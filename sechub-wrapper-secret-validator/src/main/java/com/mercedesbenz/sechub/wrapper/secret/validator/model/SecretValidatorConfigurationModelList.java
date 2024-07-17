@@ -16,10 +16,19 @@ public class SecretValidatorConfigurationModelList {
         return Collections.unmodifiableList(validatorConfigList);
     }
 
-    public void setDataList(List<SecretValidatorConfigurationModel> validatorConfigList) {
-        if (validatorConfigList != null) {
-            this.validatorConfigList = validatorConfigList;
+    /**
+     * Every time this setter is called the list will be cleared, but it can never
+     * be null. In case the parameter is null the list, the list will stay empty,
+     * but never null.
+     *
+     * @param validatorConfigList
+     */
+    public void setValidatorConfigList(List<SecretValidatorConfigurationModel> validatorConfigList) {
+        this.validatorConfigList.clear();
+        if (validatorConfigList == null) {
+            return;
         }
+        this.validatorConfigList.addAll(validatorConfigList);
     }
 
 }

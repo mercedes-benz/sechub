@@ -4,8 +4,8 @@
 This wrapper is a Spring Boot application, that is supposed to run on PDS solutions running performing secret scan.
 After the secret scanning tool is done it will try to validate secrets found and enhance the SARIF report with a custom PropertyBag for each finding location.
 It will add a custom severity with the key `secretscan.sechub.severity` and
-one of the following values `["info", "unclassified", "low", "medium", "high", "critical"]` to the SARIF PropertyBag which contains a generic map for custom values.
-This values can then be used by the `sechub-sereco` module to improve the severity categorization of a finding.
+one of the following values `["info", "unclassified", "low", "medium", "high", "critical"]` to a SARIF PropertyBag which contains a generic map for custom values.
+This values can then be used by the `sechub-sereco` module to improve the severity categorization of a finding. We add this custom severities with a `PropertyBag` because the SARIF default called `Level` does not support `CRITICAL`.
 
 === Usage
 
@@ -13,7 +13,7 @@ This values can then be used by the `sechub-sereco` module to improve the severi
 The wrapper application is an executable jar and needs no command line arguments.
 It can automatically use all 
 https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
-and following special mandatory environment variables:
+and following special mandatory environment variable:
 
 ----
 SECRET_VALIDATOR_CONFIGFILE
@@ -21,8 +21,8 @@ SECRET_VALIDATOR_CONFIGFILE
 
 [IMPORTANT]
 ====
-This files contains the configuration for each secret type, which basically tells to wrapper how to validate secrets of a certain type.
-For each product a custom file is necessary, where you should use the SARIF `ruleId` to identify each configuration.
+The file, which must be configured by `SECRET_VALIDATOR_CONFIGFILE`, contains the configuration for each secret type, which basically tells the wrapper application how to validate secrets of a certain type.
+For each product a custom file is necessary, where some kind of finding identifier should be used, like the SARIF `ruleId` to identify each configuration.
 From the https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables]
 only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report from a secret scanning tool no validations can be done.
 ====
@@ -55,20 +55,20 @@ only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report
   } ]
 }
 ```
-<1> Define a list of configuration, for each type of secret identified by the rule id.
+<1> Define a list of configuration entries. One entry represents a type of secret identified by a dedicated rule id.
 <2> The `ruleId` identifies this configuration so the requests defined in the later section are performed for each finding of this type.
-<3> Your `categorization` configuration. If empty no categorization will be performed, otherwise:
-- The `defaultSeverity` will be applied if no requests are defined but you for this type of secret.
+<3> The `categorization` configuration. If empty no categorization will be performed, otherwise:
+- The `defaultSeverity` will be applied if there are no requests defined for this type of secret.
 - The `validationFailedSeverity` will be applied if all validation requests failed for this secret.
 - The `validationSuccessSeverity` will be applied if the secret was successfully validated with one of the requests defined.
-<4> The `requests` array defines all requests you know how to validate a secret of this certain type.
-This is an array because for some secrets you might need to validate against multiple e.g. when you have AWS credentials found with your secret scan.
-You might want to be able to check if it is valid for the public AWS or your internal AWS instances if you have some:
-- With `proxyRequired` you can specify if the URL can only be accessed using a proxy server.
-- With `url` you specify the URL the request will be performed to.
-- With `headers` you specify the header `name` and `valuePrefix` if necessary for the secret found.
+<4> The `requests` array defines all known requests to validate a secret of this certain type.
+This is an array because for some secrets it might be necessary to validate against multiple servers e.g. when a company uses multiple AWS instances.
+It might be necessary to perform validation requests to all possible AWS instances to check if a secret is valid for any of them:
+- `proxyRequired` specifies if the URL can only be accessed using a proxy server.
+- `url` specifies the URL the request will be performed to.
+- `headers` specifies the header `name` and `valuePrefix` if necessary for the secret found.
 It is an array because it could be useful in the future. Currently the header is used for the secret because it is assumed to be a token send via HTTP header.
-<5> The `expectedResponse` section contains information you expect on a request with a valid secret,
+<5> The `expectedResponse` section contains information expected on a request with a valid secret,
 like a specific `httpStatus` code or the response body should contain `allOf` or `oneOf` certain strings.
 
 
@@ -82,7 +82,7 @@ SECRET_VALIDATOR_TRUSTALLCERTIFICATES
 [TIP]
 ====
 When `SECRET_VALIDATOR_TRUSTALLCERTIFICATES` set to `true`, certificate errors on validation web requests will be ignored.
-This can be useful, if you are in a environment that needs a proxy server to access certain URLs you have in your configuration.
+This can be useful, in certain situations or setups.
 ====
 
 ===== Proxy configuration

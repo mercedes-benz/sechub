@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +73,7 @@ class SecretValidatorWebRequestServiceTest {
         /* test */
         // no validation request was performed ends up with the following status, only
         // if at least 1 request was performed, the finding could be marked as invalid.
-        assertEquals(SecretValidationStatus.NO_VALIDATION_CONFIGURED, validationResult.getValidationStatus());
+        assertEquals(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED, validationResult.getValidationStatus());
     }
 
     @Test
@@ -87,7 +88,7 @@ class SecretValidatorWebRequestServiceTest {
         /* test */
         // no validation request was performed ends up with the following status, only
         // if at least 1 request was performed, the finding could be marked as invalid.
-        assertEquals(SecretValidationStatus.NO_VALIDATION_CONFIGURED, validationResult.getValidationStatus());
+        assertEquals(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED, validationResult.getValidationStatus());
     }
 
     @ParameterizedTest
@@ -111,7 +112,7 @@ class SecretValidatorWebRequestServiceTest {
             assertEquals(SecretValidationStatus.VALID, validationResult.getValidationStatus());
             assertEquals("http://example.com", validationResult.getValidatedByUrl());
         } else {
-            assertEquals(SecretValidationStatus.INVALID, validationResult.getValidationStatus());
+            assertEquals(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED, validationResult.getValidationStatus());
         }
     }
 
@@ -122,7 +123,9 @@ class SecretValidatorWebRequestServiceTest {
         List<SecretValidatorRequest> requests = createListOfRequests(false);
 
         HttpClient directHttpClient = mock(HttpClient.class);
-        when(directHttpClient.send(any(), any())).thenReturn(null);
+        @SuppressWarnings("unchecked")
+        HttpResponse<Object> response = mock(HttpResponse.class);
+        when(directHttpClient.send(any(), any())).thenReturn(response);
 
         when(httpClientFactory.createDirectHttpClient(anyBoolean())).thenReturn(directHttpClient);
 

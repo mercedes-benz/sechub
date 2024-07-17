@@ -15,9 +15,9 @@ import com.mercedesbenz.sechub.wrapper.secret.validator.support.SarifImporterKey
 import de.jcup.sarif_2_1_0.model.PropertyBag;
 import de.jcup.sarif_2_1_0.model.Region;
 
-class SecretValidatorCategorizationServiceTest {
+class SerecoSeveritySarifEnhancementServiceTest {
 
-    private SecretValidatorCategorizationService serviceToTest = new SecretValidatorCategorizationService();
+    private SerecoSeveritySarifEnhancementService serviceToTest = new SerecoSeveritySarifEnhancementService();
 
     @Test
     void categorization_config_is_null_results_in_property_bag_being_empty() {
@@ -26,7 +26,7 @@ class SecretValidatorCategorizationServiceTest {
         SecretValidationResult validationResult = new SecretValidationResult();
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, null);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, null);
 
         /* test */
         assertNull(findingRegion.getProperties());
@@ -40,7 +40,7 @@ class SecretValidatorCategorizationServiceTest {
         SecretValidatorCategorization categorization = new SecretValidatorCategorization();
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         assertNull(findingRegion.getProperties());
@@ -58,7 +58,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setValidationSuccessSeverity("critical");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();
@@ -80,7 +80,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setValidationFailedSeverity("low");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();
@@ -101,7 +101,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setDefaultSeverity("medium");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();
@@ -122,7 +122,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setDefaultSeverity("medium");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();
@@ -142,7 +142,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setDefaultSeverity("medium");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();
@@ -167,7 +167,7 @@ class SecretValidatorCategorizationServiceTest {
         categorization.setValidationFailedSeverity("low");
 
         /* execute */
-        serviceToTest.categorizeFindingByRegion(validationResult, findingRegion, categorization);
+        serviceToTest.addSerecoSeverityInfo(validationResult, findingRegion, categorization);
 
         /* test */
         PropertyBag properties = findingRegion.getProperties();

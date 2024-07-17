@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -30,59 +31,70 @@ public class SecretValidatorWebRequestService {
     ResponseValidationService responseValidationService;
 
     public SecretValidationResult validateFinding(String snippetText, List<SecretValidatorRequest> requests, boolean trustAllCertificates) {
+        SecretValidationResult validationResult = assertValidParams(snippetText, requests);
+        if (validationResult != null) {
+            return validationResult;
+        }
+
         HttpClient proxyHttpClient = httpClientFactory.createProxyHttpClient(trustAllCertificates);
         HttpClient directHttpClient = httpClientFactory.createDirectHttpClient(trustAllCertificates);
+        HttpResponse<String> response = null;
+        for (SecretValidatorRequest request : requests) {
 
+            if (isRequestValid(request)) {
+                response = createAndExecuteHttpRequest(snippetText, proxyHttpClient, directHttpClient, request);
+
+                if (responseValidationService.isValidResponse(response, request.getExpectedResponse())) {
+                    LOG.info("Finding is valid!");
+                    return createValidationResult(SecretValidationStatus.VALID, request.getUrl());
+                }
+            }
+        }
+        if (response == null) {
+            return createValidationResult(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED);
+        }
+        return createValidationResult(SecretValidationStatus.INVALID);
+    }
+
+    private SecretValidationResult assertValidParams(String snippetText, List<SecretValidatorRequest> requests) {
         if (snippetText == null || snippetText.isBlank()) {
             LOG.warn("Cannot validate finding because the SARIF snippet text is null or empty.");
-            SecretValidationResult validationResult = new SecretValidationResult();
-            validationResult.setValidationStatus(SecretValidationStatus.SARIF_SNIPPET_NOT_SET);
-            return validationResult;
+            return createValidationResult(SecretValidationStatus.SARIF_SNIPPET_NOT_SET);
         }
+
         if (requests.isEmpty()) {
             LOG.info("Configured requests for this finding empty! Finding cannot be validated!");
-            SecretValidationResult validationResult = new SecretValidationResult();
-            validationResult.setValidationStatus(SecretValidationStatus.NO_VALIDATION_CONFIGURED);
-            return validationResult;
+            return createValidationResult(SecretValidationStatus.NO_VALIDATION_CONFIGURED);
         }
-        int validationsPerformed = 0;
-        for (SecretValidatorRequest request : requests) {
-            if (request == null) {
-                LOG.info("Request config is null! Entry will be skipped.");
-                continue;
-            }
-            if (request.getUrl() == null) {
-                LOG.info("Request config URL is null! Entry will be skipped.");
-                continue;
-            }
-            HttpResponse<String> response = null;
-            try {
-                HttpRequest httpRequest = createHttpRequest(snippetText, request);
-                if (request.isProxyRequired()) {
-                    response = proxyHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                } else {
-                    response = directHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                }
-            } catch (IOException | InterruptedException e) {
-                LOG.error("Performing validation request failed!");
-            }
-            validationsPerformed++;
-            if (responseValidationService.isValidResponse(response, request.getExpectedResponse())) {
-                LOG.info("Finding is valid!");
-                SecretValidationResult validationResult = new SecretValidationResult();
-                validationResult.setValidationStatus(SecretValidationStatus.VALID);
-                validationResult.setValidatedByUrl(request.getUrl().toString());
-                return validationResult;
-            }
+        return null;
+    }
+
+    private boolean isRequestValid(SecretValidatorRequest request) {
+        if (request == null) {
+            LOG.info("Request config is null! Entry will be skipped.");
+            return false;
         }
-        if (validationsPerformed < 1) {
-            SecretValidationResult validationResult = new SecretValidationResult();
-            validationResult.setValidationStatus(SecretValidationStatus.NO_VALIDATION_CONFIGURED);
-            return validationResult;
+        if (request.getUrl() == null) {
+            LOG.info("Request config URL is null! Entry will be skipped.");
+            return false;
         }
-        SecretValidationResult validationResult = new SecretValidationResult();
-        validationResult.setValidationStatus(SecretValidationStatus.INVALID);
-        return validationResult;
+        return true;
+    }
+
+    private HttpResponse<String> createAndExecuteHttpRequest(String snippetText, HttpClient proxyHttpClient, HttpClient directHttpClient,
+            SecretValidatorRequest request) {
+        HttpResponse<String> response = null;
+        try {
+            HttpRequest httpRequest = createHttpRequest(snippetText, request);
+            if (request.isProxyRequired()) {
+                response = proxyHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            } else {
+                response = directHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            }
+        } catch (IOException | InterruptedException e) {
+            LOG.error("Performing validation request failed!");
+        }
+        return response;
     }
 
     private HttpRequest createHttpRequest(String snippetText, SecretValidatorRequest request) {
@@ -108,6 +120,19 @@ public class SecretValidatorWebRequestService {
             LOG.error("Request URL {} is invalid!", request.getUrl());
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private SecretValidationResult createValidationResult(SecretValidationStatus validationStatus) {
+        return createValidationResult(validationStatus, null);
+    }
+
+    private SecretValidationResult createValidationResult(SecretValidationStatus validationStatus, URL secretWasValidFor) {
+        SecretValidationResult validationResult = new SecretValidationResult();
+        validationResult.setValidationStatus(validationStatus);
+        if (secretWasValidFor != null) {
+            validationResult.setValidatedByUrl(secretWasValidFor.toString());
+        }
+        return validationResult;
     }
 
 }

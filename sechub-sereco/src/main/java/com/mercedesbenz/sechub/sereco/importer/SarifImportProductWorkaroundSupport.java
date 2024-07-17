@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+
 import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
 import de.jcup.sarif_2_1_0.model.Result;
 import de.jcup.sarif_2_1_0.model.Run;
@@ -58,12 +60,12 @@ public class SarifImportProductWorkaroundSupport {
         return null;
     }
 
-    public String resolveCustomSechubSeverity(Result result, Run run) {
-        return visitAllWorkaroundsAndUseFirstResultNotNull(result, run, new WorkaroundVisitor<String, Result>() {
+    public SerecoSeverity resolveCustomSechubSeverity(Result result, Run run) {
+        return visitAllWorkaroundsAndUseFirstResultNotNull(result, run, new WorkaroundVisitor<SerecoSeverity, Result>() {
 
             @Override
-            public String visit(Result element, Run run, SarifImportProductWorkaround workaround) {
-                return workaround.resolveCustomSechubSeverity(result, run);
+            public SerecoSeverity visit(Result element, Run run, SarifImportProductWorkaround workaround) {
+                return workaround.resolveCustomSerecoSeverity(result, run);
             }
         });
     }

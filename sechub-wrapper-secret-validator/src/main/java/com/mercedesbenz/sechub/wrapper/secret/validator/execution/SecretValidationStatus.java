@@ -9,6 +9,8 @@ public enum SecretValidationStatus {
 
     NO_VALIDATION_CONFIGURED("No validation URLs are configured for this type of secret!"),
 
+    ALL_VALIDATION_REQUESTS_FAILED("All request to validate a secret failed, due to network or connection errors!"),
+
     SARIF_SNIPPET_NOT_SET("SARIF finding does not contain a valid snippet to validate!"),;
 
     private String description;

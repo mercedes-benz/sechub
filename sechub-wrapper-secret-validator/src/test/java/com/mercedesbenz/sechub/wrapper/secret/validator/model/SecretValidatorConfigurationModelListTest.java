@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 class SecretValidatorConfigurationModelListTest {
 
     @Test
-    void test() {
+    void json_converter_can_handle_model_in_expected_way() {
         /* prepare */
         String json = """
                 {

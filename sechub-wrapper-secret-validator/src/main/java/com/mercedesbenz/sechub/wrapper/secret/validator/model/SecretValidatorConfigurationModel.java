@@ -34,9 +34,18 @@ public class SecretValidatorConfigurationModel {
         return Collections.unmodifiableList(requests);
     }
 
+    /**
+     * Every time this setter is called the list will be cleared, but it can never
+     * be null. In case the parameter is null the list, the list will stay empty,
+     * but never null.
+     *
+     * @param requests
+     */
     public void setRequests(List<SecretValidatorRequest> requests) {
-        if (requests != null) {
-            this.requests = requests;
+        this.requests.clear();
+        if (requests == null) {
+            return;
         }
+        this.requests.addAll(requests);
     }
 }

@@ -30,7 +30,7 @@ public class SecretValidatorExecutionService {
     SecretValidationService validationService;
 
     @Autowired
-    SecretValidatorCategorizationService categorizationService;
+    SerecoSeveritySarifEnhancementService sarifEnhancementService;
 
     @Autowired
     SarifValidationSupport sarifValidationSupport;
@@ -44,31 +44,41 @@ public class SecretValidatorExecutionService {
         for (Run run : runs) {
             List<Result> findings = run.getResults();
             for (Result finding : findings) {
-                if (!sarifValidationSupport.findingCanBeValidated(finding)) {
-                    continue;
-                }
                 SecretValidatorConfigurationModel config = validatorConfiguration.get(finding.getRuleId());
-                if (config == null) {
-                    LOG.info("No config found to validate findings of rule: {}", finding.getRuleId());
-                    continue;
-                }
-                SecretValidatorCategorization categorization = config.getCategorization();
-                if (categorization == null || categorization.isEmpty()) {
-                    LOG.info("No config found to categorize findings of rule: {}", finding.getRuleId());
-                    continue;
-                }
-                for (Location location : finding.getLocations()) {
-                    if (!sarifValidationSupport.findingLocationCanBeValidated(location)) {
-                        continue;
-                    }
-                    Region findingRegion = location.getPhysicalLocation().getRegion();
-                    SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRequests(),
-                            executionContext.isTrustAllCertificates());
-                    categorizationService.categorizeFindingByRegion(validationResult, findingRegion, config.getCategorization());
+                if (isValidationPossible(config, finding)) {
+                    validateFindingAndEnhanceSarif(executionContext, config, finding);
                 }
             }
         }
         return executionContext.getSarifReport();
+    }
+
+    private boolean isValidationPossible(SecretValidatorConfigurationModel config, Result finding) {
+        if (!sarifValidationSupport.findingCanBeValidated(finding)) {
+            return false;
+        }
+        if (config == null) {
+            LOG.info("No config found to validate findings of rule: {}", finding.getRuleId());
+            return false;
+        }
+        SecretValidatorCategorization categorization = config.getCategorization();
+        if (categorization == null || categorization.isEmpty()) {
+            LOG.info("No config found to categorize findings of rule: {}", finding.getRuleId());
+            return false;
+        }
+        return true;
+    }
+
+    private void validateFindingAndEnhanceSarif(SecretValidatorExecutionContext executionContext, SecretValidatorConfigurationModel config, Result finding) {
+        for (Location location : finding.getLocations()) {
+            if (!sarifValidationSupport.findingLocationCanBeValidated(location)) {
+                continue;
+            }
+            Region findingRegion = location.getPhysicalLocation().getRegion();
+            SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRequests(),
+                    executionContext.isTrustAllCertificates());
+            sarifEnhancementService.addSerecoSeverityInfo(validationResult, findingRegion, config.getCategorization());
+        }
     }
 
 }

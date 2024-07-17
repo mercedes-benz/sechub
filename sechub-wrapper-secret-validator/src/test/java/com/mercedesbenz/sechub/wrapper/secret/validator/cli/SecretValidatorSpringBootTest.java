@@ -35,26 +35,27 @@ class SecretValidatorSpringBootTest {
     SecretValidatorExecutionService executionService;
 
     @Test
-    void execution_service_with_correct_configuration_without_validation_categprizes_findings_with_default_configured() {
+    void execution_service_with_correct_configuration_without_validation_categorizes_findings_with_default_configured() {
         /* execute */
         SarifSchema210 report = executionService.execute();
 
         /* test */
         Run run = report.getRuns().get(0);
         for (Result finding : run.getResults()) {
-            Location location = finding.getLocations().get(0);
-            Region region = location.getPhysicalLocation().getRegion();
-            Map<String, Object> additionalProperties = region.getProperties().getAdditionalProperties();
-            String sechubSeverity = (String) additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey());
-            String validatedByUrl = (String) additionalProperties.get(SarifImporterKeys.SECRETSCAN_VALIDATED_BY_URL.getKey());
-
-            // expected severity is the severity from the validation failed config
-            assertEquals("medium", sechubSeverity);
-
-            // since it was not validated we expected no value for
-            // SECRETSCAN_VALIDATED_BY_URL
-            assertEquals(null, validatedByUrl);
+            // since all validation requests fail the default categorization of the config
+            // file will be used which is high
+            assertFindHasSerecoSeverity("high", finding);
         }
+    }
+
+    private void assertFindHasSerecoSeverity(String expectedSerecoSeverity, Result finding) {
+        Location location = finding.getLocations().get(0);
+        Region region = location.getPhysicalLocation().getRegion();
+        Map<String, Object> additionalProperties = region.getProperties().getAdditionalProperties();
+        String serecoSeverity = (String) additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey());
+
+        assertEquals(expectedSerecoSeverity, serecoSeverity);
+
     }
 
 }

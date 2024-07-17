@@ -16,22 +16,27 @@ public class ResponseValidationService {
             return false;
         }
         int expectedHttpStatus = secretValidatorResponse.getHttpStatus();
-        // if no expected HTTP status code was configured inside the config we ignore it
-        if (expectedHttpStatus > 0) {
-            // no contains section specified, we return the result of the checked status
-            // code
-            if (hasNoContainsSection(secretValidatorResponse.getContains())) {
-                return expectedHttpStatus == response.statusCode();
-            }
-            return containsExpectedSnippets(secretValidatorResponse.getContains(), response.body());
-        } else {
-            // no contains section specified, we return false, since nothing was specified
-            // at all to check the response
-            if (hasNoContainsSection(secretValidatorResponse.getContains())) {
-                return false;
-            }
-            return containsExpectedSnippets(secretValidatorResponse.getContains(), response.body());
+        SecretValidatorResponseContains containsSection = secretValidatorResponse.getContains();
+
+        // if the expected status is not set and no contains section is set, the secret
+        // cannot be validated
+        if (expectedHttpStatus <= 0 && hasNoContainsSection(containsSection)) {
+            return false;
         }
+
+        // no contains section set, so we use the status code
+        if (hasNoContainsSection(containsSection)) {
+            return expectedHttpStatus == response.statusCode();
+        }
+
+        // contains section and expected status code set, both must be valid
+        if (expectedHttpStatus > 0) {
+            boolean valid = expectedHttpStatus == response.statusCode();
+            return valid && containsExpectedSnippets(containsSection, response.body());
+        }
+
+        // fallback if only a contains section was configured
+        return containsExpectedSnippets(containsSection, response.body());
     }
 
     private boolean hasNoContainsSection(SecretValidatorResponseContains contains) {
@@ -42,15 +47,8 @@ public class ResponseValidationService {
     }
 
     private boolean containsExpectedSnippets(SecretValidatorResponseContains contains, String body) {
-        // body should not be null since contains section should be specified at this
-        // point
+        // body and contains section should be specified at this point
         if (body == null || contains == null) {
-            return false;
-        }
-
-        // at the point where this method gets called we require the contains section to
-        // be configured
-        if (hasNoContainsSection(contains)) {
             return false;
         }
 

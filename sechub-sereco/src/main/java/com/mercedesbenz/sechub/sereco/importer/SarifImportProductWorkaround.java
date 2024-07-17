@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
+import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+
 import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
 import de.jcup.sarif_2_1_0.model.Result;
 import de.jcup.sarif_2_1_0.model.Run;
@@ -23,7 +25,7 @@ public interface SarifImportProductWorkaround {
         return null;
     }
 
-    public default String resolveCustomSechubSeverity(Result result, Run run) {
+    public default SerecoSeverity resolveCustomSerecoSeverity(Result result, Run run) {
         return null;
     }
 }

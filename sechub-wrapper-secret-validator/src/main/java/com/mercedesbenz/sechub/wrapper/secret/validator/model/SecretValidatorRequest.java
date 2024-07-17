@@ -36,10 +36,19 @@ public class SecretValidatorRequest {
         return Collections.unmodifiableList(headers);
     }
 
+    /**
+     * Every time this setter is called the list will be cleared, but it can never
+     * be null. In case the parameter is null the list, the list will stay empty,
+     * but never null.
+     *
+     * @param headers
+     */
     public void setHeaders(List<SecretValidatorRequestHeader> headers) {
-        if (headers != null) {
-            this.headers = headers;
+        this.headers.clear();
+        if (headers == null) {
+            return;
         }
+        this.headers.addAll(headers);
     }
 
     public SecretValidatorResponse getExpectedResponse() {

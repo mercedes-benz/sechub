@@ -17,20 +17,38 @@ public class SecretValidatorResponseContains {
         return Collections.unmodifiableList(allOf);
     }
 
+    /**
+     * Every time this setter is called the list will be cleared, but it can never
+     * be null. In case the parameter is null the list, the list will stay empty,
+     * but never null.
+     *
+     * @param allOf
+     */
     public void setAllOf(List<String> allOf) {
-        if (allOf != null) {
-            this.allOf = allOf;
+        this.allOf.clear();
+        if (allOf == null) {
+            return;
         }
+        this.allOf.addAll(allOf);
     }
 
     public List<String> getOneOf() {
         return Collections.unmodifiableList(oneOf);
     }
 
+    /**
+     * Every time this setter is called the list will be cleared, but it can never
+     * be null. In case the parameter is null the list, the list will stay empty,
+     * but never null.
+     *
+     * @param oneOf
+     */
     public void setOneOf(List<String> oneOf) {
-        if (oneOf != null) {
-            this.oneOf = oneOf;
+        this.oneOf.clear();
+        if (oneOf == null) {
+            return;
         }
+        this.oneOf.addAll(oneOf);
     }
 
 }

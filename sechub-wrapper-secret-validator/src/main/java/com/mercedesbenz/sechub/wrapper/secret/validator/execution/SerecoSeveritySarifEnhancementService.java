@@ -11,9 +11,9 @@ import de.jcup.sarif_2_1_0.model.PropertyBag;
 import de.jcup.sarif_2_1_0.model.Region;
 
 @Service
-public class SecretValidatorCategorizationService {
+public class SerecoSeveritySarifEnhancementService {
 
-    public void categorizeFindingByRegion(SecretValidationResult validationResult, Region findingRegion, SecretValidatorCategorization categorization) {
+    public void addSerecoSeverityInfo(SecretValidationResult validationResult, Region findingRegion, SecretValidatorCategorization categorization) {
         if (categorization == null || categorization.isEmpty()) {
             return;
         }

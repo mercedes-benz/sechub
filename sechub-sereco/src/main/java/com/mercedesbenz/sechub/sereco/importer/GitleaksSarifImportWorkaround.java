@@ -6,7 +6,18 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import de.jcup.sarif_2_1_0.model.*;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+
+import de.jcup.sarif_2_1_0.model.Location;
+import de.jcup.sarif_2_1_0.model.PartialFingerprints;
+import de.jcup.sarif_2_1_0.model.PhysicalLocation;
+import de.jcup.sarif_2_1_0.model.PropertyBag;
+import de.jcup.sarif_2_1_0.model.Region;
+import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
+import de.jcup.sarif_2_1_0.model.Result;
+import de.jcup.sarif_2_1_0.model.Run;
+import de.jcup.sarif_2_1_0.model.Tool;
+import de.jcup.sarif_2_1_0.model.ToolComponent;
 
 @Component
 public class GitleaksSarifImportWorkaround implements SarifImportProductWorkaround {
@@ -39,7 +50,7 @@ public class GitleaksSarifImportWorkaround implements SarifImportProductWorkarou
     }
 
     @Override
-    public String resolveCustomSechubSeverity(Result result, Run run) {
+    public SerecoSeverity resolveCustomSerecoSeverity(Result result, Run run) {
         if (result == null) {
             return null;
         }
@@ -67,7 +78,8 @@ public class GitleaksSarifImportWorkaround implements SarifImportProductWorkarou
             return null;
         }
         String severityKey = SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey();
-        return (String) additionalProperties.get(severityKey);
+        String severityValue = (String) additionalProperties.get(severityKey);
+        return SerecoSeverity.fromString(severityValue);
     }
 
     private boolean isGitleaksRun(Run run) {

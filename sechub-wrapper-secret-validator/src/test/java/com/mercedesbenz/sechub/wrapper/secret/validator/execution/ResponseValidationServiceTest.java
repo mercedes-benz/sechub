@@ -43,6 +43,20 @@ class ResponseValidationServiceTest {
         assertFalse(isValid);
     }
 
+    @Test
+    void validator_response_config_is_not_configured_results_in_validation_is_false() {
+        /* prepare */
+        @SuppressWarnings("unchecked")
+        HttpResponse<String> response = mock(HttpResponse.class);
+        when(response.statusCode()).thenReturn(0);
+
+        /* execute */
+        boolean isValid = serviceToTest.isValidResponse(response, new SecretValidatorResponse());
+
+        /* test */
+        assertFalse(isValid);
+    }
+
     @ParameterizedTest
     @ValueSource(ints = { 200, 302, 404, 500 })
     void validator_response_config_status_code_configured_and_contains_is_null_results_in_http_status_code_check(int responseCode) {
@@ -54,7 +68,7 @@ class ResponseValidationServiceTest {
         secretValidatorResponse.setHttpStatus(302);
         secretValidatorResponse.setContains(null);
 
-        // with this configuration we expect the satuscodes being compared,
+        // with this configuration we expect the statuscodes being compared,
         // since nothing else is configured inside the SecretValidatorResponse
         boolean expectedResponse = response.statusCode() == secretValidatorResponse.getHttpStatus();
 

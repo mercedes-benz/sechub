@@ -36,7 +36,7 @@ class SecretValidatorExecutionServiceTest {
 
     private SecretValidatorExecutionContextFactory contextFactory;
     private SecretValidationService validationService;
-    private SecretValidatorCategorizationService categorizationService;
+    private SerecoSeveritySarifEnhancementService sarifEnhancementService;
     private SarifValidationSupport sarifValidationSupport;
 
     @BeforeEach
@@ -45,12 +45,12 @@ class SecretValidatorExecutionServiceTest {
 
         contextFactory = mock(SecretValidatorExecutionContextFactory.class);
         validationService = mock(SecretValidationService.class);
-        categorizationService = mock(SecretValidatorCategorizationService.class);
+        sarifEnhancementService = mock(SerecoSeveritySarifEnhancementService.class);
         sarifValidationSupport = mock(SarifValidationSupport.class);
 
         serviceToTest.contextFactory = contextFactory;
         serviceToTest.validationService = validationService;
-        serviceToTest.categorizationService = categorizationService;
+        serviceToTest.sarifEnhancementService = sarifEnhancementService;
         serviceToTest.sarifValidationSupport = sarifValidationSupport;
     }
 
@@ -74,7 +74,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, never()).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
 
@@ -99,7 +99,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, never()).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
 
@@ -126,7 +126,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, never()).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
 
@@ -154,7 +154,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, never()).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
 
@@ -184,7 +184,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, never()).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
         verify(sarifValidationSupport, times(1)).findingLocationCanBeValidated(any());
     }
@@ -198,7 +198,7 @@ class SecretValidatorExecutionServiceTest {
         SecretValidationResult secretValidationResult = new SecretValidationResult();
         when(validationService.validateFindingByRegion(any(), any(), anyBoolean())).thenReturn(secretValidationResult);
 
-        doNothing().when(categorizationService).categorizeFindingByRegion(any(), any(), any());
+        doNothing().when(sarifEnhancementService).addSerecoSeverityInfo(any(), any(), any());
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(true);
         when(sarifValidationSupport.findingLocationCanBeValidated(any())).thenReturn(true);
@@ -209,7 +209,7 @@ class SecretValidatorExecutionServiceTest {
         /* test */
         verify(contextFactory, times(1)).create();
         verify(validationService, times(6)).validateFindingByRegion(any(), any(), anyBoolean());
-        verify(categorizationService, times(6)).categorizeFindingByRegion(any(), any(), any());
+        verify(sarifEnhancementService, times(6)).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(6)).findingCanBeValidated(any());
         verify(sarifValidationSupport, times(6)).findingLocationCanBeValidated(any());
     }
