@@ -55,7 +55,6 @@ projectType = [
                     
                     /* special application to validate and categorize results of secret scans */
                     project(':sechub-wrapper-secret-validator'),
-                     
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */

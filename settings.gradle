@@ -89,7 +89,10 @@ include 'sechub-cli',
 // Wrapper prepare
 'sechub-wrapper-prepare',
 
-/* secret validator */
+// Wrapper Xray
+'sechub-wrapper-xray',
+
+// secret validator
 'sechub-wrapper-secret-validator',
 
 /* System Test */
