@@ -20,12 +20,15 @@ import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubSecretKeyProviderFactory;
 
-class EncryptionPoolFactoryTest {
-    private EncryptionPoolFactory factoryToTest;
+class ScheduleEncryptionPoolFactoryTest {
+    private ScheduleEncryptionPoolFactory factoryToTest;
     private PersistentCipherFactory cipherFactory;
     private EncryptionSupport encryptionSupport;
-    private SecretKeyProviderFactory secretKeyProviderFactory;
+    private SecHubSecretKeyProviderFactory secHubSecretKeyProviderFactory;
     private SecretKeyProvider noneSecretKeyProvider;
     private InitializationVector noneInitVector1;
     private PersistentCipher noneCipher1;
@@ -33,18 +36,18 @@ class EncryptionPoolFactoryTest {
 
     @BeforeEach
     void beforeEach() {
-        factoryToTest = new EncryptionPoolFactory();
+        factoryToTest = new ScheduleEncryptionPoolFactory();
 
         cipherFactory = mock(PersistentCipherFactory.class);
         encryptionSupport = mock(EncryptionSupport.class);
-        secretKeyProviderFactory = mock(SecretKeyProviderFactory.class);
+        secHubSecretKeyProviderFactory = mock(SecHubSecretKeyProviderFactory.class);
 
         factoryToTest.cipherFactory = cipherFactory;
         factoryToTest.encryptionSupport = encryptionSupport;
-        factoryToTest.secretKeyProviderFactory = secretKeyProviderFactory;
+        factoryToTest.secHubSecretKeyProviderFactory = secHubSecretKeyProviderFactory;
 
         noneSecretKeyProvider = mock(SecretKeyProvider.class, "none-secret-keyprovider");
-        when(secretKeyProviderFactory.createSecretKeyProvider(CipherPasswordSourceType.NONE, null)).thenReturn(noneSecretKeyProvider);
+        when(secHubSecretKeyProviderFactory.createSecretKeyProvider(SecHubCipherPasswordSourceType.NONE, null)).thenReturn(noneSecretKeyProvider);
 
         noneCipher1 = mock(PersistentCipher.class, "none-cipher1");
         when(cipherFactory.createCipher(noneSecretKeyProvider, PersistentCipherType.NONE)).thenReturn(noneCipher1);
@@ -65,7 +68,7 @@ class EncryptionPoolFactoryTest {
     void createEncryptionPool_empty_map_is_accepted() throws Exception {
 
         /* execute */
-        EncryptionPool pool = factoryToTest.createEncryptionPool(Collections.emptyList());
+        ScheduleEncryptionPool pool = factoryToTest.createEncryptionPool(Collections.emptyList());
 
         /* test */
         assertThat(pool).isNotNull();
@@ -83,8 +86,8 @@ class EncryptionPoolFactoryTest {
 
         // create valid cipher pool data
         ScheduleCipherPoolData data1 = new ScheduleCipherPoolData();
-        data1.algorithm = CipherAlgorithm.NONE;
-        data1.cipherPasswordSourceType = CipherPasswordSourceType.NONE;
+        data1.algorithm = SecHubCipherAlgorithm.NONE;
+        data1.secHubCipherPasswordSourceType = SecHubCipherPasswordSourceType.NONE;
         data1.created = LocalDateTime.now();
         data1.createdFrom = "user1";
         data1.id = Long.valueOf(0);
@@ -98,7 +101,7 @@ class EncryptionPoolFactoryTest {
         when(encryptionSupport.decryptString(eq(noneEncrypted), eq(noneCipher1), any(InitializationVector.class))).thenReturn(plainText);
 
         /* execute */
-        EncryptionPool pool = factoryToTest.createEncryptionPool(list);
+        ScheduleEncryptionPool pool = factoryToTest.createEncryptionPool(list);
 
         /* test */
         assertThat(pool).isNotNull();
@@ -122,8 +125,8 @@ class EncryptionPoolFactoryTest {
 
         // create valid cipher pool data
         ScheduleCipherPoolData data1 = new ScheduleCipherPoolData();
-        data1.algorithm = CipherAlgorithm.NONE;
-        data1.cipherPasswordSourceType = CipherPasswordSourceType.NONE;
+        data1.algorithm = SecHubCipherAlgorithm.NONE;
+        data1.secHubCipherPasswordSourceType = SecHubCipherPasswordSourceType.NONE;
         data1.created = LocalDateTime.now();
         data1.createdFrom = "user1";
         data1.id = Long.valueOf(0);
@@ -138,7 +141,7 @@ class EncryptionPoolFactoryTest {
 
         /* execute + test  @formatter:off */
         assertThatThrownBy(() -> factoryToTest.createEncryptionPool(list)).
-                                    isInstanceOf(EncryptionPoolException.class).
+                                    isInstanceOf(ScheduleEncryptionException.class).
                                     hasMessageContaining("cipher pool").
                                     hasMessageContaining("cannot be handled");
         /* @formatter:on */

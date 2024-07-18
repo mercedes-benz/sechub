@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.schedule.encryption;
+package com.mercedesbenz.sechub.sharedkernel.encryption;
 
 import org.springframework.stereotype.Component;
 
@@ -7,9 +7,9 @@ import com.mercedesbenz.sechub.commons.encryption.DefaultSecretKeyProvider;
 import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
 
 @Component
-public class SecretKeyProviderFactory {
+public class SecHubSecretKeyProviderFactory {
 
-    public SecretKeyProvider createSecretKeyProvider(CipherPasswordSourceType passwordSourceType, String cipherPasswordSourceData) {
+    public SecretKeyProvider createSecretKeyProvider(SecHubCipherPasswordSourceType passwordSourceType, String cipherPasswordSourceData) {
 
         switch (passwordSourceType) {
         case ENVIRONMENT_VARIABLE:
@@ -18,7 +18,7 @@ public class SecretKeyProviderFactory {
         case NONE:
             return null; // here we need no secret key provider - none needs no password...
         default:
-            throw new IllegalStateException("password type %s not supported!".formatted(passwordSourceType));
+            throw new IllegalStateException("Password source type '%s' is not supported!".formatted(passwordSourceType));
         }
 
     }

@@ -44,4 +44,8 @@ public class SecHubJobTransactionService {
         LOG.info("Job :{} has now execution state: {}", sechubJobUUID, job.getExecutionState());
     }
 
+    public void saveInOwnTransaction(ScheduleSecHubJob job) {
+        repository.save(job);
+    }
+
 }

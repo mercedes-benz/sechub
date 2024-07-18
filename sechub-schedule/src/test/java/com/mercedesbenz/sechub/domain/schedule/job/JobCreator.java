@@ -91,6 +91,11 @@ public class JobCreator {
         return this;
     }
 
+    public JobCreator encryptionPoolId(Long encryptionCipherPoolId) {
+        job.encryptionCipherPoolId = encryptionCipherPoolId;
+        return this;
+    }
+
     /**
      * Creates the job and returns builder agani
      *

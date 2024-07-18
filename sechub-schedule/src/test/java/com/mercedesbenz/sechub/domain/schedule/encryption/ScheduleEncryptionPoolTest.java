@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 
-class EncryptionPoolTest {
+class ScheduleEncryptionPoolTest {
 
     @Test
     void constructor_from_map_results_in_expected_getCipherForPoolId_results() {
@@ -24,7 +24,7 @@ class EncryptionPoolTest {
         map.put(Long.valueOf(2), cipher2);
 
         /* execute */
-        EncryptionPool poolToTest = new EncryptionPool(map);
+        ScheduleEncryptionPool poolToTest = new ScheduleEncryptionPool(map);
 
         /* test */
         assertThat(poolToTest.getCipherForPoolId(Long.valueOf(0))).isNull();
@@ -40,7 +40,7 @@ class EncryptionPoolTest {
         Map<Long, PersistentCipher> map = null;
 
         /* execute */
-        EncryptionPool poolToTest = new EncryptionPool(map);
+        ScheduleEncryptionPool poolToTest = new ScheduleEncryptionPool(map);
 
         /* test */
         assertThat(poolToTest.getCipherForPoolId(Long.valueOf(value))).isNull();
@@ -53,10 +53,24 @@ class EncryptionPoolTest {
         Map<Long, PersistentCipher> map = new HashMap<>();
 
         /* execute */
-        EncryptionPool poolToTest = new EncryptionPool(map);
+        ScheduleEncryptionPool poolToTest = new ScheduleEncryptionPool(map);
 
         /* test */
         assertThat(poolToTest.getCipherForPoolId(Long.valueOf(value))).isNull();
     }
 
+    @Test
+    void getAllPoolIds_returns_keys_of_pool_map() {
+        /* prepare */
+        Map<Long, PersistentCipher> map = new HashMap<>();
+        PersistentCipher cipher1 = mock(PersistentCipher.class);
+        PersistentCipher cipher2 = mock(PersistentCipher.class);
+        map.put(Long.valueOf(1), cipher1);
+        map.put(Long.valueOf(2), cipher2);
+
+        ScheduleEncryptionPool poolToTest = new ScheduleEncryptionPool(map);
+
+        /* execute */
+        assertThat(poolToTest.getAllPoolIds()).contains(1L, 2L).hasSize(2);
+    }
 }

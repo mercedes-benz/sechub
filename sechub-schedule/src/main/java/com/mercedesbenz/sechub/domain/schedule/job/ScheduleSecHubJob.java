@@ -78,6 +78,7 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_MESSAGES = "jsonMessages";
     public static final String PROPERTY_MODULE_GROUP = "moduleGroup";
     public static final String PROPERTY_DATA = "data";
+    public static final String PROPERTY_ENCRYPTION_POOL_ID = "encryptionCipherPoolId";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
 

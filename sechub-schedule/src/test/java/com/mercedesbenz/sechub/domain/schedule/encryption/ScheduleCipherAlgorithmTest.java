@@ -11,8 +11,9 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 
-class CipherAlgorithmTest {
+class ScheduleCipherAlgorithmTest {
 
     /*
      * We have separated the database enumeration from the encryption parts - for
@@ -20,7 +21,7 @@ class CipherAlgorithmTest {
      */
     @ParameterizedTest
     @ArgumentsSource(CipherAlgorithmTestData.class)
-    void databaseAlgorithmHasExpectedInternalType(CipherAlgorithm algorithmInDb, PersistentCipherType internalType) {
+    void databaseAlgorithmHasExpectedInternalType(SecHubCipherAlgorithm algorithmInDb, PersistentCipherType internalType) {
         assertThat(algorithmInDb.getType()).isEqualTo(internalType);
     }
 
@@ -30,9 +31,9 @@ class CipherAlgorithmTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             /* @formatter:off */
             return Stream.of(
-                            Arguments.of(CipherAlgorithm.NONE, PersistentCipherType.NONE),
-                            Arguments.of(CipherAlgorithm.AES_GCM_SIV_128, PersistentCipherType.AES_GCM_SIV_128),
-                            Arguments.of(CipherAlgorithm.AES_GCM_SIV_256, PersistentCipherType.AES_GCM_SIV_256)
+                            Arguments.of(SecHubCipherAlgorithm.NONE, PersistentCipherType.NONE),
+                            Arguments.of(SecHubCipherAlgorithm.AES_GCM_SIV_128, PersistentCipherType.AES_GCM_SIV_128),
+                            Arguments.of(SecHubCipherAlgorithm.AES_GCM_SIV_256, PersistentCipherType.AES_GCM_SIV_256)
                         )
                     ;
             /* @formatter:on */

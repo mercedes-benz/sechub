@@ -2,11 +2,15 @@ package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
 
 /**
  * Provides cipher pool data
@@ -51,14 +55,46 @@ public class ScheduleCipherPoolDataProvider {
     private ScheduleCipherPoolData createFallback() {
         ScheduleCipherPoolData fallbackEntry = new ScheduleCipherPoolData();
         fallbackEntry.id = Long.valueOf(0);
-        fallbackEntry.cipherPasswordSourceType = CipherPasswordSourceType.NONE;
+        fallbackEntry.secHubCipherPasswordSourceType = SecHubCipherPasswordSourceType.NONE;
         fallbackEntry.testText = "fallback";
         fallbackEntry.testEncrypted = "fallback".getBytes();
-        fallbackEntry.algorithm = CipherAlgorithm.NONE;
+        fallbackEntry.algorithm = SecHubCipherAlgorithm.NONE;
         fallbackEntry.created = LocalDateTime.now();
         fallbackEntry.createdFrom = null;
         fallbackEntry.testInitialVector = null;
 
         return fallbackEntry;
     }
+
+    /**
+     * Checks if given set of pool ids are exactly the same pool ids available
+     * inside database
+     *
+     * @param currentPoolIds
+     * @return <code>true</code> when same pool ids, <code>false</code> if there is
+     *         any difference
+     * @throws IllegalArgumentException if current pool id set is <code>null</code>
+     */
+    public boolean isContainingExactlyGivenPoolIds(Set<Long> currentPoolIds) {
+        if (currentPoolIds == null) {
+            throw new IllegalArgumentException("Current pool ids may not be null!");
+        }
+
+        Set<Long> databaseids = repository.fetchAllCipherPoolIds();
+
+        int dbSize = databaseids.size();
+        int memorySize = currentPoolIds.size();
+
+        if (dbSize != memorySize) {
+            LOG.debug("Pool size differs. Memory: {}, Database: {}", memorySize, dbSize);
+            return false;
+        }
+
+        boolean allContained = databaseids.containsAll(currentPoolIds);
+
+        LOG.debug("allContained: {}, found pool ids in db: {}", allContained, currentPoolIds);
+
+        return allContained;
+    }
+
 }

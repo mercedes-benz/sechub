@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.schedule.encryption;
+package com.mercedesbenz.sechub.sharedkernel.encryption;
 
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 
-@MustBeKeptStable("used in database as values")
-public enum CipherAlgorithm {
+@MustBeKeptStable("used in database as values and also inside event communication/domain messages")
+public enum SecHubCipherAlgorithm {
 
     NONE(PersistentCipherType.NONE),
 
@@ -15,7 +15,7 @@ public enum CipherAlgorithm {
 
     private PersistentCipherType type;
 
-    private CipherAlgorithm(PersistentCipherType type) {
+    private SecHubCipherAlgorithm(PersistentCipherType type) {
         this.type = type;
     }
 

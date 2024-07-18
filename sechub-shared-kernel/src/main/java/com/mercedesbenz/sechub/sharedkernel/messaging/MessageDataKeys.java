@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 
 /**
  *
@@ -33,6 +34,7 @@ public class MessageDataKeys {
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
     private static final UserMessageDataProvider USER_MESSAGE_DATA_PROVIDER = new UserMessageDataProvider();
     private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
+    private static final SecHubEncryptionMessageDataProvider SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER = new SecHubEncryptionMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -52,6 +54,9 @@ public class MessageDataKeys {
 
     public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", UID_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", UID_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubEncryptionData> SECHUB_ENCRYPT_ROTATION_DATA = createKey("sechub.encrypt.rotation.data",
+            SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER);
     /**
      * Use this generic key when you just want to define timestamp without using a
      * dedicated model where it is already contained.

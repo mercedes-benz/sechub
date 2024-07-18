@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.encryption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.encryption.EncryptionRotator;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 
@@ -26,5 +27,10 @@ public class ScheduleEncryptionPojoFactory {
     @Bean
     EncryptionSupport createEncryptionSupport() {
         return new EncryptionSupport();
+    }
+
+    @Bean
+    EncryptionRotator createEncryptionRotator() {
+        return new EncryptionRotator();
     }
 }

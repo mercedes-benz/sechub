@@ -8,13 +8,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-class LatestCipherPoolIdResolverTest {
+class ScheduleLatestCipherPoolIdResolverTest {
 
     @Test
     void null_list_results_in_latest_pool_id_null() {
 
         /* prepare */
-        LatestCipherPoolIdResolver resolverToTest = new LatestCipherPoolIdResolver();
+        ScheduleLatestCipherPoolIdResolver resolverToTest = new ScheduleLatestCipherPoolIdResolver();
 
         List<ScheduleCipherPoolData> entries = null;
 
@@ -29,7 +29,7 @@ class LatestCipherPoolIdResolverTest {
     void empty_list_results_in_latest_pool_id_null() {
 
         /* prepare */
-        LatestCipherPoolIdResolver resolverToTest = new LatestCipherPoolIdResolver();
+        ScheduleLatestCipherPoolIdResolver resolverToTest = new ScheduleLatestCipherPoolIdResolver();
 
         List<ScheduleCipherPoolData> entries = new ArrayList<>();
 
@@ -44,7 +44,7 @@ class LatestCipherPoolIdResolverTest {
     void two_entries_newer_one_resolved() {
 
         /* prepare */
-        LatestCipherPoolIdResolver resolverToTest = new LatestCipherPoolIdResolver();
+        ScheduleLatestCipherPoolIdResolver resolverToTest = new ScheduleLatestCipherPoolIdResolver();
 
         // create valid cipher pool data
         ScheduleCipherPoolData data1 = new ScheduleCipherPoolData();
@@ -70,7 +70,7 @@ class LatestCipherPoolIdResolverTest {
     void three_entries_newer_resolved_no_matter_that_inside_middle() {
 
         /* prepare */
-        LatestCipherPoolIdResolver resolverToTest = new LatestCipherPoolIdResolver();
+        ScheduleLatestCipherPoolIdResolver resolverToTest = new ScheduleLatestCipherPoolIdResolver();
 
         // create valid cipher pool data
         ScheduleCipherPoolData data1 = new ScheduleCipherPoolData();

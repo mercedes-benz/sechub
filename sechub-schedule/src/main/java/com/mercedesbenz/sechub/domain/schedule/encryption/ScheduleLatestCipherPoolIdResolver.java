@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LatestCipherPoolIdResolver {
+public class ScheduleLatestCipherPoolIdResolver {
 
     /**
-     * Resolve latest entry
+     * Resolve latest entry from given list of data entries
      *
      * @param entries a list of pool data elements
      * @return latest entry of list, or <code>null</code> of entry list was empty or

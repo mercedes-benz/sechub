@@ -15,10 +15,12 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAt
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerProjectConfigService;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionRotationService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobTransactionService;
 import com.mercedesbenz.sechub.domain.schedule.status.SchedulerStatusService;
 import com.mercedesbenz.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -68,6 +70,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
     SecHubJobTransactionService jobTransactionService;
+
+    @Autowired
+    ScheduleEncryptionRotationService encryptionRotatonService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -119,6 +124,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
             break;
         case PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE:
             handleProductExecutorCancelOperationsDone(request);
+            break;
+        case START_ENCRYPTION_ROTATION:
+            handleEncryptionRotation(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
@@ -228,6 +236,12 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
         deleteAllProjectAccessService.deleteAnyAccessDataForProject(projectId);
         projectConfigService.deleteProjectConfiguration(projectId);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.START_ENCRYPTION_ROTATION)
+    private void handleEncryptionRotation(DomainMessage request) {
+        SecHubEncryptionData data = request.get(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA);
+        encryptionRotatonService.rotateEncryption(data);
     }
 
     private void updateWhiteList(ProjectMessage data) {

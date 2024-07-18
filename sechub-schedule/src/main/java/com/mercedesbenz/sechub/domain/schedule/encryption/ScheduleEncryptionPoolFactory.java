@@ -13,9 +13,11 @@ import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubSecretKeyProviderFactory;
 
 @Component
-public class EncryptionPoolFactory {
+public class ScheduleEncryptionPoolFactory {
 
     @Autowired
     EncryptionSupport encryptionSupport;
@@ -24,7 +26,7 @@ public class EncryptionPoolFactory {
     PersistentCipherFactory cipherFactory;
 
     @Autowired
-    SecretKeyProviderFactory secretKeyProviderFactory;
+    SecHubSecretKeyProviderFactory secHubSecretKeyProviderFactory;
 
     /**
      * Creates an encryption pool for the given list of scheduler cipher pool data.
@@ -32,12 +34,12 @@ public class EncryptionPoolFactory {
      * automatically check that the encryption is possible with the current setup.
      *
      * If it is not possible - e.g. a cipher is created but with the wrong password
-     * - the factory will throw an EncryptionPoolException
+     * - the factory will throw an ScheduleEncryptionException
      *
      * @param allPoolDataEntries - may not be <code>null</code>
      * @return
      */
-    public EncryptionPool createEncryptionPool(List<ScheduleCipherPoolData> allPoolDataEntries) throws EncryptionPoolException {
+    public ScheduleEncryptionPool createEncryptionPool(List<ScheduleCipherPoolData> allPoolDataEntries) throws ScheduleEncryptionException {
         if (allPoolDataEntries == null) {
             throw new IllegalArgumentException("allPoolDataEntries may never be null!");
         }
@@ -60,7 +62,7 @@ public class EncryptionPoolFactory {
                  * we block server start here - the server would not be able to handle
                  * encryption here. New started servers must always provide
                  */
-                throw new EncryptionPoolException(
+                throw new ScheduleEncryptionException(
                         "The cipher pool entry with id: %d cannot be handled by the server, because origin test text: '%s' was not retrieved from encrypted test text data, but instead: '%s'"
                                 .formatted(poolData.getId(), expected, decrypted));
             }
@@ -69,12 +71,12 @@ public class EncryptionPoolFactory {
             map.put(poolData.getId(), cipher);
 
         }
-        return new EncryptionPool(map);
+        return new ScheduleEncryptionPool(map);
     }
 
-    private PersistentCipher createCipher(PersistentCipherType cipherType, CipherPasswordSourceType passwordSourceType, String passwordSourceData) {
+    private PersistentCipher createCipher(PersistentCipherType cipherType, SecHubCipherPasswordSourceType passwordSourceType, String passwordSourceData) {
 
-        SecretKeyProvider secretKeyProvider = secretKeyProviderFactory.createSecretKeyProvider(passwordSourceType, passwordSourceData);
+        SecretKeyProvider secretKeyProvider = secHubSecretKeyProviderFactory.createSecretKeyProvider(passwordSourceType, passwordSourceData);
 
         return cipherFactory.createCipher(secretKeyProvider, cipherType);
 

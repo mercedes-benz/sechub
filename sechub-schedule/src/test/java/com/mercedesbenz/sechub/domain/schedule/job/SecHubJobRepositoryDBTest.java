@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,138 @@ public class SecHubJobRepositoryDBTest {
     void before() {
         jobCreator = jobCreator("p0", entityManager);
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 10 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_only_single_entry_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4)); // only this, because others are in wrong state
+        assertEquals(1, list.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 10 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_is_lower_ended_only_single_entry_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(0L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(2L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(3L).being(ExecutionState.ENDED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(1, newJob2.getEncryptionCipherPoolId());
+        assertEquals(1, newJob3.getEncryptionCipherPoolId());
+        assertEquals(2, newJob4.getEncryptionCipherPoolId());
+        assertEquals(3, newJob5.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob1)); // only this, because others are already with higher pool id
+        assertEquals(1, list.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 2, 10, 100 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_one_canceled_entries_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+        assertEquals(0, newJob6.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4));
+        assertTrue(list.contains(newJob6));
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_randomization_works() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+        assertEquals(0, newJob6.getEncryptionCipherPoolId());
+
+        Map<UUID, AtomicInteger> map = new LinkedHashMap<>();
+
+        /* execute */
+        for (int i = 0; i < 30; i++) {
+            List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 1);
+            for (ScheduleSecHubJob job : list) {
+                AtomicInteger atomic = map.computeIfAbsent(job.getUUID(), (uuid) -> new AtomicInteger(0));
+                atomic.incrementAndGet();
+            }
+        }
+
+        /* test */
+        assertEquals(6, map.size()); // when calling n times, we expect every entry is contained
+        System.out.println("map:" + map);
+
+    }
+
+    @Test
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_2_entries_always_returned() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 10);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4));
     }
 
     @Test

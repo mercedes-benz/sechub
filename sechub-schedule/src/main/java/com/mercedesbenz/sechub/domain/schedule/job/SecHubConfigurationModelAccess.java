@@ -19,7 +19,7 @@ public class SecHubConfigurationModelAccess {
     ScheduleEncryptionService encryptionService;
 
     /**
-     * Resolves sechub configuration model
+     * Resolves SecHub configuration model
      *
      * @param job
      * @return model or <code>null</code> if job contains no encrypted configuration
@@ -33,7 +33,7 @@ public class SecHubConfigurationModelAccess {
     }
 
     /**
-     * Resolves sechub configuration model
+     * Resolves SecHub configuration model
      *
      * @param job
      * @return model or <code>null</code> if job contains no encrypted configuration

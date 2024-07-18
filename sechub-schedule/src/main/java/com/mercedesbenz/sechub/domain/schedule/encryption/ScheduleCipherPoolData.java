@@ -5,9 +5,14 @@ import static jakarta.persistence.EnumType.*;
 
 import java.time.LocalDateTime;
 
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -48,17 +53,20 @@ public class ScheduleCipherPoolData {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = ScheduleCipherPoolData.class.getSimpleName();
 
+    public static final String PROPERTY_ID = "id";
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = COLUMN_ID, unique = true, nullable = false)
     Long id;
 
     @Enumerated(STRING)
     @Column(name = COLUMN_ALGORITHM, nullable = false)
-    CipherAlgorithm algorithm;
+    SecHubCipherAlgorithm algorithm;
 
     @Enumerated(STRING)
     @Column(name = COLUMN_PWD_SOURCE_TYPE, nullable = false)
-    CipherPasswordSourceType cipherPasswordSourceType;
+    SecHubCipherPasswordSourceType secHubCipherPasswordSourceType;
 
     @Column(name = COLUMN_PWD_SOURCE_DATA, nullable = true)
     String passwordSourceData;
@@ -86,12 +94,12 @@ public class ScheduleCipherPoolData {
         return id;
     }
 
-    public CipherAlgorithm getAlgorithm() {
+    public SecHubCipherAlgorithm getAlgorithm() {
         return algorithm;
     }
 
-    public CipherPasswordSourceType getPasswordSourceType() {
-        return cipherPasswordSourceType;
+    public SecHubCipherPasswordSourceType getPasswordSourceType() {
+        return secHubCipherPasswordSourceType;
     }
 
     public String getPasswordSourceData() {

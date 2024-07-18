@@ -1,15 +1,17 @@
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 
-public class EncryptionPool {
+public class ScheduleEncryptionPool {
 
     Map<Long, PersistentCipher> poolDataIdToPersistentCipherMap = new LinkedHashMap<>();
 
-    EncryptionPool(Map<Long, PersistentCipher> map) {
+    ScheduleEncryptionPool(Map<Long, PersistentCipher> map) {
         if (map != null) {
             poolDataIdToPersistentCipherMap.putAll(map);
         }
@@ -23,5 +25,9 @@ public class EncryptionPool {
      */
     public PersistentCipher getCipherForPoolId(Long poolId) {
         return poolDataIdToPersistentCipherMap.get(poolId);
+    }
+
+    public Set<Long> getAllPoolIds() {
+        return new HashSet<>(poolDataIdToPersistentCipherMap.keySet());
     }
 }

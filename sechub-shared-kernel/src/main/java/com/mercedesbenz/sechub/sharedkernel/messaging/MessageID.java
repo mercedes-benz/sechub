@@ -192,6 +192,11 @@ public enum MessageID {
 
     BINARY_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
 
+    /**
+     * This message will be send when an administrator defines new encryption data
+     */
+    START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA),
+
     ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;

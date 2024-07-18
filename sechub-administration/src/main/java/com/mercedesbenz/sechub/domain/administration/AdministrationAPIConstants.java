@@ -107,6 +107,11 @@ public class AdministrationAPIConstants {
     public static final String API_CHANGE_PROJECT_ACCESSLEVEL = API_ADMINISTRATION + "project/{projectId}/accesslevel/{projectAccessLevel}";
 
     /* +-----------------------------------------------------------------------+ */
+    /* +............................ Encryption................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String API_ADMIN_STARTS_ENCRYPTION_ROTATION = API_ADMINISTRATION + "encryption/rotate";
+
+    /* +-----------------------------------------------------------------------+ */
     /* +............................ Anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS + "apitoken";

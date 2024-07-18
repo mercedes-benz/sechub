@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 
 import static com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     private static final String PARAM_UUID = "p_uuid";
     private static final String PARAM_EXECUTION_STATE = "p_exec_state";
     private static final String PARAM_EXECUTION_STATE_SUB = "p_sub_exec_state";
+    private static final String PARAM_ENCRYPTION_POOL_ID = "p_encrypt_pool_id";
 
     /* @formatter:off */
 	static final String JPQL_STRING_SELECT_BY_EXECUTION_STATE =
@@ -54,6 +56,13 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 	                " and j." + PROPERTY_PROJECT_ID +
 	                " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS_AND_SAME_MODULE_GROUP + " )" +
 	                " order by " + PROPERTY_CREATED;
+
+
+    static final String JPQL_STRING_SELECT_RANDOM_JOB_CANCELED_OR_ENDED_WHERE_POOL_ID_IS_SMALLER_THAN_GIVEN_ONE =
+            "select j from " + CLASS_NAME + " j" +
+                    " where (j." + PROPERTY_EXECUTION_STATE + " = " + ExecutionState.ENDED + " or j." + PROPERTY_EXECUTION_STATE + " = " +ExecutionState.CANCELED +")"+
+                    " and j." + PROPERTY_ENCRYPTION_POOL_ID + " < :" + PARAM_ENCRYPTION_POOL_ID +
+                    " order by random()";
 
 
     /* @formatter:on */
@@ -115,6 +124,16 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
         return getUUIDFromJob(typedQuerySupport.getSingleResultAsOptional(query));
+    }
+
+    @Override
+    public List<ScheduleSecHubJob> nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long encryptionPoolId, int maxAmount) {
+        Query query = em.createQuery(JPQL_STRING_SELECT_RANDOM_JOB_CANCELED_OR_ENDED_WHERE_POOL_ID_IS_SMALLER_THAN_GIVEN_ONE);
+        query.setParameter(PARAM_ENCRYPTION_POOL_ID, encryptionPoolId);
+        query.setMaxResults(maxAmount);
+        query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+        return typedQuerySupport.getList(query);
     }
 
 }

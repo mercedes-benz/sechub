@@ -105,7 +105,7 @@ public class ProductExecutorConfigRestController {
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information"))
+	                description="Administrator fetches list of existing product executor configurations by calling REST API, will not contain setup information"))
 	@RequestMapping(path = "executors", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public ProductExecutorConfigList fechProductExecutorConfiguraitonsAsList() {
