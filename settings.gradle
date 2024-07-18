@@ -30,6 +30,9 @@ include 'sechub-cli',
 /* integration test*/
 'sechub-integrationtest',
 
+/* Arch Unit */
+'sechub-archunit-test',
+
 /* server parts */
 'sechub-schedule',
 'sechub-scan',
@@ -104,6 +107,8 @@ include 'sechub-cli',
 /* WebUI */
 'sechub-webui',
 'sechub-webui-solution'
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

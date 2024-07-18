@@ -40,6 +40,7 @@ projectType = [
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
+                    project('sechub-archunit-test'),
 
                     project(':sechub-storage-sharedvolume-spring'),
 
