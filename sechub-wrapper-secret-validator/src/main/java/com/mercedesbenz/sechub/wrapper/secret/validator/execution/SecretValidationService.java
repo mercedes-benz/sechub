@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorRequest;
@@ -13,14 +14,16 @@ import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorReq
 import de.jcup.sarif_2_1_0.model.ArtifactContent;
 import de.jcup.sarif_2_1_0.model.Region;
 
+@Profile("!" + SecretValidatorSpringProfiles.INTEGRATIONTEST)
 @Service
-public class SecretValidationService {
+public class SecretValidationService implements SecretValidationModul {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidationService.class);
 
     @Autowired
     SecretValidatorWebRequestService webRequestService;
 
+    @Override
     public SecretValidationResult validateFindingByRegion(Region findingRegion, List<SecretValidatorRequest> requests, boolean trustAllCertificates) {
         ArtifactContent snippet = findingRegion.getSnippet();
         SecretValidationResult validationResult = new SecretValidationResult();

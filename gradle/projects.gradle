@@ -53,7 +53,6 @@ projectType = [
                     project(':sechub-wrapper-checkmarx'),
                     project(':sechub-wrapper-prepare'),
                     
-                    /* special application to validate and categorize results of secret scans */
                     project(':sechub-wrapper-secret-validator'),
             ],
 
@@ -99,7 +98,8 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-webui')
+                   project(':sechub-webui'),
+                   project(':sechub-wrapper-secret-validator'),
             ],
 
             springBootWebUIProjects:[

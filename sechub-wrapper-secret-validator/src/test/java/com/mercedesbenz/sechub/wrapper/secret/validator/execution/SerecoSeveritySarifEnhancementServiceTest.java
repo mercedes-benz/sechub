@@ -65,7 +65,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(2, additionalProperties.size());
-        assertEquals(categorization.getValidationSuccessSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertEquals(categorization.getValidationSuccessSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
         assertEquals("http://api.example.com", additionalProperties.get(SarifImporterKeys.SECRETSCAN_VALIDATED_BY_URL.getKey()));
     }
 
@@ -87,7 +87,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(1, additionalProperties.size());
-        assertEquals(categorization.getValidationFailedSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertEquals(categorization.getValidationFailedSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
     }
 
     @Test
@@ -108,7 +108,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(1, additionalProperties.size());
-        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
     }
 
     @Test
@@ -129,7 +129,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(1, additionalProperties.size());
-        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
     }
 
     @Test
@@ -149,7 +149,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(1, additionalProperties.size());
-        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertEquals(categorization.getDefaultSeverity(), additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
     }
 
     @Test
@@ -174,7 +174,7 @@ class SerecoSeveritySarifEnhancementServiceTest {
         Map<String, Object> additionalProperties = properties.getAdditionalProperties();
 
         assertEquals(1, additionalProperties.size());
-        assertNull(additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey()));
+        assertNull(additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey()));
     }
 
 }

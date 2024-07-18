@@ -32,6 +32,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -72,7 +74,16 @@ public class PDSSolutionMockModeScenario21IntTest {
 
     @Test
     public void pds_solution_gitleaks_mocked_report_in_json_and_html_available() throws Exception {
-        executePDSSolutionJobAndStoreReports(ScanType.SECRET_SCAN, PROJECT_6, "gitleaks");
+        SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.SECRET_SCAN, PROJECT_6, "gitleaks");
+        /* @formatter:off */
+        assertReportUnordered(report.toJSON())
+                    .hasTrafficLight(TrafficLight.RED)
+                           .finding()
+                           .severity(Severity.CRITICAL)
+                           .scanType(ScanType.SECRET_SCAN)
+                           .description("github-pat has detected secret for file UnSAFE_Bank/iOS/Source Code/Pods/README.adoc.")
+                           .isContained();
+        /* @formatter:on */
     }
 
     @Test
@@ -100,7 +111,7 @@ public class PDSSolutionMockModeScenario21IntTest {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_10, "findsecuritybugs");
     }
 
-    private void executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
+    private SecHubReportModel executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
         SecHubConfigurationModel model = createTestModelFor(scanType, project);
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, model);
 
@@ -162,6 +173,7 @@ public class PDSSolutionMockModeScenario21IntTest {
             String spdxReport = as(USER_1).getSpdxReport(project, jobUUID);
             storeTestReport(reportName + ".spdx.json", spdxReport);
         }
+        return report;
     }
 
     private SecHubConfigurationModel createTestModelFor(ScanType type, TestProject project) {

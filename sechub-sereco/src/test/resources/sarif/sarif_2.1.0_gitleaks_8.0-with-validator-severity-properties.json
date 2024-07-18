@@ -802,7 +802,7 @@
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "info"
+              "secretscan.sereco.severity" : "info"
             }
           }
         }
@@ -833,7 +833,7 @@
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "unclassified"
+              "secretscan.sereco.severity" : "unclassified"
             }
           }
         }
@@ -864,7 +864,7 @@
               "text" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "low"
+              "secretscan.sereco.severity" : "low"
             }
           }
         }
@@ -895,7 +895,7 @@
               "text" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "medium"
+              "secretscan.sereco.severity" : "medium"
             }
           }
         }
@@ -926,7 +926,7 @@
               "text" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "high"
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -957,7 +957,7 @@
               "text" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "critical"
+              "secretscan.sereco.severity" : "critical"
             }
           }
         }

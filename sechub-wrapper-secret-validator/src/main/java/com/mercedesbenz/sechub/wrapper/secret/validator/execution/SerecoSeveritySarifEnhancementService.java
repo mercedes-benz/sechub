@@ -22,19 +22,20 @@ public class SerecoSeveritySarifEnhancementService {
 
         switch (validationStatus) {
         case VALID:
-            properties.setAdditionalProperty(SECRETSCAN_SECHUB_SEVERITY.getKey(), categorization.getValidationSuccessSeverity());
+            properties.setAdditionalProperty(SECRETSCAN_SERECO_SEVERITY.getKey(), categorization.getValidationSuccessSeverity());
             String validatedByUrl = validationResult.getValidatedByUrl();
             if (validatedByUrl != null) {
                 properties.setAdditionalProperty(SECRETSCAN_VALIDATED_BY_URL.getKey(), validatedByUrl);
             }
             break;
         case INVALID:
-            properties.setAdditionalProperty(SECRETSCAN_SECHUB_SEVERITY.getKey(), categorization.getValidationFailedSeverity());
+            properties.setAdditionalProperty(SECRETSCAN_SERECO_SEVERITY.getKey(), categorization.getValidationFailedSeverity());
             break;
         case NO_VALIDATION_CONFIGURED:
         case SARIF_SNIPPET_NOT_SET:
+        case ALL_VALIDATION_REQUESTS_FAILED:
         default:
-            properties.setAdditionalProperty(SECRETSCAN_SECHUB_SEVERITY.getKey(), categorization.getDefaultSeverity());
+            properties.setAdditionalProperty(SECRETSCAN_SERECO_SEVERITY.getKey(), categorization.getDefaultSeverity());
         }
         findingRegion.setProperties(properties);
     }

@@ -802,7 +802,7 @@
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "invalid-value"
+              "secretscan.sereco.severity" : "invalid-value"
             }
           }
         }
@@ -833,7 +833,7 @@
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
             },
             "properties" : {
-              "secretscan.sechub.severity" : "another-invalid-value-1234"
+              "secretscan.sereco.severity" : "another-invalid-value-1234"
             }
           }
         }

@@ -27,7 +27,7 @@ public class SecretValidatorExecutionService {
     SecretValidatorExecutionContextFactory contextFactory;
 
     @Autowired
-    SecretValidationService validationService;
+    SecretValidationModul validationService;
 
     @Autowired
     SerecoSeveritySarifEnhancementService sarifEnhancementService;

@@ -800,6 +800,9 @@
             "endColumn" : 1,
             "snippet" : {
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -828,6 +831,9 @@
             "endColumn" : 61,
             "snippet" : {
               "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -856,6 +862,9 @@
             "endColumn" : 56,
             "snippet" : {
               "text" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -884,6 +893,9 @@
             "endColumn" : 56,
             "snippet" : {
               "text" : "9bbc0d79e686e847bc305c9bd4cc2ea6"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -912,6 +924,9 @@
             "endColumn" : 1,
             "snippet" : {
               "text" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }
@@ -940,6 +955,9 @@
             "endColumn" : 1,
             "snippet" : {
               "text" : "b3816fddcf28aa29d94b10ec305cd52be14c472b"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "high"
             }
           }
         }

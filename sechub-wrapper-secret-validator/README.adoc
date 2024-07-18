@@ -93,3 +93,11 @@ For each request it will then be decided if the proxy is needed or not according
 ----
 java -Dhttp.proxyHost=localhost -Dhttp.proxyPort=1234 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=1234 -jar secret-validation-wrapper.jar
 ----
+
+==== Testing the wrapper
+For testing purposes there is another implementation present which is only available and used if the wrapper is started with the `integrationtest` profile:
+----
+java -Dspring.profiles.active=integrationtest -jar secret-validation-wrapper.jar
+----
+If the `integrationtest` profile is used the application will flag all findings in the SARIF report as valid, that has a none empty list of requests configured.
+In case no requests are configured the finding will be flagged as invalid.

@@ -77,7 +77,7 @@ public class GitleaksSarifImportWorkaround implements SarifImportProductWorkarou
         if (additionalProperties == null) {
             return null;
         }
-        String severityKey = SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey();
+        String severityKey = SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey();
         String severityValue = (String) additionalProperties.get(severityKey);
         return SerecoSeverity.fromString(severityValue);
     }

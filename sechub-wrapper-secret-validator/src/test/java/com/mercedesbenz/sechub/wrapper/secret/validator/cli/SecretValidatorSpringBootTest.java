@@ -52,7 +52,7 @@ class SecretValidatorSpringBootTest {
         Location location = finding.getLocations().get(0);
         Region region = location.getPhysicalLocation().getRegion();
         Map<String, Object> additionalProperties = region.getProperties().getAdditionalProperties();
-        String serecoSeverity = (String) additionalProperties.get(SarifImporterKeys.SECRETSCAN_SECHUB_SEVERITY.getKey());
+        String serecoSeverity = (String) additionalProperties.get(SarifImporterKeys.SECRETSCAN_SERECO_SEVERITY.getKey());
 
         assertEquals(expectedSerecoSeverity, serecoSeverity);
 
