@@ -19,11 +19,13 @@ public class NamingConventionTest {
     @Test
     void classes_in_test_packages_containing_test_or_assert_in_name() {
         /* prepare */
-        importedClasses = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS).withImportOption(ignoreOpenAPI)
+        /* @formatter:off */
+        importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
+                .withImportOption(ignoreOpenAPI)
                 .importPath("../../sechub/");
 
         /* execute + test */
-        /* @formatter:off */
         classes()
                 .that()
                 .resideInAPackage("..test..")
@@ -31,6 +33,7 @@ public class NamingConventionTest {
                 .haveSimpleNameContaining("Test")
                 .orShould()
                 .haveSimpleNameContaining("Assert")
+                .because("Tests classes should contain 'Test' or 'Assert' in their name.")
                 .check(importedClasses);
         /* @formatter:on */
     }
@@ -38,11 +41,15 @@ public class NamingConventionTest {
     @Test
     void service_annotated_classes_contain_service_or_executor_in_name() {
         /* prepare */
-        importedClasses = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS).withImportOption(ignoreTests).withImportOption(ignoreOpenAPI)
-                .importPath("../../sechub/");
-        /* execute + test */
         /* @formatter:off */
+        importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
+                .withImportOption(ignoreTests)
+                .withImportOption(ignoreOpenAPI)
+                .importPath("../../sechub/");
+
+        /* execute + test */
         classes()
                 .that()
                 .areAnnotatedWith(Service.class)
@@ -50,6 +57,7 @@ public class NamingConventionTest {
                 .haveSimpleNameContaining("Service")
                 .orShould()
                 .haveSimpleNameContaining("Executor")
+                .because("Service classes should contain 'Service' or 'Executor' in their name.")
                 .check(importedClasses);
         /* @formatter:on */
     }
