@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
@@ -16,6 +18,7 @@ public class SecHubConfigurationModelAccess {
     private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationModelAccess.class);
 
     @Autowired
+    @Lazy
     ScheduleEncryptionService encryptionService;
 
     /**

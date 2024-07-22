@@ -42,6 +42,10 @@ package com.mercedesbenz.sechub.domain.schedule{
         
         }
          
+        class ScheduleSecHubJobEncryptionUpdateService #dodgerblue {
+            updateEncryptionData(int blockSizeToUpdate) 
+        }
+        
         class SecHubConfigurationModelAccess {
             resolveUnencryptedConfiguration(ScheduleSecHubJob job)
         }
@@ -52,14 +56,14 @@ package com.mercedesbenz.sechub.domain.schedule{
     
     package encryption as schedule_encryption {
     
-        class ScheduleSecHubJobEncryptionUpdateService #dodgerblue {
-            updateEncryptionData(int blockSizeToUpdate) 
-        }
-    
         class ScheduleRefreshEncryptionServiceSetupTriggerService #mediumpurple {
             triggerEncryptionSetupRefresh()
         }
          
+        class ScheduleRotateDataEncryptionTriggerService #dodgerblue {
+            triggerUpdateOfEncryptedData()
+        }
+    
         class ScheduleEncryptionService {
             applicationStarted()
             refreshEncryptionPoolAndLatestIdIfNecessary()
@@ -88,12 +92,9 @@ package com.mercedesbenz.sechub.domain.schedule{
         class ScheduleEncryptionRotationService #darkorange
     
    
-    note top of ScheduleRefreshEncryptionServiceSetupTriggerService
-        To use new encryption on all server cluster 
-        member after same time. 
-    end note
+    }
     
-
+}
 
 
 ScheduleRefreshEncryptionServiceSetupTriggerService --> ScheduleEncryptionService
@@ -125,7 +126,7 @@ SecHubConfigurationModelAccess -> ScheduleSecHubJob
 SecHubJobFactory -> ScheduleSecHubJob: creates
 SecHubJobFactory -> ScheduleEncryptionService : uses
 
-
+ScheduleRotateDataEncryptionTriggerService -> ScheduleSecHubJobEncryptionUpdateService: calls
 ScheduleSecHubJobEncryptionUpdateService -> ScheduleEncryptionService
 
 

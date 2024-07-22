@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import java.time.LocalDateTime;
@@ -80,9 +81,9 @@ public class ScheduleCipherPoolDataProvider {
             throw new IllegalArgumentException("Current pool ids may not be null!");
         }
 
-        Set<Long> databaseids = repository.fetchAllCipherPoolIds();
+        Set<Long> poolIdsFromDatabase = repository.fetchAllCipherPoolIds();
 
-        int dbSize = databaseids.size();
+        int dbSize = poolIdsFromDatabase.size();
         int memorySize = currentPoolIds.size();
 
         if (dbSize != memorySize) {
@@ -90,11 +91,11 @@ public class ScheduleCipherPoolDataProvider {
             return false;
         }
 
-        boolean allContained = databaseids.containsAll(currentPoolIds);
+        boolean allPoolIdsContained = poolIdsFromDatabase.containsAll(currentPoolIds);
 
-        LOG.debug("allContained: {}, found pool ids in db: {}", allContained, currentPoolIds);
+        LOG.trace("all pool ids contained: {}, found pool ids in db: {}", allPoolIdsContained, poolIdsFromDatabase);
 
-        return allContained;
+        return allPoolIdsContained;
     }
 
 }

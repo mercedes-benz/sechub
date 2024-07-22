@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == About
 `sechub-commons-encryption` is a library without any dependency to Spring or SecHub.
 

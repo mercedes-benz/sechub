@@ -61,7 +61,7 @@ public class DomainMessageService {
                     this.asynchronHandlers.put(messageId, foundAsynchronousHandlersForID);
                 }
                 foundAsynchronousHandlersForID.add(handler);
-                LOG.debug("Registered asynchronus message handler:{} for message ID:{}", handler.getClass(), messageId);
+                LOG.trace("Registered asynchronus message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
     }

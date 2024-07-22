@@ -54,7 +54,33 @@ public class SecHubJobRepositoryDBTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 1, 2, 10 })
+    @ValueSource(ints = { 0, 1, 2, 10 })
+    void countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_works_as_expected(int expectedResultCount) {
+        /* prepare */
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+
+        // generate data
+        if (expectedResultCount > 0) {
+            jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        }
+        if (expectedResultCount > 1) {
+            for (int i = 1; i < expectedResultCount; i++) {
+                jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+            }
+        }
+
+        /* execute */
+        long result = jobRepository.countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L);
+
+        /* test */
+        assertEquals(result, expectedResultCount);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 4 })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_only_single_entry_always_returned(int amount) {
         /* prepare */
         ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
@@ -80,7 +106,7 @@ public class SecHubJobRepositoryDBTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 1, 2, 10 })
+    @ValueSource(ints = { 1, 2, 4 })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_is_lower_ended_only_single_entry_always_returned(int amount) {
         /* prepare */
         ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(0L).being(ExecutionState.ENDED).create();
@@ -172,9 +198,9 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_2_entries_always_returned() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
         ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
 
         /* execute */

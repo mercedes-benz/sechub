@@ -187,16 +187,9 @@ The `SchedulerJobEncryptionUpdateTriggerService` is fetches periodically (on eve
 all jobs jobs which are in execution state `ENDED` (means failed or success) or `CANCELED` which have not the 
 latest cipher from pool and will do an encryption conversion here.
 
-// FIXME 2024-06-27, de-jcup: maybe column "update_running" : boolean necessary -> upate -> softlock version..
-Remark: maybe
-
-One exception: If the current running server does NOT support the latest cipher from pool (means this server
-instance has not the possibility to encrypt the data) the automation will only log a warning about encryption update
-is not possible on this instance and do nothing!  
-
 ===== New / non approved jobs are handled by auto cleanup
 Because there is the possibility that there are jobs which are created, but never approved, those jobs must be
-handled as well. But we must ensure that we have no race conditions here (e.g. the job is now approved and job starts
+handled as well. But we must ensure that we have no race conditions here (e.g. the job gets approved and job starts
 running while the encryption data is changed).
 
 To keep this as simple as possible and to ensure we have no race conditions, we just do not handle them directly,
@@ -262,7 +255,11 @@ the meta data defined inside the {sechub} configuration. To obtain this informat
 will be encrypted at runtime and the meta data are resolved. Because meta data shall not contain any
 sensitive information, this will not be audit logged. 
 
-===== Important infos about migration
+==== Diagrams
+===== Schedule encryption
+plantuml::diagrams/diagram_encryption_sechub_config.puml[] 
+
+==== Important infos about migration
 
 ====== Server 1.10.0 to 2.0.0
 

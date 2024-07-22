@@ -17,7 +17,7 @@ public class EncryptionSupport {
      * @param string        text to encrypt
      * @param cipher        cipher to use for encryption
      * @param initialVector initial vector for cipher
-     * @return {@link EncryptionResult}
+     * @return {@link EncryptionResult}, never <code>null</code>
      */
     public EncryptionResult encryptString(String string, PersistentCipher cipher) {
         return encrypt(string, cipher, stringTransformer);
@@ -30,7 +30,7 @@ public class EncryptionSupport {
      * @param object      object to encrypt
      * @param cipher      cipher to use for encryption
      * @param transformer transformer used to transform object into a byte array
-     * @return {@link EncryptionResult}
+     * @return {@link EncryptionResult}, never <code>null</code>
      */
     public <T> EncryptionResult encrypt(T object, PersistentCipher cipher, ByteArrayTransformer<T> transformer) {
         if (transformer == null) {
@@ -78,4 +78,5 @@ public class EncryptionSupport {
 
         return transformer.transformFromBytes(unencrypted);
     }
+
 }

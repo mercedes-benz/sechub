@@ -195,9 +195,9 @@ public enum MessageID {
     /**
      * This message will be send when an administrator defines new encryption data
      */
-    START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA),
+    START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA, MessageDataKeys.EXECUTED_BY),
 
-    ;
+    SCHEDULE_ENCRYPTION_POOL_INITIALIZED,;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

@@ -44,6 +44,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -1305,6 +1306,12 @@ public class AsUser {
         String url = getUrlBuilder().buildAddJobUrl(project.getProjectId());
         return getRestHelper().postJson(url, sechubConfigAsString);
 
+    }
+
+    public String rotateEncryption(SecHubEncryptionData data) {
+
+        String url = getUrlBuilder().buildRotateEncryption();
+        return getRestHelper().postJson(url, data.toFormattedJSON());
     }
 
 }

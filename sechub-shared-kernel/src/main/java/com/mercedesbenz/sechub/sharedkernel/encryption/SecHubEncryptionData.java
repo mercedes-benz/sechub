@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.encryption;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;

@@ -659,4 +659,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run-data/" + sechubJobUUID);
     }
 
+    public String buildRotateEncryption() {
+        return buildUrl(API_ADMIN, "encryption/rotate");
+    }
+
 }

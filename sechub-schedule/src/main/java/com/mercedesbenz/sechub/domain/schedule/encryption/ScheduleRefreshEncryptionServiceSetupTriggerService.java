@@ -31,7 +31,7 @@ public class ScheduleRefreshEncryptionServiceSetupTriggerService {
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 5 * 60 * 1000; // 5 minutes
 
     private static final String INITIAL_DELAY_STRING = "${sechub.config.trigger.refresh.encryptionsetup.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
-    private static final String FIXED_DELAY_STRING = "${sechub.config.trigger.refresh.encryptionsetup.delay" + DEFAULT_FIXED_DELAY_MILLIS + "}";
+    private static final String FIXED_DELAY_STRING = "${sechub.config.trigger.refresh.encryptionsetup.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
 
     private static final String DESCRIPTION = "Scheduler instance will check if encryption pool is in synch with the database definitions. If not, the instance will try to create new encryption pool object and provide the new setup.";
 

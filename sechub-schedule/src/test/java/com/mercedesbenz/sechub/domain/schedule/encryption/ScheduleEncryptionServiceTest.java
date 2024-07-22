@@ -1,17 +1,21 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
@@ -19,8 +23,13 @@ import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubSecretKeyProviderFactory;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 
 class ScheduleEncryptionServiceTest {
 
@@ -33,6 +42,8 @@ class ScheduleEncryptionServiceTest {
     private PersistentCipher fakedNoneCipher;
     private ScheduleLatestCipherPoolIdResolver scheduleLatestCipherPoolIdResolver;
     private ScheduleCipherPoolDataProvider poolDataProvider;
+    private PersistentCipher fakedAES256Cipher;
+    private DomainMessageService domainMessageService;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -42,10 +53,15 @@ class ScheduleEncryptionServiceTest {
         when(secHubSecretKeyProviderFactory.createSecretKeyProvider(eq(SecHubCipherPasswordSourceType.NONE), any())).thenReturn(null);
 
         fakedNoneCipher = mock(PersistentCipher.class, "faked none cipher");
+        fakedAES256Cipher = mock(PersistentCipher.class, "faked AES256 cipher");
         cipherFactory = mock(PersistentCipherFactory.class);
+
         when(cipherFactory.createCipher(null, PersistentCipherType.NONE)).thenReturn(fakedNoneCipher);
+        when(cipherFactory.createCipher(null, PersistentCipherType.AES_GCM_SIV_256)).thenReturn(fakedAES256Cipher);
 
         encryptionSupport = mock(EncryptionSupport.class);
+
+        domainMessageService = mock(DomainMessageService.class);
 
         scheduleEncryptionPoolFactory = mock(ScheduleEncryptionPoolFactory.class);
         scheduleEncryptionPool = mock(ScheduleEncryptionPool.class);
@@ -56,8 +72,122 @@ class ScheduleEncryptionServiceTest {
         serviceToTest.encryptionSupport = encryptionSupport;
         serviceToTest.scheduleEncryptionPoolFactory = scheduleEncryptionPoolFactory;
         serviceToTest.scheduleLatestCipherPoolIdResolver = scheduleLatestCipherPoolIdResolver;
+        serviceToTest.secretKeyProviderFactory = secHubSecretKeyProviderFactory;
+        serviceToTest.cipherFactory = cipherFactory;
+        serviceToTest.domainMessageService = domainMessageService;
 
         when(scheduleEncryptionPoolFactory.createEncryptionPool(any())).thenReturn(scheduleEncryptionPool);
+    }
+
+    @Test
+    void application_started_triggers_encryption_pool_refresh_event() throws Exception {
+        /* prepare */
+        Long latestCipherPoolId = Long.valueOf(1);
+        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
+
+        /* execute */
+        serviceToTest.applicationStarted();
+
+        /* test */
+        assertEncryptionPoolInitEventSent();
+
+    }
+
+    @Test
+    void createInitialCipherPoolData_working_as_expected() throws Exception {
+
+        /* prepare */
+        String testText = "testtext";
+
+        SecHubEncryptionData data = new SecHubEncryptionData();
+        data.setAlgorithm(SecHubCipherAlgorithm.AES_GCM_SIV_256);
+        data.setPasswordSourceType(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
+        data.setPasswordSourceData("SECRET_1");
+
+        byte[] initBytes = UUID.randomUUID().toString().getBytes();
+
+        EncryptionResult result = mock(EncryptionResult.class);
+        byte[] encryptedBytes = "faked-encryped-content".getBytes(Charset.forName("UTF-8"));
+        when(result.getEncryptedData()).thenReturn(encryptedBytes);
+        when(result.getInitialVector()).thenReturn(new InitializationVector(initBytes));
+
+        when(encryptionSupport.encryptString(eq(testText), eq(fakedAES256Cipher))).thenReturn(result);
+        when(encryptionSupport.decryptString(eq(encryptedBytes), eq(fakedAES256Cipher), eq(new InitializationVector(initBytes)))).thenReturn(testText);
+
+        /* execute */
+        ScheduleCipherPoolData createdPoolData = serviceToTest.createInitialCipherPoolData(data, testText);
+
+        /* test */
+        ArgumentCaptor<String> testTextCaptor = ArgumentCaptor.forClass(String.class);
+        verify(encryptionSupport).encryptString(testTextCaptor.capture(), eq(fakedAES256Cipher));
+
+        String encryptedTestText = testTextCaptor.getValue();
+        assertThat(encryptedTestText).isEqualTo(testText);
+
+        assertThat(createdPoolData.getPasswordSourceType()).isEqualTo(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
+        assertThat(createdPoolData.getTestEncrypted()).isEqualTo(encryptedBytes);
+        assertThat(createdPoolData.getPasswordSourceData()).isEqualTo("SECRET_1");
+        assertThat(createdPoolData.getTestInitialVector()).isEqualTo(initBytes);
+        assertThat(createdPoolData.getTestText()).isEqualTo(testText);
+        assertThat(createdPoolData.getAlgorithm()).isEqualTo(SecHubCipherAlgorithm.AES_GCM_SIV_256);
+        assertThat(createdPoolData.getCreatedFrom()).isNull();// the user is NOT set, as defined in JavaDoc of method
+        assertThat(createdPoolData.getCreated()).isNotNull();
+
+    }
+
+    @Test
+    void createInitialCipherPoolData_null_from_encryption_support_throws_exception() throws Exception {
+
+        /* prepare */
+        String testText = "testtext";
+
+        SecHubEncryptionData data = new SecHubEncryptionData();
+        data.setAlgorithm(SecHubCipherAlgorithm.AES_GCM_SIV_256);
+        data.setPasswordSourceType(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
+        data.setPasswordSourceData("SECRET_1");
+
+        byte[] initBytes = UUID.randomUUID().toString().getBytes();
+
+        EncryptionResult result = mock(EncryptionResult.class);
+        byte[] encryptedBytes = "faked-encryped-content".getBytes(Charset.forName("UTF-8"));
+        when(result.getEncryptedData()).thenReturn(encryptedBytes);
+        when(result.getInitialVector()).thenReturn(new InitializationVector(initBytes));
+
+        when(encryptionSupport.encryptString(eq(testText), eq(fakedAES256Cipher))).thenReturn(result);
+        when(encryptionSupport.decryptString(eq(encryptedBytes), eq(fakedAES256Cipher), eq(new InitializationVector(initBytes)))).thenReturn(null);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.createInitialCipherPoolData(data, testText)).isInstanceOf(ScheduleEncryptionException.class)
+                .hasMessageContaining("decrypted value is null");
+
+    }
+
+    @Test
+    void createInitialCipherPoolData_decrypted_test_text_not_as_origin_throws_exception() throws Exception {
+
+        /* prepare */
+        String testText = "testtext";
+
+        SecHubEncryptionData data = new SecHubEncryptionData();
+        data.setAlgorithm(SecHubCipherAlgorithm.AES_GCM_SIV_256);
+        data.setPasswordSourceType(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
+        data.setPasswordSourceData("SECRET_1");
+
+        byte[] initBytes = UUID.randomUUID().toString().getBytes();
+
+        EncryptionResult result = mock(EncryptionResult.class);
+        byte[] encryptedBytes = "faked-encryped-content".getBytes(Charset.forName("UTF-8"));
+        when(result.getEncryptedData()).thenReturn(encryptedBytes);
+        when(result.getInitialVector()).thenReturn(new InitializationVector(initBytes));
+
+        when(encryptionSupport.encryptString(eq(testText), eq(fakedAES256Cipher))).thenReturn(result);
+        when(encryptionSupport.decryptString(eq(encryptedBytes), eq(fakedAES256Cipher), eq(new InitializationVector(initBytes)))).thenReturn("wrong-result");
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.createInitialCipherPoolData(data, testText)).isInstanceOf(ScheduleEncryptionException.class)
+                .hasMessageContaining("decrypted value is not origin test text");
+
     }
 
     @Test
@@ -68,8 +198,8 @@ class ScheduleEncryptionServiceTest {
 
         // simulate originally setup done on startup;
         long latestCipherPoolId = 4L;
-        serviceToTest.scheduleEncryptionPool=scheduleEncryptionPool;
-        serviceToTest.latestCipherPoolId=latestCipherPoolId;// just other value;
+        serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
+        serviceToTest.latestCipherPoolId = latestCipherPoolId;// just other value;
 
         // important part: contains exactly ....
         when(poolDataProvider.isContainingExactlyGivenPoolIds(any())).thenReturn(true);
@@ -79,6 +209,7 @@ class ScheduleEncryptionServiceTest {
 
         /* test */
         assertThat(serviceToTest.latestCipherPoolId).isEqualTo(latestCipherPoolId); // still same
+        assertNoDomainMessageEventSent();
 
     }
 
@@ -90,8 +221,8 @@ class ScheduleEncryptionServiceTest {
 
         // simulate originally setup done on startup;
         long latestCipherPoolId = 4L;
-        serviceToTest.scheduleEncryptionPool=scheduleEncryptionPool;
-        serviceToTest.latestCipherPoolId=latestCipherPoolId;// just other value;
+        serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
+        serviceToTest.latestCipherPoolId = latestCipherPoolId;// just other value;
 
         // important part: contains exactly ....
         when(poolDataProvider.isContainingExactlyGivenPoolIds(any())).thenReturn(true);
@@ -100,9 +231,10 @@ class ScheduleEncryptionServiceTest {
         serviceToTest.refreshEncryptionPoolAndLatestPoolIdIfNecessary();
 
         /* test */
-        verify(scheduleEncryptionPoolFactory,never()).createEncryptionPool(any()); // never a new pool is created!
+        verify(scheduleEncryptionPoolFactory, never()).createEncryptionPool(any()); // never a new pool is created!
         verify(scheduleEncryptionPool, never()).getCipherForPoolId(anyLong());
-        assertThat(serviceToTest.scheduleEncryptionPool).isSameAs(scheduleEncryptionPool);//not changed
+        assertThat(serviceToTest.scheduleEncryptionPool).isSameAs(scheduleEncryptionPool);// not changed
+        assertNoDomainMessageEventSent();
 
     }
 
@@ -176,10 +308,12 @@ class ScheduleEncryptionServiceTest {
         /* test */
         verify(scheduleEncryptionPoolFactory).createEncryptionPool(poolDataList); // a new pool is created!
         assertThat(serviceToTest.scheduleEncryptionPool).isEqualTo(newEncryptionPool); // and set
+        assertEncryptionPoolInitEventSent(); // event must be sent!
+
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_when_pool_ids_are_NOT_but_new_pool_creatin_fails_old_setup_is_kept() throws Exception {
+    void refreshEncryptionPoolAndLatestIdIfNecessary_when_pool_ids_are_NOT_but_new_pool_creation_fails_old_setup_is_kept() throws Exception {
 
         /* prepare */
         ScheduleCipherPoolData poolData1 = mock(ScheduleCipherPoolData.class);
@@ -213,6 +347,8 @@ class ScheduleEncryptionServiceTest {
         verify(scheduleEncryptionPoolFactory).createEncryptionPool(poolDataList); // it is tried to create a new pool
         assertThat(serviceToTest.latestCipherPoolId).isEqualTo(oldCipherPoolId); // not changed
         assertThat(serviceToTest.scheduleEncryptionPool).isEqualTo(scheduleEncryptionPool); // not changed
+
+        assertNoDomainMessageEventSent(); // no event may be sent!
 
     }
 
@@ -366,5 +502,17 @@ class ScheduleEncryptionServiceTest {
         verify(encryptionSupport).decryptString(encryptedData, cipherForDecryption, initialVector);
         assertThat(decrypted).isEqualTo(decryptedString);
 
+    }
+
+    void assertNoDomainMessageEventSent() {
+        verify(domainMessageService, never()).sendAsynchron(any(DomainMessage.class));
+    }
+
+    void assertEncryptionPoolInitEventSent() {
+        ArgumentCaptor<DomainMessage> captor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(domainMessageService).sendAsynchron(captor.capture());
+
+        DomainMessage sentDomainMessage = captor.getValue();
+        assertThat(sentDomainMessage.getMessageId()).isEqualTo(MessageID.SCHEDULE_ENCRYPTION_POOL_INITIALIZED);
     }
 }

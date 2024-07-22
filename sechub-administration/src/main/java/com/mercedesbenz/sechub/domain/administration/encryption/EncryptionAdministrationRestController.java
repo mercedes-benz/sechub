@@ -36,17 +36,17 @@ import jakarta.validation.Valid;
 public class EncryptionAdministrationRestController {
 
     @Autowired
-    EncryptionRotationService encryptionRotationService;
+    AdministrationEncryptionRotationService administrationEncryptionRotationService;
 
     @Autowired
     SecHubEncryptionDataValidator rotationDataValidator;
 
     /* @formatter:off */
-	@UseCaseAdminStartsEncryptionRotation(@Step(number=1,name="Rest call",description="Admin triggers rotation of encryption via REST"))
+	@UseCaseAdminStartsEncryptionRotation(@Step(number=1,name="Rest call",description="Admin triggers rotation of encryption via REST", needsRestDoc =true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_STARTS_ENCRYPTION_ROTATION, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void rotateEncryption(@RequestBody @Valid SecHubEncryptionData data) {
 		/* @formatter:on */
-        encryptionRotationService.rotateEncryption(data);
+        administrationEncryptionRotationService.rotateEncryption(data);
     }
 
     @InitBinder

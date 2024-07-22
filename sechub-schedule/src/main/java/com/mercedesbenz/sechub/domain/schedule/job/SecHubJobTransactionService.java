@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,6 +47,14 @@ public class SecHubJobTransactionService {
 
     public void saveInOwnTransaction(ScheduleSecHubJob job) {
         repository.save(job);
+    }
+
+    public long countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long latestPoolid) {
+        return repository.countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(latestPoolid);
+    }
+
+    public List<ScheduleSecHubJob> nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long latestPoolid, int updateBlockSize) {
+        return repository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(latestPoolid, updateBlockSize);
     }
 
 }

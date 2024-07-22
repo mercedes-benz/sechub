@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.Lock;
+
+import jakarta.persistence.LockModeType;
+
 public interface SecHubJobRepositoryCustom {
 
     Optional<ScheduleSecHubJob> getJob(UUID id);
@@ -25,4 +29,7 @@ public interface SecHubJobRepositoryCustom {
      * @return list of jobs, never <code>null</code>
      */
     List<ScheduleSecHubJob> nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long encryptionPoolId, int maxAmount);
+
+    @Lock(LockModeType.NONE)
+    public long countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long encryptionPoolId);
 }

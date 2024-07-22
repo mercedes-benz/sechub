@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;

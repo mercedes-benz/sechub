@@ -57,12 +57,16 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 	                " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS_AND_SAME_MODULE_GROUP + " )" +
 	                " order by " + PROPERTY_CREATED;
 
-
     static final String JPQL_STRING_SELECT_RANDOM_JOB_CANCELED_OR_ENDED_WHERE_POOL_ID_IS_SMALLER_THAN_GIVEN_ONE =
             "select j from " + CLASS_NAME + " j" +
                     " where (j." + PROPERTY_EXECUTION_STATE + " = " + ExecutionState.ENDED + " or j." + PROPERTY_EXECUTION_STATE + " = " +ExecutionState.CANCELED +")"+
                     " and j." + PROPERTY_ENCRYPTION_POOL_ID + " < :" + PARAM_ENCRYPTION_POOL_ID +
                     " order by random()";
+
+    static final String JPQL_STRING_COUNT_JOBS_CANCELED_OR_ENDED_WHERE_POOL_ID_IS_SMALLER_THAN_GIVEN_ONE =
+            "select count(j) from " + CLASS_NAME + " j" +
+                    " where (j." + PROPERTY_EXECUTION_STATE + " = " + ExecutionState.ENDED + " or j." + PROPERTY_EXECUTION_STATE + " = " +ExecutionState.CANCELED +")"+
+                    " and j." + PROPERTY_ENCRYPTION_POOL_ID + " < :" + PARAM_ENCRYPTION_POOL_ID;
 
 
     /* @formatter:on */
@@ -134,6 +138,13 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
         return typedQuerySupport.getList(query);
+    }
+
+    public long countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long encryptionPoolId) {
+        Query query = em.createQuery(JPQL_STRING_COUNT_JOBS_CANCELED_OR_ENDED_WHERE_POOL_ID_IS_SMALLER_THAN_GIVEN_ONE);
+        query.setParameter(PARAM_ENCRYPTION_POOL_ID, encryptionPoolId);
+        query.setMaxResults(1);
+        return (Long) query.getSingleResult();
     }
 
 }

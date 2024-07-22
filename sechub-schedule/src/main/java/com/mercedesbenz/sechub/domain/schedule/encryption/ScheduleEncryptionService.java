@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,16 @@ import com.mercedesbenz.sechub.commons.encryption.EncryptionRotator;
 import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
 import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
+import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubSecretKeyProviderFactory;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseScheduleEncryptionPoolRefresh;
 
 /**
@@ -45,17 +56,27 @@ public class ScheduleEncryptionService {
     @Autowired
     EncryptionRotator rotator;
 
+    @Autowired
+    PersistentCipherFactory cipherFactory;
+
+    @Autowired
+    SecHubSecretKeyProviderFactory secretKeyProviderFactory;
+
+    @Autowired
+    @Lazy
+    DomainMessageService domainMessageService;
+
     Long latestCipherPoolId;
 
     ScheduleEncryptionPool scheduleEncryptionPool;
 
     @EventListener(ApplicationStartedEvent.class)
+    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, name = "Init encryption pool", description = "Encryption pool is created on startup"))
     void applicationStarted() throws ScheduleEncryptionException {
         // If a new started server is not able to handle all ciphers from cipher pool it
         // will just
         // not start (ensures old and new jobs can always be handled)
-        setupEncryptionPoolOrFail();
-
+        initNewEncryptionPoolOrFail();
     }
 
     /**
@@ -71,7 +92,8 @@ public class ScheduleEncryptionService {
      * encryption is currently not supported by this server instance) just a warning
      * is logged and the old encryption pool is still in use.
      */
-    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, name = "Refresh encryption pool", description = "Encryption pool is refreshed (if necessary)"))
+    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 2, name = "Refresh encryption pool", description = "Encryption pool is refreshed (if necessary)"))
+    @UseCaseAdminStartsEncryptionRotation(@Step(number = 5, name = "Refresh encryption pool", description = "Encryption pool is refreshed (necessary because pool changed before this method call)"))
     public void refreshEncryptionPoolAndLatestPoolIdIfNecessary() {
 
         if (isStillSameEncryptionPool()) {
@@ -79,26 +101,24 @@ public class ScheduleEncryptionService {
             return;
         }
 
-        Long oldLatestCipherPoolId = latestCipherPoolId;
-
-        LOG.debug("Encryption pool has changed, start encryption pool recreation.");
+        LOG.info("Encryption pool has changed, start encryption pool recreation.");
 
         try {
-            setupEncryptionPoolOrFail();
+            initNewEncryptionPoolOrFail();
             LOG.info("Encryption pool has been recreated sucessfully.");
 
         } catch (ScheduleEncryptionException e) {
             LOG.warn("Was not able to refresh encryption pool, will stay on old encryption. Reason: {}", e.getMessage());
         }
 
-        LOG.info("Changed latest cipher pool from: {} to: {}", oldLatestCipherPoolId, latestCipherPoolId);
     }
 
     private boolean isStillSameEncryptionPool() {
         return poolDataProvider.isContainingExactlyGivenPoolIds(scheduleEncryptionPool.getAllPoolIds());
     }
 
-    private void setupEncryptionPoolOrFail() throws ScheduleEncryptionException {
+    @IsSendingAsyncMessage(MessageID.SCHEDULE_ENCRYPTION_POOL_INITIALIZED)
+    private void initNewEncryptionPoolOrFail() throws ScheduleEncryptionException {
         List<ScheduleCipherPoolData> allPoolDataEntries = poolDataProvider.ensurePoolDataAvailable();
 
         scheduleEncryptionPool = scheduleEncryptionPoolFactory.createEncryptionPool(allPoolDataEntries);
@@ -113,7 +133,11 @@ public class ScheduleEncryptionService {
             throw new IllegalStateException("Encryption pool has no entry for latest cipher pool id: %d".formatted(latestCipherPoolId));
         }
 
-        LOG.info("Encryption pool created ({} pool entries)");
+        LOG.info("Encryption pool created ({} pool entries)", allPoolDataEntries.size());
+
+        /* send message about new pool creation */
+        DomainMessage message = new DomainMessage(MessageID.SCHEDULE_ENCRYPTION_POOL_INITIALIZED);
+        domainMessageService.sendAsynchron(message);
     }
 
     public ScheduleEncryptionResult encryptWithLatestCipher(String string) {
@@ -162,6 +186,47 @@ public class ScheduleEncryptionService {
         EncryptionResult res = new EncryptionResult(newEncrypted, newInitialVector);
 
         return new ScheduleEncryptionResult(newCipherPoolId, res);
+    }
+
+    /**
+     * Creates new initial cipher pool data entity. Will automatically check if
+     * encryption process can be done with this instance and given test text. Pool
+     * data will contain all relevant data, except information about user which was
+     * responsible for the new pool data.
+     *
+     * @param data     encryption data
+     * @param testText text to be used for initial test
+     * @return not initial pool data ready to be stored, but without setting the
+     *         creator
+     * @throws ScheduleEncryptionException if encryption process has any problems
+     */
+    public ScheduleCipherPoolData createInitialCipherPoolData(SecHubEncryptionData data, String testText) throws ScheduleEncryptionException {
+
+        ScheduleCipherPoolData poolData = new ScheduleCipherPoolData();
+        poolData.algorithm = data.getAlgorithm();
+        poolData.created = LocalDateTime.now();
+        poolData.passwordSourceData = data.getPasswordSourceData();
+        poolData.secHubCipherPasswordSourceType = data.getPasswordSourceType();
+
+        poolData.testText = testText;
+
+        SecretKeyProvider secretKey = secretKeyProviderFactory.createSecretKeyProvider(poolData.getPasswordSourceType(), poolData.getPasswordSourceData());
+        PersistentCipher tempCipher = cipherFactory.createCipher(secretKey, poolData.getAlgorithm().getType());
+
+        EncryptionResult result = encryptionSupport.encryptString(poolData.testText, tempCipher);
+        poolData.testInitialVector = result.getInitialVector().getInitializationBytes();
+        poolData.testEncrypted = result.getEncryptedData();
+
+        // sanity check
+        String decrypted = encryptionSupport.decryptString(poolData.testEncrypted, tempCipher, new InitializationVector(poolData.getTestInitialVector()));
+        if (decrypted == null) {
+            throw new ScheduleEncryptionException("Was not able to instantiate new cipher pool data, because decrypted value is null!");
+        }
+        if (!decrypted.equals(poolData.testText)) {
+            throw new ScheduleEncryptionException("Was not able to instantiate new cipher pool data, because decrypted value is not origin test text!");
+        }
+        return poolData;
+
     }
 
 }

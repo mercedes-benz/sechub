@@ -139,8 +139,8 @@ public class DialogUI {
      * @param identifier
      * @return
      */
-    public Optional<String> getUserInputFromCombobox(String message, String title, List<String> comboboxValues, String initialValue) {
-        ComboxSelectionDialogUI dialog = new ComboxSelectionDialogUI(frame, title, message, comboboxValues, initialValue);
+    public <T> Optional<T> getUserInputFromCombobox(String message, String title, List<T> comboboxValues, T initialValue) {
+        ComboxSelectionDialogUI<T> dialog = new ComboxSelectionDialogUI<>(frame, title, message, comboboxValues, initialValue);
         dialog.showDialog();
 
         if (!dialog.isOkPressed()) {
