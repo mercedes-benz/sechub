@@ -1,32 +1,56 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import * as fs from 'fs';
-import { ensureDirectorySync, downloadFile, unzipFile, chmodSync } from './fs-helper';
-import { LaunchContext } from './launcher';
+import * as toolCache from '@actions/tool-cache';
+import * as path from 'path';
+import * as os from 'os';
+import { getPlatform, getPlatformDirectory } from './platform-helper';
+
+const SECHUB_TOOL = 'sechub';
+const SECHUB_EXECUTABLE = getPlatform() === 'win32' ? 'sechub.exe' : 'sechub';
 
 /**
- * Downloads release for the SecHub CLI if not already loaded.
+ * Sets up the SecHub CLI by downloading and caching it.
  *
- * @param context launch context
+ * @param version the version of the client to download
  */
-export async function downloadClientRelease(context: LaunchContext): Promise<void> {
-    const clientVersion = context.clientVersion;
+export async function setupSecHubCli(version: string): Promise<string> {
+    const dir = await findOrDownload(version);
+    core.addPath(dir);
+    core.info(`${SECHUB_TOOL} ${version} is now set up at ${dir}`);
+    return path.join(dir, SECHUB_EXECUTABLE);
+}
 
-    if (fs.existsSync(context.clientExecutablePath)) {
-        core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
-        return;
+/**
+ * Finds the SecHub CLI in the cache or downloads it if it is not found.
+ *
+ * @param version the version of the client to find or download
+ */
+async function findOrDownload(version: string): Promise<string> {
+    const existingDir = toolCache.find(SECHUB_TOOL, version);
+
+    if (existingDir) {
+        core.debug(`Found cached ${SECHUB_TOOL} ${version} at ${existingDir}`);
+        return existingDir;
+    } else {
+        core.debug(`${SECHUB_TOOL} ${version} not cached, so attempting to download`);
+        return await downloadClientRelease(version);
     }
+}
 
-    const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
+/**
+ * Downloads release for the SecHub CLI.
+ *
+ * @param clientVersion the version of the client to download
+ */
+async function downloadClientRelease(clientVersion: string): Promise<string> {
     const zipDownloadUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${clientVersion}-client/sechub-cli-${clientVersion}.zip`;
 
     core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
-    core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
 
-    ensureDirectorySync(context.clientDownloadFolder);
-    await downloadFile(zipDownloadUrl, secHubZipFilePath);
-    await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
-    chmodSync(context.clientExecutablePath);
+    const archivePath = await toolCache.downloadTool(zipDownloadUrl);
+
+    const extracted = await toolCache.extractZip(archivePath, os.tmpdir());
+    const releaseFolder = path.join(extracted, `platform/${getPlatformDirectory()}`);
+    return await toolCache.cacheDir(releaseFolder, SECHUB_TOOL, clientVersion);
 }
-

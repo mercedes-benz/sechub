@@ -42,7 +42,7 @@ const mockedInputMap = new Map();
 let mockedUploadFunction: jest.Mock;
 
 beforeEach(() => {
-    
+
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
     shell.echo('START Integration test: '+ expect.getState().currentTestName);
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
@@ -161,7 +161,7 @@ describe('integrationtest codescan generated config', () => {
         const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(result, 1); 
+        assertLastClientExitCode(result, 1);
         assertTrafficLight(result, 'RED');
         assertActionIsNotMarkedAsFailed(); // important: exit code 1 but action is NOT marked as failed because fail-job-with-findings=false
         assertJsonReportContains(result, 'result-red');
@@ -188,7 +188,7 @@ describe('integrationtest secretscan generated config', () => {
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         assertUploadDone();
-        
+
     });
     test('secretscan yellow, html only', async () => {
 
@@ -210,7 +210,7 @@ describe('integrationtest secretscan generated config', () => {
         assertUploadDone();
 
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
-        
+
     });
     test('secretscan yellow, json,html', async () => {
 
@@ -230,9 +230,9 @@ describe('integrationtest secretscan generated config', () => {
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         assertUploadDone();
-       
+
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
-        
+
     });
 
 });
@@ -249,7 +249,7 @@ describe('integrationtest licensescan generated config', () => {
 
         /* execute */
         const result = await launcher.launch();
-        
+
         /* test */
         assertTrafficLight(result, 'GREEN');
         assertLastClientExitCode(result, 0);
@@ -301,7 +301,7 @@ describe('integrationtest non-generated config', () => {
 
         /* prepare */
         initInputMap();
-        
+
         const pwd = shell.pwd();
         const configDir = `${pwd}/__test__/integrationtest/test-config`;
 
@@ -350,7 +350,7 @@ function assertUploadDone(){
 }
 
 function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: string) {
-    
+
     const fileName = context.secHubReportJsonFileName.replace('.json','.html');
     const htmlPath = `./${fileName}`;
     if (context.debug){
@@ -364,7 +364,7 @@ function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: str
 }
 
 function loadSpdxJsonReportAndAssertItContains(context: LaunchContext, textPart: string) {
-    
+
     const fileName = context.secHubReportJsonFileName.replace('.json','.spdx.json');
     const spdxJsonPath = `./${fileName}`;
     if (context.debug){

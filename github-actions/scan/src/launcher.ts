@@ -2,7 +2,6 @@
 
 import * as core from '@actions/core';
 import { failAction } from './action-helper';
-import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
 import { ContentType, ScanType } from './configuration-model';
 import { initEnvironmentVariables } from './environment';
@@ -13,9 +12,9 @@ import { initReportFormats, initSecHubJson } from './init-scan';
 import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
-import { getPlatform, getPlatformDirectory } from './platform-helper';
 import { split } from './input-helper';
 import { getClientVersion } from './client-version-helper';
+import { setupSecHubCli } from './client-download';
 
 /**
  * Starts the launch process
@@ -49,7 +48,6 @@ export interface LaunchContext {
     reportFormats: string[];
 
     clientVersion: string;
-    clientDownloadFolder: string;
     clientExecutablePath: string;
 
     lastClientExitCode: number;
@@ -69,7 +67,6 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     inputData: INPUT_DATA_DEFAULTS,
     reportFormats: ['json'],
     clientVersion: '',
-    clientDownloadFolder: '',
     configFileLocation: null,
     clientExecutablePath: '',
 
@@ -92,14 +89,7 @@ async function createContext(): Promise<LaunchContext> {
     const gitHubInputData = resolveGitHubInputData();
 
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
-    const expression = /\./gi;
-    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
     const workspaceFolder = getWorkspaceDir();
-    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
-    let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
-    if (getPlatform() === 'win32') {
-        clientExecutablePath = clientExecutablePath.concat('.exe');
-    }
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
 
@@ -120,8 +110,7 @@ async function createContext(): Promise<LaunchContext> {
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientVersion: clientVersion,
-        clientDownloadFolder: clientDownloadFolder,
-        clientExecutablePath: clientExecutablePath,
+        clientExecutablePath: '',
 
         projectName: projectName,
 
@@ -149,7 +138,7 @@ async function init(context: LaunchContext) {
     core.debug(`Init for project : ${context.projectName}`);
     initEnvironmentVariables(context.inputData, context.projectName);
 
-    await downloadClientRelease(context);
+    context.clientExecutablePath = await setupSecHubCli(context.clientVersion);
 }
 
 /**

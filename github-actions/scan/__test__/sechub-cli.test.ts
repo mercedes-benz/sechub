@@ -109,9 +109,9 @@ describe('sechub-cli', function() {
         /* test */
         expect(jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
-    
+
     it('extractJobUUID - returns job uuid from string with "job: xxxx"', function () {
-        
+
         const output = `
         The uuid for job:1234
         can be extracted
@@ -125,7 +125,7 @@ describe('sechub-cli', function() {
     });
 
     it('extractJobUUID - returns empty string when no job id is available', function () {
-        
+
         const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
         2024-03-08 13:58:18 (+01:00) Zipping folder: __test__/integrationtest/test-sources (/home/xyzgithub-actions/scan/__test__/integrationtest/test-sources)

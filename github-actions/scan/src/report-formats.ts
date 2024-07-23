@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import {split} from "./input-helper";
+import {split} from './input-helper';
 
 export const availableFormats = ['json', 'html', 'spdx-json'];
 
