@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
 
 import static org.mockito.ArgumentMatchers.any;
