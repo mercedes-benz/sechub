@@ -5,19 +5,19 @@ import java.io.File;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
-import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.constraints.NotNull;
-
-@Validated
 @ConfigurationProperties(prefix = "pds.job.result")
 public class SecretValidatorPDSJobResult {
 
     private final File file;
 
     @ConstructorBinding
-    public SecretValidatorPDSJobResult(@NotNull String file) {
-        this.file = new File(file);
+    public SecretValidatorPDSJobResult(File file) {
+        if (file == null) {
+            throw new IllegalArgumentException("The PDS result file is null!");
+        }
+
+        this.file = file;
 
         if (!this.file.exists()) {
             throw new IllegalArgumentException("The PDS result file " + file + " does not exist!");

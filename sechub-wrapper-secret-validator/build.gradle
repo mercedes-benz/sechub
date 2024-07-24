@@ -10,7 +10,6 @@ dependencies {
     implementation project(':sechub-commons-pds')
     
     implementation library.sarif_210
-    implementation library.springboot_starter_validation
 
     /* test */
     testImplementation project(':sechub-testframework')

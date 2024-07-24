@@ -5,11 +5,7 @@ import java.io.File;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
-import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.constraints.NotNull;
-
-@Validated
 @ConfigurationProperties(prefix = "secret.validator")
 public class SecretValidatorProperties {
 
@@ -17,14 +13,18 @@ public class SecretValidatorProperties {
     private final boolean trustAllCertificates;
 
     @ConstructorBinding
-    public SecretValidatorProperties(@NotNull String configFile, boolean trustAllCertificates) {
-        this.configFile = new File(configFile);
+    public SecretValidatorProperties(File configFile, boolean trustAllCertificates) {
+        if (configFile == null) {
+            throw new IllegalArgumentException("The secret validator configuration file is null!");
+        }
+
+        this.configFile = configFile;
 
         if (!this.configFile.exists()) {
-            throw new IllegalStateException("The configuration file " + configFile + " does not exist!");
+            throw new IllegalArgumentException("The secret validator configuration file " + configFile + " does not exist!");
         }
         if (!this.configFile.canRead()) {
-            throw new IllegalStateException("The configuration file " + configFile + "  is not readable!");
+            throw new IllegalArgumentException("The secret validator configuration file " + configFile + "  is not readable!");
         }
 
         this.trustAllCertificates = trustAllCertificates;

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.File;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +22,10 @@ class SecretValidatorExecutionContextFactoryTest {
     private SecretValidatorProperties invalidProperties;
     private SecretValidatorProperties validProperties;
 
-    private static final String invalidSarifFile = "src/test/resources/config-test-files/invalid-files/invalid-sarif.txt";
-    private static final String invalidConfigFile = "src/test/resources/config-test-files/invalid-files/invalid-validator-config.txt";
-    private static final String validSarifFile = "src/test/resources/config-test-files/valid-files/test-result.txt";
-    private static final String validConfigFile = "src/test/resources/config-test-files/valid-files/test-config.json";
+    private static final File invalidSarifFile = new File("src/test/resources/config-test-files/invalid-files/invalid-sarif.txt");
+    private static final File invalidConfigFile = new File("src/test/resources/config-test-files/invalid-files/invalid-validator-config.txt");
+    private static final File validSarifFile = new File("src/test/resources/config-test-files/valid-files/test-result.txt");
+    private static final File validConfigFile = new File("src/test/resources/config-test-files/valid-files/test-config.json");
 
     @BeforeEach
     void beforeEach() {
