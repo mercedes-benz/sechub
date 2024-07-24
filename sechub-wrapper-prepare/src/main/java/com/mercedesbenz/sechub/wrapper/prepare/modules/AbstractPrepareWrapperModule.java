@@ -31,7 +31,7 @@ public abstract class AbstractPrepareWrapperModule implements PrepareWrapperModu
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            throw new RuntimeException("Error while creating download directory: " + path, e);
+            throw new IllegalStateException("Error while creating download directory: " + path, e);
         }
     }
 

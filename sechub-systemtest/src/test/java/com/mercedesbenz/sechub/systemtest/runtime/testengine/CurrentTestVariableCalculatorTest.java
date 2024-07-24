@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.runtime.testengine;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -15,7 +15,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.TestDefinition;
-import com.mercedesbenz.sechub.systemtest.runtime.testengine.CurrentTestVariableCalculator;
+import com.mercedesbenz.sechub.systemtest.runtime.LocationSupport;
+import com.mercedesbenz.sechub.systemtest.runtime.SystemTestRuntimeContext;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class CurrentTestVariableCalculatorTest {

@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.product.pds;
+package com.mercedesbenz.sechub.commons.pds;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-
-import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 
 class PDSConfigDataKeyProviderTest {
 

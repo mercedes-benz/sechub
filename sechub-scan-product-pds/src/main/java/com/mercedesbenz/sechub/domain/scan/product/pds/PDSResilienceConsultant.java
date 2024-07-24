@@ -47,7 +47,7 @@ public class PDSResilienceConsultant implements ResilienceConsultant {
         Throwable rootCause = StacktraceUtil.findRootCause(context.getCurrentError());
         if (rootCause instanceof HttpClientErrorException) {
             HttpClientErrorException hce = (HttpClientErrorException) rootCause;
-            int statusCode = hce.getRawStatusCode();
+            int statusCode = hce.getStatusCode().value();
             if (statusCode == 400) {
                 /*
                  * BAD request - this can happen for same project scans put to queue because

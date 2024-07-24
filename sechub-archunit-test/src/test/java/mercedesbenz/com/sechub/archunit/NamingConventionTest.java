@@ -1,6 +1,7 @@
 package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
-import com.tngtech.archunit.core.importer.Location;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
@@ -22,7 +22,9 @@ public class NamingConventionTest {
         /* @formatter:off */
         importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
-                .withImportOption(ignoreOpenAPI)
+                .withImportOption(ignoreSechubOpenAPIJava)
+                .withImportOption(ignoreSechubTestframework)
+                .withImportOption(ignoreSharedkernelTest)
                 .importPath("../../sechub/");
 
         /* execute + test */
@@ -32,7 +34,9 @@ public class NamingConventionTest {
                 .should()
                 .haveSimpleNameContaining("Test")
                 .orShould()
-                .haveSimpleNameContaining("Assert")
+                .haveNameMatching(".*\\.Assert.*") // including inner classes
+                .orShould()
+                .haveNameMatching(".*Test\\$.*") // including inner classes
                 .because("Tests classes should contain 'Test' or 'Assert' in their name.")
                 .check(importedClasses);
         /* @formatter:on */
@@ -45,8 +49,8 @@ public class NamingConventionTest {
         importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
-                .withImportOption(ignoreTests)
-                .withImportOption(ignoreOpenAPI)
+                .withImportOption(ignoreAllTests)
+                .withImportOption(ignoreSechubOpenAPIJava)
                 .importPath("../../sechub/");
 
         /* execute + test */
@@ -61,18 +65,4 @@ public class NamingConventionTest {
                 .check(importedClasses);
         /* @formatter:on */
     }
-
-    ImportOption ignoreTests = new ImportOption() {
-        @Override
-        public boolean includes(Location location) {
-            return !location.contains("/test/"); // ignore any URI to sources that contains '/test/'
-        }
-    };
-
-    ImportOption ignoreOpenAPI = new ImportOption() {
-        @Override
-        public boolean includes(Location location) {
-            return !location.contains("/sechub-openapi-java(*)/"); // ignore any URI to sources that contains '/openapi/'
-        }
-    };
 }

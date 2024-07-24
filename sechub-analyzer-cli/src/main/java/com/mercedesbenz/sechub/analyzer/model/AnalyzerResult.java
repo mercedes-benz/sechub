@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.analyzer.model;
+package com.mercedesbenz.sechub.analyzer.model;
 
 import java.io.IOException;
 import java.util.HashMap;
