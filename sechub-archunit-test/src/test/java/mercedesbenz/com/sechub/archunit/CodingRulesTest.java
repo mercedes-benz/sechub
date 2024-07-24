@@ -24,7 +24,7 @@ public class CodingRulesTest {
         NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);
     }
 
-    // @Test
+    @Test
     void classes_should_not_use_deprecated_members() {
         /* prepare */
         /* @formatter:off */
@@ -57,7 +57,7 @@ public class CodingRulesTest {
         ASSERTIONS_SHOULD_HAVE_DETAIL_MESSAGE.check(importedClasses);
     }
 
-    // @Test
+    @Test
     void test_classes_should_be_in_the_same_package_as_implementation() {
         /* prepare */
         /* @formatter:off */
