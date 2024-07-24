@@ -1,10 +1,14 @@
 package mercedesbenz.com.sechub.archunit;
 
+import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
+import static com.tngtech.archunit.lang.conditions.ArchConditions.accessTargetWhere;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.GeneralCodingRules.*;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.tngtech.archunit.core.domain.JavaAccess;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -28,7 +32,6 @@ public class CodingRulesTest {
     void classes_should_not_use_deprecated_members() {
         /* prepare */
         /* @formatter:off */
-        /* @formatter:off */
         importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
@@ -41,11 +44,22 @@ public class CodingRulesTest {
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreProductIdentifierClass)
+                .withImportOption(ignoreIntegrationTestClass)
+                .withImportOption(ignoreSchedulerSourcecodeUploadService)
                 .importPath("../../sechub/");
-        /* @formatter:on */
+
 
         /* execute + test */
-        DEPRECATED_API_SHOULD_NOT_BE_USED.check(importedClasses);
+        /* custom version of DEPRECATED_API_SHOULD_NOT_BE_USED */
+        noClasses()
+                .should(accessTargetWhere(JavaAccess.Predicates.target(annotatedWith(Deprecated.class)))
+                        .as("access @Deprecated members"))
+//                 Following lines were out-commented because of JsonSerialize annotation uses deprecated default implementation
+//                .orShould(dependOnClassesThat(annotatedWith(Deprecated.class))
+//                        .as("depend on @Deprecated classes"))
+                .because("there should be a better alternative")
+                .check(importedClasses);
+        /* @formatter:on */
     }
 
     @Test
@@ -68,6 +82,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreDocGen)
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubTest)
+                .withImportOption(ignoreSystemTest)
                 .importPath("../../sechub/");
 
         /* execute + test */

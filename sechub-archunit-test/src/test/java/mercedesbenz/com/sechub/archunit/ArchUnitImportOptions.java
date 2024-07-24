@@ -125,11 +125,32 @@ public class ArchUnitImportOptions {
         }
     };
 
+    static ImportOption ignoreSystemTest = new ImportOption() {
+        @Override
+        public boolean includes(Location location) {
+            return !location.contains("/sechub-systemtest/"); // ignore any URI to sources that contains '/sechub-systemtest/'
+        }
+    };
+
     /* Ignore specific classes */
     static ImportOption ignoreProductIdentifierClass = new ImportOption() {
         @Override
         public boolean includes(Location location) {
             return !location.contains("ProductIdentifier"); // ignore any URI to sources that contains '/ProductIdentifier'
+        }
+    };
+
+    static ImportOption ignoreIntegrationTestClass = new ImportOption() {
+        @Override
+        public boolean includes(Location location) {
+            return !location.contains("IntegrationTest"); // ignore any URI to sources that contains '/ProductResult'
+        }
+    };
+
+    static ImportOption ignoreSchedulerSourcecodeUploadService = new ImportOption() {
+        @Override
+        public boolean includes(Location location) {
+            return !location.contains("SchedulerSourcecodeUploadService"); // ignore any URI to sources that contains '/ProductResult'
         }
     };
 }
