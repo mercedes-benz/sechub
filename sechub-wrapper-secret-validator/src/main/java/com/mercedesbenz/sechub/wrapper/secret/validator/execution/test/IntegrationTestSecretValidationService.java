@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
+package com.mercedesbenz.sechub.wrapper.secret.validator.execution.test;
 
 import java.util.List;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.wrapper.secret.validator.execution.SecretValidationModul;
+import com.mercedesbenz.sechub.wrapper.secret.validator.execution.SecretValidationResult;
+import com.mercedesbenz.sechub.wrapper.secret.validator.execution.SecretValidationStatus;
+import com.mercedesbenz.sechub.wrapper.secret.validator.execution.SecretValidatorSpringProfiles;
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorRequest;
 
 import de.jcup.sarif_2_1_0.model.Region;

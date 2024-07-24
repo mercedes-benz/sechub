@@ -8,14 +8,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest(classes = { SecretValidatorProperties.class, SecretValidatorPDSJobResult.class })
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource(properties = { "secret.validator.config-file=src/test/resources/config-test-files/valid-files/test-config.json",
         "secret.validator.trust-all-certificates=false", "pds.job.result.file=src/test/resources/config-test-files/valid-files/test-result.txt" })
+@ActiveProfiles("test")
 class SecretValidatorConfigurationSpringBootTest {
 
     @Autowired

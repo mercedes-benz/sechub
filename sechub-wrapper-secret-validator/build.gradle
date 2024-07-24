@@ -22,6 +22,12 @@ dependencies {
 
 // TODO Jan 2024-07-17: version = versionData.getSecretValidatorWrapperVersion()
 
+compileJava {
+
+    options.compilerArgs += ['-parameters']
+
+}
+
 bootJar {
 
      doLast {

@@ -4,10 +4,6 @@ package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,57 +20,22 @@ class SecretValidatorExecutionContextFactoryTest {
     private SecretValidatorProperties invalidProperties;
     private SecretValidatorProperties validProperties;
 
-    private static final File invalidSarifFile = new File("src/test/resources/config-test-files/invalid-files/invalid-sarif.txt");
-    private static final File invalidConfigFile = new File("src/test/resources/config-test-files/invalid-files/invalid-validator-config.txt");
-    private static final File validSarifFile = new File("src/test/resources/config-test-files/valid-files/test-result.txt");
-    private static final File validConfigFile = new File("src/test/resources/config-test-files/valid-files/test-config.json");
+    private static final String invalidSarifFile = "src/test/resources/config-test-files/invalid-files/invalid-sarif.txt";
+    private static final String invalidConfigFile = "src/test/resources/config-test-files/invalid-files/invalid-validator-config.txt";
+    private static final String validSarifFile = "src/test/resources/config-test-files/valid-files/test-result.txt";
+    private static final String validConfigFile = "src/test/resources/config-test-files/valid-files/test-config.json";
 
     @BeforeEach
     void beforeEach() {
         factoryToTest = new SecretValidatorExecutionContextFactory();
 
-        invalidsecretValidatorPDSJobResult = new SecretValidatorPDSJobResult();
-        invalidsecretValidatorPDSJobResult.setFile(invalidSarifFile);
+        invalidsecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(invalidSarifFile);
 
-        invalidProperties = new SecretValidatorProperties();
-        invalidProperties.setConfigFile(invalidConfigFile);
+        invalidProperties = new SecretValidatorProperties(invalidConfigFile, false);
 
-        validSecretValidatorPDSJobResult = new SecretValidatorPDSJobResult();
-        validSecretValidatorPDSJobResult.setFile(validSarifFile);
+        validSecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(validSarifFile);
 
-        validProperties = new SecretValidatorProperties();
-        validProperties.setConfigFile(validConfigFile);
-    }
-
-    @Test
-    void not_existing_pds_job_result_file_throws_exception() {
-        /* prepare */
-        File notExisting = mock(File.class);
-        when(notExisting.exists()).thenReturn(false);
-        SecretValidatorPDSJobResult secretValidatorPDSJobResult = new SecretValidatorPDSJobResult();
-        secretValidatorPDSJobResult.setFile(notExisting);
-
-        factoryToTest.pdsResult = secretValidatorPDSJobResult;
-
-        /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
-        assertEquals("PDS job result file: " + notExisting + " does not exist!", exception.getMessage());
-    }
-
-    @Test
-    void not_readable_pds_job_result_file_throws_exception() {
-        /* prepare */
-        File notReadable = mock(File.class);
-        when(notReadable.exists()).thenReturn(true);
-        when(notReadable.canRead()).thenReturn(false);
-        SecretValidatorPDSJobResult secretValidatorPDSJobResult = new SecretValidatorPDSJobResult();
-        secretValidatorPDSJobResult.setFile(notReadable);
-
-        factoryToTest.pdsResult = secretValidatorPDSJobResult;
-
-        /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
-        assertEquals("PDS job result file: " + notReadable + " is not readable!", exception.getMessage());
+        validProperties = new SecretValidatorProperties(validConfigFile, false);
     }
 
     @Test
@@ -85,39 +46,6 @@ class SecretValidatorExecutionContextFactoryTest {
         /* execute + test */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
         assertEquals("Creating SARIF report model from: " + invalidsecretValidatorPDSJobResult.getFile() + " failed!", exception.getMessage());
-    }
-
-    @Test
-    void not_existing_secret_validator_config_file_throws_exception() {
-        /* prepare */
-        File notExisting = mock(File.class);
-        when(notExisting.exists()).thenReturn(false);
-        SecretValidatorProperties properties = new SecretValidatorProperties();
-        properties.setConfigFile(notExisting);
-
-        factoryToTest.pdsResult = validSecretValidatorPDSJobResult;
-        factoryToTest.properties = properties;
-
-        /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
-        assertEquals("Secret validator configuration file: " + notExisting + " does not exist!", exception.getMessage());
-    }
-
-    @Test
-    void not_readable_secret_validator_config_file_throws_exception() {
-        /* prepare */
-        File notReadable = mock(File.class);
-        when(notReadable.exists()).thenReturn(true);
-        when(notReadable.canRead()).thenReturn(false);
-        SecretValidatorProperties properties = new SecretValidatorProperties();
-        properties.setConfigFile(notReadable);
-
-        factoryToTest.pdsResult = validSecretValidatorPDSJobResult;
-        factoryToTest.properties = properties;
-
-        /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
-        assertEquals("Secret validator configuration file: " + notReadable + " is not readable!", exception.getMessage());
     }
 
     @Test
