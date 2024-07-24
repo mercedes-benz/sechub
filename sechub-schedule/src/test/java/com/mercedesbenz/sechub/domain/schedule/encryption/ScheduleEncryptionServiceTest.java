@@ -50,7 +50,8 @@ class ScheduleEncryptionServiceTest {
         serviceToTest = new ScheduleEncryptionService();
 
         secHubSecretKeyProviderFactory = mock(SecHubSecretKeyProviderFactory.class);
-        when(secHubSecretKeyProviderFactory.createSecretKeyProvider(eq(SecHubCipherPasswordSourceType.NONE), any())).thenReturn(null);
+        when(secHubSecretKeyProviderFactory.createSecretKeyProvider(eq(PersistentCipherType.NONE), eq(SecHubCipherPasswordSourceType.NONE), any()))
+                .thenReturn(null);
 
         fakedNoneCipher = mock(PersistentCipher.class, "faked none cipher");
         fakedAES256Cipher = mock(PersistentCipher.class, "faked AES256 cipher");

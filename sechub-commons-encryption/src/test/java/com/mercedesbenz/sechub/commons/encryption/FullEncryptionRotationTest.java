@@ -48,11 +48,13 @@ class FullEncryptionRotationTest {
     @BeforeAll
     static void beforeAll() {
         PersistentCipherFactory factory = new PersistentCipherFactory();
-        cipher1Aes256 = factory.createCipher(new DefaultSecretKeyProvider("x".repeat(32)), PersistentCipherType.AES_GCM_SIV_256);
-        cipher2Aes256 = factory.createCipher(new DefaultSecretKeyProvider("y".repeat(32)), PersistentCipherType.AES_GCM_SIV_256);
+        PersistentCipherType aes256CipherType = PersistentCipherType.AES_GCM_SIV_256;
+        cipher1Aes256 = factory.createCipher(new DefaultSecretKeyProvider("x".repeat(32).getBytes(), aes256CipherType), aes256CipherType);
+        cipher2Aes256 = factory.createCipher(new DefaultSecretKeyProvider("y".repeat(32).getBytes(), aes256CipherType), aes256CipherType);
 
-        cipher3Aes128 = factory.createCipher(new DefaultSecretKeyProvider("x".repeat(16)), PersistentCipherType.AES_GCM_SIV_128);
-        cipher4Aes128 = factory.createCipher(new DefaultSecretKeyProvider("y".repeat(16)), PersistentCipherType.AES_GCM_SIV_128);
+        PersistentCipherType aes128CipherType = PersistentCipherType.AES_GCM_SIV_128;
+        cipher3Aes128 = factory.createCipher(new DefaultSecretKeyProvider("x".repeat(16).getBytes(), aes128CipherType), aes128CipherType);
+        cipher4Aes128 = factory.createCipher(new DefaultSecretKeyProvider("y".repeat(16).getBytes(), aes128CipherType), aes128CipherType);
 
         cipher5None = factory.createCipher(null, PersistentCipherType.NONE);
         cipher6None = factory.createCipher(null, PersistentCipherType.NONE);

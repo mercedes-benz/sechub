@@ -109,7 +109,8 @@ public class AdministrationAPIConstants {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Encryption................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String API_ADMIN_STARTS_ENCRYPTION_ROTATION = API_ADMINISTRATION + "encryption/rotate";
+    public static final String API_ADMIN_ENCRYPTION_ROTATION = API_ADMINISTRATION + "encryption/rotate";
+    public static final String API_ADMIN_ENCRYPTION_STATUS = API_ADMINISTRATION + "encryption/status";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Anonymous ................................+ */

@@ -30,6 +30,11 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
             + " = :executionState", nativeQuery = false)
     public long countJobsInExecutionState(@Param("executionState") ExecutionState state);
 
+    @Query(value = "SELECT COUNT(t) FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_EXECUTION_STATE + " = :executionState and t."
+            + PROPERTY_ENCRYPTION_POOL_ID + " = :encryptionPoolId", nativeQuery = false)
+    public long countJobsInExecutionStateAndEncryptedWithPoolId(@Param("executionState") ExecutionState state,
+            @Param("encryptionPoolId") Long encryptionPoolId);
+
     @Transactional
     @Modifying
     @Query(ScheduleSecHubJob.QUERY_DELETE_JOB_OLDER_THAN)

@@ -15,12 +15,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_STARTS_ENCRYPTION_ROTATION,
+		id=UseCaseIdentifier.UC_ADMIN_FETCHES_ENCRYPTION_STATUS,
 		group=UseCaseGroup.ENCRYPTION,
-		apiName="adminStartsEncryptionRotation",
-		title="Admin starts encryption rotation",
-		description="An administrator starts encryption rotation. A new cipher pool entry will be created.")
-public @interface UseCaseAdminStartsEncryptionRotation{
+		apiName="adminFetchesEncryptionRotation",
+		title="Admin fetches encryption status",
+		description="An administrator fetches encryption status from all domains where encryption is used.")
+public @interface UseCaseAdminFetchesEncryptionStatus{
 
 	Step value();
 }

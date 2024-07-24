@@ -24,13 +24,13 @@ public class EncryptionUsageTest {
         /* prepare */
         PersistentCipherType cipherType = PersistentCipherType.AES_GCM_SIV_256;
         byte[] rawPlainTextInBytes = "hallo welt".getBytes();
-        String testSecret256bit = "x".repeat(32);
+        byte[] testSecret256bit = "x".repeat(32).getBytes();
 
         /* execute - usage .. */
         PersistentCipherFactory factory = new PersistentCipherFactory();
 
         // encrypt and simulate storage
-        PersistentCipher cipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
+        PersistentCipher cipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit, cipherType), cipherType);
 
         InitializationVector initVector = cipher.createNewInitializationVector();
         byte[] encrypted = cipher.encrypt(rawPlainTextInBytes, initVector);
@@ -40,7 +40,7 @@ public class EncryptionUsageTest {
         byte[] storedInitVectorBytes = initVector.getInitializationBytes();
 
         // decrypt
-        PersistentCipher anotherCipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
+        PersistentCipher anotherCipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit, cipherType), cipherType);
         byte[] decrypted = anotherCipher.decrypt(storedEncryptedDataBytes, new InitializationVector(storedInitVectorBytes));
 
         /* test */
@@ -52,13 +52,13 @@ public class EncryptionUsageTest {
     void encryption_support_usage_with_string() { /* prepare */
         PersistentCipherType cipherType = PersistentCipherType.AES_GCM_SIV_256;
         String plainText = "hallo welt";
-        String testSecret256bit = "x".repeat(32);
+        byte[] testSecret256bit = "x".repeat(32).getBytes();
 
         /* execute - usage .. */
         PersistentCipherFactory factory = new PersistentCipherFactory();
 
         // encrypt and simulate storage
-        PersistentCipher cipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
+        PersistentCipher cipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit, cipherType), cipherType);
 
         EncryptionSupport support = new EncryptionSupport();
 
@@ -69,7 +69,7 @@ public class EncryptionUsageTest {
         byte[] storedInitVectorBytes = encryptionResult.getInitialVector().getInitializationBytes();
 
         // decrypt
-        PersistentCipher anotherCipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit), cipherType);
+        PersistentCipher anotherCipher = factory.createCipher(new DefaultSecretKeyProvider(testSecret256bit, cipherType), cipherType);
         String decrypted = support.decryptString(storedEncryptedDataBytes, anotherCipher, new InitializationVector(storedInitVectorBytes));
 
         /* test */
@@ -81,18 +81,19 @@ public class EncryptionUsageTest {
     void rotation_with_changed_password_same_init_vector() {
         /* prepare */
         String testData = "hallo welt";
-        String oldPassword = "x".repeat(32);
-        String newPassword = "y".repeat(32);
+        byte[] oldPassword = "x".repeat(32).getBytes();
+        byte[] newPassword = "y".repeat(32).getBytes();
 
         PersistentCipherFactory factory = new PersistentCipherFactory();
-        PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword), PersistentCipherType.AES_GCM_SIV_256);
+        PersistentCipherType cipherType = PersistentCipherType.AES_GCM_SIV_256;
+        PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword, cipherType), cipherType);
 
         EncryptionSupport encryptSupport = new EncryptionSupport();
 
         // encrypt with old cipher
         EncryptionResult encryptionResult = encryptSupport.encryptString(testData, cipherOldPassword);
 
-        PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword), PersistentCipherType.AES_GCM_SIV_256);
+        PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword, cipherType), cipherType);
 
         EncryptionRotator rotatorToTest = new EncryptionRotator();
 
@@ -120,18 +121,19 @@ public class EncryptionUsageTest {
     void rotation_with_changed_password_different_init_vector() {
         /* prepare */
         String testData = "hallo welt";
-        String oldPassword = "x".repeat(32);
-        String newPassword = "y".repeat(32);
+        byte[] oldPassword = "x".repeat(32).getBytes();
+        byte[] newPassword = "y".repeat(32).getBytes();
 
         PersistentCipherFactory factory = new PersistentCipherFactory();
-        PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword), PersistentCipherType.AES_GCM_SIV_256);
+        PersistentCipherType cipherType = PersistentCipherType.AES_GCM_SIV_256;
+        PersistentCipher cipherOldPassword = factory.createCipher(new DefaultSecretKeyProvider(oldPassword, cipherType), cipherType);
 
         EncryptionSupport encryptSupport = new EncryptionSupport();
 
         // encrypt with old cipher
         EncryptionResult firstEncryptionResult = encryptSupport.encryptString(testData, cipherOldPassword);
 
-        PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword), PersistentCipherType.AES_GCM_SIV_256);
+        PersistentCipher cipherNewPassword = factory.createCipher(new DefaultSecretKeyProvider(newPassword, cipherType), cipherType);
         InitializationVector newInitVector = cipherNewPassword.createNewInitializationVector();
 
         EncryptionRotator rotatorToTest = new EncryptionRotator();

@@ -48,7 +48,8 @@ class ScheduleEncryptionPoolFactoryTest {
         factoryToTest.secHubSecretKeyProviderFactory = secHubSecretKeyProviderFactory;
 
         noneSecretKeyProvider = mock(SecretKeyProvider.class, "none-secret-keyprovider");
-        when(secHubSecretKeyProviderFactory.createSecretKeyProvider(SecHubCipherPasswordSourceType.NONE, null)).thenReturn(noneSecretKeyProvider);
+        when(secHubSecretKeyProviderFactory.createSecretKeyProvider(PersistentCipherType.NONE, SecHubCipherPasswordSourceType.NONE, null))
+                .thenReturn(noneSecretKeyProvider);
 
         noneCipher1 = mock(PersistentCipher.class, "none-cipher1");
         when(cipherFactory.createCipher(noneSecretKeyProvider, PersistentCipherType.NONE)).thenReturn(noneCipher1);

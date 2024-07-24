@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessCountService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
@@ -39,6 +43,9 @@ public class IntegrationTestSchedulerRestController {
 
     @Autowired
     private SchedulerConfigService scheduleConfigService;
+
+    @Autowired
+    private SecHubJobRepository jobRepository;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/schedule/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -77,6 +84,17 @@ public class IntegrationTestSchedulerRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public void setSchedulerStrategy(@PathVariable("strategyId") String strategyId) {
         schedulerStrategyFactory.setStrategyIdentifier(strategyId);
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS
+            + "integrationtest/schedule/encryption-pool-id/job/{sechubJobUUID}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @Transactional
+    public Long fetchEncryptionPoolIdForSecHubJob(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
+        Optional<ScheduleSecHubJob> job = jobRepository.findById(sechubJobUUID);
+        if (job.isEmpty()) {
+            throw new IllegalArgumentException("SecHub job: " + sechubJobUUID + " not found!");
+        }
+        return job.get().getEncryptionCipherPoolId();
     }
 
 }

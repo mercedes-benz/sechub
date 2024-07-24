@@ -51,6 +51,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.Test
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -116,6 +117,10 @@ public class TestAPI {
 
     public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
         return AssertUserJobInfo.assertInfo(page);
+    }
+
+    public static AssertEncryptionStatus assertEncryptionStatus(SecHubEncryptionStatus status) {
+        return AssertEncryptionStatus.assertEncryptionStatus(status);
     }
 
     /**
@@ -1339,6 +1344,12 @@ public class TestAPI {
 
     }
 
+    public static Long fetchScheduleEncryptionPoolIdForJob(UUID jobUUID) {
+        String url = getURLBuilder().buildIntegrationTestFetchScheduleEncryptionPoolIdForSecHubJob(jobUUID);
+        String result = getSuperAdminRestHelper().getStringFromURL(url);
+        return Long.valueOf(result);
+    }
+
     public static FullScanData fetchFullScanData(UUID sechubJobUIUD) {
 
         String url = getURLBuilder().buildIntegrationTestFetchFullScandata(sechubJobUIUD);
@@ -1631,4 +1642,5 @@ public class TestAPI {
         }
         return executorConfig.uuid;
     }
+
 }

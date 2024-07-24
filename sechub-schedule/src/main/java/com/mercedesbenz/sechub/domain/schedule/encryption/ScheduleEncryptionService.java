@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
 import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
@@ -210,8 +211,10 @@ public class ScheduleEncryptionService {
 
         poolData.testText = testText;
 
-        SecretKeyProvider secretKey = secretKeyProviderFactory.createSecretKeyProvider(poolData.getPasswordSourceType(), poolData.getPasswordSourceData());
-        PersistentCipher tempCipher = cipherFactory.createCipher(secretKey, poolData.getAlgorithm().getType());
+        PersistentCipherType cipherType = poolData.getAlgorithm().getType();
+        SecretKeyProvider secretKey = secretKeyProviderFactory.createSecretKeyProvider(cipherType, poolData.getPasswordSourceType(),
+                poolData.getPasswordSourceData());
+        PersistentCipher tempCipher = cipherFactory.createCipher(secretKey, cipherType);
 
         EncryptionResult result = encryptionSupport.encryptString(poolData.testText, tempCipher);
         poolData.testInitialVector = result.getInitialVector().getInitializationBytes();

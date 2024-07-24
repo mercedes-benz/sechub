@@ -80,8 +80,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
+        LOG.debug("received asynchronous domain request: {}", request);
+
         MessageID messageId = request.getMessageId();
-        LOG.debug("received domain request: {}", request);
 
         switch (messageId) {
         case USER_ADDED_TO_PROJECT:

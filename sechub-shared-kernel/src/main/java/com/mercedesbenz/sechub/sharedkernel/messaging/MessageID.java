@@ -8,7 +8,7 @@ import java.util.Set;
 public enum MessageID {
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_JOB_UUID,
@@ -17,12 +17,12 @@ public enum MessageID {
 	/* @formatter:on */
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     SCAN_DONE,
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     SCAN_FAILED,
 
@@ -197,7 +197,16 @@ public enum MessageID {
      */
     START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA, MessageDataKeys.EXECUTED_BY),
 
-    SCHEDULE_ENCRYPTION_POOL_INITIALIZED,;
+    SCHEDULE_ENCRYPTION_POOL_INITIALIZED,
+
+    /**
+     * Is send/received synchronous
+     */
+    GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN,
+
+    RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN(MessageDataKeys.SECHUB_DOMAIN_ENCRYPTION_STATUS),
+
+    ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

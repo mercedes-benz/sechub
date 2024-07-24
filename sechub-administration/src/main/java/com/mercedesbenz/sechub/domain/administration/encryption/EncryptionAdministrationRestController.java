@@ -18,13 +18,15 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionDataValidator;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
+import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 
 /**
- * The rest api for job administration done by a super admin.
+ * The rest api for encryption done by a super admin.
  *
  * @author Albert Tregnaghi
  *
@@ -39,14 +41,25 @@ public class EncryptionAdministrationRestController {
     AdministrationEncryptionRotationService administrationEncryptionRotationService;
 
     @Autowired
+    AdministrationEncryptionStatusService administrationStatusService;
+
+    @Autowired
     SecHubEncryptionDataValidator rotationDataValidator;
 
     /* @formatter:off */
 	@UseCaseAdminStartsEncryptionRotation(@Step(number=1,name="Rest call",description="Admin triggers rotation of encryption via REST", needsRestDoc =true))
-	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_STARTS_ENCRYPTION_ROTATION, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_ENCRYPTION_ROTATION, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void rotateEncryption(@RequestBody @Valid SecHubEncryptionData data) {
 		/* @formatter:on */
         administrationEncryptionRotationService.rotateEncryption(data);
+    }
+
+    /* @formatter:off */
+	@UseCaseAdminFetchesEncryptionStatus(@Step(number=1,name="Rest call",description="Admin fetches encryption status from domains via REST", needsRestDoc =true))
+	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_ENCRYPTION_STATUS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	public SecHubEncryptionStatus fetchEncryptionStatus() {
+	    /* @formatter:on */
+        return administrationStatusService.fetchStatus();
     }
 
     @InitBinder

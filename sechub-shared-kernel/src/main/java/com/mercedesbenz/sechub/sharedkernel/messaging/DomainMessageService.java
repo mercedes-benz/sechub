@@ -45,7 +45,7 @@ public class DomainMessageService {
             Set<MessageID> messageIds = getSupportedMessageIdsFor(handler);
             for (MessageID messageId : messageIds) {
                 synchronHandlers.put(messageId, handler);
-                LOG.debug("Registered synchron message handler:{} for message ID:{}", handler.getClass(), messageId);
+                LOG.trace("Registered synchron message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
 

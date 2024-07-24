@@ -170,6 +170,8 @@ public enum UseCaseIdentifier {
 
     UC_SCHEDULE_ROTATE_DATA_ENCRYPTION(75, false),
 
+    UC_ADMIN_FETCHES_ENCRYPTION_STATUS(76),
+
     ;
 
     /* +-----------------------------------------------------------------------+ */

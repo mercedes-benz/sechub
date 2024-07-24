@@ -16,17 +16,24 @@ public class DefaultSecretKeyProvider implements SecretKeyProvider {
     private int lengthInBits;
     private SecretKey secretKey;
 
-    public DefaultSecretKeyProvider(String secret) {
-        if (secret == null) {
+    public DefaultSecretKeyProvider(byte[] rawSecret, PersistentCipherType cipherType) {
+        if (rawSecret == null) {
             throw new IllegalArgumentException("secret may not be null");
         }
-        if (secret.isEmpty()) {
-            throw new IllegalArgumentException("secret may not be null");
+        if (rawSecret.length == 0) {
+            throw new IllegalArgumentException("secret bytes array may not be empty");
         }
-        byte[] rawSecret = secret.getBytes(EncryptionConstants.UTF8_CHARSET_ENCODING);
-        this.lengthInBits = rawSecret.length * 8;
+        if (cipherType == null) {
+            throw new IllegalArgumentException("cipher type not defined");
+        }
+        String secretKeyAlgorithm = cipherType.getSecretKeyAlgorithm();
+        if (secretKeyAlgorithm == null || secretKeyAlgorithm.isBlank()) {
+            throw new IllegalArgumentException("cipher type: " + cipherType.getClass().getSimpleName() + " does not provide an algorithm for secret keys!");
+        }
 
-        secretKey = new SecretKeySpec(rawSecret, 0, rawSecret.length, "AES");
+        lengthInBits = rawSecret.length * 8;
+
+        secretKey = new SecretKeySpec(rawSecret, 0, rawSecret.length, secretKeyAlgorithm);
     }
 
     @Override

@@ -77,7 +77,7 @@ public class ScheduleEncryptionPoolFactory {
 
     private PersistentCipher createCipher(PersistentCipherType cipherType, SecHubCipherPasswordSourceType passwordSourceType, String passwordSourceData) {
 
-        SecretKeyProvider secretKeyProvider = secHubSecretKeyProviderFactory.createSecretKeyProvider(passwordSourceType, passwordSourceData);
+        SecretKeyProvider secretKeyProvider = secHubSecretKeyProviderFactory.createSecretKeyProvider(cipherType, passwordSourceType, passwordSourceData);
 
         return cipherFactory.createCipher(secretKeyProvider, cipherType);
 

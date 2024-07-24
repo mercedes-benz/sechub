@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 
 /**
@@ -28,13 +29,13 @@ public class MessageDataKeys {
     private static final AnalyticMessageDataProvider ANALYTIC_MESSAGE_DATA_PROVIDER = new AnalyticMessageDataProvider();
     private static final MappingMessageDataProvider MAPPING_MESSAGE_DATA_PROVIDER = new MappingMessageDataProvider();
     private static final JobMessageDataProvider JOB_MESSAGE_DATA_PROVIDER = new JobMessageDataProvider();
-    private static final JobMessageWithUnencryptedConfigurationDataProvider JOB_MESSAGE_WITH_UNENCRYPED_CONFIG_DATA_PROVIDER = new JobMessageWithUnencryptedConfigurationDataProvider();
     private static final ProjectMessageDataProvider PROJECT_MESSAGE_DATA_PROVIDER = new ProjectMessageDataProvider();
     private static final SchedulerMessageDataProvider SCHEDULER_MESSAGE_DATA_PROVIDER = new SchedulerMessageDataProvider();
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
     private static final UserMessageDataProvider USER_MESSAGE_DATA_PROVIDER = new UserMessageDataProvider();
     private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
     private static final SecHubEncryptionMessageDataProvider SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER = new SecHubEncryptionMessageDataProvider();
+    private static final SecHubEncryptionStatusMessageDataProvider SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER = new SecHubEncryptionStatusMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -57,6 +58,10 @@ public class MessageDataKeys {
 
     public static final MessageDataKey<SecHubEncryptionData> SECHUB_ENCRYPT_ROTATION_DATA = createKey("sechub.encrypt.rotation.data",
             SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubDomainEncryptionStatus> SECHUB_DOMAIN_ENCRYPTION_STATUS = createKey("sechub.domain.encryption.status",
+            SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER);
+
     /**
      * Use this generic key when you just want to define timestamp without using a
      * dedicated model where it is already contained.

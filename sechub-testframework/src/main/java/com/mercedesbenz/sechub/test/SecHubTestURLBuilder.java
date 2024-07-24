@@ -445,6 +445,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG, "autoclean");
     }
 
+    public String buildRotateEncryption() {
+        return buildUrl(API_ADMIN, "encryption/rotate");
+    }
+
+    public String buildFetchEncryptionStatus() {
+        return buildUrl(API_ADMIN, "encryption/status");
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */
@@ -659,8 +667,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run-data/" + sechubJobUUID);
     }
 
-    public String buildRotateEncryption() {
-        return buildUrl(API_ADMIN, "encryption/rotate");
+    public String buildIntegrationTestFetchScheduleEncryptionPoolIdForSecHubJob(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/encryption-pool-id/job/" + sechubJobUUID.toString());
     }
 
 }
