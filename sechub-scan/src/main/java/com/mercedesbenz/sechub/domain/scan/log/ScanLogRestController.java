@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.log;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -18,6 +16,8 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsScanLogsForProject;
 
+import jakarta.annotation.security.RolesAllowed;
+
 @RestController
 @EnableAutoConfiguration
 @RequestMapping(APIConstants.API_ADMINISTRATION + "project/{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
@@ -30,9 +30,7 @@ public class ScanLogRestController {
     /* @formatter:off */
 	@UseCaseAdminShowsScanLogsForProject(@Step(number=1,next=2,name="REST API call to get JSON list",needsRestDoc=true))
 	@RequestMapping(path = "/scan/logs", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public List<ProjectScanLogSummary> getScanLogsForProject(
-			@PathVariable("projectId") String projectId
-			) {
+	public List<ProjectScanLogSummary> getScanLogsForProject(@PathVariable("projectId") String projectId) {
 		/* @formatter:on */
         return projectScanLogService.fetchSummaryLogsFor(projectId);
 

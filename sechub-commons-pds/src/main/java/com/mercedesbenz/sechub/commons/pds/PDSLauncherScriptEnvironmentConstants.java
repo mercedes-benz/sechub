@@ -50,5 +50,4 @@ public class PDSLauncherScriptEnvironmentConstants {
     public static final String PDS_JOB_EVENTS_FOLDER = "PDS_JOB_EVENTS_FOLDER";
 
     public static final String PDS_JOB_METADATA_FILE = "PDS_JOB_METADATA_FILE";
-
 }

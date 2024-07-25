@@ -1,18 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.scan;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -20,7 +11,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +36,7 @@ import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
@@ -89,6 +80,7 @@ class ZapScannerTest {
         when(scanContext.getContextName()).thenReturn(contextName);
         when(scanContext.getZapProductMessageHelper()).thenReturn(helper);
         when(scanContext.getZapPDSEventHandler()).thenReturn(zapPDSEventHandler);
+        when(scanContext.getAjaxSpiderBrowserId()).thenReturn(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId());
 
         doNothing().when(helper).writeProductError(any());
         doNothing().when(helper).writeProductMessages(any());
@@ -106,7 +98,7 @@ class ZapScannerTest {
         when(clientApiFacade.configureMaximumAlertsForEachRule("0")).thenReturn(null);
         when(clientApiFacade.enableAllPassiveScannerRules()).thenReturn(null);
         when(clientApiFacade.enableAllActiveScannerRulesForPolicy(null)).thenReturn(null);
-        when(clientApiFacade.configureAjaxSpiderBrowserId("firefox-headless")).thenReturn(null);
+        when(clientApiFacade.configureAjaxSpiderBrowserId(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId())).thenReturn(null);
 
         /* execute */
         scannerToTest.setupStandardConfiguration();
@@ -116,7 +108,7 @@ class ZapScannerTest {
         verify(clientApiFacade, times(1)).configureMaximumAlertsForEachRule("0");
         verify(clientApiFacade, times(1)).enableAllPassiveScannerRules();
         verify(clientApiFacade, times(1)).enableAllActiveScannerRulesForPolicy(null);
-        verify(clientApiFacade, times(1)).configureAjaxSpiderBrowserId("firefox-headless");
+        verify(clientApiFacade, times(1)).configureAjaxSpiderBrowserId(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId());
     }
 
     @Test
@@ -359,16 +351,18 @@ class ZapScannerTest {
     void import_openapi_file_but_api_file_is_null_api_facade_is_never_called() throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        when(scanContext.getApiDefinitionFiles()).thenReturn(Collections.emptyList());
 
         ApiResponse response = mock(ApiResponse.class);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(new SecHubWebScanConfiguration());
         when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
+        when(clientApiFacade.importOpenApiDefintionFromUrl(any(), any(), any())).thenReturn(response);
 
         /* execute */
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
         verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
+        verify(clientApiFacade, never()).importOpenApiDefintionFromUrl(any(), any(), any());
     }
 
     @ParameterizedTest
@@ -380,7 +374,7 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
         List<File> apiFiles = new ArrayList<>();
-        apiFiles.add(new File("examplefile.json"));
+        apiFiles.add(new File("openapi3.json"));
 
         when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
@@ -393,6 +387,52 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-from-url.json" })
+    void import_openapi_defintion_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
+        /* prepare */
+        String contextId = "context-id";
+        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
+        when(clientApiFacade.importOpenApiDefintionFromUrl(any(), any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.loadApiDefinitions(contextId);
+
+        /* test */
+        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
+        verify(clientApiFacade, times(1)).importOpenApiDefintionFromUrl(any(), any(), any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-from-file-and-url.json" })
+    void import_openapi_from_file_and_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
+        /* prepare */
+        String contextId = "context-id";
+        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+
+        List<File> apiFiles = new ArrayList<>();
+        apiFiles.add(new File("openapi3.json"));
+
+        when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        ApiResponse response = mock(ApiResponse.class);
+        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
+
+        /* execute */
+        scannerToTest.loadApiDefinitions(contextId);
+
+        /* test */
+        verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
+        verify(clientApiFacade, times(1)).importOpenApiDefintionFromUrl(any(), any(), any());
     }
 
     @Test

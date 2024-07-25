@@ -18,9 +18,13 @@ src-gen/
 .idea/
 *.ipr
 *.iws
+out/
 
 # vscode parts
 .vscode/
+
+# theia parts
+.theia/
 
 # gradle parts
 .gradle/
@@ -66,3 +70,7 @@ copy/
 
 # Node
 node_modules/
+
+# github-action integration test
+.sechub-gha/
+generated-sechub.json

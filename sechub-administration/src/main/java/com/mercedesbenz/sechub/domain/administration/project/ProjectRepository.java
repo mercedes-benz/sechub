@@ -9,9 +9,9 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 
 public interface ProjectRepository extends JpaRepository<Project, String>, ProjectRepositoryCustom {
 
-    public default Project findOrFailProject(String projectId) {
+    default Project findOrFailProject(String projectId) {
         Optional<Project> found = findById(projectId);
-        if (!found.isPresent()) {
+        if (found.isEmpty()) {
             throw new NotFoundException("Project '" + projectId + "' not found!");
         }
         return found.get();

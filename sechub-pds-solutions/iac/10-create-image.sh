@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 cd `dirname $0`
@@ -16,7 +16,7 @@ for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- IAC_VERSION - IaC version to use. E.g. 2.9.5
+- KICS_VERSION - KICS version to use. E.g. 2.0.0
 EOF
 }
 
@@ -36,6 +36,12 @@ if [[ -z "$BASE_IMAGE" ]]; then
   FAILED=true
 fi
 
+# If "KICS_VERSION" is not set file "env" should be sourced
+if [[ -z "$KICS_VERSION" ]] && [[ -f env ]]; then
+  echo "KICS_VERSION is not set, sourcing 'env' file"
+  source ./env
+fi
+
 if $FAILED ; then
   usage
   exit 1
@@ -44,9 +50,9 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$IAC_VERSION" ]] ; then
-    echo ">> IaC version: $IAC_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg IAC_VERSION=$IAC_VERSION"
+if [ -n "$KICS_VERSION" ] ; then
+    echo ">> KICS version: $KICS_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg KICS_VERSION=$KICS_VERSION"
 fi
 
 # Use Docker BuildKit

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class PDSExceptionHandler {

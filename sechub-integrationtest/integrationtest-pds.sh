@@ -12,6 +12,17 @@ PDS_DEFAULT_PORT=8444
 PDS_DEFAULT_VERSION="0.0.0"
 PDS_DEFAULT_TEMPFOLDER="temp-shared"
 
+# --------------------------------------------------------------------------------
+# Export special variables to test script environment cleanup works as expected
+# - we just start the PDS with those variables
+# - only INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED is whitelisted and must be available
+#   inside integration tests variable dump, the forbidden one not, because not
+#   whitelisted...
+# --------------------------------------------------------------------------------
+export INTEGRATIONTEST_PDS_STARTED_BY_SCRIPT="true" # is checked in integration tests to check if server started by script
+export INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED="accepted"
+export INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN="forbidden"
+
 function log() {
     echo "$1"
     echo "`date +%Y-%m-%d\ %H:%M:%S` $1" >> "$LOGFILE"

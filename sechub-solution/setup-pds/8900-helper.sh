@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 # checks if a string is a json array
@@ -63,4 +63,13 @@ function setup_project_user_executor_profile() {
     ./8800-setup-project-and-user.sh "$project" "$user"
     ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
     ./8802-assign-profile-to-project.sh "$project" "$profile"
+}
+
+function setup_second_executor_profile_to_existing_project() {
+      local project="$1"
+      local executor_file_name="$2"
+      local profile="$3"
+
+      ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
+      ./8802-assign-profile-to-project.sh "$project" "$profile"
 }

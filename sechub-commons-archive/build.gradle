@@ -9,10 +9,10 @@ dependencies{
     
     api project(':sechub-commons-core')
     api project(':sechub-commons-model')
-    
-    implementation library.apache_commons_io
-    implementation library.apache_commons_compress // we need TAR archive support
-    
+    api library.apache_commons_io
+    api library.apache_commons_compress // we need TAR archive support
+
+
     testImplementation project(':sechub-testframework')
     testImplementation spring_boot_dependency.junit_jupiter
     

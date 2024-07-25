@@ -102,7 +102,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
         LOG.debug("CLEANUP all test uses");
 
         for (TestUser user : testusers) {
-            LOG.debug("Drop user:{}", user);
+            LOG.trace("Drop user:{}", user);
             resetUserInstanceData(user);
             dropExistingUser(user);
             dropExistingSignups(user);
@@ -250,29 +250,19 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
             resetEmails();
         }
         if (cleanNecessary) {
-            LOG.info("############################################################################################################");
             LOG.info("## [CLEAN] remove old test data");
-            LOG.info("############################################################################################################");
             cleanupTestdataAfterTest();
         } else {
-            LOG.info("############################################################################################################");
             LOG.info("## [CLEAN] skipped");
-            LOG.info("############################################################################################################");
         }
 
         if (initializeNecessary) {
-            LOG.info("############################################################################################################");
-            LOG.info("## [INIT] trigger test data initialization on server side");
-            LOG.info("############################################################################################################");
+            LOG.info("## [INIT ] trigger test data initialization on server side");
             initializeTestData();
-            LOG.info("############################################################################################################");
-            LOG.info("## [WAIT] for all test data availale");
-            LOG.info("############################################################################################################");
+            LOG.info("## [WAIT ] for all test data availale");
             waitForTestDataAvailable();
         } else {
-            LOG.info("############################################################################################################");
-            LOG.info("## [INIT] skipped");
-            LOG.info("############################################################################################################");
+            LOG.info("## [INIT ] skipped");
         }
 
     }
@@ -291,7 +281,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
     protected abstract void waitForTestDataAvailable();
 
     protected void resetEmails() {
-        LOG.info("RESET mail mock data");
+        LOG.info("## [MAIL ] RESET mail mock data");
         getContext().emailAccess().reset();
     }
 

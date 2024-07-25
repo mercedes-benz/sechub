@@ -34,7 +34,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 
 @Component
 public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMessageHandler {
@@ -128,7 +128,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             productResultService.deleteAllResultsForJob(jobUUID);
             return purgeDone(jobUUID);
         } catch (Exception e) {
-            LOG.error("Was not able to purge results for job {}", e);
+            LOG.error("Was not able to purge results for job {}", jobUUID, e);
             return purgeFailed(jobUUID, e);
         }
     }
@@ -168,7 +168,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     }
 
     @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
-    @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 3, name = "Event handler", description = "Receives change project access level event"))
+    @UseCaseAdminChangesProjectAccessLevel(@Step(number = 3, name = "Event handler", description = "Receives change project access level event"))
     private void handleProcessAccessLevelChanged(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
 

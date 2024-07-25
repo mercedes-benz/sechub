@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.signup;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
+
+import jakarta.validation.Valid;
 
 /**
  * Self registration rest controller - anonymous access possible
@@ -40,7 +40,7 @@ public class AnonymousSignupRestController {
 	@UseCaseUserSignup(@Step(number=1, name="Rest API call",description="Rest api called to register user. Normally done by user itself",needsRestDoc=true))
 	@Validated
 	@RequestMapping(path = AdministrationAPIConstants.API_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public void registerUser(@RequestBody @Valid SignupJsonInput signupInput) {
+	public void signUp(@RequestBody @Valid SignupJsonInput signupInput) {
 		/* @formatter:on */
         signupService.register(signupInput);
     }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector;
 import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector.JsonDeleteCount;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -96,6 +97,15 @@ public class IntegrationTestPDSRestController {
 
         LOG.info("Integration test checks upload folder path for pds job uuid:{} - result:{}", pdsJobUUID, uploadFolder);
         return uploadFolder;
+    }
+
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/env/{envVariable}", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
+    public String getEnvironmentVariableValue(@PathVariable("envVariable") String envVariable) {
+        String value = System.getenv(envVariable);
+
+        LOG.info("Integration test checks environment variable:{} - value:{}", envVariable, value);
+        return value;
     }
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/last/started/job/uuid", method = RequestMethod.GET, produces = {

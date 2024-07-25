@@ -31,10 +31,10 @@ public class ScheduleGrantUserAccessToProjectService {
         ScheduleAccess scheduleAccess = new ScheduleAccess(userId, projectId);
         Optional<ScheduleAccess> potentialAlreadyFound = repository.findById(scheduleAccess.getKey());
         if (potentialAlreadyFound.isPresent()) {
-            LOG.debug("User {} has already acces to {} so skipped", userId, projectId);
+            LOG.debug("User {} has already access to {} so skipped", userId, projectId);
             return;
         }
-        LOG.debug("User {} has now gained acces to {}", userId, projectId);
+        LOG.debug("User {} has now gained access to {}", userId, projectId);
         repository.save(scheduleAccess);
     }
 

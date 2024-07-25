@@ -103,6 +103,7 @@ public class ZapScanContextFactory {
 												.setReportFile(settings.getReportFile())
 												.setContextName(contextName)
 												.setAjaxSpiderEnabled(settings.isAjaxSpiderEnabled())
+												.setAjaxSpiderBrowserId(settings.getAjaxSpiderBrowserId())
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
 												.setAuthenticationType(authType)

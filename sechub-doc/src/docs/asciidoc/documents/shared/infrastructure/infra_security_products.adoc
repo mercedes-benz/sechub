@@ -10,6 +10,8 @@ Please visit {pds-solutions-projectsite} for details and a complete list of supp
 
 include::products/07_03_99_infra_security_products_sereco.adoc[]
 
+include::products/07_03_98_infra_security_products_prepare.adoc[]
+
 include::products/07_03_02_infra_security_products_checkmarx.adoc[]
 
 include::products/07_03_01_infra_security_products_netsparker.adoc[]

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mercedesbenz.sechub.sharedkernel.AuthorityConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 
 @Configuration
@@ -58,13 +59,13 @@ public class AuthUserRestAPIConfiguration {
         List<String> authorities = new ArrayList<String>();
 
         if (entity.isRoleUser()) {
-            authorities.add(RoleConstants.ROLE_USER);
+            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
         }
         if (entity.isRoleSuperAdmin()) {
-            authorities.add(RoleConstants.ROLE_SUPERADMIN);
+            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);
         }
         if (entity.isRoleOwner()) {
-            authorities.add(RoleConstants.ROLE_OWNER);
+            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
         }
         return authorities;
     }

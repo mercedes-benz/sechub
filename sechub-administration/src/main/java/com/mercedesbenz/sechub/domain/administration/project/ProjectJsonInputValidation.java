@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -17,6 +15,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ProjectMetaDataValidation
 import com.mercedesbenz.sechub.sharedkernel.validation.URIValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class ProjectJsonInputValidation {

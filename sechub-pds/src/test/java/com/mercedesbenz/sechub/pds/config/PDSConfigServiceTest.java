@@ -14,11 +14,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 
-import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig.CleanupTime;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupDaysCalculator;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeUnit;
 
 class PDSConfigServiceTest {
@@ -27,7 +27,7 @@ class PDSConfigServiceTest {
     private PDSConfigRepository repository;
     private PDSConfigTransactionService transactionService;
     private PDSAutoCleanupDaysCalculator calculator;
-    private LogSanitizer logSanitizer;
+    private PDSLogSanitizer PDSLogSanitizer;
 
     @BeforeEach
     void beforeEach() {
@@ -36,12 +36,12 @@ class PDSConfigServiceTest {
         repository = mock(PDSConfigRepository.class);
         transactionService = mock(PDSConfigTransactionService.class);
         calculator = mock(PDSAutoCleanupDaysCalculator.class);
-        logSanitizer = mock(LogSanitizer.class);
+        PDSLogSanitizer = mock(PDSLogSanitizer.class);
 
         serviceToTest.repository = repository;
         serviceToTest.transactionService = transactionService;
         serviceToTest.calculator = calculator;
-        serviceToTest.logSanitizer = logSanitizer;
+        serviceToTest.pdsLogSanitizer = PDSLogSanitizer;
     }
 
     @Test

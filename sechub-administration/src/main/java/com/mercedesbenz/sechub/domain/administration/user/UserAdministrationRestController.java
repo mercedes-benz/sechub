@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -29,6 +27,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevo
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest api for user administration done by a super admin.
@@ -115,7 +115,7 @@ public class UserAdministrationRestController {
     /* @formatter:off */
 	@UseCaseAdminGrantsAdminRightsToUser(@Step(number=1,name="Rest call",description="User will be granted admin rights",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_GRANT_ADMIN_RIGHTS_TO_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public void grantSuperAdminrights(@PathVariable(name="userId") String userId) {
+	public void grantSuperAdminRights(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
         userGrantSuperAdminRightsService.grantSuperAdminRightsFor(userId);
     }
@@ -123,7 +123,7 @@ public class UserAdministrationRestController {
     /* @formatter:off */
 	@UseCaseAdminRevokesAdminRightsFromAdmin(@Step(number=1,name="Rest call",description="Admin rights will be revoked from admin",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_REVOKE_ADMIN_RIGHTS_FROM_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public void revokeSuperAdminrights(@PathVariable(name="userId") String userId) {
+	public void revokeSuperAdminRights(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
         userRevokeSuperAdminRightsService.revokeSuperAdminRightsFrom(userId);
     }
@@ -131,7 +131,7 @@ public class UserAdministrationRestController {
     /* @formatter:off */
     @UseCaseAdminUpdatesUserEmailAddress(@Step(number=1,name="Rest call",description="User emaill address will be changed",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_UPDATE_USER_EMAIL_ADDRESS, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
-    public void updateUserEmailAdderss(@PathVariable(name="userId") String userId,@PathVariable(name="newEmailAddress") String newEmailAddress) {
+    public void updateUserEmailAddress(@PathVariable(name="userId") String userId,@PathVariable(name="newEmailAddress") String newEmailAddress) {
         /* @formatter:on */
         userEmailAddressUpdateService.updateUserEmailAddress(userId, newEmailAddress);
     }

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ServletFileUploadFactory {
-    public ServletFileUpload create() {
-        return new ServletFileUpload();
+    public JakartaServletFileUpload create() {
+        return new JakartaServletFileUpload();
     }
 }

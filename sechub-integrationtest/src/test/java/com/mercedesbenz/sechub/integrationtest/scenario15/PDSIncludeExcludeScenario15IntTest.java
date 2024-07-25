@@ -80,7 +80,7 @@ public class PDSIncludeExcludeScenario15IntTest {
             hasMessages(0).
             hasTrafficLight(RED).
             hasFindings(4).
-            hasUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
+            assertUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
                 finding().
                     scanType(ScanType.CODE_SCAN).
                     severity(Severity.INFO).
@@ -154,7 +154,7 @@ public class PDSIncludeExcludeScenario15IntTest {
         hasMessages(0).
         hasTrafficLight(RED).
         hasFindings(4).
-        hasUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
+        assertUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
             finding().
                 scanType(ScanType.CODE_SCAN).
                 severity(Severity.INFO).

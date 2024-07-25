@@ -12,10 +12,10 @@ public class ProjectIdValidationImplTest {
 
     private ProjectIdValidationImpl validationToTest = new ProjectIdValidationImpl();
 
-    private static final String VALID_PROJECT_ID_WITH_40_CHARS = "a2345678901234567890b2345678901234567890";
+    private static final String VALID_PROJECT_ID_WITH_150_CHARS = "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
 
     @ParameterizedTest
-    @ValueSource(strings = { "a2", "i-am-with-hyphens", "i_am_with_underscore", VALID_PROJECT_ID_WITH_40_CHARS })
+    @ValueSource(strings = { "a2", "i-am-with-hyphens", "i_am_with_underscore", VALID_PROJECT_ID_WITH_150_CHARS })
     void valid_projectIds(String projectId) {
         /* execute */
         ValidationResult validationResult = validationToTest.validate(projectId);
@@ -30,7 +30,7 @@ public class ProjectIdValidationImplTest {
     @NullSource
     @EmptySource
     @ValueSource(strings = { "a", "i.am.with.dot", "i-am/slashy", "with\\backslash", "percent%", "dollar$", "question?", "colon:", "exclamationmark!",
-            VALID_PROJECT_ID_WITH_40_CHARS + "x" })
+            VALID_PROJECT_ID_WITH_150_CHARS + "x" })
     void invalid_projectIds(String projectId) {
         /* execute */
         ValidationResult validationResult = validationToTest.validate(projectId);

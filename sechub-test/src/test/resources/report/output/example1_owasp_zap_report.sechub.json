@@ -801,5 +801,9 @@
   },
   "status" : "SUCCESS",
   "reportVersion" : "1.0",
+  "metaData" : {
+    "labels" : { },
+    "summary" : { }
+  },
   "messages" : [ ]
 }

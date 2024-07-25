@@ -1,17 +1,28 @@
 // SPDX-License-Identifier: MIT
 
-import {initReportFormats, initSecHubJson} from "../src/init-scan";
+import {initReportFormats, initSecHubJson} from '../src/init-scan';
 
-jest.mock('../../shared/src/cli-helper');
-import {createSecHubJsonFile} from '../../shared/src/cli-helper';
+jest.mock('./../src/configuration-builder');
+import {SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile} from '../src/configuration-builder';
+
 
 describe('initSecHubJson', function () {
-    it('returns parameter if configPath is set', function () {
+    it('throws error if configPath is set, but file does not exist', function () {
         /* prepare */
-        const configPath = 'sechub.json';
+        const configPath = 'not-existing-json.json';
+        const builderData = new SecHubConfigurationModelBuilderData();
+
+        /* execute + test */
+        expect(() => initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData)).toThrow(Error);
+    });
+
+    it('returns parameter if configPath is set and file exists', function () {
+        /* prepare */
+        const configPath = '__test__/test-resources/test-config.json';
+        const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute */
-        const parameter = initSecHubJson(configPath, [], []);
+        const parameter = initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData);
 
         /* test */
         expect(parameter).toContain(configPath);
@@ -19,24 +30,25 @@ describe('initSecHubJson', function () {
 
     it('creates sechub.json if configPath is not set', function () {
         /* execute */
-        const parameter = initSecHubJson('', [], []);
+        const builderData = new SecHubConfigurationModelBuilderData();
+        const parameter = initSecHubJson('somewhere/runtime/sechub.json','', builderData);
 
         /* test */
-        expect(parameter).toBeNull();
-        expect(createSecHubJsonFile).toHaveBeenCalledTimes(1);
+        expect(parameter).toEqual('somewhere/runtime/sechub.json');
+        expect(createSecHubConfigJsonFile).toHaveBeenCalledTimes(1);
     });
 });
 
 describe('initReportFormats', function () {
-    it('throws Error if no valid report formats found', function () {
+    it('throws error if no valid report formats found', function () {
         /* prepare */
         const reportFormats = 'yaml,xml';
 
-        /* execute & test */
+        /* execute + test */
         expect(() => initReportFormats(reportFormats)).toThrow(Error);
     });
 
-    it('adds missing json report at the beginning', function () {
+    it('json always available, even when only html report wanted', function () {
         /* prepare */
         const reportFormats = 'html';
 

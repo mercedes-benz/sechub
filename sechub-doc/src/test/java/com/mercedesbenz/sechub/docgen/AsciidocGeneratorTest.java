@@ -28,7 +28,7 @@ public class AsciidocGeneratorTest {
         generatorToTest.scheduleDescriptionGenerator = mock(ScheduleDescriptionGenerator.class);
         generatorToTest.writer = mock(TextFileWriter.class);
 
-        when(generatorToTest.propertiesGenerator.generate(any())).thenReturn("properties-test");
+        when(generatorToTest.propertiesGenerator.generate(any(), any())).thenReturn("properties-test");
         when(generatorToTest.scheduleDescriptionGenerator.generate(generatorToTest.collector)).thenReturn("schedule-test");
     }
 
@@ -66,10 +66,10 @@ public class AsciidocGeneratorTest {
         genContext.systemProperitesFile = new File("outputfile");
 
         /* execute */
-        generatorToTest.generateSystemPropertiesDescription(genContext);
+        generatorToTest.generateSecHubSystemPropertiesDescription(genContext);
 
         /* test */
-        verify(generatorToTest.propertiesGenerator).generate(any());
+        verify(generatorToTest.propertiesGenerator).generate(any(), any());
         verify(generatorToTest.writer).save(genContext.systemProperitesFile, "properties-test");
 
     }
@@ -82,7 +82,7 @@ public class AsciidocGeneratorTest {
         genContext.scheduleDescriptionFile = new File("outputfile");
 
         /* execute */
-        generatorToTest.generateScheduleDescription(genContext);
+        generatorToTest.generateSecHubScheduleDescription(genContext);
 
         /* test */
         verify(generatorToTest.scheduleDescriptionGenerator).generate(generatorToTest.collector);

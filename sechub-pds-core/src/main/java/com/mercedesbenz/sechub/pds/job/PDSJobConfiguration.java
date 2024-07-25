@@ -16,7 +16,7 @@ public class PDSJobConfiguration {
 
     private String productId;
 
-    private List<PDSExecutionParameterEntry> parameters = new ArrayList<>();
+    private final List<PDSExecutionParameterEntry> parameters = new ArrayList<>();
 
     public void setApiVersion(String apiVersion) {
         this.apiVersion = apiVersion;
@@ -60,8 +60,8 @@ public class PDSJobConfiguration {
     @Override
     public String toString() {
         return "PDSJobConfiguration [" + (sechubJobUUID != null ? "sechubJobUUID=" + sechubJobUUID + ", " : "")
-                + (apiVersion != null ? "apiVersion=" + apiVersion + ", " : "") + (productId != null ? "productId=" + productId + ", " : "")
-                + (parameters != null ? "parameters=" + parameters : "") + "]";
+                + (apiVersion != null ? "apiVersion=" + apiVersion + ", " : "") + (productId != null ? "productId=" + productId + ", " : "") + "parameters="
+                + parameters + "]";
     }
 
 }

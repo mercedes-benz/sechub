@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.webui.sechubaccess;
 
 import java.net.URI;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +12,8 @@ import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.MockedSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Main class for communication with SecHub server. The {@link SecHubClient} is

@@ -18,6 +18,7 @@ import (
 // Config for internal CLI calls
 type Config struct {
 	action                         string
+	addSCMHistory                  bool
 	apiToken                       string
 	configFilePath                 string
 	configFileRead                 bool
@@ -74,6 +75,8 @@ func init() {
 }
 
 func prepareOptionsFromCommandline(config *Config) {
+	flag.BoolVar(&config.addSCMHistory,
+		addSCMHistoryOption, false, "Secrets scan only: Upload SCM directories like `.git` for scanning. Can also be defined in environment variable "+SechubAddSCMHistoryEnvVar+"=true")
 	flag.StringVar(&config.apiToken,
 		apitokenOption, config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
 	flag.StringVar(&config.configFilePath,
@@ -114,6 +117,8 @@ func prepareOptionsFromCommandline(config *Config) {
 
 func parseConfigFromEnvironment(config *Config) {
 	var err error
+	config.addSCMHistory =
+		os.Getenv(SechubAddSCMHistoryEnvVar) == "true"
 	apiTokenFromEnv :=
 		os.Getenv(SechubApitokenEnvVar)
 	config.debug =

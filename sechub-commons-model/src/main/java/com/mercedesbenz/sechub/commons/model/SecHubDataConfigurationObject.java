@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface SecHubDataConfigurationObject {
@@ -16,6 +18,8 @@ public interface SecHubDataConfigurationObject {
      *         <code>null</code>
      */
     @JsonProperty("name")
-    public String getUniqueName();
+    String getUniqueName();
+
+    Optional<SecHubRemoteDataConfiguration> getRemote();
 
 }

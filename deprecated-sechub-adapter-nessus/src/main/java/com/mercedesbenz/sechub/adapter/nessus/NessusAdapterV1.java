@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -109,7 +111,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
         ResponseEntity<String> response = context.getRestOperations().postForEntity(apiUrl, request, String.class);
         if (!OK.equals(response.getStatusCode())) {
-            throw new NessusRESTFailureException(response.getStatusCode(), response.getBody());
+            throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
         }
         String fileId = context.json().fetch("file", response).asText();
         context.setExportFileId(fileId);
@@ -133,13 +135,18 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
         String apiUrl = createGetHistoryIdsApiURL(context);
         ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
         if (!OK.equals(response.getStatusCode())) {
-            throw new NessusRESTFailureException(response.getStatusCode(), response.getBody());
+
+            throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
         }
         String content = response.getBody();
         String historyId = resolveHistoryIdByUUID(content, context);
         LOG.debug("{} found history id {}", traceID, historyId);
 
         return historyId;
+    }
+
+    private HttpStatus converToHttpStatus(HttpStatusCode code) {
+        return HttpStatus.valueOf(code.value());
     }
 
     private void launchScan(NessusAdapterContext context) throws AdapterException {
@@ -391,7 +398,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
             ResponseEntity<String> response = context.getRestOperations().exchange(apiUrl, HttpMethod.GET, entity, String.class);
             if (!OK.equals(response.getStatusCode())) {
-                throw new NessusRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
             String status = context.json().fetch("info", response).fetch("status").asText();
             LOG.debug("{} found status {}", adapterLogId, status);
@@ -416,7 +423,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
             ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
             if (!OK.equals(response.getStatusCode())) {
-                throw new NessusRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
 
             String result = response.getBody();
@@ -431,7 +438,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
             ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
             if (!OK.equals(response.getStatusCode())) {
-                throw new NessusRESTFailureException(response.getStatusCode(), response.getBody());
+                throw new NessusRESTFailureException(converToHttpStatus(response.getStatusCode()), response.getBody());
             }
 
             String state = context.json().fetch("status", response).asText();

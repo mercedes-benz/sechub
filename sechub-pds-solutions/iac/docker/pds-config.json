@@ -5,12 +5,14 @@
         {
             "id": "PDS_KICS",
             "path": "/pds/scripts/kics.sh",
+            "envWhitelist" : [ "TOOL_FOLDER" ],
             "scanType": "codeScan",
             "description": "Runs the Infrastructure-as-Code security checker Kics."
         },
         {
             "id": "PDS_KICS_MOCK",
             "path": "/pds/scripts/kics_mock.sh",
+            "envWhitelist" : [ "MOCK_FOLDER" ],
             "scanType": "codeScan",
             "description": "Runs Kics mock. It returns a fixed result file."
         }

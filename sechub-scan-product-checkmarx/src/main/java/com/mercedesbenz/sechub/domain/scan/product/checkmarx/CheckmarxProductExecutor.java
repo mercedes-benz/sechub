@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,8 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+import jakarta.annotation.PostConstruct;
+
 /**
  * This class is marked as deprecated. Why? The product executor shall no longer
  * be used in production. We use the PDS solution for checkmarx which does a
@@ -53,6 +53,7 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
  * @author Albert Tregnaghi
  *
  */
+
 @Service
 @Deprecated
 public class CheckmarxProductExecutor extends AbstractProductExecutor {
@@ -106,7 +107,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         UUID jobUUID = data.getSechubExecutionContext().getSechubJobUUID();
         String projectId = data.getSechubExecutionContext().getConfiguration().getProjectId();
 
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
 
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);

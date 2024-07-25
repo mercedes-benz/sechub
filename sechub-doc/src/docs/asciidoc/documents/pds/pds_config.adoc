@@ -140,6 +140,13 @@ include::product_delegation_server_config_example1.json[]
 
 <12> Using `none` will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available.
 
+<13> An optional list of environment variable names which are additionally white listed from PDS script environment cleanup.
+     Those entries can also end with an asterisk, in this case every variable name starting with this entry will 
+     be whitelisted (e.g. `SPECIAL_VAR_*` woud white list `SPECIAL_VAR_CONNECTION_URL` etc.) +
+     The PDS script cleanup process prevents inheritage of environment variables from PDS parent process.
+     There are some also some default variable names which are automatically accepted (e.g. `HOME`, `PATH`, ..).
+     
+
 === Launcher scripts
 
 ==== Generated variables

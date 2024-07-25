@@ -1,5 +1,0 @@
-{
-  "artifactName": "sechub scan-report",
-  "filePattern": "sechub_report_*.*",
-  "secHubJsonFileName": "sechub.json"
-}

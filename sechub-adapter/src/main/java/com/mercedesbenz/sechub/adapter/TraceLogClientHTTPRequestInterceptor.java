@@ -51,7 +51,7 @@ public class TraceLogClientHTTPRequestInterceptor implements ClientHttpRequestIn
         StringBuilder sb = new StringBuilder();
         sb.append("\nRequest:");
         sb.append("\n Method:");
-        sb.append(request.getMethodValue());
+        sb.append(request.getMethod());
         sb.append("\n Headers:");
         sb.append(request.getHeaders().toString());
         sb.append("\n URI:");

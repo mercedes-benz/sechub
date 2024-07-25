@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -48,7 +48,7 @@ public class UpdateProductExecutorConfigService {
 
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", uuid);
         Optional<ProductExecutorConfig> opt = repository.findById(uuid);
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             throw new NotFoundException("No config found with uuid:" + uuid);
         }
 

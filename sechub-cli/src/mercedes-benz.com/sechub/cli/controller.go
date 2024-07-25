@@ -106,11 +106,11 @@ func prepareCreateApproveJob(context *Context) {
  * --------------------------------------------------
  */
 func handleUploads(context *Context) {
-	if context.sourceZipFileExists() {
-		sechubUtil.Log("Uploading source zip file", context.config.quiet)
+	if context.sourceZipUploadNeeded {
+		sechubUtil.Log("Uploading sources zip file", context.config.quiet)
 		uploadSourceZipFile(context)
 	}
-	if context.binariesTarFileExists() {
+	if context.binariesTarUploadNeeded {
 		sechubUtil.Log("Uploading binaries tar archive", context.config.quiet)
 		uploadBinariesTarFile(context)
 	}
@@ -123,23 +123,27 @@ func prepareScan(context *Context) {
 		// Creating sources ZIP file
 		context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
 
-		// Set source code patterns in
+		// Set sources filter patterns in
 		// - data.sources
 		// - codeScan
 		// depending on
-		// - DefaultSourceCodeAllowedFilePatterns
+		// - scan type
+		//   - codeScan -> DefaultSourceCodeAllowedFilePatterns
+		//   - secretScan -> everything but blacklisted
 		// - context.config.whitelistAll (deactivates all filters)
-		adjustSourceCodePatterns(context)
+		adjustSourceFilterPatterns(context)
 
 		err := createSouceCodeZipFile(context)
 		if err != nil {
 			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
 			os.Remove(context.sourceZipFileName) // cleanup zip file
 			os.Exit(ExitCodeFailed)
+		} else if context.sourceZipUploadNeeded {
+			// calculate checksum for zip file
+			context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 		}
-
-		// calculate checksum for zip file
-		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
+	} else {
+		context.sourceZipUploadNeeded = false
 	}
 
 	if len(context.sechubConfig.Data.Binaries) > 0 {
@@ -152,10 +156,12 @@ func prepareScan(context *Context) {
 			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating binaries tar file...\n", err))
 			os.Remove(context.binariesTarFileName) // cleanup tar file
 			os.Exit(ExitCodeFailed)
+		} else if context.binariesTarUploadNeeded {
+			// calculate checksum for tar file
+			context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
 		}
-
-		// calculate checksum for tar file
-		context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
+	} else {
+		context.binariesTarUploadNeeded = false
 	}
 }
 

@@ -12,6 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.sharedkernel.test.SimulatedDomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.test.sechub.domain.testonly.SimulatedCaller;
+
 import ch.qos.logback.classic.Level;
 
 public class IntegrationTestEventInspectorServiceTest {
@@ -27,8 +30,8 @@ public class IntegrationTestEventInspectorServiceTest {
     public void before() {
         serviceToTest = new IntegrationTestEventInspectorService();
 
-        simulatedDomainMessageService = new SimulatedDomainMessageService();
-        simulatedCaller = new SimulatedCaller();
+        simulatedDomainMessageService = new SimulatedDomainMessageService(serviceToTest);
+        simulatedCaller = new SimulatedCaller(simulatedDomainMessageService);
 
         request = mock(DomainMessage.class);
         when(request.getMessageId()).thenReturn(MessageID.PROJECT_CREATED);
@@ -74,7 +77,7 @@ public class IntegrationTestEventInspectorServiceTest {
     public void async_when_initialized_with_usecase_UC_aDMIN_CREATE_PROJECT_returns_history_without_usecasename() {
         /* execute */
         serviceToTest.start();
-        simulatedCaller.simulateCallerSendAsync(123);
+        simulatedCaller.simulateCallerSendAsync(123, request);
         serviceToTest.inspectReceiveAsynchronMessage(request, 123, asynchronousMessagerHandler);
 
         /* test */
@@ -106,7 +109,7 @@ public class IntegrationTestEventInspectorServiceTest {
     public void sync_when_started() {
         /* execute */
         serviceToTest.start();
-        simulatedCaller.simulateCallereSendSync(123);
+        simulatedCaller.simulateCallereSendSync(123, request);
         serviceToTest.inspectReceiveSynchronMessage(request, 123, synchronousMessagerHandler);
 
         /* test */
@@ -134,34 +137,6 @@ public class IntegrationTestEventInspectorServiceTest {
         String senderClassName = inspection123.getSenderClassName();
         assertEquals(expectedSenderClassname, senderClassName);// test calls the inspection
 
-    }
-
-    /**
-     * Simulation to check if stacktrace caller identification works - only
-     * necessary for sender
-     *
-     * @author Albert Tregnaghi
-     *
-     */
-    private class SimulatedCaller {
-
-        public void simulateCallerSendAsync(int inspectId) {
-            simulatedDomainMessageService.simulateServiceSendAsync(inspectId);
-        }
-
-        public void simulateCallereSendSync(int inspectId) {
-            simulatedDomainMessageService.simulateServiceSendSync(inspectId);
-        }
-    }
-
-    private class SimulatedDomainMessageService {
-        public void simulateServiceSendAsync(int inspectId) {
-            serviceToTest.inspectSendAsynchron(request, inspectId);
-        }
-
-        public void simulateServiceSendSync(int inspectId) {
-            serviceToTest.inspectSendSynchron(request, inspectId);
-        }
     }
 
 }

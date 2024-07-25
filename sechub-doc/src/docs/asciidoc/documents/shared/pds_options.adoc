@@ -60,40 +60,28 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...
 [[section-general-configuration]]
 ==== General configuration
 {pds} can be configured by keys on server startup.
-Using the spring `@Value` annotation we are able to
-use these keys as Java system properties but also as environment entries.
+With spring it is is possible to define the keys as Java system properties but also as
+environment entries.
 
-E.g. a key like `pds.admin.apitoken` can be set with
+E.g. a key like `pds.server.debug` can be set with `-Dpds.server.debug=true`
 
-----
-java ... -Dpds.admin.apitoken={noop}12345exampleToken
-----
-
-or with an environment entry `PDS_ADMIN_APITOKEN` which
+or with an environment entry `PDS_SERVER_DEBUG` which
 is e.g. more suitable for a `kubernetes` cluster deployment.
-
-[TIP]
-====
-When you have secret information you can define those information as a template by using environment
-variables from your {sechub} installation.
-
-An example:
-
-```
-pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN
-```
-
-If your SecHub process runs in an environment with variable `PDS_GOSEC_SOLUTION_APITOKEN` set
-to 'very-secret-apitoken1234' _(e.g. by using secrets inside K8s)_, the authentication sent to
-{pds} by {sechub} will use
-```
-pds.admin.apitoken=very-secret-apitoken1234
-```
-====
 
 ifdef::showhintaboutgenerated[]
 include::./../shared/pds_hint_generated_systemproperties.adoc[]
 endif::[]
+
+
+[WARNING]
+====
+Even when it is possible to configure `PDS` with system properties or with environment variables
+there are some configuration options which insists to be defined as environment variable only (E.g. because they
+contain sensitive information which shall not appear inside any process inspection logs).
+
+If you define those parts not as environment variables, `PDS` will not start but show an error message instead.
+Please look for more information at the following tables.
+====
 
 [[link-gen-pds-systemproperties]]
 include::./../gen/gen_pds_systemproperties.adoc[]

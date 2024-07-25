@@ -50,6 +50,8 @@ public class UserContextService {
         if (role == null) {
             return false;
         }
+        String authorityOfRole = AuthorityConstants.AUTHORITY_ROLE_PREFIX + role;
+
         Authentication authentication = getAuthentication();
         if (authentication == null) {
             return false;
@@ -59,7 +61,7 @@ public class UserContextService {
             if (auth == null) {
                 continue;
             }
-            if (role.equals(auth.getAuthority())) {
+            if (authorityOfRole.equals(auth.getAuthority())) {
                 return true;
             }
         }

@@ -1,2 +1,3 @@
 copy/**
 !copy/README.adoc
+/install-java

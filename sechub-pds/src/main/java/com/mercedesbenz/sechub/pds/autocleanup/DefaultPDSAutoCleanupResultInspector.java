@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupResult.AutoCleanupResultKey;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 
 /**
  * This default implementation does only log the result

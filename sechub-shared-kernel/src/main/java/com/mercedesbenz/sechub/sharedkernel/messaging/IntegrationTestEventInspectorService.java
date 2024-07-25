@@ -87,7 +87,8 @@ public class IntegrationTestEventInspectorService implements EventInspector {
             }
             /* identify sender (this method = 1, caller = 2... */
             IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
-            StackTraceElement traceElement = grabTracElementWithoutProxies(4);
+
+            StackTraceElement traceElement = grabFirstNonProxiedDomainTraceElement();
             inspection.setSynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
             appendAdditionalDebugData(request, inspection);
         }
@@ -122,7 +123,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
             /* identify sender (this method = 1, caller = 2... */
             IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
 
-            StackTraceElement traceElement = grabTracElementWithoutProxies(4);
+            StackTraceElement traceElement = grabFirstNonProxiedDomainTraceElement();
             inspection.setAsynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
             appendAdditionalDebugData(request, inspection);
         }
@@ -166,38 +167,38 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     }
 
     /**
-     * Grabs trace element - will ignore spring proxy stuff automatically
+     * Grabs first trace element with domain package- will ignore spring proxy stuff
+     * automatically
      *
-     * @param pos position in stack trace, starts with 0, where 0 is get trace
-     *            element, and 1 is this method!
-     * @return trace element for given position or <code>null</code>
+     * @return trace element or <code>null</code>
      */
-    private StackTraceElement grabTracElementWithoutProxies(int pos) {
+    private StackTraceElement grabFirstNonProxiedDomainTraceElement() {
 
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         int elementIndex = 0;
         if (LOG.isTraceEnabled()) {
-            LOG.trace("Grab tracelements:{}", pos);
             for (StackTraceElement element : elements) {
                 LOG.trace("{}: {}", elementIndex++, element);
             }
         }
-
-        int currentPosWithoutProxyParts = 0;
         elementIndex = 0;
         for (StackTraceElement element : elements) {
             String className = element.getClassName();
-            // Grab tracelements:4
-            // 0:java.lang.Thread.getStackTrace(Thread.java:1559)
-            // 1:com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.grabTracElementWithoutProxies(IntegrationTestEventInspectorService.java:173)
-            // 2:com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.inspectSendAsynchron(IntegrationTestEventInspectorService.java:110)
-            // 3:com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService.sendAsynchron(DomainMessageService.java:153)
-            // 4:com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService$$FastClassBySpringCGLIB$$c7de0c21.invoke(<generated>)
-            // 5:org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
-            // 6:org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:685)
-            // 7:com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService$$EnhancerBySpringCGLIB$$83df6b4.sendAsynchron(<generated>)
-            // 8:com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService.setJobProcessingEnabled(SchedulerConfigService.java:70)
-            // 9:com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService.enableJobProcessing(SchedulerConfigService.java:38)
+            /* @formatter:off */
+            //  Grab trace elements: new example (Spring Boot3):
+            //  -----------------------------------------------
+            //  0:java.base/java.lang.Thread.getStackTrace(Thread.java:1619),
+            //  1:com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.grabTracElementWithoutProxies(IntegrationTestEventInspectorService.java:177),
+            //  2:com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.inspectSendAsynchron(IntegrationTestEventInspectorService.java:125),
+            //  3:com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService.sendAsynchron(DomainMessageService.java:160), java.base/
+            //  4:jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method), java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77), java.base/
+            //  5:jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43), java.base/java.lang.reflect.Method.invoke(Method.java:568),
+            //  6:org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351),
+            //  7:org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:713), com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService$
+            //  8:$SpringCGLIB$$0.sendAsynchron(<generated>), com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService.sendEvent(AdministrationConfigService.java:109),
+            //  9:com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService.updateAutoCleanupConfiguration(AdministrationConfigService.java:72),
+            /* @formatter:on */
+
             elementIndex++;
 
             /* check if proxied */
@@ -209,11 +210,10 @@ public class IntegrationTestEventInspectorService implements EventInspector {
                 LOG.trace("Skip proxy stuff {}:{}", elementIndex, className);
                 continue;
             }
-            if (currentPosWithoutProxyParts == pos) {
+            if (className.indexOf("sechub.domain.") != -1) {
                 LOG.trace("return: {}:{}", elementIndex, element);
                 return element;
             }
-            currentPosWithoutProxyParts++;
         }
         throw new IllegalStateException("Trace element may not be null!");
     }

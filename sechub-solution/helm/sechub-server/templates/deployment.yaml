@@ -249,7 +249,18 @@ spec:
         # When email mock shall cache the mails this must be configured to true, per default disabled!
         - name: SECHUB_NOTIFICATION_EMAIL_MOCK_CACHE_ENABLED
           value: "false"
+{{- if .Values.env }}
+# ----------------------------------------------------------------------------------------------#
+# Scope: Additional environment variables for the SecHub server container
+# --------------------------------------------------------------------------------------------- #
+        {{ .Values.env | indent 8 | trim }}
+{{- end }}
 {{- if .Values.adapterCheckmarx.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# Scope: Reports
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_REPORT_SENSITIVEDATA_MAX_NONOBFUSCATED_CHARACTERS
+          value: "{{ .Values.server.reports.maxNonObfuscatedCharacters | toString }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: Checkmarx (Deprecation warning: Please use PDS-Checkmarx instead)
 # --------------------------------------------------------------------------------------------- #
@@ -387,201 +398,6 @@ spec:
         # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
         - name: SECHUB_ADAPTER_NETSPARKER_SCANRESULTCHECK_PERIOD_MINUTES
           value: "-1"
-{{- end }}
-{{- if .Values.pdsCheckmarx.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Checkmarx
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_CHECKMARX_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-checkmarx
-               key: techuser_username
-        - name: SECHUB_PDS_CHECKMARX_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-checkmarx
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsCoverity.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Coverity
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_COVERITY_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-coverity
-               key: techuser_username
-        - name: SECHUB_PDS_COVERITY_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-coverity
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsFindSecurityBugs.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-FindSecurityBugs
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_FINDSECURITYBUGS_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-findsecuritybugs
-               key: techuser_username
-        - name: SECHUB_PDS_FINDSECURITYBUGS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-findsecuritybugs
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsGitleaks.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Gitleaks
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_GITLEAKS_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-gitleaks
-               key: techuser_username
-        - name: SECHUB_PDS_GITLEAKS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-gitleaks
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsGoSec.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-GoSec
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_GOSEC_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-gosec
-               key: techuser_username
-        - name: SECHUB_PDS_GOSEC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-gosec
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsIaC.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-IaC
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_IAC_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-iac
-               key: techuser_username
-        - name: SECHUB_PDS_IAC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-iac
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsLoc.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Loc
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_LOC_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-loc
-               key: techuser_username
-        - name: SECHUB_PDS_LOC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-loc
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsMulti.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Multi
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_MULTI_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-multi
-               key: techuser_username
-        - name: SECHUB_PDS_MULTI_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-multi
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsOWASPZAP.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-OWASP ZAP
-# ----------------------------------------------------------------------------------------------#
-        - name: SECHUB_PDS_OWASPZAP_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-owaspzap
-               key: techuser_username
-        - name: SECHUB_PDS_OWASPZAP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-owaspzap
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsPMD.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-PMD
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_PMD_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-pmd
-               key: techuser_username
-        - name: SECHUB_PDS_PMD_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-pmd
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsScancode.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Scancode
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_SCANCODE_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-scancode
-               key: techuser_username
-        - name: SECHUB_PDS_SCANCODE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-scancode
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsSecretScanner.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-SecretScanner
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_SECRETSCANNER_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-secretscanner
-               key: techuser_username
-        - name: SECHUB_PDS_SECRETSCANNER_PASSWORD
-          valueFrom:
-            secretKeyRef:
-               name: secret-pds-secretscanner
-               key: techuser_password
-{{- end }}
-{{- if .Values.pdsXray.enabled }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: PDS-Xray
-# --------------------------------------------------------------------------------------------- #
-        - name: SECHUB_PDS_XRAY_USERID
-          valueFrom:
-            secretKeyRef:
-              name: secret-pds-xray
-              key: techuser_username
-        - name: SECHUB_PDS_XRAY_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: secret-pds-xray
-              key: techuser_password
 {{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: emails from SecHub server

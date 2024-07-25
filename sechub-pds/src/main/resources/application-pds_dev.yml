@@ -1,7 +1,4 @@
 # SPDX-License-Identifier: MIT
-spring.profiles.include:
- - pds_localserver
- 
 pds.config.file: "src/test/resources/dev-pds-config.json"
  
 sechub.initialadmin:

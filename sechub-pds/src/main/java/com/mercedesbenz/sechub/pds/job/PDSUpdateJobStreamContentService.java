@@ -7,8 +7,6 @@ import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)

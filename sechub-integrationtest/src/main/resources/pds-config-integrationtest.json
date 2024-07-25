@@ -5,6 +5,7 @@
     "id" : "PDS_INTTEST_PRODUCT_CODESCAN",
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan.sh",
     "scanType" : "codeScan",
+    "envWhitelist" : [ "INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED"],
     "description" : "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
     "parameters" : {
       "mandatory" : [ {
@@ -208,6 +209,7 @@
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-prepare.sh",
     "scanType" : "prepare",
     "description" : "This is a fake prepare scan - used by integration tests.",
+    "envWhitelist" : [ "PDS_STORAGE_*"],
     "parameters" : {
       "optional" : [ {
         "key" : "pds.test.key.variantname",

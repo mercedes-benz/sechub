@@ -16,8 +16,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -43,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.administration.user.UserAdministrationRestController;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
-import com.mercedesbenz.sechub.pds.PDSProfiles;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseDefinition;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseIdentifier;
@@ -51,6 +49,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @SuppressWarnings("rawtypes")
 public class RoutesTest {

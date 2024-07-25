@@ -9,10 +9,7 @@ echo "Kics Setup"
 echo "----------"
 echo ""
 
-if [ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]
-then
-    echo "Found sources to scan."
-else
+if [ "$PDS_JOB_HAS_EXTRACTED_SOURCES" != "true" ] ; then
     echo ""
     echo "ERROR: No sources found."
     echo ""
@@ -29,13 +26,15 @@ echo "-------------"
 echo ""
 
 echo "Starting Kics"
-cd $PDS_JOB_SOURCECODE_UNZIPPED_FOLDER
-kics scan --ci --exclude-categories "Best practices" --disable-full-descriptions --report-formats "sarif" --output-path "$scan_results_folder" --path "."
+cd "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER"
+# Link in the "assets" folder. Otherwise we get no CWEs
+ln -s "$TOOL_FOLDER/kics/assets" .
+kics scan --ci --exclude-categories "Best practices" --disable-full-descriptions --report-formats "sarif" --output-path "$scan_results_folder" --path .
 
-#######################################################################################################################
-# Workaround: Since there are no CWEs we add a fixed CWE taxonomy to the SARIF report for false-positive handling     #
-# This won't be needed anymore once Checkmarx adds CWEs to their reports                                              #
-#######################################################################################################################
+#############################################################################################################################################
+# Workaround: Since there are only a few CWEs added by KICS we add a fixed CWE taxonomy to the SARIF report for false-positive handling     #
+# This won't be needed anymore once Checkmarx adds CWEs to their reports                                                                    #
+#############################################################################################################################################
 
 cat $scan_results_folder/results.sarif | jq '.runs[].taxonomies += [{
 					"name": "CWE",
@@ -69,7 +68,7 @@ cat $scan_results_folder/results.sarif | jq '.runs[].taxonomies += [{
 					]
  }]' > $scan_results_folder/intermediate.sarif
 
-cat $scan_results_folder/intermediate.sarif | jq '.runs[].tool.driver.rules[].relationships += [{
+cat $scan_results_folder/intermediate.sarif | jq '(.runs[].tool.driver.rules[] | select(.relationships | all(.target.toolComponent.name != "CWE"))) .relationships += [{
                     "target": {
                         "id": "1349",
                         "guid": "33333333-0000-1111-8888-111111111111",
@@ -87,7 +86,4 @@ mv $scan_results_folder/results-fixedcwe.sarif $scan_results_folder/results.sari
 ######################
 
 echo "Copy result file"
-echo "Results folder: $scan_results_folder"
-tree "$scan_results_folder"
-
 cp "$scan_results_folder/results.sarif" "$PDS_JOB_RESULT_FILE"

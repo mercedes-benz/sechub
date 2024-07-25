@@ -45,6 +45,7 @@ import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
@@ -56,6 +57,9 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
+import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
+import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigList;
+import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigListEntry;
 
 import junit.framework.AssertionFailedError;
 
@@ -122,6 +126,10 @@ public class TestAPI {
      */
     public static AssertReportUnordered assertReportUnordered(String json) {
         return AssertReportUnordered.assertReportUnordered(json);
+    }
+
+    public static AssertExecutionResult assertExecutionResult(ExecutionResult result) {
+        return AssertExecutionResult.assertResult(result);
     }
 
     /**
@@ -1174,13 +1182,14 @@ public class TestAPI {
 
     private static void reConnectStaticDataWithDatabaseContent(TestExecutionProfile profile) {
         if (profile.configurations.isEmpty()) {
-            LOG.info("reconnecting static data with existing database content of profiles");
+            LOG.info("reconnect static data with existing database content of profile: {}", profile.id);
+
             TestExecutionProfile profile2 = as(SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
 
             profile.configurations.addAll(profile2.configurations);
             profile.enabled = profile2.enabled;
         }
-        as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
+        ensureExecutorConfigUUIDs(profile);
     }
 
     public static void switchSchedulerStrategy(String strategyId) {
@@ -1253,7 +1262,7 @@ public class TestAPI {
      */
     public static void resetAutoCleanupDays(int wantedFormerDays) {
         ensureAutoCleanupSetToDays(wantedFormerDays);
-        resetIntegrationTestAutoCleanupInspector();
+        resetIntegrationTestAutoCleanupInspectorEvents();
     }
 
     public static void resetPDSAutoCleanupDaysToZero() {
@@ -1262,7 +1271,7 @@ public class TestAPI {
         waitUntilPDSAutoCleanupConfigurationChangedTo(data);
     }
 
-    private static void resetIntegrationTestAutoCleanupInspector() {
+    public static void resetIntegrationTestAutoCleanupInspectorEvents() {
         String url = getURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
         getSuperAdminRestHelper().post(url);
     }
@@ -1305,7 +1314,6 @@ public class TestAPI {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(PDS_ADMIN, 2, 200) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
                 TestAutoCleanupData autoCleanupConfig2 = asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
                 return data.equals(autoCleanupConfig2);
             }
@@ -1364,6 +1372,12 @@ public class TestAPI {
         List<UUID> jobUUIDS = found.stream().map((string) -> UUID.fromString(string)).collect(Collectors.toList());
         LOG.info("Found PDS job uuids:{} for sechub job:{}", jobUUIDS, sechubJobUUID);
         return jobUUIDS;
+    }
+
+    public static String getPDSServerEnvironmentVariableValue(String environmentVariableName) {
+        String url = getPDSURLBuilder().buildIntegrationTestFetchEnvironmentVariableValue(environmentVariableName);
+        String value = getPDSAdminRestHelper().getStringFromURL(url);
+        return value;
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
@@ -1563,5 +1577,58 @@ public class TestAPI {
         } catch (Exception e) {
             LOG.error("Was not able to store sechub test report: {}", fileName, e);
         }
+    }
+
+    public static void ensureExecutorConfigUUIDs(TestExecutionProfile profile) {
+        boolean atLeastOneWithoutUUID = false;
+        for (TestExecutorConfig config : profile.configurations) {
+
+            if (config.uuid == null) {
+                atLeastOneWithoutUUID = true;
+                break;
+            }
+        }
+        if (!atLeastOneWithoutUUID) {
+            return;
+        }
+        /* reload necessary */
+        LOG.info("At least one executor config for profile: {}: has no uuid, seems to be a local integration test restart. Start reconnecting.", profile.id);
+        TestExecutorConfigList executorConfigList = as(SUPER_ADMIN).fetchProductExecutorConfigList(); // fetch only one time
+
+        for (TestExecutorConfig config : profile.configurations) {
+            ensureConfigHasUUID(config, executorConfigList);
+        }
+    }
+
+    public static UUID ensureExecutorConfigUUID(TestExecutorConfig executorConfig) {
+        return ensureConfigHasUUID(executorConfig, null);
+    }
+
+    private static UUID ensureConfigHasUUID(TestExecutorConfig executorConfig, TestExecutorConfigList executorConfigList) {
+        if (executorConfig.uuid != null) {
+            return executorConfig.uuid;
+        }
+        if (executorConfigList == null) {
+            LOG.info("Load executor config list from database for executorConfig: {}", executorConfig.name);
+            executorConfigList = as(SUPER_ADMIN).fetchProductExecutorConfigList(); // fetch only one time
+        }
+
+        LOG.info("searching executor config with name: {}", executorConfig.name);
+        for (TestExecutorConfigListEntry entry : executorConfigList.executorConfigurations) {
+
+            LOG.info("- found executor config with name: {}", entry.name);
+
+            if (executorConfig.name.equals(entry.name)) {
+                executorConfig.uuid = entry.uuid;
+                LOG.info("- accepted for reconnect");
+                break;
+            }
+        }
+        if (executorConfig.uuid == null) {
+            LOG.error("Loaded executor config list does not contain {}:\n{}", executorConfig.name, JSONConverter.get().toJSON(executorConfigList, true));
+
+            throw new IllegalStateException("Reconnection of executor config failed! config name: " + executorConfig.name);
+        }
+        return executorConfig.uuid;
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
 
@@ -18,9 +19,12 @@ public class SystemPropertiesDescriptionGeneratorTest {
 
     private SystemPropertiesDescriptionGenerator generatorToTest;
     private ClasspathDataCollector collector;
+    private SecureEnvironmentVariableKeyValueRegistry registry;
 
     @Before
     public void before() throws Exception {
+
+        registry = mock(SecureEnvironmentVariableKeyValueRegistry.class);
         generatorToTest = new SystemPropertiesDescriptionGenerator();
 
         collector = mock(ClasspathDataCollector.class);
@@ -33,7 +37,7 @@ public class SystemPropertiesDescriptionGeneratorTest {
         when(collector.fetchMustBeDocumentParts()).thenReturn(null);
 
         /* execute */
-        String generated = generatorToTest.generate(null);
+        String generated = generatorToTest.generate(null,registry);
 
         /* test */
         assertNotNull(generated);
@@ -44,7 +48,7 @@ public class SystemPropertiesDescriptionGeneratorTest {
     public void when_param_is_empty_list_result_is_not_null_but_empty() throws Exception {
 
         /* execute */
-        String generated = generatorToTest.generate(Collections.emptyList());
+        String generated = generatorToTest.generate(Collections.emptyList(), registry);
 
         /* test */
         assertNotNull(generated);
@@ -60,7 +64,7 @@ public class SystemPropertiesDescriptionGeneratorTest {
         list.add(a);
 
         /* execute */
-        String generated = generatorToTest.generate(list);
+        String generated = generatorToTest.generate(list, registry);
 
         /* test */
         assertNotNull(generated);
@@ -78,7 +82,7 @@ public class SystemPropertiesDescriptionGeneratorTest {
         list.add(a);
 
         /* execute */
-        String generated = generatorToTest.generate(list);
+        String generated = generatorToTest.generate(list, registry);
 
         /* test */
         assertNotNull(generated);

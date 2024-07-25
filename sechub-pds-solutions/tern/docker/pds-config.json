@@ -5,6 +5,7 @@
         {
             "id": "PDS_TERN",
             "path": "/scripts/tern.sh",
+            "envWhitelist" : [ "HELPER_FOLDER" ],
             "scanType": "licenseScan",
             "description": "Runs tern. Tern is a container analysis tool.",
             "minutesToWaitForProductResult": "660",
@@ -21,6 +22,7 @@
         {
             "id": "PDS_TERN_MOCK",
             "path": "/scripts/tern_mock.sh",
+            "envWhitelist" : [ "MOCK_FOLDER" ],
             "scanType": "licenseScan",
             "description": "Runs tern. Tern is a container analysis tool."
         }

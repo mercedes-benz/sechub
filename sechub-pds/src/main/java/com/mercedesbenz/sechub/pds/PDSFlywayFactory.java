@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
+
 @Configuration
 @Profile("!" + PDSProfiles.TEST) // spring profile "test" has no Flyway enabled
 public class PDSFlywayFactory {

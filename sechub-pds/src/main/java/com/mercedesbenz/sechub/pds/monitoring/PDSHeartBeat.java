@@ -1,19 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.monitoring;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Represents a PDS Job which contains information about ownership, related
@@ -64,7 +65,7 @@ public class PDSHeartBeat {
     String serverId;
 
     @Column(name = COLUMN_RESULT)
-    @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
+    @JdbcTypeCode(Types.LONGNVARCHAR) // why not using @Lob, because hibernate/postgres issues. see
     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
     String clusterMemberData;
 

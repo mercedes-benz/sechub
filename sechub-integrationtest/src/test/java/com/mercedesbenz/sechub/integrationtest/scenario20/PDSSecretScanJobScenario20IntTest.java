@@ -57,6 +57,7 @@ public class PDSSecretScanJobScenario20IntTest {
             hasFindings(6).
     	        finding(0).
     	          hasId(expectedFindingId).
+    	          hasRevisionId("b3816fddcf28aa29d94b10ec305cd52be14c472b"). //remark this is defined inside "zipfile_contains_inttest_secretscan_with_gitleaks_sample_sarif.json.zip"
     	          hasScanType(ScanType.SECRET_SCAN).
     	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
     	          hasName("Generic API Key").

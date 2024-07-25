@@ -1,0 +1,10 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://localhost:8443",
+    "api" : {
+      "type" : "openApi",
+      "apiDefinitionUrl" : "https://example.com/api/v1/swagger/?format=openapi"
+    }
+  }
+}

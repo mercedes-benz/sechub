@@ -28,12 +28,12 @@ class PDSServerEncryptionIntTest {
     }
 
     @Test
-    void verified_ciphers_do_have_MAC_with_SHA_or_SHA1() throws Exception {
+    void verified_ciphers_do_not_have_MAC_with_SHA_or_SHA1() throws Exception {
         securityTestHelper.assertNotContainedMacsInCiphers("SHA", "SHA1");
     }
 
     @Test
-    void verified_ciphers_do_have_MAC_with_MD5() throws Exception {
+    void verified_ciphers_do_not_have_MAC_with_MD5() throws Exception {
         securityTestHelper.assertNotContainedMacsInCiphers("MD5");
     }
 

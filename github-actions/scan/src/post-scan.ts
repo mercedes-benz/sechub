@@ -1,51 +1,77 @@
 // SPDX-License-Identifier: MIT
 
-import * as core from '@actions/core';
 import * as artifact from '@actions/artifact';
-import * as shell from 'shelljs';
-import { getReport } from '../../shared/src/sechub-cli';
-import { getWorkspaceDir } from '../../shared/src/fs-helper';
-import { logExitCode } from '../../shared/src/log-helper';
-import * as input from './input';
+import * as core from '@actions/core';
 import * as fs from 'fs';
+import * as shell from 'shelljs';
+import { getWorkspaceDir } from './fs-helper';
+import { LaunchContext } from './launcher';
+import { logExitCode } from './exitcode';
+import { getReport } from './sechub-cli';
+import { getFieldFromJson } from './json-helper';
 
 /**
- * Downloads the reports for the given formats.
- * @param formats formats in which the report should be downloaded
+ * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
-export function downloadReports(formats: string[]): object | undefined {
-    core.startGroup('Download Reports');
-    if (formats.length === 0) {
-        core.info('No more formats');
-        return;
-    }
-    const json = loadJsonReport();
-    if (json) {
-        const jobUUID = getFieldFromJsonReport('jobUUID', json);
-        core.debug('JobUUID: ' + jobUUID);
-        formats.forEach((format) => {
-            core.info(`Get Report as ${format}`);
-            const exitCode = getReport(jobUUID, input.projectName, format);
-            logExitCode(exitCode ? exitCode.code : 0);
-        });
-    }
+export function collectReportData(context: LaunchContext) {
+    core.startGroup('Collect report data');
+
+    collectJsonReportData(context);
+    downloadOtherReportsThanJson(context);
+
     core.endGroup();
-    return json;
+}
+
+function collectJsonReportData(context: LaunchContext) {
+
+    /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
+    const fileName = resolveReportNameForScanJob(context);
+    const filePath = `${getWorkspaceDir()}/${fileName}`;
+    let text = '';
+    try {
+        core.info('Get Report as json');
+        text = fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+        core.warning(`Error reading JSON file: ${error}`);
+        return undefined;
+    }
+
+    const jsonObject = asJsonObject(text);
+
+    /* setup data in context */
+    context.secHubReportJsonObject = jsonObject;
+    context.secHubReportJsonFileName = fileName;
+
+}
+
+
+function downloadOtherReportsThanJson(context: LaunchContext) {
+    if (context.jobUUID) {
+        const jobUUID = context.jobUUID;
+        core.debug('JobUUID: ' + jobUUID);
+
+        context.reportFormats.forEach((format) => {
+            if (format != 'json') { // json is skipped, because already downloaded
+                core.info(`Get Report as ${format}`);
+                getReport(jobUUID, format, context);
+                logExitCode(context.lastClientExitCode);
+            }
+        });
+    } else {
+        core.warning('No job uuid available, cannot download other reports!');
+    }
 }
 
 /**
- * Load and parse the SecHub JSON report.
+ * Parse the SecHub JSON report.
  * @returns {object | undefined} - The parsed JSON report or undefined if not found or there was an error.
  */
-function loadJsonReport(): object | undefined {
-    const fileName = getJsonReportFileName();
-    const filePath = `${getWorkspaceDir()}/${fileName}`;
-
+function asJsonObject(text: string): object | undefined {
     try {
-        const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const jsonData = JSON.parse(text);
         return jsonData;
     } catch (error) {
-        core.warning(`Error reading or parsing JSON file: ${error}`);
+        core.warning(`Error parsing JSON file: ${error}`);
         return undefined;
     }
 }
@@ -53,21 +79,25 @@ function loadJsonReport(): object | undefined {
 /**
  * Uploads all given files as artifact
  * @param name Name for the zip file.
- * @param paths All file paths to include into the artifact.
+ * @param files All files to include into the artifact.
  */
-export async function uploadArtifact(name: string, paths: string[]) {
+export async function uploadArtifact(context: LaunchContext, name: string, files: string[]) {
     core.startGroup('Upload artifacts');
     try {
         const artifactClient = artifact.create();
         const artifactName = name;
         const options = { continueOnError: true };
 
-        const workspace = getWorkspaceDir();
-        shell.exec(`ls ${workspace}`);
-        core.debug('rootDirectory: ' + workspace);
-        core.debug('files: ' + paths);
+        const rootDirectory = context.workspaceFolder;
+        core.debug('rootDirectory: ' + rootDirectory);
+        if (core.isDebug()) {
+            shell.exec(`ls ${rootDirectory}`);
+        }
+        core.debug('files: ' + files);
 
-        await artifactClient.uploadArtifact(artifactName, paths, workspace, options);
+        await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+        core.debug('artifact upload done');
+
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Unknown error';
         core.error(`ERROR while uploading artifacts: ${message}`);
@@ -76,39 +106,26 @@ export async function uploadArtifact(name: string, paths: string[]) {
 }
 
 /**
- * Reads the given field from the SecHub JSON report.
- * @param {string} field - The field relative to root, where the value should be found. The field can be a nested field, e.g. result.count.
- * @param jsonData - The json data to read the field from.
- * @returns {*} - The value found for the given field or undefined if not found.
- */
-function getFieldFromJsonReport(field: string, jsonData: any): any {
-    // Split the given field into individual keys
-    const keys = field.split('.');
-
-    // Traverse the JSON object to find the requested field
-    let currentKey = jsonData;
-    for (const key of keys) {
-        if (currentKey && currentKey.hasOwnProperty && typeof currentKey.hasOwnProperty === 'function' && currentKey.hasOwnProperty(key)) {
-            currentKey = currentKey[key];
-        } else {
-            core.warning(`Field "${key}" not found in the JSON report.`);
-            return undefined;
-        }
-    }
-
-    return currentKey;
-}
-
-/**
- * Get the JSON report file name from the workspace directory.
+ * Get the JSON report file name for the scan job from the workspace directory.
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
-function getJsonReportFileName(): string {
+function resolveReportNameForScanJob(context: LaunchContext): string {
     const workspaceDir = getWorkspaceDir();
     const filesInWorkspace = shell.ls(workspaceDir);
 
+    if (!context.jobUUID) {
+        core.error('Illegal state: No job uuid resolved - not allowed at this point');
+        return '';
+    }
+    const jobUUID = context.jobUUID;
+    const regexString = `sechub_report_.*${jobUUID}.*\\.json$`;
+
+    core.debug(`resolveReportNameForScanJob: regexString='${regexString}'`);
+    const regex = new RegExp(regexString);
+
     for (const fileName of filesInWorkspace) {
-        if (/sechub_report.*\.json$/.test(fileName)) {
+        if (regex.test(fileName)) {
+            core.debug(`resolveReportNameForScanJob: regexString matched for file: '${fileName}'`);
             return fileName;
         }
     }
@@ -118,21 +135,27 @@ function getJsonReportFileName(): string {
 }
 
 /**
- * Reports specific outputs to GitHub Actions based on the SecHub result.
+ * Reports specific outputs to GitHub Actions based on the SecHub result
+ * @returns traffic light
  */
-export function reportOutputs(jsonData: any): void {
+export function reportOutputs(jsonData: any): string {
     core.startGroup('Reporting outputs to GitHub');
+
     const findings = analyzeFindings(jsonData);
-    const trafficLight = getFieldFromJsonReport('trafficLight', jsonData);
-    const totalFindings = getFieldFromJsonReport('result.count', jsonData);
+    const trafficLight = getFieldFromJson('trafficLight', jsonData);
+    const totalFindings = getFieldFromJson('result.count', jsonData);
     const humanReadableSummary = buildSummary(trafficLight, totalFindings, findings);
+
     setOutput('scan-trafficlight', trafficLight, 'string');
     setOutput('scan-findings-count', totalFindings, 'number');
     setOutput('scan-findings-high', findings.highCount, 'number');
     setOutput('scan-findings-medium', findings.mediumCount, 'number');
     setOutput('scan-findings-low', findings.lowCount, 'number');
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
+
     core.endGroup();
+
+    return trafficLight;
 }
 
 
@@ -142,7 +165,7 @@ export function reportOutputs(jsonData: any): void {
  * @returns {{mediumCount: number, highCount: number, lowCount: number}}
  */
 function analyzeFindings(jsonData: any): { mediumCount: number; highCount: number; lowCount: number } {
-    const findings = getFieldFromJsonReport('result.findings', jsonData);
+    const findings = getFieldFromJson('result.findings', jsonData);
 
     // if no findings were reported.
     if (findings === undefined) {

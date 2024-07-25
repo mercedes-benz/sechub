@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +21,7 @@ import com.mercedesbenz.sechub.sereco.metadata.MetaDataAccess;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoDetection;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoRevisionData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
@@ -173,6 +173,7 @@ public class AssertVulnerabilities {
                 contained = contained && isEitherNullInSearchOrEqual(search.getCode(), vulnerability.getCode()) && trace.done(vulnerability, "code");
                 contained = contained && isEitherNullInSearchOrEqual(search.getScanType(), vulnerability.getScanType()) && trace.done(vulnerability, "scanType");
                 contained = contained && isEitherNullInSearchOrEqual(search.getWeb(), vulnerability.getWeb()) && trace.done(vulnerability, "web");
+                contained = contained && isEitherNullInSearchOrEqual(search.getRevision(), vulnerability.getRevision()) && trace.done(vulnerability, "revision");
                 /* @formatter:on */
                 if (contained) {
                     matching.add(vulnerability);
@@ -307,6 +308,13 @@ public class AssertVulnerabilities {
 
             public FindCodeCallStackBuilder containingSource(String source) {
                 currentCallStackElement.setSource(source);
+                return this;
+            }
+
+            public FindCodeCallStackBuilder withRevisionId(String revisionId) {
+                SerecoRevisionData revision = new SerecoRevisionData();
+                revision.setId(revisionId);
+                search.setRevision(revision);
                 return this;
             }
 

@@ -5,6 +5,7 @@
     {
       "id": "PDS_OWASP_ZAP",
       "path": "/pds/scripts/owasp-zap.sh",
+      "envWhitelist" : [ "TOOL_FOLDER" ],
       "scanType": "webScan",
       "minutesToWaitForProductResult": 600,
       "description": "Runs OWASP ZAP",
@@ -51,7 +52,7 @@
           {
             "key": "zap.jvm.args",
             "description": "JVM arguments passed to ZAP on start up, e.g. to limit resources.",
-            "default": "-Xmx4096m"
+            "default": "-Xmx8192m"
           },
           {
             "key": "wrapper.connectioncheck.enabled",
@@ -74,6 +75,7 @@
     {
       "id": "PDS_OWASP_ZAP_MOCK",
       "path": "/pds/scripts/owasp-zap-mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "webScan",
       "description": "Runs OWASP ZAP mock",
       "parameters": {
@@ -115,6 +117,11 @@
           {
             "key": "zap.deactivated.rule.references",
             "description": "Comma separated list of rule references that will be deactivated during the scan."
+          },
+          {
+            "key": "zap.jvm.args",
+            "description": "JVM arguments passed to ZAP on start up, e.g. to limit resources.",
+            "default": "-Xmx8192m"
           },
           {
             "key": "wrapper.connectioncheck.enabled",

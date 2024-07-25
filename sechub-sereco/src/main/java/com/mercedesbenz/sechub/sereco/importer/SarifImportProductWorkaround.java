@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.sereco.importer;
 
 import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
+import de.jcup.sarif_2_1_0.model.Result;
 import de.jcup.sarif_2_1_0.model.Run;
 
 public interface SarifImportProductWorkaround {
@@ -15,6 +16,10 @@ public interface SarifImportProductWorkaround {
      *         this workaround.
      */
     public default String resolveType(ReportingDescriptor rule, Run run) {
+        return null;
+    }
+
+    public default String resolveFindingRevisionId(Result result, Run run) {
         return null;
     }
 }

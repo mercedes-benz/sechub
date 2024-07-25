@@ -1,0 +1,1 @@
+SECHUB_PREPARE_RESULT;status=ok

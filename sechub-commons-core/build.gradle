@@ -3,6 +3,8 @@ dependencies {
     
     api spring_boot_dependency.slf4j_api
 
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.73'
+
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.mockito_core
     

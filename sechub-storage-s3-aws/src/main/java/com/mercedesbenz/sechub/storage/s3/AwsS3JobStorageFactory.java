@@ -54,4 +54,5 @@ public class AwsS3JobStorageFactory implements JobStorageFactory {
     public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
         return new AwsS3JobStorage(s3Client, bucketName, storagePath, jobUUID);
     }
+
 }

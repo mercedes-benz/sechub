@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.description="A container which combines PMD with 
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG PMD_VERSION="6.47.0"
+ARG PMD_VERSION="6.55.0"
 
 # Environment variables in container
 ENV PMD_VERSION="${PMD_VERSION}"

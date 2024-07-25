@@ -123,7 +123,7 @@ public class SecurityTestHelper {
         httpsConnection.setSSLSocketFactory(socketFactory);
 
         /*
-         * next fetch of conent is also necessary and we do also getotherwise we have a
+         * next fetch of conent is also necessary and we do also get otherwise we have a
          * "java.lang.IllegalStateException: connection not yet open"
          */
         print_content(httpsConnection);
@@ -223,21 +223,26 @@ public class SecurityTestHelper {
     public void assertNotContainedMacsInCiphers(String... notAllowedMacs) throws Exception {
         ensureCipherTestDone();
 
+        StringBuilder problems = new StringBuilder();
+
         for (CipherCheck check : cipherTestData.cipherChecks) {
             if ("true".equals(check.verified)) {
                 String mac = getMac(check);
 
                 if (mac == null) {
-                    fail("mac is null in test cipher - should not happen!");
+                    problems.append("Mac is null in test cipher - should never happen!\n  * " + check + "\n");
                 }
 
                 for (String notAllowedMac : notAllowedMacs) {
 
                     if (mac.equalsIgnoreCase(notAllowedMac)) {
-                        fail("Not wanted mac: " + mac + " found inside verfified cipher: " + check.cipher);
+                        problems.append("Not wanted mac: " + mac + " found inside verfified cipher: " + check.cipher + "\n");
                     }
                 }
             }
+        }
+        if (!problems.isEmpty()) {
+            fail("Problems found:\n" + problems.toString());
         }
 
     }
@@ -378,6 +383,15 @@ public class SecurityTestHelper {
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);
 
         assertNoConnectionHasBeenRefused();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Accepted ciphers for " + targetType + " from " + testURL + "\n");
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if (Boolean.valueOf(check.verified)) {
+                sb.append("- " + check.cipher + "\n");
+            }
+        }
+        LOG.info(sb.toString());
 
     }
 

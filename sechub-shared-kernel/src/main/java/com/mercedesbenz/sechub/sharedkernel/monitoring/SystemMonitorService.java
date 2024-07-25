@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
-import javax.annotation.PostConstruct;
 import javax.management.MBeanServerConnection;
 
 import org.slf4j.Logger;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * A service where callers can check current CPU and memory state of the running

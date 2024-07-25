@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.mapping;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidResult.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidResult.assertValid;
 
 import java.util.Optional;
 
@@ -45,12 +45,7 @@ public class UpdateMappingService {
         assertValid(mappingDataValidation.validate(mappingData), "Mapping Data invalid");
 
         Optional<Mapping> mapping = repository.findById(mappingId);
-        Mapping mappingObj = null;
-        if (!mapping.isPresent()) {
-            mappingObj = new Mapping(mappingId);
-        } else {
-            mappingObj = mapping.get();
-        }
+        Mapping mappingObj = mapping.orElseGet(() -> new Mapping(mappingId));
         mappingObj.setData(mappingData.toJSON());
 
         mappingTransactionService.saveMappingInOwnTransaction(mappingObj);

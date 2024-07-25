@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.sharedkernel.jpa;
 
 import java.util.Optional;
 
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 
 public class TypedQuerySupport<T> {
     private Class<T> clazz;

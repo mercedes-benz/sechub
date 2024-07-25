@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.AuthorityConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
@@ -176,13 +177,15 @@ public class IntegrationTestServerRestController {
     public boolean checkRole(@PathVariable("role") String role) {
         String authories = userContextService.getAuthories();
         String userId = userContextService.getUserId();
+
         LOG.info("Integration test server wants to know if current user '{}' has role '{}'", userId, role);
+
         boolean hasRole = false;
         if (authories != null) {
-            String authRole = "ROLE_" + role.toUpperCase();
-            hasRole = authories.indexOf(authRole) != -1;
+            String authority = AuthorityConstants.AUTHORITY_ROLE_PREFIX + role.toUpperCase();
+            hasRole = authories.indexOf(authority) != -1;
 
-            LOG.debug("Check if authRole '{}' contained in authorities '{}'", authRole, authories);
+            LOG.debug("Check if authRole '{}' contained in authorities '{}'", authority, authories);
         } else {
             LOG.info("No authorities found - return false");
         }
@@ -202,7 +205,7 @@ public class IntegrationTestServerRestController {
         }
         LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId, 30), jobUUID);
 
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
         if (!storage.isExisting(fileName)) {
             throw new NotFoundException("file not uploaded:" + fileName);
         }
@@ -215,10 +218,14 @@ public class IntegrationTestServerRestController {
 
         /* @formatter:off */
 		InputStreamResource resource = new InputStreamResource(inputStream);
-		return ResponseEntity.ok()
+		ResponseEntity<Resource> result = ResponseEntity.ok()
 				.headers(headers)
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
 				.body(resource);
+
+		storage.close();
+
+		return result;
 		/* @formatter:on */
 
     }

@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.zapwrapper.scan;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,7 +28,6 @@ import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.BrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
@@ -137,7 +137,7 @@ public class ZapScanner implements ZapScan {
 
         LOG.info("Set browser for ajaxSpider.");
         // use firefox in headless mode by default
-        clientApiFacade.configureAjaxSpiderBrowserId(BrowserId.FIREFOX_HEADLESS.getBrowserId());
+        clientApiFacade.configureAjaxSpiderBrowserId(scanContext.getAjaxSpiderBrowserId());
     }
 
     void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
@@ -257,18 +257,21 @@ public class ZapScanner implements ZapScan {
     }
 
     void loadApiDefinitions(String zapContextId) throws ClientApiException {
-        if (scanContext.getApiDefinitionFiles().isEmpty()) {
-            LOG.info("For scan {}: No file with API definition found!", scanContext.getContextName());
-            return;
-        }
         Optional<SecHubWebScanApiConfiguration> apiConfig = scanContext.getSecHubWebScanConfiguration().getApi();
         if (!apiConfig.isPresent()) {
             LOG.info("For scan {}: No API definition was found!", scanContext.getContextName());
             return;
         }
 
-        switch (apiConfig.get().getType()) {
+        SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = apiConfig.get();
+
+        switch (secHubWebScanApiConfiguration.getType()) {
         case OPEN_API:
+            URL apiDefinitionUrl = secHubWebScanApiConfiguration.getApiDefinitionUrl();
+            if (apiDefinitionUrl != null) {
+                LOG.info("For scan {}: Loading openAPI definition from : {}", scanContext.getContextName(), apiDefinitionUrl.toString());
+                clientApiFacade.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), zapContextId);
+            }
             for (File apiFile : scanContext.getApiDefinitionFiles()) {
                 LOG.info("For scan {}: Loading openAPI file: {}", scanContext.getContextName(), apiFile.toString());
                 clientApiFacade.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);

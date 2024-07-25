@@ -53,6 +53,8 @@ public class PDSSummaryLogService {
             PDSProductParameterSetup parameterSetup = setup.getParameters();
             appendParameterInfo(summary, "mandatory", parameterSetup.getMandatory());
             appendParameterInfo(summary, "optional", parameterSetup.getOptional());
+            appendParameterInfo(summary, "optional", parameterSetup.getOptional());
+            summary.append("\n    - envWhitelist: ").append(setup.getEnvWhitelist());
         }
 
         LOG.info(summary.toString());

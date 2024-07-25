@@ -804,7 +804,7 @@ function sechub_user_list_open_signups {
 
 
 function sechub_user_reset_apitoken {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
 }
 
 
@@ -819,7 +819,7 @@ EOF
 }
 
 function sechub_user_signup {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' \
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
     -d "$(generate_sechub_user_signup_data $1 $2)" \
     "$SECHUB_SERVER/api/anonymous/signup" | $CURL_FILTER
 }

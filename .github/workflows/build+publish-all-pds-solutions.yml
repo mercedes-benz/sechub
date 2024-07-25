@@ -20,12 +20,11 @@ jobs:
       pds-solution: checkmarx
       pds-version: ${{ inputs.pds-version }}
 
-  # 2023-06-12: findsecuritybugs deactivated due to upstream fix is not yet released
-  # call_build_pds-findsecuritybugs:
-  #   uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
-  #   with:
-  #     pds-solution: findsecuritybugs
-  #     pds-version: ${{ inputs.pds-version }}
+  call_build_pds-findsecuritybugs:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: findsecuritybugs
+      pds-version: ${{ inputs.pds-version }}
 
   call_build_pds-gitleaks:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
@@ -61,6 +60,12 @@ jobs:
     uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
     with:
       pds-solution: owaspzap
+      pds-version: ${{ inputs.pds-version }}
+
+  call_build_pds-prepare:
+    uses: mercedes-benz/sechub/.github/workflows/_build+publish-pds-solution.yml@develop
+    with:
+      pds-solution: prepare
       pds-version: ${{ inputs.pds-version }}
 
   call_build-and-publish-pmd:

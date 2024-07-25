@@ -5,7 +5,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -96,7 +96,7 @@ func getSecHubJobReport(context *Context) []byte {
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
 	return data
@@ -114,7 +114,7 @@ func newSecHubReportFromFile(context *Context) SecHubReport {
 	defer jsonFile.Close()
 
 	var filecontent []byte
-	filecontent, err = ioutil.ReadAll(jsonFile)
+	filecontent, err = io.ReadAll(jsonFile)
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)

@@ -55,6 +55,10 @@ dependencies {
     }
     implementation library.apache_commons_io
 
+    implementation spring_boot_dependency.jackson_core
+    implementation spring_boot_dependency.jackson_databind
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${spring_boot_dependency_version.jackson_databind}"
+    
     testImplementation library.epages_restdoc_api_spec_mockmvc
     testImplementation project(':sechub-commons-model-testframework')
 

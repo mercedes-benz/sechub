@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.spring5.dialect.SpringStandardDialect;
+import org.thymeleaf.spring6.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -210,6 +210,48 @@ public class ThymeLeafHTMLReportingTest {
         assertFalse(htmlResult.contains("Yellow findings"));
         assertFalse(htmlResult.contains("Green findings"));
 
+    }
+
+    @Test
+    void example7_gitleaks_sarif_is_transformed_to_expected_sechub_report_HTML_with_secret_data_and_finding_revision_id() throws Exception {
+        /* prepare */
+        TestReportContext context = new TestReportContext(7, ProductIdentifier.PDS_SECRETSCAN, ReportInputFormat.SARIF, "gitleaks");
+        context.sechubJobUUID = "b6fdccc6-45d3-4b45-972c-08ff9ee0dddb";
+
+        /* execute */
+        String htmlResult = processThymeLeafTemplates(context);
+
+        /* test */
+        /* test */
+        assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example7");
+        assertTrue(htmlResult.contains(context.sechubJobUUID));
+
+        assertTrue(htmlResult.contains("Yellow findings"));
+        assertFalse(htmlResult.contains("Red findings"));
+        assertFalse(htmlResult.contains("Green findings"));
+        assertTrue(htmlResult.contains("0000000000012345")); // commit sha as revision
+    }
+
+    @Test
+    void example8_pseudo_gitleaks_sarif_with_version_control_transformed_to_sechub_report_HTML_with_version_control_and_secret_data() throws Exception {
+        /* prepare */
+        TestReportContext context = new TestReportContext(8, ProductIdentifier.PDS_SECRETSCAN, ReportInputFormat.SARIF, "pseudo_gitleaks_with_version_control");
+        context.sechubJobUUID = "a5feccc6-45d3-4b45-972c-08ff9ee0dddb";
+
+        /* execute */
+        String htmlResult = processThymeLeafTemplates(context);
+
+        /* test */
+        assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example8");
+        assertTrue(htmlResult.contains(context.sechubJobUUID));
+
+        assertTrue(htmlResult.contains("Yellow findings"));
+        assertFalse(htmlResult.contains("Red findings"));
+        assertFalse(htmlResult.contains("Green findings"));
+        assertTrue(htmlResult.contains("b87c4e9")); // first one
+        assertFalse(htmlResult.contains("cafdac7")); // seconds is not listed by sechub
     }
 
     private void storeHTMLOutputAsFile(String htmlResult, String name) throws IOException {

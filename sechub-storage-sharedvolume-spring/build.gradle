@@ -10,6 +10,5 @@ dependencies {
     implementation spring_boot_dependency.slf4j_api
     implementation project(':sechub-storage-core')
     
-	testImplementation library.mockito_inline
 	testImplementation project(':sechub-testframework')
 }

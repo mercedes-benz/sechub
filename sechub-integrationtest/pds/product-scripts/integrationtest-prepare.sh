@@ -50,6 +50,24 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" == "d" ]]; then
     dumpVariable "PDS_SCAN_CONFIGURATION"
 fi
 
+if [[ "$PDS_TEST_KEY_VARIANTNAME" == "e" ]]; then
+  export TOOL_FOLDER=./../sechub-integrationtest/build/pds-tools # gradle bootJar task does inject the
+                                                                 # wrapper jar here for testing
+  export PDS_INTEGRATIONTEST_ENABLED=true
+  export PDS_DEBUG_ENABLED=true
+  export PDS_PREPARE_MINUTES_TO_WAIT_PREPARE_PROCESSES=30
+  export PDS_PREPARE_MODULE_ENABLED_GIT=false
+  export PDS_PREPARE_AUTO_CLEANUP_GIT_FOLDER=false
+  export PDS_PREPARE_MODULE_ENABLED_SKOPEO=false
+
+  echo ""
+  echo "- start sourcing the pds-solution script"
+  echo ""
+  # next line uses same start script as the original - will start the prepare wrapper in integration test mode!
+  source ./../sechub-pds-solutions/prepare/docker/scripts/prepare.sh
+  exit 0
+fi
+
 # Otherwise - prepare done, write result with status "ok"
 echo "3.3. Prepare done, write result with state done"
 echo "SECHUB_PREPARE_RESULT;status=ok" > "$PDS_JOB_RESULT_FILE"

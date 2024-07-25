@@ -33,7 +33,7 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfigurat
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
@@ -142,7 +142,7 @@ public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNeces
 
     @TestConfiguration
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

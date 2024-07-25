@@ -94,6 +94,9 @@ public class SpringProfilesPlantumlGenerator implements Generator {
     }
 
     public String generate(SpringProfileGenoConfig config) {
+        LOG.info("Start spring profile plantuml generation. filtered profile={}, satelite profiles={}", config.getFilteredProfile(),
+                config.getSateliteProfiles());
+
         File serverFolder = new File("./sechub-server/");
         if (!serverFolder.exists()) {
             /* not gradle but inside IDE: */

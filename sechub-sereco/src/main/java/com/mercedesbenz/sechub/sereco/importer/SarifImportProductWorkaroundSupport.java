@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import de.jcup.sarif_2_1_0.model.ReportingDescriptor;
+import de.jcup.sarif_2_1_0.model.Result;
 import de.jcup.sarif_2_1_0.model.Run;
 
 /**
@@ -28,12 +29,38 @@ public class SarifImportProductWorkaroundSupport {
      *         any available workaround.
      */
     public String resolveType(ReportingDescriptor rule, Run run) {
+        return visitAllWorkaroundsAndUseFirstResultNotNull(rule, run, new WorkaroundVisitor<String, ReportingDescriptor>() {
+
+            @Override
+            public String visit(ReportingDescriptor element, Run run, SarifImportProductWorkaround workaround) {
+                return workaround.resolveType(rule, run);
+            }
+        });
+    }
+
+    public String resolveFindingRevisionId(Result result, Run run) {
+        return visitAllWorkaroundsAndUseFirstResultNotNull(result, run, new WorkaroundVisitor<String, Result>() {
+
+            @Override
+            public String visit(Result element, Run run, SarifImportProductWorkaround workaround) {
+                return workaround.resolveFindingRevisionId(result, run);
+            }
+        });
+    }
+
+    private <R, E> R visitAllWorkaroundsAndUseFirstResultNotNull(E element, Run run, WorkaroundVisitor<R, E> visitor) {
         for (SarifImportProductWorkaround workaround : workarounds) {
-            String resolvedType = workaround.resolveType(rule, run);
-            if (resolvedType != null) {
-                return resolvedType;
+            R result = visitor.visit(element, run, workaround);
+            if (result != null) {
+                return result;
             }
         }
         return null;
     }
+
+    public interface WorkaroundVisitor<R, E> {
+
+        public R visit(E element, Run run, SarifImportProductWorkaround workaround);
+    }
+
 }

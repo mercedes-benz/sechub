@@ -1,6 +1,1 @@
 # SPDX-License-Identifier: MIT
-spring.profiles.include:
- - postgres
- - initial_admin_created
- - real_products
- - server

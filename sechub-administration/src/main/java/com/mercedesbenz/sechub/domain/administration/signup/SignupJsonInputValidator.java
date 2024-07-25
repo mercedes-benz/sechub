@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import static com.mercedesbenz.sechub.domain.administration.signup.SignupJsonInput.*;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFacto
 import com.mercedesbenz.sechub.sharedkernel.validation.EmailValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class SignupJsonInputValidator implements Validator {

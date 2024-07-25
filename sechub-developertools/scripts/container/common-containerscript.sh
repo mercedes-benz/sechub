@@ -83,7 +83,9 @@ function checkContainerRunning(){
     if [ $? -eq 1 ]; then
       echo "* $container_name does not exist."
       running=CONST_DOES_NOT_EXIST
+      sleep 2s
     fi
+    
 }
 
 function startContainer(){

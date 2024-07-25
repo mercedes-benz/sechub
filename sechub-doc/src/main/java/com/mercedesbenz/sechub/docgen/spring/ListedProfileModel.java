@@ -3,16 +3,25 @@ package com.mercedesbenz.sechub.docgen.spring;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.mercedesbenz.sechub.docgen.spring.SpringProfilesPlantumlGenerator.SpringProfileGenoConfig;
 
 public class ListedProfileModel {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ListedProfileModel.class);
+
     List<ListedProfile> profiles = new ArrayList<>();
     List<String> errorMessages = new ArrayList<>();
 
@@ -28,6 +37,7 @@ public class ListedProfileModel {
         }
         if (found == null) {
             found = new ListedProfile(profileName);
+            LOG.info("added listed profile: {}", profileName);
             this.profiles.add(found);
         }
         found.configFiles.add(configFile);
@@ -38,7 +48,6 @@ public class ListedProfileModel {
         /* add includes */
         buildModelRelations(config);
         filter(config);
-
     }
 
     private void filter(SpringProfileGenoConfig config) {
@@ -94,7 +103,8 @@ public class ListedProfileModel {
     private void buildModelRelations(SpringProfileGenoConfig config) {
         ListedProfile baseProfile = ensureProfile("");
         ensureProfile("test");
-        for (ListedProfile profile : profiles) {
+        List<ListedProfile> iterateList = new ArrayList<>(profiles);
+        for (ListedProfile profile : iterateList) {
             handleProfile(profile);
         }
         for (ListedProfile profile : profiles) {
@@ -132,50 +142,66 @@ public class ListedProfileModel {
         return baseProfile;
     }
 
+    @SuppressWarnings("unchecked")
     private void handleProfile(ListedProfile profile) {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        LOG.info("Handle profile: label:{}, name:{}", profile.getLabel(), profile.getName());
+//        spring:
+//            profiles:
+//              group:
+//                pds_integrationtest: "pds_localserver,pds_integrationtest"
+//                pds_debug: "pds_debug"
+//                pds_dev: "pds_dev,pds_localserver"
+//                pds_prod: "pds_postgres,pds_server"
+
         for (File file : profile.configFiles) {
+
             if (!ListedProfile.isYaml(file)) {
                 continue;
             }
+            LOG.debug("Read from file: {}", file);
+            Map<String, Object> result = null;
             try {
-                List<String> lines = Files.readAllLines(file.toPath());
-                for (Iterator<String> it = lines.iterator(); it.hasNext();) {
-//						spring.profiles.include:
-                    // -... name
-                    String line = it.next();
-                    if (!line.trim().contentEquals("spring.profiles.include:")) {
-                        continue;
-                    }
-                    boolean doneEvenWhenIteratorHasNext = false;
-                    while (it.hasNext()) {
-                        String l = it.next().trim();
-                        if (!l.startsWith("-")) {
-                            doneEvenWhenIteratorHasNext = true;
-                            break;
-                        }
-                        String profileName = l.substring(1).trim();
-                        ListedProfile profileToInclude = null;
-                        for (ListedProfile incProfile : this.profiles) {
-                            if (incProfile.getName().contentEquals(profileName)) {
-                                profileToInclude = incProfile;
-                                break;
-                            }
-                        }
-                        if (profileToInclude != null) {
-                            profile.includedProfiles.add(profileToInclude);
-                        } else {
-                            String message = "Include profile not found:" + profileName;
-                            SpringProfilesPlantumlGenerator.LOG.error(message);
-                            addError(message);
-                        }
+                result = objectMapper.readValue(file, Map.class);
 
-                    }
-                    if (doneEvenWhenIteratorHasNext) {
-                        break;
-                    }
+            } catch (JsonMappingException e) {
+                if (e.getMessage().contains("No content")) {
+                    // just ignore empty files
+                    continue;
                 }
+                addError(e.getMessage());
+                continue;
             } catch (IOException e) {
-                throw new IllegalStateException("Cannot read lines of " + file);
+                addError(e.getMessage());
+                continue;
+            }
+            Object spring = result.get("spring");
+            if (!(spring instanceof Map)) {
+                continue;
+            }
+            Map<String, Object> springMap = (Map<String, Object>) spring;
+            Object profiles = springMap.get("profiles");
+            if (!(profiles instanceof Map)) {
+                continue;
+            }
+            Map<String, Object> profilesMap = (Map<String, Object>) profiles;
+            Object group = profilesMap.get("group");
+            if (!(group instanceof Map)) {
+                continue;
+            }
+            Map<String, Object> groupMap = (Map<String, Object>) group;
+
+            Set<String> groupNames = groupMap.keySet();
+            for (String groupName : groupNames) {
+                String content = (String) groupMap.get(groupName);
+                String[] splitted = content.split(",");
+                LOG.info("group '{}' : {}", groupName, splitted);
+                ListedProfile currentProfile = ensureProfile(groupName);
+                for (String split : splitted) {
+                    currentProfile.includedProfiles.add(ensureProfile(split.trim()));
+                }
             }
         }
     }

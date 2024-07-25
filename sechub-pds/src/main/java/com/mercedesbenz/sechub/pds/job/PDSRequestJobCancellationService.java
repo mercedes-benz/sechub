@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancellation;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })

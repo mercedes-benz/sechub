@@ -48,6 +48,12 @@ fi
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "j" ]]; then
     dumpVariable "TEST_MAPPING1_REPLACE_PROJECT1"
     dumpVariable "TEST_MAPPING2_NOT_EXISTING_IN_SECHUB"
+    
+    # we dump here for PDSUseSecHubCentralMappingInJobScenario16IntTest to check that
+    # environment variables which are not white listed are not available here
+    dumpVariable "INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED" # is white listed variable - must be not empty
+    dumpVariable "INTEGRATIONTEST_SCRIPT_ENV_FORBIDDEN" # not white listed - must be empty in test
+    dumpVariable "PATH" # check that this as a default white listed environment variable is available
 fi
 
 #

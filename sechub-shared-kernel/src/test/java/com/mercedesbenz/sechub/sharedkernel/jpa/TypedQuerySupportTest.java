@@ -6,11 +6,11 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 
 public class TypedQuerySupportTest {
     private TypedQuerySupport<String> supportToTest;

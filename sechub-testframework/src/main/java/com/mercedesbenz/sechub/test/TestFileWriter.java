@@ -15,8 +15,16 @@ public class TestFileWriter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestFileWriter.class);
 
+    public void write(File targetFile, String text) throws IOException {
+        save(targetFile, text, false);
+    }
+
     public void save(String text, File targetFile, Charset charset) throws IOException {
         internalSave(targetFile, text, true, charset);
+    }
+
+    public void write(File targetFile, String text, boolean overwrite) throws IOException {
+        save(targetFile, text, overwrite);
     }
 
     public void save(File targetFile, String text, boolean overwrite) throws IOException {

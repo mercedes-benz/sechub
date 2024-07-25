@@ -39,12 +39,13 @@ public class PDSUserContextService {
         if (authentication == null) {
             return false;
         }
+        String authorityForRole = PDSAuthorityConstants.AUTHORITY_ROLE_PREFIX + role;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority auth : authorities) {
             if (auth == null) {
                 continue;
             }
-            if (role.equals(auth.getAuthority())) {
+            if (authorityForRole.equals(auth.getAuthority())) {
                 return true;
             }
         }

@@ -5,6 +5,7 @@
     {
       "id": "PDS_SCANCODE",
       "path": "/pds/scripts/scancode.sh",
+      "envWhitelist" : [ "HELPER_FOLDER", "PDS_VERSION", "TOOL_FOLDER" ],
       "scanType": "licenseScan",
       "description": "Runs Scancode.",
       "minutesToWaitForProductResult": "660",
@@ -76,6 +77,7 @@
     {
       "id": "PDS_SCANCODE_MOCK",
       "path": "/pds/scripts/scancode_mock.sh",
+      "envWhitelist" : [ "HELPER_FOLDER", "MOCK_FOLDER" ],
       "scanType": "licenseScan",
       "description": "Runs ScanCode mock.",
       "parameters": {

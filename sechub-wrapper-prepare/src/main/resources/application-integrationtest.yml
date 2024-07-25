@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+logging:
+  level:
+    com.mercedesbenz.sechub: DEBUG

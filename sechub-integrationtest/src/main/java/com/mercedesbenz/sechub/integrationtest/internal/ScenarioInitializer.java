@@ -99,7 +99,7 @@ public class ScenarioInitializer {
      */
     public ScenarioInitializer createUser(TestUser user) {
 
-        LOG.info("create user:{}", user);
+        LOG.info("create user:{}", user.getUserId());
         assertUser(user).doesNotExist();
 
         as(ANONYMOUS).signUpAs(user);

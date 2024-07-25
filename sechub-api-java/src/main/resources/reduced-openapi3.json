@@ -970,19 +970,6 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
-                                    }
-                                }
-                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -1015,6 +1002,19 @@
                                             "type": "string",
                                             "description": "Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both."
                                         }
+                                    }
+                                }
+                            },
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
@@ -1051,6 +1051,10 @@
                             "api": {
                                 "type": "object",
                                 "properties": {
+                                    "apiDefinitionUrl": {
+                                        "type": "string",
+                                        "description": "Specifies an URL to read the API definition from."
+                                    },
                                     "use": {
                                         "type": "array",
                                         "description": "Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.",
@@ -1158,10 +1162,6 @@
                         "description": "The sechub server version."
                     }
                 }
-            },
-            "ServerVersion": {
-                "title": "ServerVersion",
-                "type": "object"
             },
             "StatusInformation": {
                 "title": "StatusInformation",
@@ -1870,35 +1870,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ServerRuntimeData"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "basic": [
-                            
-                        ]
-                    }
-                ]
-            }
-        },
-        "/api/admin/info/version": {
-            "get": {
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Admin checks server version",
-                "description": "An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.",
-                "operationId": "adminChecksServerVersion",
-                "responses": {
-                    "200": {
-                        "description": "200",
-                        "content": {
-                            "text/plain;charset=UTF-8": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ServerVersion"
                                 }
                             }
                         }
@@ -3372,15 +3343,6 @@
                         "name": "jobUUID",
                         "in": "path",
                         "description": "The SecHub jobUUID. During the job creation this unique job identifier is automatically generated by SecHub.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "checkSum",
-                        "in": "query",
-                        "description": "A sha256 checksum for file upload validation",
                         "required": true,
                         "schema": {
                             "type": "string"

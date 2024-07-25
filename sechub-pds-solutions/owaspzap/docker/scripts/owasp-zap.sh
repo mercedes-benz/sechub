@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
 
 shutdownZAP() {
@@ -40,6 +40,12 @@ echo "OWASP-ZAP started"
 echo "sechub job uuid: $SECHUB_JOB_UUID"
 echo ""
 
+options=""
+
+if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
+    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
+fi
+
 echo "###########################"
 echo "# Starting OWASP ZAP scan #"
 echo "###########################"
@@ -48,12 +54,12 @@ echo "Target URL: $PDS_SCAN_TARGET_URL"
 echo "Target Type: $PDS_SCAN_TARGET_TYPE"
 echo ""
 
-options=""
+zap_options=""
 
 if [ "$ZAP_ACTIVESCAN_ENABLED" = "true"  ]
 then
     echo "Active scan: enabled"
-    options="$options --activeScan"
+    zap_options="$zap_options --activeScan"
 else
     echo "Active scan: disabled"
 fi
@@ -61,7 +67,7 @@ fi
 if [ "$ZAP_AJAXCRAWLER_ENABLED" = "true" ]
 then
     echo "Ajax spider: enabled"
-    options="$options --ajaxSpider"
+    zap_options="$zap_options --ajaxSpider"
 else
     echo "Ajax spider: disabled"
 fi
@@ -75,7 +81,7 @@ fi
 if [ "$ZAP_USE_PROXY" = "true" ]
 then
     echo "Use proxy: enabled"
-    options="$options --proxyHost $ZAP_PROXY_HOST --proxyPort $ZAP_PROXY_PORT"
+    zap_options="$zap_options --proxyHost $ZAP_PROXY_HOST --proxyPort $ZAP_PROXY_PORT"
 else
     echo "Use proxy: disabled"
 fi
@@ -83,7 +89,7 @@ fi
 if [ "$WRAPPER_CONNECTIONCHECK_ENABLED" = "true" ]
 then
     echo "Wrapper connection check: enabled"
-    options="$options --connectionCheck"
+    zap_options="$zap_options --connectionCheck"
 else
     echo "Wrapper connection check: disabled"
 fi
@@ -91,7 +97,7 @@ fi
 if [ ! -z "$WRAPPER_MAXIMUM_CONNECTION_RETRIES" ]
 then
     echo "Use WRAPPER_MAXIMUM_CONNECTION_RETRIES: $WRAPPER_MAXIMUM_CONNECTION_RETRIES"
-    options="$options --maxNumberOfConnectionRetries $WRAPPER_MAXIMUM_CONNECTION_RETRIES"
+    zap_options="$zap_options --maxNumberOfConnectionRetries $WRAPPER_MAXIMUM_CONNECTION_RETRIES"
 else
     echo "Use default value of wrapper for WRAPPER_MAXIMUM_CONNECTION_RETRIES"
 fi
@@ -99,7 +105,7 @@ fi
 if [ ! -z "$WRAPPER_RETRY_WAITTIME_MILLISECONDS" ]
 then
     echo "Use WRAPPER_RETRY_WAITTIME_MILLISECONDS: $WRAPPER_RETRY_WAITTIME_MILLISECONDS"
-    options="$options --retryWaittimeInMilliseconds $WRAPPER_RETRY_WAITTIME_MILLISECONDS"
+    zap_options="$zap_options --retryWaittimeInMilliseconds $WRAPPER_RETRY_WAITTIME_MILLISECONDS"
 else
     echo "Use default value of wrapper for WRAPPER_RETRY_WAITTIME_MILLISECONDS"
 fi
@@ -116,10 +122,10 @@ then
 
     echo "$PDS_SCAN_CONFIGURATION" > "$sechub_scan_configuration"
 
-    options="$options --sechubConfigfile $sechub_scan_configuration"
+    zap_options="$zap_options --sechubConfigfile $sechub_scan_configuration"
 fi
 
-java -jar "$TOOL_FOLDER/wrapperowaspzap.jar" $options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE" --fullRulesetfile "$TOOL_FOLDER/owasp-zap-full-ruleset-all-release-status.json"
+java -jar $options "$TOOL_FOLDER/wrapperowaspzap.jar" $zap_options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE" --fullRulesetfile "$TOOL_FOLDER/owasp-zap-full-ruleset-all-release-status.json"
 
 # Shutdown OWASP-ZAP and cleanup after the scan
 echo "Shutdown OWASP-ZAP after scan"

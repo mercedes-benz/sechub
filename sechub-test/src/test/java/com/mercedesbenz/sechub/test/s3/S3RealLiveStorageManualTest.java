@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test.s3;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,7 +48,7 @@ class S3RealLiveStorageManualTest implements ManualTest {
         MultiStorageService service = new MultiStorageService(setup, s3Setup);
 
         UUID jobUUID = UUID.randomUUID();
-        JobStorage jobStorage = service.getJobStorage("test-only", jobUUID);
+        JobStorage jobStorage = service.createJobStorage("test-only", jobUUID);
 
         /* check preconditions */
         boolean existsBefore = jobStorage.isExisting(S3_OBJECT_NAME);
@@ -60,7 +62,8 @@ class S3RealLiveStorageManualTest implements ManualTest {
         InputStream inputStream = jobStorage.fetch(S3_OBJECT_NAME);
         InputStreamReader reader = new InputStreamReader(inputStream);
         BufferedReader br = new BufferedReader(reader);
-        String result = br.readLine();
+        String result = br.readLine() + "\n" + br.readLine();
+
         br.close();
 
         /* delete all */
@@ -69,27 +72,15 @@ class S3RealLiveStorageManualTest implements ManualTest {
         /* check delete done */
         boolean existsAfterDelete = jobStorage.isExisting(S3_OBJECT_NAME);
 
-        System.out.println("exists before storage:" + existsBefore);
-        System.out.println("exists after storage:" + existsAfterStore);
-        System.out.println("fetched string from object store:" + result);
-        System.out.println("exists after delete:" + existsAfterDelete);
+        System.out.println("- exists before storage:" + existsBefore);
+        System.out.println("- exists after storage:" + existsAfterStore);
+        System.out.println("- fetched string from object store:" + result);
+        System.out.println("- exists after delete:" + existsAfterDelete);
 
-        if (existsBefore) {
-            System.err.println("existed before!");
-            System.exit(1);
-        }
-        if (!existsAfterStore) {
-            System.err.println("was not stored!");
-            System.exit(1);
-        }
-        if (!testDataAsString.equals(result)) {
-            System.err.println("result was not as expected:" + result);
-            System.exit(1);
-        }
-        if (existsAfterDelete) {
-            System.err.println("data was not as expected:" + result);
-            System.exit(1);
-        }
+        assertFalse(existsBefore, "existed before!");
+        assertTrue(existsAfterStore, "was not stored!");
+        assertEquals(testDataAsString, result, "result was not as expected");
+        assertFalse(existsAfterDelete, "data still exists!");
     }
 
     private static S3Setup createS3SetupByEnvironmentVariables() {

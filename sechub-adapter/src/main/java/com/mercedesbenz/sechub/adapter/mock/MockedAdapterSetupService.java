@@ -82,7 +82,7 @@ public class MockedAdapterSetupService {
     private void loadConfiguredSetup() {
 
         try {
-            LOG.info("Loading conifgured setup from {}", filePath);
+            LOG.info("Loading configured setup from {}", filePath);
 
             String json = mockSupport.loadResourceString(filePath);
             staticMockSetup = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fromJSON(MockedAdapterSetup.class, json);

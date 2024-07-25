@@ -101,6 +101,8 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
             results.add(currentProductResult);
 
         }
+        contentProvider.close();
+
         return results;
     }
 

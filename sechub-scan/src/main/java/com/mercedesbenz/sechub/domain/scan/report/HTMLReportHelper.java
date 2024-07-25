@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
@@ -8,6 +10,9 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
+import com.mercedesbenz.sechub.commons.model.SecHubVersionControlData;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebAttack;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebBody;
@@ -249,6 +254,43 @@ public class HTMLReportHelper {
         }
         /* fallback always "no icon" */
         return EMPTY_STRING;
+    }
+
+    public SecHubVersionControlData getVersionControl(Optional<SecHubReportMetaData> metaData) {
+        return resolveVersionControlOrNull(metaData);
+    }
+
+    public boolean hasVersionControl(Optional<SecHubReportMetaData> metaData) {
+        return resolveVersionControlOrNull(metaData) != null;
+    }
+
+    public boolean hasRevisionData(SecHubFinding finding) {
+        return getRevisionData(finding) != null;
+    }
+
+    public SecHubRevisionData getRevisionData(SecHubFinding finding) {
+        if (finding == null) {
+            return null;
+        }
+        Optional<SecHubRevisionData> revisionOpt = finding.getRevision();
+        if (revisionOpt.isEmpty()) {
+            return null;
+        }
+        return revisionOpt.get();
+    }
+
+    private SecHubVersionControlData resolveVersionControlOrNull(Optional<SecHubReportMetaData> metaDataOpt) {
+        if (metaDataOpt == null) {
+            return null;
+        }
+        if (metaDataOpt.isEmpty()) {
+            return null;
+        }
+        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
+        if (versionControlOpt.isEmpty()) {
+            return null;
+        }
+        return versionControlOpt.get();
     }
 
     private HTMLFirstLinkToSeveritySupport getLinkSupport() {

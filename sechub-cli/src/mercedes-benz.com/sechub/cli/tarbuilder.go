@@ -26,10 +26,14 @@ func createBinariesTarFile(context *Context) error {
 	tarWriter := tar.NewWriter(newTarFile)
 
 	// Add everything in Data.Binaries to tar file
+	tarFileShouldHaveContent := false
 	for _, item := range context.sechubConfig.Data.Binaries {
-		err = appendToBinariesTarFile(tarFile, tarWriter, item, context.config.quiet, context.config.debug)
-		if err != nil {
-			return err
+		if len(item.FileSystem.Files) > 0 || len(item.FileSystem.Folders) > 0 {
+			err = appendToBinariesTarFile(tarFile, tarWriter, item, context.config.quiet, context.config.debug)
+			if err != nil {
+				return err
+			}
+			tarFileShouldHaveContent = true
 		}
 	}
 
@@ -38,11 +42,18 @@ func createBinariesTarFile(context *Context) error {
 
 	// Check if context.binariesTarFileName is an empty tar
 	// For performance reasons we only look deeper into very small files
-	if sechubUtil.GetFileSize(tarFile) < 10000 {
-		tarFileContent, _ := sechubUtil.ListContentOfTarFile(tarFile)
-		if len(tarFileContent) == 0 {
-			return errors.New(sechubUtil.TarFileHasNoContent)
+	if tarFileShouldHaveContent {
+		context.binariesTarUploadNeeded = true
+		if sechubUtil.GetFileSize(tarFile) < 10000 {
+			tarFileContent, _ := sechubUtil.ListContentOfTarFile(tarFile)
+			if len(tarFileContent) == 0 {
+				return errors.New(sechubUtil.TarFileHasNoContent)
+			}
 		}
+	} else {
+		os.Remove(context.binariesTarFileName)
+		context.binariesTarUploadNeeded = false
+		sechubUtil.LogNotice(sechubUtil.TarFileNotCreated)
 	}
 
 	return nil

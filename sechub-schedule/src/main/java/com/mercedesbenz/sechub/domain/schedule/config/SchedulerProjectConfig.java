@@ -3,13 +3,13 @@ package com.mercedesbenz.sechub.domain.schedule.config;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Configuration entry for scheduler project configuration data inside database.

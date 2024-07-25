@@ -272,6 +272,7 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("greenList", new ArrayList<>());
         reportModelBuilderResult.put("isWebDesignMode", false);
         reportModelBuilderResult.put("metaData", null);
+        reportModelBuilderResult.put("reportHelper", new HTMLReportHelper());
         reportModelBuilderResult.put("codeScanSupport", new HTMLCodeScanDescriptionSupport());
         reportModelBuilderResult.put("scanTypeSummaries", new ArrayList<>());
 

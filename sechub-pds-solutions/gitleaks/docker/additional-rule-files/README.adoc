@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+
+=== Additional gitleaks rule files
+Inside this directory you can put multiple rule files that specify gitleaks rule patterns.
+All the rules from the `.toml` files in this directory will be appended to the `custom-gitleaks.toml` file.
+
+[IMPORTANT]
+When creating this structure, there was a small bug inside gitleaks,
+which omitted the rule identifiers inside the SARIF report when specifying a custom rule file as intended by choosing `extendDefaults=true`.
+Because of this issue all default rules are inside the `custom-gitleaks.toml` with a small modification on the rule `generic-api-key`.
+When the issue regarding the SARIF report is resolved, the `custom-gitleaks.toml` file will be changed to the way it is intended by Gitleaks.

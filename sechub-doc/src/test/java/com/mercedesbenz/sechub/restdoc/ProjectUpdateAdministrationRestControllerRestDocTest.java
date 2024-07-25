@@ -39,7 +39,7 @@ import com.mercedesbenz.sechub.domain.administration.project.ProjectUpdateWhitel
 import com.mercedesbenz.sechub.domain.administration.project.UpdateProjectInputValidator;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectMetaData;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectWhitelist;
@@ -51,7 +51,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest(ProjectUpdateAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
         ProjectUpdateAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProjectUpdateAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -156,7 +156,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

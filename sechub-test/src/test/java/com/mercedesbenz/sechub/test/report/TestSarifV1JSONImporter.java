@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test.report;
 
-import com.mercedesbenz.sechub.sereco.importer.SarifImportProductWorkaroundSupport;
 import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
+import com.mercedesbenz.sechub.sereco.importer.TestWorkaroundSupport;
 
 /**
  * This importer provides an initialized SarifImportProductWorkaroundSupport,
@@ -11,7 +11,6 @@ import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 public class TestSarifV1JSONImporter extends SarifV1JSONImporter {
 
     public TestSarifV1JSONImporter() {
-        this.workaroundSupport = new SarifImportProductWorkaroundSupport();
+        this.workaroundSupport = new TestWorkaroundSupport();
     }
-
 }

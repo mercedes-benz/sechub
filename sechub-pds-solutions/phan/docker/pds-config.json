@@ -11,6 +11,7 @@
     {
       "id": "PDS_PHAN_MOCK",
       "path": "/pds/scripts/phan_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs Phan mock. It returns a fixed result file."
     }
