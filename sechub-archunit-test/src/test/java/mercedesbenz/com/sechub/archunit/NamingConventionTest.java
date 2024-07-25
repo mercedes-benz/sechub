@@ -25,6 +25,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
+                .withImportOption(ignoreSechubApiJava)
                 .importPath("../../sechub/");
 
         /* execute + test */
