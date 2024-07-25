@@ -197,6 +197,10 @@ public enum MessageID {
      */
     START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA, MessageDataKeys.EXECUTED_BY),
 
+    /**
+     * Event is sent when a scheduler instance creates or recreates its encryption
+     * pool
+     */
     SCHEDULE_ENCRYPTION_POOL_INITIALIZED,
 
     /**
@@ -204,6 +208,10 @@ public enum MessageID {
      */
     GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN,
 
+    /**
+     * Contains result for encryption status request by
+     * {@link #GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN}
+     */
     RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN(MessageDataKeys.SECHUB_DOMAIN_ENCRYPTION_STATUS),
 
     ;

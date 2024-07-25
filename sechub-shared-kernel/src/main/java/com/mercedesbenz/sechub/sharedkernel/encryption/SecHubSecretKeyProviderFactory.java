@@ -18,22 +18,37 @@ public class SecHubSecretKeyProviderFactory {
 
     public SecretKeyProvider createSecretKeyProvider(PersistentCipherType cipherType, SecHubCipherPasswordSourceType passwordSourceType,
             String cipherPasswordSourceData) {
+        if (PersistentCipherType.NONE.equals(cipherType)) {
+            /* none has never a secret key provider - there is just no secret */
+            return null;
+        }
+        try {
+            return handle(cipherType, passwordSourceType, cipherPasswordSourceData);
 
-        switch (passwordSourceType) {
-        case ENVIRONMENT_VARIABLE:
-            String environmentVariableName = cipherPasswordSourceData;
-            String environmentEntry = encryptionEnvironmentEntryProvider.getBase64EncodedEnvironmentEntry(environmentVariableName);
-
-            byte[] base64decoded = Base64.getDecoder().decode(environmentEntry);
-
-            return new DefaultSecretKeyProvider(base64decoded, cipherType);
-
-        case NONE:
-            return null; // here we need no secret key provider - none needs no password...
-        default:
-            throw new IllegalStateException("Password source type '%s' is not supported!".formatted(passwordSourceType));
+        } catch (Exception e) {
+            throw new SecHubSecretKeyProviderFactoryException(
+                    "Was not able to create key provider for cipherType: '%s', passwordSourceType: '%s', cipherPasswordSourceData: '%s'".formatted(cipherType,
+                            passwordSourceType, cipherPasswordSourceData),
+                    e);
         }
 
     }
 
+    private SecretKeyProvider handle(PersistentCipherType cipherType, SecHubCipherPasswordSourceType passwordSourceType, String cipherPasswordSourceData) {
+        switch (passwordSourceType) {
+
+        case ENVIRONMENT_VARIABLE:
+            String environmentVariableName = cipherPasswordSourceData;
+            String environmentEntry = encryptionEnvironmentEntryProvider.getBase64EncodedEnvironmentEntry(environmentVariableName);
+            if (environmentEntry == null || environmentEntry.isBlank()) {
+                throw new IllegalArgumentException("The environment variable: " + environmentVariableName + " has no value!");
+            }
+            byte[] base64decoded = Base64.getDecoder().decode(environmentEntry);
+
+            return new DefaultSecretKeyProvider(base64decoded, cipherType);
+
+        default:
+            throw new IllegalArgumentException("Password source type '%s' for cipher type: '%s' is not supported!".formatted(passwordSourceType, cipherType));
+        }
+    }
 }
