@@ -33,6 +33,7 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
@@ -45,9 +46,10 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreProductIdentifierClass)
                 .withImportOption(ignoreIntegrationTestClass)
+                .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreSchedulerSourcecodeUploadService)
-                .importPath("../../sechub/");
-
+                .withImportOption(ignoreSystemTest)
+                .importPath(SECHUB_ROOT_FOLDER);
 
         /* execute + test */
         /* custom version of DEPRECATED_API_SHOULD_NOT_BE_USED */
@@ -76,6 +78,7 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubApiJava)
@@ -83,7 +86,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubTest)
                 .withImportOption(ignoreSystemTest)
-                .importPath("../../sechub/");
+                .withImportOption(ignoreGenApi)
+                .importPath(SECHUB_ROOT_FOLDER);
 
         /* execute + test */
         testClassesShouldResideInTheSamePackageAsImplementation().check(importedClasses);
@@ -104,6 +108,7 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
@@ -115,7 +120,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreBuildSrc)
                 .withImportOption(ignoreAnalyzerCLI)
                 .withImportOption(ignoreExamples)
-                .importPath("../../sechub/");
+                .importPath(SECHUB_ROOT_FOLDER);
 
         /* execute + test */
         NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(importedClasses);
@@ -125,6 +130,7 @@ public class CodingRulesTest {
     private void ignoreTestGeneratedAndDeprecatedPackages() {
         /* @formatter:off */
         importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
@@ -135,7 +141,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreNetsparkerProduct)
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubApiJava)
-                .importPath("../../sechub/");
+                .withImportOption(ignoreDevelopertools)
+                .importPath(SECHUB_ROOT_FOLDER);
         /* @formatter:on */
     }
 }

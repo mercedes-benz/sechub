@@ -1,9 +1,15 @@
 package mercedesbenz.com.sechub.archunit;
 
+import java.util.List;
+
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.core.importer.Location;
 
 public class ArchUnitImportOptions {
+
+    public static final String SECHUB_ROOT_FOLDER = "../../sechub/";
+
+    static List<ImportOption> ignoreBuildFolders = new ArchUnitRuntimeSupport().createImportOptionsForBuildSystem();
 
     /* Ignore specific packages */
     static ImportOption ignoreAllTests = new ImportOption() {
@@ -132,11 +138,18 @@ public class ArchUnitImportOptions {
         }
     };
 
+    static ImportOption ignoreGenApi = new ImportOption() {
+        @Override
+        public boolean includes(Location location) {
+            return !location.contains("/api/internal/gen/"); // ignore any URI to sources that contains '/sechub-gen-api/'
+        }
+    };
+
     /* Ignore specific classes */
     static ImportOption ignoreProductIdentifierClass = new ImportOption() {
         @Override
         public boolean includes(Location location) {
-            return !location.contains("ProductIdentifier"); // ignore any URI to sources that contains '/ProductIdentifier'
+            return !location.contains("sharedkernel/ProductIdentifier"); // ignore any URI to sources that contains '/ProductIdentifier'
         }
     };
 

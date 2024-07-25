@@ -1,6 +1,7 @@
 package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,23 +22,21 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 @AnalyzeClasses
 public class DomainAccessRulesTest {
 
-    private JavaClasses importedClasses;
-
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_SCAN = "com.mercedesbenz.sechub.domain.scan";
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_ADMINISTRATION = "com.mercedesbenz.sechub.domain.administration";
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_STATISTIC = "com.mercedesbenz.sechub.domain.statistic";
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_SCHEDULE = "com.mercedesbenz.sechub.domain.schedule";
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_NOTIFICATION = "com.mercedesbenz.sechub.domain.notification";
-    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN_AUTHORIZATION = "com.mercedesbenz.sechub.domain.authorization";
+    private static final String DOMAIN_SCAN = "com.mercedesbenz.sechub.domain.scan";
+    private static final String DOMAIN_ADMINISTRATION = "com.mercedesbenz.sechub.domain.administration";
+    private static final String DOMAIN_STATISTIC = "com.mercedesbenz.sechub.domain.statistic";
+    private static final String DOMAIN_SCHEDULE = "com.mercedesbenz.sechub.domain.schedule";
+    private static final String DOMAIN_NOTIFICATION = "com.mercedesbenz.sechub.domain.notification";
+    private static final String DOMAIN_AUTHORIZATION = "com.mercedesbenz.sechub.domain.authorization";
 
     /* @formatter:off */
-    private static List<String> allDomainsToTest = Arrays.asList(
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_SCAN,
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_ADMINISTRATION,
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_STATISTIC,
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_SCHEDULE,
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_NOTIFICATION,
-            COM_MERCEDESBENZ_SECHUB_DOMAIN_AUTHORIZATION
+    private static final List<String> allDomainsToTest = Arrays.asList(
+            DOMAIN_SCAN,
+            DOMAIN_ADMINISTRATION,
+            DOMAIN_STATISTIC,
+            DOMAIN_SCHEDULE,
+            DOMAIN_NOTIFICATION,
+            DOMAIN_AUTHORIZATION
             );
     /* @formatter:on */
 
@@ -46,10 +45,12 @@ public class DomainAccessRulesTest {
     void no_class_in_one_domain_communicate_with_another_domain(String domainToTest) {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreBuildFolders)
+                .withImportOption(ignoreDevelopertools)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
-                .importPath("../../sechub/");
+                .importPath(SECHUB_ROOT_FOLDER);
 
         /* execute + test */
         noClasses()

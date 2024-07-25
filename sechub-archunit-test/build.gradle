@@ -5,10 +5,20 @@
 * Root build file: "${rootProject.projectDir}/build.gradle"
 * ============================================================================
 */
+
 dependencies {
+//    testImplementation library.springboot_starter_actuator
+    testImplementation library.springframework_web
+
+    for (project in projectType.archUnitProjects) {
+        testImplementation project
+    }
 
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation library.arch_unit
-    testImplementation "org.springframework:spring-beans:6.1.3"
-    testImplementation "org.springframework:spring-context:6.1.3"
+//    testImplementation "org.springframework:spring-beans:6.1.3"
+//    testImplementation "org.springframework:spring-context:6.1.3"
 }
+
+// ./gradlew sechub-archunit-test:test
+
