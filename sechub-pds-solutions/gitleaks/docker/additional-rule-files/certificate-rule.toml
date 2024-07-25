@@ -1,7 +1,0 @@
-[[rules]]
-id = "cryptographic-certificate"
-description = "Identified a cryptographic certificate, which may compromise cryptographic security and sensitive data encryption."
-regex = '''(?i)-----BEGIN[ A-Z0-9_-]{0,100}CERTIFICATE( BLOCK)?-----[\s\S-]*KEY( BLOCK)?----'''
-keywords = [
-    "-----begin",
-]
