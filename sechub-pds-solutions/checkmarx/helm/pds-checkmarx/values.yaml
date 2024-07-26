@@ -29,11 +29,11 @@ pds:
   archive:
     # Limiting parameters regarding the extraction of .zip archives:
     extraction:
-      # The maximal file size of the uncompressed zip archive (e.g.: 10KB or 10MB or 10GB)
+      # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
       maxFileFizeUncompressed: 1GB
-      # Defines how many entries the zip archive may have
+      # Defines how many entries the archive may have
       maxEntries: 100000
-      # The maximum directory depth for an entry inside the zip archive
+      # The maximum directory depth for an entry inside the archive
       maxDirectoryDepth: 100
       # The timeout of the archive extraction process
       timeout: 1m

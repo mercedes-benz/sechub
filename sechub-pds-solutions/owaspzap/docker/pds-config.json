@@ -5,7 +5,6 @@
     {
       "id": "PDS_OWASP_ZAP",
       "path": "/pds/scripts/owasp-zap.sh",
-      "envWhitelist" : [ "TOOL_FOLDER" ],
       "scanType": "webScan",
       "minutesToWaitForProductResult": 600,
       "description": "Runs OWASP ZAP",
@@ -70,7 +69,13 @@
             "default": 1000
           }
         ]
-      }
+      },
+      "envWhitelist": [
+        "TOOL_FOLDER",
+        "ZAP_API_KEY",
+        "ZAP_HOST",
+        "ZAP_PORT"
+      ]
     },
     {
       "id": "PDS_OWASP_ZAP_MOCK",
