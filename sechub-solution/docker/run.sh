@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 # SPDX-License-Identifier: MIT
 
 SLEEP_TIME_IN_WAIT_LOOP="2h"
@@ -41,15 +41,18 @@ localserver() {
   check_setup
 
   profiles="dev,real_products,mocked_notifications"
-  storage_options="-Dsechub.storage.sharedvolume.upload.dir=$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 
-  if [ "$POSTGRES_ENABLED" = true ]
-  then
+  if [ "$POSTGRES_ENABLED" = true ] ; then
     profiles="$profiles,postgres"
     check_variable "$DATABASE_CONNECTION" "DATABASE_CONNECTION"
     check_variable "$DATABASE_USERNAME" "DATABASE_USERNAME"
     check_variable "$DATABASE_PASSWORD" "DATABASE_PASSWORD"
-    database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
+
+    # Set datasource variables for Java Spring app:
+    export SPRING_DATASOURCE_URL="$DATABASE_CONNECTION"
+    export SPRING_DATASOURCE_USERNAME="$DATABASE_USERNAME"
+    export SPRING_DATASOURCE_PASSWORD="$DATABASE_PASSWORD"
+
     echo "Using database: Postgres"
     echo " * connection string: $DATABASE_CONNECTION"
     echo " * database username: $DATABASE_USERNAME"
@@ -62,27 +65,31 @@ localserver() {
   echo "Upload binaries maximum bytes: $SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES"
   echo "Activated Spring profiles: $profiles"
 
+  # Check variables for Java Spring app:
+  check_variable "$SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES" "SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES"
+
+  # Set variables for Java Spring app:
+  export SPRING_PROFILES_ACTIVE="$profiles"
+  export SECHUB_TARGETTYPE_DETECTION_INTRANET_HOSTNAME_ENDSWITH="intranet.example.org"
+  export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY="0"
+  export SECHUB_INITIALADMIN_USERID="$ADMIN_USERID"
+  export SECHUB_INITIALADMIN_APITOKEN="$ADMIN_APITOKEN"
+  export SECHUB_INITIALADMIN_EMAIL="sechubadm@example.org"
+  export SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE="$SECHUB_MAX_FILE_UPLOAD_SIZE"
+  export SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE="$SECHUB_MAX_FILE_UPLOAD_SIZE"
+  export SECHUB_ADAPTER_NETSPARKER_USERID="abc"
+  export SECHUB_ADAPTER_NETSPARKER_APITOKEN="xyz"
+  export SECHUB_ADAPTER_NETSPARKER_BASEURL="https://example.org"
+  export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID="example"
+  export SECHUB_ADAPTER_NETSPARKER_LICENSEID="example"
+  export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID="example"
+  export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS="example@example.org"
+  export SECHUB_NOTIFICATION_EMAIL_FROM="example@example.org"
+  export SECHUB_NOTIFICATION_SMTP_HOSTNAME="example.org"
+
   echo "Starting up SecHub server"
-  java $java_debug_options $database_options $storage_options \
+  java $java_debug_options \
     -Dfile.encoding=UTF-8 \
-    -Dspring.profiles.active="$profiles" \
-    -Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org \
-    -Dsechub.config.trigger.nextjob.initialdelay=0 \
-    -Dsechub.initialadmin.userid="$ADMIN_USERID" \
-    -Dsechub.initialadmin.email=sechubadm@example.org \
-    -Dsechub.initialadmin.apitoken="$ADMIN_APITOKEN" \
-    -Dspring.servlet.multipart.max-file-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
-    -Dspring.servlet.multipart.max-request-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
-    -Dsechub.upload.binaries.maximum.bytes="$SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES" \
-    -Dsechub.adapter.netsparker.userid=abc \
-    -Dsechub.adapter.netsparker.apitoken=xyz \
-    -Dsechub.adapter.netsparker.baseurl=https://example.org \
-    -Dsechub.adapter.netsparker.defaultpolicyid=example \
-    -Dsechub.adapter.netsparker.licenseid=example \
-    -Dsechub.adapter.nessus.defaultpolicyid=example \
-    -Dsechub.notification.email.administrators=example@example.org \
-    -Dsechub.notification.email.from=example@example.org \
-    -Dsechub.notification.smtp.hostname=example.org \
     -Dserver.port=8443 \
     -Dserver.address=0.0.0.0 \
     -jar /sechub/sechub-server*.jar
@@ -126,8 +133,11 @@ SecHub server settings:
 
 Starting up SecHub server
 EOF
-  java $java_debug_options $storage_options \
-    -Dfile.encoding=UTF-8 -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm \
+  java $java_debug_options \
+    -Dfile.encoding=UTF-8 \
+    -XX:InitialRAMPercentage=50 \
+    -XX:MaxRAMPercentage=80 \
+    -XshowSettings:vm \
     -jar /sechub/sechub-server*.jar
 }
 
@@ -136,19 +146,18 @@ echo "Starting run script: run.sh $@"
 echo "Java version:"
 java --version
 
-if [ "$JAVA_ENABLE_DEBUG" = "true" ]
-then
+if [ "$JAVA_ENABLE_DEBUG" = "true" ] ; then
   JAVA_DEBUG_PORT=15023
   echo "# Opening port $JAVA_DEBUG_PORT for Java debugging"
   java_debug_options="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$JAVA_DEBUG_PORT"
 fi
 
-if [ "$S3_ENABLED" = "true" ]
-then
-  storage_options="-Dsechub.storage.s3.endpoint=$S3_ENDPOINT"
-  storage_options="$storage_options -Dsechub.storage.s3.bucketname=$S3_BUCKETNAME"
-  storage_options="$storage_options -Dsechub.storage.s3.accesskey=$S3_ACCESSKEY"
-  storage_options="$storage_options -Dsechub.storage.s3.secretkey=$S3_SECRETKEY"
+if [ "$S3_ENABLED" = "true" ] ; then
+  # Set storage variables for Java Spring app:
+  export SECHUB_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
+  export SECHUB_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
+  export SECHUB_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
+  export SECHUB_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
 
   cat - <<EOF
 Using S3 object storage:
@@ -164,7 +173,6 @@ case "$SECHUB_START_MODE" in
   *) wait_loop ;;
 esac
 
-if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ]
-then
+if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ] ; then
   wait_loop
 fi
