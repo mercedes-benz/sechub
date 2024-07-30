@@ -6,12 +6,13 @@ import { getValidFormatsFromInput } from './report-formats';
 import * as fs from 'fs';
 
 /**
- * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be 
+ * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be
  * generated from the input parameters and this path will be returned.
- * 
+ *
+ * @param secHubJsonFilePath Path to the sechub.json
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param builderData contains builder data which is used when no custom sechub configuration file is defined by user
- * 
+ *
  * @returns resulting configuration file path
  */
 export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): string {
