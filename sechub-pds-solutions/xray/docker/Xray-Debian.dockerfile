@@ -5,8 +5,8 @@ ARG BASE_IMAGE
 
 # Build Args
 # Build type can be "copy" or "download"
-ARG BUILD_TYPE
-ARG XRAY_WRAPPER_VERSION="1.0.0"
+ARG BUILD_TYPE="download"
+ARG XRAY_WRAPPER_VERSION
 
 # The base image of the builder
 ARG BUILDER_BASE_IMAGE="debian:12-slim"
