@@ -68,6 +68,9 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
                     " where (j." + PROPERTY_EXECUTION_STATE + " = " + ExecutionState.ENDED + " or j." + PROPERTY_EXECUTION_STATE + " = " +ExecutionState.CANCELED +")"+
                     " and j." + PROPERTY_ENCRYPTION_POOL_ID + " < :" + PARAM_ENCRYPTION_POOL_ID;
 
+    static final String JPQL_STRING_FETCH_ALL_USED_ENCRYPTION_POOL_IDS_IN_JOBS =
+            "select DISTINCT j."+PROPERTY_ENCRYPTION_POOL_ID+" from " + CLASS_NAME + " j";
+
 
     /* @formatter:on */
 
@@ -145,6 +148,13 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
         query.setParameter(PARAM_ENCRYPTION_POOL_ID, encryptionPoolId);
         query.setMaxResults(1);
         return (Long) query.getSingleResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Long> collectAllUsedEncryptionPoolIdsInsideJobs() {
+        Query query = em.createQuery(JPQL_STRING_FETCH_ALL_USED_ENCRYPTION_POOL_IDS_IN_JOBS);
+        return query.getResultList();
     }
 
 }

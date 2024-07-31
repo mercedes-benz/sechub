@@ -6,16 +6,31 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScheduleLatestCipherPoolIdResolver {
+public class ScheduleLatestCipherPoolDataCalculator {
 
     /**
-     * Resolve latest entry from given list of data entries
+     * Calculates latest id from given list of data entries
+     *
+     * @param entries a list of pool data elements
+     * @return latest id of list, or <code>null</code> of entry list was empty or
+     *         null
+     */
+    public Long calculateLatestPoolId(List<ScheduleCipherPoolData> entries) {
+        ScheduleCipherPoolData latestCipherPoolData = calculateLatestPoolData(entries);
+        if (latestCipherPoolData == null) {
+            return null;
+        }
+        return latestCipherPoolData.getId();
+    }
+
+    /**
+     * Calculates latest entry from given list of data entries
      *
      * @param entries a list of pool data elements
      * @return latest entry of list, or <code>null</code> of entry list was empty or
      *         null
      */
-    public Long resolveLatestPoolId(List<ScheduleCipherPoolData> entries) {
+    public ScheduleCipherPoolData calculateLatestPoolData(List<ScheduleCipherPoolData> entries) {
         if (entries == null || entries.isEmpty()) {
             return null;
         }
@@ -32,10 +47,7 @@ public class ScheduleLatestCipherPoolIdResolver {
                 }
             }
         }
-        if (latestCipherPoolData == null) {
-            return null;
-        }
-        return latestCipherPoolData.getId();
+        return latestCipherPoolData;
     }
 
 }

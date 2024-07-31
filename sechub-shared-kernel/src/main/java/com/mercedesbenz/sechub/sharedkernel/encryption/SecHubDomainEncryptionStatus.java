@@ -7,6 +7,9 @@ import com.mercedesbenz.sechub.commons.model.JSONable;
 
 public class SecHubDomainEncryptionStatus implements JSONable<SecHubDomainEncryptionStatus> {
 
+    public static final String PROPERTY_DATA = "data";
+    public static final String PROPERTY_NAME = "name";
+
     private static final SecHubDomainEncryptionStatus CONVERTER = new SecHubDomainEncryptionStatus();
     private String name;
 
@@ -20,6 +23,12 @@ public class SecHubDomainEncryptionStatus implements JSONable<SecHubDomainEncryp
         return name;
     }
 
+    /**
+     * Returns the list of encryption data entries. Each entry represents one
+     * encryption pool entry!
+     *
+     * @return list of encryption data entries
+     */
     public List<SecHubDomainEncryptionData> getData() {
         return data;
     }

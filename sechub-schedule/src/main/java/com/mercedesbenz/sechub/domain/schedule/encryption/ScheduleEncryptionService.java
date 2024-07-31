@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 import com.mercedesbenz.sechub.commons.encryption.SecretKeyProvider;
+import com.mercedesbenz.sechub.domain.schedule.ScheduleShutdownService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubSecretKeyProviderFactory;
@@ -31,12 +33,6 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseScheduleEncryptionPoolRefresh;
 
-/**
- * This service is the central point for all schedule encryption actions.
- *
- * @author Albert Tregnaghi
- *
- */
 @Service
 public class ScheduleEncryptionService {
 
@@ -52,7 +48,7 @@ public class ScheduleEncryptionService {
     ScheduleEncryptionPoolFactory scheduleEncryptionPoolFactory;
 
     @Autowired
-    ScheduleLatestCipherPoolIdResolver scheduleLatestCipherPoolIdResolver;
+    ScheduleLatestCipherPoolDataCalculator latestCipherPoolDataCalculator;
 
     @Autowired
     EncryptionRotator rotator;
@@ -64,6 +60,12 @@ public class ScheduleEncryptionService {
     SecHubSecretKeyProviderFactory secretKeyProviderFactory;
 
     @Autowired
+    SecHubOutdatedEncryptionPoolSupport outdatedEncryptionPoolSupport;
+
+    @Autowired
+    ScheduleShutdownService shutdownService;
+
+    @Autowired
     @Lazy
     DomainMessageService domainMessageService;
 
@@ -72,7 +74,7 @@ public class ScheduleEncryptionService {
     ScheduleEncryptionPool scheduleEncryptionPool;
 
     @EventListener(ApplicationStartedEvent.class)
-    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, name = "Init encryption pool", description = "Encryption pool is created on startup"))
+    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, next = 3, name = "Init encryption pool", description = "Encryption pool is created on startup"))
     void applicationStarted() throws ScheduleEncryptionException {
         // If a new started server is not able to handle all ciphers from cipher pool it
         // will just
@@ -93,7 +95,7 @@ public class ScheduleEncryptionService {
      * encryption is currently not supported by this server instance) just a warning
      * is logged and the old encryption pool is still in use.
      */
-    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 2, name = "Refresh encryption pool", description = "Encryption pool is refreshed (if necessary)"))
+    @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 2, next = 3, name = "Refresh encryption pool", description = "Encryption pool is refreshed (if necessary)"))
     @UseCaseAdminStartsEncryptionRotation(@Step(number = 5, name = "Refresh encryption pool", description = "Encryption pool is refreshed (necessary because pool changed before this method call)"))
     public void refreshEncryptionPoolAndLatestPoolIdIfNecessary() {
 
@@ -108,8 +110,16 @@ public class ScheduleEncryptionService {
             initNewEncryptionPoolOrFail();
             LOG.info("Encryption pool has been recreated sucessfully.");
 
-        } catch (ScheduleEncryptionException e) {
-            LOG.warn("Was not able to refresh encryption pool, will stay on old encryption. Reason: {}", e.getMessage());
+        } catch (Exception e) {
+            LOG.warn("Was not able to refresh encryption pool. Reason: {}", e.getMessage());
+
+            if (outdatedEncryptionPoolSupport.isOutdatedEncryptionStillAllowedOnThisClusterMember()) {
+                LOG.info("Failing encrytpion pool initialization is still accepted, will use old existing encryption pool.");
+            } else {
+                LOG.info("Old (outdated) encryption pool no longer accepted, will trigger shutdown");
+                shutdownService.shutdownApplication();
+            }
+
         }
 
     }
@@ -124,7 +134,7 @@ public class ScheduleEncryptionService {
 
         scheduleEncryptionPool = scheduleEncryptionPoolFactory.createEncryptionPool(allPoolDataEntries);
 
-        latestCipherPoolId = scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(allPoolDataEntries);
+        latestCipherPoolId = latestCipherPoolDataCalculator.calculateLatestPoolId(allPoolDataEntries);
         if (latestCipherPoolId == null) {
             throw new IllegalStateException("Was not able to determine latest cipher pool data!");
         }
@@ -230,6 +240,10 @@ public class ScheduleEncryptionService {
         }
         return poolData;
 
+    }
+
+    public Set<Long> getCurrentEncryptionPoolIds() {
+        return scheduleEncryptionPool.getAllPoolIds();
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessCountService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
@@ -47,10 +48,19 @@ public class IntegrationTestSchedulerRestController {
     @Autowired
     private SecHubJobRepository jobRepository;
 
+    @Autowired
+    private ScheduleCipherPoolCleanupService scheduleCipherPoolCleanupService;
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/schedule/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long fetchScheduleAutoCleanupConfiguredDays() {
         return scheduleConfigService.getAutoCleanupInDays();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/schedule/cipher-pool-data/cleanup", method = RequestMethod.PUT, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void startScheduleAutoCleanupDirectlyForTesting() {
+        scheduleCipherPoolCleanupService.cleanupCipherPoolDataIfNecessaryAndPossible();
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/schedule/access/count", method = RequestMethod.GET, produces = {
@@ -68,7 +78,6 @@ public class IntegrationTestSchedulerRestController {
     @RequestMapping(path = APIConstants.API_ANONYMOUS
             + "integrationtest/schedule/revert/job/{sechubJobUUID}/still-running", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
     public void revertJobAsStillRunning(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        ;
         integrationTestSchedulerService.revertJobAsStillRunning(sechubJobUUID);
     }
 
@@ -76,7 +85,6 @@ public class IntegrationTestSchedulerRestController {
             + "integrationtest/schedule/revert/job/{sechubJobUUID}/still-not-approved", method = RequestMethod.PUT, produces = {
                     MediaType.APPLICATION_JSON_VALUE })
     public void revertJobAsStillNotApproved(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        ;
         integrationTestSchedulerService.revertJobAsStillNotApproved(sechubJobUUID);
     }
 

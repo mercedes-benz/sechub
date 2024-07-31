@@ -7,6 +7,13 @@ import java.util.TreeMap;
 //SPDX-License-Identifier: MIT
 public class SecHubDomainEncryptionData {
 
+    public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_ALGORITHM = "algorithm";
+    public static final String PROPERTY_PASSWORDSOURCE = "passwordSource";
+    public static final String PROPERTY_CREATED = "created";
+    public static final String PROPERTY_CREATED_FROM = "createdFrom";
+    public static final String PROPERTY_USAGE = "usage";
+
     private String id;
 
     private SecHubCipherAlgorithm algorithm;
@@ -20,6 +27,9 @@ public class SecHubDomainEncryptionData {
     private LocalDateTime created;
 
     public class PasswordSourceData {
+        public static final String PROPERTY_TYPE = "type";
+        public static final String PROPERTY_DATA = "data";
+
         private SecHubCipherPasswordSourceType type;
         private String data;
 

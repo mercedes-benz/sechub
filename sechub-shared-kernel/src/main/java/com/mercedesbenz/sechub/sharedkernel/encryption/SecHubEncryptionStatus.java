@@ -8,6 +8,9 @@ import com.mercedesbenz.sechub.commons.model.JSONable;
 
 public class SecHubEncryptionStatus implements JSONable<SecHubEncryptionStatus> {
 
+    public static final String PROPERTY_TYPE = "type";
+    public static final String PROPERTY_DOMAINS = "domains";
+
     private static SecHubEncryptionStatus CONVERTER = new SecHubEncryptionStatus();
 
     private String type = "encryptionStatus";

@@ -63,7 +63,7 @@ public class ScheduleCipherPoolDataProvider {
         fallbackEntry.created = LocalDateTime.now();
         fallbackEntry.createdFrom = null;
         fallbackEntry.testInitialVector = null;
-
+        fallbackEntry.version = Integer.valueOf(0);
         return fallbackEntry;
     }
 

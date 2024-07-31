@@ -22,7 +22,6 @@ import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 
 public class JobScenario2IntTest {
 
@@ -105,7 +104,72 @@ public class JobScenario2IntTest {
     }
 
     @Test
-    public void a_triggered_job_is_NOT_found_in_running_jobs_list_by_admin__when_already_done_and_encryption_rotation_can_be_done() {
+    public void job_list_for_done_job__and_encryption_and_cleanup_are_working() {
+        /* step 1 : job list entries */
+        UUID doneJobUUID = assertAlreadyDoneJobIsNotListedInAdminJobList();
+        int scheduleDataSizeBeforeRotate = assertEncryptionStatus().domain("schedule").hasData().getDataSize();
+
+        /* step 2 : rotate encryption for job */
+        triggerEncryptionRotationAndAssertEncryptionIsDone(doneJobUUID);
+
+        /* step3: check status must have now one more data */
+        int scheduleDataSizeAfterRotate = assertEncryptionStatus()./* dump(). */domain("schedule").hasData().getDataSize();
+        assertThat(scheduleDataSizeAfterRotate).isEqualTo(scheduleDataSizeBeforeRotate + 1); // must be one more...
+
+        /*
+         * step4: rotate encryption for job again - means we ensure former job uses no
+         * longer the older cipher pool data and next cleanup will at least remove this
+         * one
+         */
+        triggerEncryptionRotationAndAssertEncryptionIsDone(doneJobUUID);
+
+        int scheduleDataSizeAfterRotate2 = assertEncryptionStatus()/* .dump() */.domain("schedule").hasData().getDataSize();
+        assertThat(scheduleDataSizeAfterRotate2).isEqualTo(scheduleDataSizeBeforeRotate + 2); // must be one more...
+
+        /*
+         * now cleanup cipher pool data (we do not want to wait for auto cleanup...
+         * takes too long time
+         */
+        startScheduleCipherPoolDataCleanup();
+
+        /*
+         * wait until auto cleanup is done and encryption pool is cleaned
+         */
+        executeRunnableAndAcceptAssertionsMaximumTimes(20, () -> {
+            int scheduleDataSize3 = assertEncryptionStatus()./* dump(). */domain("schedule").hasData().getDataSize();
+            LOG.info("Fetched schedule encryption pool size(3): {}", scheduleDataSize3);
+            assertThat(scheduleDataSize3).isLessThan(scheduleDataSizeAfterRotate2); // must be less
+
+        }, 500);
+    }
+
+    private void triggerEncryptionRotationAndAssertEncryptionIsDone(UUID doneJobUUID) {
+        /* @formatter:off */
+		/* prepare 3 */
+		Long formerEncryptionPoolid = fetchScheduleEncryptionPoolIdForJob(doneJobUUID);
+		LOG.info("Job: {} had encryption pool id: {}", doneJobUUID, formerEncryptionPoolid);
+
+		SecHubEncryptionData data = new SecHubEncryptionData();
+		data.setAlgorithm(SecHubCipherAlgorithm.AES_GCM_SIV_256);
+		data.setPasswordSourceType(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
+		data.setPasswordSourceData("INTEGRATION_TEST_SECRET_1_AES_256"); // see IntegrationTestEncryptionEnvironmentEntryProvider
+
+		/* execution 3 - change encryption */
+		as(SUPER_ADMIN).rotateEncryption(data);
+
+		/* test 3 */
+		executeRunnableAndAcceptAssertionsMaximumTimes(10, ()->{
+
+		    Long newEncryptionPoolid = fetchScheduleEncryptionPoolIdForJob(doneJobUUID);
+		    assertThat(newEncryptionPoolid).isNotEqualTo(formerEncryptionPoolid);
+		    LOG.info("Job: {} has now encryption pool id: {}", doneJobUUID, newEncryptionPoolid);
+
+		}, 500);
+		/* @formatter:on */
+    }
+
+    private UUID assertAlreadyDoneJobIsNotListedInAdminJobList() {
+        /* @formatter:off */
         /* prepare */
         as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
@@ -134,44 +198,8 @@ public class JobScenario2IntTest {
 			and().
 			onJobAdministration().
 			    canNotFindRunningJob(jobUUID); // means events are triggered and handled */
-
-		/* execute 2 - fetch encryption status is possible*/
-		SecHubEncryptionStatus status =  as(SUPER_ADMIN).fetchEncryptionStatus();
-
-		/* test 2 - fetch encryption status  is possible*/
-		int scheduleDataSize= assertEncryptionStatus(status).
-		    dump().
-		    domain("schedule").
-		        hasData().getDataSize();
-
-
-		/* prepare 3 */
-		Long formerEncryptionPoolid = fetchScheduleEncryptionPoolIdForJob(jobUUID);
-		LOG.info("formerEncryptionPoolid: {}", formerEncryptionPoolid);
-
-		SecHubEncryptionData data = new SecHubEncryptionData();
-		data.setAlgorithm(SecHubCipherAlgorithm.AES_GCM_SIV_256);
-		data.setPasswordSourceType(SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE);
-		data.setPasswordSourceData("INTEGRATION_TEST_SECRET_1_AES_256"); // see IntegrationTestEncryptionEnvironmentEntryProvider
-
-		/* execution 3 - change encryption */
-		as(SUPER_ADMIN).rotateEncryption(data);
-
-		/* test 3 */
-		executeRunnableAndAcceptAssertionsMaximumTimes(10, ()->{
-
-		    Long newEncryptionPoolid = fetchScheduleEncryptionPoolIdForJob(jobUUID);
-		    LOG.info("newEncryptionPoolid: {}", newEncryptionPoolid);
-		    assertThat(newEncryptionPoolid).isNotEqualTo(formerEncryptionPoolid);
-
-		}, 500);
-		/* @formatter:on */
-
-        /* test 4 - status returns now one more data */
-        SecHubEncryptionStatus status2 = as(SUPER_ADMIN).fetchEncryptionStatus();
-        int scheduleDataSize2 = assertEncryptionStatus(status2).dump().domain("schedule").hasData().getDataSize();
-
-        assertThat(scheduleDataSize2).isEqualTo(scheduleDataSize + 1); // must be one more...
+        return jobUUID;
+        /* @formatter:on */
     }
 
 }

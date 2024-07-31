@@ -119,6 +119,10 @@ public class TestAPI {
         return AssertUserJobInfo.assertInfo(page);
     }
 
+    public static AssertEncryptionStatus assertEncryptionStatus() {
+        return assertEncryptionStatus(as(SUPER_ADMIN).fetchEncryptionStatus());
+    }
+
     public static AssertEncryptionStatus assertEncryptionStatus(SecHubEncryptionStatus status) {
         return AssertEncryptionStatus.assertEncryptionStatus(status);
     }
@@ -1258,6 +1262,18 @@ public class TestAPI {
                 return foundDays == days;
             }
         });
+    }
+
+    /**
+     * Starts cipher pool cleanup for scheduler domain directly for test scenario.
+     * Normally this is done by auto cleanup mechanism only, but with this method it
+     * is also possible to trigger the cleanup inside integration tests.
+     */
+    public static void startScheduleCipherPoolDataCleanup() {
+        resetAutoCleanupDays(0);
+
+        String url = getURLBuilder().buildIntegrationTestStartScheduleCipherPoolDataCleanup();
+        getSuperAdminRestHelper().put(url);
     }
 
     /**

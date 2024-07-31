@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -37,6 +38,9 @@ public class ScheduleAutoCleanupService {
     @Autowired
     AutoCleanupResultInspector inspector;
 
+    @Autowired
+    ScheduleCipherPoolCleanupService encryptionPoolCleanupService;
+
     @UseCaseScheduleAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
@@ -60,6 +64,9 @@ public class ScheduleAutoCleanupService {
                     build()
                     );
         /* @formatter:on */
+
+        /* cleanup encryption */
+        encryptionPoolCleanupService.cleanupCipherPoolDataIfNecessaryAndPossible();
 
     }
 

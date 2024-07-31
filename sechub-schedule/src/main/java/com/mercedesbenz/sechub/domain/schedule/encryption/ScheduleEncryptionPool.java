@@ -8,6 +8,18 @@ import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 
+/**
+ * This class represents the runtime container cache which provides
+ * {@link PersistentCipher} objects for dedicated pool identifier.
+ *
+ * It has a nother name than {@link ScheduleCipherPoolData} which represents the
+ * data source from database (but which is only used for creation of this pool).
+ * To differ between database entities and runtime container object, the names
+ * differ.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class ScheduleEncryptionPool {
 
     Map<Long, PersistentCipher> poolDataIdToPersistentCipherMap = new LinkedHashMap<>();

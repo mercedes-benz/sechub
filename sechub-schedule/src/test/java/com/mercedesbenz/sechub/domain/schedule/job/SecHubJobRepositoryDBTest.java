@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import static com.mercedesbenz.sechub.commons.model.job.ExecutionState.*;
 import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,50 @@ public class SecHubJobRepositoryDBTest {
     @BeforeEach
     void before() {
         jobCreator = jobCreator("p0", entityManager);
+    }
 
+    @Test
+    void collectAllUsedEncryptionPoolIdsInsideJobs_no_jobs_found() {
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @ParameterizedTest
+    @EnumSource(ExecutionState.class)
+    void collectAllUsedEncryptionPoolIdsInsideJobs_only_two_jobs_found_same_poolid(ExecutionState stateOfJob) {
+        /* prepare */
+        int poolId = 1234;
+        createJobUsingEncryptionPoolId(poolId, stateOfJob);
+        createJobUsingEncryptionPoolId(poolId, stateOfJob);
+
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().hasSize(1);
+        Long value = result.iterator().next();
+
+        assertThat(value).isEqualTo(poolId);
+    }
+
+    @Test
+    void collectAllUsedEncryptionPoolIdsInsideJobs_multiple_jobs_mixed_poolids() {
+        /* prepare */
+        createJobUsingEncryptionPoolId(0, ExecutionState.INITIALIZING);
+        createJobUsingEncryptionPoolId(1, ExecutionState.READY_TO_START);
+        createJobUsingEncryptionPoolId(1, ExecutionState.CANCEL_REQUESTED);
+        createJobUsingEncryptionPoolId(3, ExecutionState.ENDED);
+        createJobUsingEncryptionPoolId(176, ExecutionState.STARTED);
+        createJobUsingEncryptionPoolId(176, ExecutionState.CANCELED);
+
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().hasSize(4).contains(0L, 1L, 3L, 176L);
     }
 
     @ParameterizedTest
@@ -512,10 +557,6 @@ public class SecHubJobRepositoryDBTest {
         assertNull(result);
     }
 
-    private ScheduleSecHubJobData findDataOrNullByJobUUID(String key, UUID jobUUID) {
-        return entityManager.find(ScheduleSecHubJobData.class, new ScheduleSecHubJobDataId(jobUUID, key));
-    }
-
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {
         /* prepare */
@@ -919,6 +960,15 @@ public class SecHubJobRepositoryDBTest {
         assertEquals(expectedNextJob.getUUID(), jobUUID);
     }
 
+    private ScheduleSecHubJobData findDataOrNullByJobUUID(String key, UUID jobUUID) {
+        return entityManager.find(ScheduleSecHubJobData.class, new ScheduleSecHubJobDataId(jobUUID, key));
+    }
+
+    private void createJobUsingEncryptionPoolId(long poolId, ExecutionState state) {
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(state).encryptionPoolId(poolId).create();
+
+    }
+
     private void assertDeleted(int expected, int deleted, DeleteJobTestData testData, LocalDateTime olderThan) {
         if (deleted == expected) {
             return;
@@ -938,7 +988,7 @@ public class SecHubJobRepositoryDBTest {
         sb.append(describe(testData.job3_1_day_before_created, testData));
         sb.append(describe(testData.job4_now_created, testData));
 
-        fail(sb.toString());
+        throw new AssertionError(sb.toString());
     }
 
     private String describe(ScheduleSecHubJob info, DeleteJobTestData data) {

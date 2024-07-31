@@ -172,6 +172,8 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_FETCHES_ENCRYPTION_STATUS(76),
 
+    UC_ENCRYPTION_CLEANUP(77, false), // encryption cleanup is done by auto cleanup mechanism, no REST call necessary
+
     ;
 
     /* +-----------------------------------------------------------------------+ */

@@ -48,8 +48,8 @@ public class SchedulerJobBatchTriggerService {
     @MustBeDocumented("When retry mechanism is enabled by `sechub.config.trigger.nextjob.retries`, and a retry is necessary, "
             + "this value is used to define the maximum time period in millis which will be waited before retry. "
             + "Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. "
-            + "So having here a max value will result in a randomized wait time so cluster members will do "
-            + "fetch operations time shifted and automatically reduce collisions!")
+            + "So having here a max value will result in a randomized wait time: means cluster members will do "
+            + "fetch operations time shifted and this automatically reduces collisions!")
     @Value("${sechub.config.trigger.nextjob.maxwaitretry:" + DEFAULT_RETRY_MAX_MILLIS + "}")
     private int markNextJobWaitBeforeRetryMillis = DEFAULT_RETRY_MAX_MILLIS;
 
@@ -61,7 +61,7 @@ public class SchedulerJobBatchTriggerService {
     @Value("${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
-    @MustBeDocumented("When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
+    @MustBeDocumented("When enabled each trigger will do an healt check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
     @Value("${sechub.config.trigger.healthcheck.enabled:" + DEFAULT_HEALTHCHECK_ENABLED + "}")
     private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED;
 
@@ -143,6 +143,7 @@ public class SchedulerJobBatchTriggerService {
 
                 retryContext.markAsFatalFailure();
             }
+
         } while (retryContext.isRetryPossible());
 
         if (!retryContext.isExecutionDone()) {

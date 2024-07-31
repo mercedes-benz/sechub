@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
-import static com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupConstants.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,16 +28,16 @@ public class ScheduleRefreshEncryptionServiceSetupTriggerService {
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 5 * 1000; // 5 seconds delay
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 5 * 60 * 1000; // 5 minutes
 
-    private static final String INITIAL_DELAY_STRING = "${sechub.config.trigger.refresh.encryptionsetup.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
-    private static final String FIXED_DELAY_STRING = "${sechub.config.trigger.refresh.encryptionsetup.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
+    static final String SPRING_VALUE_INITIAL_DELAY_MILLISECONDS = "${sechub.schedule.encryption.refresh.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
+    static final String SPRING_VALUE_FIXED_DELAY_MILLISECONDS = "${sechub.schedule.encryption.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
 
     private static final String DESCRIPTION = "Scheduler instance will check if encryption pool is in synch with the database definitions. If not, the instance will try to create new encryption pool object and provide the new setup.";
 
     @Autowired
     ScheduleEncryptionService encryptionService;
 
-    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCUMENTED)
-    @Scheduled(initialDelayString = INITIAL_DELAY_STRING, fixedDelayString = FIXED_DELAY_STRING)
+    @MustBeDocumented("Defines the initial and also the fixed delay for the refresh interval. These values are also used for calculation of remaining run time of outdated encrytion pools (when refresh fails)")
+    @Scheduled(initialDelayString = SPRING_VALUE_INITIAL_DELAY_MILLISECONDS, fixedDelayString = SPRING_VALUE_FIXED_DELAY_MILLISECONDS)
     @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, name = "Encryption pool data refresh trigger", description = DESCRIPTION))
     public void triggerEncryptionSetupRefresh() {
         encryptionService.refreshEncryptionPoolAndLatestPoolIdIfNecessary();

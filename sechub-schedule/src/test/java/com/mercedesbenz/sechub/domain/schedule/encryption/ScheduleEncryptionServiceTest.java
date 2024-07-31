@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipher;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
+import com.mercedesbenz.sechub.domain.schedule.ScheduleShutdownService;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
@@ -40,10 +41,12 @@ class ScheduleEncryptionServiceTest {
     private ScheduleEncryptionPoolFactory scheduleEncryptionPoolFactory;
     private ScheduleEncryptionPool scheduleEncryptionPool;
     private PersistentCipher fakedNoneCipher;
-    private ScheduleLatestCipherPoolIdResolver scheduleLatestCipherPoolIdResolver;
+    private ScheduleLatestCipherPoolDataCalculator scheduleLatestCipherPoolDataCalculator;
     private ScheduleCipherPoolDataProvider poolDataProvider;
     private PersistentCipher fakedAES256Cipher;
     private DomainMessageService domainMessageService;
+    private SecHubOutdatedEncryptionPoolSupport outdatedEncryptionPoolSupport;
+    private ScheduleShutdownService shutdownService;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -66,16 +69,20 @@ class ScheduleEncryptionServiceTest {
 
         scheduleEncryptionPoolFactory = mock(ScheduleEncryptionPoolFactory.class);
         scheduleEncryptionPool = mock(ScheduleEncryptionPool.class);
-        scheduleLatestCipherPoolIdResolver = mock(ScheduleLatestCipherPoolIdResolver.class);
+        scheduleLatestCipherPoolDataCalculator = mock(ScheduleLatestCipherPoolDataCalculator.class);
         poolDataProvider = mock(ScheduleCipherPoolDataProvider.class);
+        outdatedEncryptionPoolSupport = mock(SecHubOutdatedEncryptionPoolSupport.class);
+        shutdownService = mock(ScheduleShutdownService.class);
 
         serviceToTest.poolDataProvider = poolDataProvider;
         serviceToTest.encryptionSupport = encryptionSupport;
         serviceToTest.scheduleEncryptionPoolFactory = scheduleEncryptionPoolFactory;
-        serviceToTest.scheduleLatestCipherPoolIdResolver = scheduleLatestCipherPoolIdResolver;
+        serviceToTest.latestCipherPoolDataCalculator = scheduleLatestCipherPoolDataCalculator;
         serviceToTest.secretKeyProviderFactory = secHubSecretKeyProviderFactory;
         serviceToTest.cipherFactory = cipherFactory;
         serviceToTest.domainMessageService = domainMessageService;
+        serviceToTest.outdatedEncryptionPoolSupport = outdatedEncryptionPoolSupport;
+        serviceToTest.shutdownService = shutdownService;
 
         when(scheduleEncryptionPoolFactory.createEncryptionPool(any())).thenReturn(scheduleEncryptionPool);
     }
@@ -84,7 +91,7 @@ class ScheduleEncryptionServiceTest {
     void application_started_triggers_encryption_pool_refresh_event() throws Exception {
         /* prepare */
         Long latestCipherPoolId = Long.valueOf(1);
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
 
         /* execute */
@@ -192,7 +199,7 @@ class ScheduleEncryptionServiceTest {
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_pooldata_provider_says_same_poolids_last_cipher_id_kept() throws Exception {
+    void refresh_pooldata_provider_says_same_poolids_last_cipher_id_kept() throws Exception {
 
         /* prepare */
         when(scheduleEncryptionPool.getAllPoolIds()).thenReturn(Set.of(5L));
@@ -215,7 +222,7 @@ class ScheduleEncryptionServiceTest {
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_pooldata_provider_says_same_poolids_no_new_pool_created_or_used() throws Exception {
+    void refresh_pooldata_provider_says_same_poolids_no_new_pool_created_or_used() throws Exception {
 
         /* prepare */
         when(scheduleEncryptionPool.getAllPoolIds()).thenReturn(Set.of(5L));
@@ -240,7 +247,7 @@ class ScheduleEncryptionServiceTest {
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_when_pool_ids_are_NOT_same_latest_cipher_pool_id_is_changed() throws Exception {
+    void refresh_when_pool_ids_are_NOT_same_latest_cipher_pool_id_is_changed() throws Exception {
 
         /* prepare */
         ScheduleCipherPoolData poolData1 = mock(ScheduleCipherPoolData.class);
@@ -254,7 +261,7 @@ class ScheduleEncryptionServiceTest {
         long newCipherPoolId = 5L;
         when(scheduleEncryptionPool.getAllPoolIds()).thenReturn(Set.of(oldCipherPoolId, newCipherPoolId));
         when(scheduleEncryptionPool.getCipherForPoolId(newCipherPoolId)).thenReturn(fakedNoneCipher);
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
 
         // simulate originally setup done on startup;
         serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
@@ -275,7 +282,7 @@ class ScheduleEncryptionServiceTest {
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_when_pool_ids_are_NOT_same_new_pool_is_created_and_used() throws Exception {
+    void refresh_when_pool_ids_have_changed_a_new_pool_is_created_and_used() throws Exception {
 
         /* prepare */
         ScheduleCipherPoolData poolData1 = mock(ScheduleCipherPoolData.class);
@@ -291,7 +298,7 @@ class ScheduleEncryptionServiceTest {
         ScheduleEncryptionPool newEncryptionPool = mock(ScheduleEncryptionPool.class);
         when(scheduleEncryptionPoolFactory.createEncryptionPool(poolDataList)).thenReturn(newEncryptionPool);
         when(newEncryptionPool.getCipherForPoolId(newCipherPoolId)).thenReturn(fakedNoneCipher);
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
 
         // simulate originally setup done on startup;
         serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
@@ -314,7 +321,7 @@ class ScheduleEncryptionServiceTest {
     }
 
     @Test
-    void refreshEncryptionPoolAndLatestIdIfNecessary_when_pool_ids_are_NOT_but_new_pool_creation_fails_old_setup_is_kept() throws Exception {
+    void refresh_when_pool_ids_have_changed_but_new_pool_creation_fails_but_not_outdated_old_setup_is_kept() throws Exception {
 
         /* prepare */
         ScheduleCipherPoolData poolData1 = mock(ScheduleCipherPoolData.class);
@@ -329,8 +336,9 @@ class ScheduleEncryptionServiceTest {
 
         when(scheduleEncryptionPoolFactory.createEncryptionPool(poolDataList))
                 .thenThrow(new ScheduleEncryptionException("was not able to create new encryption pool"));
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
 
+        when(outdatedEncryptionPoolSupport.isOutdatedEncryptionStillAllowedOnThisClusterMember()).thenReturn(true);
         // simulate originally setup done on startup;
         serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
         serviceToTest.latestCipherPoolId = oldCipherPoolId;
@@ -351,6 +359,50 @@ class ScheduleEncryptionServiceTest {
 
         assertNoDomainMessageEventSent(); // no event may be sent!
 
+        verify(shutdownService, never()).shutdownApplication(); // no shutdown triggered
+
+    }
+
+    @Test
+    void refresh_when_pool_ids_have_changed_but_new_pool_creation_fails_but_too_long_outdated_shutdown_triggered() throws Exception {
+
+        /* prepare */
+        ScheduleCipherPoolData poolData1 = mock(ScheduleCipherPoolData.class);
+        when(poolData1.getId()).thenReturn(Long.valueOf(4));
+        List<ScheduleCipherPoolData> poolDataList = List.of(poolData1);
+
+        when(poolDataProvider.ensurePoolDataAvailable()).thenReturn(poolDataList);
+        long oldCipherPoolId = 4L;
+
+        long newCipherPoolId = 5L;
+        when(scheduleEncryptionPool.getAllPoolIds()).thenReturn(Set.of(oldCipherPoolId, newCipherPoolId));
+
+        when(scheduleEncryptionPoolFactory.createEncryptionPool(poolDataList))
+                .thenThrow(new ScheduleEncryptionException("was not able to create new encryption pool"));
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(poolDataList)).thenReturn(newCipherPoolId);
+        when(outdatedEncryptionPoolSupport.isOutdatedEncryptionStillAllowedOnThisClusterMember()).thenReturn(false);
+
+        // simulate originally setup done on startup;
+        serviceToTest.scheduleEncryptionPool = scheduleEncryptionPool;
+        serviceToTest.latestCipherPoolId = oldCipherPoolId;
+
+        // important part: contains exactly ....
+        when(poolDataProvider.isContainingExactlyGivenPoolIds(any())).thenReturn(false);
+
+        /* check preconditions */
+        assertThat(serviceToTest.latestCipherPoolId).isEqualTo(oldCipherPoolId);
+
+        /* execute */
+        serviceToTest.refreshEncryptionPoolAndLatestPoolIdIfNecessary();
+
+        /* test */
+        verify(scheduleEncryptionPoolFactory).createEncryptionPool(poolDataList); // it is tried to create a new pool
+        assertThat(serviceToTest.latestCipherPoolId).isEqualTo(oldCipherPoolId); // not changed
+        assertThat(serviceToTest.scheduleEncryptionPool).isEqualTo(scheduleEncryptionPool); // not changed
+
+        assertNoDomainMessageEventSent(); // no event may be sent!
+        verify(shutdownService).shutdownApplication();
+
     }
 
     @ParameterizedTest
@@ -359,7 +411,7 @@ class ScheduleEncryptionServiceTest {
 
         /* prepare */
         Long latestCipherPoolId = Long.valueOf(value);
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
 
         /* execute */
@@ -376,7 +428,7 @@ class ScheduleEncryptionServiceTest {
         /* prepare */
         Long latestPoolId = Long.valueOf(value);
         when(scheduleEncryptionPool.getCipherForPoolId(latestPoolId)).thenReturn(null);
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestPoolId);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.applicationStarted()).isInstanceOf(IllegalStateException.class)
@@ -390,7 +442,7 @@ class ScheduleEncryptionServiceTest {
         Long latestCipherPoolId = Long.valueOf(12);
         List<ScheduleCipherPoolData> list = new ArrayList<>();
 
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
         when(poolDataProvider.ensurePoolDataAvailable()).thenReturn(list);
         when(scheduleEncryptionPoolFactory.createEncryptionPool(list)).thenReturn(scheduleEncryptionPool);
@@ -409,7 +461,7 @@ class ScheduleEncryptionServiceTest {
         String stringToEncrypt = "please-encrypt-me";
         Long latestCipherPoolId = Long.valueOf(12);
 
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
 
         // fake encryption by cipher
@@ -446,7 +498,7 @@ class ScheduleEncryptionServiceTest {
         PersistentCipher cipherForDecryption = fakedNoneCipher;
 
         // necessary to get startup not failing for missing latest pool id:
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
 
         // fake encryption by cipher
@@ -479,7 +531,7 @@ class ScheduleEncryptionServiceTest {
         PersistentCipher cipherForDecryption = mock(PersistentCipher.class, "cipher for decryption");
 
         // necessary to get startup not failing for missing latest pool id:
-        when(scheduleLatestCipherPoolIdResolver.resolveLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
+        when(scheduleLatestCipherPoolDataCalculator.calculateLatestPoolId(anyList())).thenReturn(latestCipherPoolId);
         when(scheduleEncryptionPool.getCipherForPoolId(latestCipherPoolId)).thenReturn(fakedNoneCipher);
 
         // but we use here an "older" cipher pool entry

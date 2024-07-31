@@ -1311,12 +1311,12 @@ public class AsUser {
 
     public String rotateEncryption(SecHubEncryptionData data) {
 
-        String url = getUrlBuilder().buildRotateEncryption();
+        String url = getUrlBuilder().buildAdminStartsEncryptionRotation();
         return getRestHelper().postJson(url, data.toFormattedJSON());
     }
 
     public SecHubEncryptionStatus fetchEncryptionStatus() {
-        String url = getUrlBuilder().buildFetchEncryptionStatus();
+        String url = getUrlBuilder().buildAdminFetchesEncryptionStatus();
         String json = getRestHelper().getJSON(url);
         return SecHubEncryptionStatus.fromString(json);
     }

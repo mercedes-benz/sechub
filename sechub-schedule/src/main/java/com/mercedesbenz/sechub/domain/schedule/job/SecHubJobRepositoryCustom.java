@@ -32,4 +32,12 @@ public interface SecHubJobRepositoryCustom {
 
     @Lock(LockModeType.NONE)
     public long countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(Long encryptionPoolId);
+
+    /**
+     * Collects a distinct list of all encryption pool ids which are used by any job
+     * in any state.
+     *
+     * @return set of encryption pool ids, never <code>null</code>
+     */
+    List<Long> collectAllUsedEncryptionPoolIdsInsideJobs();
 }

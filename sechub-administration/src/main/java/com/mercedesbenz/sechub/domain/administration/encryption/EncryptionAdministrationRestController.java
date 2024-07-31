@@ -44,7 +44,7 @@ public class EncryptionAdministrationRestController {
     AdministrationEncryptionStatusService administrationStatusService;
 
     @Autowired
-    SecHubEncryptionDataValidator rotationDataValidator;
+    SecHubEncryptionDataValidator encryptionDataValidator;
 
     /* @formatter:off */
 	@UseCaseAdminStartsEncryptionRotation(@Step(number=1,name="Rest call",description="Admin triggers rotation of encryption via REST", needsRestDoc =true))
@@ -64,7 +64,7 @@ public class EncryptionAdministrationRestController {
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(rotationDataValidator);
+        binder.setValidator(encryptionDataValidator);
     }
 
 }

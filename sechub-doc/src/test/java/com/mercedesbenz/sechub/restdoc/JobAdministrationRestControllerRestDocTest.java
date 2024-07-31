@@ -225,7 +225,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     }
 
     // see
-    // https://docs.spring.io/spring-restdocs/docs/current/reference/html5/#documenting-your-api-request-response-payloads-fields-json
+    // https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#documenting-your-api-request-response-payloads-fields-json
     private static String inArray(String field) {
         return "[]." + field;
     }

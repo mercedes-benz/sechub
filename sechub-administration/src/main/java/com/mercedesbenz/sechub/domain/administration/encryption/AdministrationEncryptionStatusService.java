@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousRe
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
-import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
+import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus;
 
 @Service
 public class AdministrationEncryptionStatusService {
@@ -25,19 +25,19 @@ public class AdministrationEncryptionStatusService {
     @Autowired
     AuditLogService auditLogService;
 
-    @UseCaseAdminStartsEncryptionRotation(@Step(number = 2, name = "Service call", description = "Triggers rotation of encryption via domain message"))
+    @UseCaseAdminFetchesEncryptionStatus(@Step(number = 1, name = "Service call", description = "Services collects encryption status from domains via event bus"))
     public SecHubEncryptionStatus fetchStatus() {
         auditLogService.log("starts collecting encryption status");
 
-        SecHubEncryptionStatus status = new SecHubEncryptionStatus();
-        addSchedulerStatus(status);
+        SecHubEncryptionStatus sechubEncryptionStatus = new SecHubEncryptionStatus();
+        collectScheduleEncryptionStatus(sechubEncryptionStatus);
 
-        return status;
+        return sechubEncryptionStatus;
 
     }
 
     @IsSendingSyncMessage(MessageID.GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN)
-    private void addSchedulerStatus(SecHubEncryptionStatus status) {
+    private void collectScheduleEncryptionStatus(SecHubEncryptionStatus status) {
         DomainMessage message = new DomainMessage(MessageID.GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN);
 
         DomainMessageSynchronousResult result = domainMessageService.sendSynchron(message);

@@ -37,9 +37,14 @@ public class SecHubEncryptionDataValidator implements Validator {
     }
 
     private void internalValidate(SecHubEncryptionData data, Errors errors) {
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, SecHubEncryptionData.PROPERTY_ALGORITHM, "field.required");
 
         SecHubCipherAlgorithm algorithm = data.getAlgorithm();
+        handleAlgorithmPasswordData(errors, algorithm);
+    }
+
+    private void handleAlgorithmPasswordData(Errors errors, SecHubCipherAlgorithm algorithm) {
         if (algorithm == null) {
             return;
         }
