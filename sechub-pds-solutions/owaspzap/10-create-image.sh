@@ -65,6 +65,10 @@ if [[ ! -z "$OWASPZAP_WRAPPER_VERSION" ]] ; then
     BUILD_ARGS+=" --build-arg OWASPZAP_WRAPPER_VERSION=$OWASPZAP_WRAPPER_VERSION"
 fi
 
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
+
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
        --file docker/Owasp-Zap-Debian.dockerfile docker/

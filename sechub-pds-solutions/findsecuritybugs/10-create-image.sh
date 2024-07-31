@@ -11,6 +11,7 @@ DEFAULT_BUILD_TYPE=build
 
 usage() {
   cat - <<EOF
+
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with FindSecurityBugs
 for <docker registry> with tag <version tag>.
