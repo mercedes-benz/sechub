@@ -44,26 +44,29 @@ fi
 echo ">> Building \"$REGISTRY:$VERSION\""
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
-echo ">> - From base image: $BASE_IMAGE"
+echo ">> From base image: $BASE_IMAGE"
 
 # Enforce OWASPZAP_SHA256SUM is defined when building custom version of find-sec-bugs
-if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
-  echo ">> - OWASP-ZAP version: $OWASPZAP_VERSION"
-  BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
-
-  if [[ -z "$OWASPZAP_SHA256SUM" ]] ; then
-    echo "FATAL: Please define sha256 checksum in OWASPZAP_SHA256SUM environment variable"
-    exit 1
-  fi
-
-  echo ">> - OWASP-ZAP sha256sum: $OWASPZAP_SHA256SUM"
-  BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
+if [[ -z "$OWASPZAP_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> OWASP-ZAP version: $OWASPZAP_VERSION"
+BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
 
-if [[ ! -z "$OWASPZAP_WRAPPER_VERSION" ]] ; then
-    echo ">> - SecHub OWASP-ZAP Wrapper version: $OWASPZAP_WRAPPER_VERSION"
-    BUILD_ARGS+=" --build-arg OWASPZAP_WRAPPER_VERSION=$OWASPZAP_WRAPPER_VERSION"
+if [[ -z "$OWASPZAP_SHA256SUM" ]] ; then
+  echo "FATAL: Please define sha256 checksum in OWASPZAP_SHA256SUM environment variable"
+  exit 1
 fi
+echo ">> OWASP-ZAP sha256sum: $OWASPZAP_SHA256SUM"
+BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
+
+if [[ -z "$OWASPZAP_WRAPPER_VERSION" ]] ; then
+  # source defaults
+  source ./env
+fi
+echo ">> SecHub OWASP-ZAP Wrapper version: $OWASPZAP_WRAPPER_VERSION"
+BUILD_ARGS+=" --build-arg OWASPZAP_WRAPPER_VERSION=$OWASPZAP_WRAPPER_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
