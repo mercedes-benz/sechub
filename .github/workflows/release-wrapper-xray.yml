@@ -6,6 +6,7 @@ on:
     inputs:
       actor-email:
         description: Insert your email address here. It will be used in the generated pull requests
+        required: true
       xray-wrapper-version:
         description: Xray-wrapper Version (e.g. 1.0.0)
         required: true
@@ -23,7 +24,7 @@ jobs:
           echo "Xray-wrapper '${{ inputs.xray-wrapper-version }}' - Milestone '${{ inputs.xray-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: master
 
@@ -36,13 +37,13 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93
+        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@982da8e78c05368c70dac0351bb82647a9e9a5d2
+        uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70
         with:
           cache-read-only: false
 
@@ -62,7 +63,7 @@ jobs:
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -99,7 +100,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -107,7 +108,7 @@ jobs:
 
       - name: Archive Xray Wrapper libs directory
         if: always()
-        uses: actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: sechub-wrapper-xray
           path: sechub-wrapper-xray/build/libs

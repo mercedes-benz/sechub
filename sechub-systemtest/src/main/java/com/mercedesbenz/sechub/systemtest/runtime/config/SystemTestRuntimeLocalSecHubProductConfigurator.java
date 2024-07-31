@@ -110,7 +110,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             project.setApiVersion("1.0");
             project.setDescription("System test project " + projectName);
             project.setName(projectName);
-            project.setOwner(client.getUsername());// we use the administrator as owner of the project
+            project.setOwner(client.getUserId());// we use the administrator as owner of the project
 
             ProjectWhiteList whiteList = project.getWhiteList();
             for (String whiteListEntry : projectDefinition.getWhitelistedURIs()) {
@@ -286,7 +286,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
 
         SecHubClient client = context.getLocalAdminSecHubClient();
-        String userId = client.getUsername();
+        String userId = client.getUserId();
         for (ProjectDefinition projectDefinition : config.getProjects().get()) {
             String projectid = projectDefinition.getName();
             if (context.isDryRun()) {

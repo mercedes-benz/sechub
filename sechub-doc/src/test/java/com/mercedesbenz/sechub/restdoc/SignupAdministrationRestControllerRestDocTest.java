@@ -38,7 +38,7 @@ import com.mercedesbenz.sechub.domain.administration.signup.SignupDeleteService;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
@@ -50,7 +50,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
 @ContextConfiguration(classes = { SignupAdministrationRestController.class, SignupAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SignupAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -78,11 +78,11 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
         Class<? extends Annotation> useCase = UseCaseAdminListsOpenUserSignups.class;
 
         Signup signup1 = new Signup();
-        signup1.setEmailAdress("john.smith@example.com");
+        signup1.setEmailAddress("john.smith@example.com");
         signup1.setUserId("johnsmith");
 
         Signup signup2 = new Signup();
-        signup2.setEmailAdress("jane.smith@example.com");
+        signup2.setEmailAddress("jane.smith@example.com");
         signup2.setUserId("janesmith");
 
         List<Signup> signupList = new ArrayList<>();
@@ -97,7 +97,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
         			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
-        			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAdress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAdress\":\"jane.smith@example.com\"}]")).
+        			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAddress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAddress\":\"jane.smith@example.com\"}]")).
         			andDo(defineRestService().
         			        with().
         			            useCaseData(useCase).
@@ -111,7 +111,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
 	        	                    responseFields(
 	        	                            fieldWithPath("[]").description("List of user signups").optional(),
 	        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
-	        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
+	        	                            fieldWithPath("[].emailAddress").type(JsonFieldType.STRING).description("The email address")
 	        	                    )
         	            )
         		);
@@ -152,7 +152,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

@@ -12,15 +12,19 @@ plugins {
  
 dependencies {
 
-    implementation library.springboot_starter_web
-    implementation library.springboot_starter_data_jpa
-    implementation library.springboot_starter_security
-    implementation library.flyway
-    implementation library.logstashLogbackEncoder
-    implementation library.database_h2
-    implementation library.database_postgres
-    implementation library.apache_commons_io
-    implementation(library.apache_commons_fileupload)
+    implementation(library.springboot_starter_web)
+    implementation(library.springboot_starter_data_jpa)
+    implementation(library.springboot_starter_security)
+    implementation(library.flyway)
+    implementation(library.logstashLogbackEncoder)
+    implementation(library.database_h2)
+    implementation(library.database_postgres)
+    implementation(library.apache_commons_io)
+    implementation(library.apache_commons_fileupload2_core)
+    implementation(library.apache_commons_fileupload2_jakarta)
+    
+
+
 
     api project(':sechub-pds-core')
 
@@ -84,7 +88,7 @@ publishing {
 
             pom {
                 name = 'SecHub Product Delegation Server'
-                description = 'SecHub Product Delegation Server as a sprint boot jar. Ready to use.'
+                description = 'SecHub Product Delegation Server as a Spring Boot Jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/mercedes-benz/sechub'

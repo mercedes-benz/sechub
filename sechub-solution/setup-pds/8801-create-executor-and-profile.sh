@@ -1,5 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
+
+# creates a sechub executor from an executor file and a sechub project
 
 declare -r SCRIPT_PARAMETERS="<executor-config-file-name> <profile-name>"
 declare -r EXECUTOR_DIRECTORY="executors"

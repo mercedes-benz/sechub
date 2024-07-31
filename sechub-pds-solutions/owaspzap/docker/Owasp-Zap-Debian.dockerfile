@@ -4,17 +4,17 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+# Build args
+# ZAP (Zed Attack Proxy) version. See https://github.com/zaproxy/zaproxy
+ARG OWASPZAP_VERSION
+ARG OWASPZAP_SHA256SUM
+# Version of SecHub's ZAP wrapper
+ARG OWASPZAP_WRAPPER_VERSION
+
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub OWASP ZAP + PDS Image"
 LABEL org.opencontainers.image.description="A container which combines OWASP ZAP with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
-
-# Build args
-# ZAP (Zed Attack Proxy) version. See https://github.com/zaproxy/zaproxy
-ARG OWASPZAP_VERSION="2.14.0"
-ARG OWASPZAP_SHA256SUM="219d7f25bbe25247713805ab02cc12279898c870743c1aae3c2b0b1882191960"
-
-ARG OWASPZAP_WRAPPER_VERSION="1.5.0"
 
 # OWASP ZAP host and port
 ENV ZAP_HOST="127.0.0.1"

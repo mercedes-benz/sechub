@@ -5,10 +5,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +30,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.URIValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -84,7 +83,7 @@ public class ProjectCreationService {
         }
 
         Optional<User> foundOwner = userRepository.findById(owner);
-        if (!foundOwner.isPresent()) {
+        if (foundOwner.isEmpty()) {
             throw new NotFoundException("Owner '" + owner + "' not found");
         }
 
@@ -95,11 +94,11 @@ public class ProjectCreationService {
 
         User ownerUser = foundOwner.get();
         project.owner = ownerUser;
-        /** add only accepted/valid URIs - sanitize */
+        /* add only accepted/valid URIs - sanitize */
         whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
         List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream()
-                .map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
+                .map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).toList();
 
         project.metaData.addAll(metaDataEntities);
 

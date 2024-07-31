@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -90,7 +90,7 @@ public class UserRevokeSuperAdminRightsService {
     @IsSendingAsyncMessage(MessageID.USER_NO_LONGER_SUPERADMIN)
     private void informUserNoLongerSuperadmin(User user) {
         eventBusService
-                .sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAdress(), secHubEnvironment.getServerBaseUrl()));
+                .sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAddress(), secHubEnvironment.getServerBaseUrl()));
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)

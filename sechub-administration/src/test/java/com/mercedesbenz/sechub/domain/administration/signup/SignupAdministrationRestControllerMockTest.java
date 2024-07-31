@@ -26,13 +26,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
 @ContextConfiguration(classes = { SignupAdministrationRestController.class, SignupAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class SignupAdministrationRestControllerMockTest {
 
@@ -69,11 +69,11 @@ public class SignupAdministrationRestControllerMockTest {
         /* prepare */
         List<Signup> list = new ArrayList<>();
         Signup signup1 = new Signup();
-        signup1.setEmailAdress("sechub.test1@example.org");
+        signup1.setEmailAddress("sechub.test1@example.org");
         signup1.setUserId("sechub.test1");
 
         Signup signup2 = new Signup();
-        signup2.setEmailAdress("sechub.test2@example.org");
+        signup2.setEmailAddress("sechub.test2@example.org");
         signup2.setUserId("sechub.test2");
 
         list.add(signup1);
@@ -86,10 +86,10 @@ public class SignupAdministrationRestControllerMockTest {
         		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.[0].userId", equalTo("sechub.test1"))).
-        			andExpect(jsonPath("$.[0].emailAdress", equalTo("sechub.test1@example.org"))).
+        			andExpect(jsonPath("$.[0].emailAddress", equalTo("sechub.test1@example.org"))).
 
         			andExpect(jsonPath("$.[1].userId", equalTo("sechub.test2"))).
-        			andExpect(jsonPath("$.[1].emailAdress", equalTo("sechub.test2@example.org"))
+        			andExpect(jsonPath("$.[1].emailAddress", equalTo("sechub.test2@example.org"))
 
         		);
 
@@ -99,7 +99,7 @@ public class SignupAdministrationRestControllerMockTest {
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

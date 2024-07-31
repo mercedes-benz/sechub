@@ -8,10 +8,15 @@ sechub:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
-      
+    
 spring:
-  config:
-    use-legacy-processing: true # see https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4 and  https://stackoverflow.com/questions/64907675/including-profiles-in-spring-boot-2-4-0-version
+  profiles:
+    group:
+      prod: "server, initial_admin_created,real_products, postgres"
+      dev: "localserver, initial_admin_predefined, admin_access"
+      integrationtest: "localserver,initial_admin_static,mocked_notifications,admin_access"
+      test: "mocked_products,mocked_notifications,h2,test"
+    
   jackson:
     # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper
     mapper: 

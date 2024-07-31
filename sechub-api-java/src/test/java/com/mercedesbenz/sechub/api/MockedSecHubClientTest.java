@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ class MockedSecHubClientTest {
 
     @BeforeEach
     void beforeEach() {
-        clientToTest = new MockedSecHubClient();
+        clientToTest = MockedSecHubClient.from(URI.create("https://localhost"), "i-am-the-token", "user1", true);
     }
 
     @Test
@@ -68,7 +69,7 @@ class MockedSecHubClientTest {
         /* execute */
         UserSignup signup = new UserSignup();
         signup.setUserId("somebody");
-        signup.setEmailAdress("somebody@example.org");
+        signup.setEmailAddress("somebody@example.org");
 
         clientToTest.createSignup(signup);
 

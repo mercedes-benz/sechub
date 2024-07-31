@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: MIT
+
+version: "1"
+services:
+    pds-prepare:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+                - PREPARE_WRAPPER_VERSION=${PREPARE_WRAPPER_VERSION}
+            context: docker/
+            dockerfile: Prepare-Debian.dockerfile
+        container_name: pds-prepare
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "internal"
+        volumes:
+          - ./docker/scripts:/pds/scripts
+networks:
+    internal:

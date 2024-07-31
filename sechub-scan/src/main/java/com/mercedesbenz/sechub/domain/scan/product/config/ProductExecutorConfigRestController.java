@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.product.config;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +26,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The REST API for project executor config done by a super admin.
@@ -105,10 +105,10 @@ public class ProductExecutorConfigRestController {
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information"))
+	                description="Administrator fetches list of existing product executor configurations by calling REST API, will not contain setup information"))
 	@RequestMapping(path = "executors", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfigList fechProductExecutorConfiguraitonsAsList() {
+	public ProductExecutorConfigList fetchProductExecutorConfigurationsAsList() {
 	    return fetchListService.fetchProductExecutorConfigList();
 	    /* @formatter:on */
     }
@@ -122,7 +122,7 @@ public class ProductExecutorConfigRestController {
 	                description="Administrator fetches setup of an existing product executor configuration by calling REST API"))
 	@RequestMapping(path = "executor/{uuid}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfig fechProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid) {
+	public ProductExecutorConfig fetchProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid) {
 	    return fetchService.fetchProductExecutorConfig(uuid);
 	    /* @formatter:on */
     }

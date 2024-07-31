@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.monitoring;
 
-import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.https;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,23 +19,23 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverter;
-import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
+import com.mercedesbenz.sechub.pds.security.PDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(PDSAdminMonitoringRestController.class)
 /* @formatter:off */
 @ContextConfiguration(classes = {
         PDSAdminMonitoringRestController.class,
         PDSAdminMonitoringRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
-@WithMockUser(authorities = PDSRoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = PDSRoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSAdminMonitoringRestControllerMockTest {
 
@@ -48,8 +49,8 @@ public class PDSAdminMonitoringRestControllerMockTest {
 
     private PDSMonitoring result;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    public void beforeEach() throws Exception {
         /* prepare */
         result = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
     }
@@ -77,7 +78,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
     @TestConfiguration
     @Profile(PDSProfiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends PDSAPISecurityConfiguration {
 
     }
 

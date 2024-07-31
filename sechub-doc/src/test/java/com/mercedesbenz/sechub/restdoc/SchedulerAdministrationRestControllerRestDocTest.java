@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.domain.administration.scheduler.SwitchSchedulerJo
 import com.mercedesbenz.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
@@ -43,7 +43,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerAdministrationRestController.class)
 @ContextConfiguration(classes = { SchedulerAdministrationRestController.class, SchedulerAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SchedulerAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -149,7 +149,7 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

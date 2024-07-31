@@ -44,10 +44,12 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$GITLEAKS_VERSION" ]] ; then
-    echo ">> Gitleaks version: $GITLEAKS_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg GITLEAKS_VERSION=$GITLEAKS_VERSION"
+if [[ -z "$GITLEAKS_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> Gitleaks version: $GITLEAKS_VERSION"
+BUILD_ARGS="$BUILD_ARGS --build-arg GITLEAKS_VERSION=$GITLEAKS_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

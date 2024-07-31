@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.scan.product.config;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,8 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfiguration;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -38,7 +38,7 @@ public class FetchProductExecutorConfigService {
         auditLogService.log("Reads setup for executor configuration:{}", uuid);
 
         Optional<ProductExecutorConfig> config = repository.findById(uuid);
-        if (!config.isPresent()) {
+        if (config.isEmpty()) {
             throw new NotFoundException("Product executor config not found for uuid:" + uuid);
         }
 

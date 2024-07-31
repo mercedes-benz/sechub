@@ -1,0 +1,132 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+// SPDX-License-Identifier: MIT
+/*============================================================================
+* Build file for subproject
+*
+* Root build file: "${rootProject.projectDir}/build.gradle"
+* ============================================================================
+*/
+
+plugins {
+    id 'org.openapi.generator'
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.1'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+}
+
+clean.doFirst {
+    delete 'gen'
+}
+
+def openApiSpecPath = "${project.rootDir}/sechub-api-java/src/main/resources/openapi.yaml"
+
+openApiGenerate {
+    generatorName = 'java'
+    inputSpec = openApiSpecPath
+    outputDir = "${projectDir}/gen"
+    apiPackage = 'com.mercedesbenz.sechub.api.internal.gen'
+    invokerPackage = 'com.mercedesbenz.sechub.api.internal.gen.invoker'
+    modelPackage = 'com.mercedesbenz.sechub.api.internal.gen.model'
+    packageName = 'com.mercedesbenz.sechub.api.internal.gen'
+    generateModelTests = false
+    generateApiTests = false
+
+    globalProperties = [
+            validateSpec   : 'true',
+            modelDocs      : 'false',
+            models         : '',  // generate all
+            apis           : '', // generate all
+            supportingFiles: '',  // generate all
+    ]
+    // java generator: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
+    configOptions = [
+            groupId                    : 'com.mercedesbenz.sechub',
+            version                    : "${project.version}",
+            performBeanValidation      : 'false',
+            useBeanValidation          : 'false',
+            dateLibrary                : 'java8',
+            serializableModel          : 'true',
+            serializationLibrary       : 'jackson',
+            artifactId                 : 'sechub-openapi-java-client',
+            artifactDescription        : 'The SecHub API Java client',
+            artifactUrl                : 'https://github.com/mercedes-benz/sechub',
+            legacyDiscriminatorBehavior: 'false',
+            library                    : 'native', // Uses the Java HTTP Client (available in Java 11+)
+            licenseName                : 'MIT',
+            licenseUrl                 : 'https://github.com/mercedes-benz/sechub/blob/develop/LICENSE',
+            developerEmail             : '',
+            developerName              : '',
+            developerOrganization      : 'Mercedes-Benz Tech Innovation',
+            developerOrganizationUrl   : 'https://www.mercedes-benz-techinnovation.com/',
+            scmConnection              : '',
+            scmDeveloperConnection     : '',
+            scmUrl                     : 'https://github.com/mercedes-benz/sechub',
+            useJakartaEe               : 'false'
+    ]
+}
+
+tasks.named('openApiGenerate').configure {
+    doFirst {
+        delete 'gen'
+    }
+}
+
+tasks.withType(GenerateTask).configureEach {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+}
+
+ext.apiPublishNecessary = "${project.version}" != '0.0.0'
+
+/*
+ * The assemble task will normally be called from IDE integrations (eclipse buildship, intellij) to setup parts
+ */
+tasks.named('assemble') {
+    dependsOn tasks.named('openApiGenerate') // an assemble shall always generate all parts
+}
+
+tasks.named('compileJava') {
+    dependsOn tasks.named('openApiGenerate')
+}
+
+/*
+* If the gradle task eclipse is used, the assemble task shall be used as well
+* to avoid compile errors.
+*
+* Direct IDE integrations (eclipse buildship, intellij) normally directly use
+* the assemble task before importing projects/modules, so it should work there always.
+*/
+tasks.named('eclipse') {
+    dependsOn('assemble')
+}
+
+/**
+ * Custom gradle task to build a 'fatJar'.
+ */
+tasks.register('buildJavaApiAll', Jar) {
+    group 'sechub'
+    description 'Builds the java api library as standalone library.'
+    archivesBaseName = 'sechub-java-api-all'
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with jar
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "$rootDir/sechub-openapi-java-client/gen/src/main/java"
+        }
+    }
+}

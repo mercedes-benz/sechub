@@ -24,7 +24,7 @@ Please make sure that the SQL statements work with both of them.
 * We are using PostgreSQL which does automatically use lower_case names
 * Numbering starts at `01`; maximum is `99`
 * Naming scheme for constraints: `c<number>_<table name>_<constraint title>` +
-  Example: `c01_adm_user_emailadress`
+  Example: `c01_adm_user_emailaddress`
 * Naming scheme for indices: `i<number>_<table name>_<index title>` +
   Example: `i01_statistic_job_run_data_filter`
 
@@ -463,3 +463,86 @@ System tests are tests which test the entire application.
 ====== Naming
 
 The name pattern `${nameOfClassToTest}SystemTest.java` is used to find system tests.
+
+=== Updates
+==== Updating Spring Boot version
+
+===== Update build.gradle
+As first we update the spring boot version inside `${rootFolder}/build.gradle`. 
+
+As an example we upgrade from version 3.2.2 to 3.2.4:
+
+The existing code in `${rootFolder}/build.gradle`
+[source,gradle]
+---- 
+id 'org.springframework.boot' version '3.2.2' apply false
+----
+
+will be replaced by
+ 
+[source,gradle]
+---- 
+id 'org.springframework.boot' version '3.2.4' apply false
+----
+
+===== Generate spring_boot_dependagen.gradle
+We have some projects which do not have any Spring dependencies (e.g. `sechub-commons-core`).
+But these projects are used in different {sechub} Spring boot applications as dependencies and also
+often use the same libraries which are used in Spring as well.
+
+Here we could have version conflicts and it is pretty hard to handle this manually.
+
+This is the reason why we use https://github.com/de-jcup/dependagen to create the 
+file `spring_boot_dependagen.gradle`.
+
+====== Howto use DependaGen
+[NOTE]
+====
+If not already done, clone the `dependagen` repository loca and generate IDE parts by gradle
+
+For example:
+[source,bash]
+---- 
+git clone https://github.com/de-jcup/dependagen.git
+cd dependagen
+./gradlew eclipse
+----
+
+After this you can import the dependagen project into your Eclipse IDE and it is ready to use.
+====
+
+*Change the spring boot template to wanted version* 
+[source,bash]
+---- 
+vim ./dependagen/gradle-templates/spring-boot/template_build.gradle 
+----
+
+Change the spring boot version _(and if necessary also the version for spring dependency management plugin)_
+[source,bash]
+---- 
+// ...
+plugins {
+        id 'org.springframework.boot' version '3.2.4'
+        id 'io.spring.dependency-management' version '1.1.4'
+        id 'org.asciidoctor.convert' version '1.5.8'
+        id 'java'
+}
+// ...
+----
+*Generate files*
+
+Execute `DependaGenApplication` with `generate` as argument.
+
+*Copy the generated output*/
+Please copy 
+`dependagen/gen/gradle-templates/springboot/spring_boot_dependagen.gradle`
+
+to
+
+`sechub/gradle/spring_boot_dependagen.gradle`
+
+After this regenerate your IDE setup - e.g. for eclipse: `./gradlew cleanEclipse eclipse`. 
+Check there are no compile issues. If no problems appear you can commit and push and the update
+is done.
+
+

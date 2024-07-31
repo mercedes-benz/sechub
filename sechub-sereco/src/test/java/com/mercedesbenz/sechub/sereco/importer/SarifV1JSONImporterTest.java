@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
@@ -27,12 +28,14 @@ class SarifV1JSONImporterTest {
 
     private static String sarif_2_1_0_brakeman;
     private static String sarif_2_1_0_es_lint_empty_results;
+    private static String sarif_2_1_0_empty_results_with_version_control;
     private static String sarif_2_1_0_pythonscanner_thread_flows;
     private static String sarif_2_1_0_gosec2_8_0_taxonomyExample;
     private static String sarif_2_1_0_coverity_20_21_03_taxonomyExample;
     private static String sarif_2_1_0_owasp_zap;
     private static String sarif_2_1_0_gosec2_9_5_example5_cosdescan;
     private static String sarif_2_1_0_sarif_2_1_0_gitleaks_8_0;
+    private static String sarif_2_1_0_sarif_2_1_0_gitleaks_8_0_one_finding_with_revision_id;
 
     private SarifV1JSONImporter importerToTest;
 
@@ -40,17 +43,22 @@ class SarifV1JSONImporterTest {
     public static void before() {
         sarif_2_1_0_brakeman = loadSarifTestFile("sarif_2.1.0_brakeman.json");
         sarif_2_1_0_es_lint_empty_results = loadSarifTestFile("sarif_2.1.0_empty_results.json");
+        sarif_2_1_0_empty_results_with_version_control = loadSarifTestFile("sarif_2.1.0_empty_results-with-version-control.json");
         sarif_2_1_0_pythonscanner_thread_flows = loadSarifTestFile("sarif_2.1.0_threadflows_example.json");
         sarif_2_1_0_gosec2_8_0_taxonomyExample = loadSarifTestFile("sarif_2.1.0_gosec_2.8.0_example_with_taxonomy.json");
         sarif_2_1_0_gosec2_9_5_example5_cosdescan = loadSarifTestFile("sarif_2.1.0_gosec_2.9.5_example5_codescan.sarif.json");
         sarif_2_1_0_coverity_20_21_03_taxonomyExample = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");
         sarif_2_1_0_owasp_zap = loadSarifTestFile("sarif_2.1.0_owasp_zap.json");
         sarif_2_1_0_sarif_2_1_0_gitleaks_8_0 = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0.json");
+        sarif_2_1_0_sarif_2_1_0_gitleaks_8_0_one_finding_with_revision_id = loadSarifTestFile("sarif_2.1.0_gitleaks_8.0-one-finding-with-revision.json");
     }
 
     @BeforeEach
     void beforeEach() {
         importerToTest = new SarifV1JSONImporter();
+
+        // initialize workarounds
+        importerToTest.workaroundSupport = new SarifImportProductWorkaroundSupport();
     }
 
     @Test
@@ -209,10 +217,10 @@ class SarifV1JSONImporterTest {
                 .build();
 
         /* execute */
-        ProductImportAbility ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
+        boolean ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportGosec_2_8_0sarif, "Has NOT the ability to import sarif!");
+        assertTrue(ableToImportGosec_2_8_0sarif, "Has NOT the ability to import sarif!");
     }
 
     @Test
@@ -265,6 +273,7 @@ class SarifV1JSONImporterTest {
     @Test
     void gitleaks_8_0_example_secretscan__can_be_imported() throws Exception {
         /* prepare */
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
         SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_sarif_2_1_0_gitleaks_8_0, ScanType.SECRET_SCAN);
 
         /* execute */
@@ -277,7 +286,34 @@ class SarifV1JSONImporterTest {
             verifyVulnerability().
                 classifiedBy().cwe(798).and(). // 798 is our generic fallback for secret scans when no cweId is set by products (gitleaks SARIF does currently not set cweId)
                 withDescriptionContaining("generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php.").
+                withType("Generic API Key").
                 withCodeLocation("UnSAFE_Bank/Backend/src/api/application/config/database.php", 80, 7).containingSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").done().
+            isContained();
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void gitleaks_8_0_simple_example_secretscan__can_be_imported_and_revision_information_is_available() throws Exception {
+        /* prepare */
+        importerToTest.workaroundSupport.workarounds.add(new GitleaksSarifImportWorkaround());
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_sarif_2_1_0_gitleaks_8_0_one_finding_with_revision_id, ScanType.SECRET_SCAN);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(1).
+            verifyVulnerability().
+                classifiedBy().cwe(798).and(). // 798 is our generic fallback for secret scans when no cweId is set by products (gitleaks SARIF does currently not set cweId)
+                withType("Test rule1").
+                withSeverity(SerecoSeverity.MEDIUM).
+                withCodeLocation("auth.py", 1, 1).
+                containingSource("a test secret").
+                withRevisionId("0000000000000001").
+                done().
             isContained();
 
         /* @formatter:on */
@@ -290,10 +326,10 @@ class SarifV1JSONImporterTest {
         ImportParameter paramBrakeman = ImportParameter.builder().importData(sarif_2_1_0_brakeman).importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
+        boolean ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif, "Was NOT able to import sarif!");
+        assertTrue(ableToImportBrakemanSarif, "Was NOT able to import brakeman sarif!");
     }
 
     @Test
@@ -303,10 +339,10 @@ class SarifV1JSONImporterTest {
                 .productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
+        boolean ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
 
         /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif, "Was NOT able to import sarif!");
+        assertTrue(ableToImportThreadFlowSarif, "Was NOT able to import thread flow sarif!");
     }
 
     @Test
@@ -316,10 +352,10 @@ class SarifV1JSONImporterTest {
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+        boolean importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility, "Not the expected ability!");
+        assertFalse(importAbility, "Empty json should be importable");
     }
 
     @Test
@@ -329,10 +365,10 @@ class SarifV1JSONImporterTest {
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
-        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+        boolean importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals(ProductImportAbility.PRODUCT_FAILED_OR_CANCELED, importAbility, "Not the expected ability!");
+        assertFalse(importAbility, "Empty string should be importable");
     }
 
     @Test
@@ -391,6 +427,25 @@ class SarifV1JSONImporterTest {
 
         /* test */
         assertTrue(vulnerabilities.isEmpty());
+        SerecoVersionControl versionControl = result.getVersionControl();
+        assertNull(versionControl); // no version control data
+
+    }
+
+    @Test
+    void sarif_report_empty_report_with_version_control_data() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_empty_results_with_version_control, ScanType.CODE_SCAN);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        assertTrue(vulnerabilities.isEmpty());
+        SerecoVersionControl versionControl = result.getVersionControl();
+        assertNotNull(versionControl); // version control data set
+        assertEquals("revision1", versionControl.getRevisionId());
+        assertEquals("https://example.org/example-org/repo1", versionControl.getLocation());
 
     }
 

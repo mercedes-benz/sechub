@@ -6,7 +6,7 @@
 replicaCount: 1
 
 image:
-  registry: "ghcr.io/mercedes-benz/sechub/server"
+  registry: "ghcr.io/mercedes-benz/sechub/sechub-server"
   tag: "latest"
   # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
   #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -60,6 +60,9 @@ server:
   # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
   #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
   loggingType: LOGSTASH_JSON
+  reports:
+    # maxNonObfuscatedCharacters: 0 = only ***** ; >0 = this number of chars is shown in the report ; <0 = no obfuscation
+    maxNonObfuscatedCharacters: 0
   # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
   validityOnetimetokenInMilliseconds: 86400000
 
@@ -74,7 +77,7 @@ server:
       size:
         minimumIdle: 5
         maximum: 30
-    # Configure Spring Boot's embadded Tomcat
+    # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:
       logging:
         enabled: false
@@ -206,9 +209,16 @@ webScan:
 deploymentComment: "my deployment comment"
 
 # ----------------------------------------------------------------------------------------------#
-# Settings for Scan Backends (at least one should be enabled)
-#   For activation: set enabled: true
+# Optional: Additional environment variables for the SecHub server container
 # --------------------------------------------------------------------------------------------- #
+# env: |-
+#   - name: SECHUB_EXAMPLE_SMTP_HOSTNAME
+#     value: "smtp.example.com"
+#   - name: SECHUB_PDS_EXAMPLE_PASSWORD
+#     valueFrom:
+#       secretKeyRef:
+#         name: secret-pds-example
+#         key: techuser_password
 
 # ------------------------------------------------------------------------------------- #
 # Checkmarx adapter (Deprecation warning: Please use PDS-Checkmarx instead)
@@ -260,101 +270,3 @@ adapterNetsparker:
   internetAgentGroupName: sechub-internet
   intranetAgentGroupName: sechub-intranet
   licenseID: to.be.defined
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Checkmarx adapter
-# ------------------------------------------------------------------------------------- #
-# Using this adapter, you can integrate a Checkmarx server for code scans into SecHub.
-# Please refer to `sechub-pds-solutions/checkmarx/` on how to configure the PDS-Checkmarx adapter.
-pdsCheckmarx:
-  enabled: false
-  # Put the user id  of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_username
-  # Put the password of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Coverity adapter
-# ------------------------------------------------------------------------------------- #
-pdsCoverity:
-  enabled: false
-  # Put the user id  of PDS-Coverity in k8s secret secret-pds-coverity:techuser_username
-  # Put the password of PDS-Coverity in k8s secret secret-pds-coverity:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-FindSecurityBugs adapter
-# ------------------------------------------------------------------------------------- #
-pdsFindSecurityBugs:
-  enabled: false
-  # Put the user id  of PDS-FindSecurityBugs in k8s secret secret-pds-findsecuritybugs:techuser_username
-  # Put the password of PDS-FindSecurityBugs in k8s secret secret-pds-findsecuritybugs:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-GoSec adapter
-# ------------------------------------------------------------------------------------- #
-pdsGoSec:
-  enabled: false
-  # Put the user id  of PDS-GoSec in k8s secret secret-pds-gosec:techuser_username
-  # Put the password of PDS-GoSec in k8s secret secret-pds-gosec:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-IaC adapter
-# ------------------------------------------------------------------------------------- #
-pdsIaC:
-  enabled: false
-  # Put the user id  of PDS-IaC in k8s secret secret-pds-iac:techuser_username
-  # Put the password of PDS-IaC in k8s secret secret-pds-iac:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Loc analytics adapter
-# ------------------------------------------------------------------------------------- #
-pdsLoc:
-  enabled: false
-  # Put the user id  of PDS-Loc in k8s secret secret-pds-loc:techuser_username
-  # Put the password of PDS-Loc in k8s secret secret-pds-loc:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Multi adapter
-# ------------------------------------------------------------------------------------- #
-pdsMulti:
-  enabled: false
-  # Put the user id  of PDS-Multi in k8s secret secret-pds-multi:techuser_username
-  # Put the password of PDS-Multi in k8s secret secret-pds-multi:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-OWASP ZAP adapter
-# ------------------------------------------------------------------------------------- #
-pdsOWASPZAP:
-  enabled: false
-  # Put the user id  of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_username
-  # Put the password of PDS-OWASP ZAP in k8s secret secret-pds-owaspzap:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-PMD adapter
-# ------------------------------------------------------------------------------------- #
-pdsPMD:
-  enabled: false
-  # Put the user id  of PDS-PMD in k8s secret secret-pds-pmd:techuser_username
-  # Put the password of PDS-PMD in k8s secret secret-pds-pmd:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Scancode adapter
-# ------------------------------------------------------------------------------------- #
-pdsScancode:
-  enabled: false
-  # Put the user id  of PDS-Scancode in k8s secret secret-pds-scancode:techuser_username
-  # Put the password of PDS-Scancode in k8s secret secret-pds-scancode:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-SecretScanner adapter
-# ------------------------------------------------------------------------------------- #
-pdsSecretScanner:
-  enabled: false
-  # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
-  # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password
-
-# ------------------------------------------------------------------------------------- #
-# PDS-Xray adapter
-# ------------------------------------------------------------------------------------- #
-pdsXray:
-  enabled: false
-  # Put the user id  of PDS-Xray in k8s secret secret-pds-xray:techuser_username
-  # Put the password of PDS-Xray in k8s secret secret-pds-xray:techuser_password

@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +23,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUn
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.transaction.Transactional;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -65,7 +65,7 @@ public class UpdateProductExecutionProfileService {
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", profileId);
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             throw new NotFoundException("No profile found with id:" + profileId);
         }
         profileFromUser.id = profileId;
@@ -94,7 +94,7 @@ public class UpdateProductExecutionProfileService {
         for (ProductExecutorConfig configFromUser : configurationsFromUser) {
             UUID uuid = configFromUser.getUUID();
             Optional<ProductExecutorConfig> found = configRepository.findById(uuid);
-            if (!found.isPresent()) {
+            if (found.isEmpty()) {
                 LOG.warn("Found no configuration with uuid:{}, so cannot add to profile:{}", uuid, profileId);
                 continue;
             }

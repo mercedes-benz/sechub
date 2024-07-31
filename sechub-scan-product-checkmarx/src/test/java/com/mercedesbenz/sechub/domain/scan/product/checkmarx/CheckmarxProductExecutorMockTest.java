@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
@@ -45,13 +50,14 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+@SuppressWarnings("deprecation")
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { CheckmarxProductExecutor.class, CheckmarxResilienceConsultant.class,
         CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class, DefaultMetaDataInspector.class })
@@ -87,11 +93,14 @@ public class CheckmarxProductExecutorMockTest {
     @MockBean
     CodeScanPathCollector codeScanPathCollector;
 
+    @MockBean
+    SecHubDirectCheckmarxResilienceConfiguration resilienceConfiguration;
+
     @Before
     public void before() throws Exception {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
-        when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+        when(storageService.createJobStorage(any(), any())).thenReturn(storage);
 
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");
@@ -208,7 +217,7 @@ public class CheckmarxProductExecutorMockTest {
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

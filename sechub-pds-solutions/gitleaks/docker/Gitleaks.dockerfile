@@ -5,7 +5,7 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE}
 
-ARG GITLEAKS_VERSION=8.16.4
+ARG GITLEAKS_VERSION
 ENV GITLEAKS_VERSION="${GITLEAKS_VERSION}"
 
 USER root
@@ -16,11 +16,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get clean
 
 RUN cd "$DOWNLOAD_FOLDER" && \
-    wget "https://github.com/zricethezav/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt" && \
-    wget "https://github.com/zricethezav/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" && \
+    wget "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt" && \
+    wget "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" && \
     sha256sum --check --ignore-missing "gitleaks_${GITLEAKS_VERSION}_checksums.txt" && \
-    tar --extract --gunzip --file="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" --directory="$TOOL_FOLDER" && \
-    rm --recursive --force "$DOWNLOAD_FOLDER"/*
+    tar --extract --gunzip --file="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" --directory="$TOOL_FOLDER"
+
+# Copy custom rule file custom-gitleaks.toml
+COPY custom-gitleaks.toml "$TOOL_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json

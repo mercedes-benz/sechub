@@ -17,7 +17,6 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -37,9 +36,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
-import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLReportHelper;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
@@ -94,7 +94,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -144,7 +144,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
         assertNotNull(scanSecHubReport.getMetaData());
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -237,11 +237,10 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("styleRed", "theRedStyle");
         map.put("styleGreen", "display:none");
         map.put("styleYellow", "display:none");
-        map.put("redList", new ArrayList<>());
-        map.put("yellowList", new ArrayList<>());
-        map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
-        map.put("metaData", Optional.ofNullable(null));
+        map.put("metaData", null);
+        map.put("reportHelper", new HTMLReportHelper());
+        map.put("scanTypeSummaries", new ArrayList<>());
         when(modelBuilder.build(any())).thenReturn(map);
     }
 

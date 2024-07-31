@@ -311,6 +311,7 @@ In below table, there is an overview of what can be defined where.
 |===
 | *scope* | *cmdline option* | *environment variable* | *JSON config file*
 | api token | `-apitoken` _(!! not recommended !!)_ | `SECHUB_APITOKEN` |
+| append SCM history | `-addScmHistory` | `SECHUB_ADD_SCM_HISTORY` |
 | code scan config ||| <<sechub-config-code-scan,codeScan>>
 | JSON config file | `-configfile` ||
 | file | `-file` ||
@@ -326,13 +327,22 @@ In below table, there is an overview of what can be defined where.
 | server url | `-server` | `SECHUB_SERVER` | server
 | stop on yellow | `-stop-on-yellow`||
 | temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
+| trust all certificates || `SECHUB_TRUSTALL` |
 | user id | `-user` | `SECHUB_USERID` | user
 | web scan config ||| <<web-scan,webScan>>
+| DEV: debug http traffic || `SECHUB_DEBUG_HTTP` |
+| DEV: enable debugging || `SECHUB_DEBUG` |
+| DEV: ignore default excludes || `SECHUB_IGNORE_DEFAULT_EXCLUDES` |
+| DEV: initial wait interval || `SECHUB_INITIAL_WAIT_INTERVAL` |
+| DEV: keep temporary files || `SECHUB_KEEP_TEMPFILES` |
 |===
 
 
 ==== Commandline Options
 
+- `-addScmHistory` +
+  Secrets scan only: Upload SCM directories like `.git` for scanning. +
+  Can also be defined via environment variable `SECHUB_ADD_SCM_HISTORY=true`.
 - `-apitoken <string>` +
   The user's api token - mandatory. _Please try to avoid `-apitoken` parameter for security reasons!!_ +
   Use environment variable `SECHUB_APITOKEN` instead! (see: <<Environment variables>>)
@@ -370,6 +380,8 @@ In below table, there is an overview of what can be defined where.
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
 
+- `SECHUB_ADD_SCM_HISTORY` +
+  (`true` or `false` / unset) Secrets scan only: Upload SCM directories like `.git` for scanning. (same as `-addScmHistory` option)
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_LABELS` +
@@ -440,9 +452,10 @@ include::../shared/configuration/sechub_config.adoc[]
 The client will per default only include "wellknown" source files.
 This is done by inspecting the filename ending. The accepted defaults are shown in next table.
 
-NOTE: *All files having file endings not listed here, will be ignored* and not uploaded to {sechub} server.
+NOTE: *All files having file endings not listed here, will be ignored* and not uploaded to {sechub} server. +
+      *Except* the source data definition is also used for *secrets scanning*. Then every file is being uploaded.
 
-TIP: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+TIP: You can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
 
 include::../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 

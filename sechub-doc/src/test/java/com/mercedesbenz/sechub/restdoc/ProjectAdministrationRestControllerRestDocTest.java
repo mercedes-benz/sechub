@@ -1,17 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ACCESS_LEVEL;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.USER_ID;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
@@ -61,15 +69,15 @@ import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.server.SecHubWebMvcConfigurer;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
@@ -81,7 +89,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest(ProjectAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class,
         SecHubWebMvcConfigurer.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProjectAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -140,7 +148,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         Class<? extends Annotation> useCase = UseCaseAdminCreatesProject.class;
 
         /* execute + test @formatter:off */
-		this.mockMvc.perform(
+		mockMvc.perform(
 				post(apiEndpoint).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -190,7 +198,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         when(listProjectsService.listProjects()).thenReturn(ids);
 
         /* execute + test @formatter:off */
-		this.mockMvc
+		mockMvc
 				.perform(
 						get(apiEndpoint).
 							header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
@@ -222,7 +230,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         Class<? extends Annotation> useCase = UseCaseAdminDeleteProject.class;
 
         /* execute + test @formatter:off */
-		this.mockMvc.perform(
+		mockMvc.perform(
 				delete(apiEndpoint,"projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -252,7 +260,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
 
         /* execute + test @formatter:off */
-        this.mockMvc.perform(
+        mockMvc.perform(
                 post(apiEndpoint, "projectId1", "userId1").
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
 	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -276,10 +284,10 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectAccessLevel.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectAccessLevel.class)
     public void restdoc_change_project_access_level() throws Exception {
 
-        Class<UseCaseAdministratorChangesProjectAccessLevel> useCase = UseCaseAdministratorChangesProjectAccessLevel.class;
+        Class<UseCaseAdminChangesProjectAccessLevel> useCase = UseCaseAdminChangesProjectAccessLevel.class;
         String apiEndpoint = https(PORT_USED).buildAdminChangesProjectAccessLevelUrl(PROJECT_ID.pathElement(), PROJECT_ACCESS_LEVEL.pathElement());
 
         /* prepare */
@@ -300,7 +308,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         }
 
         /* execute + test @formatter:off */
-        this.mockMvc.perform(
+        mockMvc.perform(
                 post(apiEndpoint, "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
 	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -317,7 +325,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 		),
 		                pathParameters(
 		                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
-		                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
+		                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues)
 		                )
                 ));
 
@@ -332,7 +340,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
 
         /* execute + test @formatter:off */
-		this.mockMvc.perform(
+		mockMvc.perform(
 				post(apiEndpoint, "projectId1", "userId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -364,7 +372,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
 
         /* execute + test @formatter:off */
-		this.mockMvc.perform(
+		mockMvc.perform(
 				delete(apiEndpoint,"userId1", "projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -430,7 +438,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         when(detailInformationService.fetchDetails("projectId1")).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
-		this.mockMvc.perform(
+		mockMvc.perform(
 				get(apiEndpoint,"projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
 					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
@@ -505,7 +513,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         when(detailsChangeService.changeProjectDescription(any(), any())).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
-        this.mockMvc.perform(
+        mockMvc.perform(
                 post(apiEndpoint, "projectId1").
 	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	                content("{\n"
@@ -546,7 +554,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

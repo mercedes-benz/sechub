@@ -1,53 +1,82 @@
 // SPDX-License-Identifier: MIT
+:toc:
+:toclevels: 5
 
 == GitHub Action for SecHub scan
 
 This GitHub action uses the SecHub cli to scan the repository for security issues.
 
 
+
+
 === Usage
 
 To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
 
-```yaml
-
-- uses: mercedes-benz/sechub/github-actions/scan@72a27282da80952e6fadcef452c6a9085971c688
+[source,yaml]
+----
+- uses: mercedes-benz/sechub/github-actions/scan@master
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
     config-path: 'sechub.json'
 
-    # OPTIONAL: SecHub server url
+    # REQUIRED: SecHub server url (can alternatively provided via env variable or config file)
     url: ${{ secrets.SECHUB_SERVER }}
 
-    # OPTIONAL: SecHub api token
+    # REQUIRED: SecHub api token (can alternatively provided via env variable)
     api-token: ${{ secrets.SECHUB_APITOKEN }}
 
-    # OPTIONAL: SecHub user
+    # REQUIRED: SecHub user (can alternatively provided via env variable or config file)
     user: ${{ secrets.SECHUB_USERID }}
 
-    # OPTIONAL: the name of the project registered in SecHub (required if config-path not set)
+    # REQUIRED: the name of the project registered in SecHub (can alternatively provided via env variable or config file)
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
     # OPTIONAL: Which version of the SecHub cli to use
-    # DEFAULT: 1.2.0
-    version: '1.2.0'
+    # DEFAULT: latest
+    version: 'latest'
+
+    # OPTIONAL: Whether scm history should be uploaded or not
+    # DEFAULT: false
+    add-scm-history: false
+
+    # OPTIONAL: A list of scan types that shall be used when a SecHub configuration file is generated.
+    #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you
+    #           have to create a SecHub configuration file and provide it by the config-path attribute
+    #           (ignored in the case of a custom configuration file)
+    # DEFAULT: codeScan
+    scan-types: codeScan, secretScan
+
+    # OPTIONAL: A definition of the content type which shall be used for SecHub configuration file generation.
+    #           Allowed values: source,binaries. Cannot be combined.
+    #           (ignored in the case of a custom configuration file)
+    # DEFAULT: source
+    content-type: source
 
     # OPTIONAL: A list of folders to be included. Multiple folders can be separated by ,
+    #           (ignored in the case of a custom configuration file)
+    # DEFAULT: '.'
     include-folders: 'src,lib'
 
     # OPTIONAL: A list of folders to be excluded. Multiple folders can be separated by ,
+    #           (ignored in the case of a custom configuration file)
     # DEFAULT: empty (see SecHub documentation for default excludes)
     exclude-folders: 'bin,build,dist'
 
     # REQUIRED: The formats in which the report should be downloaded. Multiple values can be separatd by ,
     # DEFAULT: json,html
-    report-formats: 'json,html'
+    report-formats: 'json,html,spdx-json'
+
+    # OPTIONAL: When set to true, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates.
+    #           Please try to avoid this setting for security reasons.
+    # DEFAULT: false
+    trust-all: false
 
     # OPTIONAL: SecHub debug output on/off.
     # DEFAULT: false
     debug: false
 
-    # OPTIONAL: job (pipeline) will be marked as failed if sechub finds something
+    # OPTIONAL: job (pipeline) will be marked as failed if SecHub finds something
     # DEFAULT: true
     fail-job-with-findings: true
 ----
@@ -74,23 +103,78 @@ You can access them after the action has run with `${{ steps.<step-id>.outputs.<
 
 === Build
 
-To build the action locally you have to run this command:
+Make sure that you have installed https://nodejs.org/en/download/package-manager[Node.js]. +
+To build the action locally you have to run these commands:
 
 [source,npm]
 ----
+# Install dependencies
+npm install
+# Build
 npm run build
 ----
 
-This will run the `ncc` compiler and transpile the files from the src folder into the files from the dist folder.
+This runs the ncc compiler and transpiles the files from the src folder into the `dist/` folder.
 The dist files will be executed by the GitHub Action.
 
 It's necessary to execute the build after every change of the sources and you have to commit the changes in dist to git.
 
 === Test
 
-To run the tests you have to run this command:
+==== Unit tests
+To run the unit tests you have to execute this command:
 
 [source,npm]
 ----
 npm run test
 ----
+
+
+==== Integration-Test
+As a precondition to run the integration tests locally you have to
+
+- execute `__test__/01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortNr`
+
+TIP: You can also start a SecHub server and a PDS (both in integration test mode) instead of using the `01-start` script.
+
+After the script has been executed, you can execute integration tests multiple times via following command:
+
+[source,npm]
+----
+npm run integration-test
+----
+
+To enable full debug output in integration tests please execute following before running the integration tests:
+[source,npm]
+----
+export SECHUB_DEBUG=true
+----
+
+==== Debugging tests
+The unit and also the integration tests are written with `jest` test framework.
+
+===== Setup
+====== VSCodium
+
+Used extensions
+
+- Test explorer
+- Jest Test explorer
+- Jest
+
+In this setup the tests can be executed from sidebar and from links created inside the editor.
+
+[TIP]
+====
+Unfortunately, the Jest UI integration works only for npm script "test". But to handle integration tests different (the tests shall only be executed when all is build and servers are started) they are not executed by "test" script.
+
+If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
+
+- open `package.json` and look into section `scripts`
+- remove 'test' entry + copy `test-with-integrationtests` entry and rename copied part to `test`
+  (but please do not push this - otherwise build will fail on integration test!)
+- restart your VSCode/VSCodium instance (only necessary if integration tests are not listed in test explorer)
+- debug the parts, fix it etc.
+- remove 'test' entry + copy `test-without-integrationtests` entry and rename copied part to `test`
+- if necessary push fixes/changes to remote...
+====

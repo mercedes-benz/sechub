@@ -16,11 +16,11 @@ public class PDSSecretScanConfigImpl extends AbstractCodeScanAdapterConfig imple
         return configData;
     }
 
-    public static PDSLicenseScanConfigBuilder builder() {
-        return new PDSLicenseScanConfigBuilder();
+    public static PDSSecretScanConfigBuilder builder() {
+        return new PDSSecretScanConfigBuilder();
     }
 
-    public static class PDSLicenseScanConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<PDSLicenseScanConfigBuilder, PDSSecretScanConfigImpl>
+    public static class PDSSecretScanConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<PDSSecretScanConfigBuilder, PDSSecretScanConfigImpl>
             implements PDSAdapterConfigBuilder {
         private PDSAdapterDataConfigurator configurator = new PDSAdapterDataConfigurator();
 

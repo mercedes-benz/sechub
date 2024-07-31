@@ -18,6 +18,50 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class SimpleStringUtilsTest {
 
+    @ValueSource(strings = { "a", "ab", "$*abcdefghiujklmnop" })
+    @ParameterizedTest
+    void obfuscate_always_obfuscated_when_length_0(String text) {
+        assertEquals("*****", SimpleStringUtils.createObfuscatedString(text, 0));
+    }
+
+    @Test
+    void obfuscate_always_obfuscated_when_length_3_but_only_2_chars() {
+        /* prepare */
+        String text = "abc";
+
+        /* execute + test */
+        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, 2));
+    }
+
+    @ValueSource(ints = { 3, 5, 100 })
+    @ParameterizedTest
+    void obfuscate_always_obfuscated_when_string_length_smaller_than_obfuscation_length(int length) {
+        /* prepare */
+        String text = "ab";
+
+        /* execute + test */
+        assertEquals("ab*****", SimpleStringUtils.createObfuscatedString(text, length));
+    }
+
+    @ValueSource(ints = { -1, -5, -100 })
+    @ParameterizedTest
+    void do_not_obfuscate_when_length_smaller_0(int lenght) {
+        /* prepare */
+        String text = "ab23zr9hfiedlshfl";
+
+        /* execute + test */
+        assertEquals("ab23zr9hfiedlshfl", SimpleStringUtils.createObfuscatedString(text, lenght));
+    }
+
+    @Test
+    void return_null_when_string_parameter_null() {
+        /* prepare */
+        String text = null;
+
+        /* execute + test */
+        assertNull(SimpleStringUtils.createObfuscatedString(text, 0));
+    }
+
     @ValueSource(strings = { "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" })
     @ParameterizedTest
     void isLatinLetter_valid_values(String value) {

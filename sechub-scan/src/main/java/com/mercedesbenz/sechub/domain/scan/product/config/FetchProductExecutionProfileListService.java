@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.product.config;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,8 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfileList;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)

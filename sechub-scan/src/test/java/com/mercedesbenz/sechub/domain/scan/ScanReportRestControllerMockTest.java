@@ -9,12 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,17 +25,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
-import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
+import com.mercedesbenz.sechub.domain.scan.report.*;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @ExtendWith(SpringExtension.class)
@@ -98,7 +85,7 @@ class ScanReportRestControllerMockTest {
         scanReport.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(scanReport);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -131,23 +118,43 @@ class ScanReportRestControllerMockTest {
         Integer cweId = Integer.valueOf(77);
 
         SecHubFinding finding = new SecHubFinding();
+
         finding.setCweId(cweId);
+        finding.setSeverity(Severity.HIGH);
+        finding.setType(ScanType.CODE_SCAN);
+        finding.setDescription("Potential file inclusion via variable");
 
-        reportModelBuilderResult.put("redList", Arrays.asList(finding));
-        reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
+        /*
+         * its too complex to mock all parts - so we use simply the real model builder
+         * output here
+         */
+        HTMLScanResultReportModelBuilder realBuilder = new HTMLScanResultReportModelBuilder();
 
-        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
+        SecHubReportModel model = new SecHubReportModel();
+        model.getResult().getFindings().add(finding);
+
+        ScanReport scanReport = new ScanReport(randomUUID, "project1");
+        scanReport.setTrafficLight(TrafficLight.YELLOW);
+        scanReport.setResultType(ScanReportResultType.MODEL);
+        scanReport.setResult(JSONConverter.get().toJSON(model));
+
+        ScanSecHubReport report = new ScanSecHubReport(scanReport);
+        Map<String, Object> realModelBuilderResult = realBuilder.build(report);
+
+        when(modelBuilder.build(any())).thenReturn(realModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.TEXT_HTML).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                ).  andDo(print()).
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().contentType("text/html;charset=UTF-8")).
                     andExpect(content().encoding("UTF-8")).
                     andExpect(content().string(containsString(randomUUID.toString()))).
-                    andExpect(content().string(containsString("CWE-" + cweId.toString()))).
+                    andExpect(content().string(containsString("CWE-" + cweId.toString()))). /* finding + summary */
+                    andExpect(content().string(containsString("Count"))). /* summary only */
+                    andExpect(content().string(containsString("Potential file inclusion via variable"))). /* finding info */
                     andExpect(content().string(containsString("href=\"https://cwe.mitre.org/data/definitions/" + cweId.toString() + ".html\""))
                 );
 
@@ -168,7 +175,7 @@ class ScanReportRestControllerMockTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.TEXT_HTML).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                ).  andDo(print()).
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().contentType("text/html;charset=UTF-8")).
                     andExpect(content().encoding("UTF-8")).
@@ -204,7 +211,7 @@ class ScanReportRestControllerMockTest {
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -225,13 +232,13 @@ class ScanReportRestControllerMockTest {
         report.setTrafficLight(TrafficLight.YELLOW);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  andDo(print()).
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).
@@ -264,8 +271,10 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("yellowList", new ArrayList<>());
         reportModelBuilderResult.put("greenList", new ArrayList<>());
         reportModelBuilderResult.put("isWebDesignMode", false);
-        reportModelBuilderResult.put("metaData", Optional.ofNullable(null));
-        reportModelBuilderResult.put("codeScanSupport", new HtmlCodeScanDescriptionSupport());
+        reportModelBuilderResult.put("metaData", null);
+        reportModelBuilderResult.put("reportHelper", new HTMLReportHelper());
+        reportModelBuilderResult.put("codeScanSupport", new HTMLCodeScanDescriptionSupport());
+        reportModelBuilderResult.put("scanTypeSummaries", new ArrayList<>());
 
         when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
     }

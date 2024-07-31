@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.spring5.dialect.SpringStandardDialect;
+import org.thymeleaf.spring6.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -28,26 +29,19 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
-import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
+import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
-import com.mercedesbenz.sechub.test.CSSFileToFragementMerger;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**
  * A special reporting test: Will create "real life" HTML reports very fast (no
  * server or spring boot container start necessary) and test output rudimentary.
- * <br>
- * <br>
- * Does automatically load sarif test data from
- * "src/test/resources/report/input". Also able to store temporary JSON and HTML
- * output files to build when {@link TestUtil#isDeletingTempFiles()} returns
- * <code>true</code> (this is interesting when designing or debugging
- * reporting).
  *
- * When {@link TestUtil#isDeletingTempFiles()} returns <code>true</code> the
- * fragements file will be automatically updated by data from "scanresult.css"
+ * After the tests are executed, you can open the created files in your browser
+ * and check the results. This is very convenient for report development.
  *
  * @author Albert Tregnaghi
  *
@@ -74,18 +68,6 @@ public class ThymeLeafHTMLReportingTest {
 
         thymeleafTemplateEngine.setTemplateResolver(templateResolver);
 
-        if (TestUtil.isAutoCSSFragementGenerationEnabled()) {
-
-            File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");
-
-            File cssFile = new File(scanHTMLFolder, "scanresult.css");
-            File fragmentsFile = new File(scanHTMLFolder, "fragments.html");
-
-            CSSFileToFragementMerger merger = new CSSFileToFragementMerger();
-            merger.merge(cssFile, fragmentsFile);
-        } else {
-            LOG.info("Skipping CSS auto generation/merging");
-        }
     }
 
     @Test
@@ -102,9 +84,11 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example1");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("XSS"), "The report must at least contain a cross site scripting vulnerability!");
+        assertTrue(htmlResult.contains("CWE-614"), "The report must at least contain the CWE-614 vulnerability!");
         assertTrue(htmlResult.contains("Cross Site Scripting (Reflected)"), "The report must at least contain a cross site scripting reflected vulnerability!");
 
         assertTrue(htmlResult.contains("Red findings"));
@@ -126,6 +110,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example2");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("testdata.rule1.shortdescription.text"));
@@ -147,6 +132,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example3");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("Aliasing3.java"));
@@ -170,6 +156,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example4");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("java/com/mercedesbenz/sechub/docgen/util/TextFileWriter.java"));
@@ -191,7 +178,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
-
+        storeHTMLOutputAsFile(htmlResult, "example5");
         assertTrue(htmlResult.contains(context.sechubJobUUID));
 
         assertTrue(htmlResult.contains("Red findings"));
@@ -212,6 +199,7 @@ public class ThymeLeafHTMLReportingTest {
 
         /* test */
         assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example6");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
         assertTrue(htmlResult.contains("Job execution failed because of an internal problem!"));
@@ -224,8 +212,55 @@ public class ThymeLeafHTMLReportingTest {
 
     }
 
+    @Test
+    void example7_gitleaks_sarif_is_transformed_to_expected_sechub_report_HTML_with_secret_data_and_finding_revision_id() throws Exception {
+        /* prepare */
+        TestReportContext context = new TestReportContext(7, ProductIdentifier.PDS_SECRETSCAN, ReportInputFormat.SARIF, "gitleaks");
+        context.sechubJobUUID = "b6fdccc6-45d3-4b45-972c-08ff9ee0dddb";
+
+        /* execute */
+        String htmlResult = processThymeLeafTemplates(context);
+
+        /* test */
+        /* test */
+        assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example7");
+        assertTrue(htmlResult.contains(context.sechubJobUUID));
+
+        assertTrue(htmlResult.contains("Yellow findings"));
+        assertFalse(htmlResult.contains("Red findings"));
+        assertFalse(htmlResult.contains("Green findings"));
+        assertTrue(htmlResult.contains("0000000000012345")); // commit sha as revision
+    }
+
+    @Test
+    void example8_pseudo_gitleaks_sarif_with_version_control_transformed_to_sechub_report_HTML_with_version_control_and_secret_data() throws Exception {
+        /* prepare */
+        TestReportContext context = new TestReportContext(8, ProductIdentifier.PDS_SECRETSCAN, ReportInputFormat.SARIF, "pseudo_gitleaks_with_version_control");
+        context.sechubJobUUID = "a5feccc6-45d3-4b45-972c-08ff9ee0dddb";
+
+        /* execute */
+        String htmlResult = processThymeLeafTemplates(context);
+
+        /* test */
+        assertNotNull(htmlResult);
+        storeHTMLOutputAsFile(htmlResult, "example8");
+        assertTrue(htmlResult.contains(context.sechubJobUUID));
+
+        assertTrue(htmlResult.contains("Yellow findings"));
+        assertFalse(htmlResult.contains("Red findings"));
+        assertFalse(htmlResult.contains("Green findings"));
+        assertTrue(htmlResult.contains("b87c4e9")); // first one
+        assertFalse(htmlResult.contains("cafdac7")); // seconds is not listed by sechub
+    }
+
+    private void storeHTMLOutputAsFile(String htmlResult, String name) throws IOException {
+        TestFileWriter writer = new TestFileWriter();
+        writer.save(new File("./build/test-data/thymeleaf-test/" + name + ".html"), htmlResult, true);
+    }
+
     private String processThymeLeafTemplates(TestReportContext context) throws IOException, SecHubExecutionException {
-        String htmlResult = thymeleafTemplateEngine.process("report/html/scanresult", context.convertToThymeLeafContext());
+        String htmlResult = thymeleafTemplateEngine.process("report/html/report", context.convertToThymeLeafContext());
 
         storeAsHTMLFileForReportDesignWhenTempFilesAreKept(htmlResult, context);
 
@@ -334,7 +369,7 @@ public class ThymeLeafHTMLReportingTest {
 
             }
             TrafficLightSupport trafficLightSupport = new TrafficLightSupport();
-            TestHTMLScanResultReportModelBuilder reportModelBuilder = new TestHTMLScanResultReportModelBuilder(trafficLightSupport);
+            HTMLScanResultReportModelBuilder reportModelBuilder = new HTMLScanResultReportModelBuilder();
 
             String sechubReportAsJson = report.getResult();
             SecHubReportModel reportModel = SecHubReportModel.fromJSONString(sechubReportAsJson);
@@ -344,9 +379,9 @@ public class ThymeLeafHTMLReportingTest {
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
             if (getMetaData().isMetaDataNecessaryForReport()) {
 
-                SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-                reportMetaData.getLabels().putAll(getMetaData().labels);
-                scanReport.setMetaData(reportMetaData);
+                Optional<SecHubReportMetaData> reportMetaData = scanReport.getMetaData();
+                reportMetaData.get().getLabels().putAll(getMetaData().labels);
+                scanReport.setMetaData(reportMetaData.get());
             }
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
             Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);

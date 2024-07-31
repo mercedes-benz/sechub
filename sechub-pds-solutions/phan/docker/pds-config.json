@@ -1,0 +1,19 @@
+{
+  "apiVersion": "1.0",
+  "serverId": "PHAN_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_PHAN",
+      "path": "/pds/scripts/phan.sh",
+      "scanType": "codeScan",
+      "description": "Phan is a static analyzer for PHP."
+    },
+    {
+      "id": "PDS_PHAN_MOCK",
+      "path": "/pds/scripts/phan_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
+      "scanType": "codeScan",
+      "description": "Runs Phan mock. It returns a fixed result file."
+    }
+  ]
+}

@@ -1,28 +1,28 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR_FILESIZE;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.core.FileUploadSizeException;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
+import org.apache.commons.io.input.MessageDigestInputStream;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUpl
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_USER)
@@ -108,10 +111,10 @@ public class SchedulerBinariesUploadService {
 
             startUpload(projectId, jobUUID, request);
 
-        } catch (SizeLimitExceededException sizeLimitExceededException) {
+        } catch (FileUploadSizeException fileUploadSizeException) {
 
-            LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
-            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
+            LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
 
         } catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
 
@@ -132,6 +135,16 @@ public class SchedulerBinariesUploadService {
     }
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
+        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        try {
+            store(projectId, jobUUID, request, jobStorage);
+        } finally {
+            jobStorage.close();
+        }
+    }
+
+    private void store(String projectId, UUID jobUUID, HttpServletRequest request, JobStorage jobStorage)
+            throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
         long binaryFileSizeFromUser = getBinaryFileSize(request);
 
@@ -143,9 +156,7 @@ public class SchedulerBinariesUploadService {
 
         long realContentLengthInBytes = -1;
 
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
-
-        ServletFileUpload upload = servletFileUploadFactory.create();
+        JakartaServletFileUpload<?, ?> upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
@@ -179,15 +190,15 @@ public class SchedulerBinariesUploadService {
          *
          * ------------------------- So please do NOT change! -------------------------
          */
-        FileItemIterator iterStream = upload.getItemIterator(request);
+        FileItemInputIterator iterStream = upload.getItemIterator(request);
 
         while (iterStream.hasNext()) {
-            FileItemStream item = iterStream.next();
+            FileItemInput item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
             case PARAMETER_CHECKSUM:
-                try (InputStream checkSumInputStream = item.openStream()) {
-                    checksumFromUser = Streams.asString(checkSumInputStream);
+                try (InputStream checkSumInputStream = item.getInputStream()) {
+                    checksumFromUser = streamToString(checkSumInputStream);
 
                     assertion.assertIsValidSha256Checksum(checksumFromUser);
 
@@ -197,11 +208,17 @@ public class SchedulerBinariesUploadService {
                 checkSumDefinedByUser = true;
                 break;
             case PARAMETER_FILE:
-                try (InputStream fileInputstream = item.openStream()) {
+                try (InputStream fileInputstream = item.getInputStream()) {
 
                     MessageDigest digest = checkSumSupport.createSha256MessageDigest();
 
-                    MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
+                    /* @formatter:off */
+					MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
+							                                              setInputStream(fileInputstream).
+							                                              setMessageDigest(digest).
+							                                              get();
+					/* @formatter:on */
+
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
                     jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, binaryFileSizeFromUser);
@@ -286,9 +303,13 @@ public class SchedulerBinariesUploadService {
         return binaryFileSizeFromUser;
     }
 
+    String streamToString(InputStream inputStream) throws IOException {
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    }
+
     private void assertMultipart(HttpServletRequest request) {
-        if (!ServletFileUpload.isMultipartContent(request)) {
-            throw new BadRequestException("The binary upload request did not contain multipart content");
+        if (!JakartaServletFileUpload.isMultipartContent(request)) {
+            throw new BadRequestException("The upload request did not contain multipart content");
         }
     }
 

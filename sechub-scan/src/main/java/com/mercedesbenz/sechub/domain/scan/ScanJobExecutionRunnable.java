@@ -9,6 +9,7 @@ import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionServ
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
@@ -44,6 +45,15 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
 
             SecHubExecutionContext executionContext = runnableData.getExecutionContext();
             ProductExecutionServiceContainer executionServiceContainer = runnableData.getExecutionServiceContainer();
+
+            /* prepare phase (e.g. for remote data ) */
+            PrepareProductExecutionService prepareProductExecutionService = executionServiceContainer.getPrepareProductExecutionService();
+            prepareProductExecutionService.executeProductsAndStoreResults(executionContext);
+
+            if (executionContext.hasPrepareFailed()) {
+                LOG.error("Preparation phase failed");
+                return;
+            }
 
             /* analytics scan phase */
             AnalyticsProductExecutionService analyticsProductExecutionService = executionServiceContainer.getAnalyticsProductExecutionService();

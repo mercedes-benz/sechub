@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -59,6 +60,8 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
     String owasp;
 
     SecHubReportWeb web;
+
+    SecHubRevisionData revision;
 
     public void setType(ScanType scanType) {
         this.type = scanType;
@@ -261,8 +264,27 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
         this.target = target;
     }
 
-    public boolean hasScanType(String type) {
-        if (type == null) {
+    public Optional<SecHubRevisionData> getRevision() {
+        return Optional.ofNullable(revision);
+    }
+
+    public void setRevision(SecHubRevisionData revision) {
+        this.revision = revision;
+    }
+
+    public boolean hasScanType(ScanType scanType) {
+        String typeAsString = null;
+        if (scanType != null) {
+            typeAsString = scanType.getId();
+        }
+        return hasScanType(typeAsString);
+    }
+
+    public boolean hasScanType(String scanTypeId) {
+        if (scanTypeId == null || scanTypeId.isEmpty()) {
+            if (this.type == null) {
+                return true;
+            }
             return false;
         }
         if (this.type == null) {
@@ -270,7 +292,7 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
         }
 
         String typeId = this.type.getId();
-        return type.equalsIgnoreCase(typeId);
+        return scanTypeId.equalsIgnoreCase(typeId);
     }
 
     @Override

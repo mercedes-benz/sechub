@@ -3,11 +3,11 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = Signup.TABLE_NAME)
@@ -19,9 +19,9 @@ public class Signup {
     public static final String TABLE_NAME = "ADM_USER_SELFREGISTRATION";
 
     /**
-     * Email adress is also the primary key. So no duplicates
+     * Email address is also the primary key. So no duplicates
      */
-    public static final String COLUMN_EMAIL_ADRESS = "EMAIL_ADRESS";
+    public static final String COLUMN_EMAIL_ADDRESS = "EMAIL_ADDRESS";
     public static final String COLUMN_USER_ID = "USER_ID";
 
     /* +-----------------------------------------------------------------------+ */
@@ -33,23 +33,23 @@ public class Signup {
     @Column(name = COLUMN_USER_ID)
     String userId;
 
-    @Column(name = COLUMN_EMAIL_ADRESS, nullable = false)
-    String emailAdress;
+    @Column(name = COLUMN_EMAIL_ADDRESS, nullable = false)
+    String emailAddress;
 
     @Version
     @Column(name = "VERSION")
     Integer version;
 
-    public void setEmailAdress(String emailAdress) {
-        this.emailAdress = emailAdress;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public String getUserId() {

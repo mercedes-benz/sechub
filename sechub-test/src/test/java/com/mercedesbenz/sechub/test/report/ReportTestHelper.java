@@ -32,7 +32,7 @@ public class ReportTestHelper {
 
     private static final String REPORT_PATH = "./src/test/resources/report/";
 
-    private static final SarifV1JSONImporter sarifImporter = new SarifV1JSONImporter();
+    private static final SarifV1JSONImporter sarifImporter = new TestSarifV1JSONImporter();
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer serecoProductResultTransformer = new TestSerecoProductResultTransformer();
 
@@ -83,11 +83,7 @@ public class ReportTestHelper {
     public static ScanReport transformToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
 
-        ScanType scanType = ScanType.WEB_SCAN;
-
-        if (productIdentifier.equals(ProductIdentifier.PDS_CODESCAN)) {
-            scanType = ScanType.CODE_SCAN;
-        }
+        ScanType scanType = productIdentifier == null ? ScanType.WEB_SCAN : productIdentifier.getType();
 
         return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, scanType, true);
     }

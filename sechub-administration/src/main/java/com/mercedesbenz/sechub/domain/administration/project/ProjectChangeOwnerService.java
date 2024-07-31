@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -102,11 +102,11 @@ public class ProjectChangeOwnerService {
         DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
         ProjectMessage projectData = new ProjectMessage();
         projectData.setProjectId(project.id);
-        projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAdress());
-        projectData.setProjectOwnerEmailAddress(newOwner.getEmailAdress());
+        projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAddress());
+        projectData.setProjectOwnerEmailAddress(newOwner.getEmailAddress());
 
         project.users.forEach(user -> {
-            projectData.addUserEmailAddress(user.getEmailAdress());
+            projectData.addUserEmailAddress(user.getEmailAddress());
         });
 
         request.set(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, projectData);

@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.annotation.security.RolesAllowed;
-
 import com.mercedesbenz.sechub.sharedkernel.Step;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * Is used by Asciidoc generator to automatically generate documentation about

@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,6 +33,10 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCre
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 /**
  * The rest api for job scheduling. It shall be same obvious like
@@ -90,12 +92,12 @@ public class SchedulerRestController {
 	@UseCaseUserUploadsSourceCode(@Step(number=1,name="Authenticated REST call",needsRestDoc=true))
 	@RequestMapping(path = "/job/{jobUUID}/sourcecode", method = RequestMethod.POST)
 	public void uploadSourceCode(
-				@PathVariable("projectId") String projectId,
-				@PathVariable("jobUUID") UUID jobUUID,
-				@RequestParam("file") MultipartFile file,
-				@RequestParam("checkSum") String checkSum
-			) {
-		sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
+	        @PathVariable("projectId") String projectId,
+	        @PathVariable("jobUUID") UUID jobUUID,
+	        @RequestParam(MULTIPART_FILE) MultipartFile file,
+	        @RequestParam(MULTIPART_CHECKSUM) String checkSum
+	        ) {
+	    sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}
 	/* @formatter:on */
 
@@ -104,8 +106,10 @@ public class SchedulerRestController {
     @UseCaseUserUploadsBinaries(@Step(number=1,name="Authenticated REST call" ,needsRestDoc=true))
     @RolesAllowed(RoleConstants.ROLE_USER)
     @RequestMapping(path = "/job/{jobUUID}/binaries", method = RequestMethod.POST)
-    public void uploadBinaries( @PathVariable("projectId") String projectId,
-          @PathVariable("jobUUID") UUID jobUUID, HttpServletRequest request) throws Exception {
+    public void uploadBinaries(
+    		@PathVariable("projectId") String projectId,
+            @PathVariable("jobUUID") UUID jobUUID,
+            HttpServletRequest request) throws Exception {
         binariesUploadService.uploadBinaries(projectId, jobUUID, request);
     }
     /* @formatter:on */

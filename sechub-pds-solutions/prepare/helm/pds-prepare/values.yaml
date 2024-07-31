@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: MIT
+
+# This is a sample values file containing the defaults.
+
+replicaCount: 1
+
+image:
+  registry: "ghcr.io/mercedes-benz/sechub/pds-prepare"
+  tag: "latest"
+
+resources:
+  requests:
+    # Initial container memory size
+    memory: 256Mi
+  limits:
+    # Maximum container memory size
+    memory: 2Gi
+
+pds:
+  startMode: localserver
+  # Maximum upload size for source code: 20 MiB by default (20 * 1024 * 1024 = 20971520)
+  uploadMaximumBytes: "20971520"
+  # Maximum upload size for binaries: 100 MiB by default (100 * 1024 * 1024 = 104857600)
+  uploadBinariesMaximumBytes: "104857600"
+  config:
+    execute:
+      # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+      queueMax: 10
+      # Maximum number of jobs that are processed in parallel by PDS
+      workerThreadCount: 1
+  archive:
+    # Limiting parameters regarding the extraction of archives:
+    extraction:
+      # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
+      maxFileFizeUncompressed: 1GB
+      # Defines how many entries the archive may have
+      maxEntries: 100000
+      # The maximum directory depth for an entry inside the archive
+      maxDirectoryDepth: 100
+      # The timeout of the archive extraction process
+      timeout: 1m
+  volumes:
+    workspace:
+      size: "1Gi"
+  heartbeatLogging: "true"
+  logging:
+    type:
+      enabled: false
+      appenderName: "LOGSTASH_JSON"
+  debug:
+    keepReportsInWorkspace: false
+  javaDebug:
+    enabled: false
+  keepContainerAliveAfterPDSCrashed: false
+
+proxy:
+  httpsHost:  "<https proxy>"
+  noProxy:  "<no proxy>"
+
+users:
+  technical:
+    id: "techuser"
+    apiToken: "<api token of techuser>"
+  admin:
+    id: "admin"
+    apiToken: "<api token of admin user>"
+
+storage:
+  local:
+    enabled: true
+  s3:
+    enabled: false
+    endpoint: "https://<minio-or-s3-server>:<port>"
+    bucketname: "<my-bucketname>"
+    accesskey: "<my-accesskey>"
+    secretkey: "<my-secretkey>"
+  sharedVolume:
+    enabled: false
+    upload:
+      dir: "/mount/nfs/shares/<sharename>"
+
+database:
+  postgres:
+    enabled: false
+    connection: "jdbc:postgresql://database:5432/pds"
+    username: "pds_prepare"
+    password: "<password-of-db-user>"
+
+networkPolicy:
+  enabled: false
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            name: sechub-server
+      - podSelector:
+          matchLabels:
+            name: sechub-adminserver
+
+# deploymentComment (optional):
+#  When setting to a different value than before, it forces k8s to spin up a new container.
+#  This way, you can force deployments e.g. when only secrets have changed.
+deploymentComment: "my deployment comment"
+
+# optional: Add annotations to template.metadata.annotations
+#           Can contain multiple lines. Example for Prometheus actuator:
+# templateMetadataAnnotations: |-
+#   prometheus.io/scrape: "true"
+#   prometheus.io/probe: "true"
+#   prometheus.io/port: "10251"
+#   prometheus.io/path: "/actuator/prometheus"

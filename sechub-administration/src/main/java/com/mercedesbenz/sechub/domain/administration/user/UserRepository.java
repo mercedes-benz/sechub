@@ -11,19 +11,19 @@ public interface UserRepository extends JpaRepository<User, String>, UserReposit
 
     Optional<User> findByOneTimeToken(String oneTimeToken);
 
-    public default User findOrFailUser(String userId) {
+    default User findOrFailUser(String userId) {
         Optional<User> foundUser = findById(userId);
-        if (!foundUser.isPresent()) {
+        if (foundUser.isEmpty()) {
             throw new NotFoundException("User '" + userId + "' not found!");
         }
         return foundUser.get();
     }
 
-    Optional<User> findByEmailAdress(String emailAdress);
+    Optional<User> findByEmailAddress(String emailAddress);
 
-    public default User findOrFailUserByEmailAdress(String emailAddress) {
-        Optional<User> foundUser = findByEmailAdress(emailAddress);
-        if (!foundUser.isPresent()) {
+    default User findOrFailUserByEmailAddress(String emailAddress) {
+        Optional<User> foundUser = findByEmailAddress(emailAddress);
+        if (foundUser.isEmpty()) {
             throw new NotFoundException("No user with email address '" + emailAddress + "' found!");
         }
         return foundUser.get();

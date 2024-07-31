@@ -2,20 +2,20 @@
 package com.mercedesbenz.sechub.domain.administration.job;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
-import static javax.persistence.EnumType.*;
+import static jakarta.persistence.EnumType.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = JobInformation.TABLE_NAME)
@@ -27,7 +27,7 @@ public class JobInformation {
     /* +-----------------------------------------------------------------------+ */
     public static final String TABLE_NAME = "ADM_JOB_INFORMATION";
     /**
-     * Email adress is also the primary key. So no duplicates
+     * Email address is also the primary key. So no duplicates
      */
     public static final String COLUMN_UUID = "UUID";
     public static final String COLUMN_JOB_UUID = "JOB_UUID";

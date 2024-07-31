@@ -6,9 +6,10 @@
 
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
+ARG KICS_VERSION
 
 # Build args
-ARG GO="go1.20.4.linux-amd64.tar.gz"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 
 # Artifact folder
 ARG PDS_ARTIFACT_FOLDER="/artifacts"
@@ -22,13 +23,14 @@ FROM ${BASE_IMAGE} AS builder
 # Build args
 ARG GO
 ARG PDS_ARTIFACT_FOLDER
-
 ARG BUILD_FOLDER="/build"
-ARG GIT_URL_KICS="https://github.com/Checkmarx/kics.git"
-ARG GIT_BRANCH_KICS="master"
+ARG KICS_VERSION
 
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
+
+ENV KICS_VERSION="${KICS_VERSION}"
 
 USER root
 
@@ -36,7 +38,7 @@ RUN mkdir --parent "$PDS_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
+    apt-get install --quiet --assume-yes wget w3m git unzip && \
     apt-get clean
 
 # Install Go
@@ -57,13 +59,15 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 # Build Kics
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
-    # Clone Kics
-    git clone "$GIT_URL_KICS" --depth 1 --branch "$GIT_BRANCH_KICS" && \
+    # Download and extract Kics
+    wget --no-verbose https://github.com/Checkmarx/kics/archive/refs/tags/v${KICS_VERSION}.zip && \
+    unzip -q v${KICS_VERSION}.zip && \
+    mv kics-${KICS_VERSION} kics && \
     cd "kics" && \
     # Downloads Go packages
     go mod vendor && \
     # Build kics
-    go build -o ./bin/kics cmd/console/main.go && \
+    CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/Checkmarx/kics/internal/constants.Version=${KICS_VERSION}" -a -installsuffix cgo -o bin/kics cmd/console/main.go && \
     # copy kics binary
     mkdir --parents "$PDS_ARTIFACT_FOLDER/kics/" && \
     cp bin/kics --target-directory "$PDS_ARTIFACT_FOLDER/kics/" && \
@@ -87,11 +91,6 @@ LABEL maintainer="SecHub FOSS Team"
 ARG PDS_ARTIFACT_FOLDER
 
 ENV PATH "$TOOL_FOLDER/kics:$PATH"
-#ARG GO="go1.20.4.linux-amd64.tar.gz"
-#ARG IAC_VERSION="2.13.1"
-
-# Environment variables in container
-#ENV IAC_VERSION="${IAC_VERSION}"
 
 USER root
 

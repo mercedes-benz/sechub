@@ -32,7 +32,11 @@ public interface SecHubClient {
      */
     void removeListener(SecHubClientListener listener);
 
-    String getUsername();
+    void setUserId(String userId);
+
+    String getUserId();
+
+    void setApiToken(String apiToken);
 
     String getSealedApiToken();
 
@@ -96,7 +100,7 @@ public interface SecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Assign/Unassign................. + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    void acceptOpenSignup(String signupUsername) throws SecHubClientException;
+    void acceptOpenSignup(String signupUserId) throws SecHubClientException;
 
     void assignUserToProject(String userId, String projectId) throws SecHubClientException;
 
@@ -128,6 +132,22 @@ public interface SecHubClient {
      * @throws SecHubClientException
      */
     void approveJob(String projectId, UUID jobUUID) throws SecHubClientException;
+
+    /**
+     * Resolve SecHub server version
+     *
+     * @return server version as string
+     * @throws SecHubClientException
+     */
+    String getServerVersion() throws SecHubClientException;
+
+    /**
+     * Request a new API token for given email address
+     *
+     * @param emailAddress
+     * @throws SecHubClientException
+     */
+    void requestNewApiToken(String emailAddress) throws SecHubClientException;
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Other........................... + */

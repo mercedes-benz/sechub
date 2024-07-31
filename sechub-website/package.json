@@ -1,0 +1,24 @@
+{
+  "name": "sechub-website",
+  "version": "1.0.0",
+  "author": "Bernardo Oliveira | Mercedes-Benz.io",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt generate",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "prettier:fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "@headlessui/vue": "^1.7.19",
+    "@heroicons/vue": "^2.1.1",
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/tailwindcss": "^6.11.4",
+    "nuxt": "^3.10.3",
+    "nuxt-security": "^1.2.1",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11"
+  }
+}

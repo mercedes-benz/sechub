@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.zapwrapper.scan;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -26,7 +28,6 @@ import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.BrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
@@ -52,6 +53,8 @@ public class ZapScanner implements ZapScan {
     SystemUtil systemUtil;
 
     long remainingScanTime;
+
+    TextFileReader fileReader;
 
     public static ZapScanner from(ClientApiFacade clientApiFacade, ZapScanContext scanContext) {
         if (clientApiFacade == null) {
@@ -79,6 +82,8 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = systemUtil;
 
         this.remainingScanTime = scanContext.getMaxScanDurationInMilliSeconds();
+
+        this.fileReader = new TextFileReader();
     }
 
     @Override
@@ -132,7 +137,7 @@ public class ZapScanner implements ZapScan {
 
         LOG.info("Set browser for ajaxSpider.");
         // use firefox in headless mode by default
-        clientApiFacade.configureAjaxSpiderBrowserId(BrowserId.FIREFOX_HEADLESS.getBrowserId());
+        clientApiFacade.configureAjaxSpiderBrowserId(scanContext.getAjaxSpiderBrowserId());
     }
 
     void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
@@ -213,6 +218,10 @@ public class ZapScanner implements ZapScan {
             matchstring = httpHeader.getName();
             replacement = httpHeader.getValue();
 
+            if (replacement == null) {
+                replacement = readHeaderValueFromFile(httpHeader);
+            }
+
             if (httpHeader.getOnlyForUrls().isEmpty()) {
                 // if there are no onlyForUrl patterns, there is only one rule for each header
                 description = httpHeader.getName();
@@ -248,18 +257,21 @@ public class ZapScanner implements ZapScan {
     }
 
     void loadApiDefinitions(String zapContextId) throws ClientApiException {
-        if (scanContext.getApiDefinitionFiles().isEmpty()) {
-            LOG.info("For scan {}: No file with API definition found!", scanContext.getContextName());
-            return;
-        }
         Optional<SecHubWebScanApiConfiguration> apiConfig = scanContext.getSecHubWebScanConfiguration().getApi();
         if (!apiConfig.isPresent()) {
             LOG.info("For scan {}: No API definition was found!", scanContext.getContextName());
             return;
         }
 
-        switch (apiConfig.get().getType()) {
+        SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = apiConfig.get();
+
+        switch (secHubWebScanApiConfiguration.getType()) {
         case OPEN_API:
+            URL apiDefinitionUrl = secHubWebScanApiConfiguration.getApiDefinitionUrl();
+            if (apiDefinitionUrl != null) {
+                LOG.info("For scan {}: Loading openAPI definition from : {}", scanContext.getContextName(), apiDefinitionUrl.toString());
+                clientApiFacade.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), zapContextId);
+            }
             for (File apiFile : scanContext.getApiDefinitionFiles()) {
                 LOG.info("For scan {}: Loading openAPI file: {}", scanContext.getContextName(), apiFile.toString());
                 clientApiFacade.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);
@@ -796,6 +808,21 @@ public class ZapScanner implements ZapScan {
                 }
             }
         }
+    }
+
+    private String readHeaderValueFromFile(HTTPHeaderConfiguration httpHeader) {
+        File headerFile = null;
+        headerFile = scanContext.getHeaderValueFiles().getOrDefault(httpHeader.getName(), null);
+        try {
+            if (headerFile != null) {
+                return fileReader.loadTextFile(headerFile.getAbsoluteFile());
+            }
+        } catch (IOException e) {
+            SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR, "Could not read header value from file: " + headerFile);
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(message);
+            throw new ZapWrapperRuntimeException(message.getText(), e, ZapWrapperExitCode.IO_ERROR);
+        }
+        return null;
     }
 
     private String urlEncodeUTF8(String stringToEncode) {

@@ -1,0 +1,25 @@
+{
+  "apiVersion": "1.0",
+  "data": {
+    "sources": [
+      {
+        "name": "remote_example_name",
+        "remote": {
+          "location": "remote_example_location",
+          "type": "integrationtest",
+          "credentials": {
+            "user": {
+              "name": "remote_example_user",
+              "password": "remote_example_password"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "codeScan": {
+    "use": [
+      "remote_example_name"
+    ]
+  }
+}

@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.mercedesbenz.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidationImpl;
@@ -65,7 +65,7 @@ public class AnonymousSignupRestControllerMockTest {
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
+        			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAddress\":\"valid_emailaddress@example.org\"}")
         		).
         			andExpect(status().isOk()
         		);
@@ -82,7 +82,7 @@ public class AnonymousSignupRestControllerMockTest {
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content("{\"apiVersion\":\"X.0\",\"userId\":\"\",\"emailAdress\":\"test@test.com\"}")
+        			content("{\"apiVersion\":\"X.0\",\"userId\":\"\",\"emailAddress\":\"test@example.org\"}")
         		).
         			andExpect(status().isBadRequest()
         		);
@@ -128,7 +128,7 @@ public class AnonymousSignupRestControllerMockTest {
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			content(createUserSelfRegistration("X.0", "test@test.com", null).toJSON())
+        			content(createUserSelfRegistration("X.0", "test@example.org", null).toJSON())
         		).
         			andExpect(status().isBadRequest()
         		);
@@ -155,7 +155,7 @@ public class AnonymousSignupRestControllerMockTest {
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 
@@ -163,7 +163,7 @@ public class AnonymousSignupRestControllerMockTest {
 
         SignupJsonInput created = new SignupJsonInput();
         created.setApiVersion(api);
-        created.setEmailAdress(email);
+        created.setEmailAddress(email);
         created.setUserId(name);
         return created;
     }

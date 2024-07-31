@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 1.4.0 modified (commit aa28120)</span>
+<span id="revnumber"> PDS 1.7.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -792,7 +792,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 1.4.0 modified (commit aa28120) - Build date: 20240129100221</code></p>
+<p>Documentation version: <code>PDS 1.7.0 - Build date: 20240710135650</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -2095,49 +2095,31 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
 <h4 id="section-general-configuration">4.1.4. General configuration</h4>
 <div class="paragraph">
 <p>PDS can be configured by keys on server startup.
-Using the spring <code>@Value</code> annotation we are able to
-use these keys as Java system properties but also as environment entries.</p>
+With spring it is is possible to define the keys as Java system properties but also as
+environment entries.</p>
 </div>
 <div class="paragraph">
-<p>E.g. a key like <code>pds.admin.apitoken</code> can be set with</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>java ... -Dpds.admin.apitoken={noop}12345exampleToken</pre>
-</div>
+<p>E.g. a key like <code>pds.server.debug</code> can be set with <code>-Dpds.server.debug=true</code></p>
 </div>
 <div class="paragraph">
-<p>or with an environment entry <code>PDS_ADMIN_APITOKEN</code> which
+<p>or with an environment entry <code>PDS_SERVER_DEBUG</code> which
 is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </div>
-<div class="admonitionblock tip">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>When you have secret information you can define those information as a template by using environment
-variables from your SecHub installation.</p>
+<p>Even when it is possible to configure <code>PDS</code> with system properties or with environment variables
+there are some configuration options which insists to be defined as environment variable only (E.g. because they
+contain sensitive information which shall not appear inside any process inspection logs).</p>
 </div>
 <div class="paragraph">
-<p>An example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If your SecHub process runs in an environment with variable <code>PDS_GOSEC_SOLUTION_APITOKEN</code> set
-to 'very-secret-apitoken1234' <em>(e.g. by using secrets inside K8s)</em>, the authentication sent to
-PDS by SecHub will use</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>pds.admin.apitoken=very-secret-apitoken1234</code></pre>
-</div>
+<p>If you define those parts not as environment variables, <code>PDS</code> will not start but show an error message instead.
+Please look for more information at the following tables.</p>
 </div>
 </td>
 </tr>
@@ -2152,36 +2134,31 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.apitoken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ADMIN_APITOKEN</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator api token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator api token. <strong>This must be defined as an environment variable!</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.userid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ADMIN_USERID</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user id. <strong>This must be defined as an environment variable!</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.apitoken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_TECHUSER_APITOKEN</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user api token</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user api token. <strong>This must be defined as an environment variable!</strong></p></td>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Scope 'development'</caption>
+<table id="section-gen-config-scope-credentials." class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Scope 'credentials.'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2189,7 +2166,29 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_TECHUSER_USERID</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user id <strong>This must be defined as an environment variable!</strong></p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Scope 'development'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2208,7 +2207,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-execution" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Scope 'execution'</caption>
+<caption class="title">Table 4. Scope 'execution'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2216,12 +2215,32 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-directory-depth</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum directory depth for an entry inside the archive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-entries</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines how many entries the archive may have</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-file-size-uncompressed</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the max file size of the uncompressed archive (e.g.: 10KB or 10mb)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the timeout of the archive extraction process</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.execute.queue.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
@@ -2245,7 +2264,7 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.autoclean.disabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done). This is useful for debugging, but should not be used in production.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.rootfolder</p></td>
@@ -2255,7 +2274,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'migration'</caption>
+<caption class="title">Table 5. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2263,7 +2282,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2277,7 +2296,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-monitoring" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'monitoring'</caption>
+<caption class="title">Table 6. Scope 'monitoring'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2285,7 +2304,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2314,7 +2333,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'p'</caption>
+<caption class="title">Table 7. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2322,7 +2341,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2356,7 +2375,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'scheduler'</caption>
+<caption class="title">Table 8. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2364,7 +2383,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2388,7 +2407,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'security'</caption>
+<caption class="title">Table 9. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2396,7 +2415,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2410,7 +2429,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-startup" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'startup'</caption>
+<caption class="title">Table 10. Scope 'startup'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2418,7 +2437,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2429,10 +2448,15 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">./pds-config.json</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Define path to PDS configuration file</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.startup.assert.environment-variables-used.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When true, the startup assertion for forcing usage of some environment variables is disabled</p></td>
+</tr>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'storage'</caption>
+<caption class="title">Table 11. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2440,7 +2464,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2449,12 +2473,12 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.accesskey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.bucketname</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.idle.max.milliseconds</p></td>
@@ -2479,12 +2503,12 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.signer.override</p></td>
@@ -2519,7 +2543,7 @@ PDS by SecHub will use</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-upload" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'upload'</caption>
+<caption class="title">Table 12. Scope 'upload'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2527,7 +2551,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2650,6 +2674,36 @@ PDS to Checmarx will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid.mapping</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for bad request handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a bad request happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for internal server error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when an internal server error happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for network error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a network error happend</p></td>
 </tr>
 </tbody>
 </table>
@@ -2782,7 +2836,8 @@ Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">none</span><span class="delimiter">&quot;</span></span> 
                     }  
                 ]
-            }
+            },
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">envWhitelist</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">SOME_SPECIAL_ENV_VARIABLE</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="13"></i><b>(13)</b>
         }
     ]
 }</code></pre>
@@ -2868,6 +2923,14 @@ Also the environment variables <code>$PDS_JOB_HAS_EXTRACTED_SOURCES</code> and <
 <tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
 <td>Using <code>none</code> will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>An optional list of environment variable names which are additionally white listed from PDS script environment cleanup.
+Those entries can also end with an asterisk, in this case every variable name starting with this entry will
+be whitelisted (e.g. <code>SPECIAL_VAR_*</code> woud white list <code>SPECIAL_VAR_CONNECTION_URL</code> etc.)<br>
+The PDS script cleanup process prevents inheritage of environment variables from PDS parent process.
+There are some also some default variable names which are automatically accepted (e.g. <code>HOME</code>, <code>PATH</code>, ..).</td>
 </tr>
 </table>
 </div>
@@ -3004,7 +3067,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 <p>We have following standard parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. PDS executor configuration parameters</caption>
+<caption class="title">Table 13. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3325,6 +3388,41 @@ When 'true', the PDS instance will show up some debug information on scan time. 
 <li>
 <p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
 </li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.wrapper.remote.debugging.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Additional information will be always sent to launcher scripts. Interesting to debug wrapper applications remote.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.add.scriptlog.to.pdslog.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will add the complete log output from launcher script (and wrapper calls) to PDS log after the PDS launcher script has finished.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
 <li>
 <p>Optional</p>
 </li>
@@ -3713,14 +3811,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User creates job. If configuration is not valid an error will be thrown</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">job will be created, serverId will be used to store new job</p></td>
 </tr>
@@ -3756,14 +3854,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User uploads a file to workspace of given job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">uploaded file is stored by storage service</p></td>
 </tr>
@@ -3799,7 +3897,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User marks job as ready to start.</p></td>
 </tr>
@@ -3835,23 +3933,23 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User cancels a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 </tbody>
 </table>
@@ -3885,14 +3983,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User fetches status of a job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">returns job status</p></td>
 </tr>
@@ -3928,14 +4026,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get result of a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job result from database. When job is not already done a failure will be shown</p></td>
 </tr>
@@ -3985,7 +4083,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">admin fetches monitoring status by REST API</p></td>
 </tr>
@@ -4069,14 +4167,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches result or failure text for job from db.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Result data will be returned - can be empty or even a failure text from job execution.</p></td>
 </tr>
@@ -4112,7 +4210,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches server configuration of PDS server(s).</p></td>
 </tr>
@@ -4148,14 +4246,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches output stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Output stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4205,14 +4303,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches error stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Error stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4262,7 +4360,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches auto cleanup configuration</p></td>
 </tr>
@@ -4305,7 +4403,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator changes auto cleanup configuration</p></td>
 </tr>
@@ -4398,14 +4496,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get messages of job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job messages from database. When job is not already done a failure will be shown</p></td>
 </tr>
@@ -4441,14 +4539,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches meta data text or null.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Meta data of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4715,7 +4813,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 1.4.0 modified (commit aa28120)<br>
+ PDS 1.7.0<br>
 </div>
 </div>
 </body>

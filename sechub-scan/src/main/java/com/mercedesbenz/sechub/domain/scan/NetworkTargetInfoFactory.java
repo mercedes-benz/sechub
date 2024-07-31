@@ -34,7 +34,7 @@ public class NetworkTargetInfoFactory {
             List<URI> uris = networkLocationProvider.getURIs();
             registerURIs(traceLogId, support, registry, uris);
 
-            List<InetAddress> inetAdresses = networkLocationProvider.getInetAdresses();
+            List<InetAddress> inetAdresses = networkLocationProvider.getInetAddresses();
             registerInetAdresses(traceLogId, support, registry, inetAdresses);
 
         } else {

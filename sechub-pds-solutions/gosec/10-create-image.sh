@@ -44,10 +44,12 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$GOSEC_VERSION" ]] ; then
-    echo ">> GoSec version: $GOSEC_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg GOSEC_VERSION=$GOSEC_VERSION"
+if [[ -z "$GOSEC_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> GoSec version: $GOSEC_VERSION"
+BUILD_ARGS="$BUILD_ARGS --build-arg GOSEC_VERSION=$GOSEC_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

@@ -2,16 +2,17 @@
 package com.mercedesbenz.sechub.domain.schedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 
 /*
@@ -21,10 +22,10 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
  * @author Albert Tregnaghi
  *
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@WithMockUser(authorities = { RoleConstants.ROLE_USER })
+@TestPropertySource(locations = "classpath:application-test.yml")
+@WithMockUser(roles = { RoleConstants.ROLE_USER })
+@ActiveProfiles(Profiles.TEST)
 public class SchedulerSmokeSpringBootTest {
 
     @Autowired

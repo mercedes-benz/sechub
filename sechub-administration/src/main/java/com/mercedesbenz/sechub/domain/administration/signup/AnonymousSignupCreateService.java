@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.validation.Valid;
 
 @Service
 public class AnonymousSignupCreateService {
@@ -54,23 +54,23 @@ public class AnonymousSignupCreateService {
     @UseCaseUserSignup(@Step(number = 2, name = "Persistence", description = "Valid self registration input will be persisted to database."))
     public void register(@Valid SignupJsonInput userSelfRegistrationInput) {
         String userId = userSelfRegistrationInput.getUserId();
-        String emailAdress = userSelfRegistrationInput.getEmailAdress();
+        String emailAddress = userSelfRegistrationInput.getEmailAddress();
 
-        LOG.debug("user tries to register himself:{},mail:{}", userId, emailAdress);
+        LOG.debug("user tries to register himself:{},mail:{}", userId, emailAddress);
 
         assertion.assertIsValidUserId(userId);
-        assertion.assertIsValidEmailAddress(emailAdress);
+        assertion.assertIsValidEmailAddress(emailAddress);
 
-        assertNotAlreadySignedIn(userId, emailAdress);
-        assertUsernameNotUsedAlready(userId, emailAdress);
-        assertEmailAdressNotUsedAlready(userId, emailAdress);
+        assertNotAlreadySignedIn(userId, emailAddress);
+        assertUsernameNotUsedAlready(userId, emailAddress);
+        assertEmailAddressNotUsedAlready(userId, emailAddress);
 
         Signup entity = new Signup();
 
-        entity.setEmailAdress(emailAdress);
+        entity.setEmailAddress(emailAddress);
         entity.setUserId(userId);
         userSelfRegistrationRepository.save(entity);
-        LOG.debug("Added registration entry for user:{},mail:{}", entity.getUserId(), entity.getEmailAdress());
+        LOG.debug("Added registration entry for user:{},mail:{}", entity.getUserId(), entity.getEmailAddress());
 
         /* trigger event */
         informAboutSignupRequest(entity);
@@ -81,7 +81,7 @@ public class AnonymousSignupCreateService {
         DomainMessage infoRequest = new DomainMessage(MessageID.USER_SIGNUP_REQUESTED);
 
         UserMessage userMessage = new UserMessage();
-        userMessage.setEmailAdress(signup.getEmailAdress());
+        userMessage.setEmailAddress(signup.getEmailAddress());
         userMessage.setUserId(signup.getUserId());
 
         infoRequest.set(MessageDataKeys.USER_SIGNUP_DATA, userMessage);
@@ -89,29 +89,29 @@ public class AnonymousSignupCreateService {
         eventBusService.sendAsynchron(infoRequest);
     }
 
-    private void assertEmailAdressNotUsedAlready(String userId, String emailAdress) {
-        Optional<User> foundUserByMail = userRepository.findByEmailAdress(emailAdress);
+    private void assertEmailAddressNotUsedAlready(String userId, String emailAddress) {
+        Optional<User> foundUserByMail = userRepository.findByEmailAddress(emailAddress);
 
         if (foundUserByMail.isPresent()) {
-            LOG.warn("Self registration coming in for emailadress:{} and user:{} but an existing user does already have this email adress. So not accepted",
-                    emailAdress, userId);
+            LOG.warn("Self registration coming in for email address:{} and user:{} but an existing user does already have this email address. So not accepted",
+                    emailAddress, userId);
             handleRegistrationNotPossible();
         }
     }
 
-    private void assertUsernameNotUsedAlready(String userId, String emailAdress) {
+    private void assertUsernameNotUsedAlready(String userId, String emailAddress) {
         Optional<User> foundUser = userRepository.findById(userId);
 
         if (foundUser.isPresent()) {
-            LOG.warn("Self registration coming in for emailadress:{} and user:{} but existing user found by name. So not accepted", emailAdress, userId);
+            LOG.warn("Self registration coming in for email address:{} and user:{} but existing user found by name. So not accepted", emailAddress, userId);
             handleRegistrationNotPossible();
         }
     }
 
-    private void assertNotAlreadySignedIn(String userId, String emailAdress) {
+    private void assertNotAlreadySignedIn(String userId, String emailAddress) {
         Optional<Signup> found = userSelfRegistrationRepository.findById(userId);
         if (found.isPresent()) {
-            LOG.warn("Self registration coming in for emailadress:{} and user:{} but signup already exists. So not accepted", emailAdress, userId);
+            LOG.warn("Self registration coming in for email address:{} and user:{} but signup already exists. So not accepted", emailAddress, userId);
             handleRegistrationNotPossible();
         }
     }

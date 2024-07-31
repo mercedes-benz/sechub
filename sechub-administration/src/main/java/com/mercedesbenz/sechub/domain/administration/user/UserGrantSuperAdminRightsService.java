@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -52,7 +52,7 @@ public class UserGrantSuperAdminRightsService {
 					number = 2,
 					name = "Service grants user admin rights.",
 					next = { 3,	4 },
-					description = "The service will grant user admin righs and triggers asynchronous events"))
+					description = "The service will grant user admin rights and triggers asynchronous events"))
 	/* @formatter:on */
     public void grantSuperAdminRightsFor(String userId) {
         auditLogService.log("Triggered granting admin rights for user {}", logSanitizer.sanitize(userId, 30));
@@ -68,19 +68,19 @@ public class UserGrantSuperAdminRightsService {
         user.superAdmin = true;
         userRepository.save(user);
 
-        requestUserRoleRecalculaton(user);
-        informUserBecomesSuperadmin(user);
+        requestUserRoleRecalculation(user);
+        informUserBecomesSuperAdmin(user);
 
     }
 
     @IsSendingAsyncMessage(MessageID.USER_BECOMES_SUPERADMIN)
-    private void informUserBecomesSuperadmin(User user) {
+    private void informUserBecomesSuperAdmin(User user) {
         eventBusService
-                .sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(), sechubEnvironment.getServerBaseUrl()));
+                .sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAddress(), sechubEnvironment.getServerBaseUrl()));
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-    private void requestUserRoleRecalculaton(User user) {
+    private void requestUserRoleRecalculation(User user) {
         eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
     }
 
