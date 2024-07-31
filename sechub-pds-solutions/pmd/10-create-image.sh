@@ -43,10 +43,16 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$PMD_VERSION" ]] ; then
-    echo ">> PMD version: $PMD_VERSION"
-    BUILD_ARGS+=" --build-arg PMD_VERSION=$PMD_VERSION"
+if [[ -z "$PMD_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> PMD version: $PMD_VERSION"
+BUILD_ARGS+=" --build-arg PMD_VERSION=$PMD_VERSION"
+
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \

@@ -6,6 +6,7 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - XRAY_WRAPPER_VERSION=${XRAY_WRAPPER_VERSION}
             context: docker/
             dockerfile: Xray-Debian.dockerfile
         container_name: pds-xray

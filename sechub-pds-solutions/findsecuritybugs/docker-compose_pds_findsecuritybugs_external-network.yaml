@@ -6,6 +6,8 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - FINDSECURITYBUGS_VERSION=${FINDSECURITYBUGS_VERSION}
+                - SPOTBUGS_VERSION=${SPOTBUGS_VERSION}
             context: docker/
             dockerfile: FindSecurityBugs-Debian.dockerfile
         container_name: pds-findsecuritybugs

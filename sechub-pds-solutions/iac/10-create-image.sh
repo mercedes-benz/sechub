@@ -36,12 +36,6 @@ if [[ -z "$BASE_IMAGE" ]]; then
   FAILED=true
 fi
 
-# If "KICS_VERSION" is not set file "env" should be sourced
-if [[ -z "$KICS_VERSION" ]] && [[ -f env ]]; then
-  echo "KICS_VERSION is not set, sourcing 'env' file"
-  source ./env
-fi
-
 if $FAILED ; then
   usage
   exit 1
@@ -50,10 +44,12 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [ -n "$KICS_VERSION" ] ; then
-    echo ">> KICS version: $KICS_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg KICS_VERSION=$KICS_VERSION"
+if [ -z "$KICS_VERSION" ] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> KICS version: $KICS_VERSION"
+BUILD_ARGS="$BUILD_ARGS --build-arg KICS_VERSION=$KICS_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

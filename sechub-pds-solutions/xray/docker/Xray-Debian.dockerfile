@@ -4,9 +4,10 @@
 ARG BASE_IMAGE
 
 # Build Args
+# See: See: https://github.com/mercedes-benz/sechub/releases
+ARG XRAY_WRAPPER_VERSION
 # Build type can be "copy" or "download"
 ARG BUILD_TYPE="download"
-ARG XRAY_WRAPPER_VERSION
 
 # The base image of the builder
 ARG BUILDER_BASE_IMAGE="debian:12-slim"
@@ -60,7 +61,7 @@ COPY copy/sechub-pds-wrapper-xray-$XRAY_WRAPPER_VERSION.jar "$ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 RUN echo "build stage"
 
 
@@ -70,13 +71,13 @@ RUN echo "build stage"
 
 FROM ${BASE_IMAGE}
 
+ARG ARTIFACT_FOLDER
+ARG XRAY_WRAPPER_VERSION
+
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Xray+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines Xray Wrapper with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
-
-ARG ARTIFACT_FOLDER
-ARG XRAY_WRAPPER_VERSION
 
 USER root
 
