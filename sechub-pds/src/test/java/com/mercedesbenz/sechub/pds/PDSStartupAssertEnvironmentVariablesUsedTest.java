@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,6 +46,21 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
         assertionToTest.sharedVolumeSetup = sharedVolumeSetup;
         assertionToTest.environment = environment;
 
+    }
+
+    /**
+     * With this test we ensure that fallback creation works on a new assertion
+     * object (which is used in asciidoc generation process)
+     */
+    @Test
+    void initial_created_createRegistryForOnlyAllowedAsEnvironmentVariables_with_fallbacks_work() {
+        assertionToTest = new PDSStartupAssertEnvironmentVariablesUsed(); // no mocks, nothing defined
+
+        /* execute */
+        SecureEnvironmentVariableKeyValueRegistry registry = assertionToTest.createRegistryForOnlyAllowedAsEnvironmentVariables(true);
+
+        /* test */
+        assertFalse(registry.getEntries().isEmpty());
     }
 
     @Test

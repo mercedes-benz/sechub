@@ -1,4 +1,13 @@
 // SPDX-License-Identifier: MIT
-. Place a single PDS Jar into this folder. 
-. Name it `sechub-pds-0.0.0.jar`
-. Run `10-create-image.sh` to build the image
+. Build PDS jar local with gradle command
+. Copy the pds jar into the copy folder sechub-pds-0.0.0.jar
++
+----
+cp sechub-pds/build/libs/sechub-pds-0.0.0.jar .
+----
+. Run `10-create-image.sh` with the copy parameter to build the image
++
+----
+./10-create-image.sh pds-base-pds latest 0.0.0 debian:12-slim copy
+----
+

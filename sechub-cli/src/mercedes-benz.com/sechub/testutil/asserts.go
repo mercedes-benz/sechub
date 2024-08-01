@@ -4,6 +4,7 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"reflect"
 	"strings"
@@ -142,10 +143,18 @@ func jsonBytesEqual(a, b []byte) (bool, error) {
 // AssertFileExists - checks if a file exists
 func AssertFileExists(filePath string, t *testing.T) {
 	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
+	if errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("File %q expected, but does not exist.", filePath)
 	} else {
 		Check(err, t)
+	}
+}
+
+// AssertFileNotExists - checks if a file does not exist
+func AssertFileNotExists(filePath string, t *testing.T) {
+	_, err := os.Stat(filePath)
+	if ! errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("File %q exists but it should not.", filePath)
 	}
 }
 

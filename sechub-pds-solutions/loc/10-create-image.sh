@@ -43,15 +43,19 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$CLOC_VERSION" ]] ; then
-    echo ">> Cloc version: $CLOC_VERSION"
-    BUILD_ARGS+=" --build-arg CLOC_VERSION=$CLOC_VERSION"
+if [[ -z "$CLOC_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> Cloc version: $CLOC_VERSION"
+BUILD_ARGS+=" --build-arg CLOC_VERSION=$CLOC_VERSION"
 
-if [[ ! -z "$SCC_VERSION" ]] ; then
-    echo ">> Scc version: $SCC_VERSION"
-    BUILD_ARGS+=" --build-arg SCC_VERSION=$SCC_VERSION"
+if [[ -z "$SCC_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> Scc version: $SCC_VERSION"
+BUILD_ARGS+=" --build-arg SCC_VERSION=$SCC_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

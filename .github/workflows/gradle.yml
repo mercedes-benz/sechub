@@ -25,12 +25,12 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
+        uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70
         with:
           cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
         with:
           go-version: 1.21.6
 

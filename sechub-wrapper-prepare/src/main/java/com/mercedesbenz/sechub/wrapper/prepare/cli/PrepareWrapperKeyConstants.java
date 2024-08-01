@@ -33,4 +33,19 @@ public class PrepareWrapperKeyConstants {
 
     public static final String KEY_PDS_PREPARE_MODULE_GIT_CLONE_WITHOUT_GIT_HISTORY = PREPARE_MODULE_GIT + ".clone.without.git.history";
 
+    /**
+     * Flag to enable the prepare proxy
+     */
+    public static final String KEY_PDS_PREPARE_PROXY_ENABLED = "pds.prepare.proxy.enabled";
+
+    /**
+     * HTTPS Proxy URL
+     */
+    public static final String KEY_PDS_HTTPS_PROXY = "pds.https.proxy";
+
+    /**
+     * Comma seperated list to define which hosts must be accessed without proxy
+     */
+    public static final String KEY_PDS_NO_PROXY = "pds.no.proxy";
+
 }

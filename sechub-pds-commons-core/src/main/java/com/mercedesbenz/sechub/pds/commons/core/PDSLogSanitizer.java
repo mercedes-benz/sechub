@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.commons.core;
 
 import java.util.regex.Pattern;

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
@@ -27,7 +28,7 @@ class PrepareWrapperFileUploadServiceTest {
         uploadServiceToTest = new PrepareWrapperFileUploadService();
         jobStorage = mock(JobStorage.class);
         PrepareWrapperStorageService storageService = mock(PrepareWrapperStorageService.class);
-        when(storageService.getJobStorage(anyString(), any(UUID.class))).thenReturn(jobStorage);
+        when(storageService.createJobStorage(anyString(), any(UUID.class))).thenReturn(jobStorage);
 
         uploadServiceToTest.storageService = storageService;
 

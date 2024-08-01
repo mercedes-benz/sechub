@@ -97,12 +97,12 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda
+        uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70
         with:
           cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
         with:
           go-version: 1.21.6
 
@@ -118,7 +118,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -143,7 +143,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -295,7 +295,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash

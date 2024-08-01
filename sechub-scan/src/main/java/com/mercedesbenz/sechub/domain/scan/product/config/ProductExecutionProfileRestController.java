@@ -66,8 +66,8 @@ public class ProductExecutionProfileRestController {
 				description="Administrator adds a new product execution profile by calling REST API"))
 	@RequestMapping(path="execution/profile/{id}",method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profileFromuser) {
-	    createService.createProductExecutionProfile(profileId,profileFromuser);
+	public void createProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profileFromUser) {
+	    createService.createProductExecutionProfile(profileId,profileFromUser);
 		/* @formatter:on */
     }
 
@@ -88,7 +88,7 @@ public class ProductExecutionProfileRestController {
     @UseCaseAdminUpdatesExecutionProfile(@Step(number = 1, name = "Rest call", needsRestDoc = true, description = "Administrator updates existing profile by calling REST API"))
     @RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public void udpateProfile(@PathVariable("id") String profileId, @RequestBody ProductExecutionProfile profile) {
+    public void updateProfile(@PathVariable("id") String profileId, @RequestBody ProductExecutionProfile profile) {
         updateService.updateExecutionProfile(profileId, profile);
         /* @formatter:on */
     }
@@ -132,7 +132,7 @@ public class ProductExecutionProfileRestController {
 	                description="Administrator fetches setup of an existing product executor configuration by calling REST API"))
 	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutionProfile fechProductExecutorConfigSetup(@PathVariable("id")String profileId) {
+	public ProductExecutionProfile fetchProductExecutorConfigSetup(@PathVariable("id")String profileId) {
 	    return fetchService.fetchProductExecutorConfig(profileId);
 	    /* @formatter:on */
     }

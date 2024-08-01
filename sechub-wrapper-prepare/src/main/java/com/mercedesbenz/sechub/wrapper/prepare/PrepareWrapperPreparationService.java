@@ -34,6 +34,9 @@ public class PrepareWrapperPreparationService {
     @Autowired
     List<PrepareWrapperModule> modules = new ArrayList<>();
 
+    @Autowired
+    PrepareWrapperProxySupport proxySupport;
+
     public AdapterExecutionResult startPreparation() throws IOException {
 
         LOG.debug("Start preparation");
@@ -51,6 +54,7 @@ public class PrepareWrapperPreparationService {
         }
 
         LOG.info("Start preparation with following modules: {}", modules);
+        setUpSystemProperties();
 
         for (PrepareWrapperModule module : modules) {
             if (!module.isEnabled()) {
@@ -80,5 +84,9 @@ public class PrepareWrapperPreparationService {
         messages.add(secHubMessage);
 
         return new AdapterExecutionResult(result.toString(), messages);
+    }
+
+    private void setUpSystemProperties() {
+        proxySupport.setUpProxy();
     }
 }

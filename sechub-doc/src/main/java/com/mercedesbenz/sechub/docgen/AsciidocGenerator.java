@@ -211,7 +211,7 @@ public class AsciidocGenerator implements Generator {
         context.sechubEnvVariableRegistry = new SecureEnvironmentVariableKeyValueRegistry();
 
         /*
-         * Environment variable registry for PDS - we use sanitiy check handling to
+         * Environment variable registry for PDS - we use sanity check handling to
          * create same s3Setup as on startup phase
          */
         context.pdsEnvVariableRegistry = new PDSStartupAssertEnvironmentVariablesUsed().createRegistryForOnlyAllowedAsEnvironmentVariables(true);

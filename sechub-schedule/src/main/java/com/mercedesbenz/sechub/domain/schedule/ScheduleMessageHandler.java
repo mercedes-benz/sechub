@@ -32,7 +32,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 
 @Component
 public class ScheduleMessageHandler implements AsynchronMessageHandler {
@@ -156,7 +156,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     }
 
     @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
-    @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 4, name = "Event handler", description = "Receives change project access level event"))
+    @UseCaseAdminChangesProjectAccessLevel(@Step(number = 4, name = "Event handler", description = "Receives change project access level event"))
     private void handleProcessAccessLevelChanged(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
 

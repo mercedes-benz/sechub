@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
@@ -56,19 +57,24 @@ public class PrepareWrapperFileUploadService {
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, File file, String checkSum) {
         String storagePath = SecHubStorageUtil.createStoragePath(projectId);
 
-        JobStorage jobStorage = storageService.getJobStorage(storagePath, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorage(storagePath, jobUUID);
 
-        UploadFileNameData uploadFileNameData;
+        try {
+            UploadFileNameData uploadFileNameData;
 
-        if (file.getName().endsWith(".tar")) {
-            uploadFileNameData = new UploadFileNameData(FILENAME_BINARIES_TAR, FILENAME_BINARIES_TAR_FILESIZE, FILENAME_BINARIES_TAR_CHECKSUM);
-        } else if (file.getName().endsWith(".zip")) {
-            uploadFileNameData = new UploadFileNameData(FILENAME_SOURCECODE_ZIP, FILENAME_SOURCECODE_ZIP_FILESIZE, FILENAME_SOURCECODE_ZIP_CHECKSUM);
-        } else {
-            throw new IllegalArgumentException("File must be a zip or tar file");
+            if (file.getName().endsWith(".tar")) {
+                uploadFileNameData = new UploadFileNameData(FILENAME_BINARIES_TAR, FILENAME_BINARIES_TAR_FILESIZE, FILENAME_BINARIES_TAR_CHECKSUM);
+            } else if (file.getName().endsWith(".zip")) {
+                uploadFileNameData = new UploadFileNameData(FILENAME_SOURCECODE_ZIP, FILENAME_SOURCECODE_ZIP_FILESIZE, FILENAME_SOURCECODE_ZIP_CHECKSUM);
+            } else {
+                throw new IllegalArgumentException("File must be a zip or tar file");
+            }
+
+            upload(file, checkSum, jobStorage, uploadFileNameData);
+        } finally {
+            jobStorage.close();
+
         }
-
-        upload(file, checkSum, jobStorage, uploadFileNameData);
     }
 
     private void upload(File file, String checkSum, JobStorage jobStorage, UploadFileNameData uploadFileNameData) {

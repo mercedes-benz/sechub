@@ -4,21 +4,22 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+# See: https://github.com/tern-tools/tern/releases
+ARG TERN_VERSION
+# See: https://github.com/nexB/scancode-toolkit/releases
+ARG SCANCODE_VERSION
+
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Tern+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines Tern with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG TERN_VERSION="2.12.1"
-ARG SCANCODE_VERSION="32.0.4"
-
-# execute commands as root
 USER root
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --quiet update && \
     apt-get --quiet --assume-yes upgrade && \
-    apt-get --quiet --assume-yes install attr bzip2 git jq libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python3 python3-distutils python3-pip  skopeo tar wget xz-utils zlib1g && \
+    apt-get --quiet --assume-yes install attr bzip2 git jq libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python3 python3-distutils python3-pip skopeo tar wget xz-utils zlib1g && \
     apt-get --quiet --assume-yes clean
 
 # python-dev

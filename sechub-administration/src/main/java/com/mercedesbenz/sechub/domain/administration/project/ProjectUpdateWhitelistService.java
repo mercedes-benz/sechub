@@ -61,7 +61,7 @@ public class ProjectUpdateWhitelistService {
         assertion.assertIsValidProjectId(projectId);
 
         Optional<Project> found = repository.findById(projectId);
-        if (!found.isPresent()) {
+        if (found.isEmpty()) {
             throw new NotFoundException("Project '" + projectId + "' does not exist.");
         }
         /*

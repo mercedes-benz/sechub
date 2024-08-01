@@ -32,6 +32,17 @@ pds:
       queueMax: 10
       # Number of parallel threads for processing
       workerThreadCount: 5
+  archive:
+    # Limiting parameters regarding the extraction of archives:
+    extraction:
+      # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
+      maxFileFizeUncompressed: 1GB
+      # Defines how many entries the archive may have
+      maxEntries: 100000
+      # The maximum directory depth for an entry inside the archive
+      maxDirectoryDepth: 100
+      # The timeout of the archive extraction process
+      timeout: 1m
   volumes:
     workspace:
       # Size of /workspace where the uploads are unpacked

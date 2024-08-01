@@ -3,14 +3,10 @@
 apiVersion: v2
 name: pds-findsecuritybugs
 description: FindSecurityBugs + PDS as Helm chart for Kubernetes
-
-maintainers:
-  - name: Jeremias Eppler
-  - name: Sven Dolderer
-
+home: https://github.com/mercedes-benz/sechub
 type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
+# This is the chart version.
+# This version number should be incremented each time you make changes to the chart and its templates.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.1.0
+version: 1.2.0
