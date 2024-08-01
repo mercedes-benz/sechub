@@ -127,6 +127,14 @@ SecHub will always auto generate a dedicate value when it comes to encryption an
 will be stored together with the encrypted data. If the initial vector is changed, the row cannot
 be decrypted, even when the secret key is known!
 
+===== Constraints on scheduling
+The only situation we need to access the encrypted job configuration is the point, when 
+it comes to job execution. At all other situations it does not matter if the configuration
+can be decrypted or not.
+
+This means that it may not be possible that an scheduler instance executes a job which is
+not supported by the current encryption pool!
+
 ==== Handling server updates
 ===== {sechub} server 1.x to 2.x
 Old server versions do not have the encryption field inside the scheduler job table or the cipher pool table.
@@ -148,7 +156,6 @@ For a downgrade from {sechub} server V2.x to V1.x it is necessary to ensure, tha
 encrypted with `NONE` cipher type (can be done by encryption rotation). When ensured that everything
 is "encrypted" with this cipher type, the old server version can be deployed/used and migration
 is automatically done as usual.
- 
 
 ==== Handling sensitive data at runtime
 JVM crash dumps contain string information. Classes containing sensitive information shall

@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
@@ -21,11 +22,13 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     private static final String PARAM_EXECUTION_STATE = "p_exec_state";
     private static final String PARAM_EXECUTION_STATE_SUB = "p_sub_exec_state";
     private static final String PARAM_ENCRYPTION_POOL_ID = "p_encrypt_pool_id";
+    private static final String PARAM_ENCRYPTION_POOL_IDS = "p_encrypt_pool_ids";
 
     /* @formatter:off */
 	static final String JPQL_STRING_SELECT_BY_EXECUTION_STATE =
 			"select j from " + CLASS_NAME + " j" +
 			" where j." + PROPERTY_EXECUTION_STATE + " = :" + PARAM_EXECUTION_STATE +
+			" and j."+ PROPERTY_ENCRYPTION_POOL_ID +" in (:"+PARAM_ENCRYPTION_POOL_IDS+")"+
 			" order by j." + PROPERTY_CREATED;
 
 	static final String JPQL_STRING_SELECT_BY_JOB_ID =
@@ -40,6 +43,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 	static final String JPQL_STRING_SELECT_JOB_WHERE_NOT_YET_RUNNING_SAME_PROJECT =
             "select j from " + CLASS_NAME + " j" +
             " where j." + PROPERTY_EXECUTION_STATE + " = :" + PARAM_EXECUTION_STATE +
+            " and j."+ PROPERTY_ENCRYPTION_POOL_ID +" in (:"+PARAM_ENCRYPTION_POOL_IDS+")"+
             " and j." + PROPERTY_PROJECT_ID +
             " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS + " )" +
             " order by " + PROPERTY_CREATED;
@@ -53,6 +57,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 	static final String JPQL_STRING_SELECT_JOB_WHERE_NOT_YET_RUNNING_SAME_PROJECT_IN_SAME_GROUP =
 	        "select j from " + CLASS_NAME + " j" +
 	                " where j." + PROPERTY_EXECUTION_STATE + " = :" + PARAM_EXECUTION_STATE +
+	                " and j."+ PROPERTY_ENCRYPTION_POOL_ID +" in (:"+PARAM_ENCRYPTION_POOL_IDS+")"+
 	                " and j." + PROPERTY_PROJECT_ID +
 	                " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS_AND_SAME_MODULE_GROUP + " )" +
 	                " order by " + PROPERTY_CREATED;
@@ -91,9 +96,10 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     }
 
     @Override
-    public Optional<UUID> nextJobIdToExecuteFirstInFirstOut() {
+    public Optional<UUID> nextJobIdToExecuteFirstInFirstOut(Set<Long> acceptedEncryptiondPoolIds) {
         Query query = em.createQuery(JPQL_STRING_SELECT_BY_EXECUTION_STATE);
         query.setParameter(PARAM_EXECUTION_STATE, ExecutionState.READY_TO_START);
+        query.setParameter(PARAM_ENCRYPTION_POOL_IDS, acceptedEncryptiondPoolIds);
         query.setMaxResults(1);
         // we use OPTIMISTIC_FORCE_INCREMENT write lock - so only one POD will be able
         // to execute next job...
@@ -104,10 +110,11 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     }
 
     @Override
-    public Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted() {
+    public Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds) {
         Query query = em.createQuery(JPQL_STRING_SELECT_JOB_WHERE_NOT_YET_RUNNING_SAME_PROJECT);
         query.setParameter(PARAM_EXECUTION_STATE, ExecutionState.READY_TO_START);
         query.setParameter(PARAM_EXECUTION_STATE_SUB, ExecutionState.STARTED);
+        query.setParameter(PARAM_ENCRYPTION_POOL_IDS, acceptedEncryptiondPoolIds);
         query.setMaxResults(1);
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
@@ -123,10 +130,11 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     }
 
     @Override
-    public Optional<UUID> nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {
+    public Optional<UUID> nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds) {
         Query query = em.createQuery(JPQL_STRING_SELECT_JOB_WHERE_NOT_YET_RUNNING_SAME_PROJECT_IN_SAME_GROUP);
         query.setParameter(PARAM_EXECUTION_STATE, ExecutionState.READY_TO_START);
         query.setParameter(PARAM_EXECUTION_STATE_SUB, ExecutionState.STARTED);
+        query.setParameter(PARAM_ENCRYPTION_POOL_IDS, acceptedEncryptiondPoolIds);
         query.setMaxResults(1);
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 

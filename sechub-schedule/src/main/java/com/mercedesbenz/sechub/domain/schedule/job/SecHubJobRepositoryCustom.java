@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Lock;
@@ -13,11 +14,11 @@ public interface SecHubJobRepositoryCustom {
 
     Optional<ScheduleSecHubJob> getJob(UUID id);
 
-    Optional<UUID> nextJobIdToExecuteFirstInFirstOut();
+    Optional<UUID> nextJobIdToExecuteFirstInFirstOut(Set<Long> acceptedEncryptiondPoolIds);
 
-    Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted();
+    Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds);
 
-    Optional<UUID> nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+    Optional<UUID> nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds);
 
     /**
      * Fetches next jobs which have been canceled or have ended but have an
