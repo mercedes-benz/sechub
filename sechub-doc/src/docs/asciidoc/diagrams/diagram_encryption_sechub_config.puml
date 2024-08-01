@@ -8,26 +8,23 @@ hide empty methods
 'You can find more examles at https://plantuml.com/class-diagram
 
 'skinparam linetype ortho
-skinparam linetype polyline
+'skinparam linetype polyline
 
-database DB {
-
+database START_ENCRYPTION_ROTATION as rotateEvent #darkorange {
 }
-
-database EventBus{
+note right of rotateEvent
+asynchronous
+end note
+database SCHEDULE_ENCRYPTION_POOL_INITIALIZED as poolInitEvent #limegreen {
 }
-
-package com.mercedesbenz.sechub.commons.encryption as common_encrypt {
-    
-    class PersistentCipherFactory
-    class PersistentCipher
-    class EncryptionSupport
-}
+note right of poolInitEvent
+asynchronous
+end note
 
 package com.mercedesbenz.sechub.domain.administration {
     package encryption as adm_encryption{
         class EncryptionAdministrationRestController
-        class EncryptionRotationService #darkorange
+        class AdministrationEncryptionRotationService
     }
 }
 
@@ -46,98 +43,54 @@ package com.mercedesbenz.sechub.domain.schedule{
             resolveUnencryptedConfiguration(ScheduleSecHubJob job)
         }
         
-        class SecHubJobRepository
+        class ScheduleSecHubJobEncryptionUpdateService #limegreen ##green {
+            updateEncryptedDataIfNecessary() 
+        }
         
     }
     
     package encryption as schedule_encryption {
     
-        class ScheduleSecHubJobEncryptionUpdateService #dodgerblue {
-            updateEncryptionData(int blockSizeToUpdate) 
-        }
-    
-        class ScheduleRefreshEncryptionServiceSetupTriggerService #mediumpurple {
+        class ScheduleRefreshEncryptionServiceSetupTriggerService #aliceblue ##darkblue {
             triggerEncryptionSetupRefresh()
         }
          
-        class ScheduleEncryptionService {
+        class ScheduleEncryptionService #aliceblue ##darkblue {
             applicationStarted()
             refreshEncryptionPoolAndLatestIdIfNecessary()
-            encryptWithLatestCipher()
+           
+            encryptWithLatestCipher(String plainText)
             String decryptToString(byte[] encrypted, Long encryptionPoolId, InitializationVector initialVector)
             ScheduleEncryptionResult rotateEncryption(byte[] data, Long oldCipherPoolId, InitializationVector oldInitialVector)
         }
         
-        class ScheduleCipherPoolData {
+        class ScheduleCipherPoolData #darkorange {
         }
         
-        class ScheduleCipherPoolDataRepository {
-            
-        }
-        
-        class ScheduleEncryptionPool #mediumpurple {
+        class ScheduleEncryptionPool #aliceblue ##darkblue {
            PersistentCipher getCipherForPoolId(Long poolId)
         }
         
-        class ScheduleEncryptionPoolFactory #mediumpurple {
-            
+        class ScheduleEncryptionRotationService #darkorange {
+            startEncryptionRotation()
         }
-        
-        class ScheduleLatestCipherPoolIdResolver
-        
-        class ScheduleEncryptionRotationService #darkorange
+    }
     
-   
-    note top of ScheduleRefreshEncryptionServiceSetupTriggerService
-        To use new encryption on all server cluster 
-        member after same time. 
-    end note
+EncryptionAdministrationRestController ->  AdministrationEncryptionRotationService
+AdministrationEncryptionRotationService --> rotateEvent    
+rotateEvent -[#darkorange]-> ScheduleEncryptionRotationService    
+
+ScheduleEncryptionRotationService -[#darkorange]-> ScheduleCipherPoolData : (A1) create new
     
-
-
-
-ScheduleRefreshEncryptionServiceSetupTriggerService --> ScheduleEncryptionService
-
-ScheduleEncryptionService -> ScheduleLatestCipherPoolIdResolver: uses
-ScheduleEncryptionService o-- ScheduleEncryptionPool
-
-ScheduleEncryptionService -> EncryptionSupport: uses
-ScheduleEncryptionService -> ScheduleEncryptionPoolFactory: uses
-
-ScheduleEncryptionPoolFactory --> ScheduleEncryptionPool : creates
-PersistentCipherFactory -> PersistentCipher: creates
-ScheduleEncryptionPoolFactory -> PersistentCipherFactory: uses
-ScheduleLatestCipherPoolIdResolver  -> ScheduleCipherPoolDataRepository
-ScheduleEncryptionPoolFactory -- ScheduleCipherPoolDataRepository: uses
-ScheduleEncryptionPoolFactory -- ScheduleCipherPoolData
-
-ScheduleEncryptionPool -- PersistentCipher
-
-ScheduleCipherPoolData --> DB
-ScheduleSecHubJob --> DB
-ScheduleCipherPoolDataRepository --> ScheduleCipherPoolData
-
-SecHubConfigurationModelAccess -> ScheduleEncryptionService : uses
-
-
-SecHubConfigurationModelAccess -> ScheduleSecHubJob
-
-SecHubJobFactory -> ScheduleSecHubJob: creates
-SecHubJobFactory -> ScheduleEncryptionService : uses
-
-
-ScheduleSecHubJobEncryptionUpdateService -> ScheduleEncryptionService
-
-
-ScheduleSecHubJobEncryptionUpdateService --> SecHubJobRepository
-SecHubJobRepository --> ScheduleSecHubJob  
-
-
-EncryptionAdministrationRestController  --> EncryptionRotationService
-EncryptionRotationService  --> EventBus
-EventBus --> ScheduleEncryptionRotationService 
-
-ScheduleEncryptionRotationService --> ScheduleCipherPoolData : creates
-'ScheduleEncryptionRotationService --> ScheduleCipherPoolDataRepository
+ScheduleRefreshEncryptionServiceSetupTriggerService -[#darkblue]-> ScheduleEncryptionService: (B1) trigger refresh
+ScheduleEncryptionRotationService -[#darkorange]-> ScheduleEncryptionService: (A2) trigger refresh
+ScheduleEncryptionPool <-[#darkblue]- ScheduleEncryptionService: (A3,B2): refesh pool
+ 
+ScheduleEncryptionService -[#darkblue]-> poolInitEvent: (A4,B3): trigger update
+poolInitEvent -[#limegreen]-> ScheduleSecHubJobEncryptionUpdateService: (A5,B4): trigger update
+ 
+SecHubConfigurationModelAccess --> ScheduleSecHubJob
+SecHubJobFactory  ..> ScheduleSecHubJob: create
+ScheduleSecHubJobEncryptionUpdateService -[#limegreen]-> ScheduleSecHubJob: updates
  
 @enduml
