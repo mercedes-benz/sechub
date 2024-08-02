@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.ENCRYPTION,
 		apiName="adminStartsEncryptionRotation",
 		title="Admin starts encryption rotation",
-		description="An administrator starts encryption rotation. A new cipher pool entry will be created.")
+		description="An administrator starts encryption rotation.")
 public @interface UseCaseAdminStartsEncryptionRotation{
 
 	Step value();

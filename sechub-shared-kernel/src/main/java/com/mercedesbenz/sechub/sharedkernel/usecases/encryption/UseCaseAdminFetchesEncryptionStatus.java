@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_FETCHES_ENCRYPTION_STATUS,
 		group=UseCaseGroup.ENCRYPTION,
-		apiName="adminFetchesEncryptionRotation",
+		apiName="adminFetchesEncryptionStatus",
 		title="Admin fetches encryption status",
 		description="An administrator fetches encryption status from all domains where encryption is used.")
 public @interface UseCaseAdminFetchesEncryptionStatus{

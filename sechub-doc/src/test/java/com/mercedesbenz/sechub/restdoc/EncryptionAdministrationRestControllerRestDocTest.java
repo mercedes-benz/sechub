@@ -40,11 +40,11 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecur
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionData;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionData.PasswordSourceData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionDataValidator;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubPasswordSource;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
@@ -152,8 +152,8 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
                         fieldWithPath(domains+SecHubDomainEncryptionStatus.PROPERTY_NAME).description("Name of the domain which will provide this encryption data elements"),
                         fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ID).description("Unique identifier"),
                         fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ALGORITHM).description("Algorithm used for encryption"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ PasswordSourceData.PROPERTY_TYPE).description("Type of password source. Can be "+List.of(SecHubCipherPasswordSourceType.values())),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ PasswordSourceData.PROPERTY_DATA).description("Data for password source. If type is "+SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE+" then it is the the name of the environment variable."),
+                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_TYPE).description("Type of password source. Can be "+List.of(SecHubCipherPasswordSourceType.values())),
+                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_DATA).description("Data for password source. If type is "+SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE+" then it is the the name of the environment variable."),
                         fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE).description("Map containing information about usage of this encryption"),
                         fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE+".*").description("Key value data"),
                         fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_CREATED).description("Creation timestamp"),

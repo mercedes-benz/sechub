@@ -18,37 +18,13 @@ public class SecHubDomainEncryptionData {
 
     private SecHubCipherAlgorithm algorithm;
 
-    private PasswordSourceData passwordSource = new PasswordSourceData();
+    private SecHubPasswordSource passwordSource = new SecHubPasswordSource();
 
     private Map<String, Long> usage = new TreeMap<>();
 
     private String createdFrom;
 
     private LocalDateTime created;
-
-    public class PasswordSourceData {
-        public static final String PROPERTY_TYPE = "type";
-        public static final String PROPERTY_DATA = "data";
-
-        private SecHubCipherPasswordSourceType type;
-        private String data;
-
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        public void setType(SecHubCipherPasswordSourceType type) {
-            this.type = type;
-        }
-
-        public String getData() {
-            return data;
-        }
-
-        public SecHubCipherPasswordSourceType getType() {
-            return type;
-        }
-    }
 
     public String getId() {
         return id;
@@ -66,11 +42,11 @@ public class SecHubDomainEncryptionData {
         this.algorithm = algorithm;
     }
 
-    public PasswordSourceData getPasswordSource() {
+    public SecHubPasswordSource getPasswordSource() {
         return passwordSource;
     }
 
-    public void setPasswordSource(PasswordSourceData passwordSource) {
+    public void setPasswordSource(SecHubPasswordSource passwordSource) {
         this.passwordSource = passwordSource;
     }
 
