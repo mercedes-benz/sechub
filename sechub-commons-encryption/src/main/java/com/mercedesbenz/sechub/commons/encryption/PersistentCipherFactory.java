@@ -23,7 +23,7 @@ public class PersistentCipherFactory {
         case NONE:
             return new NoneCipher();
         default:
-            throw new IllegalStateException("Ther is no implementation for %s".formatted(type));
+            throw new IllegalStateException("There is no implementation for %s".formatted(type));
         }
     }
 

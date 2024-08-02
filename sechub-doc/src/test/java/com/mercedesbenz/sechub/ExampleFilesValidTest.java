@@ -92,7 +92,7 @@ class ExampleFilesValidTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOpt = config.getWebScan();
-        assertTrue(webScanOpt.isPresent(), "Webscan config does exist for file: " + file.getPath());
+        assertTrue(webScanOpt.isPresent(), "Webscan configuration does exist for file: " + file.getPath());
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         assertNotNull(webScan.getUrl(), "No URI set in file: " + file.getPath());

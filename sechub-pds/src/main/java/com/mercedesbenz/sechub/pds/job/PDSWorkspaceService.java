@@ -146,7 +146,7 @@ public class PDSWorkspaceService {
      * </ol>
      *
      * @param pdsJobUUID
-     * @param config
+     * @param configuration
      * @param metaData
      * @return {@link PDSWorkspacePreparationResult}, never <code>null</code>
      * @throws IOException

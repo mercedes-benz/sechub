@@ -1,88 +1,97 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSGetJobStatusServiceTest {
 
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
-
+    private static final LocalDateTime CREATION_TIME = LocalDateTime.of(2020, 06, 23, 16, 35, 01);
+    private static final LocalDateTime END_TIME = LocalDateTime.of(2020, 06, 23, 16, 37, 03);
     private PDSGetJobStatusService serviceToTest;
     private UUID jobUUID;
     private PDSJobRepository repository;
     private PDSJob job;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         repository = mock(PDSJobRepository.class);
 
         jobUUID = UUID.randomUUID();
-        job = new PDSJob();
-        job.uUID = jobUUID;
-        job.created = LocalDateTime.of(2020, 06, 23, 16, 35, 01);
-        job.owner = "theOwner";
-
-        when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
 
         serviceToTest = new PDSGetJobStatusService();
         serviceToTest.repository = repository;
     }
 
-    @Test
-    public void get_status_works_for_any_state() {
-        for (PDSJobStatusState state : PDSJobStatusState.values()) {
-            String ended = null;
-            if (PDSJobStatusState.DONE.equals(state)) {
-                ended = "2020-06-23T16:37:03";
-                job.ended = LocalDateTime.of(2020, 06, 23, 16, 37, 03);
-            } else {
-                ended = "";
-            }
-            fetchStateWorksFor(state, ended);
-        }
-    }
-
-    @Test
-    public void job_not_found_throws_pds_not_found_exception() {
-        /* test */
-        expected.expect(PDSNotFoundException.class);
-        expected.expectMessage("Given job does not exist");
-
-        /* execute */
-        UUID notExistingJobUUID = UUID.randomUUID();
-        serviceToTest.getJobStatus(notExistingJobUUID);
-
-    }
-
-    private void fetchStateWorksFor(PDSJobStatusState state, String eexpectedEnded) {
+    @ParameterizedTest
+    @EnumSource(PDSJobStatusState.class)
+    void get_status_works_for_any_state(PDSJobStatusState state) {
         /* prepare */
-        job.setState(state);
-        /* prepare */
-        job.state = PDSJobStatusState.DONE;
+        prepareJob(state, END_TIME, false);
 
         /* execute */
         PDSJobStatus result = serviceToTest.getJobStatus(jobUUID);
 
         /* test */
-        assertEquals(job.owner, result.owner);
-        assertEquals("2020-06-23T16:35:01", result.created);
-        assertEquals(eexpectedEnded, result.ended);
-        assertEquals(job.state.name(), result.state);
+        assertThat(result.getOwner()).isEqualTo(job.owner);
+        assertThat(result.getCreated()).isEqualTo(CREATION_TIME.toString());
+        assertThat(result.getEnded()).isEqualTo(END_TIME.toString());
+        assertThat(result.getState()).isEqualTo(job.state);
+        assertThat(result.isEncryptionOutOfSynch()).isEqualTo(false);
+    }
+
+    @ParameterizedTest
+    @EnumSource(PDSJobStatusState.class)
+    void get_status_works_for_any_state_encryption_out_of_synch(PDSJobStatusState state) {
+        /* prepare */
+        prepareJob(state, END_TIME, true);
+
+        /* execute */
+        PDSJobStatus result = serviceToTest.getJobStatus(jobUUID);
+
+        /* test */
+        assertThat(result.getOwner()).isEqualTo(job.owner);
+        assertThat(result.getCreated()).isEqualTo(CREATION_TIME.toString());
+        assertThat(result.getEnded()).isEqualTo(END_TIME.toString());
+        assertThat(result.getState()).isEqualTo(job.state);
+        assertThat(result.isEncryptionOutOfSynch()).isEqualTo(true);
+    }
+
+    @Test
+    void job_not_found_throws_pds_not_found_exception() {
+        /* prepare */
+        UUID notExistingJobUUID = UUID.randomUUID();
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.getJobStatus(notExistingJobUUID)).isInstanceOf(PDSNotFoundException.class)
+                .hasMessageContaining("Given job does not exist");
+
+    }
+
+    private PDSJob prepareJob(PDSJobStatusState state, LocalDateTime expectedEnded, boolean encryptionOutOfSynch) {
+        job = new PDSJob();
+        job.uUID = jobUUID;
+        job.created = CREATION_TIME;
+        job.setOwner("theOwner");
+        job.setEnded(expectedEnded);
+        job.setState(state);
+        job.setEncryptionOutOfSynch(encryptionOutOfSynch);
+
+        when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
+        return job;
     }
 
 }

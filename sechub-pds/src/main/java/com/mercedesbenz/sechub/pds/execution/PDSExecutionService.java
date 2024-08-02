@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.pds.execution;
 
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -14,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -93,6 +91,9 @@ public class PDSExecutionService {
 
     @Autowired
     PDSWorkspaceService workspaceService;
+
+    @Autowired
+    PDSApplyFutureExecutionResultToJobService applyService;
 
     @PostConstruct
     protected void postConstruct() {
@@ -318,43 +319,10 @@ public class PDSExecutionService {
                     return true;
                 }
 
+                PDSJob job = jobOption.get();
+
                 try {
-                    PDSJob job = jobOption.get();
-                    // we use this moment of time for all, currently the easiest and central way
-                    job.setEnded(LocalDateTime.now());
-
-                    if (future.isCancelled()) {
-                        job.setState(PDSJobStatusState.CANCELED);
-                    } else {
-                        PDSExecutionResult callResult;
-                        try {
-                            callResult = future.get();
-                            LOG.debug("Fetch job result from future, pds job uuid={}, state={}", job.getUUID(), job.getState());
-                            job.setResult(callResult.result);
-
-                            if (callResult.canceled) {
-                                job.setState(PDSJobStatusState.CANCELED);
-                            } else if (callResult.failed) {
-                                job.setState(PDSJobStatusState.FAILED);
-                            } else {
-                                job.setState(PDSJobStatusState.DONE);
-                            }
-
-                        } catch (InterruptedException e) {
-                            LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
-
-                            job.setState(PDSJobStatusState.FAILED);
-                            job.setResult("Job interrupted");
-                        } catch (ExecutionException e) {
-                            LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
-
-                            job.setState(PDSJobStatusState.FAILED);
-                            job.setResult("Job execution failed");
-                        }
-                        LOG.debug("Handled job result and state job uuid={}, state={}", job.getUUID(), job.getState());
-                    }
-                    repository.save(job);
-                    LOG.debug("Stored job pds uuid={}, state={}", job.getUUID(), job.getState());
+                    applyService.applyResultToJob(future, job);
 
                     return true;
 

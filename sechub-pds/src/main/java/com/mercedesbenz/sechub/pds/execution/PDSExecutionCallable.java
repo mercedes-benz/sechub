@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
-import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionException;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
@@ -101,9 +102,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
 
             getJobTransactionService().markJobAsRunningInOwnTransaction(pdsJobUUID);
-
-            JobConfigurationData data = getJobTransactionService().getJobConfigurationData(pdsJobUUID);
-            config = PDSJobConfiguration.fromJSON(data.getJobConfigurationJson());
+            JobConfigurationData data = getJobTransactionService().getJobConfigurationDataOrFail(pdsJobUUID);
+            config = data.getJobConfiguration();
 
             MDC.put(PDSLogConstants.MDC_SECHUB_JOB_UUID, Objects.toString(config.getSechubJobUUID()));
 
@@ -127,15 +127,18 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 LOG.info("Workspace not prepared enough for launcher script, so skipping execution of product: {} for pds job: {}", config.getProductId(),
                         pdsJobUUID);
 
-                result.exitCode = 0;
+                result.setExitCode(0);
             }
 
         } catch (Exception e) {
 
             LOG.error("Execution of job uuid:{} failed", pdsJobUUID, e);
 
-            result.failed = true;
-            result.result = "Execution of job uuid:" + pdsJobUUID + " failed. Please look into PDS logs for details and search for former string.";
+            result.setFailed(true);
+            if (e instanceof PDSEncryptionException) {
+                result.setEncryptionFailure(true);
+            }
+            result.setResult("Execution of job uuid:" + pdsJobUUID + " failed. Please look into PDS logs for details and search for former string.");
 
         } finally {
             cleanUpWorkspace(pdsJobUUID, config);
@@ -147,15 +150,15 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
          * handle always exit code. Everything having an exit code != 0 is handled as an
          * error
          */
-        if (result.exitCode != 0) {
-            result.failed = true;
+        if (result.getExitCode() != 0) {
+            result.setFailed(true);
         }
-        result.canceled = cancelOperationsHasBeenStarted;
+        result.setCanceled(cancelOperationsHasBeenStarted);
 
-        LOG.info("Finished execution of job {} with exitCode={}, failed={}, cancelOperationsHasBeenStarted={}", pdsJobUUID, result.exitCode, result.failed,
-                cancelOperationsHasBeenStarted);
+        LOG.info("Finished execution of job {} with exitCode={}, failed={}, cancelOperationsHasBeenStarted={}", pdsJobUUID, result.getExitCode(),
+                result.isFailed(), cancelOperationsHasBeenStarted);
 
-        if (result.failed) {
+        if (result.isFailed()) {
             PDSGetJobStreamService pdsGetJobStreamService = serviceCollection.getPdsGetJobStreamService();
             String truncatedErrorStream = pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID);
             String truncatedOutputStream = pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID);
@@ -175,7 +178,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                     ------------------------------------
                     %s
 
-                    """.formatted(pdsJobUUID, productPath, result.exitCode, lastChars, truncatedErrorStream, lastChars, truncatedOutputStream);
+                    """.formatted(pdsJobUUID, productPath, result.getExitCode(), lastChars, truncatedErrorStream, lastChars, truncatedOutputStream);
 
             LOG.error(message);
         }
@@ -228,10 +231,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         if (exitDoneInTime) {
             LOG.debug("Job execution {} done - product id:{}.", jobUUID, config.getProductId());
 
-            result.failed = false;
-            result.exitCode = process.exitValue();
+            result.setFailed(false);
+            result.setExitCode(process.exitValue());
 
-            LOG.debug("Process of PDS job with uuid: {} ended in time with exit code: {} after {} ms - for product with id: {}", jobUUID, result.exitCode,
+            LOG.debug("Process of PDS job with uuid: {} ended in time with exit code: {} after {} ms - for product with id: {}", jobUUID, result.getExitCode(),
                     timeElapsedInMilliseconds, config.getProductId());
 
             storeResultFileOrCreateShrinkedProblemDataInstead(result, jobUUID);
@@ -240,9 +243,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.error("Process did not end in time for PDS job with uuid: {} for product id: {}. Waited {} minutes.", jobUUID, config.getProductId(),
                     minutesToWaitForResult);
 
-            result.failed = true;
-            result.result = "Product time out.";
-            result.exitCode = 1;
+            result.setFailed(true);
+            result.setResult("Product time out.");
+            result.setExitCode(1);
 
             prepareForCancel(true);
         }
@@ -263,12 +266,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         if (file.exists()) {
             LOG.debug("Result file found - will read data and set as result");
 
-            result.result = FileUtils.readFileToString(file, encoding);
+            result.setResult(FileUtils.readFileToString(file, encoding));
         } else {
             LOG.debug("Result file NOT found - will append output and error streams as result");
 
-            result.failed = true;
-            result.result = "Result file not found at " + file.getAbsolutePath();
+            result.setFailed(true);
+            result.setResult("Result file not found at " + file.getAbsolutePath());
 
             int max = MAXIMUM_START_TRUNCATE_CHARS;
 
@@ -299,7 +302,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         File systemErrorFile = getWorkspaceService().getSystemErrorFile(jobUUID);
         if (systemErrorFile.exists()) {
             String error = FileUtils.readFileToString(systemErrorFile, encoding);
-            result.result += "\nErrors:\n" + error;
+            result.setResult(result.getResult() + "\nErrors:\n" + error);
             shrinkedErrorStream = shrinkTo(error, max);
         }
         return shrinkedErrorStream;
@@ -311,7 +314,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (systemOutFile.exists()) {
             String output = FileUtils.readFileToString(systemOutFile, encoding);
-            result.result += "\nOutput:\n" + output;
+            result.setResult(result.getResult() + "\nOutput:\n" + output);
             shrinkedOutputStream = shrinkTo(output, max);
         }
         return shrinkedOutputStream;
@@ -512,15 +515,21 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         } catch (RuntimeException e) {
             return false;
         } finally {
-
-            JobConfigurationData data = getJobTransactionService().getJobConfigurationData(pdsJobUUID);
+            PDSJobConfiguration jobConfiguration = null;
 
             try {
-                PDSJobConfiguration config = PDSJobConfiguration.fromJSON(data.getJobConfigurationJson());
-                cleanUpWorkspace(pdsJobUUID, config);
-            } catch (PDSJSONConverterException e) {
-                LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", pdsJobUUID, e);
+                JobConfigurationData data = getJobTransactionService().getJobConfigurationDataOrFail(pdsJobUUID);
+                jobConfiguration = data.getJobConfiguration();
+
+            } catch (PDSEncryptionException e) {
+                LOG.warn("Was not able to decrypt configuration of PDS job: {}", pdsJobUUID, e);
+
+                LOG.info("Create fallback configuration, asuming sechub storage reuse is enabled (SecHub does storage cleanup)");
+                jobConfiguration = new PDSJobConfiguration();
+                PDSExecutionParameterEntry resueSecHubConfigParameter = new PDSExecutionParameterEntry(PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
+                jobConfiguration.getParameters().add(resueSecHubConfigParameter);
             }
+            cleanUpWorkspace(pdsJobUUID, jobConfiguration);
 
         }
 

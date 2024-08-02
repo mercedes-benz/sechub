@@ -336,7 +336,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("uuid of configuration"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_NAME).description("name of configuration"),
-                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this config"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this configuration"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER).description("executed product"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).description("executor version"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).ignored(),

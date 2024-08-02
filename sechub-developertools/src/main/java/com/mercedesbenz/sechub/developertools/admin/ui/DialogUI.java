@@ -61,7 +61,18 @@ public class DialogUI {
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath) {
-        return selectFile(initialPath, null);
+        return selectFile(initialPath, null, null);
+    }
+
+    /*
+     * Selects file by file chooser
+     *
+     * @param initialPath the initial file path or <code>null</code>
+     *
+     * @return file or <code>null</code>
+     */
+    public File selectFile(String initialPath, String title) {
+        return selectFile(initialPath, null, title);
     }
 
     /**
@@ -73,6 +84,11 @@ public class DialogUI {
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath, javax.swing.filechooser.FileFilter fileFilter) {
+        return selectFile(initialPath, fileFilter, null);
+    }
+
+    public File selectFile(String initialPath, javax.swing.filechooser.FileFilter fileFilter, String title) {
+        fileChooser.setDialogTitle(title);
         fileChooser.setFileFilter(fileFilter);
         if (initialPath != null) {
             File file = new File(initialPath);

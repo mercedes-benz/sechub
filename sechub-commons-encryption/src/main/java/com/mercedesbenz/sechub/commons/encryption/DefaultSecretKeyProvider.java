@@ -28,7 +28,7 @@ public class DefaultSecretKeyProvider implements SecretKeyProvider {
         }
         String secretKeyAlgorithm = cipherType.getSecretKeyAlgorithm();
         if (secretKeyAlgorithm == null || secretKeyAlgorithm.isBlank()) {
-            throw new IllegalArgumentException("cipher type: " + cipherType.getClass().getSimpleName() + " does not provide an algorithm for secret keys!");
+            throw new IllegalArgumentException("cipher type: " + cipherType + " does not provide an algorithm for secret keys!");
         }
 
         lengthInBits = rawSecret.length * 8;

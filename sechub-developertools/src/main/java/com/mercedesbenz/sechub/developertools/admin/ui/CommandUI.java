@@ -32,9 +32,10 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.config.EditExecuti
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutionProfilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.developerbatchops.DeveloperBatchCreateCheckmarxTestSetupAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.FetchEncryptionStatusAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.RotateEncryptionAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.FetchSecHubEncryptionStatusAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.RotateSecHubEncryptionAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.SecretKeyGeneratorAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.TestDecryptToStringAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
@@ -254,10 +255,12 @@ public class CommandUI {
     public void createEncryptionMenu() {
         JMenu menu = new JMenu("Encryption");
         menuBar.add(menu);
-        menu.add(new FetchEncryptionStatusAction(context));
+        menu.add(new FetchSecHubEncryptionStatusAction(context));
         menu.addSeparator();
         menu.add(new SecretKeyGeneratorAction(context));
-        menu.add(new RotateEncryptionAction(context));
+        menu.add(new TestDecryptToStringAction(context));
+        menu.addSeparator();
+        menu.add(new RotateSecHubEncryptionAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {

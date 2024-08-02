@@ -27,7 +27,8 @@ public interface PersistentCipher {
      * encrypted data. Otherwise it is not possible to retain the origin data even
      * when the secret key is known!
      *
-     * @return initialization vector which provides initialization bytes
+     * @return initialization vector which provides initialization bytes, never
+     *         <code>null</code>
      */
     public InitializationVector createNewInitializationVector();
 

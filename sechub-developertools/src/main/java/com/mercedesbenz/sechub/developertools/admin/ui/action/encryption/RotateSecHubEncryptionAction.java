@@ -13,19 +13,19 @@ import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherAlgorithm;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubCipherPasswordSourceType;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 
-public class RotateEncryptionAction extends AbstractUIAction {
+public class RotateSecHubEncryptionAction extends AbstractUIAction {
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = LoggerFactory.getLogger(RotateEncryptionAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RotateSecHubEncryptionAction.class);
 
-    public RotateEncryptionAction(UIContext context) {
-        super("Rotate encryption", context);
+    public RotateSecHubEncryptionAction(UIContext context) {
+        super("Rotate SecHub encryption", context);
     }
 
     @Override
     public void execute(ActionEvent e) {
 
-        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorith to use for encryptin",
+        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorith to use for encryption",
                 SecHubCipherAlgorithm.AES_GCM_SIV_256, "Select algorithm", SecHubCipherAlgorithm.values());
         if (!optSelectedAlgorithm.isPresent()) {
             return;

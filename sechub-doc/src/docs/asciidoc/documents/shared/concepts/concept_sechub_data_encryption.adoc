@@ -32,7 +32,8 @@ use a new encryption method.
     the environment variable name to use inside the database but never plain values!
 
 ==== Server startup
-A {sechub} server will stop on startup phase when one of the entries inside the cipher pool cannot be handled by this server.
+A {sechub} server will stop on startup phase when one of the entries inside the cipher pool cannot 
+be handled by this server.
 
 This ensures that every new started server is able to handle all of them / is always readable.
 
@@ -176,7 +177,7 @@ Because meta data shall not contain any sensitive information, this will not be 
 
 ==== Diagrams
 ===== Usage of encryption commons
-plantuml::diagrams/diagram_encryption_use_of_commons.puml[] 
+plantuml::diagrams/diagram_encryption_sechub_use_of_commons.puml[] 
 
 ===== Encryption rotation overview
 plantuml::diagrams/diagram_encryption_sechub_config.puml[title='a reduced view of the steps done on encryption rotation'] 

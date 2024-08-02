@@ -7,11 +7,11 @@ import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 
-public class FetchEncryptionStatusAction extends AbstractUIAction {
+public class FetchSecHubEncryptionStatusAction extends AbstractUIAction {
     private static final long serialVersionUID = 1L;
 
-    public FetchEncryptionStatusAction(UIContext context) {
-        super("Fetch encryption status", context);
+    public FetchSecHubEncryptionStatusAction(UIContext context) {
+        super("Fetch SecHub encryption status", context);
     }
 
     @Override

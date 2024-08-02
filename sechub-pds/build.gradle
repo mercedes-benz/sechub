@@ -22,9 +22,6 @@ dependencies {
     implementation(library.apache_commons_io)
     implementation(library.apache_commons_fileupload2_core)
     implementation(library.apache_commons_fileupload2_jakarta)
-    
-
-
 
     api project(':sechub-pds-core')
 

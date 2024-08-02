@@ -1,0 +1,99 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-pds-data-encryption]]
+In {pds} we can have also some sensitive data we want to be encrypted. For example: The remote data
+section inside the sechub job configuration contains credentials to fetch data. 
+Such sensitive information shall be always encrypted.
+
+===== General
+We want 
+
+. Simple encryption rotation approach +
+In contrast to {sechub}, the data in the {pds} is only temporary and is not made available for a 
+longer period of time. Subsequent access to encrypted data is also no longer necessary, 
+but only while a SecHub job is running. + +
+ +
+This means we simply accept the situation that a PDS restart with new encryption setup could
+lead to a situation where a former created job is no longer executable by PDS.
+
+When the encryption comes out of synch for a job while it is running, the job will be marked 
+automatically as failed and having encryption out of synch. 
+The PDS product executor at {sechub} side will take care of such a situation and will restart
+a new PDS job (which will then be encrypted correctly again).
+
+. Full automated +
+There is no need for manual interaction - means it is not necessary to create any cron jobs or
+something else to convert non encrypted data to encrypted data or to rotate a password or to
+use a new encryption method.
+
+. Data protection /Privacy policy
+- Even for administrators it shall not be possible to fetch the information directly +
+  _(of course a person who knows the encryption password and has access to the database will always
+   be able to calculate values - but we separate here between administration and operation inside
+   this concept, so protection is fully possible)_
+- The data must not be accidentally made available in decrypted form - for example through a REST 
+  call in which the data object is passed along unencrypted.
+  
+. Easy encryption administration
+  - It shall be possible for an administrator to configure a new cipher entry at deployment time 
+
+. Secure storage of encryption passwords +
+  - Encryption passwords are always provided via environment entries, we store always 
+    the environment variable name to use inside the database but never plain values!
+
+===== PDS startup
+A {pds} server only knows the encryption defined inside two variables:
+
+- `PDS_ENCRYPTION_SECRET_KEY` +
+  contains the base64 encoded secret key used for encryption
+- `PDS_ENCRYPTION_ALGORITHM` +
+  contains the information about the used encryption algorithm. Can be +
+  `NONE`, `AES_GCM_SIV_128` or `AES_GCM_SIV_256` .
+
+
+This setup will be used inside the complete instance as long as it is running. 
+There is no pooling of diffeent encryptions (in constrast to {sechub}, where pooling feature exists).
+
+[IMPORTANT]
+====
+If the secret key is not a base 64 value the server startup will fail!
+====
+
+
+===== Administration
+[[section-shared-concepts-pds-data-encryption-rotation]]
+====== Encryption rotation
+There is no complete rotation of encryption - old data will have no encryption update.
+
+But an administrator is able to do re-deployment of the PDS cluster
+and using other secret or algorithm.
+
+This will 
+
+- use new encryption setup for all new PDS jobs
+- keep existing encrypted data as is
+- can lead to a rare race condition when {sechub} has created the job with old PDS instance and
+  new PDS instance tries to run the PDS job (the access to the encrypted data is no longer possible)
+
+[TIP]
+====
+Via <<concept-pds-auto-cleanup,auto cleanup>> the old data will automatically disappear.
+If an encryption cleanup for PDS via auto cleanup is too late (e.g. credentials were leaked and 
+an update is really urgent) , it is still possible to just delete
+via SQL all jobs at database which have a timestamp older then the newest deployment time (or 
+just all).
+====
+
+====== Encryption status
+There is no direct possibility to check encryption status. But the job contains a creation time stamp
+and can be mapped to the startup of containers if this would become necessary.
+
+====== Cleanup old encrypted data
+<<concept-pds-auto-cleanup],Auto Cleanup>> automatically removes old information.
+This means that old encrypted information (with older encryption settings) automatically
+disappears after a certain period of time.
+
+Since no other encryption data is persisted except in the PDS job, nothing else needs to be cleaned up.
+
+===== Diagrams
+plantuml::diagrams/diagram_encryption_pds.puml[format=svg, title="title"]
+
