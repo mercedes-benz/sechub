@@ -7,6 +7,7 @@ import java.util.Base64.Encoder;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherType;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
 
@@ -38,11 +39,15 @@ public class SecretKeyGeneratorAction extends AbstractUIAction {
                 (base64 encoded - ready to use as environment variables for encryption )
 
                 256 bit: %s
+                usable for
+                 - %s
 
                 128 bit: %s
+                usable for
+                 - %s
 
 
-                """.formatted(random256BitBase64encoded, random128BitBase64encoded);
+                """.formatted(random256BitBase64encoded, PersistentCipherType.AES_GCM_SIV_256, random128BitBase64encoded, PersistentCipherType.AES_GCM_SIV_128);
 
         outputAsTextOnSuccess(output);
     }
