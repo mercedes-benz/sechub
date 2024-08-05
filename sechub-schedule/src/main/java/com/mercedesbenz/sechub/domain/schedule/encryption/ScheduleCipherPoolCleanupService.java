@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseEncryptio
 @Service
 public class ScheduleCipherPoolCleanupService {
 
-    private static final String DESCRIPTION = "Removes cipher pool data entries from databasse which are no longer used by any job";
+    private static final String DESCRIPTION = "Removes cipher pool data entries from database which are no longer used by any job";
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduleCipherPoolCleanupService.class);
 

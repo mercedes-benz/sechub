@@ -61,7 +61,7 @@ public class SchedulerJobBatchTriggerService {
     @Value("${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
-    @MustBeDocumented("When enabled each trigger will do an healt check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
+    @MustBeDocumented("When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
     @Value("${sechub.config.trigger.healthcheck.enabled:" + DEFAULT_HEALTHCHECK_ENABLED + "}")
     private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED;
 

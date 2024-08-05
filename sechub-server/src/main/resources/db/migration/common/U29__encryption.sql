@@ -1,17 +1,14 @@
 -- SPDX-License-Identifier: MIT
 
+-- Remark: the scripts U31-U29 are only to provide the downgrade per SQL
+-- but it IS NOT recommended to do this with encrypted data inside! This will
+-- only work if all jobs are encrypted with NoneCipher, otherwise this means configuration data
+-- loss because it will not contain valid json
+
+-- (U30 scripts will have copied encrypted conifg bytes as text to configuration) 
+ALTER TABLE schedule_sechub_job DROP COLUMN encrypted_configuration;
+ALTER TABLE schedule_sechub_job DROP COLUMN encrypt_initial_vector;
+ALTER TABLE schedule_sechub_job DROP COLUMN encrypt_pool_data_id;
+
 -- encryption parts
--- FIXME de-jcup: discussion necessary, maybe server 2.0.0 (major update necessary)
--- we should not provide here an update, because when 
-
-
---DROP TABLE schedule_cipher_pool_data;
-
--- we have encrypted the data it would never be possible to retrieve it!
-
---ALTER TABLE adm_job_information DROP COLUMN encrypt_pool_id;
---ALTER TABLE adm_job_information DROP COLUMN encrypt_pool_initial_vector;
-
---ALTER TABLE adm_job_information ADD COLUMN configuration varchar(8912);
---ALTER TABLE scan_project_log ADD COLUMN config varchar(8192);
-
+DROP TABLE schedule_cipher_pool_data;

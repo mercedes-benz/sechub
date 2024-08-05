@@ -31,7 +31,7 @@ public class TestDecryptToStringAction extends AbstractUIAction {
     public void execute(ActionEvent e) {
 
         /* -------algorithm--------------------------- */
-        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorith to use for encryption",
+        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorithm to use for encryption",
                 SecHubCipherAlgorithm.AES_GCM_SIV_256, "Select algorithm", SecHubCipherAlgorithm.values());
         if (!optSelectedAlgorithm.isPresent()) {
             return;
@@ -61,11 +61,12 @@ public class TestDecryptToStringAction extends AbstractUIAction {
         PersistentCipher cipher = cipherFactory.createCipher(secretKeyProvider, selectedAlgorithm.getType());
 
         /* ------select files------------------------------- */
-        File encryptedDataFile = getContext().getDialogUI().selectFile(System.getenv("HOME"), "Please select encrypted data file");
+        String userHomeFolder = System.getProperty("user.home");
+        File encryptedDataFile = getContext().getDialogUI().selectFile(userHomeFolder, "Please select encrypted data file");
         if (encryptedDataFile == null) {
             return;
         }
-        File initialVectorFile = getContext().getDialogUI().selectFile(System.getenv("HOME"), "Please select initial vector file");
+        File initialVectorFile = getContext().getDialogUI().selectFile(userHomeFolder, "Please select initial vector file");
         if (initialVectorFile == null) {
             return;
         }

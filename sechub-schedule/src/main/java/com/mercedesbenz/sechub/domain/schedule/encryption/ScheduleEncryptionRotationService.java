@@ -37,10 +37,10 @@ public class ScheduleEncryptionRotationService {
 
             ScheduleCipherPoolData newCreatedEntry = transactionService.storeInOwnTransaction(poolData);
 
-            LOG.info("Created new cipher pool entry wit id: {}, algorithm: {}, creation timestamp: {}, created from: {} ", newCreatedEntry.id,
+            LOG.info("Created new cipher pool entry with id: {}, algorithm: {}, creation timestamp: {}, created from: {} ", newCreatedEntry.id,
                     newCreatedEntry.algorithm, newCreatedEntry.created, newCreatedEntry.createdFrom);
         } catch (ScheduleEncryptionException e) {
-            LOG.error("Was not able to create new cipher pool enty!", e);
+            LOG.error("Was not able to create new cipher pool entry!", e);
         }
 
         LOG.info("Trigger refresh of encryption pool in this instance");

@@ -17,11 +17,13 @@ class NoneCipher implements PersistentCipher {
 
     @Override
     public InitializationVector createNewInitializationVector() {
-        // We always use the "same" initial vector which is always "none" - means it is
-        // also clear in datbase that this is not a real initial vector..
-        // The NoneCipher implementation does not the initial vector at all... but it is
-        // inside
-        // the interface contract;
+        /*
+         * We always use the "same" initial vector which is always "none". Means it is
+         * also clear in database that this is not a real initial vector. The NoneCipher
+         * implementation does need an initial vector at all... but having a database
+         * column and having this method inside the interface contract, it is necessary
+         * to provide a value.
+         */
         return INITIAL_VECTOR;
     }
 

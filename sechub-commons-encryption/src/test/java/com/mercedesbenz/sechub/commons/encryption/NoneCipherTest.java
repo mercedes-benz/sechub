@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class NoneCipherTest {
 
     @Test
-    void none_cipher_encryption_and_deryption_works_but_encrypted_data_is_origin() {
+    void none_cipher_encryption_and_decryption_works_but_encrypted_data_is_origin() {
 
         /* prepare */
         NoneCipher cipherToTest = new NoneCipher();

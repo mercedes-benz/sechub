@@ -110,7 +110,7 @@ class PDSApplyFutureExecutionResultToJobServiceTest {
         InOrder inOrder = inOrder(job, repository);
         inOrder.verify(job).setResult("");
         inOrder.verify(job).setState(PDSJobStatusState.FAILED);
-        inOrder.verify(job).setEncryptionOutOfSynch(true);
+        inOrder.verify(job).setEncryptionOutOfSync(true);
         inOrder.verify(repository).save(job);
 
     }

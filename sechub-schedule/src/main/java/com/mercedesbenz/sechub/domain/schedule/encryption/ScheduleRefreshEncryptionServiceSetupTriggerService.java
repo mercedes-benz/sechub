@@ -31,7 +31,7 @@ public class ScheduleRefreshEncryptionServiceSetupTriggerService {
     static final String SPRING_VALUE_INITIAL_DELAY_MILLISECONDS = "${sechub.schedule.encryption.refresh.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
     static final String SPRING_VALUE_FIXED_DELAY_MILLISECONDS = "${sechub.schedule.encryption.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";
 
-    private static final String DESCRIPTION = "Scheduler instance will check if encryption pool is in synch with the database definitions. If not, the instance will try to create new encryption pool object and provide the new setup.";
+    private static final String DESCRIPTION = "Scheduler instance will check if encryption pool is in sync with the database definitions. If not, the instance will try to create new encryption pool object and provide the new setup.";
 
     @Autowired
     ScheduleEncryptionService encryptionService;

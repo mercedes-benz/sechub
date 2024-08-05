@@ -24,7 +24,7 @@ public class PDSJobStatus {
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED = "ended";
     public static final String PROPERTY_STATE = "state";
-    public static final String PROPERTY_ENCRYPTION_OUT_OF_SYNCH = "encryptionOutOfSynch";
+    public static final String PROPERTY_ENCRYPTION_OUT_OF_SYNCH = "encryptionOutOfSync";
 
     private UUID jobUUID;
 
@@ -34,7 +34,7 @@ public class PDSJobStatus {
     private String started;
     private String ended;
 
-    private boolean encryptionOutOfSynch;
+    private boolean encryptionOutOfSync;
 
     private PDSJobStatusState state;
 
@@ -86,12 +86,12 @@ public class PDSJobStatus {
         this.state = state;
     }
 
-    public boolean isEncryptionOutOfSynch() {
-        return encryptionOutOfSynch;
+    public boolean isEncryptionOutOfSync() {
+        return encryptionOutOfSync;
     }
 
-    public void setEncryptionOutOfSynch(boolean encryptionFailure) {
-        this.encryptionOutOfSynch = encryptionFailure;
+    public void setEncryptionOutOfSync(boolean encryptionOutOfSync) {
+        this.encryptionOutOfSync = encryptionOutOfSync;
     }
 
 }

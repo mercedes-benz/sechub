@@ -69,7 +69,7 @@ public class PDSJob {
 
     public static final String COLUMN_ENCRYPT_INITIAL_VECTOR = "ENCRYPT_INITIAL_VECTOR";
 
-    public static final String COLUMN_ENCRYPTION_OUT_OF_SYNCH = "ENCRYPTION_OUT_OF_SYNCH";
+    public static final String COLUMN_ENCRYPTION_OUT_OF_SYNC = "ENCRYPTION_OUT_OF_SYNC";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -173,8 +173,8 @@ public class PDSJob {
     @Column(name = COLUMN_ENCRYPT_INITIAL_VECTOR)
     byte[] encryptionInitialVectorData;
 
-    @Column(name = COLUMN_ENCRYPTION_OUT_OF_SYNCH)
-    boolean encryptionOutOfSynch;
+    @Column(name = COLUMN_ENCRYPTION_OUT_OF_SYNC)
+    boolean encryptionOutOfSync;
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
@@ -272,12 +272,12 @@ public class PDSJob {
         this.encryptionInitialVectorData = encryptionInitialVectorData;
     }
 
-    public void setEncryptionOutOfSynch(boolean encryptionOutOfSynch) {
-        this.encryptionOutOfSynch = encryptionOutOfSynch;
+    public void setEncryptionOutOfSync(boolean encryptionOutOfSync) {
+        this.encryptionOutOfSync = encryptionOutOfSync;
     }
 
-    public boolean isEncryptionOutOfSynch() {
-        return encryptionOutOfSynch;
+    public boolean isEncryptionOutOfSync() {
+        return encryptionOutOfSync;
     }
 
     @Override

@@ -50,12 +50,12 @@ public class PDSGetJobStatusServiceTest {
         assertThat(result.getCreated()).isEqualTo(CREATION_TIME.toString());
         assertThat(result.getEnded()).isEqualTo(END_TIME.toString());
         assertThat(result.getState()).isEqualTo(job.state);
-        assertThat(result.isEncryptionOutOfSynch()).isEqualTo(false);
+        assertThat(result.isEncryptionOutOfSync()).isEqualTo(false);
     }
 
     @ParameterizedTest
     @EnumSource(PDSJobStatusState.class)
-    void get_status_works_for_any_state_encryption_out_of_synch(PDSJobStatusState state) {
+    void get_status_works_for_any_state_encryption_out_of_sync(PDSJobStatusState state) {
         /* prepare */
         prepareJob(state, END_TIME, true);
 
@@ -67,7 +67,7 @@ public class PDSGetJobStatusServiceTest {
         assertThat(result.getCreated()).isEqualTo(CREATION_TIME.toString());
         assertThat(result.getEnded()).isEqualTo(END_TIME.toString());
         assertThat(result.getState()).isEqualTo(job.state);
-        assertThat(result.isEncryptionOutOfSynch()).isEqualTo(true);
+        assertThat(result.isEncryptionOutOfSync()).isEqualTo(true);
     }
 
     @Test
@@ -81,14 +81,14 @@ public class PDSGetJobStatusServiceTest {
 
     }
 
-    private PDSJob prepareJob(PDSJobStatusState state, LocalDateTime expectedEnded, boolean encryptionOutOfSynch) {
+    private PDSJob prepareJob(PDSJobStatusState state, LocalDateTime expectedEnded, boolean encryptionOutOfSync) {
         job = new PDSJob();
         job.uUID = jobUUID;
         job.created = CREATION_TIME;
         job.setOwner("theOwner");
         job.setEnded(expectedEnded);
         job.setState(state);
-        job.setEncryptionOutOfSynch(encryptionOutOfSynch);
+        job.setEncryptionOutOfSync(encryptionOutOfSync);
 
         when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
         return job;

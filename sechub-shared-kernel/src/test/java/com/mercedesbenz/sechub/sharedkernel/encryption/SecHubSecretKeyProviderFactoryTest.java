@@ -39,7 +39,7 @@ class SecHubSecretKeyProviderFactoryTest {
     @EnumSource(SecHubCipherPasswordSourceType.class)
     void none_cipher_no_encryptionEnvironmentEntryProvider_used_no_matter_which_pwd_source_type_defined(SecHubCipherPasswordSourceType type) {
         /* execute */
-        SecretKeyProvider result = factoryToTest.createSecretKeyProvider(PersistentCipherType.NONE, SecHubCipherPasswordSourceType.NONE, "SECRET_1");
+        SecretKeyProvider result = factoryToTest.createSecretKeyProvider(PersistentCipherType.NONE, type, "SECRET_1");
 
         /* test */
         assertThat(result).isNull();

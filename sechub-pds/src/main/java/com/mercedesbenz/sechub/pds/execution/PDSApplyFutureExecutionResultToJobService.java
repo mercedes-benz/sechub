@@ -23,7 +23,12 @@ public class PDSApplyFutureExecutionResultToJobService {
     @Autowired
     PDSJobRepository repository;
 
-    /* package private for testing */
+    /**
+     * Applies given future of an execution result to the given PDS job.
+     *
+     * @param future future result
+     * @param job    pds
+     */
     public void applyResultToJob(Future<PDSExecutionResult> future, PDSJob job) {
         // we use this moment of time for all, currently the easiest and central way
         job.setEnded(LocalDateTime.now());
@@ -43,7 +48,7 @@ public class PDSApplyFutureExecutionResultToJobService {
                 } else if (callResult.isFailed()) {
                     job.setState(PDSJobStatusState.FAILED);
                     if (callResult.isEncryptionFailure()) {
-                        job.setEncryptionOutOfSynch(true);
+                        job.setEncryptionOutOfSync(true);
                     }
                 } else {
                     job.setState(PDSJobStatusState.DONE);

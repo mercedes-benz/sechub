@@ -5,8 +5,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Default implementation of a secret key provider. Uses AES for key encryption
- * and UTF 8 charset encoding
+ * Default implementation of a secret key provider.
  *
  * @author Albert Tregnaghi
  *

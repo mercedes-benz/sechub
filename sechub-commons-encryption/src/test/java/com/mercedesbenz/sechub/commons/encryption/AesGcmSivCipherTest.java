@@ -24,7 +24,7 @@ class AesGcmSivCipherTest {
     }
 
     @Test
-    void aes_gcm_siv_256_encryption_and_deryption_works_in_general() {
+    void aes_gcm_siv_256_encryption_and_decryption_works_in_general() {
 
         /* prepare */
         AesGcmSivCipher cipherToTest = new AesGcmSivCipher(aes256secretKey, PersistentCipherType.AES_GCM_SIV_256);
@@ -74,7 +74,7 @@ class AesGcmSivCipherTest {
     }
 
     @Test
-    void aes_gcm_siv_128_encryption_and_deryption_works_in_general() {
+    void aes_gcm_siv_128_encryption_and_decryption_works_in_general() {
 
         /* prepare */
         AesGcmSivCipher cipherToTest = new AesGcmSivCipher(aes128secretKey, PersistentCipherType.AES_GCM_SIV_128);

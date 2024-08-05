@@ -14,9 +14,8 @@ public class EncryptionSupport {
     /**
      * Encrypt given string
      *
-     * @param string        text to encrypt
-     * @param cipher        cipher to use for encryption
-     * @param initialVector initial vector for cipher
+     * @param string text to encrypt
+     * @param cipher cipher to use for encryption
      * @return {@link EncryptionResult}, never <code>null</code>
      */
     public EncryptionResult encryptString(String string, PersistentCipher cipher) {

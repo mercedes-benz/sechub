@@ -60,15 +60,15 @@ public class ScheduleEncryptionPoolFactory {
 
             if (!expected.equals(decrypted)) {
                 /*
-                 * we block server start here - the server would not be able to handle
-                 * encryption here. New started servers must always provide
+                 * We block server start here because a new server must always be able to handle
+                 * the complete encryption pool.
                  */
                 throw new ScheduleEncryptionException(
                         "The cipher pool entry with id: %d cannot be handled by the server, because origin test text: '%s' was not retrieved from encrypted test text data, but instead: '%s'"
                                 .formatted(poolData.getId(), expected, decrypted));
             }
 
-            /* server is able to encrypt/decrypt data with given secret - register it */
+            /* Server is able to encrypt/decrypt data with given secret - register it */
             map.put(poolData.getId(), cipher);
 
         }

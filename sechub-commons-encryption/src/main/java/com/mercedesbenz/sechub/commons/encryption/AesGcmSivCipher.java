@@ -77,7 +77,7 @@ class AesGcmSivCipher implements PersistentCipher {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException providerException) {
             throw new IllegalStateException("Encryption not possible, please check the provider", providerException);
         } catch (BadPaddingException | IllegalBlockSizeException paddingBlockException) {
-            throw new IllegalStateException("Should not occure. AES in GCM-SIV mode does not require padding.", paddingBlockException);
+            throw new IllegalStateException("Should not occur. AES in GCM-SIV mode does not require padding.", paddingBlockException);
         } catch (InvalidKeyException e) {
             throw new IllegalStateException("Key not valid", e);
         } catch (InvalidAlgorithmParameterException e) {

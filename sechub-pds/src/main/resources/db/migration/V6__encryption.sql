@@ -6,7 +6,7 @@
 -- by SecHub
 ALTER TABLE pds_job ADD COLUMN encrypted_configuration bytea;
 ALTER TABLE pds_job ADD COLUMN encrypt_initial_vector bytea;
-ALTER TABLE pds_job ADD COLUMN encryption_out_of_synch boolean;
+ALTER TABLE pds_job ADD COLUMN encryption_out_of_sync boolean;
 
 -- Delete old configuration column (+data), existing data will be lost - this is a wanted behavor
 -- see comment before.

@@ -128,6 +128,7 @@ public class SecHubMultiSpringBootTest {
         project = "projectId";
 
         when(job.getProjectId()).thenReturn(project);
+        when(jobRepository.save(job)).thenReturn(job);
 
         when(job.getUUID()).thenReturn(jobUUID);
         when(job.getProjectId()).thenReturn(projectUUID);
@@ -264,16 +265,4 @@ public class SecHubMultiSpringBootTest {
             createJobServiceToTest.createJob(PROJECT_ID, configuration);
         });
     }
-
-    @Test
-    void create_job_configuration_having_no_project_gets_project_from_URL() {
-        /* prepare */
-        when(jobRepository.save(job)).thenReturn(job);
-
-        /* execute + test */
-        Assertions.assertThrows(NotFoundException.class, () -> {
-            createJobServiceToTest.createJob(PROJECT_ID, configuration);
-        });
-    }
-
 }

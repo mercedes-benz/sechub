@@ -15,8 +15,8 @@ but only while a SecHub job is running. + +
 This means we simply accept the situation that a PDS restart with new encryption setup could
 lead to a situation where a former created job is no longer executable by PDS.
 
-When the encryption comes out of synch for a job while it is running, the job will be marked 
-automatically as failed and having encryption out of synch. 
+When the encryption changes for a job between its creation and when it begins running, the job will
+be marked automatically as failed and having encryption out of sync. 
 The PDS product executor at {sechub} side will take care of such a situation and will restart
 a new PDS job (which will then be encrypted correctly again).
 
@@ -51,7 +51,7 @@ A {pds} server only knows the encryption defined inside two variables:
 
 
 This setup will be used inside the complete instance as long as it is running. 
-There is no pooling of diffeent encryptions (in constrast to {sechub}, where pooling feature exists).
+There is no pooling of different encryptions (in constrast to {sechub}, where pooling feature exists).
 
 [IMPORTANT]
 ====

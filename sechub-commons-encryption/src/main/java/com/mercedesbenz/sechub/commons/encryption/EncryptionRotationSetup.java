@@ -12,15 +12,10 @@ public class EncryptionRotationSetup {
 
     }
 
-    private byte[] encryptedDataToRotate;
     private PersistentCipher oldCipher;
     private InitializationVector oldInitialVector;
     private PersistentCipher newCipher;
     private InitializationVector newInitialVector;
-
-    public byte[] getEncryptedDataToRotate() {
-        return encryptedDataToRotate;
-    }
 
     public PersistentCipher getOldCipher() {
         return oldCipher;
@@ -40,18 +35,12 @@ public class EncryptionRotationSetup {
 
     public static class RotationSetupBuilder {
 
-        private byte[] encryptedDataToRotate;
         private PersistentCipher oldCipher;
         private InitializationVector oldInitialVector;
         private PersistentCipher newCipher;
         private InitializationVector newInitialVector;
 
         private RotationSetupBuilder() {
-        }
-
-        public RotationSetupBuilder oldData(byte[] encryptedDataToRotate) {
-            this.encryptedDataToRotate = encryptedDataToRotate;
-            return this;
         }
 
         public RotationSetupBuilder oldInitialVector(InitializationVector oldInitialVector) {
@@ -100,7 +89,6 @@ public class EncryptionRotationSetup {
             }
 
             EncryptionRotationSetup data = new EncryptionRotationSetup();
-            data.encryptedDataToRotate = encryptedDataToRotate;
             data.oldCipher = this.oldCipher;
             data.oldInitialVector = this.oldInitialVector;
 

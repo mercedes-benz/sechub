@@ -207,8 +207,7 @@ public class ScheduleEncryptionService {
      *
      * @param data     encryption data
      * @param testText text to be used for initial test
-     * @return not initial pool data ready to be stored, but without setting the
-     *         creator
+     * @return initial pool data ready to be stored, but without setting the creator
      * @throws ScheduleEncryptionException if encryption process has any problems
      */
     public ScheduleCipherPoolData createInitialCipherPoolData(SecHubEncryptionData data, String testText) throws ScheduleEncryptionException {

@@ -175,8 +175,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 jobEnded = true;
                 break;
             case FAILED:
-                if (jobstatus.isEncryptionOutOfSynch()) {
-                    throw new PDSEncryptionOutOfSynchException();
+                if (jobstatus.isEncryptionOutOfSync()) {
+                    throw new PDSEncryptionOutOfSyncException();
                 }
                 throw asAdapterException("PDS job execution failed: TimeOut=" + timeOutCheck.wasTimeOut() + ",JobEnded=" + jobEnded, config);
             case CANCELED:

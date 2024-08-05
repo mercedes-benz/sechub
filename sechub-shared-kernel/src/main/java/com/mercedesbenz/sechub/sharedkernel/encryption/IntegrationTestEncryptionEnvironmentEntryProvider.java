@@ -17,10 +17,10 @@ public class IntegrationTestEncryptionEnvironmentEntryProvider implements Encryp
     private Map<String, String> encryptionEntryMap = new TreeMap<>();
 
     public IntegrationTestEncryptionEnvironmentEntryProvider() {
-        addPasswordAs64ForEnvironmentVariable("INTEGRATION_TEST_SECRET_1_AES_256", "123456789012345678901234567890AX");
+        addPasswordAsBase64ForEnvironmentVariable("INTEGRATION_TEST_SECRET_1_AES_256", "123456789012345678901234567890AX");
     }
 
-    private void addPasswordAs64ForEnvironmentVariable(String environmentVariableName, String plainTextPassword) {
+    private void addPasswordAsBase64ForEnvironmentVariable(String environmentVariableName, String plainTextPassword) {
         String base64Value = Base64.getEncoder().encodeToString(plainTextPassword.getBytes(Charset.forName("UTF-8")));
         encryptionEntryMap.put(environmentVariableName, base64Value);
     }

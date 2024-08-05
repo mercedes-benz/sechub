@@ -25,7 +25,7 @@ public class RotateSecHubEncryptionAction extends AbstractUIAction {
     @Override
     public void execute(ActionEvent e) {
 
-        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorith to use for encryption",
+        Optional<SecHubCipherAlgorithm> optSelectedAlgorithm = getUserInputFromCombobox("Select algorithm to use for encryption",
                 SecHubCipherAlgorithm.AES_GCM_SIV_256, "Select algorithm", SecHubCipherAlgorithm.values());
         if (!optSelectedAlgorithm.isPresent()) {
             return;

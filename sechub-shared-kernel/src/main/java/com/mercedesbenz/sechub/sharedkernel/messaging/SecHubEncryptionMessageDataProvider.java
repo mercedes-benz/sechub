@@ -11,14 +11,14 @@ public class SecHubEncryptionMessageDataProvider implements MessageDataProvider<
     private static final Logger LOG = LoggerFactory.getLogger(SecHubEncryptionMessageDataProvider.class);
 
     @Override
-    public SecHubEncryptionData get(String uuidAsString) {
-        if (uuidAsString == null) {
+    public SecHubEncryptionData get(String encryptionDataAsJson) {
+        if (encryptionDataAsJson == null) {
             return null;
         }
         try {
-            return SecHubEncryptionData.fromString(uuidAsString);
+            return SecHubEncryptionData.fromString(encryptionDataAsJson);
         } catch (IllegalArgumentException e) {
-            LOG.error("No UUID transformable because {} is not a valid UUID!", uuidAsString);
+            LOG.error("No UUID transformable because {} is not a valid UUID!", encryptionDataAsJson);
             return null;
         }
     }

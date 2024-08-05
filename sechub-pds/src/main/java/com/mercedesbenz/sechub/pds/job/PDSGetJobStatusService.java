@@ -32,14 +32,13 @@ public class PDSGetJobStatusService {
         PDSJob pdsJob = assertJobFound(jobUUID, repository);
 
         PDSJobStatus status = new PDSJobStatus();
-        status.setCreated(null);
         status.setJobUUID(pdsJob.getUUID());
         status.setOwner(pdsJob.getOwner());
         status.setCreated(convertToString(pdsJob.getCreated()));
         status.setStarted(convertToString(pdsJob.getStarted()));
         status.setEnded(convertToString(pdsJob.getEnded()));
         status.setState(pdsJob.getState());
-        status.setEncryptionOutOfSynch(pdsJob.isEncryptionOutOfSynch());
+        status.setEncryptionOutOfSync(pdsJob.isEncryptionOutOfSync());
 
         return status;
     }
