@@ -92,7 +92,7 @@ public class SecretValidatorWebRequestService {
                 response = directHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             }
         } catch (IOException | InterruptedException e) {
-            LOG.error("Performing validation request failed!");
+            LOG.error("Performing validation request failed!", e);
         }
         return response;
     }

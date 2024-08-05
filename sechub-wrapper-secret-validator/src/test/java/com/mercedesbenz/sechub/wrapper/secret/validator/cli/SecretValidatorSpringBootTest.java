@@ -44,11 +44,11 @@ class SecretValidatorSpringBootTest {
         for (Result finding : run.getResults()) {
             // since all validation requests fail the default categorization of the config
             // file will be used which is high
-            assertFindHasSerecoSeverity("high", finding);
+            assertFindingHasSerecoSeverity("high", finding);
         }
     }
 
-    private void assertFindHasSerecoSeverity(String expectedSerecoSeverity, Result finding) {
+    private void assertFindingHasSerecoSeverity(String expectedSerecoSeverity, Result finding) {
         Location location = finding.getLocations().get(0);
         Region region = location.getPhysicalLocation().getRegion();
         Map<String, Object> additionalProperties = region.getProperties().getAdditionalProperties();

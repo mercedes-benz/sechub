@@ -19,15 +19,15 @@ import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorReq
 import de.jcup.sarif_2_1_0.model.ArtifactContent;
 import de.jcup.sarif_2_1_0.model.Region;
 
-class SecretValidationServiceTest {
+class SecretValidationServiceImplTest {
 
-    private SecretValidationService serviceToTest;
+    private SecretValidationServiceImpl serviceToTest;
 
     private SecretValidatorWebRequestService webRequestService;
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new SecretValidationService();
+        serviceToTest = new SecretValidationServiceImpl();
 
         webRequestService = mock(SecretValidatorWebRequestService.class);
         serviceToTest.webRequestService = webRequestService;

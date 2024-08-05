@@ -36,7 +36,7 @@ class SecretValidatorExecutionServiceTest {
     private SecretValidatorExecutionService serviceToTest;
 
     private SecretValidatorExecutionContextFactory contextFactory;
-    private SecretValidationService validationService;
+    private SecretValidationServiceImpl validationService;
     private SerecoSeveritySarifEnhancementService sarifEnhancementService;
     private SarifValidationSupport sarifValidationSupport;
 
@@ -45,7 +45,7 @@ class SecretValidatorExecutionServiceTest {
         serviceToTest = new SecretValidatorExecutionService();
 
         contextFactory = mock(SecretValidatorExecutionContextFactory.class);
-        validationService = mock(SecretValidationService.class);
+        validationService = mock(SecretValidationServiceImpl.class);
         sarifEnhancementService = mock(SerecoSeveritySarifEnhancementService.class);
         sarifValidationSupport = mock(SarifValidationSupport.class);
 
