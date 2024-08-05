@@ -18,7 +18,7 @@ public class SecHubEncryptionMessageDataProvider implements MessageDataProvider<
         try {
             return SecHubEncryptionData.fromString(encryptionDataAsJson);
         } catch (IllegalArgumentException e) {
-            LOG.error("No UUID transformable because {} is not a valid UUID!", encryptionDataAsJson);
+            LOG.error("Cannot transform json to sechub encryption data", e);
             return null;
         }
     }
