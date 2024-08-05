@@ -256,7 +256,7 @@ public class ProjectScanLogRepositoryDBTest {
     }
 
     private ProjectScanLog createNewProjectScanLog(String projectId) {
-        return new ProjectScanLog(projectId, UUID.randomUUID(), "testuser", "{}");
+        return new ProjectScanLog(projectId, UUID.randomUUID(), "testuser");
     }
 
     @TestConfiguration

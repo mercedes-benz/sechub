@@ -249,7 +249,7 @@ class PDSAdapterV1Test {
 
     private void preparePDSJobStatus(UUID pdsJobUUID, PDSJobStatusState state) {
         PDSJobStatus jobStatus = new PDSJobStatus();
-        jobStatus.state = state;
+        jobStatus.setState(state);
         ResponseEntity<PDSJobStatus> responseEntity = new ResponseEntity<>(jobStatus, HttpStatus.OK);
         when(restOperations.getForEntity(eq("null/api/job/" + pdsJobUUID.toString() + "/status"), eq(PDSJobStatus.class))).thenReturn(responseEntity);
     }

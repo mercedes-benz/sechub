@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionException;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionData;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
@@ -35,6 +36,9 @@ public class PDSJobTransactionService {
 
     @Autowired
     PDSJobRepository repository;
+
+    @Autowired
+    PDSJobConfigurationAccess access;
 
     public PDSJobTransactionService() {
     }
@@ -115,16 +119,14 @@ public class PDSJobTransactionService {
      *
      * @param jobUUID
      * @return job configuration, will fail when job is not found
+     * @throws PDSEncryptionException when it was not possible to access the
+     *                                encrypted configuration data
      */
-    public JobConfigurationData getJobConfigurationData(UUID jobUUID) {
+    public JobConfigurationData getJobConfigurationDataOrFail(UUID jobUUID) throws PDSEncryptionException {
 
         PDSJob job = assertJobFound(jobUUID, repository);
 
-        JobConfigurationData data = new JobConfigurationData();
-        data.jobConfigurationJson = job.getJsonConfiguration();
-        data.metaData = job.getMetaDataText();
-
-        return data;
+        return new JobConfigurationData(access.resolveUnEncryptedJobConfiguration(job), job.getMetaDataText());
     }
 
     /**
@@ -166,14 +168,14 @@ public class PDSJobTransactionService {
     }
 
     public void markJobAsCancelRequestedInOwnTransaction(UUID jobUUID) {
-        updatJobStatusState(jobUUID, PDSJobStatusState.CANCEL_REQUESTED);
+        updateJobStatusState(jobUUID, PDSJobStatusState.CANCEL_REQUESTED);
     }
 
     public void markJobAsCanceledInOwnTransaction(UUID jobUUID) {
-        updatJobStatusState(jobUUID, PDSJobStatusState.CANCELED);
+        updateJobStatusState(jobUUID, PDSJobStatusState.CANCELED);
     }
 
-    private void updatJobStatusState(UUID jobUUID, PDSJobStatusState state) {
+    private void updateJobStatusState(UUID jobUUID, PDSJobStatusState state) {
         PDSJob job = assertJobFound(jobUUID, repository);
         PDSJobStatusState oldState = job.getState();
         if (state == oldState) {

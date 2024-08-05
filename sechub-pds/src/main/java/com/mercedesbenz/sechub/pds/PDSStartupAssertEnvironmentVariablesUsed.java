@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry.EnvironmentVariableKeyValueEntry;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.pds.encryption.PDSCipherAlgorithm;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSSecurityConfiguration;
 import com.mercedesbenz.sechub.pds.storage.PDSS3PropertiesSetup;
 import com.mercedesbenz.sechub.pds.storage.PDSSharedVolumePropertiesSetup;
@@ -37,6 +39,9 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
 
     @Autowired
     PDSSecurityConfiguration securityConfiguration;
+
+    @Autowired
+    PDSEncryptionConfiguration encryptionConfiguration;
 
     @Autowired
     Environment environment;
@@ -90,10 +95,14 @@ public class PDSStartupAssertEnvironmentVariablesUsed {
             if (securityConfiguration == null) {
                 securityConfiguration = PDSSecurityConfiguration.create("test-user", "test-user-token", "test-admin", "test-admintoken");
             }
+            if (encryptionConfiguration == null) {
+                encryptionConfiguration = PDSEncryptionConfiguration.create(PDSCipherAlgorithm.NONE, null);
+            }
         }
         s3Setup.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
         sharedVolumeSetup.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
         securityConfiguration.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
+        encryptionConfiguration.registerOnlyAllowedAsEnvironmentVariables(sensitiveDataRegistry);
 
         // some additional parts which shall only be available as environment variables
         // - h2 databases allow no setup here, so not mandatory

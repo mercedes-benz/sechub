@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSSecurityConfiguration;
 import com.mercedesbenz.sechub.pds.storage.PDSS3PropertiesSetup;
 import com.mercedesbenz.sechub.pds.storage.PDSSharedVolumePropertiesSetup;
@@ -29,6 +30,7 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
     private PDSSecurityConfiguration securityConfiguration;
     private PDSSharedVolumePropertiesSetup sharedVolumeSetup;
     private Environment environment;
+    private PDSEncryptionConfiguration encryptionConfiguration;
 
     @BeforeEach
     void beforeEach() {
@@ -38,6 +40,8 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
         securityConfiguration = mock(PDSSecurityConfiguration.class);
         envVariableSupport = mock(SystemEnvironmentVariableSupport.class);
         sharedVolumeSetup = mock(PDSSharedVolumePropertiesSetup.class);
+        encryptionConfiguration = mock(PDSEncryptionConfiguration.class);
+
         environment = mock(Environment.class);
 
         assertionToTest.envVariableSupport = envVariableSupport;
@@ -45,6 +49,7 @@ class PDSStartupAssertEnvironmentVariablesUsedTest {
         assertionToTest.s3Setup = s3setup;
         assertionToTest.sharedVolumeSetup = sharedVolumeSetup;
         assertionToTest.environment = environment;
+        assertionToTest.encryptionConfiguration = encryptionConfiguration;
 
     }
 

@@ -37,6 +37,7 @@ class SecHubJobInfoForUserServiceTest {
     private SecHubJobInfoForUserService serviceToTest;
     private SecHubJobRepository jobRepository;
     private ScheduleAssertService assertService;
+    private SecHubConfigurationModelAccess configurationModelAccess;
 
     @BeforeEach
     void beforeEach() {
@@ -44,12 +45,15 @@ class SecHubJobInfoForUserServiceTest {
         jobRepository = mock(SecHubJobRepository.class);
         assertService = mock(ScheduleAssertService.class);
 
+        configurationModelAccess = mock(SecHubConfigurationModelAccess.class);
+
         serviceToTest = new SecHubJobInfoForUserService();
 
         serviceToTest.jobRepository = jobRepository;
         serviceToTest.assertService = assertService;
         serviceToTest.metaDataTransformer = new SecHubConfigurationMetaDataMapTransformer();
         serviceToTest.modelValidator = new SecHubConfigurationModelValidator();
+        serviceToTest.configurationModelAccess = configurationModelAccess;
 
     }
 
@@ -290,7 +294,9 @@ class SecHubJobInfoForUserServiceTest {
             SecHubConfigurationMetaData metaData = new SecHubConfigurationMetaData();
             metaData.getLabels().put("testlabel1", "testvalue1");
             config.setMetaData(metaData);
-            sechubJob.jsonConfiguration = config.toJSON();
+
+            // simulate encryption done by job creation factory
+            when(configurationModelAccess.resolveUnencryptedConfiguration(sechubJob)).thenReturn(config);
         }
 
         return sechubJob;
