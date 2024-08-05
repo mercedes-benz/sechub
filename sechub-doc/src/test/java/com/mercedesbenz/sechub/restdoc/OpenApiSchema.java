@@ -48,9 +48,7 @@ enum OpenApiSchema {
 
     RUNNING_JOB_LIST("ListOfRunningJobs"),
 
-    FALSE_POSITVES_FOR_JOB("FalsePositivesForJob"),
-
-    FALSE_POSITVES("FalsePositives"),
+    FALSE_POSITIVES("FalsePositives"),
 
     FULL_SCAN_DATA_ZIP("FullScanDataZIP"),
 

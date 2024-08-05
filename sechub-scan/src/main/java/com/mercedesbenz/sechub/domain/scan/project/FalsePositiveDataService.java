@@ -22,11 +22,11 @@ import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
-public class FalsePositiveJobDataService {
+public class FalsePositiveDataService {
 
     private static final ScanProjectConfigID CONFIG_ID = ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION;
 
-    private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveDataService.class);
 
     @Autowired
     ScanReportRepository scanReportRepository;
@@ -38,10 +38,10 @@ public class FalsePositiveJobDataService {
     ScanProjectConfigService configService;
 
     @Autowired
-    FalsePositiveJobDataListValidation falsePositiveJobDataListValidation;
+    FalsePositiveDataListValidation falsePositiveDataListValidation;
 
     @Autowired
-    FalsePositiveJobDataConfigMerger merger;
+    FalsePositiveDataConfigMerger merger;
 
     @Autowired
     UserContextService userContextService;
@@ -52,13 +52,15 @@ public class FalsePositiveJobDataService {
     @Autowired
     AuditLogService auditLogService;
 
-    public void addFalsePositives(String projectId, FalsePositiveJobDataList data) {
+    public void addFalsePositives(String projectId, FalsePositiveDataList data) {
         validateUserInputAndProjectAccess(projectId, data);
 
-        auditLogService.log("triggers add of {} false postive entries to project {}", data.getJobData().size(), projectId);
+        int numberOfEntries = data.getJobData().size() + data.getProjectData().size();
 
-        if (data.getJobData().isEmpty()) {
-            LOG.debug("User false positive job data list has no entries - so skip further steps");
+        auditLogService.log("triggers add or update of {} false postive entries to project {}", numberOfEntries, projectId);
+
+        if (data.getJobData().isEmpty() && data.getProjectData().isEmpty()) {
+            LOG.debug("User false positive data list has no entries - so skip further steps");
             return;
         }
 
@@ -88,6 +90,22 @@ public class FalsePositiveJobDataService {
 
     }
 
+    public void removeFalsePositiveByProjectDataId(String projectId, String id) {
+        validateProjectIdAndProjectAccess(projectId);
+
+        auditLogService.log("triggers remove of false positive project data entry from project {}: id={}", projectId, id);
+
+        FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
+        FalsePositiveProjectData projectDataToRemove = new FalsePositiveProjectData();
+        projectDataToRemove.setId(id);
+
+        merger.removeProjectDataFromConfig(config, projectDataToRemove);
+
+        /* update configuration */
+        configService.set(projectId, CONFIG_ID, config.toJSON());
+
+    }
+
     public FalsePositiveProjectConfiguration fetchFalsePositivesProjectConfiguration(String projectId) {
         validateProjectIdAndProjectAccess(projectId);
 
@@ -96,9 +114,9 @@ public class FalsePositiveJobDataService {
         return config;
     }
 
-    private void validateUserInputAndProjectAccess(String projectId, FalsePositiveJobDataList data) {
+    private void validateUserInputAndProjectAccess(String projectId, FalsePositiveDataList data) {
         validateProjectIdAndProjectAccess(projectId);
-        assertValid(data, falsePositiveJobDataListValidation);
+        assertValid(data, falsePositiveDataListValidation);
     }
 
     private void validateProjectIdAndProjectAccess(String projectId) {
@@ -106,27 +124,32 @@ public class FalsePositiveJobDataService {
         scanAssertService.assertUserHasAccessToProject(projectId);
     }
 
-    private void addJobDataListToConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveJobDataList jobDataList) {
-        List<FalsePositiveJobData> list = jobDataList.getJobData();
+    private void addJobDataListToConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveDataList dataList) {
+        List<FalsePositiveJobData> jobDataList = dataList.getJobData();
 
         /*
          * Reason for sorting: we want to load reports only one time, so sort by report
          * job UUID is necessary for method "fetchReportIfNotAlreadyLoaded"
          */
-        list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
+        jobDataList.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
         ScanSecHubReport currentReport = null;
 
-        for (FalsePositiveJobData data : list) {
-            if (merger.isFalsePositiveEntryAlreadyExisting(config, data)) {
-                LOG.debug("Skip processing because FP already defined: {}", data);
+        for (FalsePositiveJobData jobData : jobDataList) {
+            if (merger.isFalsePositiveEntryAlreadyExisting(config, jobData)) {
+                LOG.debug("Skip processing because FP already defined: {}", jobData);
                 continue;
             }
 
-            UUID jobUUID = data.getJobUUID();
+            UUID jobUUID = jobData.getJobUUID();
             currentReport = fetchReportIfNotAlreadyLoaded(jobUUID, currentReport);
 
-            merger.addJobDataWithMetaDataToConfig(currentReport, config, data, userContextService.getUserId());
+            merger.addJobDataWithMetaDataToConfig(currentReport, config, jobData, userContextService.getUserId());
+        }
+
+        List<FalsePositiveProjectData> projectDataList = dataList.getProjectData();
+        for (FalsePositiveProjectData projectData : projectDataList) {
+            merger.addFalsePositiveProjectDataEntryOrUpdateExisting(config, projectData, userContextService.getUserId());
         }
 
     }
@@ -145,7 +168,9 @@ public class FalsePositiveJobDataService {
     }
 
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {
-        ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, "{}"); // access check unnecessary, already done
+        ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, "{}"); // access check
+                                                                                                        // unnecessary,
+                                                                                                        // already done
 
         FalsePositiveProjectConfiguration falsePositiveConfiguration = FalsePositiveProjectConfiguration.fromJSONString(projectConfig.getData());
         return falsePositiveConfiguration;

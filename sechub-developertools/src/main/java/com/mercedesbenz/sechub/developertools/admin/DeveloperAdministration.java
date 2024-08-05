@@ -685,7 +685,7 @@ public class DeveloperAdministration {
     }
 
     public String markFalsePositivesForProjectByJobData(String projectId, String json) {
-        return getRestHelper().putJSON(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId), json);
+        return getRestHelper().putJSON(getUrlBuilder().buildUserAddsFalsePositiveDataListForProject(projectId), json);
     }
 
     public void deleteFalsePositivesForProject(String projectId, UUID jobUUID, int findingId) {

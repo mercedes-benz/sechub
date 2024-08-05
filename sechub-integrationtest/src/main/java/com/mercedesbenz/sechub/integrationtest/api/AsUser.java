@@ -1118,7 +1118,7 @@ public class AsUser {
         private void markAsFalsePositiveByREST() {
             String json = buildJSON();
 
-            String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
+            String url = getUrlBuilder().buildUserAddsFalsePositiveDataListForProject(project.getProjectId());
             getRestHelper().putJSON(url, json);
         }
 

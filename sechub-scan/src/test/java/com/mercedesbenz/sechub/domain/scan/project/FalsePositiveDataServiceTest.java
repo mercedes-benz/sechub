@@ -12,11 +12,11 @@ import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
-public class FalsePositiveJobDataServiceTest {
+public class FalsePositiveDataServiceTest {
 
     private static final String PROJECT_ID = "testprojectId";
-    private FalsePositiveJobDataService serviceToTest;
-    private FalsePositiveJobDataListValidation falsePositiveListValidation;
+    private FalsePositiveDataService serviceToTest;
+    private FalsePositiveDataListValidation falsePositiveListValidation;
     private ScanProjectConfigService configService;
     private ScanAssertService scanAssertService;
     private UserInputAssertion userInputAssertion;
@@ -25,21 +25,21 @@ public class FalsePositiveJobDataServiceTest {
 
     @Before
     public void before() {
-        serviceToTest = new FalsePositiveJobDataService();
+        serviceToTest = new FalsePositiveDataService();
 
-        falsePositiveListValidation = mock(FalsePositiveJobDataListValidation.class);
+        falsePositiveListValidation = mock(FalsePositiveDataListValidation.class);
         configService = mock(ScanProjectConfigService.class);
         userInputAssertion = mock(UserInputAssertion.class);
         scanAssertService = mock(ScanAssertService.class);
         auditLogService = mock(AuditLogService.class);
 
-        serviceToTest.falsePositiveJobDataListValidation = falsePositiveListValidation;
+        serviceToTest.falsePositiveDataListValidation = falsePositiveListValidation;
         serviceToTest.configService = configService;
         serviceToTest.scanAssertService = scanAssertService;
         serviceToTest.userInputAssertion = userInputAssertion;
         serviceToTest.auditLogService = auditLogService;
 
-        when(falsePositiveListValidation.validate(any(FalsePositiveJobDataList.class))).thenReturn(new ValidationResult());
+        when(falsePositiveListValidation.validate(any(FalsePositiveDataList.class))).thenReturn(new ValidationResult());
 
         /* we mock config service */
         config = new ScanProjectConfig();
@@ -52,7 +52,7 @@ public class FalsePositiveJobDataServiceTest {
     @Test
     public void check_validations_are_triggered() {
         /* prepare */
-        FalsePositiveJobDataList data = new FalsePositiveJobDataList();
+        FalsePositiveDataList data = new FalsePositiveDataList();
 
         /* execute */
         serviceToTest.addFalsePositives(PROJECT_ID, data);
@@ -60,7 +60,7 @@ public class FalsePositiveJobDataServiceTest {
         /* test */
         verify(userInputAssertion).assertIsValidProjectId(PROJECT_ID);
         verify(scanAssertService).assertUserHasAccessToProject(PROJECT_ID);
-        verify(falsePositiveListValidation).validate(any(FalsePositiveJobDataList.class));
+        verify(falsePositiveListValidation).validate(any(FalsePositiveDataList.class));
     }
 
 }

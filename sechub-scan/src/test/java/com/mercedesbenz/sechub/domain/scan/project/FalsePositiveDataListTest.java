@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
-public class FalsePositiveJobDataListTest {
+public class FalsePositiveDataListTest {
 
     @Test
     public void json_content_as_described_in_example_of_documentation() {
@@ -19,10 +19,10 @@ public class FalsePositiveJobDataListTest {
                 .loadTestFileFromRoot("/sechub-doc/src/docs/asciidoc/documents/shared/false-positives/false-positives-REST-API-content-example1.json");
 
         /* execute */
-        FalsePositiveJobDataList dataList = FalsePositiveJobDataList.fromString(json);
+        FalsePositiveDataList dataList = FalsePositiveDataList.fromString(json);
 
         /* test */
-        assertEquals(FalsePositiveJobDataList.ACCEPTED_TYPE, dataList.getType());
+        assertEquals(FalsePositiveDataList.ACCEPTED_TYPE, dataList.getType());
         List<FalsePositiveJobData> jobData = dataList.getJobData();
         assertEquals(2, jobData.size());
         Iterator<FalsePositiveJobData> it = jobData.iterator();

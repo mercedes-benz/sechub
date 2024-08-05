@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,9 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
  *
  */
 @Component
-public class FalsePositiveJobDataConfigMerger {
+public class FalsePositiveDataConfigMerger {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataConfigMerger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveDataConfigMerger.class);
 
     @Autowired
     FalsePositiveMetaDataFactory metaDataFactory;
@@ -50,6 +52,28 @@ public class FalsePositiveJobDataConfigMerger {
 
     }
 
+    public void addFalsePositiveProjectDataEntryOrUpdateExisting(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectData,
+            String userId) {
+        FalsePositiveEntry projectDataEntry = new FalsePositiveEntry();
+        projectDataEntry.setAuthor(userId);
+        projectDataEntry.setProjectData(projectData);
+
+        List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
+        for (int index = 0; index < falsePositives.size(); index++) {
+            FalsePositiveEntry existingFPEntry = falsePositives.get(index);
+            FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
+            if (projectDataFromEntry == null) {
+                // the entry is a jobData entry with metaData so no projectData
+                continue;
+            }
+            if (projectDataFromEntry.getId().equals(projectData.getId())) {
+                falsePositives.set(index, projectDataEntry);
+                return;
+            }
+        }
+        falsePositives.add(projectDataEntry);
+    }
+
     public void removeJobDataWithMetaDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData jobDataToRemove) {
         FalsePositiveEntry entry = findExistingFalsePositiveEntryInConfig(config, jobDataToRemove);
         if (entry == null) {
@@ -58,13 +82,43 @@ public class FalsePositiveJobDataConfigMerger {
         config.getFalsePositives().remove(entry);
     }
 
+    public void removeProjectDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectDataToRemove) {
+        FalsePositiveEntry entry = findExistingProjectDataFalsePositiveEntryInConfig(config, projectDataToRemove);
+        if (entry == null) {
+            return;
+        }
+        config.getFalsePositives().remove(entry);
+
+    }
+
     public boolean isFalsePositiveEntryAlreadyExisting(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
         return findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData) != null;
+    }
+
+    private FalsePositiveEntry findExistingProjectDataFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
+            FalsePositiveProjectData projectDataToRemove) {
+        for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
+            FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
+            if (projectDataFromEntry == null) {
+                // the entry is a jobData entry with metaData so no projectData
+                continue;
+            }
+
+            if (projectDataFromEntry.getId().equals(projectDataToRemove.getId())) {
+                return existingFPEntry;
+            }
+        }
+        return null;
     }
 
     private FalsePositiveEntry findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveJobData jobData = existingFPEntry.getJobData();
+            if (jobData == null) {
+                // the entry is a projectData entry so no jobData and metaData
+                continue;
+            }
+
             if (!jobData.getJobUUID().equals(falsePositiveJobData.getJobUUID())) {
                 continue;
             }
