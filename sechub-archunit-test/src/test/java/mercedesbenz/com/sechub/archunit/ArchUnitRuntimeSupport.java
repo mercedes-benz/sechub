@@ -10,7 +10,12 @@ import com.tngtech.archunit.core.importer.Location;
 
 class ArchUnitRuntimeSupport {
 
-    private Map<String, String> buildSystemToBinaryFolder = Map.of("gradle", "/build/classes/", "intelliJ", "/out/", "eclipse", "/bin/");
+    /* @formatter:off */
+    private Map<String, String> buildSystemToBinaryFolder = Map.of(
+            "gradle", "/build/classes/",
+            "intelliJ", "/out/",
+            "eclipse", "/bin/");
+    /* @formatter:on */
 
     public List<ImportOption> createImportOptionsForBuildSystem() {
         String buildSystem = resolveBuildSystem();

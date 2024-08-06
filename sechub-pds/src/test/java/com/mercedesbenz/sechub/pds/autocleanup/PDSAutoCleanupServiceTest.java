@@ -22,7 +22,7 @@ class PDSAutoCleanupServiceTest {
     private PDSAutoCleanupService serviceToTest;
     private PDSConfigService configService;
     private PDSJobRepository jobRepository;
-    private PDSTimeCalculationService PDSTimeCalculationService;
+    private PDSTimeCalculationService pdsTimeCalculationService;
     private PDSAutoCleanupResultInspector inspector;
 
     @BeforeEach
@@ -31,12 +31,12 @@ class PDSAutoCleanupServiceTest {
 
         configService = mock(PDSConfigService.class);
         jobRepository = mock(PDSJobRepository.class);
-        PDSTimeCalculationService = mock(PDSTimeCalculationService.class);
+        pdsTimeCalculationService = mock(PDSTimeCalculationService.class);
         inspector = mock(PDSAutoCleanupResultInspector.class);
 
         serviceToTest.configService = configService;
         serviceToTest.jobRepository = jobRepository;
-        serviceToTest.PDSTimeCalculationService = PDSTimeCalculationService;
+        serviceToTest.PDSTimeCalculationService = pdsTimeCalculationService;
         serviceToTest.inspector = inspector;
     }
 
@@ -46,14 +46,14 @@ class PDSAutoCleanupServiceTest {
         long days = -1;
         when(configService.getAutoCleanupInDays()).thenReturn(days);
         LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
-        when(PDSTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(pdsTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
 
         /* execute */
         serviceToTest.cleanup();
 
         /* test */
         verify(configService).getAutoCleanupInDays();
-        verify(PDSTimeCalculationService, never()).calculateNowMinusDays(any());
+        verify(pdsTimeCalculationService, never()).calculateNowMinusDays(any());
         verify(jobRepository, never()).deleteJobOlderThan(any());
         // check inspection as expected: never because not executed
         verify(inspector, never()).inspect(any());
@@ -65,14 +65,14 @@ class PDSAutoCleanupServiceTest {
         long days = 0;
         when(configService.getAutoCleanupInDays()).thenReturn(days);
         LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
-        when(PDSTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(pdsTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
 
         /* execute */
         serviceToTest.cleanup();
 
         /* test */
         verify(configService).getAutoCleanupInDays();
-        verify(PDSTimeCalculationService, never()).calculateNowMinusDays(any());
+        verify(pdsTimeCalculationService, never()).calculateNowMinusDays(any());
         verify(jobRepository, never()).deleteJobOlderThan(any());
         // check inspection as expected: never because not executed
         verify(inspector, never()).inspect(any());
@@ -84,7 +84,7 @@ class PDSAutoCleanupServiceTest {
         /* prepare */
         when(configService.getAutoCleanupInDays()).thenReturn(days);
         LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
-        when(PDSTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(pdsTimeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
         when(jobRepository.deleteJobOlderThan(cleanTime)).thenReturn(1234);
 
         /* execute */
@@ -92,7 +92,7 @@ class PDSAutoCleanupServiceTest {
 
         /* test */
         verify(configService).getAutoCleanupInDays();
-        verify(PDSTimeCalculationService).calculateNowMinusDays(eq(days));
+        verify(pdsTimeCalculationService).calculateNowMinusDays(eq(days));
         verify(jobRepository).deleteJobOlderThan(cleanTime);
 
         // check inspection as expected
