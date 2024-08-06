@@ -44,10 +44,19 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$TERN_VERSION" ]] ; then
-    echo ">> Tern version: $TERN_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg TERN_VERSION=$TERN_VERSION"
+if [[ -z "$TERN_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> Tern version: $TERN_VERSION"
+BUILD_ARGS+=" --build-arg TERN_VERSION=$TERN_VERSION"
+
+if [[ -z "$SCANCODE_VERSION" ]] ; then
+  # source defaults
+  source ./env
+fi
+echo ">> Scancode version: $SCANCODE_VERSION"
+BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

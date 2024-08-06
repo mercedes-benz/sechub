@@ -61,7 +61,18 @@ public class DialogUI {
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath) {
-        return selectFile(initialPath, null);
+        return selectFile(initialPath, null, null);
+    }
+
+    /*
+     * Selects file by file chooser
+     *
+     * @param initialPath the initial file path or <code>null</code>
+     *
+     * @return file or <code>null</code>
+     */
+    public File selectFile(String initialPath, String title) {
+        return selectFile(initialPath, null, title);
     }
 
     /**
@@ -73,6 +84,11 @@ public class DialogUI {
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath, javax.swing.filechooser.FileFilter fileFilter) {
+        return selectFile(initialPath, fileFilter, null);
+    }
+
+    public File selectFile(String initialPath, javax.swing.filechooser.FileFilter fileFilter, String title) {
+        fileChooser.setDialogTitle(title);
         fileChooser.setFileFilter(fileFilter);
         if (initialPath != null) {
             File file = new File(initialPath);
@@ -139,8 +155,8 @@ public class DialogUI {
      * @param identifier
      * @return
      */
-    public Optional<String> getUserInputFromCombobox(String message, String title, List<String> comboboxValues, String initialValue) {
-        ComboxSelectionDialogUI dialog = new ComboxSelectionDialogUI(frame, title, message, comboboxValues, initialValue);
+    public <T> Optional<T> getUserInputFromCombobox(String message, String title, List<T> comboboxValues, T initialValue) {
+        ComboxSelectionDialogUI<T> dialog = new ComboxSelectionDialogUI<>(frame, title, message, comboboxValues, initialValue);
         dialog.showDialog();
 
         if (!dialog.isOkPressed()) {

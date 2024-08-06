@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.mercedesbenz.sechub.adapter.pds.PDSEncryptionOutOfSyncException;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
@@ -20,10 +21,22 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 public class PDSResilienceConsultant implements ResilienceConsultant {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSResilienceConsultant.class);
+    private static final int DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_MAX = 3;
+    private static final int DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_TIMEOUT_MILLISECONDS = 2000;
+
     private static final int DEFAULT_BADREQUEST_RETRY_MAX = 3;
     private static final int DEFAULT_BADREQUEST_RETRY_TIMEOUT_MILLISECONDS = 2000;
+
     private static final int DEFAULT_SERVERERROR_RETRY_MAX = 1;
     private static final int DEFAULT_SERVERERROR_RETRY_TIMEOUT_MILLISECONDS = 5000;
+
+    @Value("${sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max:" + DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_MAX + "}")
+    @MustBeDocumented("Amount of retries done when a PDS encryption out of sync problem happens")
+    private int encryptionOutOfSyncMaxRetries = DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_MAX;
+
+    @Value("${sechub.adapter.pds.resilience.encryption-out-of-sync.retry.wait:" + DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_TIMEOUT_MILLISECONDS + "}")
+    @MustBeDocumented("Time to wait until retry is done when a PDS encryption out of sync problem happens")
+    private int encryptionOutOfSyncMRetryTimeToWaitInMilliseconds = DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_TIMEOUT_MILLISECONDS;
 
     @Value("${sechub.adapter.checkmarx.resilience.badrequest.retry.max:" + DEFAULT_BADREQUEST_RETRY_MAX + "}")
     @MustBeDocumented("Amount of retries done when a 400 bad request happened on Checkmarx server")
@@ -45,6 +58,12 @@ public class PDSResilienceConsultant implements ResilienceConsultant {
     public ResilienceProposal consultFor(ResilienceContext context) {
         Objects.requireNonNull(context);
         Throwable rootCause = StacktraceUtil.findRootCause(context.getCurrentError());
+        if (rootCause instanceof PDSEncryptionOutOfSyncException) {
+            LOG.info("Propose retry for PDS encryption out of sync");
+            return new SimpleRetryResilienceProposal("Encryption out of sync handling", encryptionOutOfSyncMaxRetries,
+                    encryptionOutOfSyncMRetryTimeToWaitInMilliseconds);
+        }
+
         if (rootCause instanceof HttpClientErrorException) {
             HttpClientErrorException hce = (HttpClientErrorException) rootCause;
             int statusCode = hce.getStatusCode().value();
@@ -54,7 +73,7 @@ public class PDSResilienceConsultant implements ResilienceConsultant {
                  * there can a CHECKMARX server error happen
                  */
                 LOG.info("Propose retry for bad request");
-                return new SimpleRetryResilienceProposal("checkmarx bad request handling", badRequestMaxRetries, badRequestRetryTimeToWaitInMilliseconds);
+                return new SimpleRetryResilienceProposal("bad request handling", badRequestMaxRetries, badRequestRetryTimeToWaitInMilliseconds);
 
             } else if (statusCode == 500) {
                 /*

@@ -32,10 +32,9 @@ public class ProjectScanLogService {
     public UUID logScanStarted(SecHubExecutionContext context) {
         String projectId = context.getConfiguration().getProjectId();
         UUID secHubJobUUID = context.getSechubJobUUID();
-        String config = context.getConfiguration().toJSON();
         String executedBy = context.getExecutedBy();
 
-        ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy, config);
+        ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy);
         log.setStatus(ProjectScanLog.STATUS_STARTED);
         ProjectScanLog persistedLog = repository.save(log);
         return persistedLog.getUUID();

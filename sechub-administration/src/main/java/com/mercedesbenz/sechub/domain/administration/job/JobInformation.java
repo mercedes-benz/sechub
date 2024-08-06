@@ -44,11 +44,6 @@ public class JobInformation {
      * This is a free text field and shows up some information about
      */
     public static final String COLUMN_INFO = "INFO";
-    /**
-     * JSON configuration for this job. Interesting for administrators because of
-     * support
-     */
-    public static final String COLUMN_CONFIGURATION = "CONFIGURATION";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -61,7 +56,6 @@ public class JobInformation {
     public static final String PROPERTY_PROJECT_ID = "projectId";
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_SINCE = "since";
-    public static final String PROPERTY_CONFIGURATION = "configuration";
 
     public static final String QUERY_FIND_ALL_RUNNING_JOBS = "SELECT j FROM JobInformation j where j.status = com.mercedesbenz.sechub.domain.administration.job.JobStatus.RUNNING";
     public static final String QUERY_DELETE_JOBINFORMATION_FOR_JOBUUID = "DELETE FROM JobInformation j WHERE j.jobUUID=:jobUUID";
@@ -95,9 +89,6 @@ public class JobInformation {
     @Column(name = COLUMN_SINCE) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime since;
 
-    @Column(name = COLUMN_CONFIGURATION)
-    String configuration;
-
     @Column(name = COLUMN_INFO)
     String info;
 
@@ -111,14 +102,6 @@ public class JobInformation {
 
     public void setOwner(String owner) {
         this.owner = owner;
-    }
-
-    public String getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(String jsonConfiguration) {
-        this.configuration = jsonConfiguration;
     }
 
     public void setProjectId(String projectId) {

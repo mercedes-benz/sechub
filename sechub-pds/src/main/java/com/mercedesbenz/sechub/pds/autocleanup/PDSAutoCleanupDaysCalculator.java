@@ -15,7 +15,7 @@ public class PDSAutoCleanupDaysCalculator {
     /**
      * Calculates cleanup time in days
      *
-     * @param config
+     * @param configuration
      * @return cleanup time in days
      */
     public long calculateCleanupTimeInDays(PDSAutoCleanupConfig config) {

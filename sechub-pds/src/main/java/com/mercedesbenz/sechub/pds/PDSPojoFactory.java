@@ -10,6 +10,8 @@ import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.encryption.EncryptionSupport;
+import com.mercedesbenz.sechub.commons.encryption.PersistentCipherFactory;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
@@ -25,6 +27,16 @@ import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
  */
 @Component
 public class PDSPojoFactory {
+
+    @Bean
+    EncryptionSupport createEncryptionSupport() {
+        return new EncryptionSupport();
+    }
+
+    @Bean
+    PersistentCipherFactory createPersistentCipherFactory() {
+        return new PersistentCipherFactory();
+    }
 
     @Bean
     SecHubDataConfigurationTypeListParser createTypeListParser() {

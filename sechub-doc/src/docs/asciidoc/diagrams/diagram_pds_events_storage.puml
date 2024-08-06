@@ -72,7 +72,7 @@ note bottom of eventFile
     
     Remark: Currently not implemented,
     but if an event type shall supports multiple
-    files in fture the name pattern shall be:
+    files in future the name pattern shall be:
     "${eventTypeName}[${nr}].json"
 end note
 

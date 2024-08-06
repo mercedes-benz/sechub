@@ -111,7 +111,7 @@ public class SecureEnvironmentVariableKeyValueRegistry {
             entry.variableName = variableName;
 
             if (entry.variableName == null) {
-                entry.variableName = key.toUpperCase().replace('.', '_');
+                entry.variableName = key.toUpperCase().replace('.', '_').replace('-', '_');
             }
             return entry;
         }

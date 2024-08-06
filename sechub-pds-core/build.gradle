@@ -19,6 +19,8 @@ dependencies {
     api project(':sechub-commons-core')
     api project(':sechub-commons-model')
     api project(':sechub-commons-archive')
+    api project(':sechub-commons-encryption')
+    
     api project(':sechub-storage-core')
    
     api project(':sechub-pds-commons-core')

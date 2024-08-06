@@ -163,6 +163,17 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_SHOWS_USER_DETAILS_FOR_EMAIL_ADDRESS(72),
 
+    /* encryption */
+    UC_ADMIN_STARTS_ENCRYPTION_ROTATION(73),
+
+    UC_SCHEDULE_ENCRYPTION_POOL_REFRESH(74, false),
+
+    UC_SCHEDULE_ROTATE_DATA_ENCRYPTION(75, false),
+
+    UC_ADMIN_FETCHES_ENCRYPTION_STATUS(76),
+
+    UC_ENCRYPTION_CLEANUP(77, false), // encryption cleanup is done by auto cleanup mechanism, no REST call necessary
+
     ;
 
     /* +-----------------------------------------------------------------------+ */

@@ -64,6 +64,8 @@ enum OpenApiSchema {
 
     PROJECT_JOB_LIST("ProjectJobList"),
 
+    ENCRYPTION_STATUS("EncryptionStatus"),
+
     ;
 
     private final Schema schema;

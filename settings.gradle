@@ -15,6 +15,9 @@ include 'sechub-cli',
 'sechub-commons-pds',
 'sechub-commons-archive',
 
+/* encryption */
+'sechub-commons-encryption',
+
 /* server POD area */
 'sechub-server',       // executable spring boot jar
 'sechub-server-core',  // core project for test compile dependencies and more
@@ -94,6 +97,9 @@ include 'sechub-cli',
 
 // Wrapper Xray
 'sechub-wrapper-xray',
+
+// secret validator
+'sechub-wrapper-secret-validator',
 
 /* System Test */
 'sechub-systemtest',

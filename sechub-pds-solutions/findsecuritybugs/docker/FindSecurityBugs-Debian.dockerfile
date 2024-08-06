@@ -5,9 +5,9 @@ ARG BASE_IMAGE
 
 # Arguments
 #   The FindSecurityBugs version to use. See https://github.com/find-sec-bugs/find-sec-bugs/releases
-ARG FINDSECURITYBUGS_VERSION="1.13.0"
+ARG FINDSECURITYBUGS_VERSION
 #   The Spotbugs version to use. See https://github.com/spotbugs/spotbugs/releases
-ARG SPOTBUGS_VERSION="4.8.3"
+ARG SPOTBUGS_VERSION
 #   Build type can be "build" or "download"
 ARG BUILD_TYPE="build"
 #   The base image of the builder

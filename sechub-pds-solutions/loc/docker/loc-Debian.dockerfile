@@ -4,6 +4,9 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+ARG CLOC_VERSION
+ARG SCC_VERSION
+
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
@@ -11,10 +14,6 @@ LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub loc+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines lines of code (LoC) counting analytics tools with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
-
-# Build args
-ARG CLOC_VERSION="1.94"
-ARG SCC_VERSION="3.1.0"
 
 ENV CLOC_TAR="cloc-$CLOC_VERSION.tar.gz"
 ENV SCC_VERSION="${SCC_VERSION}"

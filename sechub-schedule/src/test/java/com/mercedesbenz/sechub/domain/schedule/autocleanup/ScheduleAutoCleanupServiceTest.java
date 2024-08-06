@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.autocleanup;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -12,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResultInspector;
+import com.mercedesbenz.sechub.test.TestCanaryException;
 
 class ScheduleAutoCleanupServiceTest {
 
@@ -26,6 +29,7 @@ class ScheduleAutoCleanupServiceTest {
     private SecHubJobDataRepository jobDataRepository;
     private TimeCalculationService timeCalculationService;
     private AutoCleanupResultInspector inspector;
+    private ScheduleCipherPoolCleanupService encryptionPoolCleanupService;
 
     @BeforeEach
     void beforeEach() {
@@ -36,12 +40,64 @@ class ScheduleAutoCleanupServiceTest {
         jobDataRepository = mock(SecHubJobDataRepository.class);
         timeCalculationService = mock(TimeCalculationService.class);
         inspector = mock(AutoCleanupResultInspector.class);
+        encryptionPoolCleanupService = mock(ScheduleCipherPoolCleanupService.class);
 
         serviceToTest.configService = configService;
         serviceToTest.jobRepository = jobRepository;
         serviceToTest.jobDataRepository = jobDataRepository;
         serviceToTest.timeCalculationService = timeCalculationService;
         serviceToTest.inspector = inspector;
+        serviceToTest.encryptionPoolCleanupService = encryptionPoolCleanupService;
+    }
+
+    @Test
+    void auto_cleanup_triggers_encryption_pool_cleanup() throws Exception {
+
+        /* prepare */
+        when(configService.getAutoCleanupInDays()).thenReturn(1L);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(1L);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(encryptionPoolCleanupService).cleanupCipherPoolDataIfNecessaryAndPossible();
+
+    }
+
+    @Test
+    void when_jobDataRepository_deleteJobDataOlderThan_throws_exception_encryption_pool_cleanup_is_not_done() throws Exception {
+
+        /* prepare */
+        when(configService.getAutoCleanupInDays()).thenReturn(1L);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(1L);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(jobDataRepository.deleteJobDataOlderThan(cleanTime)).thenThrow(TestCanaryException.class);
+
+        /* execute */
+        assertThatThrownBy(()->serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
+
+        /* test */
+        verify(encryptionPoolCleanupService,never()).cleanupCipherPoolDataIfNecessaryAndPossible();
+
+    }
+
+    @Test
+    void when_jobRepository_deleteJobsOlderThan_throws_exception_encryption_pool_cleanup_is_not_done() throws Exception {
+
+        /* prepare */
+        when(configService.getAutoCleanupInDays()).thenReturn(1L);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(1L);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(jobRepository.deleteJobsOlderThan(cleanTime)).thenThrow(TestCanaryException.class);
+
+        /* execute */
+        assertThatThrownBy(()->serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
+
+        /* test */
+        verify(encryptionPoolCleanupService,never()).cleanupCipherPoolDataIfNecessaryAndPossible();
+
     }
 
     @Test
@@ -62,6 +118,8 @@ class ScheduleAutoCleanupServiceTest {
         verify(jobDataRepository, never()).deleteJobDataOlderThan(any());
         // check inspection as expected: never because not executed
         verify(inspector, never()).inspect(any());
+        // check not encryption pool cleanup is done
+        verify(encryptionPoolCleanupService, never()).cleanupCipherPoolDataIfNecessaryAndPossible();
     }
 
     @Test

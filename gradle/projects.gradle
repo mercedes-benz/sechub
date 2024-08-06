@@ -19,6 +19,7 @@ projectType = [
                project(':sechub-commons-model-testframework'),
                project(':sechub-commons-pds'),
                project(':sechub-commons-archive'),
+               project(':sechub-commons-encryption'),
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                project(':sechub-pds-commons-core'),
@@ -52,6 +53,8 @@ projectType = [
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
                     project(':sechub-wrapper-prepare'),
+
+                    project(':sechub-wrapper-secret-validator'),
 
                     /* archUnit */
                     project(':sechub-archunit-test')
@@ -99,7 +102,8 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-webui')
+                   project(':sechub-webui'),
+                   project(':sechub-wrapper-secret-validator'),
             ],
 
             springBootWebUIProjects:[
