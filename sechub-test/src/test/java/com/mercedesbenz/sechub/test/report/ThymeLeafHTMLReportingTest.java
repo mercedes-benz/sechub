@@ -159,7 +159,7 @@ public class ThymeLeafHTMLReportingTest {
         storeHTMLOutputAsFile(htmlResult, "example4");
 
         assertTrue(htmlResult.contains(context.sechubJobUUID));
-        assertTrue(htmlResult.contains("java/com/mercedesbenz/sechub/docgen/util/DocGenTextFileWriter.java"));
+        assertTrue(htmlResult.contains("java/com/mercedesbenz/sechub/docgen/util/TextFileWriter.java"));
 
         assertFalse(htmlResult.contains("Red findings"));
         assertTrue(htmlResult.contains("Yellow findings"));
