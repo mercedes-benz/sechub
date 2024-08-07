@@ -8,6 +8,11 @@ import java.util.Map;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.core.importer.Location;
 
+/*
+ * This class provides build system specific import options for ArchUnit.
+ * Depending on the build system, the binary folder is different for gradle, intelliJ or eclipse.
+ * The property "sechub.archunit.buildsystem" can be set to "gradle", "intelliJ" or "eclipse" and is by default gradle
+ */
 class ArchUnitRuntimeSupport {
 
     /* @formatter:off */
