@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.systemtest.runtime;
+package com.mercedesbenz.sechub.systemtest.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,9 +22,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
-import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 
 class RunSecHubJobDefinitionTransformerTest {
 

@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubConfigurationModelAccess;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubConfigurationModelAccessService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -56,7 +56,7 @@ public class SynchronSecHubJobExecutor {
     SecHubJobSafeUpdater secHubJobSafeUpdater;
 
     @Autowired
-    SecHubConfigurationModelAccess configurationModelAccess;
+    SecHubConfigurationModelAccessService configurationModelAccess;
 
     @IsSendingSyncMessage(MessageID.START_SCAN)
     public void execute(final ScheduleSecHubJob secHubJob) {

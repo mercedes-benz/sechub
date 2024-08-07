@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.adapter;
+package com.mercedesbenz.sechub.adapter.support;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -17,7 +17,10 @@ import org.junit.rules.ExpectedException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
+import com.mercedesbenz.sechub.adapter.Adapter;
+import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterLogId;
+import com.mercedesbenz.sechub.adapter.TraceIdProvider;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class JSONAdapterSupportTest {

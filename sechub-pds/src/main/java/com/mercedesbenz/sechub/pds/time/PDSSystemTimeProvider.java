@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class SystemTimeProvider {
+public class PDSSystemTimeProvider {
 
     public LocalDateTime getNow() {
         return LocalDateTime.now();

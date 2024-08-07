@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
+package com.mercedesbenz.sechub.adapter.checkmarx;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -10,9 +10,6 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
-import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceCallback;
-import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 
 public class CheckmarxResilienceCallbackTest {

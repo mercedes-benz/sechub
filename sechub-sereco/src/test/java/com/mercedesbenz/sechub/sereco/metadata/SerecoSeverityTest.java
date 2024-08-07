@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class SeverityTest {
+public class SerecoSeverityTest {
 
     @Test
     public void value_null_is_null() {

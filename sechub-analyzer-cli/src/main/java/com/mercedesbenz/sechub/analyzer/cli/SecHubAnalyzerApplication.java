@@ -12,8 +12,8 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.analyzer.model.AnalyzerResult;
 import com.mercedesbenz.sechub.analyzer.core.Analyzer;
+import com.mercedesbenz.sechub.analyzer.model.AnalyzerResult;
 
 import ch.qos.logback.classic.Level;
 

@@ -56,7 +56,7 @@ public class SecHubJobInfoForUserService {
     SecHubConfigurationModelValidator modelValidator;
 
     @Autowired
-    SecHubConfigurationModelAccess configurationModelAccess;
+    SecHubConfigurationModelAccessService configurationModelAccess;
 
     @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
     @MustBeDocumented("Maximum limit for job information list entries per page")

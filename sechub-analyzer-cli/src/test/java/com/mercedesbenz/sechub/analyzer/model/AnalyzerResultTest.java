@@ -11,11 +11,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.mercedesbenz.analyzer.model.AnalyzerResult;
-import com.mercedesbenz.analyzer.model.Marker;
-import com.mercedesbenz.analyzer.model.MarkerPair;
-import com.mercedesbenz.analyzer.model.MarkerType;
-
 public class AnalyzerResultTest {
 
     @Test

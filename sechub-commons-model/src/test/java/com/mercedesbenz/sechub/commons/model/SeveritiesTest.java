@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.commons.model;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import com.mercedesbenz.sechub.commons.model.Severities;
-import com.mercedesbenz.sechub.commons.model.Severity;
 
 public class SeveritiesTest {
 

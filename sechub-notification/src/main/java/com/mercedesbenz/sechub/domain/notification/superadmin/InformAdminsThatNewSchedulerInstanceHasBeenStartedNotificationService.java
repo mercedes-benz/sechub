@@ -17,9 +17,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart;
 
 @Service
-public class InformAdminsThatNewSchedulerInstanceHasBeenStarted {
+public class InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InformAdminsThatNewSchedulerInstanceHasBeenStarted.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService.class);
 
     @Value("${sechub.notification.scheduler.startup.enabled:true}")
     @MustBeDocumented(scope = "administration", value = "When enabled, administrators will be informed by notification "

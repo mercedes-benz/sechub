@@ -37,7 +37,7 @@ class SecHubJobInfoForUserServiceTest {
     private SecHubJobInfoForUserService serviceToTest;
     private SecHubJobRepository jobRepository;
     private ScheduleAssertService assertService;
-    private SecHubConfigurationModelAccess configurationModelAccess;
+    private SecHubConfigurationModelAccessService configurationModelAccess;
 
     @BeforeEach
     void beforeEach() {
@@ -45,7 +45,7 @@ class SecHubJobInfoForUserServiceTest {
         jobRepository = mock(SecHubJobRepository.class);
         assertService = mock(ScheduleAssertService.class);
 
-        configurationModelAccess = mock(SecHubConfigurationModelAccess.class);
+        configurationModelAccess = mock(SecHubConfigurationModelAccessService.class);
 
         serviceToTest = new SecHubJobInfoForUserService();
 

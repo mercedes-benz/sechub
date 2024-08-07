@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.adapter;
+package com.mercedesbenz.sechub.adapter.support;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.adapter.support.APIURLSupport;
+import com.mercedesbenz.sechub.adapter.AdapterConfig;
 
 public class APIURLSupportTest {
     private APIURLSupport supportToTest;

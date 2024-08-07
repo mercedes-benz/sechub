@@ -13,9 +13,9 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 
 @Service
-public class SecHubConfigurationModelAccess {
+public class SecHubConfigurationModelAccessService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationModelAccess.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationModelAccessService.class);
 
     @Autowired
     @Lazy

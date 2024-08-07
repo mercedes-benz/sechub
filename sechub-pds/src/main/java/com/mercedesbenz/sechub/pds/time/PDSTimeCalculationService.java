@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TimeCalculationService {
+public class PDSTimeCalculationService {
 
     @Autowired
-    SystemTimeProvider systemTime;
+    PDSSystemTimeProvider systemTime;
 
     /**
      * Calculates current time stamp minus days. When days are negative the days are
