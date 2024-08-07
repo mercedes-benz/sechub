@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.xray.util;
 
-import static com.mercedesbenz.sechub.test.TestFileReader.loadTextFile;
-import static com.mercedesbenz.sechub.test.TestUtil.createTempDirectoryInBuildFolder;
+import static com.mercedesbenz.sechub.test.TestFileReader.*;
+import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -57,10 +57,10 @@ class ZipFileExtractorTest {
         assertFileExists(expectedFile03);
         assertFileExists(expectedFileSomeFile);
 
-        assertEquals("testfile01", loadTextFile(expectedFile01));
-        assertEquals("testfile02", loadTextFile(expectedFile02));
-        assertEquals("testfile03", loadTextFile(expectedFile03));
-        assertEquals("somefile", loadTextFile(expectedFileSomeFile));
+        assertEquals("testfile01", readTextFromFile(expectedFile01));
+        assertEquals("testfile02", readTextFromFile(expectedFile02));
+        assertEquals("testfile03", readTextFromFile(expectedFile03));
+        assertEquals("somefile", readTextFromFile(expectedFileSomeFile));
     }
 
     private void assertFileExists(Path path) {

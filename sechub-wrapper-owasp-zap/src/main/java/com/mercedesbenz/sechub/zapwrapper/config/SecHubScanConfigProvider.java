@@ -19,7 +19,7 @@ public class SecHubScanConfigProvider {
         String sechubConfigJson;
         SecHubScanConfiguration sechubScanConfig;
         try {
-            sechubConfigJson = fileReader.loadTextFile(secHubConfigFile);
+            sechubConfigJson = fileReader.readTextFromFile(secHubConfigFile);
             sechubScanConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJson);
         } catch (IOException e) {
             throw new ZapWrapperRuntimeException("Was not able to read sechub config file: " + secHubConfigFile, e, ZapWrapperExitCode.IO_ERROR);

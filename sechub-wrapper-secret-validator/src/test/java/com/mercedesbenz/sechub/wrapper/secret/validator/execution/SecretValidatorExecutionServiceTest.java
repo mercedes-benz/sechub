@@ -232,7 +232,7 @@ class SecretValidatorExecutionServiceTest {
 
     private SarifSchema210 createSarifReport(File file) {
         try {
-            String sarifReportJson = TestFileReader.loadTextFile(file);
+            String sarifReportJson = TestFileReader.readTextFromFile(file);
             return JSONConverter.get().fromJSON(SarifSchema210.class, sarifReportJson);
         } catch (Exception e) {
             throw new IllegalStateException("Creating SARIF report model from: " + file + " failed!", e);
@@ -241,7 +241,7 @@ class SecretValidatorExecutionServiceTest {
 
     private Map<String, SecretValidatorConfigurationModel> createRuleConfigurations(File file) {
         try {
-            String validatorConfigJson = TestFileReader.loadTextFile(file);
+            String validatorConfigJson = TestFileReader.readTextFromFile(file);
             SecretValidatorConfigurationModelList configurationDataList = JSONConverter.get().fromJSON(SecretValidatorConfigurationModelList.class,
                     validatorConfigJson);
 

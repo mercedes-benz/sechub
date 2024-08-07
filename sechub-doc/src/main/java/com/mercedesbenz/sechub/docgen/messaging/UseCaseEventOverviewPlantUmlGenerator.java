@@ -14,8 +14,8 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.docgen.util.TextFileReader;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileReader;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistoryInspection;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
@@ -34,16 +34,16 @@ public class UseCaseEventOverviewPlantUmlGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(UseCaseEventOverviewPlantUmlGenerator.class);
     private File folderToStartFrom;
-    private TextFileReader reader;
-    private TextFileWriter writer;
+    private DocGenTextFileReader reader;
+    private DocGenTextFileWriter writer;
     private File outputFolder;
     private Map<UseCaseIdentifier, Set<String>> usecaseNameToMessageIdsMap = new TreeMap<>();
 
     public UseCaseEventOverviewPlantUmlGenerator(File jsonEventDataFolder, File outputFolder) {
         this.folderToStartFrom = jsonEventDataFolder;
         this.outputFolder = outputFolder;
-        this.reader = new TextFileReader();
-        this.writer = new TextFileWriter();
+        this.reader = new DocGenTextFileReader();
+        this.writer = new DocGenTextFileWriter();
     }
 
     /**
@@ -115,7 +115,7 @@ public class UseCaseEventOverviewPlantUmlGenerator {
         if (jsonSourceFile.getAbsolutePath().endsWith("uc_admin_enables_scheduler_job_processing.json")) {
             System.out.println("got");
         }
-        String json = reader.loadTextFile(jsonSourceFile);
+        String json = reader.readTextFromFile(jsonSourceFile);
         IntegrationTestEventHistory history = IntegrationTestEventHistory.fromJSONString(json);
         try {
             generate(history, usecaseIdentifier, variant);
@@ -191,7 +191,7 @@ public class UseCaseEventOverviewPlantUmlGenerator {
 
         /* write PLANTUML file */
         File targetFile = new File(outputFolder, createPlantumlFileSubPathByUsecase(usecaseIdentifier.name(), variant));
-        writer.save(targetFile, pb.getPlantUML());
+        writer.writeTextToFile(targetFile, pb.getPlantUML());
 
     }
 

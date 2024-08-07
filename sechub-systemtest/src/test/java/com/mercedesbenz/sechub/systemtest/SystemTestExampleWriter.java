@@ -23,7 +23,7 @@ public class SystemTestExampleWriter {
 
         TextFileWriter writer = new TextFileWriter();
         File generatedSecHubDocExampleFile = new File("./build/gen/example/" + name);
-        writer.save(generatedSecHubDocExampleFile, configurationAsPrettyPrintedJson, true);
+        writer.writeTextToFile(generatedSecHubDocExampleFile, configurationAsPrettyPrintedJson, true);
 
         LOG.info("Wrote configuration data as example doc file into: {}", generatedSecHubDocExampleFile.getAbsolutePath());
     }

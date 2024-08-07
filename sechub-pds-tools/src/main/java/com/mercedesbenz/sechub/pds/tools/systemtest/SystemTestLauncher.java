@@ -102,7 +102,7 @@ public class SystemTestLauncher {
         if (!file.exists()) {
             throw new FileNotFoundException("Test configuration file does not exist:" + file.getAbsolutePath());
         }
-        String configAsText = reader.loadTextFile(file);
+        String configAsText = reader.readTextFromFile(file);
         SystemTestConfiguration testConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, configAsText);
 
         builder.testConfiguration(testConfiguration);

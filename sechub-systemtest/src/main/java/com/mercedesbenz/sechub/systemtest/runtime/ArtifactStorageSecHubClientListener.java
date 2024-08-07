@@ -67,7 +67,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
 
         File targetFile = new File(targetFolder.toFile(), "sechub-report.json");
         try {
-            textFileWriter.save(targetFile, prettyPrintedJson, true);
+            textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
         } catch (IOException e) {
             LOG.error("Was not able to store sechub config file: {}", targetFile, e);
         }
@@ -98,7 +98,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
     private void storeSecHubJobUUIDFile(UUID secHubJobUUID, Path targetFolder) {
         File targetFile = new File(targetFolder.toFile(), "sechub-job-uuid.txt");
         try {
-            textFileWriter.save(targetFile, secHubJobUUID.toString(), true);
+            textFileWriter.writeTextToFile(targetFile, secHubJobUUID.toString(), true);
         } catch (IOException e) {
             LOG.error("Was not able to store sechub job uuid file: {}", targetFile, e);
         }

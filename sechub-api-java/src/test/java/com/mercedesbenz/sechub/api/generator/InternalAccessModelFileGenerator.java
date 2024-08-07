@@ -98,7 +98,7 @@ public class InternalAccessModelFileGenerator {
         template.addLine("    }");
         template.addLine("}");
 
-        context.getTextFileWriter().save(genFile, template.getCode(), true);
+        context.getTextFileWriter().writeTextToFile(genFile, template.getCode(), true);
 
     }
 

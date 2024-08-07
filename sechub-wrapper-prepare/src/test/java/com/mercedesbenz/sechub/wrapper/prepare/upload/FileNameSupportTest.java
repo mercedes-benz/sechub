@@ -34,7 +34,7 @@ class FileNameSupportTest {
 
         String subfolder = "/subfolder";
         String file = subfolder + "/test";
-        writer.save(new File(tempDir + file), "testText", true);
+        writer.writeTextToFile(new File(tempDir + file), "testText", true);
 
         /* execute */
         List<Path> result = fileNameSupportToTest.getRepositoriesFromDirectory(tempDir.toPath());
@@ -54,8 +54,8 @@ class FileNameSupportTest {
         String path = tempDir.getAbsolutePath();
         String subfolder1 = "/subfolder";
         String subfolder2 = "/subfolder2";
-        writer.save(new File(path + subfolder1 + "/hello"), "testText", true);
-        writer.save(new File(path + subfolder2 + "/hello"), "testText", true);
+        writer.writeTextToFile(new File(path + subfolder1 + "/hello"), "testText", true);
+        writer.writeTextToFile(new File(path + subfolder2 + "/hello"), "testText", true);
 
         /* execute */
         List<Path> result = fileNameSupportToTest.getRepositoriesFromDirectory(tempDir.toPath());
@@ -85,7 +85,7 @@ class FileNameSupportTest {
 
         String path = tempDir.getAbsolutePath();
         String tarFile = "/test-tar-file.tar";
-        writer.save(new File(path + tarFile), "testText", true);
+        writer.writeTextToFile(new File(path + tarFile), "testText", true);
 
         /* execute */
         List<Path> result = fileNameSupportToTest.getTarFilesFromDirectory(tempDir.toPath());
@@ -105,8 +105,8 @@ class FileNameSupportTest {
         String path = tempDir.getAbsolutePath();
         String tarFile1 = "/test-tar-file1.tar";
         String tarFile2 = "/test-tar-file2.tar";
-        writer.save(new File(path + tarFile1), "testText", true);
-        writer.save(new File(path + tarFile2), "testText", true);
+        writer.writeTextToFile(new File(path + tarFile1), "testText", true);
+        writer.writeTextToFile(new File(path + tarFile2), "testText", true);
 
         /* execute */
         List<Path> result = fileNameSupportToTest.getTarFilesFromDirectory(tempDir.toPath());

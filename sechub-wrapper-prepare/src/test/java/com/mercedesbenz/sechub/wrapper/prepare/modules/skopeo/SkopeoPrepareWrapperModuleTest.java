@@ -116,7 +116,7 @@ class SkopeoPrepareWrapperModuleTest {
 
         Path testFile = Path.of("testimage.tar");
         Path downloadDirectory = tempDir.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
-        writer.save(downloadDirectory.resolve(testFile).toFile(), "some text", true);
+        writer.writeTextToFile(downloadDirectory.resolve(testFile).toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
         when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());
@@ -164,7 +164,7 @@ class SkopeoPrepareWrapperModuleTest {
 
         Path downloadDirectory = tempDir.resolve(SkopeoWrapperConstants.DOWNLOAD_DIRECTORY_NAME);
         Path testFile = downloadDirectory.resolve("testimage.tar");
-        writer.save(testFile.toFile(), "some text", true);
+        writer.writeTextToFile(testFile.toFile(), "some text", true);
 
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
         when(environment.getPdsJobWorkspaceLocation()).thenReturn(tempDir.toString());

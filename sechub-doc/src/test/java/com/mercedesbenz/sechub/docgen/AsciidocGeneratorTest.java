@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.docgen.AsciidocGenerator.GenContext;
 import com.mercedesbenz.sechub.docgen.spring.ScheduleDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SystemPropertiesDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 
 public class AsciidocGeneratorTest {
 
@@ -26,7 +26,7 @@ public class AsciidocGeneratorTest {
         generatorToTest.collector = mock(ClasspathDataCollector.class);
         generatorToTest.propertiesGenerator = mock(SystemPropertiesDescriptionGenerator.class);
         generatorToTest.scheduleDescriptionGenerator = mock(ScheduleDescriptionGenerator.class);
-        generatorToTest.writer = mock(TextFileWriter.class);
+        generatorToTest.writer = mock(DocGenTextFileWriter.class);
 
         when(generatorToTest.propertiesGenerator.generate(any(), any())).thenReturn("properties-test");
         when(generatorToTest.scheduleDescriptionGenerator.generate(generatorToTest.collector)).thenReturn("schedule-test");
@@ -70,7 +70,7 @@ public class AsciidocGeneratorTest {
 
         /* test */
         verify(generatorToTest.propertiesGenerator).generate(any(), any());
-        verify(generatorToTest.writer).save(genContext.systemProperitesFile, "properties-test");
+        verify(generatorToTest.writer).writeTextToFile(genContext.systemProperitesFile, "properties-test");
 
     }
 
@@ -86,7 +86,7 @@ public class AsciidocGeneratorTest {
 
         /* test */
         verify(generatorToTest.scheduleDescriptionGenerator).generate(generatorToTest.collector);
-        verify(generatorToTest.writer).save(genContext.scheduleDescriptionFile, "schedule-test");
+        verify(generatorToTest.writer).writeTextToFile(genContext.scheduleDescriptionFile, "schedule-test");
 
     }
 

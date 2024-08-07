@@ -1,53 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.docgen.util;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.docgen.GeneratorConstants;
 
-public class TextFileWriter {
+public class DocGenTextFileWriter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TextFileWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DocGenTextFileWriter.class);
 
     private LicenseHeaderProvider licenseHeaderProvider;
 
-    public TextFileWriter() {
+    public DocGenTextFileWriter() {
         licenseHeaderProvider = new LicenseHeaderProvider();
-    }
-
-    public void addMissingHeaders(File targetFile) throws IOException {
-        /* read content */
-        String origin = read(targetFile);
-        if (origin.contains(LicenseHeaderProvider.LICENSE_SPDX_IDENTIFIER)) {
-            /* already contained - ignore */
-            return;
-        }
-        /* do save, will add header if necessary */
-        save(targetFile, origin, true);
-    }
-
-    private String read(File file) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = Files.newBufferedReader(file.toPath())) {
-            String readLine = null;
-            boolean notFirstLine = false;
-            while ((readLine = br.readLine()) != null) {
-                if (notFirstLine) {
-                    sb.append("\n");
-                }
-                notFirstLine = true;
-                sb.append(readLine);
-            }
-        }
-        return sb.toString();
     }
 
     /**
@@ -57,8 +28,8 @@ public class TextFileWriter {
      * @param origin
      * @throws IOException
      */
-    public void save(File targetFile, String origin) throws IOException {
-        save(targetFile, origin, true);
+    public void writeTextToFile(File targetFile, String origin) throws IOException {
+        writeTextToFile(targetFile, origin, true);
     }
 
     /**
@@ -70,7 +41,7 @@ public class TextFileWriter {
      * @param overwrite
      * @throws IOException
      */
-    public void save(File targetFile, String origin, boolean overwrite) throws IOException {
+    public void writeTextToFile(File targetFile, String origin, boolean overwrite) throws IOException {
         if (targetFile == null) {
             throw new IllegalArgumentException("null not allowed as file!");
         }

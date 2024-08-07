@@ -34,7 +34,7 @@ class SystemTestConfigurationTest {
     void xray_license_config_can_be_read_and_contains_license_check() throws Exception {
         /* prepare */
         String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
-        String json = TestFileReader.loadTextFile(path);
+        String json = TestFileReader.readTextFromFile(path);
 
         /* execute */
         SystemTestConfiguration result = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
