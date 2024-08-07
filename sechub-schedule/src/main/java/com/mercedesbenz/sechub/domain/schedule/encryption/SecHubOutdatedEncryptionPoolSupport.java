@@ -19,9 +19,10 @@ public class SecHubOutdatedEncryptionPoolSupport {
      * interval time
      */
     private static final int MAX_REFRESH_INTERVAL_ADDITIONAL_TIME_BUFFER_MILLISECONDS = 500;
+    private static final int DEFAULT_ACCEPT_OUTDATED_POOL_IN_MILLISECONDS = 30 * 60 * 1000; // 30 minutes
 
     @MustBeDocumented("The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase")
-    @Value("${sechub.schedule.encryption.refresh.accept-outdated.milliseconds:10000}")
+    @Value("${sechub.schedule.encryption.refresh.accept-outdated.milliseconds:" + DEFAULT_ACCEPT_OUTDATED_POOL_IN_MILLISECONDS + "}")
     long acceptOutdatedEncryptionPoolInMilliseconds;
 
     // documented in ScheduleRefreshEncryptionServiceSetupTriggerService
