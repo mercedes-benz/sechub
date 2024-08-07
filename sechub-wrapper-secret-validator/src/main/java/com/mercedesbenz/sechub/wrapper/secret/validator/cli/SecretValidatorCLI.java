@@ -35,7 +35,7 @@ public class SecretValidatorCLI implements CommandLineRunner {
             SarifSchema210 report = executionService.execute();
 
             String json = JSONConverter.get().toJSON(report, true);
-            fileWriter.save(pdsJobResult.getFile(), json, true);
+            fileWriter.writeTextToFile(pdsJobResult.getFile(), json, true);
         } catch (Exception e) {
             LOG.error("Execution failed!", e);
             System.exit(1);

@@ -138,7 +138,7 @@ class ZapScannerTest {
         deactivatedReferences.addRuleReference(new RuleReference("Cross-Site-Scripting-(Reflected)-40012", "second-info"));
         deactivatedReferences.addRuleReference(new RuleReference("Path-Traversal-6", "third-info"));
 
-        String json = TestFileReader.loadTextFile("src/test/resources/zap-available-rules/zap-full-ruleset.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/zap-available-rules/zap-full-ruleset.json");
         ZapFullRuleset ruleSet = new ZapFullRuleset().fromJSON(json);
 
         when(clientApiFacade.disablePassiveScannerRule(any())).thenReturn(null);
@@ -319,7 +319,7 @@ class ZapScannerTest {
     void set_includes_and_excludes_api_facade_is_called_once_for_each_include_and_once_for_exclude(String sechubConfigFile)
             throws ClientApiException, MalformedURLException {
         /* prepare */
-        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        String json = TestFileReader.readTextFromFile(sechubConfigFile);
 
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
         IncludeExcludeToZapURLHelper helper = new IncludeExcludeToZapURLHelper();
@@ -370,7 +370,7 @@ class ZapScannerTest {
     void import_openapi_file_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
         List<File> apiFiles = new ArrayList<>();
@@ -394,7 +394,7 @@ class ZapScannerTest {
     void import_openapi_defintion_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
@@ -415,7 +415,7 @@ class ZapScannerTest {
     void import_openapi_from_file_and_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
         List<File> apiFiles = new ArrayList<>();
@@ -553,7 +553,7 @@ class ZapScannerTest {
     void configure_login_inside_zap_using_no_auth_and_unsupported_auth_return_null(String sechubConfigFile) throws ClientApiException {
         /* prepare */
         String contextId = "context-id";
-        String json = TestFileReader.loadTextFile(sechubConfigFile);
+        String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
@@ -571,7 +571,7 @@ class ZapScannerTest {
         String contextId = "context-id";
         String userId = "user-id";
         URL targetUrl = URI.create("https:127.0.0.1:8000").toURL();
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub-config-examples/basic-auth.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub-config-examples/basic-auth.json");
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
         BasicLoginConfiguration basicLoginConfiguration = sechubWebScanConfig.getLogin().get().getBasic().get();
         String userName = new String(basicLoginConfiguration.getUser());

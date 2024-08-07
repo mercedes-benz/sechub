@@ -108,7 +108,7 @@ public class IntegrationTestPrepareWrapperModule extends AbstractPrepareWrapperM
                         INFO:i am just an information from IntegrationTestPrepareWrapperModule
                                                 """;
 
-                writer.save(dataFile.toFile(), mediumIntegrationTestData, false);
+                writer.writeTextToFile(dataFile.toFile(), mediumIntegrationTestData, false);
 
             } catch (IOException e) {
                 throw new RuntimeException("Error while files in directory: " + downloadPath, e);

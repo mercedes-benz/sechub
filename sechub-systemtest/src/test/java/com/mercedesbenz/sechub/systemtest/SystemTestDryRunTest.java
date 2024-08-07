@@ -58,7 +58,7 @@ class SystemTestDryRunTest {
     @Test
     void faked_xray_can_be_executed_without_errors() throws IOException {
         String path = "./src/test/resources/systemtest_xray_licensescan_example.json";
-        String json = TestFileReader.loadTextFile(path);
+        String json = TestFileReader.readTextFromFile(path);
 
         SystemTestConfiguration configuration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
 
@@ -260,23 +260,23 @@ class SystemTestDryRunTest {
             fail("The execution failed:"+result.toString());
         }
         // we now check that all test output was written by our test scripts to files
-        String sechubStartOutputData = TestFileReader.loadTextFile(secHubStartOutputFile);
+        String sechubStartOutputData = TestFileReader.readTextFromFile(secHubStartOutputFile);
         assertEquals("sechub-started and TEST_NUMBER_LIST=2_should_be_2", sechubStartOutputData);
 
         // special case: inside this script we wait some time before the output is done
         // means: we can test if waitForStage information is correct handled by framework
-        String gosecStartOutputData = TestFileReader.loadTextFile(goSecStartOutputFile);
+        String gosecStartOutputData = TestFileReader.readTextFromFile(goSecStartOutputFile);
         assertEquals("gosec-started with param2=secondCallIsForPDS and C_test_var_number_added=2_should_be_2, B_TEST2=value2, D_RESOLVED_SECRET is like path=true, parameter3 is still a secret=true", gosecStartOutputData);
 
-        String sechubStopOutputData = TestFileReader.loadTextFile(secHubStopOutputFile);
+        String sechubStopOutputData = TestFileReader.readTextFromFile(secHubStopOutputFile);
         assertEquals("sechub-stopped with param2=second and parm3=third-as:"+var_Text+" and Y_TEST=testy", sechubStopOutputData);
 
-        String gosecStopOutputData = TestFileReader.loadTextFile(goSecStopOutputFile);
+        String gosecStopOutputData = TestFileReader.readTextFromFile(goSecStopOutputFile);
         assertEquals("gosec-stopped with param2=second and parm3=third-as:"+var_Text+" and X_TEST=testx", gosecStopOutputData);
 
         // Here we check if the test1 output file preparation was written to test folder
         Path preparationOutputFile = tempWorkspaceFolder.resolve("tests/test1/"+PREPARE_TEST1_OUPTUT_FILE_NAME);
-        String preparationOutputFileContent = TestFileReader.loadTextFile(preparationOutputFile);
+        String preparationOutputFileContent = TestFileReader.readTextFromFile(preparationOutputFile);
 
         assertEquals("Output from prepare-test1.sh", preparationOutputFileContent);
 

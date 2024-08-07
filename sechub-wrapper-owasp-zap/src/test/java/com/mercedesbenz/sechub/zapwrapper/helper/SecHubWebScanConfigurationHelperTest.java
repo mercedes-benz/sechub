@@ -38,7 +38,7 @@ class SecHubWebScanConfigurationHelperTest {
     void determines_AuthenticationType_sechub_config_has_basic_auth() {
         /* prepare */
         File file = new File("src/test/resources/sechub-config-examples/basic-auth.json");
-        String sechubConfigJSON = TestFileReader.loadTextFile(file);
+        String sechubConfigJSON = TestFileReader.readTextFromFile(file);
         SecHubScanConfiguration sechubConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJSON);
         SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfig.getWebScan().get();
 

@@ -637,7 +637,7 @@ public class AsUser {
         String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
         if (enableHTMLautoDumps) {
             try {
-                getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
+                getWriter().writeTextToFile(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
             } catch (IOException e) {
                 throw new IllegalStateException("Was not able to dump HTML data", e);
             }

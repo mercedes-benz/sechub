@@ -1600,7 +1600,7 @@ public class TestAPI {
      */
     public static void storeTestReport(String fileName, String reportData) {
         try {
-            writer.save(new File(testReportStorageFolder, fileName), reportData, true);
+            writer.writeTextToFile(new File(testReportStorageFolder, fileName), reportData, true);
         } catch (Exception e) {
             LOG.error("Was not able to store sechub test report: {}", fileName, e);
         }

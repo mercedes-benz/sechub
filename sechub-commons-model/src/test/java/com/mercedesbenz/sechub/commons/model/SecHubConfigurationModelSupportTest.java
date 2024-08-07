@@ -681,7 +681,7 @@ class SecHubConfigurationModelSupportTest {
     }
 
     static SecHubConfigurationModel loadModel(String testFileName) {
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/" + testFileName));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/" + testFileName));
         return converter.fromJSON(SecHubConfigurationModel.class, json);
     }
 }

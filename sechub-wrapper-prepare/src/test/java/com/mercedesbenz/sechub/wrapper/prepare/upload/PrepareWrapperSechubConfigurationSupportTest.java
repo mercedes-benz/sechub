@@ -108,7 +108,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_binaries_is_not_empty() throws IOException {
         /* prepare */
-        writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
 
@@ -136,7 +136,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_SecHubConfigurationModel_when_SecHubConfigurationModel_data_sources_is_not_empty() throws IOException {
         /* prepare */
-        writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_source_code_scan_example.json");
 
@@ -164,7 +164,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_expected_SecHubConfigurationModel_for_remote_binaries() throws IOException {
         /* prepare */
-        writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_binary_code_scan_example.json");
 
@@ -194,7 +194,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     @Test
     void replaceRemoteDataWithFilesystem_returns_expected_SecHubConfigurationModel_for_remote_sources() throws IOException {
         /* prepare */
-        writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
         SecHubConfigurationModel model = loadModelFromTestFile("sechub_remote_data_config_source_code_scan_example.json");
         when(prepareContext.getSecHubConfiguration()).thenReturn(model);
@@ -221,7 +221,7 @@ class PrepareWrapperSechubConfigurationSupportTest {
     }
 
     private SecHubConfigurationModel loadModelFromTestFile(String fileName) {
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/" + fileName));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/" + fileName));
         return createFromJSON(json);
     }
 }

@@ -177,7 +177,7 @@ public class PDSWorkspaceService {
             LOG.debug("Meta data found for PDS job {} - will create metadata file {}", jobUUID, metaDataFile);
 
             TextFileWriter writer = new TextFileWriter();
-            writer.save(metaDataFile, metaData, true);
+            writer.writeTextToFile(metaDataFile, metaData, true);
             LOG.info("Created meta data file for PDS job {}", jobUUID);
         }
     }
@@ -592,7 +592,7 @@ public class PDSWorkspaceService {
         LOG.debug("Send event {} to workspace for sechub job: {}", eventType, jobUUID);
 
         try {
-            textFileWriter.save(eventFileToWrite, eventJson, true);
+            textFileWriter.writeTextToFile(eventFileToWrite, eventJson, true);
         } catch (IOException e) {
             LOG.error("Was not able to send event: {} with text: '{}' to workspace for PDS job: {}", eventType, eventJson, jobUUID, e);
             throw new IllegalStateException("Execution event storage failed for job: " + jobUUID, e);
@@ -622,7 +622,7 @@ public class PDSWorkspaceService {
         }
         String json = null;
         try {
-            json = textFileReader.loadTextFile(eventFileToRead);
+            json = textFileReader.readTextFromFile(eventFileToRead);
         } catch (IOException e) {
             LOG.error("Was not able to read event: {} from file: '{}' of PDS job: {}", eventType, eventFileToRead, jobUUID, e);
             throw new IllegalStateException("Execution event reading failed for job: " + jobUUID, e);

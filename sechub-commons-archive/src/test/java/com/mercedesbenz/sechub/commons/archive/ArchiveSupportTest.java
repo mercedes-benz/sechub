@@ -284,7 +284,7 @@ class ArchiveSupportTest {
         File targetFile = new File(parentFolder, "sourcecode.zip");
 
         TextFileWriter writer = new TextFileWriter();
-        writer.save(textFile, "This is just a test content", true);
+        writer.writeTextToFile(textFile, "This is just a test content", true);
 
         /* execute */
         supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);
@@ -307,7 +307,7 @@ class ArchiveSupportTest {
             fail("File:" + file + " does not exist!");
         }
         TextFileReader reader = new TextFileReader();
-        String content = reader.loadTextFile(file);
+        String content = reader.readTextFromFile(file);
         assertEquals(expectedContent, content);
     }
 
@@ -324,8 +324,8 @@ class ArchiveSupportTest {
         File targetFile = new File(parentFolder, "sourcecode.zip");
 
         TextFileWriter writer = new TextFileWriter();
-        writer.save(textFile1, "text1", true);
-        writer.save(textFile2, "text2", true);
+        writer.writeTextToFile(textFile1, "text1", true);
+        writer.writeTextToFile(textFile2, "text2", true);
 
         /* execute */
         supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);

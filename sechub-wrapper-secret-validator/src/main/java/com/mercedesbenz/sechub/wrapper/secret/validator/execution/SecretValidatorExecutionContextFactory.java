@@ -57,7 +57,7 @@ public class SecretValidatorExecutionContextFactory {
         }
 
         try {
-            String sarifReportJson = reader.loadTextFile(pdsResultFile);
+            String sarifReportJson = reader.readTextFromFile(pdsResultFile);
             return JSONConverter.get().fromJSON(SarifSchema210.class, sarifReportJson);
         } catch (Exception e) {
             throw new IllegalStateException("Creating SARIF report model from: " + pdsResultFile + " failed!", e);
@@ -72,7 +72,7 @@ public class SecretValidatorExecutionContextFactory {
         }
 
         try {
-            String validatorConfigJson = reader.loadTextFile(validatorConfigFile);
+            String validatorConfigJson = reader.readTextFromFile(validatorConfigFile);
             SecretValidatorConfigurationModelList configurationDataList = JSONConverter.get().fromJSON(SecretValidatorConfigurationModelList.class,
                     validatorConfigJson);
 

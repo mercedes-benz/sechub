@@ -33,7 +33,7 @@ class ExampleFilesValidTest {
     void check_pds_config_example1_can_be_loaded_and_is_valid() throws Exception {
 
         /* execute */
-        String json = TestFileReader.loadTextFile("src/docs/asciidoc/documents/pds/product_delegation_server_config_example1.json");
+        String json = TestFileReader.readTextFromFile("src/docs/asciidoc/documents/pds/product_delegation_server_config_example1.json");
         PDSServerConfiguration configuration = PDSServerConfiguration.fromJSON(json);
 
         /* test */
@@ -66,7 +66,7 @@ class ExampleFilesValidTest {
     @EnumSource(ExampleFile.class)
     void every_sechub_config_file_is_valid(ExampleFile file) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(file.getPath());
+        String json = TestFileReader.readTextFromFile(file.getPath());
         SecHubScanConfiguration config = null;
 
         /* execute */
@@ -85,7 +85,7 @@ class ExampleFilesValidTest {
             "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE" }, mode = EnumSource.Mode.INCLUDE)
     void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(ExampleFile file) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(file.getPath());
+        String json = TestFileReader.readTextFromFile(file.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);

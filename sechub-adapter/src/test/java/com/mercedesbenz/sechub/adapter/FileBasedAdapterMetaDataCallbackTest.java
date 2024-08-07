@@ -59,7 +59,7 @@ class FileBasedAdapterMetaDataCallbackTest {
     void reading_a_clean_json_does_return_empty_metadata_object() throws Exception {
         /* prepare */
         TestFileWriter writer = new TestFileWriter();
-        writer.save(testFile, "{}", true);
+        writer.writeTextToFile(testFile, "{}", true);
 
         /* execute */
         AdapterMetaData metaData = callbackToTest.getMetaDataOrNull();

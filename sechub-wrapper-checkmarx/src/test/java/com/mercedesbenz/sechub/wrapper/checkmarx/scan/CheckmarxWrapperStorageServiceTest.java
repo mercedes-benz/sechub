@@ -57,7 +57,7 @@ class CheckmarxWrapperStorageServiceTest {
         serviceToTest.store(result);
 
         /* test */
-        verify(writer).save(resultFile, "content", true);
+        verify(writer).writeTextToFile(resultFile, "content", true);
 
     }
 
@@ -75,7 +75,7 @@ class CheckmarxWrapperStorageServiceTest {
         serviceToTest.store(result);
 
         /* test */
-        verify(writer).save(resultFile, "content1", true);
+        verify(writer).writeTextToFile(resultFile, "content1", true);
         verify(messageSupport).writeMessages(eq(Arrays.asList(message1, message2)));
 
     }

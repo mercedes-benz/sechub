@@ -214,7 +214,7 @@ class SensitiveDataMaskingServiceTest {
     private SecHubConfigurationModel createConfiguration(boolean withSensitiveHeaders) {
         String path = withSensitiveHeaders ? SECHUB_WEBSCAN_CONFIG_FILE_WITH_SENSITIVE_HEADERS : SECHUB_WEBSCAN_CONFIG_FILE_WITHOUT_SENSITIVE_HEADERS;
 
-        String sechubConfigJson = TestFileReader.loadTextFile(path);
+        String sechubConfigJson = TestFileReader.readTextFromFile(path);
         SecHubConfigurationModel result = SecHubConfiguration.createFromJSON(sechubConfigJson);
         return result;
     }
