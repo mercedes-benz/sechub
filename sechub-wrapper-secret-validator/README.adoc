@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 == Secret valdiation Wrapper
 
-This wrapper is a Spring Boot application, that is supposed to run on PDS solutions running performing secret scan.
+This wrapper is a Spring Boot application, that is supposed to run on PDS solutions performing secret scans.
 After the secret scanning tool is done it will try to validate secrets found and enhance the SARIF report with a custom PropertyBag for each finding location.
-It will add a custom severity with the key `secretscan.sechub.severity` and
+It will add a custom severity with the key `secretscan.sereco.severity` with
 one of the following values `["info", "unclassified", "low", "medium", "high", "critical"]` to a SARIF PropertyBag which contains a generic map for custom values.
 This values can then be used by the `sechub-sereco` module to improve the severity categorization of a finding. We add this custom severities with a `PropertyBag` because the SARIF default called `Level` does not support `CRITICAL`.
+
+In case the secret was valid,the key `secretscan.validated.by.url` will be added to the PropertyBag as well with the value containing the URL the secret was valid for.
 
 === Usage
 
