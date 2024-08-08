@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 1.10.0</span>
+<span id="revnumber"> Server 2.0.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -559,12 +559,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel5">
 <li><a href="#import-projects">2.1.3.1.1. Import projects</a></li>
 <li><a href="#create-localhost-server-certificate">2.1.3.1.2. Create localhost server certificate</a></li>
+<li><a href="#add-sechub-java-code-formatter">2.1.3.1.3. Add Sechub Java Code Formatter</a></li>
 </ul>
 </li>
 <li><a href="#others">2.1.3.2. Others</a>
 <ul class="sectlevel5">
 <li><a href="#import-projects-2">2.1.3.2.1. Import projects</a></li>
 <li><a href="#create-localhost-server-certificate-2">2.1.3.2.2. Create localhost server certificate</a></li>
+<li><a href="#add-sechub-java-code-formatter-intellij">2.1.3.2.3. Add Sechub Java Code Formatter (IntelliJ)</a></li>
 </ul>
 </li>
 </ul>
@@ -1029,54 +1031,58 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-gen-messaging-analyze_scan_results_available">10.9.2.2. Message ANALYZE_SCAN_RESULTS_AVAILABLE</a></li>
 <li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">10.9.2.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
 <li><a href="#section-gen-messaging-binary_upload_done">10.9.2.4. Message BINARY_UPLOAD_DONE</a></li>
-<li><a href="#section-gen-messaging-job_cancellation_running">10.9.2.5. Message JOB_CANCELLATION_RUNNING</a></li>
-<li><a href="#section-gen-messaging-job_created">10.9.2.6. Message JOB_CREATED</a></li>
-<li><a href="#section-gen-messaging-job_done">10.9.2.7. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_execution_starting">10.9.2.8. Message JOB_EXECUTION_STARTING</a></li>
-<li><a href="#section-gen-messaging-job_failed">10.9.2.9. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">10.9.2.10. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">10.9.2.11. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">10.9.2.12. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">10.9.2.13. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">10.9.2.14. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">10.9.2.15. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">10.9.2.16. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">10.9.2.17. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
-<li><a href="#section-gen-messaging-project_access_level_changed">10.9.2.18. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">10.9.2.19. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">10.9.2.20. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_owner_changed">10.9.2.21. Message PROJECT_OWNER_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">10.9.2.22. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_job_cancellation">10.9.2.23. Message REQUEST_JOB_CANCELLATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">10.9.2.24. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">10.9.2.25. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">10.9.2.26. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.9.2.27. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.9.2.28. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_job_status">10.9.2.29. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">10.9.2.30. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">10.9.2.31. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_done">10.9.2.32. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">10.9.2.33. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.9.2.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.9.2.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_status">10.9.2.36. Message SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-scheduler_started">10.9.2.37. Message SCHEDULER_STARTED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">10.9.2.38. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-source_upload_done">10.9.2.39. Message SOURCE_UPLOAD_DONE</a></li>
-<li><a href="#section-gen-messaging-start_scan">10.9.2.40. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">10.9.2.41. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">10.9.2.42. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">10.9.2.43. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">10.9.2.44. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">10.9.2.45. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">10.9.2.46. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_email_address_changed">10.9.2.47. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">10.9.2.48. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">10.9.2.49. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">10.9.2.50. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">10.9.2.51. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">10.9.2.52. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-get_encryption_status_schedule_domain">10.9.2.5. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
+<li><a href="#section-gen-messaging-job_cancellation_running">10.9.2.6. Message JOB_CANCELLATION_RUNNING</a></li>
+<li><a href="#section-gen-messaging-job_created">10.9.2.7. Message JOB_CREATED</a></li>
+<li><a href="#section-gen-messaging-job_done">10.9.2.8. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_execution_starting">10.9.2.9. Message JOB_EXECUTION_STARTING</a></li>
+<li><a href="#section-gen-messaging-job_failed">10.9.2.10. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">10.9.2.11. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">10.9.2.12. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">10.9.2.13. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">10.9.2.14. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">10.9.2.15. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">10.9.2.16. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">10.9.2.17. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">10.9.2.18. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
+<li><a href="#section-gen-messaging-project_access_level_changed">10.9.2.19. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">10.9.2.20. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">10.9.2.21. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_owner_changed">10.9.2.22. Message PROJECT_OWNER_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">10.9.2.23. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_job_cancellation">10.9.2.24. Message REQUEST_JOB_CANCELLATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">10.9.2.25. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">10.9.2.26. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">10.9.2.27. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.9.2.28. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.9.2.29. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_job_status">10.9.2.30. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">10.9.2.31. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">10.9.2.32. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-result_encryption_status_schedule_domain">10.9.2.33. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
+<li><a href="#section-gen-messaging-scan_done">10.9.2.34. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">10.9.2.35. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.9.2.36. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.9.2.37. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_status">10.9.2.38. Message SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">10.9.2.39. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">10.9.2.40. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-schedule_encryption_pool_initialized">10.9.2.41. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</a></li>
+<li><a href="#section-gen-messaging-source_upload_done">10.9.2.42. Message SOURCE_UPLOAD_DONE</a></li>
+<li><a href="#section-gen-messaging-start_encryption_rotation">10.9.2.43. Message START_ENCRYPTION_ROTATION</a></li>
+<li><a href="#section-gen-messaging-start_scan">10.9.2.44. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">10.9.2.45. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">10.9.2.46. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">10.9.2.47. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">10.9.2.48. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">10.9.2.49. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">10.9.2.50. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_changed">10.9.2.51. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">10.9.2.52. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">10.9.2.53. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">10.9.2.54. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">10.9.2.55. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">10.9.2.56. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -1095,7 +1101,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#technical">10.10.1.8. Technical</a></li>
 <li><a href="#testing">10.10.1.9. Testing</a></li>
 <li><a href="#configuration-2">10.10.1.10. Configuration</a></li>
-<li><a href="#other">10.10.1.11. Other</a></li>
+<li><a href="#encryption">10.10.1.11. Encryption</a></li>
+<li><a href="#other">10.10.1.12. Other</a></li>
 </ul>
 </li>
 <li><a href="#section-usecase-UC_001">10.10.2. UC_001-User self registration</a></li>
@@ -1181,6 +1188,11 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_070">10.10.71. UC_070-User downloads job report in SPDX format</a></li>
 <li><a href="#section-usecase-UC_071">10.10.72. UC_071-User lists jobs for project</a></li>
 <li><a href="#section-usecase-UC_072">10.10.73. UC_072-Admin shows user details for email address</a></li>
+<li><a href="#section-usecase-UC_073">10.10.74. UC_073-Admin starts encryption rotation</a></li>
+<li><a href="#section-usecase-UC_074">10.10.75. UC_074-Scheduler encryption pool refresh</a></li>
+<li><a href="#section-usecase-UC_075">10.10.76. UC_075-Scheduler rotates data encryption</a></li>
+<li><a href="#section-usecase-UC_076">10.10.77. UC_076-Admin fetches encryption status</a></li>
+<li><a href="#section-usecase-UC_077">10.10.78. UC_077-SecHub does cleanup encryption</a></li>
 </ul>
 </li>
 </ul>
@@ -1200,13 +1212,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#job-administration-2">11.1.1.7. Job administration</a></li>
 <li><a href="#testing-2">11.1.1.8. Testing</a></li>
 <li><a href="#configuration-3">11.1.1.9. Configuration</a></li>
-<li><a href="#other-2">11.1.1.10. Other</a></li>
+<li><a href="#encryption-2">11.1.1.10. Encryption</a></li>
+<li><a href="#other-2">11.1.1.11. Other</a></li>
 </ul>
 </li>
 <li><a href="#check-if-the-server-is-alive-and-running">11.1.2. Check if the server is alive and running.</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_039-get">11.1.2.1. GET variant</a></li>
-<li><a href="#section-ucrestdoc-UC_039-head">11.1.2.2. HEAD variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-head">11.1.2.1. HEAD variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-get">11.1.2.2. GET variant</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">11.1.3. Admin lists all users</a></li>
@@ -1287,12 +1300,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#admin-unassigns-execution-profile-from-project">11.1.59. Admin unassigns execution profile from project</a></li>
 <li><a href="#admin-fetches-auto-cleanup-configuration">11.1.60. Admin fetches auto cleanup configuration</a></li>
 <li><a href="#admin-updates-auto-cleanup-configuration">11.1.61. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.62. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.63. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.64. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.65. Admin lists status information</a></li>
-<li><a href="#admin-fetches-server-runtime-data">11.1.66. Admin fetches server runtime data</a></li>
-<li><a href="#user-lists-jobs-for-project">11.1.67. User lists jobs for project</a></li>
+<li><a href="#admin-starts-encryption-rotation">11.1.62. Admin starts encryption rotation</a></li>
+<li><a href="#admin-fetches-encryption-status">11.1.63. Admin fetches encryption status</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.64. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.65. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.66. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.67. Admin lists status information</a></li>
+<li><a href="#admin-fetches-server-runtime-data">11.1.68. Admin fetches server runtime data</a></li>
+<li><a href="#user-lists-jobs-for-project">11.1.69. User lists jobs for project</a></li>
 </ul>
 </li>
 </ul>
@@ -1520,7 +1535,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.10.0 - Build date: 20240710135650</code></p>
+<p>Documentation version: <code>Server 2.0.0 - Build date: 20240808080534</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1632,6 +1647,40 @@ of your choice.</p>
 <p>This is automatically done by former gradle call, so not necessary here.</p>
 </div>
 </div>
+<div class="sect5">
+<h6 id="add-sechub-java-code-formatter">2.1.3.1.3. Add Sechub Java Code Formatter</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the formatter xml file <a href="https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip">here</a> and unzip it.</p>
+</li>
+<li>
+<p>Open Java Formatter page in preferences (Window&#8594;Preferences). Then press the import button and select the former unpacked xml file.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/eclipse-java-formatter-import.png" alt="eclipse java formatter import">
+</div>
+</div>
+</li>
+<li>
+<p>Ensure SecHub is your active profile. Select <code>SecHub</code> as active profile, then press apply and close.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/eclipse-java-formatter-activate.png" alt="eclipse java formatter activate">
+</div>
+</div>
+</li>
+<li>
+<p>Before pushing your code please check your java format by executing spotless check.</p>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew clean spotlessCheck</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="others">2.1.3.2. Others</h5>
@@ -1649,6 +1698,40 @@ just call  <code>./gradlew ensureLocalhostCertificate</code></p>
 </div>
 <div class="paragraph">
 <p>This will generate a self signed server certificate for localhost.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="add-sechub-java-code-formatter-intellij">2.1.3.2.3. Add Sechub Java Code Formatter (IntelliJ)</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the formatter xml file <a href="https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip">here</a> and unzip it.</p>
+</li>
+<li>
+<p>Open Java Formatter page in preferences (File&#8594;Settings). Then press the import button and select the former unpacked xml file.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/intelliJ-java-formatter-import.png" alt="intelliJ java formatter import">
+</div>
+</div>
+</li>
+<li>
+<p>Ensure SecHub is your active profile. Select <code>SecHub</code> as active profile, then press apply and close.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/intelliJ-java-formatter-activate.png" alt="intelliJ java formatter activate">
+</div>
+</div>
+</li>
+<li>
+<p>Before pushing your code please check your java format by executing spotless check.</p>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew clean spotlessCheck</pre>
+</div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -2096,7 +2179,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1252" height="274">
+<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1328" height="274">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -2240,7 +2323,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </table>
 </div>
-<table id="section-gen-config-scope-administration" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-administration" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2268,7 +2351,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-anonymous" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2290,7 +2373,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-checkmarx" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-checkmarx" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2322,7 +2405,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-initial" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2354,7 +2437,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2376,7 +2459,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-mock" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2398,7 +2481,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-nessus" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 7. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2475,7 +2558,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-netsparker" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 8. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2547,7 +2630,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-new" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-new" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 9. Scope 'new'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2569,7 +2652,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-notification" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 10. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2601,7 +2684,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-p" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 11. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2646,9 +2729,19 @@ The system properties described here are <strong>automatically</strong>
 <td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a PDS encryption out of sync problem happens</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a PDS encryption out of sync problem happens</p></td>
+</tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-s" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 12. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2690,7 +2783,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 13. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2727,7 +2820,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 14. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2745,7 +2838,7 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.healthcheck.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.delay</p></td>
@@ -2760,7 +2853,7 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.maxwaitretry</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">300</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When retry mechanism is enabled by <code>sechub.config.trigger.nextjob.retries</code>, and a retry is necessary, this value is used to define the maximum time period in millis which will be waited before retry. Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. So having here a max value will result in a randomized wait time so cluster members will do fetch operations time shifted and automatically reduce collisions!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When retry mechanism is enabled by <code>sechub.config.trigger.nextjob.retries</code>, and a retry is necessary, this value is used to define the maximum time period in millis which will be waited before retry. Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. So having here a max value will result in a randomized wait time: means cluster members will do fetch operations time shifted and this automatically reduces collisions!</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
@@ -2789,7 +2882,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 15. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2845,13 +2938,18 @@ The system properties described here are <strong>automatically</strong>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum limit for job information list entries per page</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.encryption.refresh.accept-outdated.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1800000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base url of SecHub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 16. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2873,7 +2971,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 17. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2895,7 +2993,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 18. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2982,7 +3080,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 19. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3014,7 +3112,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 20. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3129,6 +3227,11 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 <td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.nextjob.initialdelay:5000} fixed delay:${sechub.config.trigger.nextjob.delay:10000}</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. For initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.schedule.encryption.refresh.initialdelay:5000} fixed delay:${sechub.schedule.encryption.refresh.delay:300000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the initial and also the fixed delay for the refresh interval. These values are also used for calculation of remaining run time of outdated encrytion pools (when refresh fails)</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -3150,7 +3253,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </table>
 </div>
-<table id="section-gen-config-scope-abstract" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-abstract" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 24. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3172,7 +3275,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-mocked" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 25. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -5160,7 +5263,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3866">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="4099">
 </div>
 </div>
 </div>
@@ -7563,6 +7666,9 @@ false positive is ignored/will not be fixed. The kind/type must be product indep
 <div class="paragraph">
 <p>To prevent full hard drives there is an option to automatically remove old data.</p>
 </div>
+<div class="paragraph">
+<p>It also cleans up old encryption settings when it comes to <a href="#section-shared-concepts-sechub-data-encryption-rotation">encryption rotation</a>.</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7817,7 +7923,7 @@ one domain calls another one.</p>
 <h6 id="diagram">10.9.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="921" height="3866">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="942" height="4099">
 </div>
 </div>
 </div>
@@ -7833,6 +7939,9 @@ one domain calls another one.</p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-binary_upload_done">BINARY_UPLOAD_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-get_encryption_status_schedule_domain">GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_cancellation_running">JOB_CANCELLATION_RUNNING</a></p>
@@ -7916,6 +8025,9 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-result_encryption_status_schedule_domain">RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-scan_done">SCAN_DONE</a></p>
 </li>
 <li>
@@ -7937,7 +8049,13 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-scheduler_status_update">SCHEDULER_STATUS_UPDATE</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-schedule_encryption_pool_initialized">SCHEDULE_ENCRYPTION_POOL_INITIALIZED</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-source_upload_done">SOURCE_UPLOAD_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-start_encryption_rotation">START_ENCRYPTION_ROTATION</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-start_scan">START_SCAN</a></p>
@@ -7994,7 +8112,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-auto_cleanup_configuration_changed">10.9.2.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1119" height="234">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8028,15 +8146,23 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_cancellation_running">10.9.2.5. Message JOB_CANCELLATION_RUNNING</h5>
+<h5 id="section-gen-messaging-get_encryption_status_schedule_domain">10.9.2.5. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="835" height="205">
+<img src="images/gen_domain_messaging_get_encryption_status_schedule_domain.svg" alt="Sequence diagram of messaging GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN" width="833" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_created">10.9.2.6. Message JOB_CREATED</h5>
+<h5 id="section-gen-messaging-job_cancellation_running">10.9.2.6. Message JOB_CANCELLATION_RUNNING</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_created">10.9.2.7. Message JOB_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_created.svg" alt="Sequence diagram of messaging JOB_CREATED" width="493" height="176">
@@ -8044,7 +8170,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">10.9.2.7. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_done">10.9.2.8. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="765" height="205">
@@ -8076,7 +8202,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_execution_starting">10.9.2.8. Message JOB_EXECUTION_STARTING</h5>
+<h5 id="section-gen-messaging-job_execution_starting">10.9.2.9. Message JOB_EXECUTION_STARTING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_execution_starting.svg" alt="Sequence diagram of messaging JOB_EXECUTION_STARTING" width="628" height="176">
@@ -8108,7 +8234,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">10.9.2.9. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_failed">10.9.2.10. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="765" height="205">
@@ -8116,7 +8242,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">10.9.2.10. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">10.9.2.11. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -8148,7 +8274,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">10.9.2.11. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">10.9.2.12. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -8180,7 +8306,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">10.9.2.12. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">10.9.2.13. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -8209,7 +8335,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">10.9.2.13. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">10.9.2.14. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -8217,7 +8343,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">10.9.2.14. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">10.9.2.15. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -8225,7 +8351,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">10.9.2.15. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">10.9.2.16. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -8257,7 +8383,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">10.9.2.16. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">10.9.2.17. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -8265,7 +8391,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-product_executor_cancel_operations_done">10.9.2.17. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
+<h5 id="section-gen-messaging-product_executor_cancel_operations_done">10.9.2.18. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_product_executor_cancel_operations_done.svg" alt="Sequence diagram of messaging PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" width="863" height="176">
@@ -8273,15 +8399,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_access_level_changed">10.9.2.18. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
+<h5 id="section-gen-messaging-project_access_level_changed">10.9.2.19. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="824" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">10.9.2.19. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-project_created">10.9.2.20. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="543" height="176">
@@ -8289,15 +8415,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">10.9.2.20. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-project_deleted">10.9.2.21. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="880" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_owner_changed">10.9.2.21. Message PROJECT_OWNER_CHANGED</h5>
+<h5 id="section-gen-messaging-project_owner_changed">10.9.2.22. Message PROJECT_OWNER_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_owner_changed.svg" alt="Sequence diagram of messaging PROJECT_OWNER_CHANGED" width="636" height="176">
@@ -8305,7 +8431,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">10.9.2.22. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">10.9.2.23. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="667" height="176">
@@ -8313,7 +8439,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancellation">10.9.2.23. Message REQUEST_JOB_CANCELLATION</h5>
+<h5 id="section-gen-messaging-request_job_cancellation">10.9.2.24. Message REQUEST_JOB_CANCELLATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_cancellation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELLATION" width="656" height="176">
@@ -8321,7 +8447,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">10.9.2.24. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">10.9.2.25. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="595" height="176">
@@ -8350,7 +8476,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">10.9.2.25. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">10.9.2.26. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -8379,7 +8505,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">10.9.2.26. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">10.9.2.27. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -8408,7 +8534,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.9.2.27. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.9.2.28. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -8437,7 +8563,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.9.2.28. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.9.2.29. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -8466,7 +8592,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_job_status">10.9.2.29. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_scheduler_job_status">10.9.2.30. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_job_status.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_JOB_STATUS" width="715" height="234">
@@ -8498,7 +8624,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">10.9.2.30. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_scheduler_status_update">10.9.2.31. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="761" height="176">
@@ -8506,10 +8632,10 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">10.9.2.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">10.9.2.32. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2237" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2229" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8541,7 +8667,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">10.9.2.32. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-result_encryption_status_schedule_domain">10.9.2.33. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_result_encryption_status_schedule_domain.svg" alt="Sequence diagram of messaging RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN" width="871" height="118">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-scan_done">10.9.2.34. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -8549,7 +8683,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">10.9.2.33. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">10.9.2.35. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -8557,10 +8691,10 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.9.2.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.9.2.36. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="912" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8586,10 +8720,10 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.9.2.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.9.2.37. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="908" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8615,7 +8749,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_status">10.9.2.36. Message SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-scheduler_job_status">10.9.2.38. Message SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_status.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_STATUS" width="612" height="118">
@@ -8623,7 +8757,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_started">10.9.2.37. Message SCHEDULER_STARTED</h5>
+<h5 id="section-gen-messaging-scheduler_started">10.9.2.39. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="579" height="176">
@@ -8631,15 +8765,23 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">10.9.2.38. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">10.9.2.40. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="658" height="176">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-source_upload_done">10.9.2.39. Message SOURCE_UPLOAD_DONE</h5>
+<h5 id="section-gen-messaging-schedule_encryption_pool_initialized">10.9.2.41. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_schedule_encryption_pool_initialized.svg" alt="Sequence diagram of messaging SCHEDULE_ENCRYPTION_POOL_INITIALIZED" width="794" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-source_upload_done">10.9.2.42. Message SOURCE_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_source_upload_done.svg" alt="Sequence diagram of messaging SOURCE_UPLOAD_DONE" width="598" height="176">
@@ -8647,10 +8789,18 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">10.9.2.40. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-start_encryption_rotation">10.9.2.43. Message START_ENCRYPTION_ROTATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="353">
+<img src="images/gen_domain_messaging_start_encryption_rotation.svg" alt="Sequence diagram of messaging START_ENCRYPTION_ROTATION" width="686" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-start_scan">10.9.2.44. Message START_SCAN</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="353">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8679,7 +8829,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">10.9.2.41. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-unsupported_operation">10.9.2.45. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="636" height="118">
@@ -8687,10 +8837,10 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">10.9.2.42. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">10.9.2.46. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="735" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8716,7 +8866,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">10.9.2.43. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">10.9.2.47. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1153" height="234">
@@ -8724,7 +8874,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">10.9.2.44. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">10.9.2.48. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="663" height="176">
@@ -8732,7 +8882,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">10.9.2.45. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">10.9.2.49. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="615" height="205">
@@ -8761,15 +8911,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">10.9.2.46. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">10.9.2.50. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1026" height="264">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_email_address_changed">10.9.2.47. Message USER_EMAIL_ADDRESS_CHANGED</h5>
+<h5 id="section-gen-messaging-user_email_address_changed">10.9.2.51. Message USER_EMAIL_ADDRESS_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_email_address_changed.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGED" width="696" height="176">
@@ -8777,7 +8927,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">10.9.2.48. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">10.9.2.52. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
@@ -8806,7 +8956,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">10.9.2.49. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">10.9.2.53. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="687" height="176">
@@ -8814,10 +8964,10 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">10.9.2.50. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">10.9.2.54. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="780" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8843,7 +8993,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">10.9.2.51. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">10.9.2.55. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="594" height="176">
@@ -8878,7 +9028,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">10.9.2.52. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">10.9.2.56. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="629" height="176">
@@ -9227,7 +9377,32 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="other">10.10.1.11. Other</h5>
+<h5 id="encryption">10.10.1.11. Encryption</h5>
+<div class="paragraph">
+<p>Usecases for encryption parts</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_073">UC_073-Admin starts encryption rotation</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_074">UC_074-Scheduler encryption pool refresh</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_075">UC_075-Scheduler rotates data encryption</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_076">UC_076-Admin fetches encryption status</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_077">UC_077-SecHub does cleanup encryption</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other">10.10.1.12. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -10042,17 +10217,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -10311,18 +10486,18 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p>
-<p class="tableblock"><em>This step is defined at method <code>assignUserToProject</code> in class `com.mercedesbenz.sechub.domain.administration.project.ProjectAssignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p>
+<p class="tableblock"><em>This step is defined at method <code>assignUserToProject</code> in class `com.mercedesbenz.sechub.domain.administration.project.ProjectAssignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -10422,11 +10597,10 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
-<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.mercedesbenz.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -10437,10 +10611,11 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
+<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.mercedesbenz.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10579,14 +10754,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -12491,13 +12666,6 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -12508,9 +12676,16 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
 <p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -12580,7 +12755,7 @@ but not finished jobs before scheduler start.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that new scheduler job has been started</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStarted`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -13002,7 +13177,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -13010,7 +13185,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -14165,9 +14340,17 @@ the new email address will be sent as well.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Delete old data</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">deletes old job information</p>
 <p class="tableblock"><em>This step is defined at method <code>cleanup</code> in class `com.mercedesbenz.sechub.domain.schedule.autocleanup.ScheduleAutoCleanupService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Schedule cipher pool data cleanup</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Removes cipher pool data entries from database which are no longer used by any job</p>
+<p class="tableblock"><em>This step is defined at method <code>cleanupCipherPoolDataIfNecessaryAndPossible</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -14175,7 +14358,7 @@ the new email address will be sent as well.</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_069">10.10.70. UC_069-User uploads binaries</h4>
 <div id="sechub-doclink-uc-user-uploads-binaries-for-job" class="paragraph">
-<p>A user wants to upload binearies for a former <a href="#sechub-doclink-uc-user-creates-job">created sechub job</a>.</p>
+<p>A user wants to upload binaries for a former <a href="#sechub-doclink-uc-user-creates-job">created SecHub job</a>.</p>
 </div>
 <div class="paragraph">
 <p>The binaries must be inside a valid tar file.</p>
@@ -14387,6 +14570,311 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_072">REST API documentation for usecase UC_072-Admin shows user details for email address </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_073">10.10.74. UC_073-Admin starts encryption rotation</h4>
+<div class="paragraph">
+<p>An administrator starts encryption rotation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin triggers rotation of encryption via REST</p>
+<p class="tableblock"><em>This step is defined at method <code>rotateEncryption</code> in class `com.mercedesbenz.sechub.domain.administration.encryption.EncryptionAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers rotation of encryption via domain message</p>
+<p class="tableblock"><em>This step is defined at method <code>rotateEncryption</code> in class `com.mercedesbenz.sechub.domain.administration.encryption.AdministrationEncryptionRotationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Forces new cipher pool entry creation and triggers encryption service pool refresh</p>
+<p class="tableblock"><em>This step is defined at method <code>startEncryptionRotation</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionRotationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates new cipher pool entry in database in own transaction</p>
+<p class="tableblock"><em>This step is defined at method <code>storeInOwnTransaction</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolDataTransactionService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh encryption pool</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption pool is refreshed (necessary because pool changed before this method call)</p>
+<p class="tableblock"><em>This step is defined at method <code>refreshEncryptionPoolAndLatestPoolIdIfNecessary</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update encrypted data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encrypted data is updated (a direct pool refresh was triggered by admin action)</p>
+<p class="tableblock"><em>This step is defined at method <code>updateEncryptedDataIfNecessary</code> in class `com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobEncryptionUpdateService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_073">REST API documentation for usecase UC_073-Admin starts encryption rotation </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_074">10.10.75. UC_074-Scheduler encryption pool refresh</h4>
+<div class="paragraph">
+<p>The scheduler refreshes its encryption pool data to handle new setup</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseScheduleEncryptionPoolRefresh</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Init encryption pool</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption pool is created on startup</p>
+<p class="tableblock"><em>This step is defined at method <code>applicationStarted</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption pool data refresh trigger</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduler instance will check if encryption pool is in sync with the database definitions. If not, the instance will try to create new encryption pool object and provide the new setup.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerEncryptionSetupRefresh</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleRefreshEncryptionServiceSetupTriggerService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh encryption pool</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption pool is refreshed (if necessary)</p>
+<p class="tableblock"><em>This step is defined at method <code>refreshEncryptionPoolAndLatestPoolIdIfNecessary</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update encrypted data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encrypted data is updated (all other cluster members)</p>
+<p class="tableblock"><em>This step is defined at method <code>updateEncryptedDataIfNecessary</code> in class `com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobEncryptionUpdateService`</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_075">10.10.76. UC_075-Scheduler rotates data encryption</h4>
+<div class="paragraph">
+<p>The scheduler checks for old encrypted data and will encrypt with latest cipher</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseScheduleRotateDataEncryption</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update encrypted data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Final update of encrypted job data. Will update all SecHub jobs having a pool id which is lower than latest from encryption pool</p>
+<p class="tableblock"><em>This step is defined at method <code>updateEncryptedDataIfNecessary</code> in class `com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobEncryptionUpdateService`</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_076">10.10.77. UC_076-Admin fetches encryption status</h4>
+<div class="paragraph">
+<p>An administrator fetches encryption status from all domains where encryption is used.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin fetches encryption status from domains via REST</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchEncryptionStatus</code> in class `com.mercedesbenz.sechub.domain.administration.encryption.EncryptionAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Services collects encryption status from domains via event bus</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchStatus</code> in class `com.mercedesbenz.sechub.domain.administration.encryption.AdministrationEncryptionStatusService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_076">REST API documentation for usecase UC_076-Admin fetches encryption status </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_077">10.10.78. UC_077-SecHub does cleanup encryption</h4>
+<div class="paragraph">
+<p>Secub does an ecnryption cleanup.</p>
+</div>
+<div class="paragraph">
+<p>Inside relevant domains the encryption situation will be checked and
+old encryption setup, which is no longer necessary, will be dropped.</p>
+</div>
+<div class="paragraph">
+<p>For example: When encryption was done with formerly via ENV variable
+<code>SECRET_1_AES_256</code> and the new one setup is using <code>SECRET_2_AES_256</code> and
+all jobs have been migrated to the new encryption, the cipher setup
+using <code>SECRET_1_AES_256</code> will become obsolete and will be automatically
+removed. After the remove is done, there is no longer a need to
+start the server with <code>SECRET_1_AES_256</code>, but only with <code>SECRET_2_AES_256</code> &#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseEncryptionCleanup</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Schedule cipher pool data cleanup</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Removes cipher pool data entries from database which are no longer used by any job</p>
+<p class="tableblock"><em>This step is defined at method <code>cleanupCipherPoolDataIfNecessaryAndPossible</code> in class `com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService`</em></p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -14686,7 +15174,23 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="other-2">11.1.1.10. Other</h5>
+<h5 id="encryption-2">11.1.1.10. Encryption</h5>
+<div class="paragraph">
+<p>Usecases for encryption parts</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_073">REST API for UC_073-Admin starts encryption rotation </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_076">REST API for UC_076-Admin fetches encryption status </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other-2">11.1.1.11. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -14720,60 +15224,12 @@ The complete documentation about REST API is generated. If you want to change co
 <p>REST API for usecase <a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running. </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-get">11.1.2.1. GET variant</h5>
+<h5 id="section-ucrestdoc-UC_039-head">11.1.2.1. HEAD variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 27. General request information</caption>
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 85.7143%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong class="big">Example</strong></p>
-</div>
-<div class="paragraph">
-<p><strong>Curl request</strong> <br></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X GET</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Response body</strong> <br>
-<em>(empty)</em></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-head">11.1.2.2. HEAD variant</h5>
-<div class="paragraph">
-<p><strong class="big">Definition</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14808,6 +15264,54 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_039-get">11.1.2.2. GET variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 28. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X GET</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -15522,7 +16026,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/65fc6925-ffcb-4f71-8468-01b1a5b5a65d' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/50a3de31-e207-4ac3-a6da-0f46e478d7ff' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -16687,7 +17191,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1c24f69f-c988-4ce7-94ef-22dfac5ba3db</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-09T13:57:03.927240632</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:57:03.927258626</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">fc559da4-0535-46c7-941f-1a76d09a2ca1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-07T08:05:51.724664496</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:51.724691357</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -17297,7 +17801,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2c7e0719-0c4e-4f6a-aa56-6a39e63c2fe5</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e80bc191-1fab-4e51-9c53-44b956b37b88</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -17476,7 +17980,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e61914c5-b3b6-4af0-a9bf-748a376c2638</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">278d510e-e7b2-4d07-b593-7fa77b54eef8</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -17635,7 +18139,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">75d2cfea-3690-4397-8ea7-b7a0f87123a9</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">07c86999-76c1-4a12-90b7-4b97a7632579</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -17794,7 +18298,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a37386d3-a808-4dcb-b68e-a7fcde86f2bd</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">18b74d14-fd93-4beb-9ed0-623ba27171df</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -17948,7 +18452,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1718acea-bb09-4621-9cfd-d5337be22244</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a47a9992-6b75-46db-a77a-5590b115e8e4</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18117,7 +18621,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">24a520cd-a6ce-4120-addc-fdc21980de51</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ad2715a7-ed7c-49c5-9b0d-ef7b80f276c1</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18281,7 +18785,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">fa954d23-1920-4338-bec4-6f4eb3271427</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f4542da9-59bb-41d2-a120-39a5f14e286a</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18440,7 +18944,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">603cbbb3-792e-4647-acde-a018c9672d26</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">361d942a-c955-42ba-baea-41bfccfe08e3</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18614,7 +19118,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c6f36e9c-22ce-4405-a50a-809b01ddec4a</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">48c03859-a741-4e25-9ade-314a1583e45f</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18808,7 +19312,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e09816f7-bde7-4764-acb4-1b9e67316ba4</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">046e0236-dd5f-4b07-8c57-3c45801b6c37</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18972,7 +19476,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">515131cd-f610-43fb-b3c7-73c227dcc919</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">dd1b6f6b-7a47-408d-a919-0f06c9b43200</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19061,7 +19565,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/4cdef6b6-f307-42cb-bb15-13ed84e11efc/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d26d431f-532e-403d-8649-41840afaf02a/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -19158,7 +19662,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/dd1fc660-d0e5-48aa-bedd-d8786eea7dcc/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2599f5c1-4bb0-4ca2-9745-49411e356282/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19310,7 +19814,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7c58dbab-860f-4d45-b1f9-3de1b7a8e5b5' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/acd54ae3-6a88-4002-85f0-c7026639380a' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19319,7 +19823,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7c58dbab-860f-4d45-b1f9-3de1b7a8e5b5</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:42:02.31702027</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:57:02.317046408</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">acd54ae3-6a88-4002-85f0-c7026639380a</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:50:50.192109111</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:50.192137775</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19394,7 +19898,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/1452ace3-df08-4d20-8fa8-c48d219b4e98' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5e4d6d16-930d-4a32-9277-b178d2e0a033' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -19466,7 +19970,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/d6929af5-02d1-4060-89b8-bb5a88a81917' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/d2552d0b-e265-4673-ad90-e43e0f61a610' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -20024,7 +20528,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/844bf46d-865c-407d-a28c-e2286a7d7a96/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/897847f1-3e25-44cc-a4cf-67508dbd295a/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -20105,7 +20609,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/69ab8fa2-fe63-45ca-aafe-6efdc937b4e8' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/28097c41-5d4d-4355-a509-ce22bdb69537' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -20644,11 +21148,6 @@ The complete documentation about REST API is generated. If you want to change co
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Timestamp since when job has been started</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration used for this job</p></td>
-</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -20668,7 +21167,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">364a395c-7439-4f84-ae4b-b26517c3fe53</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:57:06.714971112</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configuration</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">{ config data }</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1761a2a9-37a9-48e1-98e5-63e3c2785c67</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:55.044912463</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -20752,7 +21251,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/cb7e5145-587c-4cc3-b536-0a516788b323' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/08eaf3b6-4d6e-4ad9-a7ac-7d88b4884d13' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20841,7 +21340,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c798ca3b-4ac7-4e54-9507-e8267d591a3a' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/98470906-23a7-4233-8228-4e213cb5b173' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20930,7 +21429,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/f96ec449-ff8e-4328-a66c-0783edd140d6' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/c3a07e23-27f4-4a02-9313-c5e8ee6aa8f7' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21455,7 +21954,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;name&quot;:&quot;PDS gosec config 1&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productXYZ.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;},{&quot;key&quot;:&quot;example.key2&quot;,&quot;value&quot;:&quot;Another value&quot;}]}}'</code></pre>
+    -d '{&quot;name&quot;:&quot;PDS gosec configuration 1&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productXYZ.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;},{&quot;key&quot;:&quot;example.key2&quot;,&quot;value&quot;:&quot;Another value&quot;}]}}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -21463,7 +21962,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json"><span class="integer">16</span><span class="error">d</span><span class="integer">0</span><span class="integer">2</span><span class="error">d</span><span class="integer">16</span><span class="integer">-9</span><span class="error">d</span><span class="integer">30</span><span class="integer">-4</span><span class="error">b</span><span class="integer">50</span><span class="error">-</span><span class="error">a</span><span class="integer">0</span><span class="integer">79</span><span class="integer">-0</span><span class="error">a</span><span class="integer">992</span><span class="error">d</span><span class="integer">5</span><span class="error">d</span><span class="integer">1</span><span class="error">f</span><span class="integer">8</span><span class="error">c</span></code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json"><span class="integer">19</span><span class="error">a</span><span class="float">513e8</span><span class="error">-</span><span class="error">f</span><span class="integer">664</span><span class="integer">-43</span><span class="error">f</span><span class="integer">3</span><span class="error">-</span><span class="error">a</span><span class="error">d</span><span class="integer">0</span><span class="error">e</span><span class="error">-</span><span class="error">e</span><span class="error">c</span><span class="integer">881</span><span class="error">c</span><span class="integer">7762</span><span class="error">f</span><span class="integer">7</span></code></pre>
 </div>
 </div>
 </div>
@@ -21547,7 +22046,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/f88cb1e3-caf7-4d3a-b8c1-5801c0bcad7a' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/22fb2f08-7b58-4d57-acbb-00f12619c6e1' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21662,7 +22161,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">85535231-46bc-4301-b5f5-37730131dec6</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7d298d34-1148-4803-975d-226862654d0b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21815,7 +22314,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/6071b1b3-4573-4ae7-a13e-e1b0fdaf149a' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b60c002d-6882-41b7-9378-a1279f10fca9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21824,7 +22323,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6071b1b3-4573-4ae7-a13e-e1b0fdaf149a</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b60c002d-6882-41b7-9378-a1279f10fca9</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21972,7 +22471,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/81170e88-a5f7-4527-a19a-b9494b138f0f' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/70e7df3d-e2c9-4416-b64e-4d93d5500933' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -22316,7 +22815,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;f016a684-830a-4c66-aa5b-1f49e85e9996&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;44742c74-0b9b-46c2-afa7-1c0e8e7f3291&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -22436,7 +22935,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enabled state of this config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled state of this configuration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].productIdentifier</code></p></td>
@@ -22472,7 +22971,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">df9984fd-f307-4847-a49a-27700ee434d0</span><span class="delimiter">&quot;</span></span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ce989c37-b285-4975-a802-3930530d627b</span><span class="delimiter">&quot;</span></span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
@@ -22912,7 +23411,219 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.62. Admin disables job processing in scheduler</h4>
+<h4 id="admin-starts-encryption-rotation">11.1.62. Admin starts encryption rotation</h4>
+<div id="section-ucrestdoc-uc-UC_073" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_073">UC_073-Admin starts encryption rotation </a></p>
+</div>
+<div id="section-ucrestdoc-UC_073-" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 155. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/encryption/rotate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/encryption/rotate' -i -u 'user:secret' -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{
+  &quot;algorithm&quot; : &quot;AES_GCM_SIV_256&quot;,
+  &quot;passwordSourceType&quot; : &quot;ENVIRONMENT_VARIABLE&quot;,
+  &quot;passwordSourceData&quot; : &quot;SECRET_1&quot;
+}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-encryption-status">11.1.63. Admin fetches encryption status</h4>
+<div id="section-ucrestdoc-uc-UC_076" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_076">UC_076-Admin fetches encryption status </a></p>
+</div>
+<div id="section-ucrestdoc-UC_076-" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 156. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/encryption/status</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type description of the json content</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the domain which will provide this encryption data elements</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].algorithm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Algorithm used for encryption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].passwordSource.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of password source. Can be [NONE, ENVIRONMENT_VARIABLE]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].passwordSource.data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data for password source. If type is ENVIRONMENT_VARIABLE then it is the the name of the environment variable.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].usage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map containing information about usage of this encryption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].usage.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key value data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].created</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creation timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domains[].data[].createdFrom</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User id of admin who created the encryption entry</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/encryption/status' -i -u 'user:secret' -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">encryptionStatus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">domains</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">schedule</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">algorithm</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">AES_GCM_SIV_256</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">passwordSource</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENVIRONMENT_VARIABLE</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">SECRET_1</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">usage</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.cancel_requested</span><span class="delimiter">&quot;</span></span>:<span class="integer">4</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.canceled</span><span class="delimiter">&quot;</span></span>:<span class="integer">5</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.ended</span><span class="delimiter">&quot;</span></span>:<span class="integer">6</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.initializing</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.ready_to_start</span><span class="delimiter">&quot;</span></span>:<span class="integer">2</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">job.state.started</span><span class="delimiter">&quot;</span></span>:<span class="integer">3</span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">createdFrom</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">admin-username</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-01T09:26:00</span><span class="delimiter">&quot;</span></span>}]}]}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.64. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -22920,7 +23631,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 155. General request information</caption>
+<caption class="title">Table 157. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22979,7 +23690,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.63. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.65. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -22987,7 +23698,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 156. General request information</caption>
+<caption class="title">Table 158. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23046,7 +23757,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.64. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.66. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -23054,7 +23765,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 157. General request information</caption>
+<caption class="title">Table 159. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23113,7 +23824,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.65. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.67. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -23121,7 +23832,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 158. General request information</caption>
+<caption class="title">Table 160. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23213,7 +23924,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-server-runtime-data">11.1.66. Admin fetches server runtime data</h4>
+<h4 id="admin-fetches-server-runtime-data">11.1.68. Admin fetches server runtime data</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data </a></p>
 </div>
@@ -23221,7 +23932,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 159. General request information</caption>
+<caption class="title">Table 161. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23293,7 +24004,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-lists-jobs-for-project">11.1.67. User lists jobs for project</h4>
+<h4 id="user-lists-jobs-for-project">11.1.69. User lists jobs for project</h4>
 <div id="section-ucrestdoc-uc-UC_071" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_071">UC_071-User lists jobs for project </a></p>
 </div>
@@ -23301,7 +24012,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 160. General request information</caption>
+<caption class="title">Table 162. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23331,7 +24042,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 161. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 163. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -23455,7 +24166,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c84c93ed-3719-4a72-8d2a-42be7efdbc5d</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:40:02.462329442</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:42:02.462359458</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-07-10T13:57:02.46237082</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">048f9167-5b7a-41fb-a235-8e3a7e996efa</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:48:50.319019742</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:50:50.319048296</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:50.319059717</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -25300,7 +26011,7 @@ one will be deleted.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 1.10.0<br>
+ Server 2.0.0<br>
 </div>
 </div>
 </body>

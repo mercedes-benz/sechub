@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Developer Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 1.10.0</span>
+<span id="revnumber"> Server 2.0.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -563,44 +563,49 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#setup-sechub-in-eclipse-ide">4.1. Setup SecHub in Eclipse IDE</a>
 <ul class="sectlevel3">
-<li><a href="#switch-to-dark-theme-optional">4.1.1. Switch to <code>Dark</code> theme (Optional)</a></li>
+<li><a href="#add-sechub-java-code-formatter">4.1.1. Add Sechub Java Code Formatter</a></li>
+<li><a href="#switch-to-dark-theme-optional">4.1.2. Switch to <code>Dark</code> theme (Optional)</a></li>
+</ul>
+</li>
+<li><a href="#set-up-intellij-for-sechub">4.2. Set up IntelliJ for SecHub</a>
+<ul class="sectlevel3">
+<li><a href="#add-sechub-java-code-formatter-2">4.2.1. Add Sechub Java Code Formatter</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#set-up-intellij-for-sechub">5. Set up IntelliJ for SecHub</a></li>
-<li><a href="#run-integration-tests-from-ide">6. Run Integration Tests from IDE</a>
+<li><a href="#run-integration-tests-from-ide">5. Run Integration Tests from IDE</a>
 <ul class="sectlevel2">
-<li><a href="#run-integration-tests-from-eclipse-ide">6.1. Run Integration Tests From Eclipse IDE</a>
+<li><a href="#run-integration-tests-from-eclipse-ide">5.1. Run Integration Tests From Eclipse IDE</a>
 <ul class="sectlevel3">
-<li><a href="#sechub-server">6.1.1. SecHub Server</a>
+<li><a href="#sechub-server">5.1.1. SecHub Server</a>
 <ul class="sectlevel4">
-<li><a href="#configure-sechub-server">6.1.1.1. Configure SecHub Server</a></li>
-<li><a href="#run-a-sechub-server-integration-test">6.1.1.2. Run a SecHub server integration test</a></li>
+<li><a href="#configure-sechub-server">5.1.1.1. Configure SecHub Server</a></li>
+<li><a href="#run-a-sechub-server-integration-test">5.1.1.2. Run a SecHub server integration test</a></li>
 </ul>
 </li>
-<li><a href="#product-delegation-server-pds">6.1.2. Product Delegation Server (PDS)</a>
+<li><a href="#product-delegation-server-pds">5.1.2. Product Delegation Server (PDS)</a>
 <ul class="sectlevel4">
-<li><a href="#configure-pds">6.1.2.1. Configure Product Delegation Server (PDS)</a></li>
-<li><a href="#run-a-pds-integration-test">6.1.2.2. Run a PDS integration test</a></li>
-<li><a href="#run-a-sechub-pds-integration-test">6.1.2.3. Run a SecHub + PDS integration test</a></li>
+<li><a href="#configure-pds">5.1.2.1. Configure Product Delegation Server (PDS)</a></li>
+<li><a href="#run-a-pds-integration-test">5.1.2.2. Run a PDS integration test</a></li>
+<li><a href="#run-a-sechub-pds-integration-test">5.1.2.3. Run a SecHub + PDS integration test</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#run-integration-tests-from-intellij-ide">6.2. Run Integration Tests From IntelliJ IDE</a>
+<li><a href="#run-integration-tests-from-intellij-ide">5.2. Run Integration Tests From IntelliJ IDE</a>
 <ul class="sectlevel3">
-<li><a href="#sechub-server-2">6.2.1. SecHub Server</a>
+<li><a href="#sechub-server-2">5.2.1. SecHub Server</a>
 <ul class="sectlevel4">
-<li><a href="#configure-sechub-server-intelliJ">6.2.1.1. Configure SecHub Server</a></li>
-<li><a href="#run-a-sechub-server-integration-test-2">6.2.1.2. Run a SecHub server integration test</a></li>
+<li><a href="#configure-sechub-server-intelliJ">5.2.1.1. Configure SecHub Server</a></li>
+<li><a href="#run-a-sechub-server-integration-test-2">5.2.1.2. Run a SecHub server integration test</a></li>
 </ul>
 </li>
-<li><a href="#product-delegation-server-pds-2">6.2.2. Product Delegation Server (PDS)</a>
+<li><a href="#product-delegation-server-pds-2">5.2.2. Product Delegation Server (PDS)</a>
 <ul class="sectlevel4">
-<li><a href="#configure-pds-intelliJ">6.2.2.1. Configure Product Delegation Server (PDS)</a></li>
-<li><a href="#run-a-pds-integration-test-2">6.2.2.2. Run a PDS integration test</a></li>
-<li><a href="#run-a-sechub-pds-integration-test-2">6.2.2.3. Run a SecHub + PDS integration test</a></li>
+<li><a href="#configure-pds-intelliJ">5.2.2.1. Configure Product Delegation Server (PDS)</a></li>
+<li><a href="#run-a-pds-integration-test-2">5.2.2.2. Run a PDS integration test</a></li>
+<li><a href="#run-a-sechub-pds-integration-test-2">5.2.2.3. Run a SecHub + PDS integration test</a></li>
 </ul>
 </li>
 </ul>
@@ -690,7 +695,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 1.10.0 - Build date: 20240710135650</code></p>
+<p>Documentation version: <code>Server 2.0.0 - Build date: 20240808080534</code></p>
 </div>
 </div>
 </div>
@@ -1140,7 +1145,7 @@ However, not all issues are labeled. In addition, if you like an issue just comm
 <div class="ulist">
 <ul>
 <li>
-<p>In case, the issue you want to work on does not yet exists, please create an issue.</p>
+<p>In case, the issue you want to work on does not yet exist, please create an issue.</p>
 </li>
 </ul>
 </div>
@@ -1161,7 +1166,14 @@ Example: <code>feature-36-go-client-supports-env-variable</code>.
 </div>
 </li>
 <li>
-<p>Implement your changes</p>
+<p>Set Up git configurations as explained here: <a href="https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#sechub-git-configuration">Configure your git settings</a></p>
+</li>
+<li>
+<p>Set up your IDE</p>
+</li>
+<li>
+<p>Implement your changes<br>
+Please follow our coding conventions: <a href="https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-coding-conventions">Coding conventions</a></p>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -1514,7 +1526,41 @@ However, the EGradle IDE Plugin is a private project and not affiliated with Sec
 </ol>
 </div>
 <div class="sect3">
-<h4 id="switch-to-dark-theme-optional">4.1.1. Switch to <code>Dark</code> theme (Optional)</h4>
+<h4 id="add-sechub-java-code-formatter">4.1.1. Add Sechub Java Code Formatter</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the formatter xml file <a href="https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip">here</a> and unzip it.</p>
+</li>
+<li>
+<p>Open Java Formatter page in preferences (Window&#8594;Preferences). Then press the import button and select the former unpacked xml file.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/eclipse-java-formatter-import.png" alt="eclipse java formatter import">
+</div>
+</div>
+</li>
+<li>
+<p>Ensure SecHub is your active profile. Select <code>SecHub</code> as active profile, then press apply and close.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/eclipse-java-formatter-activate.png" alt="eclipse java formatter activate">
+</div>
+</div>
+</li>
+<li>
+<p>Before pushing your code please check your java format by executing spotless check.</p>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew clean spotlessCheck</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="switch-to-dark-theme-optional">4.1.2. Switch to <code>Dark</code> theme (Optional)</h4>
 <div class="paragraph">
 <p>Needs to be done for every new workspace.</p>
 </div>
@@ -1546,11 +1592,8 @@ However, the EGradle IDE Plugin is a private project and not affiliated with Sec
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="set-up-intellij-for-sechub">5. Set up IntelliJ for SecHub</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="set-up-intellij-for-sechub">4.2. Set up IntelliJ for SecHub</h3>
 <div class="paragraph">
 <p>Requirements: IntelliJ IDE (Community or Ultimate) is installed.</p>
 </div>
@@ -1580,23 +1623,58 @@ However, the EGradle IDE Plugin is a private project and not affiliated with Sec
 </li>
 </ol>
 </div>
+<div class="sect3">
+<h4 id="add-sechub-java-code-formatter-2">4.2.1. Add Sechub Java Code Formatter</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the formatter xml file <a href="https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip">here</a> and unzip it.</p>
+</li>
+<li>
+<p>Open Java Formatter page in preferences (File&#8594;Settings). Then press the import button and select the former unpacked xml file.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/intelliJ-java-formatter-import.png" alt="intelliJ java formatter import">
+</div>
+</div>
+</li>
+<li>
+<p>Ensure SecHub is your active profile. Select <code>SecHub</code> as active profile, then press apply and close.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/intelliJ-java-formatter-activate.png" alt="intelliJ java formatter activate">
+</div>
+</div>
+</li>
+<li>
+<p>Before pushing your code please check your java format by executing spotless check.</p>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew clean spotlessCheck</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="run-integration-tests-from-ide">6. Run Integration Tests from IDE</h2>
+<h2 id="run-integration-tests-from-ide">5. Run Integration Tests from IDE</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="run-integration-tests-from-eclipse-ide">6.1. Run Integration Tests From Eclipse IDE</h3>
+<h3 id="run-integration-tests-from-eclipse-ide">5.1. Run Integration Tests From Eclipse IDE</h3>
 <div class="paragraph">
 <p>We explain the setup based on the Free and Open Source Software (FOSS) <a href="https://eclipseide.org/">Eclipse IDE</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="sechub-server">6.1.1. SecHub Server</h4>
+<h4 id="sechub-server">5.1.1. SecHub Server</h4>
 <div class="paragraph">
 <p>Run a SecHub server integration test.</p>
 </div>
 <div class="sect4">
-<h5 id="configure-sechub-server">6.1.1.1. Configure SecHub Server</h5>
+<h5 id="configure-sechub-server">5.1.1.1. Configure SecHub Server</h5>
 <div class="paragraph">
 <p>Download the launch configuration for the Eclipse IDE: <a href="https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/SecHubServerApplication_(INTEGRATION_TEST-H2).launch">SecHubServerApplication (INTEGRATION TEST - H2)</a></p>
 </div>
@@ -1673,7 +1751,7 @@ Ensure you replace the <code>&lt;user&gt;</code> with your own user. The <code>s
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-sechub-server-integration-test">6.1.1.2. Run a SecHub server integration test</h5>
+<h5 id="run-a-sechub-server-integration-test">5.1.1.2. Run a SecHub server integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the SecHub server using <code>UserRegistrationScenario1IntTest.java</code> as example.
 Other SecHub server integration tests can be run in the same way.</p>
@@ -1716,12 +1794,12 @@ Click on the <code>Arguments</code> tab and paste the flag <code>-Dsechub.integr
 </div>
 </div>
 <div class="sect3">
-<h4 id="product-delegation-server-pds">6.1.2. Product Delegation Server (PDS)</h4>
+<h4 id="product-delegation-server-pds">5.1.2. Product Delegation Server (PDS)</h4>
 <div class="paragraph">
 <p>Run a Product Delegation Server (PDS) integration test.</p>
 </div>
 <div class="sect4">
-<h5 id="configure-pds">6.1.2.1. Configure Product Delegation Server (PDS)</h5>
+<h5 id="configure-pds">5.1.2.1. Configure Product Delegation Server (PDS)</h5>
 <div class="paragraph">
 <p>Download the launch configure for the Eclipse IDE: <a href="https://raw.githubusercontent.com/mercedes-benz/sechub/develop/sechub-examples/eclipse/ProductDelegationServerApplication_(INTEGRATION_TEST-H2).launch">ProductDelegationServerApplication (INTEGRATION TEST - H2)</a></p>
 </div>
@@ -1804,7 +1882,7 @@ Ensure you replace the <code>&lt;user&gt;</code> with your own user. It is neces
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-pds-integration-test">6.1.2.2. Run a PDS integration test</h5>
+<h5 id="run-a-pds-integration-test">5.1.2.2. Run a PDS integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the PDS server using <code>DirectPDSAPICheckAliveScenario6IntTest.java</code> as example.
 Other PDS integration tests can be run in the same way.</p>
@@ -1827,7 +1905,7 @@ Other PDS integration tests can be run in the same way.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-sechub-pds-integration-test">6.1.2.3. Run a SecHub + PDS integration test</h5>
+<h5 id="run-a-sechub-pds-integration-test">5.1.2.3. Run a SecHub + PDS integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the SecHub + PDS server using <code>PDSCodeScanJobScenario5IntTest.java</code> as example.
 Other PDS integration tests can be run in the same way.</p>
@@ -1852,7 +1930,7 @@ Other PDS integration tests can be run in the same way.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="run-integration-tests-from-intellij-ide">6.2. Run Integration Tests From IntelliJ IDE</h3>
+<h3 id="run-integration-tests-from-intellij-ide">5.2. Run Integration Tests From IntelliJ IDE</h3>
 <div class="paragraph">
 <p>We explain the integration test setup based on the IntelliJ IDEA IDE.</p>
 </div>
@@ -1870,12 +1948,12 @@ Other PDS integration tests can be run in the same way.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-server-2">6.2.1. SecHub Server</h4>
+<h4 id="sechub-server-2">5.2.1. SecHub Server</h4>
 <div class="paragraph">
 <p>Run a SecHub server integration test.</p>
 </div>
 <div class="sect4">
-<h5 id="configure-sechub-server-intelliJ">6.2.1.1. Configure SecHub Server</h5>
+<h5 id="configure-sechub-server-intelliJ">5.2.1.1. Configure SecHub Server</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1929,7 +2007,7 @@ Ensure you replace the <code>&lt;user&gt;</code> with your own user. The <code>s
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-sechub-server-integration-test-2">6.2.1.2. Run a SecHub server integration test</h5>
+<h5 id="run-a-sechub-server-integration-test-2">5.2.1.2. Run a SecHub server integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the SecHub server using <code>UserRegistrationScenario1IntTest.java</code> as example.
 Other SecHub server integration tests can be run in the same way.</p>
@@ -1958,12 +2036,12 @@ Click on the <code>Add VM options</code> tab and paste the flag <code>-Dsechub.i
 </div>
 </div>
 <div class="sect3">
-<h4 id="product-delegation-server-pds-2">6.2.2. Product Delegation Server (PDS)</h4>
+<h4 id="product-delegation-server-pds-2">5.2.2. Product Delegation Server (PDS)</h4>
 <div class="paragraph">
 <p>Run a Product Delegation Server (PDS) integration test.</p>
 </div>
 <div class="sect4">
-<h5 id="configure-pds-intelliJ">6.2.2.1. Configure Product Delegation Server (PDS)</h5>
+<h5 id="configure-pds-intelliJ">5.2.2.1. Configure Product Delegation Server (PDS)</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2023,7 +2101,7 @@ Ensure you replace the <code>&lt;user&gt;</code> with your own user.
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-pds-integration-test-2">6.2.2.2. Run a PDS integration test</h5>
+<h5 id="run-a-pds-integration-test-2">5.2.2.2. Run a PDS integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the PDS server using <code>DirectPDSAPICheckAliveScenario6IntTest.java</code> as example.
 Other PDS integration tests can be run in the same way.</p>
@@ -2046,7 +2124,7 @@ Other PDS integration tests can be run in the same way.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="run-a-sechub-pds-integration-test-2">6.2.2.3. Run a SecHub + PDS integration test</h5>
+<h5 id="run-a-sechub-pds-integration-test-2">5.2.2.3. Run a SecHub + PDS integration test</h5>
 <div class="paragraph">
 <p>This section demonstrate how to run an integration test for the SecHub + PDS server using <code>PDSCodeScanJobScenario5IntTest.java</code> as example.
 Other PDS integration tests can be run in the same way.</p>
@@ -2075,7 +2153,7 @@ Other PDS integration tests can be run in the same way.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 1.10.0<br>
+ Server 2.0.0<br>
 </div>
 </div>
 </body>

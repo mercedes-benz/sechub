@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
 import static org.mockito.ArgumentMatchers.*;
