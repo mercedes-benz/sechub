@@ -7,7 +7,7 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.docgen.util.TextFileReader;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileReader;
 
 class RestDocSanityTest {
 
@@ -18,7 +18,7 @@ class RestDocSanityTest {
         assertTrue(file.exists());
         assertTrue(file.isDirectory());
 
-        TextFileReader reader = new TextFileReader();
+        DocGenTextFileReader reader = new DocGenTextFileReader();
         StringBuilder sb = new StringBuilder();
         int count = 0;
 
@@ -26,7 +26,7 @@ class RestDocSanityTest {
         for (File sourceFile : file.listFiles((dirFile, name) -> name.endsWith("RestDocTest.java"))) {
             count++;
             // System.out.println("sourcefile:"+sourceFile);
-            String sourceCode = reader.loadTextFile(sourceFile);
+            String sourceCode = reader.readTextFromFile(sourceFile);
             if (sourceCode.indexOf("import static com.epages") != -1) {
                 sb.append("- ").append(sourceFile.getName()).append(" does use static import of com.epages. Must be changed.\n");
             } else if (sourceCode.indexOf("import com.epages") != -1) {

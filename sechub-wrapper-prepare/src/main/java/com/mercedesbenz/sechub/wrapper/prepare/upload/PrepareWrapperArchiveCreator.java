@@ -4,14 +4,14 @@ package com.mercedesbenz.sechub.wrapper.prepare.upload;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 
-@Service
+@Component
 public class PrepareWrapperArchiveCreator {
 
     @Autowired

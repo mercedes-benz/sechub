@@ -38,7 +38,7 @@ public class CheckmarxWrapperStorageService {
         }
 
         File pdsResultFile = new File(pdsResultFilePath);
-        writer.save(pdsResultFile, adapterResult.getProductResult(), true);
+        writer.writeTextToFile(pdsResultFile, adapterResult.getProductResult(), true);
     }
 
     private void writeProductMessages(AdapterExecutionResult adapterResult) throws IOException {

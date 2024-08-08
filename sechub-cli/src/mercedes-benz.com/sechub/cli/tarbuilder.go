@@ -51,6 +51,7 @@ func createBinariesTarFile(context *Context) error {
 			}
 		}
 	} else {
+		os.Remove(context.binariesTarFileName)
 		context.binariesTarUploadNeeded = false
 		sechubUtil.LogNotice(sechubUtil.TarFileNotCreated)
 	}

@@ -1100,6 +1100,37 @@
       "date": "",
       "commitMessage": ""
      }
+    },
+    {
+     "message": {
+      "text": "github-pat has detected secret for file UnSAFE_Bank/iOS/Source Code/Pods/README.adoc."
+     },
+     "ruleId": "github-pat",
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "UnSAFE_Bank/iOS/Source Code/Pods/README.adoc"
+        },
+        "region": {
+         "startLine": 1,
+         "startColumn": 1,
+         "endLine": 1,
+         "endColumn": 40,
+         "snippet": {
+          "text": "invalid-token"
+         }
+        }
+       }
+      }
+     ],
+     "partialFingerprints": {
+      "commitSha": "",
+      "email": "",
+      "author": "",
+      "date": "",
+      "commitMessage": ""
+     }
     }
    ]
   }

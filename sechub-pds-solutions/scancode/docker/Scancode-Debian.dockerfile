@@ -3,16 +3,15 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+#  SCANCODE_VERSION: see https://github.com/nexB/scancode-toolkit/releases Use the version number only
+ARG SCANCODE_VERSION
+#  SPDX_TOOL_VERSION: see https://mvnrepository.com/artifact/org.spdx/tools-java
+ARG SPDX_TOOL_VERSION
+
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Scancode-Toolkit+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines Scancode-Toolkit with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
-
-# Build args
-#  SCANCODE_VERSION: see https://github.com/nexB/scancode-toolkit/releases Use the version number only
-ARG SCANCODE_VERSION="32.0.4"
-#  SPDX_TOOL_VERSION: see https://mvnrepository.com/artifact/org.spdx/tools-java
-ARG SPDX_TOOL_VERSION="1.1.7"
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"

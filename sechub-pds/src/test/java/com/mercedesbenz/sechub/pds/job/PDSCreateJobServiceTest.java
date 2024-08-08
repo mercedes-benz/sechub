@@ -1,27 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;
+import com.mercedesbenz.sechub.commons.encryption.InitializationVector;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionService;
 import com.mercedesbenz.sechub.pds.security.PDSUserContextService;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSCreateJobServiceTest {
-
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
 
     private PDSCreateJobService serviceToTest;
     private UUID sechubJobUUID;
@@ -32,8 +29,11 @@ public class PDSCreateJobServiceTest {
     private PDSJobConfigurationValidator configurationValidator;
     private PDSServerConfigurationService serverConfigurationService;
 
-    @Before
-    public void before() throws Exception {
+    private PDSEncryptionService encryptionService;
+    private EncryptionResult encryptionResult;
+
+    @BeforeEach
+    void before() throws Exception {
         sechubJobUUID = UUID.randomUUID();
         createdJob1UUID = UUID.randomUUID();
         repository = mock(PDSJobRepository.class);
@@ -42,21 +42,31 @@ public class PDSCreateJobServiceTest {
 
         userContextService = mock(PDSUserContextService.class);
         when(userContextService.getUserId()).thenReturn("callerName");
+        encryptionService = mock(PDSEncryptionService.class);
 
         serviceToTest = new PDSCreateJobService();
         serviceToTest.repository = repository;
         serviceToTest.userContextService = userContextService;
         serviceToTest.configurationValidator = configurationValidator;
         serviceToTest.serverConfigurationService = serverConfigurationService;
+        serviceToTest.encryptionService = encryptionService;
 
         resultJob1 = new PDSJob();
         resultJob1.uUID = createdJob1UUID;
 
         when(repository.save(any())).thenReturn(resultJob1);
+
+        // encryption stup
+        encryptionResult = mock(EncryptionResult.class);
+        byte[] encryptedBytes = "some-pseudo-encrypted-data".getBytes();
+        when(encryptionResult.getEncryptedData()).thenReturn(encryptedBytes);
+        InitializationVector initialVector = mock(InitializationVector.class);
+        when(encryptionResult.getInitialVector()).thenReturn(initialVector);
+        when(encryptionService.encryptString(any())).thenReturn(encryptionResult);
     }
 
     @Test
-    public void creating_a_job_returns_jobUUD_of_stored_job_in_repository() {
+    void creating_a_job_returns_jobUUD_of_stored_job_in_repository() {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
         configuration.setSechubJobUUID(sechubJobUUID);
@@ -65,13 +75,13 @@ public class PDSCreateJobServiceTest {
         PDSJobCreateResult result = serviceToTest.createJob(configuration);
 
         /* test */
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         UUID pdsJobUUID = result.getJobUUID();
-        assertEquals(createdJob1UUID, pdsJobUUID);
+        assertThat(createdJob1UUID).isEqualTo(pdsJobUUID);
     }
 
     @Test
-    public void creating_a_job_sets_current_user_as_owner() {
+    void creating_a_job_sets_current_user_as_owner() {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
 
@@ -79,33 +89,40 @@ public class PDSCreateJobServiceTest {
         PDSJobCreateResult result = serviceToTest.createJob(configuration);
 
         /* test */
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         ArgumentCaptor<PDSJob> jobCaptor = ArgumentCaptor.forClass(PDSJob.class);
         verify(repository).save(jobCaptor.capture());
-        assertEquals("callerName", jobCaptor.getValue().getOwner());
+        assertThat(jobCaptor.getValue().getOwner()).isEqualTo("callerName");
     }
 
     @Test
-    public void creating_a_job_sets_configuration_as_json() throws Exception {
+    void creating_a_job_sets_encrypted_configuration() throws Exception {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
+        // check precondition
+        String json = configuration.toJSON();
+        // Next line normally not valid, but validator does not throw an exception here,
+        // so we can have an empty configuration here... Just to test it
+        assertThat(json).isEqualTo("{\"parameters\":[]}");
+
+        // simulate encryption for this parameter
+        byte[] encryptedBytes = ("encrypted:" + json).getBytes();
+        when(encryptionResult.getEncryptedData()).thenReturn(encryptedBytes);
 
         /* execute */
         serviceToTest.createJob(configuration);
 
         /* test */
+
         ArgumentCaptor<PDSJob> jobCaptor = ArgumentCaptor.forClass(PDSJob.class);
         verify(repository).save(jobCaptor.capture());
 
-        String json = configuration.toJSON();
-        // Next line normally not valid, but validator does not throw an exception here,
-        // so we can have an empty config here... Just to test it
-        assertEquals("{\"parameters\":[]}", json);
-        assertEquals(json, jobCaptor.getValue().getJsonConfiguration());
+        PDSJob persistedJob = jobCaptor.getValue();
+        assertThat(persistedJob.getEncryptedConfiguration()).isEqualTo(encryptedBytes);
     }
 
     @Test
-    public void creating_a_job_calls_configurationValidator() {
+    void creating_a_job_calls_configurationValidator() {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
 
@@ -117,17 +134,13 @@ public class PDSCreateJobServiceTest {
     }
 
     @Test
-    public void creating_a_job_fires_exception_thrown_by_validator() {
+    void creating_a_job_fires_exception_thrown_by_validator() {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
         doThrow(new PDSNotAcceptableException("ups")).when(configurationValidator).assertPDSConfigurationValid(configuration);
 
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("ups");
-
         /* execute */
-        serviceToTest.createJob(configuration);
+        assertThatThrownBy(() -> serviceToTest.createJob(configuration)).isInstanceOf(PDSNotAcceptableException.class).hasMessage("ups");
 
     }
 

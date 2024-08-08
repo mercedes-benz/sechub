@@ -1,0 +1,850 @@
+{
+  "$schema" : "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "version" : "2.1.0",
+  "runs" : [ {
+    "tool" : {
+      "driver" : {
+        "name" : "gitleaks",
+        "semanticVersion" : "v8.0.0",
+        "rules" : [ {
+          "id" : "adafruit-api-key",
+          "name" : "Adafruit API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:adafruit)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9_-]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "adobe-client-id",
+          "name" : "Adobe Client ID (Oauth Web)",
+          "shortDescription" : {
+            "text" : "(?i)(?:adobe)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "adobe-client-secret",
+          "name" : "Adobe Client Secret",
+          "shortDescription" : {
+            "text" : "(?i)\\b((p8e-)(?i)[a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "age secret key",
+          "name" : "Age secret key",
+          "shortDescription" : {
+            "text" : "AGE-SECRET-KEY-1[QPZRY9X8GF2TVDW0S3JN54KHCE6MUA7L]{58}"
+          }
+        }, {
+          "id" : "airtable-api-key",
+          "name" : "Airtable API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:airtable)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{17})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "algolia-api-key",
+          "name" : "Algolia API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:algolia)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "alibaba-access-key-id",
+          "name" : "Alibaba AccessKey ID",
+          "shortDescription" : {
+            "text" : "(?i)\\b((LTAI)(?i)[a-z0-9]{20})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "alibaba-secret-key",
+          "name" : "Alibaba Secret Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:alibaba)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{30})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "asana-client-id",
+          "name" : "Asana Client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:asana)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9]{16})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "asana-client-secret",
+          "name" : "Asana Client Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:asana)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "atlassian-api-token",
+          "name" : "Atlassian API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:atlassian|confluence|jira)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{24})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "aws-access-token",
+          "name" : "AWS",
+          "shortDescription" : {
+            "text" : "(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}"
+          }
+        }, {
+          "id" : "bitbucket-client-id",
+          "name" : "BitBucket Client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:bitbucket)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "bitbucket-client-secret",
+          "name" : "BitBucket Client Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:bitbucket)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "bittrex-access-key",
+          "name" : "Bittrex Access Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:bittrex)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "bittrex-secret-key",
+          "name" : "Bittrex Secret Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:bittrex)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "beamer-api-token",
+          "name" : "Beamer API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:beamer)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(b_[a-z0-9=_\\-]{44})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "codecov-access-token",
+          "name" : "Codecov Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:codecov)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "coinbase-access-token",
+          "name" : "Coinbase Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:coinbase)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9_-]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "clojars-api-token",
+          "name" : "Clojars API token",
+          "shortDescription" : {
+            "text" : "(?i)(CLOJARS_)[a-z0-9]{60}"
+          }
+        }, {
+          "id" : "confluent-access-token",
+          "name" : "Confluent Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:confluent)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{16})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "confluent-secret-key",
+          "name" : "Confluent Secret Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:confluent)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "contentful-delivery-api-token",
+          "name" : "Contentful delivery API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:contentful)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{43})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "databricks-api-token",
+          "name" : "Databricks API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(dapi[a-h0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "datadog-access-token",
+          "name" : "Datadog Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:datadog)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "discord-api-token",
+          "name" : "Discord API key",
+          "shortDescription" : {
+            "text" : "(?i)(?:discord)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "discord-client-id",
+          "name" : "Discord client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:discord)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9]{18})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "discord-client-secret",
+          "name" : "Discord client secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:discord)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "doppler-api-token",
+          "name" : "Doppler API token",
+          "shortDescription" : {
+            "text" : "(dp\\.pt\\.)(?i)[a-z0-9]{43}"
+          }
+        }, {
+          "id" : "dropbox-api-token",
+          "name" : "Dropbox API secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:dropbox)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{15})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "dropbox-long-lived-api-token",
+          "name" : "Dropbox long lived API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:dropbox)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{11}(AAAAAAAAAA)[a-z0-9\\-_=]{43})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "dropbox-short-lived-api-token",
+          "name" : "Dropbox short lived API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:dropbox)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(sl\\.[a-z0-9\\-=_]{135})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "droneci-access-token",
+          "name" : "Droneci Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:droneci)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "duffel-api-token",
+          "name" : "Duffel API token",
+          "shortDescription" : {
+            "text" : "duffel_(test|live)_(?i)[a-z0-9_\\-=]{43}"
+          }
+        }, {
+          "id" : "dynatrace-api-token",
+          "name" : "Dynatrace API token",
+          "shortDescription" : {
+            "text" : "dt0c01\\.(?i)[a-z0-9]{24}\\.[a-z0-9]{64}"
+          }
+        }, {
+          "id" : "easypost-api-token",
+          "name" : "EasyPost API token",
+          "shortDescription" : {
+            "text" : "EZAK(?i)[a-z0-9]{54}"
+          }
+        }, {
+          "id" : "easypost-test-api-token",
+          "name" : "EasyPost test API token",
+          "shortDescription" : {
+            "text" : "EZTK(?i)[a-z0-9]{54}"
+          }
+        }, {
+          "id" : "etsy-access-token",
+          "name" : "Etsy Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:etsy)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{24})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "facebook",
+          "name" : "facebook",
+          "shortDescription" : {
+            "text" : "(?i)(?:facebook)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "fastly-api-token",
+          "name" : "Fastly API key",
+          "shortDescription" : {
+            "text" : "(?i)(?:fastly)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "finicity-client-secret",
+          "name" : "Finicity Client Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:finicity)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{20})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "finicity-api-token",
+          "name" : "Finicity API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:finicity)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "flickr-access-token",
+          "name" : "Flickr Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:flickr)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "finnhub-access-token",
+          "name" : "Finnhub Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:finnhub)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{20})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "flutterwave-public-key",
+          "name" : "Finicity Public Key",
+          "shortDescription" : {
+            "text" : "FLWPUBK_TEST-(?i)[a-h0-9]{32}-X"
+          }
+        }, {
+          "id" : "flutterwave-secret-key",
+          "name" : "Flutterwave Secret Key",
+          "shortDescription" : {
+            "text" : "FLWSECK_TEST-(?i)[a-h0-9]{32}-X"
+          }
+        }, {
+          "id" : "flutterwave-encryption-key",
+          "name" : "Flutterwave Encryption Key",
+          "shortDescription" : {
+            "text" : "FLWSECK_TEST-(?i)[a-h0-9]{12}"
+          }
+        }, {
+          "id" : "frameio-api-token",
+          "name" : "Frame.io API token",
+          "shortDescription" : {
+            "text" : "fio-u-(?i)[a-z0-9\\-_=]{64}"
+          }
+        }, {
+          "id" : "freshbooks-access-token",
+          "name" : "Freshbooks Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:freshbooks)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "gocardless-api-token",
+          "name" : "GoCardless API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:gocardless)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(live_(?i)[a-z0-9\\-_=]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "gcp-api-key",
+          "name" : "GCP API key",
+          "shortDescription" : {
+            "text" : "(?i)\\b(AIza[0-9A-Za-z\\\\-_]{35})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "github-pat",
+          "name" : "GitHub Personal Access Token",
+          "shortDescription" : {
+            "text" : "ghp_[0-9a-zA-Z]{36}"
+          }
+        }, {
+          "id" : "github-oauth",
+          "name" : "GitHub OAuth Access Token",
+          "shortDescription" : {
+            "text" : "gho_[0-9a-zA-Z]{36}"
+          }
+        }, {
+          "id" : "github-app-token",
+          "name" : "GitHub App Token",
+          "shortDescription" : {
+            "text" : "(ghu|ghs)_[0-9a-zA-Z]{36}"
+          }
+        }, {
+          "id" : "github-refresh-token",
+          "name" : "GitHub Refresh Token",
+          "shortDescription" : {
+            "text" : "ghr_[0-9a-zA-Z]{36}"
+          }
+        }, {
+          "id" : "gitlab-pat",
+          "name" : "Gitlab Personal Access Token",
+          "shortDescription" : {
+            "text" : "glpat-[0-9a-zA-Z\\-\\_]{20}"
+          }
+        }, {
+          "id" : "gitter-access-token",
+          "name" : "Gitter Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:gitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9_-]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "hashicorp-tf-api-token",
+          "name" : "HashiCorp Terraform user/org API token",
+          "shortDescription" : {
+            "text" : "(?i)[a-z0-9]{14}\\.atlasv1\\.[a-z0-9\\-_=]{60,70}"
+          }
+        }, {
+          "id" : "heroku-api-key",
+          "name" : "Heroku API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:heroku)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "hubspot-api-key",
+          "name" : "HubSpot API Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:hubspot)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "intercom-api-key",
+          "name" : "Intercom API Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:intercom)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{60})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "kraken-access-token",
+          "name" : "Kraken Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:kraken)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9\\/=_\\+\\-]{80,90})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "kucoin-access-token",
+          "name" : "Kucoin Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:kucoin)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{24})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "kucoin-secret-key",
+          "name" : "Kucoin Secret Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:kucoin)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "launchdarkly-access-token",
+          "name" : "Launchdarkly Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:launchdarkly)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "linear-api-key",
+          "name" : "Linear API Token",
+          "shortDescription" : {
+            "text" : "lin_api_(?i)[a-z0-9]{40}"
+          }
+        }, {
+          "id" : "linear-client-secret",
+          "name" : "Linear Client Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:linear)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "linkedin-client-id",
+          "name" : "LinkedIn Client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:linkedin|linked-in)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{14})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "linkedin-client-secret",
+          "name" : "LinkedIn Client secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:linkedin|linked-in)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{16})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "lob-api-key",
+          "name" : "Lob API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:lob)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}((live|test)_[a-f0-9]{35})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "lob-pub-api-key",
+          "name" : "Lob Publishable API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:lob)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}((test|live)_pub_[a-f0-9]{31})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mailchimp-api-key",
+          "name" : "Mailchimp API key",
+          "shortDescription" : {
+            "text" : "(?i)(?:mailchimp)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{32}-us20)(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mailgun-pub-key",
+          "name" : "Mailgun public validation key",
+          "shortDescription" : {
+            "text" : "(?i)(?:mailgun)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(pubkey-[a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mailgun-private-api-token",
+          "name" : "Mailgun private API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:mailgun)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(key-[a-f0-9]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mailgun-signing-key",
+          "name" : "Mailgun webhook signing key",
+          "shortDescription" : {
+            "text" : "(?i)(?:mailgun)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mapbox-api-token",
+          "name" : "MapBox API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:mapbox)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(pk\\.[a-z0-9]{60}\\.[a-z0-9]{22})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "mattermost-access-token",
+          "name" : "Mattermost Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:mattermost)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{26})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "messagebird-api-token",
+          "name" : "MessageBird API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:messagebird|message-bird|message_bird)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{25})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "messagebird-client-id",
+          "name" : "MessageBird client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:messagebird|message-bird|message_bird)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "netlify-access-token",
+          "name" : "Netlify Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:netlify)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{40,46})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "new-relic-user-api-key",
+          "name" : "New Relic user API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:new-relic|newrelic|new_relic)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(NRAK-[a-z0-9]{27})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "new-relic-user-api-id",
+          "name" : "New Relic user API ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:new-relic|newrelic|new_relic)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "new-relic-browser-api-token",
+          "name" : "New Relic ingest browser API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:new-relic|newrelic|new_relic)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(NRJS-[a-f0-9]{19})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "npm-access-token",
+          "name" : "npm access token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(npm_[a-z0-9]{36})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "nytimes-access-token",
+          "name" : "Nytimes Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:nytimes|new-york-times,|newyorktimes)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{32})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "okta-access-token",
+          "name" : "Okta Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:okta)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9=_\\-]{42})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "plaid-client-id",
+          "name" : "Plaid Client ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:plaid)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{24})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "plaid-secret-key",
+          "name" : "Plaid Secret key",
+          "shortDescription" : {
+            "text" : "(?i)(?:plaid)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{30})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "plaid-api-token",
+          "name" : "Plaid API Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:plaid)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(access-(?:sandbox|development|production)-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "planetscale-password",
+          "name" : "PlanetScale password",
+          "shortDescription" : {
+            "text" : "(?i)\\b(pscale_pw_(?i)[a-z0-9=\\-_\\.]{32,64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "planetscale-api-token",
+          "name" : "PlanetScale API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(pscale_tkn_(?i)[a-z0-9=\\-_\\.]{32,64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "planetscale-oauth-token",
+          "name" : "PlanetScale OAuth token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(pscale_oauth_(?i)[a-z0-9=\\-_\\.]{32,64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "postman-api-token",
+          "name" : "Postman API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(PMAK-(?i)[a-f0-9]{24}\\-[a-f0-9]{34})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "private-key",
+          "name" : "Private Key",
+          "shortDescription" : {
+            "text" : "(?i)-----BEGIN[ A-Z0-9_-]{0,100}PRIVATE KEY-----[\\s\\S-]*KEY----"
+          }
+        }, {
+          "id" : "pulumi-api-token",
+          "name" : "Pulumi API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(pul-[a-f0-9]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "pypi-upload-token",
+          "name" : "PyPI upload token",
+          "shortDescription" : {
+            "text" : "pypi-AgEIcHlwaS5vcmc[A-Za-z0-9\\-_]{50,1000}"
+          }
+        }, {
+          "id" : "rubygems-api-token",
+          "name" : "Rubygem API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(rubygems_[a-f0-9]{48})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "rapidapi-access-token",
+          "name" : "RapidAPI Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:rapidapi)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9_-]{50})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sendbird-access-id",
+          "name" : "Sendbird Access ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:sendbird)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sendbird-access-token",
+          "name" : "Sendbird Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:sendbird)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sendgrid-api-token",
+          "name" : "SendGrid API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(SG\\.(?i)[a-z0-9=_\\-\\.]{66})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sendinblue-api-token",
+          "name" : "Sendinblue API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(xkeysib-[a-f0-9]{64}\\-(?i)[a-z0-9]{16})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sentry-access-token",
+          "name" : "Sentry Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:sentry)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-f0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "shippo-api-token",
+          "name" : "Shippo API token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(shippo_(live|test)_[a-f0-9]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "shopify-access-token",
+          "name" : "Shopify access token",
+          "shortDescription" : {
+            "text" : "shpat_[a-fA-F0-9]{32}"
+          }
+        }, {
+          "id" : "shopify-custom-access-token",
+          "name" : "Shopify custom access token",
+          "shortDescription" : {
+            "text" : "shpca_[a-fA-F0-9]{32}"
+          }
+        }, {
+          "id" : "shopify-private-app-access-token",
+          "name" : "Shopify private app access token",
+          "shortDescription" : {
+            "text" : "shppa_[a-fA-F0-9]{32}"
+          }
+        }, {
+          "id" : "shopify-shared-secret",
+          "name" : "Shopify shared secret",
+          "shortDescription" : {
+            "text" : "shpss_[a-fA-F0-9]{32}"
+          }
+        }, {
+          "id" : "slack-access-token",
+          "name" : "Slack token",
+          "shortDescription" : {
+            "text" : "xox[baprs]-([0-9a-zA-Z]{10,48})"
+          }
+        }, {
+          "id" : "slack-web-hook",
+          "name" : "Slack Webhook",
+          "shortDescription" : {
+            "text" : "https:\\/\\/hooks.slack.com\\/services\\/[A-Za-z0-9+\\/]{44,46}"
+          }
+        }, {
+          "id" : "stripe-access-token",
+          "name" : "Stripe",
+          "shortDescription" : {
+            "text" : "(?i)(sk|pk)_(test|live)_[0-9a-z]{10,32}"
+          }
+        }, {
+          "id" : "square-access-token",
+          "name" : "Square Access Token",
+          "shortDescription" : {
+            "text" : "(?i)\\b(sq0atp-[0-9A-Za-z\\-_]{22})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "squarespace-access-token",
+          "name" : "Squarespace Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:squarespace)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sumologic-access-id",
+          "name" : "SumoLogic Access ID",
+          "shortDescription" : {
+            "text" : "(?i)(?:sumo)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{14})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "sumologic-access-token",
+          "name" : "SumoLogic Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:sumo)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{64})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "travisci-access-token",
+          "name" : "Travis CI Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:travis)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{22})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twilio-api-key",
+          "name" : "Twilio API Key",
+          "shortDescription" : {
+            "text" : "SK[0-9a-fA-F]{32}"
+          }
+        }, {
+          "id" : "twitch-api-token",
+          "name" : "Twitch API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitch)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{30})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twitter-api-key",
+          "name" : "Twitter API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{25})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twitter-api-secret",
+          "name" : "Twitter API Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{50})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twitter-access-token",
+          "name" : "Twitter Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9]{15,25}-[a-zA-Z0-9]{20,40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twitter-access-secret",
+          "name" : "Twitter Access Secret",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{45})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "twitter-bearer-token",
+          "name" : "Twitter Bearer Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:twitter)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(A{22}[a-zA-Z0-9%]{80,100})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "typeform-api-token",
+          "name" : "Typeform API token",
+          "shortDescription" : {
+            "text" : "(?i)(?:typeform)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(tfp_[a-z0-9\\-_\\.=]{59})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "yandex-api-key",
+          "name" : "Yandex API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:yandex)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(AQVN[A-Za-z0-9_\\-]{35,38})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "yandex-aws-access-token",
+          "name" : "Yandex AWS Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:yandex)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(YC[a-zA-Z0-9_\\-]{38})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "yandex-access-token",
+          "name" : "Yandex Access Token",
+          "shortDescription" : {
+            "text" : "(?i)(?:yandex)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}(t1\\.[A-Z0-9a-z_-]+[=]{0,2}\\.[A-Z0-9a-z_-]{86}[=]{0,2})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "zendesk-secret-key",
+          "name" : "Zendesk Secret Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:zendesk)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([a-z0-9]{40})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        }, {
+          "id" : "generic-api-key",
+          "name" : "Generic API Key",
+          "shortDescription" : {
+            "text" : "(?i)(?:key|api|token|secret|client|passwd|password|auth)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60]|$)"
+          }
+        } ]
+      }
+    },
+    "results" : [ {
+      "ruleId" : "generic-api-key",
+      "message" : {
+        "text" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "UnSAFE_Bank/Backend/docker-compose.yml"
+          },
+          "region" : {
+            "startLine" : 12,
+            "startColumn" : 14,
+            "endLine" : 13,
+            "endColumn" : 1,
+            "snippet" : {
+              "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "invalid-value"
+            }
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "commitSha" : "",
+        "email" : "",
+        "author" : "",
+        "date" : "",
+        "commitMessage" : ""
+      }
+    }, {
+      "ruleId" : "generic-api-key",
+      "message" : {
+        "text" : "generic-api-key has detected secret for file UnSAFE_Bank/Backend/src/api/application/config/database.php."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "UnSAFE_Bank/Backend/src/api/application/config/database.php"
+          },
+          "region" : {
+            "startLine" : 80,
+            "startColumn" : 7,
+            "endLine" : 80,
+            "endColumn" : 61,
+            "snippet" : {
+              "text" : "531486b2bf646636a6a1bba61e78ec4a4a54efbd"
+            },
+            "properties" : {
+              "secretscan.sereco.severity" : "another-invalid-value-1234"
+            }
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "commitSha" : "",
+        "email" : "",
+        "author" : "",
+        "date" : "",
+        "commitMessage" : ""
+      }
+    } ]
+  } ]
+}

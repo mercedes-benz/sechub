@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
-@Service
+@Component
 public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitPrepareWrapperModule.class);
@@ -157,7 +157,7 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
         } else {
             LOG.error("Download of git repository was not successful. Git download directory is not a directory: {}", path);
-            throw new RuntimeException("Download of git repository was not successful. Git download directory is not a directory.");
+            throw new IllegalStateException("Download of git repository was not successful. Git download directory is not a directory.");
         }
     }
 

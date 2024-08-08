@@ -113,7 +113,7 @@ class PrepareWrapperFileUploadServiceTest {
         File tempDir = Files.createTempDirectory("test-sechub_archive-creator").toFile();
         tempDir.deleteOnExit();
         File file = new File(tempDir + "testfile.tar");
-        writer.save(file, "testText", true);
+        writer.writeTextToFile(file, "testText", true);
 
         /* execute */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -134,7 +134,7 @@ class PrepareWrapperFileUploadServiceTest {
         File tempDir = Files.createTempDirectory("test-sechub_archive-creator").toFile();
         tempDir.deleteOnExit();
         File file = new File(tempDir + "testfile.tar");
-        writer.save(file, "someExampleText", true);
+        writer.writeTextToFile(file, "someExampleText", true);
 
         /* execute */
         uploadServiceToTest.uploadFile(projectId, jobUUID, file, checkSum);
@@ -156,7 +156,7 @@ class PrepareWrapperFileUploadServiceTest {
         File tempDir = Files.createTempDirectory("test-sechub_archive-creator").toFile();
         tempDir.deleteOnExit();
         File file = new File(tempDir + "testfile.zip");
-        writer.save(file, "someExampleText", true);
+        writer.writeTextToFile(file, "someExampleText", true);
 
         /* execute */
         uploadServiceToTest.uploadFile(projectId, jobUUID, file, checkSum);

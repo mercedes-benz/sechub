@@ -31,7 +31,7 @@ public class PDSWorkspacePreparationContextFactory {
 
     public PDSWorkspacePreparationContext createPreparationContext(PDSJobConfigurationSupport configurationSupport) {
         if (configurationSupport == null) {
-            throw new IllegalArgumentException("configuration support may not be null!");
+            throw new IllegalArgumentException("configuration encryptionSupport may not be null!");
         }
 
         PDSWorkspacePreparationContext preparationContext = new PDSWorkspacePreparationContext();

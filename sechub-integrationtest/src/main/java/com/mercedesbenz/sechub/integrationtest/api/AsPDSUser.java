@@ -54,7 +54,7 @@ public class AsPDSUser {
 
     public PDSJobStatusState getJobStatusState(UUID jobUUID) {
         PDSJobStatus pdsJobStatus = getJobStatusObject(jobUUID);
-        return pdsJobStatus.state;
+        return pdsJobStatus.getState();
     }
 
     public PDSJobStatus getJobStatusObject(UUID jobUUID) {

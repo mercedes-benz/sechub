@@ -53,9 +53,9 @@ class PrepareWrapperArchiveCreatorTest {
         Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
         Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
         Path testTarFilename = Path.of("test-tar.tar");
-        writer.save(testDownload.resolve(testTarFilename).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testTarFilename).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);
@@ -88,9 +88,9 @@ class PrepareWrapperArchiveCreatorTest {
         Path uploadDirectory = tempDir.toPath().resolve(Path.of("upload"));
         Path testDownload = tempDir.toPath().resolve(Path.of("test-download"));
         Path testRepoName = Path.of("test-repos");
-        writer.save(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
+        writer.writeTextToFile(testDownload.resolve(testRepoName).resolve(Path.of(".git")).toFile(), "testText", true);
 
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
 
         PrepareWrapperContext context = mock(PrepareWrapperContext.class);
         PrepareWrapperEnvironment environment = mock(PrepareWrapperEnvironment.class);

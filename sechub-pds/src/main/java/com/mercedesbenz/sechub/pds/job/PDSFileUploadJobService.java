@@ -113,7 +113,7 @@ public class PDSFileUploadJobService {
 
         } catch (UnsupportedEncodingException e) {
 
-            throw new IllegalStateException("Encoding not support - should never happen", e);
+            throw new IllegalStateException("Encoding not encryptionSupport - should never happen", e);
 
         } catch (FileUploadException e) {
 

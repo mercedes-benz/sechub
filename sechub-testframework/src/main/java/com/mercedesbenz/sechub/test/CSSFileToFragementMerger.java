@@ -16,8 +16,8 @@ public class CSSFileToFragementMerger {
     private static final TestFileWriter writer = new TestFileWriter();
 
     public void merge(File cssFile, File fragmentsFile) throws IOException {
-        String cssContent = TestFileReader.loadTextFile(cssFile);
-        String fragmentsContent = TestFileReader.loadTextFile(fragmentsFile);
+        String cssContent = TestFileReader.readTextFromFile(cssFile);
+        String fragmentsContent = TestFileReader.readTextFromFile(fragmentsFile);
 
         int fragmentIndex = fragmentsContent.indexOf(CSS_FRAGMENT_START);
 
@@ -31,7 +31,7 @@ public class CSSFileToFragementMerger {
         }
 
         String newFragmentContent = fragmentsContent.substring(0, fragmentIndex) + "\n" + cssContent + "\n" + fragmentsContent.substring(closeStyleIndex);
-        writer.save(fragmentsFile, newFragmentContent, true);
+        writer.writeTextToFile(fragmentsFile, newFragmentContent, true);
         LOG.info("Updated fragment file: {}\nfrom with CSS content of: {}", fragmentsFile, cssFile);
 
     }

@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.log;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -44,7 +42,6 @@ public class ProjectScanLog {
     public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
     public static final String COLUMN_EXECUTED_BY = "EXECUTED_BY";
     public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
-    public static final String COLUMN_CONFIG = "CONFIG";
     public static final String COLUMN_STATUS = "STATUS";
 
     public static final String COLUMN_STARTED = "STARTED";
@@ -83,10 +80,6 @@ public class ProjectScanLog {
     @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false, columnDefinition = "UUID")
     UUID sechubJobUUID;
 
-    @JdbcTypeCode(Types.LONGVARCHAR)
-    @Column(name = COLUMN_CONFIG)
-    String config;
-
     @Column(name = COLUMN_STATUS)
     String status;
 
@@ -108,21 +101,16 @@ public class ProjectScanLog {
         // jpa only
     }
 
-    public ProjectScanLog(String projectId, UUID sechubJobUUID, String executedBy, String config) {
+    public ProjectScanLog(String projectId, UUID sechubJobUUID, String executedBy) {
         this.projectId = projectId;
         this.sechubJobUUID = sechubJobUUID;
         this.executedBy = executedBy;
-        this.config = config;
 
         this.started = LocalDateTime.now();
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getConfig() {
-        return config;
     }
 
     public LocalDateTime getStarted() {
@@ -151,7 +139,7 @@ public class ProjectScanLog {
 
     @Override
     public int hashCode() {
-        return Objects.hash(config, ended, executedBy, projectId, sechubJobUUID, started, uUID, version);
+        return Objects.hash(ended, executedBy, projectId, sechubJobUUID, started, uUID, version);
     }
 
     @Override
@@ -163,15 +151,15 @@ public class ProjectScanLog {
         if (getClass() != obj.getClass())
             return false;
         ProjectScanLog other = (ProjectScanLog) obj;
-        return Objects.equals(config, other.config) && Objects.equals(ended, other.ended) && Objects.equals(executedBy, other.executedBy)
-                && Objects.equals(projectId, other.projectId) && Objects.equals(sechubJobUUID, other.sechubJobUUID) && Objects.equals(started, other.started)
-                && Objects.equals(uUID, other.uUID) && Objects.equals(version, other.version);
+        return Objects.equals(ended, other.ended) && Objects.equals(executedBy, other.executedBy) && Objects.equals(projectId, other.projectId)
+                && Objects.equals(sechubJobUUID, other.sechubJobUUID) && Objects.equals(started, other.started) && Objects.equals(uUID, other.uUID)
+                && Objects.equals(version, other.version);
     }
 
     @Override
     public String toString() {
         return "ProjectScanLog [\nuUID=" + uUID + ", \nexecutedBy=" + executedBy + ", \nprojectId=" + projectId + ", \nsechubJobUUID=" + sechubJobUUID
-                + ", \nstatus=" + status + ", \nstarted=" + started + ", \nended=" + ended + ", \nconfig=" + config + "\n]";
+                + ", \nstatus=" + status + ", \nstarted=" + started + ", \nended=" + ended + "\n]";
     }
 
 }

@@ -209,7 +209,7 @@ public class SystemTestRuntimeTestEngine {
 
     private void handlePDSMetaDataFile(Path metaDataFile, TestEngineTestContext testContext, Path sechubJobFolder) throws IOException {
         LOG.debug("Handle PDS meta data file: {}", metaDataFile);
-        String metaDataJson = textFileReader.loadTextFile(metaDataFile.toFile());
+        String metaDataJson = textFileReader.readTextFromFile(metaDataFile.toFile());
         MetaDataModel metaData = JSONConverter.get().fromJSON(MetaDataModel.class, metaDataJson);
 
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDSMetaDataKeys.PDS_JOB_UUID);
@@ -244,24 +244,24 @@ public class SystemTestRuntimeTestEngine {
         Path systemtestInfoFile = pdsJobFolder.resolve("systemtest-info.txt");
 
         String output = client.fetchJobOutputStreamContentAsText(pdsJobUUID);
-        textFileWriter.save(outputStreamFile.toFile(), output, true);
+        textFileWriter.writeTextToFile(outputStreamFile.toFile(), output, true);
 
         String error = client.fetchJobErrorStreamContentAsText(pdsJobUUID);
-        textFileWriter.save(errorStreamFile.toFile(), error, true);
+        textFileWriter.writeTextToFile(errorStreamFile.toFile(), error, true);
 
         String result = client.fetchJobResultAsText(pdsJobUUID);
-        textFileWriter.save(resultFile.toFile(), result, true);
+        textFileWriter.writeTextToFile(resultFile.toFile(), result, true);
 
         String jobMetaData = client.fetchJobMetaDataAsText(pdsJobUUID);
-        textFileWriter.save(jobMetaDataFile.toFile(), jobMetaData, true);
+        textFileWriter.writeTextToFile(jobMetaDataFile.toFile(), jobMetaData, true);
 
         SecHubMessagesList messages = client.fetchJobMessages(pdsJobUUID);
         String messagesAsString = JSONConverter.get().toJSON(messages, true);
-        textFileWriter.save(sechubMessagesFile.toFile(), messagesAsString, true);
+        textFileWriter.writeTextToFile(sechubMessagesFile.toFile(), messagesAsString, true);
 
         StringBuilder sb = new StringBuilder();
         sb.append("Solution name: ").append(solution.getName());
-        textFileWriter.save(systemtestInfoFile.toFile(), sb.toString(), true);
+        textFileWriter.writeTextToFile(systemtestInfoFile.toFile(), sb.toString(), true);
     }
 
     private TestEngineTestContext createTestContext(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
@@ -671,7 +671,7 @@ public class SystemTestRuntimeTestEngine {
             File targetFile = new File(targetFolder.toFile(), "sechub-config.json");
 
             try {
-                textFileWriter.save(targetFile, prettyPrintedJson, true);
+                textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
             } catch (IOException e) {
                 LOG.error("Was not able to store sechub config file: {}", targetFile, e);
             }

@@ -69,7 +69,7 @@ public class SystemTestRuntimeMetaData {
         LOG.debug("Read existing PDS server configuration file: {}", pdsServerConfigFilePath);
         String pdsServerConfigurationJson;
         try {
-            pdsServerConfigurationJson = textFileReader.loadTextFile(pdsServerConfigFilePath.toFile());
+            pdsServerConfigurationJson = textFileReader.readTextFromFile(pdsServerConfigFilePath.toFile());
         } catch (IOException e) {
             throw new WrongConfigurationException("Was not able to load PDS server configration file: {}! ", context, e);
         }

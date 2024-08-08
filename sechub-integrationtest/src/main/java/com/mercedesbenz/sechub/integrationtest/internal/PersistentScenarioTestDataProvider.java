@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Provides persistent test data for integration tests - e.g. growing ids for
  * test scenarios.
@@ -15,6 +18,8 @@ import java.util.Properties;
  *
  */
 public class PersistentScenarioTestDataProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PersistentScenarioTestDataProvider.class);
 
     private static final String BASE_SECHUB_INTEGRATIONTEST_DATA_KEY = "sechub.integrationtest.data.";
     private static final String SECHUB_INTEGRATIONTEST_DATA_GROWINGID = BASE_SECHUB_INTEGRATIONTEST_DATA_KEY + "growingid";
@@ -43,25 +48,52 @@ public class PersistentScenarioTestDataProvider {
     }
 
     private void ensurePropertyFileExists() {
-        file.getParentFile().mkdirs();
+        LOG.trace("Ensure test scenario property file exists: {}", file);
 
         properties = new Properties();
         if (file.exists()) {
+            LOG.trace("File exists: {}", file);
 
-            try (FileInputStream fis = new FileInputStream(file)) {
-                properties.load(fis);
-                String d = properties.getProperty(SECHUB_INTEGRATIONTEST_DATA_GROWINGID);
-                if (d == null) {
-                    grow = 0;
-                } else {
-                    grow = Integer.parseInt(d);
+            boolean loaded = false;
+            int tryCount = 0;
+            Exception lastException = null;
+            while (!loaded && tryCount < 5) {
+                tryCount++;
+
+                LOG.trace("Start load of properties file: {} per stream. Try count:{}", file, tryCount);
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    properties.load(fis);
+                    LOG.trace("Properties loaded: {}, contains: {}", file.getName(), properties);
+                    String d = properties.getProperty(SECHUB_INTEGRATIONTEST_DATA_GROWINGID);
+                    LOG.trace("Properties: {}, growing id value: {}", file.getName(), d);
+                    if (d == null) {
+                        grow = 0;
+                    } else {
+                        grow = Integer.parseInt(d);
+                    }
+                    LOG.trace("Properties: {}, grow set to: {}", file.getName(), grow);
+                    loaded = true;
+                } catch (Exception e) {
+                    lastException = e;
+                    LOG.trace("Properties load failed, will wait shortly and retry some time", e);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
-            } catch (Exception e) {
+            }
+            if (!loaded) {
+                LOG.trace("Properties load failed, will no longer retry, but delete file: {}", file);
+
                 this.file.delete();
-                throw new IllegalStateException("cannot read growid file: " + file.getAbsolutePath() + ", so deleted as fallback", e);
+                throw new IllegalStateException("Cannot read growid file: " + file.getAbsolutePath() + ", so deleted as fallback", lastException);
             }
         }
         if (!file.exists()) {
+            file.getParentFile().mkdirs();
+
+            LOG.trace("File NOT exists: {}", file);
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -89,6 +121,8 @@ public class PersistentScenarioTestDataProvider {
     }
 
     private void store() {
+        LOG.trace("Try to store property file: {}", file);
+
         File parentFolder = file.getParentFile();
         if (!parentFolder.exists()) {
             if (!parentFolder.mkdirs()) {
@@ -100,6 +134,7 @@ public class PersistentScenarioTestDataProvider {
         } catch (IOException e) {
             throw new IllegalStateException("cannot store: " + file.getAbsolutePath(), e);
         }
+        LOG.trace("Stored property file: {}, content was: {}", file.getName(), properties);
     }
 
     public String getGrowId() {

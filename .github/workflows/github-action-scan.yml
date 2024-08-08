@@ -23,7 +23,7 @@ jobs:
       - name: Use Node.js
         # We do not define a dedicated node version here, we just use the default environment
         # which should be the default environment for the github actions runtime as well
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
 
       - name: Clean install
         run: npm ci 
@@ -64,7 +64,7 @@ jobs:
           key: ${{ runner.os }}-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
-        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
+        uses: actions/setup-java@6a0805fcefea3d4657a47ac4c165951e33482018
         with:
           java-version: 17
           distribution: temurin

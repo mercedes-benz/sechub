@@ -1,0 +1,183 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-sechub-data-encryption]]
+In {sechub} we have some sensitive data we want to be encrypted. For example: Inside remote data
+section the configuration contains credentials to fetch data. These sensitive information shall
+be always encrypted.
+
+==== General
+We want 
+
+. Data consistency +
+- It shall not be possible that we loose data by encryption in any way. +
+  It must be ensured that the servers are always able to read and write data.
+
+. Full automated cipher rotation +
+There is no need for manual interaction - means it is not necessary to create any cron jobs or
+something else to convert non encrypted data to encrypted data or to rotate a password or to
+use a new encryption method.
+
+. Data protection /Privacy policy
+- Even for administrators it shall not be possible to fetch the information directly +
+  _(of course a person who knows the encryption password and has access to the database will always
+   be able to calculate values - but we separate here between administration and operation inside
+   this concept, so protection is fully possible)_
+- The data must not be accidentally made available in decrypted form - for example through a REST 
+  call in which the data object is passed along unencrypted.
+  
+. Easy encryption administration
+  - It shall be possible for an administrator to configure a new cipher entry via REST 
+
+. Secure storage of encryption passwords +
+  - Encryption passwords are always provided via environment entries, we store always 
+    the environment variable name to use inside the database but never plain values!
+
+==== Server startup
+A {sechub} server will stop on startup phase when one of the entries inside the cipher pool cannot 
+be handled by this server.
+
+This ensures that every new started server is able to handle all of them / is always readable.
+
+==== Administration
+[[section-shared-concepts-sechub-data-encryption-rotation]]
+===== Encryption rotation
+
+An administrator is able to start encryption rotation via REST. This will 
+
+- use new encryption setup for all new data
+- automatically convert existing encrypted data with new encryption setup in background
+
+===== Encryption status
+An administrator is able to fetch encryption status from {sechub} server. All domains which are
+doing data encryption add their current status information into result.
+
+===== Cleanup old encryption setup
+<<concept-auto-cleanup],Auto Cleanup>> automatically removes old information.
+This means that old encrypted information that cannot be updated for some reason may eventually 
+disappear and old encryption configurations are then no longer needed and can be removed.
+
+To fully automate this, after the respective Auto Cleanup, the domains are always checked for encryption configurations that are no longer used and these are then automatically removed (except for the most recent encryption configuration).
+
+
+[IMPORTANT]
+====
+If you have setup auto cleanup to 0 days, the auto cleanup is disabled completely and 
+unused encryption setup will also not be removed.
+====
+
+==== Scheduler
+Inside the schedule domain, the sensitive information is the sechub job configuration.
+
+===== Database      
+====== Table                                                                                                                          
+We store the cipher information inside table: `SCHEDULE_CIPHER_POOL_DATA`.
+
+[NOTE]
+====
+Why in schedule domain and only there? Because it is the responsible domain for the storage. All other
+domains may NEVER persist this information (for `PDS` the configuration will be sent from SecHub
+and stored at `PDS` side encrypted as well)
+====
+
+Here an an overview of the table (names can be different in database):
+
+[options="header"]
+|===                                                                         
+|id   |algorithm      | password_source_type  |password_source_data| encoding |test_text       | test_initial_vector| test_encrypted     | creation_timestamp   |created_from                      
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|0    |NO_ENCRYPTION  | PLAIN_TEXT            |                    | PLAIN    |no-encryption   |                    | no-encryption      | 2024-06-24_10:00:01  | null 
+|1    |AES_GCM_SIV_128| ENVIRONMENT_VARIABLE  |SECHUB_CRYPTO_P0    | PLAIN    |SecHub          | easdfa313334       | 53d$125666eeffeded | 2024-06-24_10:05:34  | Admin1
+|2    |AES_GCM_SIV_256| ENVIRONMENT_VARIABLE  |SECHUB_CRYPTO_P1    | PLAIN    |Apfel           | fxadsfeec33s       | 13x313412124$rfewd | 2024-06-24_11:02:14  | Admin2
+|===         
+
+
+*algorithm*
+
+Algorithm to use in encryption - currently we provide:
+
+- NONE (means not encrypted!)
+- AES_GCM_SIV_128
+- AES_GCM_SIV_256
+
+*password_source_type*
+
+Currently supported password source types are
+
+. ENVIRONMENT_VARIABLE +
+  Here we provide environment variables, the password source data is the name of the environment variable
+. NONE +
+  No password - only allowed for `NONE` algorithm
+
+
+We separated source type and source data to be able to provide additional source - e.g. a password fault for the future.
+                                                                             
+*password_source_data*
+
+Depends on the source
+
+- If source is `env` than this is the name of the environment variable which holds the secret
+
+====== Usage inside rows
+
+Inside the encrypted rows we will persist the *pool id* together with an *initial vector*
+
+*initial vector*
+Some algorithm like `AES_GCM_SIV` do need an initial vector to encrypt secure. The value here is
+auto generated by SecHub and is dependent on the algorithm. 
+
+SecHub will always auto generate a dedicate value when it comes to encryption and the vector 
+will be stored together with the encrypted data. If the initial vector is changed, the row cannot
+be decrypted, even when the secret key is known!
+
+===== Constraints on scheduling
+The only situation we need to access the encrypted job configuration is the point, when 
+it comes to job execution. At all other situations it does not matter if the configuration
+can be decrypted or not.
+
+This means that it may not be possible that an scheduler instance executes a job which is
+not supported by the current encryption pool!
+
+==== Handling server updates
+===== {sechub} server 1.x to 2.x
+Old server versions do not have the encryption field inside the scheduler job table or the cipher pool table.
+
+Our SQL migration scripts will initialize scheduler cipher pool table on creation time with a 
+`NONE` entry (pool id = 0). This is encryption setup (meaning no encryption) will be added 
+to all existing jobs. 
+
+We want to have zero downtime and rolling updates with k8s and SecHub. To provide this,
+it must be ensured, that there is no old server running which creates new jobs with
+plain text configurations while update is running. To prevent such a situation
+the column name inside `schedule_sechub_job` have been renamed from `configuration` to `unencrypted_configuration`.
+If there appears any race conditions, old servers would no longer be able to write data and a 
+SQL error would happen.
+
+==== Handling server downgrade
+===== {sechub} server 2.x to 1.x
+For a downgrade from {sechub} server V2.x to V1.x it is necessary to ensure, that all data is 
+encrypted with `NONE` cipher type (can be done by encryption rotation). When ensured that everything
+is "encrypted" with this cipher type, the old server version can be deployed/used and migration
+is automatically done as usual.
+
+==== Handling sensitive data at runtime
+JVM crash dumps contain string information. Classes containing sensitive information shall
+store such information inside sealed objects.
+
+==== Handling metadata from job configuration
+The {secHub} configuration is encrypted, because it can contain sensitive data. E.g. when defining a remote data
+section.
+
+There exists a REST endpoint which gives users the possiblity to fetch job information, together with
+the meta data defined inside the {sechub} configuration. 
+
+To obtain this information, the configuration will be decrypted temporary at runtime and the meta
+data are resolved and returned.
+
+Because meta data shall not contain any sensitive information, this will not be audit logged. 
+
+
+==== Diagrams
+===== Usage of encryption commons
+plantuml::diagrams/diagram_encryption_sechub_use_of_commons.puml[] 
+
+===== Encryption rotation overview
+plantuml::diagrams/diagram_encryption_sechub_config.puml[title='a reduced view of the steps done on encryption rotation'] 

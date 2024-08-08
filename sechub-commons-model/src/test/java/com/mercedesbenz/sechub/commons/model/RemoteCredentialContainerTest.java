@@ -20,7 +20,7 @@ class RemoteCredentialContainerTest {
     @Test
     void resolve_remote_credentials_by_location_and_accept_all_types() {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
         String location1 = "https://github.com/username/project";
@@ -58,7 +58,7 @@ class RemoteCredentialContainerTest {
     @Test
     void resolve_remote_credentials_by_location_and_accept_specific_types() {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
         String type1 = "docker";
@@ -158,7 +158,7 @@ class RemoteCredentialContainerTest {
     @NullSource
     void resolve_remote_credential_pattern_by_location_with_empty_or_null_location(String location) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
 
@@ -174,7 +174,7 @@ class RemoteCredentialContainerTest {
     @NullSource
     void resolve_remote_credential_by_unknown_location_with_empty_or_null_type(String type) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_credentials_config.json"));
         RemoteCredentialConfiguration configuration = RemoteCredentialConfiguration.fromJSONString(json);
         containerToTest = new RemoteCredentialContainerFactory().create(configuration);
         String location = "unknown-location";

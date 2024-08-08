@@ -25,8 +25,8 @@ class ClocJsonAnalyticDataImporterTest {
 
     @BeforeAll
     static void beforeAll() {
-        sechubClocJSON = TestFileReader.loadTextFile(new File("./src/test/resources/cloc/cloc-sechub.json"));
-        gosecClocJSON = TestFileReader.loadTextFile(new File("./src/test/resources/cloc/cloc-gosec.json"));
+        sechubClocJSON = TestFileReader.readTextFromFile(new File("./src/test/resources/cloc/cloc-sechub.json"));
+        gosecClocJSON = TestFileReader.readTextFromFile(new File("./src/test/resources/cloc/cloc-gosec.json"));
     }
 
     @BeforeEach

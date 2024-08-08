@@ -288,7 +288,7 @@ public class WithSecHubClient {
             File file = tempFile.toFile();
 
             TextFileWriter writer = new TextFileWriter();
-            writer.save(file, configAsJson, true);
+            writer.writeTextToFile(file, configAsJson, true);
 
             return startAsynchronScanFor(project, environmentVariables, apiTokenStrategy, file);
         } catch (IOException e) {

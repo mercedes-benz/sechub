@@ -112,7 +112,7 @@ COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 
 #-------------------
 # SecHub Server Image
@@ -149,7 +149,8 @@ COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
 # Update packages
-RUN apk update
+RUN apk update && \
+    apk add --no-cache curl netcat-openbsd
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \

@@ -196,7 +196,6 @@ public class SchedulerSourcecodeUploadService {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void assertValidZipFile(InputStream inputStream) {
         if (!archiveSupportProvider.getArchiveSupport().isZipFileStream(inputStream)) {
             LOG.error("Uploaded file is NOT a valid ZIP file!");

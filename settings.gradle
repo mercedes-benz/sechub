@@ -6,12 +6,17 @@ include 'sechub-cli',
 
 /* openapi */
 'sechub-openapi-java',
+'sechub-openapi-java-client',
+'sechub-api-java', // DEPRECATED
 
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',
 'sechub-commons-pds',
 'sechub-commons-archive',
+
+/* encryption */
+'sechub-commons-encryption',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -27,6 +32,9 @@ include 'sechub-cli',
 
 /* integration test*/
 'sechub-integrationtest',
+
+/* Arch Unit */
+'sechub-archunit-test',
 
 /* server parts */
 'sechub-schedule',
@@ -84,37 +92,29 @@ include 'sechub-cli',
 // Wrapper checkmarx
 'sechub-wrapper-checkmarx',
 
-// Wrapper Xray
-'sechub-wrapper-xray',
-
 // Wrapper prepare
 'sechub-wrapper-prepare',
 
-/* webui */
+// Wrapper Xray
+'sechub-wrapper-xray',
+
+// secret validator
+'sechub-wrapper-secret-validator',
+
+/* System Test */
+'sechub-systemtest',
+
+/* PDS tools */
+'sechub-pds-tools',
+
+// Examples (are below 'sechub-examples' folder)
+'sechub-examples:example-sechub-api-java',
+
+/* WebUI */
+'sechub-webui',
 'sechub-webui-solution'
 
-String buildStage = System.getProperty("sechub.build.stage")
 
-if (buildStage!=null) {
-
-   /* build stage properrty is set */
-   if (buildStage.equals("api-necessary") || buildStage.equals("all") ){
-
-        include 'sechub-api-java', /* needs open api file to generate */
-
-        /* system test - needs java api*/
-        'sechub-systemtest',
-
-        /* pds tools - needs java api */
-        'sechub-pds-tools',
-
-        // Examples (are below 'sechub-examples' folder)
-        'sechub-examples:example-sechub-api-java',
-
-        /* WebUI - needs the Java API */
-        'sechub-webui'
-    }
-}
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

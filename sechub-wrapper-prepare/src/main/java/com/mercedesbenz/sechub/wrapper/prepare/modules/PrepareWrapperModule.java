@@ -3,11 +3,8 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Service;
-
 import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 
-@Service
 public interface PrepareWrapperModule {
 
     /**

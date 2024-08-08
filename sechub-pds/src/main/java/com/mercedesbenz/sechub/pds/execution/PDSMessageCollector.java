@@ -28,7 +28,7 @@ public class PDSMessageCollector {
 
         for (File file : folder.listFiles()) {
             try {
-                String text = reader.loadTextFile(file);
+                String text = reader.readTextFromFile(file);
 
                 SecHubMessageType type = SecHubMessageType.INFO;
                 String fileName = file.getName().toUpperCase();

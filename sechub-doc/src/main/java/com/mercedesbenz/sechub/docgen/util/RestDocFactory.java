@@ -120,4 +120,5 @@ public class RestDocFactory {
 
         return tag;
     }
+
 }

@@ -377,7 +377,7 @@ public class SecurityTestHelper {
         }
 
         File file = new File("./build/test-results/ciphertest/sechub-" + targetType.id + ".json");
-        String text = TestFileReader.loadTextFile(file);
+        String text = TestFileReader.readTextFromFile(file);
 
         ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);

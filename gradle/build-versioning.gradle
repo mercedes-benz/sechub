@@ -82,9 +82,9 @@ def buildVersionFiles(){
     def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber),latestClientVersion)
 
     // write version code for go client
-    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
+    String clientGoVersionTemplate = new File(project.rootDir, '/sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
-    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
+    def clientVersionFile = new File(project.rootDir, './sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     // Latest tagged client version as asciidoc file (#2285)
@@ -93,7 +93,7 @@ def buildVersionFiles(){
     if (latestClientVersion != clientVersionInfo.getShortVersion()) {
       latestClientVersionText = latestClientVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
+    def clientVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
     clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersionText+"\n:longrevnumber: Client "+latestClientVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
@@ -118,7 +118,7 @@ def buildVersionFiles(){
     if (latestServerVersion != serverVersionInfo.getShortVersion()) {
       latestServerVersionText = latestServerVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
+    def serverVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
     serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersionText+"\n:longrevnumber: Server "+latestServerVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
@@ -143,7 +143,7 @@ def buildVersionFiles(){
     if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
       latestPDSVersionText = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
+    def pdsVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
     pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersionText+"\n:longrevnumber: PDS "+latestPDSVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
@@ -261,9 +261,9 @@ def buildVersionFiles(){
 
     def stop = new Date()
 
-    println(clientVersionInfo.describe());
-    println(serverVersionInfo.describe());
-    println(webuiVersionInfo.describe());
+    println(clientVersionInfo.describe())
+    println(serverVersionInfo.describe())
+    println(webuiVersionInfo.describe())
     println(pdsVersionInfo.describe())
     println(pdsToolsVersionInfo.describe())
     println(librariesVersionInfo.describe())
@@ -327,9 +327,9 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion = calcversion - 'v'
     }
     if (hasChanged){
-        calcversion = "${calcversion}-dirty";
+        calcversion = "${calcversion}-dirty"
     }
-    calcversion = "${calcversion}-${buildNumber}";
+    calcversion = "${calcversion}-${buildNumber}"
     return calcversion
 }
 

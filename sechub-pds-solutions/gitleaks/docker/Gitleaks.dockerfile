@@ -24,20 +24,6 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 # Copy custom rule file custom-gitleaks.toml
 COPY custom-gitleaks.toml "$TOOL_FOLDER"
 
-# Copy additional rules
-COPY additional-rule-files/ "$DOWNLOAD_FOLDER"/additional-rule-files/
-
-# Merge all the rules into one configuration file
-RUN for file in "$DOWNLOAD_FOLDER"/additional-rule-files/*.toml; \
-    do \
-       echo "" >> "$TOOL_FOLDER"/custom-gitleaks.toml; \
-       cat "$file" >> "$TOOL_FOLDER"/custom-gitleaks.toml; \
-       echo "" >> "$TOOL_FOLDER"/custom-gitleaks.toml; \
-    done
-
-# Clean up after all rules are merged into one file
-RUN rm --recursive --force "$DOWNLOAD_FOLDER"/*
-
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
