@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
 public class PDSEncryptionOutOfSyncException extends Exception {
