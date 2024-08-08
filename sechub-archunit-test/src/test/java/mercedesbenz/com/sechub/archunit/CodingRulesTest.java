@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
