@@ -25,6 +25,11 @@ pds:
    admin:
       userid: test-admin
       apitoken: apitoken-just-for-testing-only
+
+   encryption:
+      algorithm: NONE
+      secret-key: #no key, just empty
+ 
 spring:
    jpa:
       hibernate:
@@ -33,3 +38,5 @@ spring:
       initialization-mode: never
    flyway:
       enabled: false # Flyway turned off for testing!
+
+      

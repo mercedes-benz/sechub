@@ -32,11 +32,11 @@ public class PDSEncryptionConfiguration {
     private static final String ENV_ALGORITHM = KEY_ALGORITHM.toUpperCase().replace('.', '_');
 
     @PDSMustBeDocumented(value = "The secret key used for encryption. It must be base64 encoded, otherwise it is not accepted.", scope = SCOPE_ENCRYPTION, secret = true)
-    @Value("${" + KEY_SECRET_KEY + ":}")
+    @Value("${" + KEY_SECRET_KEY + "}")
     String secretKeyAsString;
 
     @PDSMustBeDocumented(value = "The encryption type. Allowed values are: NONE, AES_GCM_SIV_128 or AES_GCM_SIV_256", scope = SCOPE_ENCRYPTION)
-    @Value("${" + KEY_ALGORITHM + ":NONE}")
+    @Value("${" + KEY_ALGORITHM + "}")
     String algorithmAsString;
 
     @Autowired
