@@ -48,6 +48,10 @@ spec:
             # Only one scan in parallel possible per pds-owaspzap instance
             - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
               value: "1"
+            - name: PDS_ENCRYPTION_ALGORITHM
+              value: "{{ .Values.pds.encryption.algorithm }}"
+            - name: PDS_ENCRYPTION_SECRET_KEY
+              value: "{{ .Values.pds.encryption.secretKey }}"
             - name: PDS_HEARTBEAT_LOGGING
               value: "{{ .Values.pds.heartbeatLogging }}"
             - name: ZAP_API_KEY

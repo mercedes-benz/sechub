@@ -23,6 +23,12 @@ pds:
       # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
       queueMax: 10
       # workerThreadCount is pinned to 1
+  encryption:
+    # Encryption algorithm can be one of: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256"
+    algorithm: "NONE"
+    # Encryption key: The base64 encoded secret key used for encryption.
+    #        Example: echo -n '%&/:,;-_()mysecretkey' | base64
+    secretKey: ""
   volumes:
     pdsWorkspace:
       enabled: false

@@ -59,6 +59,10 @@ spec:
               value: "{{ .Values.pds.archive.extraction.maxFileFizeUncompressed }}"
             - name: PDS_ARCHIVE_EXTRACTION_TIMEOUT
               value: "{{ .Values.pds.archive.extraction.timeout }}"
+            - name: PDS_ENCRYPTION_ALGORITHM
+              value: "{{ .Values.pds.encryption.algorithm }}"
+            - name: PDS_ENCRYPTION_SECRET_KEY
+              value: "{{ .Values.pds.encryption.secretKey }}"
 {{- if .Values.deploymentComment }}
             # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
             # This way, you can force deployments e.g. when secrets have changed.
