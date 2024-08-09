@@ -61,7 +61,7 @@ public class SerecoFalsePositiveSupport {
             }
 
         } catch (NumberFormatException e) {
-            LOG.error("Code scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
+            LOG.error("Sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
             return false;
 
         }

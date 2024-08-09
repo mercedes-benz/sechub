@@ -6,13 +6,14 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.sharedkernel.validation.AbstractValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 
 @Component
 public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValidation<WebscanFalsePositiveProjectData>
         implements WebscanFalsePositiveProjectDataValidation {
+
+    private static final String WILDCARD_SYMBOL = "*";
 
     private static final String WILDCARD_ONLY_REGEX = "^[\\.\\*/:]+$";
     private static final Pattern WILDCARD_ONLY_PATTERN = Pattern.compile(WILDCARD_ONLY_REGEX);
@@ -37,8 +38,8 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
             return;
         }
         /* validate mandatory parts */
-        validateServers(context, webScan.getHostPatterns());
-        validateUrlPatterns(context, webScan.getUrlPathPatterns());
+        validateHostPatterns(context, webScan.getHostPatterns());
+        validateUrlPathPatterns(context, webScan.getUrlPathPatterns());
 
         /* validate optional parts */
         validateCweId(context, webScan.getCweId());
@@ -47,7 +48,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
         validateProtocols(context, webScan.getProtocols());
     }
 
-    private void validateServers(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> servers) {
+    private void validateHostPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> servers) {
         String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_HOSTPATTERNS + "[]";
         if (servers == null || servers.isEmpty()) {
             context.addError(getValidatorName(), ": The list of '" + name + "' must contain at least one entry!");
@@ -59,7 +60,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
         validateRequirementsForMandatoryListWithWildcards(context, servers, name, ".", ":");
     }
 
-    private void validateUrlPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> urlPatterns) {
+    private void validateUrlPathPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> urlPatterns) {
         String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_URLPATHPATTERNS + "[]";
 
         if (urlPatterns == null || urlPatterns.isEmpty()) {
@@ -75,6 +76,10 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
     private void validateRequirementsForMandatoryListWithWildcards(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> list, String name,
             String... allowedSeparators) {
         for (String entry : list) {
+            if (entry.contains("\\")) {
+                context.addError(getValidatorName(), ": Inside '" + name + "' no backslashes are allowed!");
+                continue;
+            }
             if (WILDCARD_ONLY_PATTERN.matcher(name).matches()) {
                 context.addError(getValidatorName(), ": Inside '" + name + "' each element must consist of more than just wildcards!");
                 continue;
@@ -86,7 +91,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
             } else {
                 boolean hasAtleastOneSectionWithoutWildcards = false;
                 for (String sub : split) {
-                    if (SimpleStringUtils.hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(sub, '-')) {
+                    if (!sub.contains(WILDCARD_SYMBOL)) {
                         hasAtleastOneSectionWithoutWildcards = true;
                     }
                 }

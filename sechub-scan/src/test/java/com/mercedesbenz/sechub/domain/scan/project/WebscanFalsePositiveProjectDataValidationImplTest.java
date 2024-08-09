@@ -232,7 +232,7 @@ class WebscanFalsePositiveProjectDataValidationImplTest {
         urlPatterns.add("rest.api.*");
         // add one valid entry, so 5 errors with 6 list entries
         urlPatterns.add("rest/api/*");
-        webScan.setHostPatterns(urlPatterns);
+        webScan.setUrlPathPatterns(urlPatterns);
 
         /* execute */
         ValidationResult result = validationToTest.validate(webScan);
@@ -241,6 +241,33 @@ class WebscanFalsePositiveProjectDataValidationImplTest {
         assertFalse(result.isValid());
         List<String> errors = result.getErrors();
         assertEquals(5, errors.size());
+    }
+
+    @Test
+    void urlPathPattern_and_hostPattern_cotnaining_backslashes_return_invalid_result() {
+        /* prepare */
+        WebscanFalsePositiveProjectData webScan = createWebscanFalsePositiveProjectDataWithValidMandatoryParts();
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/rest/ap\\Ei/use\\Qrs/*");
+        webScan.setUrlPathPatterns(urlPatterns);
+
+        List<String> hostPatterns = new ArrayList<>();
+        hostPatterns.add("*.su\\Eb.ho\\Qst.com");
+        webScan.setHostPatterns(hostPatterns);
+
+        /* execute */
+        ValidationResult result = validationToTest.validate(webScan);
+
+        /* test */
+        assertFalse(result.isValid());
+        List<String> errors = result.getErrors();
+        assertEquals(2, errors.size());
+
+        String error1 = errors.get(0);
+        assertTrue(error1.contains("no backslashes are allowed"));
+
+        String error2 = errors.get(1);
+        assertTrue(error2.contains("no backslashes are allowed"));
     }
 
     private WebscanFalsePositiveProjectData createWebscanFalsePositiveProjectDataWithValidMandatoryParts() {
