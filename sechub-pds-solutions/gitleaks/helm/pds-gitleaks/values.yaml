@@ -26,6 +26,12 @@ pds:
       queueMax: 10
       # Maximum number of jobs that are processed in parallel by PDS
       workerThreadCount: 5
+  encryption:
+    # Encryption algorithm can be one of: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256"
+    algorithm: "NONE"
+    # Encryption key: The base64 encoded secret key used for encryption.
+    #        Example: echo -n '%&/:,;-_()mysecretkey' | base64
+    secretKey: ""
   archive:
     # Limiting parameters regarding the extraction of .zip archives:
     extraction:
