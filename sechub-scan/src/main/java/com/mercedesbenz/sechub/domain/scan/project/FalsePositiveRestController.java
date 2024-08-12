@@ -40,7 +40,7 @@ public class FalsePositiveRestController {
     /* @formatter:off */
 	@UseCaseUserMarksFalsePositives(@Step(number=1,name="REST API call to define false positives by JSON data containing identifiers for existing jobs or false positive project data",needsRestDoc=true))
 	@RequestMapping(path = "/false-positives", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
-    public void addFalsePositivesByJobData(
+    public void addFalsePositiveData(
             @PathVariable("projectId") String projectId,
             @RequestBody FalsePositiveDataList data
             ) {

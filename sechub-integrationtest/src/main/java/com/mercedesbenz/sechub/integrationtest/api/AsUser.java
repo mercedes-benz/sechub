@@ -34,6 +34,7 @@ import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -1062,6 +1063,8 @@ public class AsUser {
         }
 
         private List<JobData> jobData = new ArrayList<>();
+        private List<FalsePositiveProjectData> projectDataList = new ArrayList<>();
+        private List<String> projectDataIds = new ArrayList<>();
         private WithSecHubClient withSechubClient;
         private IntegrationTestJSONLocation location;
 
@@ -1130,6 +1133,20 @@ public class AsUser {
             }
         }
 
+        public void unmarkFalsePositiveProjectData() {
+            unmarkFalsePositiveProjectDataByREST();
+        }
+
+        private void unmarkFalsePositiveProjectDataByREST() {
+            Iterator<String> iterator = projectDataIds.iterator();
+            while (iterator.hasNext()) {
+                String projectDataId = iterator.next();
+                String url = getUrlBuilder().buildUserRemovesFalsePositiveProjectDataEntryFromProject(project.getProjectId(), projectDataId);
+                getRestHelper().delete(url);
+            }
+
+        }
+
         private void unmarkFalsePositiveBySecHubClient() {
             String json = buildJSON();
             IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
@@ -1150,7 +1167,10 @@ public class AsUser {
         }
 
         private String buildJSON() {
-            String content = "{\"apiVersion\":\"1.0\",\"type\":\"falsePositiveJobDataList\",\"jobData\":[";
+            String content = "{\"apiVersion\":\"1.0\",\"type\":\"falsePositiveDataList\",";
+            if (!jobData.isEmpty()) {
+                content += "\"jobData\":[";
+            }
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
@@ -1176,7 +1196,27 @@ public class AsUser {
                     content += ",";
                 }
             }
-            content += "]}";
+            if (projectDataList.isEmpty()) {
+                content += "]}";
+            } else if (!jobData.isEmpty()) {
+                content += "],";
+            }
+            if (!projectDataList.isEmpty()) {
+                content += "\"projectData\":[";
+            }
+            Iterator<FalsePositiveProjectData> iterator = projectDataList.iterator();
+            while (iterator.hasNext()) {
+                FalsePositiveProjectData projectData = iterator.next();
+                content += JSONConverter.get().toJSON(projectData);
+
+                if (it.hasNext()) {
+                    content += ",";
+                }
+            }
+            if (!content.endsWith("]}")) {
+                content += "]}";
+            }
+            System.out.println(content);
             return content;
         }
 
@@ -1193,6 +1233,17 @@ public class AsUser {
             jobData.add(data);
             return this;
         }
+
+        public ProjectFalsePositivesDefinition add(FalsePositiveProjectData projectData) {
+            projectDataList.add(projectData);
+            return this;
+        }
+
+        public ProjectFalsePositivesDefinition add(String projectDataId) {
+            projectDataIds.add(projectDataId);
+            return this;
+        }
+
     }
 
     public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {

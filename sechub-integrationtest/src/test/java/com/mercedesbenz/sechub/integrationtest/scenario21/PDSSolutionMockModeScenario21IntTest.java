@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,6 +33,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
+import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -100,7 +105,69 @@ public class PDSSolutionMockModeScenario21IntTest {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_10, "findsecuritybugs");
     }
 
-    private void executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
+    @Test
+    public void pds_solution_zap_mocked_report_REST_API_direct_mark_and_unmark_false_positive_projectData_webscan() throws Exception {
+        /* @formatter:off */
+
+        /* prepare */
+        // execute scan to see a HIGH finding inside the webscan report
+        SecHubReportModel report1 = executePDSSolutionJobAndStoreReports(ScanType.WEB_SCAN, PROJECT_4, "zap");
+        assertReportUnordered(report1.toJSON())
+        .hasTrafficLight(TrafficLight.RED)
+               .finding()
+               .severity(Severity.HIGH)
+               .scanType(ScanType.WEB_SCAN)
+               .name("SQL Injection - SQLite")
+               .description("RDBMS [SQLite] likely, given error message fragment [SQLITE_ERROR] in HTML results")
+               .isContained();
+
+        WebscanFalsePositiveProjectData webscan = new WebscanFalsePositiveProjectData();
+        // we set only mandatory parameters
+        webscan.setCweId(89);
+        webscan.setHostPatterns(List.of("localhost"));
+        webscan.setUrlPathPatterns(List.of("/rest/products/search*"));
+
+        FalsePositiveProjectData projectData = new FalsePositiveProjectData();
+        String projectDataId = "6a7fe94a-564f-11ef-87de-3f13a69f3e5d";
+        projectData.setId(projectDataId);
+        projectData.setWebScan(webscan);
+
+        /* execute 1 */
+        // mark a false positive via projectData that matches the previously detected HIGH finding
+        as(USER_1).startFalsePositiveDefinition(PROJECT_4).add(projectData).markAsFalsePositive();
+        SecHubReportModel report2 = executePDSSolutionJobAndStoreReports(ScanType.WEB_SCAN, PROJECT_4, "zap");
+
+        /* test 1 */
+        // since the HIGH finding was marked as false positive we expected it to not be inside the report after a second scan
+        assertReportUnordered(report2.toJSON())
+        .hasTrafficLight(TrafficLight.YELLOW)
+               .finding()
+               .severity(Severity.HIGH)
+               .scanType(ScanType.WEB_SCAN)
+               .name("SQL Injection - SQLite")
+               .description("RDBMS [SQLite] likely, given error message fragment [SQLITE_ERROR] in HTML results")
+               .isNotContained();
+
+        /* execute 2 */
+        // unmark the projectData via the ID and perform another scan
+        as(USER_1).startFalsePositiveDefinition(PROJECT_4).add(projectDataId).unmarkFalsePositiveProjectData();
+        SecHubReportModel report3 = executePDSSolutionJobAndStoreReports(ScanType.WEB_SCAN, PROJECT_4, "zap");
+
+        /* test 2 */
+        // since the projectData must have been deleted, the HIGH finding must be back inside the report
+        assertReportUnordered(report3.toJSON())
+        .hasTrafficLight(TrafficLight.RED)
+               .finding()
+               .severity(Severity.HIGH)
+               .scanType(ScanType.WEB_SCAN)
+               .name("SQL Injection - SQLite")
+               .description("RDBMS [SQLite] likely, given error message fragment [SQLITE_ERROR] in HTML results")
+               .isContained();
+
+        /* @formatter:on */
+    }
+
+    private SecHubReportModel executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
         SecHubConfigurationModel model = createTestModelFor(scanType, project);
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, model);
 
@@ -162,6 +229,7 @@ public class PDSSolutionMockModeScenario21IntTest {
             String spdxReport = as(USER_1).getSpdxReport(project, jobUUID);
             storeTestReport(reportName + ".spdx.json", spdxReport);
         }
+        return report;
     }
 
     private SecHubConfigurationModel createTestModelFor(ScanType type, TestProject project) {

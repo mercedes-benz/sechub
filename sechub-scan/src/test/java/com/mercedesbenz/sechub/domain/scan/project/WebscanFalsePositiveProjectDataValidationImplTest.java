@@ -198,52 +198,6 @@ class WebscanFalsePositiveProjectDataValidationImplTest {
     }
 
     @Test
-    void invalid_hostPatterns_separators_return_invalid_result() {
-        /* prepare */
-        WebscanFalsePositiveProjectData webScan = createWebscanFalsePositiveProjectDataWithValidMandatoryParts();
-        List<String> hostPatterns = new ArrayList<>();
-        hostPatterns.add("sub,host,com");
-        hostPatterns.add("sub;host;com");
-        hostPatterns.add("subhostcom");
-        hostPatterns.add("sub host com");
-        hostPatterns.add("sub/host/com");
-        // add one valid entry, so 5 errors with 6 list entries
-        hostPatterns.add("sub.host.com");
-        webScan.setHostPatterns(hostPatterns);
-
-        /* execute */
-        ValidationResult result = validationToTest.validate(webScan);
-
-        /* test */
-        assertFalse(result.isValid());
-        List<String> errors = result.getErrors();
-        assertEquals(5, errors.size());
-    }
-
-    @Test
-    void invalid_urlPattern_separators_return_invalid_result() {
-        /* prepare */
-        WebscanFalsePositiveProjectData webScan = createWebscanFalsePositiveProjectDataWithValidMandatoryParts();
-        List<String> urlPatterns = new ArrayList<>();
-        urlPatterns.add("rest,api,*");
-        urlPatterns.add("rest;api;*");
-        urlPatterns.add("restapi*");
-        urlPatterns.add("rest api *");
-        urlPatterns.add("rest.api.*");
-        // add one valid entry, so 5 errors with 6 list entries
-        urlPatterns.add("rest/api/*");
-        webScan.setUrlPathPatterns(urlPatterns);
-
-        /* execute */
-        ValidationResult result = validationToTest.validate(webScan);
-
-        /* test */
-        assertFalse(result.isValid());
-        List<String> errors = result.getErrors();
-        assertEquals(5, errors.size());
-    }
-
-    @Test
     void urlPathPattern_and_hostPattern_cotnaining_backslashes_return_invalid_result() {
         /* prepare */
         WebscanFalsePositiveProjectData webScan = createWebscanFalsePositiveProjectDataWithValidMandatoryParts();

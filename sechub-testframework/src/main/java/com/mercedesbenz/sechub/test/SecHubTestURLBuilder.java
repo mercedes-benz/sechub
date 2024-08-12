@@ -95,8 +95,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
     }
 
-    public String buildUserRemovesFalsePositiveProjectDataEntryFromProject(String projectId, String id) {
-        return buildUrl(API_PROJECT, projectId, "false-positive", "project-data", id);
+    public String buildUserRemovesFalsePositiveProjectDataEntryFromProject(String projectId, String projectDataId) {
+        return buildUrl(API_PROJECT, projectId, "false-positive", "project-data", projectDataId);
     }
 
     public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
