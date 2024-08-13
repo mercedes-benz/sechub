@@ -39,7 +39,7 @@ class ProcessAdapterTest {
 
         // the bash script has written the input from stdin to a file, now we read and
         // check the content:
-        String output = TestFileReader.loadTextFile(tempFile);
+        String output = TestFileReader.readTextFromFile(tempFile);
         assertEquals("user-input=my-user input...via stdin", output);
 
     }

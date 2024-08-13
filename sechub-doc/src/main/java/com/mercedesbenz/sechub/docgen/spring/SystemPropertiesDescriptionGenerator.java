@@ -74,7 +74,7 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
     protected void appendStringContent(StringBuilder sb, Map<String, SortedSet<TableRow>> rowMap) {
         for (Map.Entry<String, SortedSet<TableRow>> entries : rowMap.entrySet()) {
             SortedSet<TableRow> table = entries.getValue();
-            sb.append("[[section-gen-config-scope-").append(entries.getKey()).append("]]\n");
+            sb.append("[[section-gen-configuration-scope-").append(entries.getKey()).append("]]\n");
             sb.append("[options=\"header\",cols=\"1,1,1\"]\n");
             sb.append(".").append(buildTitle(entries.getKey()));
             sb.append("\n|===\n");

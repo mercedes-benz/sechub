@@ -27,7 +27,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
@@ -256,7 +256,7 @@ public class ThymeLeafHTMLReportingTest {
 
     private void storeHTMLOutputAsFile(String htmlResult, String name) throws IOException {
         TestFileWriter writer = new TestFileWriter();
-        writer.save(new File("./build/test-data/thymeleaf-test/" + name + ".html"), htmlResult, true);
+        writer.writeTextToFile(new File("./build/test-data/thymeleaf-test/" + name + ".html"), htmlResult, true);
     }
 
     private String processThymeLeafTemplates(TestReportContext context) throws IOException, SecHubExecutionException {
@@ -280,8 +280,8 @@ public class ThymeLeafHTMLReportingTest {
             return;
         }
         Path testFile = TestUtil.createTempFileInBuildFolder("thymeleaf-html-reporttest-" + context.exampleName + "." + fileEnding);
-        TextFileWriter writer = new TextFileWriter();
-        writer.save(testFile.toFile(), content);
+        DocGenTextFileWriter writer = new DocGenTextFileWriter();
+        writer.writeTextToFile(testFile.toFile(), content);
 
         LOG.info("Wrote test file to:{}", testFile);
     }

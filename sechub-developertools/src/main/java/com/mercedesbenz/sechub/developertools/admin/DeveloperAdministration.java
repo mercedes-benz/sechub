@@ -44,6 +44,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
@@ -799,6 +801,14 @@ public class DeveloperAdministration {
     public String fetchProjectJobInfoForUser(String projectId, int pageSize, int page) {
         TestSecHubJobInfoForUserListPage listPage = asTestUser().fetchUserJobInfoList(new FixedTestProject(projectId), pageSize, page);
         return TestJSONHelper.get().createJSON(listPage, true);
+    }
+
+    public String rotateEncryption(SecHubEncryptionData data) {
+        return asTestUser().rotateEncryption(data);
+    }
+
+    public SecHubEncryptionStatus fetchEncryptionStatus() {
+        return asTestUser().fetchEncryptionStatus();
     }
 
 }

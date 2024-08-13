@@ -18,7 +18,7 @@ class PDSServerConfigurationTest {
     void a_correct_server_configuration_file_can_be_read_as_json() throws Exception {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/config/pds-config-example1.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/config/pds-config-example1.json"));
 
         /* execute */
         PDSServerConfiguration configuration = PDSServerConfiguration.fromJSON(json);
@@ -49,7 +49,7 @@ class PDSServerConfigurationTest {
     @Test
     void a_server_configuration_with_unknown_entries_can_be_read() throws Exception {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/config/pds-config-example2-with-unknown-parts.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/config/pds-config-example2-with-unknown-parts.json"));
 
         /* execute */
         PDSServerConfiguration configuration = PDSServerConfiguration.fromJSON(json);
@@ -61,7 +61,8 @@ class PDSServerConfigurationTest {
     @Test
     void example_configuration_from_documentation_can_be_loaded() throws Exception {
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./..//sechub-doc/src/docs/asciidoc/documents/pds/product_delegation_server_config_example1.json"));
+        String json = TestFileReader
+                .readTextFromFile(new File("./..//sechub-doc/src/docs/asciidoc/documents/pds/product_delegation_server_config_example1.json"));
 
         /* execute */
         PDSServerConfiguration configuration = PDSServerConfiguration.fromJSON(json);

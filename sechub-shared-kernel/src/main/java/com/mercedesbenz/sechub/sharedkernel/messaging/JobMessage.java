@@ -32,8 +32,6 @@ public class JobMessage implements JSONable<JobMessage> {
 
     private String info;
 
-    private String configuration;
-
     @JsonFormat(pattern = ("yyyy/MM/dd HH:mm:ss"))
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -57,14 +55,6 @@ public class JobMessage implements JSONable<JobMessage> {
 
     public void setInfo(String info) {
         this.info = info;
-    }
-
-    public String getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(String configuration) {
-        this.configuration = configuration;
     }
 
     public void setSince(LocalDateTime date) {

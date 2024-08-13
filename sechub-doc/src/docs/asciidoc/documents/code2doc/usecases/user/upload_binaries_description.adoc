@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
 [[sechub-doclink-uc-user-uploads-binaries-for-job]]
-A user wants to upload binearies for a former <<sechub-doclink-uc-user-creates-job, created sechub job>>.
+A user wants to upload binaries for a former <<sechub-doclink-uc-user-creates-job, created {sechub} job>>.
 
 The binaries must be inside a valid tar file.

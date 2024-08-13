@@ -110,7 +110,7 @@ public class PDSSolutionTestFilesGenerator {
     }
 
     private void writeSecHubConfigurationToTempFolder() throws JSONConverterException, IOException {
-        writer.save(new File(targetFolder, "original-used-sechub-configfile.json"), JSONConverter.get().toJSON(config, true), false);
+        writer.writeTextToFile(new File(targetFolder, "original-used-sechub-configfile.json"), JSONConverter.get().toJSON(config, true), false);
 
     }
 
@@ -120,7 +120,7 @@ public class PDSSolutionTestFilesGenerator {
         recucedSecHubConfigJson = JSONConverter.get().toJSON(reducedConfig, true);
 
         File reducedSecHubConfigFile = new File(targetFolder, "reducedSecHubJson_for_" + scanType.getId() + ".json");
-        writer.save(reducedSecHubConfigFile, recucedSecHubConfigJson, true);
+        writer.writeTextToFile(reducedSecHubConfigFile, recucedSecHubConfigJson, true);
         return recucedSecHubConfigJson;
     }
 
@@ -133,7 +133,7 @@ public class PDSSolutionTestFilesGenerator {
 
         String pdsJobDataJson = JSONConverter.get().toJSON(data, true);
         File pdsJobDataFile = new File(targetFolder, "pdsJobData.json");
-        writer.save(pdsJobDataFile, pdsJobDataJson, true);
+        writer.writeTextToFile(pdsJobDataFile, pdsJobDataJson, true);
     }
 
     private void ensureScanType(String wantedScanType) {
@@ -145,7 +145,7 @@ public class PDSSolutionTestFilesGenerator {
         if (!originConfigFile.exists()) {
             throw new FileNotFoundException("Sechub configuration file not found:" + originConfigFile.getAbsolutePath());
         }
-        String json = reader.loadTextFile(originConfigFile);
+        String json = reader.readTextFromFile(originConfigFile);
 
         config = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
     }

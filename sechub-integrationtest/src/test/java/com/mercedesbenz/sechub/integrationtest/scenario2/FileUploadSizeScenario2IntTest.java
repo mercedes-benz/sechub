@@ -237,7 +237,7 @@ public class FileUploadSizeScenario2IntTest {
             assertNotNull("Downloaded filesize file may not be null!", downloadedFileSizeFile);
             assertTrue("Downloaded filesize file must exist!", downloadedFileSizeFile.exists());
 
-            String fetchedSizeAsString = TestFileReader.loadTextFile(downloadedFileSizeFile);
+            String fetchedSizeAsString = TestFileReader.readTextFromFile(downloadedFileSizeFile);
             long fetchedSize = Long.parseLong(fetchedSizeAsString);
 
             assertEquals("Fetched file size not as expected for " + data.fileNameAtServerSide + " !", realFileSizeInBytes, fetchedSize);

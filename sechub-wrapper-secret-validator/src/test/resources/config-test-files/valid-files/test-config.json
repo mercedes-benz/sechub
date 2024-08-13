@@ -1,0 +1,25 @@
+{
+  "validatorConfigList" : [ {
+    "ruleId" : "generic-api-key",
+    "categorization" : {
+      "defaultSeverity" : "high",
+      "validationFailedSeverity" : "medium",
+      "validationSuccessSeverity" : "critical"
+    },
+    "requests" : [ {
+      "proxyRequired" : false,
+      "url" : "https://localhost",
+      "headers" : [ {
+        "name" : "Authorization",
+        "valuePrefix" : "Bearer"
+      } ],
+      "expectedResponse" : {
+        "httpStatus" : 200,
+        "contains" : {
+          "allOf" : [ "is", "there" ],
+          "oneOf" : [ "success" ]
+        }
+      }
+    } ]
+  } ]
+}

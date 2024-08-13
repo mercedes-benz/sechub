@@ -15,10 +15,13 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAt
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerProjectConfigService;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionRotationService;
+import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobEncryptionUpdateService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobTransactionService;
 import com.mercedesbenz.sechub.domain.schedule.status.SchedulerStatusService;
 import com.mercedesbenz.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -69,10 +72,17 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     @Autowired
     SecHubJobTransactionService jobTransactionService;
 
+    @Autowired
+    ScheduleEncryptionRotationService encryptionRotatonService;
+
+    @Autowired
+    ScheduleSecHubJobEncryptionUpdateService encryptionUpdateService;
+
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
+        LOG.debug("received asynchronous domain request: {}", request);
+
         MessageID messageId = request.getMessageId();
-        LOG.debug("received domain request: {}", request);
 
         switch (messageId) {
         case USER_ADDED_TO_PROJECT:
@@ -119,6 +129,12 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
             break;
         case PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE:
             handleProductExecutorCancelOperationsDone(request);
+            break;
+        case START_ENCRYPTION_ROTATION:
+            handleEncryptionRotation(request);
+            break;
+        case SCHEDULE_ENCRYPTION_POOL_INITIALIZED:
+            handleEncryptionPoolInitialized(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
@@ -228,6 +244,19 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
         deleteAllProjectAccessService.deleteAnyAccessDataForProject(projectId);
         projectConfigService.deleteProjectConfiguration(projectId);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.START_ENCRYPTION_ROTATION)
+    private void handleEncryptionRotation(DomainMessage request) {
+        SecHubEncryptionData data = request.get(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA);
+        String executedBy = request.get(MessageDataKeys.EXECUTED_BY);
+
+        encryptionRotatonService.startEncryptionRotation(data, executedBy);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.SCHEDULE_ENCRYPTION_POOL_INITIALIZED)
+    private void handleEncryptionPoolInitialized(DomainMessage request) {
+        encryptionUpdateService.updateEncryptedDataIfNecessary();
     }
 
     private void updateWhiteList(ProjectMessage data) {

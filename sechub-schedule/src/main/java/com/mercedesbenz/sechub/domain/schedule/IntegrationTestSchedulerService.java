@@ -40,7 +40,7 @@ public class IntegrationTestSchedulerService {
      */
     public void deleteWaitingJobs() {
         /*
-         * we do not add the query to the repository, because it is not used in
+         * we do not add the query to the poolDataRepository, because it is not used in
          * production but only for testing
          */
         Query query = entityManager.createQuery(DELETE_WAITING_JOBS_QUERY);

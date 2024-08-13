@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteCredentialUserData;
@@ -28,7 +28,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.upload.FileNameSupport;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadException;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
-@Service
+@Component
 public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(SkopeoPrepareWrapperModule.class);

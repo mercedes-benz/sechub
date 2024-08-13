@@ -2,11 +2,11 @@
 package com.mercedesbenz.sechub.domain.schedule;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
-@Service
+@Component
 public class SchedulerSourcecodeUploadConfiguration {
 
     @Value("${sechub.server.upload.validate.zip:true}")

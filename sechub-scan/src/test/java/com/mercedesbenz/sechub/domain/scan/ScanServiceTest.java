@@ -257,7 +257,7 @@ public class ScanServiceTest {
     public void event_handling_FAILED_when_configuration_is_not_set() {
         /* prepare */
         DomainMessage request = prepareValidRequest();
-        request.set(MessageDataKeys.SECHUB_CONFIG, null);
+        request.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, null);
 
         /* execute */
         DomainMessageSynchronousResult result = simulateEventSend(request, serviceToTest);
@@ -329,7 +329,7 @@ public class ScanServiceTest {
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
         request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
         request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
-        request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
+        request.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, configMin);
 
         return request;
     }

@@ -229,7 +229,7 @@
   }, {
     "id" : "PDS_SOLUTION_GITLEAKS_MOCKED",
     "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-gitleaks-mocked.sh",
-    "scanType" : "secretSCan",
+    "scanType" : "secretScan",
     "description" : "Returns mock data, but from real product"
   }, {
     "id" : "PDS_SOLUTION_ZAP_MOCKED",

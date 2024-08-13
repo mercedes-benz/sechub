@@ -52,17 +52,16 @@ public class ScheduleJobLauncherService {
         executor.execute(secHubJob);
 
         /* send domain event */
-        sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getJsonConfiguration(), secHubJob.getOwner());
+        sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getOwner());
 
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_STARTED)
-    private void sendJobStarted(String projectId, UUID jobUUID, String configuration, String owner) {
+    private void sendJobStarted(String projectId, UUID jobUUID, String owner) {
         DomainMessage request = new DomainMessage(MessageID.JOB_STARTED);
         JobMessage message = new JobMessage();
         message.setProjectId(projectId);
         message.setJobUUID(jobUUID);
-        message.setConfiguration(configuration);
         message.setOwner(owner);
         message.setSince(LocalDateTime.now());
 

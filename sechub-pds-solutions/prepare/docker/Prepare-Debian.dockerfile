@@ -6,7 +6,7 @@ ARG BASE_IMAGE
 # Build Args
 # Build type can be "copy" or "download"
 ARG BUILD_TYPE="copy"
-ARG PREPARE_WRAPPER_VERSION="1.0.0"
+ARG PREPARE_WRAPPER_VERSION
 
 # The base image of the builder
 ARG BUILDER_BASE_IMAGE="debian:12-slim"
@@ -60,7 +60,7 @@ COPY copy/sechub-wrapper-prepare-$PREPARE_WRAPPER_VERSION.jar "$ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 RUN echo "build stage"
 
 

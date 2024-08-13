@@ -11,6 +11,7 @@ DEFAULT_BUILD_TYPE=build
 
 usage() {
   cat - <<EOF
+
 usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with FindSecurityBugs
 for <docker registry> with tag <version tag>.
@@ -47,26 +48,30 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-# Enforce FINDSECURITYBUGS_SHA256SUM is defined when building custom version of find-sec-bugs
-if [[ ! -z "$FINDSECURITYBUGS_VERSION" ]] ; then
-  echo ">> FindSecurityBugs version: $FINDSECURITYBUGS_VERSION"
-  BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_VERSION=$FINDSECURITYBUGS_VERSION"
-fi
-
-if [[ ! -z "$SPOTBUGS_VERSION" ]] ; then
-  echo ">> SpotBugs version: $SPOTBUGS_VERSION"
-  BUILD_ARGS+=" --build-arg SPOTBUGS_VERSION=$SPOTBUGS_VERSION"
-fi
-
 [ -z "$BUILD_TYPE" ] && BUILD_TYPE="$DEFAULT_BUILD_TYPE"
-echo ">> build type: $BUILD_TYPE"
+echo ">> Build type: $BUILD_TYPE"
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
+
+if [[ -z "$FINDSECURITYBUGS_VERSION" ]] ; then
+  # source defaults
+  source ./env
+fi
+echo ">> FindSecurityBugs version: $FINDSECURITYBUGS_VERSION"
+BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_VERSION=$FINDSECURITYBUGS_VERSION"
+
+if [[ -z "$SPOTBUGS_VERSION" ]] ; then
+  # source defaults
+  source ./env
+fi
+echo ">> SpotBugs version: $SPOTBUGS_VERSION"
+BUILD_ARGS+=" --build-arg SPOTBUGS_VERSION=$SPOTBUGS_VERSION"
 
 echo "Copying install-java scripts into the docker directory"
 cp -rf ../../sechub-solutions-shared/install-java/ docker/
 
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
+
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
        --file docker/FindSecurityBugs-Debian.dockerfile docker/

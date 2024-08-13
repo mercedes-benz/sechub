@@ -45,6 +45,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -636,7 +638,7 @@ public class AsUser {
         String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
         if (enableHTMLautoDumps) {
             try {
-                getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
+                getWriter().writeTextToFile(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
             } catch (IOException e) {
                 throw new IllegalStateException("Was not able to dump HTML data", e);
             }
@@ -1356,6 +1358,18 @@ public class AsUser {
         String url = getUrlBuilder().buildAddJobUrl(project.getProjectId());
         return getRestHelper().postJson(url, sechubConfigAsString);
 
+    }
+
+    public String rotateEncryption(SecHubEncryptionData data) {
+
+        String url = getUrlBuilder().buildAdminStartsEncryptionRotation();
+        return getRestHelper().postJson(url, data.toFormattedJSON());
+    }
+
+    public SecHubEncryptionStatus fetchEncryptionStatus() {
+        String url = getUrlBuilder().buildAdminFetchesEncryptionStatus();
+        String json = getRestHelper().getJSON(url);
+        return SecHubEncryptionStatus.fromString(json);
     }
 
 }

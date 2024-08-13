@@ -192,7 +192,7 @@ public class ExecutionSupport {
                 """.formatted(processContainer.getUuid(), new File("./").getAbsolutePath(), workingDirectory.getAbsolutePath(),
                 StacktraceUtil.createFullTraceDescription(reason));
         try {
-            textFileWriter.save(processContainerErrorFile.toFile(), data, true);
+            textFileWriter.writeTextToFile(processContainerErrorFile.toFile(), data, true);
         } catch (IOException e) {
             LOG.error("Was not able to write error file for process container:{}", processContainer.getUuid(), e);
         }
@@ -204,14 +204,14 @@ public class ExecutionSupport {
         Path errorFile = locationSupport.ensureErrorFile(processContainer);
 
         try {
-            String outputTextLine = textFileReader.loadTextFile(outputFile.toFile(), "\n", 1);
+            String outputTextLine = textFileReader.readTextFromFile(outputFile.toFile(), "\n", 1);
             processContainer.outputMessage = outputTextLine;
         } catch (IOException e) {
             LOG.error("Was not able to read output for process container:{}", processContainer.getUuid(), e);
         }
 
         try {
-            String errorTextLine = textFileReader.loadTextFile(errorFile.toFile(), "\n", 1);
+            String errorTextLine = textFileReader.readTextFromFile(errorFile.toFile(), "\n", 1);
             processContainer.errorMessage = errorTextLine;
         } catch (IOException e) {
             LOG.error("Was not able to read error for process container:{}", processContainer.getUuid(), e);
@@ -222,7 +222,7 @@ public class ExecutionSupport {
     private void writeToFile(ProcessContainer processContainer) {
         Path metaDataFile = locationSupport.ensureProcessContainerFile(processContainer);
         try {
-            textFileWriter.save(metaDataFile.toFile(), JSONConverter.get().toJSON(processContainer, true), true);
+            textFileWriter.writeTextToFile(metaDataFile.toFile(), JSONConverter.get().toJSON(processContainer, true), true);
         } catch (IOException e) {
             throw new SystemTestRuntimeException("Was not able to write file:" + metaDataFile, e);
         }

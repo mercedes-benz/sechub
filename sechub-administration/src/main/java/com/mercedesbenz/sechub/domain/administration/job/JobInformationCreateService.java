@@ -37,26 +37,25 @@ public class JobInformationCreateService {
 
         LOG.debug("Creating a new job information entry for project: {}, SecHub job: {}", projectId, jobUUID);
 
-        JobInformation entity = null;
+        JobInformation jobInformation = null;
 
         Optional<JobInformation> existingInfo = repository.findById(jobUUID);
         if (existingInfo.isPresent()) {
-            entity = existingInfo.get();
+            jobInformation = existingInfo.get();
 
             LOG.warn("There was an existing information entity about SecHub job: {}. The entity will be reused and updated.", jobUUID);
 
         } else {
-            entity = new JobInformation(jobUUID);
+            jobInformation = new JobInformation(jobUUID);
         }
 
-        entity.setProjectId(projectId);
-        entity.setConfiguration(message.getConfiguration());
-        entity.setOwner(message.getOwner());
-        entity.setSince(message.getSince());
+        jobInformation.setProjectId(projectId);
+        jobInformation.setOwner(message.getOwner());
+        jobInformation.setSince(message.getSince());
 
-        entity.setStatus(status);
+        jobInformation.setStatus(status);
 
-        entity = repository.save(entity);
+        jobInformation = repository.save(jobInformation);
 
         LOG.debug("Saved job information entry for project: {}, SecHub job: {}, ", projectId, jobUUID);
     }

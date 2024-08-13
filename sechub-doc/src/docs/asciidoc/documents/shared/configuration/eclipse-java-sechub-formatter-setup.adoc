@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 . Download the formatter xml file https://github.com/Daimler/sechub/files/4158667/sechub-eclipse-sourceformatter-setup.zip[here] and unzip it.
 
 . Open Java Formatter page in preferences (Window->Preferences). Then press the import button and select the former unpacked xml file.

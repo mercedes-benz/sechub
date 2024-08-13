@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionStatus;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 
 /**
  *
@@ -32,6 +34,8 @@ public class MessageDataKeys {
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
     private static final UserMessageDataProvider USER_MESSAGE_DATA_PROVIDER = new UserMessageDataProvider();
     private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
+    private static final SecHubEncryptionMessageDataProvider SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER = new SecHubEncryptionMessageDataProvider();
+    private static final SecHubEncryptionStatusMessageDataProvider SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER = new SecHubEncryptionStatusMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -51,13 +55,21 @@ public class MessageDataKeys {
 
     public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", UID_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", UID_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubEncryptionData> SECHUB_ENCRYPT_ROTATION_DATA = createKey("sechub.encrypt.rotation.data",
+            SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubDomainEncryptionStatus> SECHUB_DOMAIN_ENCRYPTION_STATUS = createKey("sechub.domain.encryption.status",
+            SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER);
+
     /**
      * Use this generic key when you just want to define timestamp without using a
      * dedicated model where it is already contained.
      */
     public static final MessageDataKey<LocalDateTime> LOCAL_DATE_TIME_SINCE = createKey("localdatetime.since", LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER);
 
-    public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<SecHubConfiguration> SECHUB_UNENCRYPTED_CONFIG = createKey("sechub.unencryptedconfig",
+            SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
             CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER);

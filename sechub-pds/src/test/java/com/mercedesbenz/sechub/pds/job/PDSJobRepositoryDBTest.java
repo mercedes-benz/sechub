@@ -495,7 +495,8 @@ public class PDSJobRepositoryDBTest {
         // necessary because must be not null
         job.created = LocalDateTime.of(2020, 06, 24, 13, 55, 01).minusMinutes(minutes);
         job.owner = "owner";
-        job.jsonConfiguration = "{}";
+        job.encryptedConfiguration = "{}".getBytes(); // simulate encryption
+        job.encryptionInitialVectorData = "initial-vector".getBytes(); // simulate initial vector
         job.state = state;
 
         /* persist */

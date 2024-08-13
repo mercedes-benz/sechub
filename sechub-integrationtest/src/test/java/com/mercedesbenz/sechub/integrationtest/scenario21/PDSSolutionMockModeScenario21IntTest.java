@@ -18,23 +18,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
-import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubStatus;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
@@ -77,7 +61,16 @@ public class PDSSolutionMockModeScenario21IntTest {
 
     @Test
     public void pds_solution_gitleaks_mocked_report_in_json_and_html_available() throws Exception {
-        executePDSSolutionJobAndStoreReports(ScanType.SECRET_SCAN, PROJECT_6, "gitleaks");
+        SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.SECRET_SCAN, PROJECT_6, "gitleaks");
+        /* @formatter:off */
+        assertReportUnordered(report.toJSON())
+                    .hasTrafficLight(TrafficLight.RED)
+                           .finding()
+                           .severity(Severity.CRITICAL)
+                           .scanType(ScanType.SECRET_SCAN)
+                           .description("github-pat has detected secret for file UnSAFE_Bank/iOS/Source Code/Pods/README.adoc.")
+                           .isContained();
+        /* @formatter:on */
     }
 
     @Test

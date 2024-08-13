@@ -3,6 +3,8 @@
 === Auto cleanup
 To prevent full hard drives there is an option to automatically remove old data.
 
+It also cleans up old encryption settings when it comes to <<section-shared-concepts-sechub-data-encryption-rotation,encryption rotation>>. 
+
 [NOTE]
 ====
 See also

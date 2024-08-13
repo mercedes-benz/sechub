@@ -52,17 +52,19 @@ if [[ -z "$BUILD_TYPE" ]] ; then
     BUILD_TYPE="$DEFAULT_BUILD_TYPE"
 fi
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
-echo ">> - Build type: $BUILD_TYPE"
+echo ">> Build type: $BUILD_TYPE"
 
 if [[ ! -z "$BUILDER_BASE_IMAGE" ]] ; then
     BUILD_ARGS+=" --build-arg BUILDER_BASE_IMAGE=$BUILDER_BASE_IMAGE"
-    echo ">> - Builder base image: $BUILDER_BASE_IMAGE"
+    echo ">> Builder base image: $BUILDER_BASE_IMAGE"
 fi
 
-if [[ ! -z "$PREPARE_WRAPPER_VERSION" ]] ; then
-    echo ">> Prepare version: $PREPARE_WRAPPER_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg PREPARE_WRAPPER_VERSION=$PREPARE_WRAPPER_VERSION"
+if [[ -z "$PREPARE_WRAPPER_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+echo ">> Prepare wrapper version: $PREPARE_WRAPPER_VERSION"
+BUILD_ARGS+=" --build-arg PREPARE_WRAPPER_VERSION=$PREPARE_WRAPPER_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

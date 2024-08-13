@@ -12,8 +12,15 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A class to write text to files. Will always use UTF-8.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class TextFileWriter {
 
+    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
     private static final Logger LOG = LoggerFactory.getLogger(TextFileWriter.class);
 
     /**
@@ -26,11 +33,7 @@ public class TextFileWriter {
      *                   before write
      * @throws IOException
      */
-    public void save(File targetFile, String text, boolean overwrite) throws IOException {
-        internalSave(targetFile, text, overwrite, Charset.forName("UTF-8"));
-    }
-
-    private void internalSave(File targetFile, String text, boolean overwrite, Charset charset) throws IOException {
+    public void writeTextToFile(File targetFile, String text, boolean overwrite) throws IOException {
         if (targetFile == null) {
             throw new IllegalArgumentException("null not allowed as file!");
         }
@@ -59,7 +62,7 @@ public class TextFileWriter {
                 throw new IllegalStateException("was not able to create new file:" + targetFile);
             }
         }
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), charset))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), CHARSET_UTF_8))) {
             bw.write(text);
         }
 

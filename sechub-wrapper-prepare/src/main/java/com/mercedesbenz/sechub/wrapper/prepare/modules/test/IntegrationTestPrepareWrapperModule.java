@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.SecHubRemoteDataConfiguration;
@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperContext;
 import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractPrepareWrapperModule;
 import com.mercedesbenz.sechub.wrapper.prepare.upload.PrepareWrapperUploadService;
 
-@Service
+@Component
 @Profile(PDSProfiles.INTEGRATIONTEST)
 /**
  * Special integration test prepare wrapper module. Is always active in profile
@@ -108,7 +108,7 @@ public class IntegrationTestPrepareWrapperModule extends AbstractPrepareWrapperM
                         INFO:i am just an information from IntegrationTestPrepareWrapperModule
                                                 """;
 
-                writer.save(dataFile.toFile(), mediumIntegrationTestData, false);
+                writer.writeTextToFile(dataFile.toFile(), mediumIntegrationTestData, false);
 
             } catch (IOException e) {
                 throw new RuntimeException("Error while files in directory: " + downloadPath, e);

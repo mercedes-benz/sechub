@@ -33,7 +33,7 @@ public class PDSSecurityConfiguration {
     private static final String KEY_ADMIN_USERID = "pds.admin.userid";
     private static final String KEY_ADMIN_APITOKEN = "pds.admin.apitoken";
 
-    @PDSMustBeDocumented(value = "Techuser user id", scope = "credentials.")
+    @PDSMustBeDocumented(value = "Techuser user id.", scope = "credentials.")
     @Value("${" + KEY_TECHUSER_USERID + "}")
     String techUserId;
 
