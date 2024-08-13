@@ -32,12 +32,12 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     private static Pattern mockedPattern = mock(Pattern.class);
     private static Matcher mockedMatcher = mock(Matcher.class);
 
-    private SerecoWebScanFalsePositiveProjectDataSupport supportToTest;
+    private SerecoProjectDataWebScanFalsePositiveSupport supportToTest;
     private Map<String, Pattern> patternMap;
 
     @BeforeEach
     void beforeEach() {
-        supportToTest = new SerecoWebScanFalsePositiveProjectDataSupport();
+        supportToTest = new SerecoProjectDataWebScanFalsePositiveSupport();
         patternMap = createPatternMapWithMocks();
 
         when(mockedPattern.matcher(matchingHost)).thenReturn(mockedMatcher);

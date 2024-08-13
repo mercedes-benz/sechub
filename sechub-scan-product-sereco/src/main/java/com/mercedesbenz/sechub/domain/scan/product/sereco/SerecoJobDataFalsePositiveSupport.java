@@ -13,9 +13,9 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
 @Component
-public class SerecoFalsePositiveSupport {
+public class SerecoJobDataFalsePositiveSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoJobDataFalsePositiveSupport.class);
 
     public boolean areBothHavingExpectedScanType(ScanType type, FalsePositiveMetaData metaData, SerecoVulnerability vulnerability) {
         notNull(vulnerability, " vulnerability may not be null");

@@ -23,29 +23,29 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 
-class WebScanFalsePositiveStrategyTest {
+class WebScanJobDataFalsePositiveStrategyTest {
 
     private static final String METHOD1 = "method1";
     private static final String EVIDENCE1 = "evidence1";
     private static final String TARGET1 = "target1";
     private static final String ATTACK_VECTOR1 = "vector1";
     private static final int CWE_ID_4711 = 4711;
-    private WebScanFalsePositiveStrategy strategyToTest;
+    private WebScanJobDataFalsePositiveStrategy strategyToTest;
     private FalsePositivedTestDataContainer testData;
-    private SerecoFalsePositiveSupport serecoFalsePositiveSupport;
+    private SerecoJobDataFalsePositiveSupport serecoJobDataFalsePositiveSupport;
 
     @BeforeEach
     void beforeEach() {
-        strategyToTest = new WebScanFalsePositiveStrategy();
+        strategyToTest = new WebScanJobDataFalsePositiveStrategy();
 
         // Initial this created test data contains meta and vulnerability data which do
         // match. When not changed, this must lead to a false positive detection. Tests
         // do change this data to simulate different situations.
         testData = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
 
-        serecoFalsePositiveSupport = mock(SerecoFalsePositiveSupport.class);
+        serecoJobDataFalsePositiveSupport = mock(SerecoJobDataFalsePositiveSupport.class);
 
-        strategyToTest.falsePositiveSupport = serecoFalsePositiveSupport;
+        strategyToTest.falsePositiveSupport = serecoJobDataFalsePositiveSupport;
     }
 
     /* @formatter:off */
@@ -61,8 +61,8 @@ class WebScanFalsePositiveStrategyTest {
     void no_false_positive_because_metadata_has_not_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -77,8 +77,8 @@ class WebScanFalsePositiveStrategyTest {
     void is_false_positive_because_metadata_has_same_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -98,8 +98,8 @@ class WebScanFalsePositiveStrategyTest {
     void no_false_positive_because_metadata_has_not_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -114,8 +114,8 @@ class WebScanFalsePositiveStrategyTest {
     void is_false_positive_because_metadata_has_similar_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -132,8 +132,8 @@ class WebScanFalsePositiveStrategyTest {
     @Test
     void no_false_positive_because_wrong_metadata_cweid() {
         /* prepare */
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(false);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(false);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -151,8 +151,8 @@ class WebScanFalsePositiveStrategyTest {
     @NullSource
     void no_false_positive_because_wrong_scan_type(ScanType type) {
         /* prepare */
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(false);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(false);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
@@ -164,8 +164,8 @@ class WebScanFalsePositiveStrategyTest {
     @Test
     void is_false_positive_because_correct_scan_type() {
         /* prepare */
-        when(serecoFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
-        when(serecoFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingExpectedScanType(ScanType.WEB_SCAN, testData.metaData, testData.vulnerability)).thenReturn(true);
+        when(serecoJobDataFalsePositiveSupport.areBothHavingSameCweIdOrBothNoCweId(testData.metaData,testData.vulnerability)).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);

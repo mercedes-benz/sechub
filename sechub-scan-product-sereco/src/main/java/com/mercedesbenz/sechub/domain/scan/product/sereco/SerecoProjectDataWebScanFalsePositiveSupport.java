@@ -16,9 +16,9 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
 @Component
-public class SerecoWebScanFalsePositiveProjectDataSupport {
+public class SerecoProjectDataWebScanFalsePositiveSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoWebScanFalsePositiveProjectDataSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoProjectDataWebScanFalsePositiveSupport.class);
 
     public boolean areBothHavingSameCweIdOrBothNoCweId(WebscanFalsePositiveProjectData webScanData, SerecoVulnerability vulnerability) {
         notNull(vulnerability, " vulnerability may not be null");

@@ -20,12 +20,12 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 
 @Component
-public class WebScanProjectDataFalsePositiveStrategy implements SerecoFalsePositiveProjectDataStrategy {
+public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDataFalsePositiveStrategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebScanProjectDataFalsePositiveStrategy.class);
 
     @Autowired
-    SerecoWebScanFalsePositiveProjectDataSupport webscanFalsePositiveProjectDataSupport;
+    SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport;
 
     @Override
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveProjectData projectData, Map<String, Pattern> projectDataPatternMap) {

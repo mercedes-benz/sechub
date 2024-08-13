@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
  * @author Albert Tregnaghi
  *
  */
-public interface SerecoFalsePositiveStrategy {
+public interface SerecoJobDataFalsePositiveStrategy {
 
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData);
 }

@@ -16,12 +16,12 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 
 @Component
-public class WebScanFalsePositiveStrategy implements SerecoFalsePositiveStrategy {
+public class WebScanJobDataFalsePositiveStrategy implements SerecoJobDataFalsePositiveStrategy {
 
     @Autowired
-    SerecoFalsePositiveSupport falsePositiveSupport;
+    SerecoJobDataFalsePositiveSupport falsePositiveSupport;
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebScanFalsePositiveStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebScanJobDataFalsePositiveStrategy.class);
 
     /**
      * Checks if given vulnerability is identified as false positive by given meta

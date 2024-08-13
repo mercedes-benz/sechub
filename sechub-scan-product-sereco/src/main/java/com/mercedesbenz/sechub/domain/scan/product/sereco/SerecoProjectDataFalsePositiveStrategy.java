@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-public interface SerecoFalsePositiveProjectDataStrategy {
+public interface SerecoProjectDataFalsePositiveStrategy {
 
     /**
      * Checks if given vulnerability is identified as false positive by given

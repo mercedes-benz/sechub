@@ -28,13 +28,13 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
     private WebScanProjectDataFalsePositiveStrategy strategyToTest;
 
-    private SerecoWebScanFalsePositiveProjectDataSupport webscanFalsePositiveProjectDataSupport;
+    private SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport;
 
     @BeforeEach
     void beforeEach() {
         strategyToTest = new WebScanProjectDataFalsePositiveStrategy();
 
-        webscanFalsePositiveProjectDataSupport = mock(SerecoWebScanFalsePositiveProjectDataSupport.class);
+        webscanFalsePositiveProjectDataSupport = mock(SerecoProjectDataWebScanFalsePositiveSupport.class);
 
         strategyToTest.webscanFalsePositiveProjectDataSupport = webscanFalsePositiveProjectDataSupport;
 

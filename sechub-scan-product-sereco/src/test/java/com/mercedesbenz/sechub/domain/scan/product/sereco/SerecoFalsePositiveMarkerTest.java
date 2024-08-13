@@ -32,7 +32,7 @@ public class SerecoFalsePositiveMarkerTest {
     private SerecoFalsePositiveMarker markerToTest;
     private ScanProjectConfigService scanProjectConfigService;
     private ScanProjectConfig config;
-    private SerecoFalsePositiveFinder falsePositiveFinder;
+    private SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder;
     private FalsePositiveProjectConfiguration projectConfig;
 
     private SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder;
@@ -43,7 +43,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest = new SerecoFalsePositiveMarker();
 
         scanProjectConfigService = mock(ScanProjectConfigService.class);
-        falsePositiveFinder = mock(SerecoFalsePositiveFinder.class);
+        jobDataFalsePositiveFinder = mock(SerecoJobDataFalsePositiveFinder.class);
 
         projectDataFalsePositiveFinder = mock(SerecoProjectDataFalsePositiveFinder.class);
         projectDataPatternMapFactory = mock(SerecoProjectDataPatternMapFactory.class);
@@ -51,7 +51,7 @@ public class SerecoFalsePositiveMarkerTest {
         config = new ScanProjectConfig(ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION, PROJECT_ID);
         when(scanProjectConfigService.get(PROJECT_ID, ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION, false)).thenReturn(config);
         markerToTest.scanProjectConfigService = scanProjectConfigService;
-        markerToTest.falsePositiveFinder = falsePositiveFinder;
+        markerToTest.jobDataFalsePositiveFinder = jobDataFalsePositiveFinder;
 
         markerToTest.projectDataFalsePositiveFinder = projectDataFalsePositiveFinder;
         markerToTest.projectDataPatternMapFactory = projectDataPatternMapFactory;
@@ -73,7 +73,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest.markFalsePositives(PROJECT_ID, all);
 
         /* test */
-        verify(falsePositiveFinder).isFound(v1, metaData);
+        verify(jobDataFalsePositiveFinder).isFound(v1, metaData);
         verify(projectDataFalsePositiveFinder, never()).isFound(any(), any(), any());
     }
 
@@ -91,7 +91,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest.markFalsePositives(PROJECT_ID, all);
 
         /* test */
-        verify(falsePositiveFinder, never()).isFound(v1, metaData);
+        verify(jobDataFalsePositiveFinder, never()).isFound(v1, metaData);
         verify(projectDataFalsePositiveFinder, never()).isFound(any(), any(), any());
     }
 
@@ -109,7 +109,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest.markFalsePositives(PROJECT_ID, all);
 
         /* test */
-        verify(falsePositiveFinder).isFound(v1, metaData);
+        verify(jobDataFalsePositiveFinder).isFound(v1, metaData);
         verify(projectDataFalsePositiveFinder, never()).isFound(any(), any(), any());
     }
 
@@ -127,7 +127,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest.markFalsePositives(PROJECT_ID, all);
 
         /* test */
-        verify(falsePositiveFinder, never()).isFound(v1, metaData);
+        verify(jobDataFalsePositiveFinder, never()).isFound(v1, metaData);
         verify(projectDataFalsePositiveFinder, never()).isFound(any(), any(), any());
     }
 
@@ -149,7 +149,7 @@ public class SerecoFalsePositiveMarkerTest {
 
         /* test */
         verify(projectDataFalsePositiveFinder).isFound(v1, projectData, mockedMap);
-        verify(falsePositiveFinder, never()).isFound(any(), any());
+        verify(jobDataFalsePositiveFinder, never()).isFound(any(), any());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class SerecoFalsePositiveMarkerTest {
 
         /* test */
         verify(projectDataFalsePositiveFinder).isFound(v1, projectData, mockedMap);
-        verify(falsePositiveFinder, never()).isFound(any(), any());
+        verify(jobDataFalsePositiveFinder, never()).isFound(any(), any());
     }
 
     private SerecoVulnerability addVulnerability(List<SerecoVulnerability> all, ScanType scanType) {

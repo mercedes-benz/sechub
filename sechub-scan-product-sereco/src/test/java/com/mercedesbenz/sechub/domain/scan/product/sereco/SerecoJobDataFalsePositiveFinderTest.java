@@ -12,11 +12,11 @@ import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-public class SerecoFalsePositiveFinderTest {
+public class SerecoJobDataFalsePositiveFinderTest {
 
-    private SerecoFalsePositiveFinder finderToTest;
-    private CodeScanFalsePositiveStrategy codeScanStrategy;
-    private WebScanFalsePositiveStrategy webScanStrategy;
+    private SerecoJobDataFalsePositiveFinder finderToTest;
+    private CodeScanJobDataFalsePositiveStrategy jobDataCodeScanStrategy;
+    private WebScanJobDataFalsePositiveStrategy jobDataWebScanStrategy;
 
     // we use always true here, because every mock will return false when
     // not defined. Only some "syntactic sugar" to make test easier to read
@@ -24,13 +24,13 @@ public class SerecoFalsePositiveFinderTest {
 
     @Before
     public void before() throws Exception {
-        finderToTest = new SerecoFalsePositiveFinder();
+        finderToTest = new SerecoJobDataFalsePositiveFinder();
 
-        codeScanStrategy = mock(CodeScanFalsePositiveStrategy.class);
-        finderToTest.codeScanStrategy = codeScanStrategy;
+        jobDataCodeScanStrategy = mock(CodeScanJobDataFalsePositiveStrategy.class);
+        finderToTest.jobDataCodeScanStrategy = jobDataCodeScanStrategy;
 
-        webScanStrategy = mock(WebScanFalsePositiveStrategy.class);
-        finderToTest.webScanStrategy = webScanStrategy;
+        jobDataWebScanStrategy = mock(WebScanJobDataFalsePositiveStrategy.class);
+        finderToTest.jobDataSebScanStrategy = jobDataWebScanStrategy;
 
     }
 
@@ -55,13 +55,13 @@ public class SerecoFalsePositiveFinderTest {
 
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
 
-        when(codeScanStrategy.isFalsePositive(vulnerability, metaData)).thenReturn(yesItIsAFalsePositive);
+        when(jobDataCodeScanStrategy.isFalsePositive(vulnerability, metaData)).thenReturn(yesItIsAFalsePositive);
 
         /* execute */
         boolean strategyResult = finderToTest.isFound(vulnerability, metaData);
 
         /* test */
-        verify(codeScanStrategy).isFalsePositive(vulnerability, metaData);
+        verify(jobDataCodeScanStrategy).isFalsePositive(vulnerability, metaData);
         assertEquals(yesItIsAFalsePositive, strategyResult);
     }
 
@@ -77,17 +77,17 @@ public class SerecoFalsePositiveFinderTest {
 
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
 
-        when(webScanStrategy.isFalsePositive(vulnerability, metaData)).thenReturn(yesItIsAFalsePositive);
+        when(jobDataWebScanStrategy.isFalsePositive(vulnerability, metaData)).thenReturn(yesItIsAFalsePositive);
 
         /* execute */
         boolean strategyResult = finderToTest.isFound(vulnerability, metaData);
 
         /* test */
-        verify(webScanStrategy).isFalsePositive(vulnerability, metaData);
+        verify(jobDataWebScanStrategy).isFalsePositive(vulnerability, metaData);
         assertEquals(yesItIsAFalsePositive, strategyResult);
 
         // additional check that other strategy is not called here
-        verify(codeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
+        verify(jobDataCodeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SerecoFalsePositiveFinderTest {
         finderToTest.isFound(vulnerability, metaData);
 
         /* test */
-        verify(codeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
+        verify(jobDataCodeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class SerecoFalsePositiveFinderTest {
         finderToTest.isFound(vulnerability, metaData);
 
         /* test */
-        verify(codeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
+        verify(jobDataCodeScanStrategy, never()).isFalsePositive(vulnerability, metaData);
     }
 
     private FalsePositiveMetaData fetchFirstEntryMetaDataOfExample3() {

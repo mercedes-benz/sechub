@@ -6,18 +6,18 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
 /**
- * Strategy to check if a code scan vulnerability identified by a product is
+ * Strategy to check if a secret scan vulnerability identified by a product is
  * handled by a false positive meta data configuration
  *
  * @author Albert Tregnaghi
  *
  */
 @Component
-public class CodeScanFalsePositiveStrategy extends AbstractSourceCodeBasedFalsePositiveStrategy {
+public class SecretScanJobDataFalsePositiveStrategy extends AbstractSourceCodeBasedFalsePositiveStrategy {
 
     @Override
     protected ScanType getScanType() {
-        return ScanType.CODE_SCAN;
+        return ScanType.SECRET_SCAN;
     }
 
 }

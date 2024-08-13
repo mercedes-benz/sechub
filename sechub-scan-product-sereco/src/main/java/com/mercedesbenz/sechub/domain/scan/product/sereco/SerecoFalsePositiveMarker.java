@@ -37,7 +37,7 @@ public class SerecoFalsePositiveMarker {
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveMarker.class);
 
     @Autowired
-    SerecoFalsePositiveFinder falsePositiveFinder;
+    SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder;
 
     @Autowired
     SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder;
@@ -116,7 +116,7 @@ public class SerecoFalsePositiveMarker {
         case CODE_SCAN:
         case SECRET_SCAN:
         case WEB_SCAN:
-            return falsePositiveFinder.isFound(vulnerability, metaData);
+            return jobDataFalsePositiveFinder.isFound(vulnerability, metaData);
         default:
             LOG.error("Cannot handle scan type {} - not implemented!", scanType);
             return false;

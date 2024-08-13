@@ -16,16 +16,16 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
  *
  */
 @Component
-public class SerecoFalsePositiveFinder {
+public class SerecoJobDataFalsePositiveFinder {
 
     @Autowired
-    CodeScanFalsePositiveStrategy codeScanStrategy;
+    CodeScanJobDataFalsePositiveStrategy jobDataCodeScanStrategy;
 
     @Autowired
-    SecretScanFalsePositiveStrategy secretScanStrategy;
+    SecretScanJobDataFalsePositiveStrategy jobDataSecretScanStrategy;
 
     @Autowired
-    WebScanFalsePositiveStrategy webScanStrategy;
+    WebScanJobDataFalsePositiveStrategy jobDataSebScanStrategy;
 
     public boolean isFound(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         if (!isVulnerabilityValid(vulnerability)) {
@@ -37,11 +37,11 @@ public class SerecoFalsePositiveFinder {
         ScanType scanType = vulnerability.getScanType();
         switch (scanType) {
         case CODE_SCAN:
-            return codeScanStrategy.isFalsePositive(vulnerability, metaData);
+            return jobDataCodeScanStrategy.isFalsePositive(vulnerability, metaData);
         case SECRET_SCAN:
-            return secretScanStrategy.isFalsePositive(vulnerability, metaData);
+            return jobDataSecretScanStrategy.isFalsePositive(vulnerability, metaData);
         case WEB_SCAN:
-            return webScanStrategy.isFalsePositive(vulnerability, metaData);
+            return jobDataSebScanStrategy.isFalsePositive(vulnerability, metaData);
         default:
             return false;
         }
