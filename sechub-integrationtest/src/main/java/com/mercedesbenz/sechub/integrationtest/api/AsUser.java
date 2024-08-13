@@ -1218,7 +1218,6 @@ public class AsUser {
             if (!content.endsWith("]}")) {
                 content += "]}";
             }
-            System.out.println(content);
             return content;
         }
 
