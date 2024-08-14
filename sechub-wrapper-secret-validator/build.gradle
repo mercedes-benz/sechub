@@ -19,7 +19,7 @@ dependencies {
     testImplementation spring_boot_dependency.mockito_core
 }
 
-// TODO Jan 2024-07-17: version = versionData.getSecretValidatorWrapperVersion()
+version = versionData.getSecretvalidationWrapperVersion()
 
 compileJava {
 

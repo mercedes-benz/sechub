@@ -30,8 +30,8 @@ jobs:
 
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
-      - name: Tag Secretscan Validation Wrapper version v${{ inputs.validation-wrapper-version }}-validation-wrapper (temporarily)
-        run: git tag v${{ inputs.validation-wrapper-version }}-validation-wrapper
+      - name: Tag Secretscan Validation Wrapper version v${{ inputs.validation-wrapper-version }}-secretvalidation-wrapper (temporarily)
+        run: git tag v${{ inputs.validation-wrapper-version }}-secretvalidation-wrapper
 
       # ----------------------
       # Setup + Caching
@@ -130,7 +130,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ inputs.validation-wrapper-version }}-validation-wrapper
+          tag_name: v${{ inputs.validation-wrapper-version }}-secretvalidation-wrapper
           commitish: master
           release_name: Secretscan Validation Wrapper Version ${{ inputs.validation-wrapper-version }}
           body: |
