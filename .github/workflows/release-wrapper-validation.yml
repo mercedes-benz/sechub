@@ -113,8 +113,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
-          name: sechub-wrapper-validation
-          path: sechub-wrapper-validation/build/libs
+          name: sechub-wrapper-secretvalidation
+          path: sechub-wrapper-secretvalidation/build/libs
           retention-days: 14
 
       - name: Switch back to feature-3359-validation-wrapper-release-and-integration branch
@@ -149,7 +149,7 @@ jobs:
       # -----------------------------------------
       - name: Create files and sha256 checksum for Secret-Validation Wrapper jar
         run: |
-          cd sechub-wrapper-validation/build/libs/
+          cd sechub-wrapper-secretvalidation/build/libs/
           sha256sum sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar > sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
 
       - name: Upload asset sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
@@ -158,7 +158,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_secretvalidation-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
+          asset_path: sechub-wrapper-secretvalidation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
           asset_name: sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
           asset_content_type: application/zip
 
@@ -168,7 +168,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_secretvalidation-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
+          asset_path: sechub-wrapper-secretvalidation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
           asset_name: sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
           asset_content_type: text/plain
 
