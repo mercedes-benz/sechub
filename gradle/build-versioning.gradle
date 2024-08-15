@@ -46,14 +46,15 @@ def buildVersionFiles(){
     // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
     def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
     def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
-    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
-    def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
-    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
-    def prepareWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-prepare-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
     def webuiVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-webui") }
+    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
+    def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
+    def prepareWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-prepare-wrapper") }
+    def secretvalidationWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-secretvalidation-wrapper") }
+    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged
@@ -240,7 +241,23 @@ def buildVersionFiles(){
     def latestPrepareWrapperVersion = latestPrepareWrapperTag - 'v'
     latestPrepareWrapperVersion = latestPrepareWrapperVersion - "-prepare-wrapper"
 
-    def latestWrapperVersionInfo = versionData.defineVersion("Prepare Wrapper",buildVersionString(prepareWrapperVersionCommitTag, hasChanged, buildNumber),latestPrepareWrapperVersion)
+    def prepareWrapperVersionInfo = versionData.defineVersion("Prepare Wrapper",buildVersionString(prepareWrapperVersionCommitTag, hasChanged, buildNumber),latestPrepareWrapperVersion)
+
+    // ----------------------------
+    // - Secret Validation wrapper
+    // ----------------------------
+
+    // Get latest tagged secretvalidation-wrapper version
+    def latestSecretValidationWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-secretvalidation-wrapper$\' | head -1'
+    ]
+    def latestSecretValidationWrapperTag = latestSecretValidationWrapperTagCmd.execute().text.trim()
+    def latestSecretValidationWrapperVersion = latestSecretValidationWrapperTag - 'v'
+    latestSecretValidationWrapperVersion = latestSecretValidationWrapperVersion - "-secretvalidation-wrapper"
+
+    def secretvalidationWrapperVersionInfo = versionData.defineVersion("SecretValidation Wrapper",buildVersionString(secretvalidationWrapperVersionCommitTag, hasChanged, buildNumber),latestSecretValidationWrapperVersion)
 
 
     // ------------------------
@@ -269,8 +286,9 @@ def buildVersionFiles(){
     println(librariesVersionInfo.describe())
     println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
+    println(prepareWrapperVersionInfo.describe())
+    println(secretvalidationWrapperVersionInfo.describe())
     println(xrayWrapperVersionInfo.describe())
-    println(latestWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
     println("\nTime elapsed to build versions: "+td)
@@ -322,6 +340,8 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion = calcversion - "-webui"
         calcversion = calcversion - "-checkmarx-wrapper"
         calcversion = calcversion - "-owaspzap-wrapper"
+        calcversion = calcversion - "-prepare-wrapper"
+        calcversion = calcversion - "-secretvalidation-wrapper"
         calcversion = calcversion - "-xray-wrapper"
         // remove leading 'v'
         calcversion = calcversion - 'v'
