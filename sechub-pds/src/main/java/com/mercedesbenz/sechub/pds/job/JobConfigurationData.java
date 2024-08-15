@@ -2,14 +2,19 @@
 package com.mercedesbenz.sechub.pds.job;
 
 public class JobConfigurationData {
-    String jobConfigurationJson;
-    String metaData;
+    private PDSJobConfiguration jobConfigurationJson;
+    private String metaData;
+
+    JobConfigurationData(PDSJobConfiguration jobConfigurationJson, String metaData) {
+        this.jobConfigurationJson = jobConfigurationJson;
+        this.metaData = metaData;
+    }
 
     public String getMetaData() {
         return metaData;
     }
 
-    public String getJobConfigurationJson() {
+    public PDSJobConfiguration getJobConfiguration() {
         return jobConfigurationJson;
     }
 }

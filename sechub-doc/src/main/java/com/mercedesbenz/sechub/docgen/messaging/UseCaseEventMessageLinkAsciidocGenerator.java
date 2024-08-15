@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseAsciiDocFactory;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
@@ -25,14 +25,14 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 public class UseCaseEventMessageLinkAsciidocGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(UseCaseEventMessageLinkAsciidocGenerator.class);
-    private TextFileWriter writer;
+    private DocGenTextFileWriter writer;
     private File outputFolder;
     private Map<UseCaseIdentifier, Set<String>> usecaseToMessageIdMap = new TreeMap<>();
 
     public UseCaseEventMessageLinkAsciidocGenerator(Map<UseCaseIdentifier, Set<String>> usecaseToMessageIdMap, File outputFolder) {
         this.outputFolder = outputFolder;
         this.usecaseToMessageIdMap = usecaseToMessageIdMap;
-        this.writer = new TextFileWriter();
+        this.writer = new DocGenTextFileWriter();
     }
 
     public void generate() throws IOException {
@@ -52,7 +52,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         String id = UseCaseEventOverviewPlantUmlGenerator.createUsecaseId(identifier);
         File file = new File(outputFolder, "usecase2messages_" + id + ".adoc");
 
-        writer.save(file, ab.getAsciiDoc());
+        writer.writeTextToFile(file, ab.getAsciiDoc());
     }
 
     private AsciidocBuilder generateLinkUsecaseToMessagesContent(UseCaseIdentifier identifier) {
@@ -78,7 +78,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         String id = DomainMessagingFilesGenerator.createMessagingLinkId(identifier);
         File file = new File(outputFolder, "message2usecases_" + id + ".adoc");
 
-        writer.save(file, ab.getAsciiDoc());
+        writer.writeTextToFile(file, ab.getAsciiDoc());
     }
 
     private AsciidocBuilder generateLinkMessageToUsecasesContent(MessageID identifier) {

@@ -38,7 +38,7 @@ public class PDSConfigService {
     PDSAutoCleanupDaysCalculator calculator;
 
     @UseCaseAdminUpdatesAutoCleanupConfiguration(@PDSStep(number = 2, next = { 3, 4,
-            5 }, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database"))
+            5 }, name = "Updates auto cleanup configuration", description = "Updates auto cleanup configuration as JSON in database"))
     public void updateAutoCleanupConfiguration(PDSAutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
@@ -72,7 +72,7 @@ public class PDSConfigService {
         transactionService.saveConfigInOwnTransaction(config);
     }
 
-    @UseCaseAdminFetchesAutoCleanupConfiguration(@PDSStep(number = 2, name = "Fetches auto cleanup config", description = "Fetches auto cleanup configuration from database"))
+    @UseCaseAdminFetchesAutoCleanupConfiguration(@PDSStep(number = 2, name = "Fetches auto cleanup configuration", description = "Fetches auto cleanup configuration from database"))
     public PDSAutoCleanupConfig fetchAutoCleanupConfiguration() {
         String cleanupConfigJson = getOrCreateConfig().autoCleanupConfiguration;
         PDSAutoCleanupConfig cleanupConfig = null;

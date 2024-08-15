@@ -7,7 +7,7 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.docgen.util.TextFileReader;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileReader;
 
 class RestDocResourceModelTest {
 
@@ -15,8 +15,8 @@ class RestDocResourceModelTest {
     void test() {
         /* prepare */
         File file = new File("./src/test/resources/restdoc/test_resource_1.json");
-        TextFileReader reader = new TextFileReader();
-        String json = reader.loadTextFile(file);
+        DocGenTextFileReader reader = new DocGenTextFileReader();
+        String json = reader.readTextFromFile(file);
 
         /* execute */
         RestDocResourceModel model = RestDocResourceModel.fromString(json);

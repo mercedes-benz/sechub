@@ -28,6 +28,23 @@ pds:
       queueMax: 10
       # Maximum number of jobs that are processed in parallel by PDS
       workerThreadCount: 1
+  encryption:
+    # Encryption algorithm can be one of: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256"
+    algorithm: "NONE"
+    # Encryption key: The base64 encoded secret key used for encryption.
+    #        Example: echo -n '%&/:,;-_()mysecretkey' | base64
+    secretKey: ""
+  archive:
+    # Limiting parameters regarding the extraction of archives:
+    extraction:
+      # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
+      maxFileFizeUncompressed: 1GB
+      # Defines how many entries the archive may have
+      maxEntries: 100000
+      # The maximum directory depth for an entry inside the archive
+      maxDirectoryDepth: 100
+      # The timeout of the archive extraction process
+      timeout: 1m
   volumes:
     workspace:
       size: "1Gi"

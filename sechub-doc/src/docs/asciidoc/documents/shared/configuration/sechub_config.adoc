@@ -480,6 +480,15 @@ include::sechub_config_example20_remote_data_with_credentials_binaries_licensesc
 ==== MetaData
 The {sechub} configuration file can have optional meta data.
 
+[IMPORTANT]
+====
+The {sechub} configuration is stored encrypted in database and access is restricted, even 
+for administrators. But the meta data can be fetched by users of the project or administrators
+without additional audit logging.
+
+Because of this you should never store sensitive information inside the meta data!
+====
+
 ===== Labels
 With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.

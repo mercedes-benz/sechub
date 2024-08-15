@@ -14,11 +14,11 @@ import com.mercedesbenz.sechub.test.TestUtil;
 
 public class TextFileWriterTest {
 
-    private TextFileWriter writerToTest;
+    private DocGenTextFileWriter writerToTest;
 
     @BeforeEach
     void before() throws Exception {
-        writerToTest = new TextFileWriter();
+        writerToTest = new DocGenTextFileWriter();
     }
 
     @Test
@@ -33,7 +33,7 @@ public class TextFileWriterTest {
         assertFalse(targetFile.exists());
 
         /* execute */
-        writerToTest.save(targetFile, "text");
+        writerToTest.writeTextToFile(targetFile, "text");
 
         /* test */
         assertTrue(subFolder.exists());

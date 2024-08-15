@@ -169,7 +169,7 @@ class PDSWorkspaceServiceTest {
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
         assertTrue(metaDataFile.exists());
-        assertEquals("this is my metadata", TestFileReader.loadTextFile(metaDataFile));
+        assertEquals("this is my metadata", TestFileReader.readTextFromFile(metaDataFile));
     }
 
     @Test

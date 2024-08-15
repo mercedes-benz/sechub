@@ -1,5 +1,17 @@
-#!/bin/sh
+#!/usr/bin/bash
 # SPDX-License-Identifier: MIT
+
+declare -r secretvalidation_wrapper="$TOOL_FOLDER/sechub-wrapper-secret-validator.jar"
+
+if [[ "$PDS_INTEGRATIONTEST_ENABLED" = "true" ]]; then
+    echo "Integrationtest will be performed. Gitleaks will not be executed."
+    
+    # Execute the wrapper using the 'integrationtest' profile
+    java -jar "-Dspring.profiles.active=integrationtest" "$secretvalidation_wrapper"
+    
+    exit $?
+fi
+
 
 . "$SCRIPT_FOLDER/common.sh"
 

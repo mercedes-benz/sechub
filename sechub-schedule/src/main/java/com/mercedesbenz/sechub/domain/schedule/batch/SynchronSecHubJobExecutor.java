@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubConfigurationModelAccessService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -54,6 +55,9 @@ public class SynchronSecHubJobExecutor {
     @Autowired
     SecHubJobSafeUpdater secHubJobSafeUpdater;
 
+    @Autowired
+    SecHubConfigurationModelAccessService configurationModelAccess;
+
     @IsSendingSyncMessage(MessageID.START_SCAN)
     public void execute(final ScheduleSecHubJob secHubJob) {
         Thread scheduleWorkerThread = new Thread(() -> executeInsideThread(secHubJob), SECHUB_SCHEDULE_THREAD_PREFIX + secHubJob.getUUID());
@@ -66,7 +70,7 @@ public class SynchronSecHubJobExecutor {
         uuids.setSecHubJobUUID(secHubJob.getUUID());
 
         try {
-            String secHubConfiguration = secHubJob.getJsonConfiguration();
+            String secHubConfiguration = configurationModelAccess.resolveUnencryptedConfigurationasJson(secHubJob);
 
             /* own thread so MDC.put necessary */
             MDC.clear();
@@ -76,18 +80,18 @@ public class SynchronSecHubJobExecutor {
 
             LOG.info("Executing sechub job: {}, execution uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
 
-            sendJobExecutionStartingEvent(secHubJob, uuids, secHubConfiguration);
+            sendJobExecutionStartingEvent(secHubJob, uuids);
 
             /* we send now a synchronous SCAN event */
-            DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-            request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
-            request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
+            DomainMessage startScanRequest = new DomainMessage(MessageID.START_SCAN);
+            startScanRequest.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
+            startScanRequest.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
 
-            request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
-            request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
+            startScanRequest.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
+            startScanRequest.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG.getProvider().get(secHubConfiguration));
 
             /* wait for scan event result - synchron */
-            DomainMessageSynchronousResult response = messageService.sendSynchron(request);
+            DomainMessageSynchronousResult response = messageService.sendSynchron(startScanRequest);
 
             updateSecHubJob(uuids, response);
 
@@ -106,7 +110,7 @@ public class SynchronSecHubJobExecutor {
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
-    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, UUIDContainer uuids, String secHubConfiguration) {
+    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, UUIDContainer uuids) {
         /* we send asynchronous an information event */
         DomainMessage jobExecRequest = new DomainMessage(MessageID.JOB_EXECUTION_STARTING);
 

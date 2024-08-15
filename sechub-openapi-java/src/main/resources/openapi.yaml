@@ -30,6 +30,8 @@ tags:
     description: Operations relevant to testing
   - name: Configuration
     description: Operations relevant to configuration parts
+  - name: Encryption
+    description: Operations relevant to encryption
   - name: Other
     description: All other use cases
 
@@ -1677,7 +1679,97 @@ components:
       properties:
         cleanupTime:
           $ref: '#/components/schemas/CleanupTime'
-
+          
+    ################
+    ## Encryption ##
+    ################
+    SecHubCipherPasswordSourceType:
+      title: SecHubCipherPasswordSourceType
+      type: string
+      enum:
+        - NONE
+        - ENVIRONMENT_VARIABLE
+        
+    SecHubPasswordSource:
+      title: SecHubPasswordSource
+      type: object
+      properties: 
+         type:
+           type: object
+           $ref: '#/components/schemas/SecHubCipherPasswordSourceType'  
+         data:
+           type: string
+      
+    SecHubCipherAlgorithm:
+      title: SecHubCipherAlgorithm
+      type: string
+      enum:
+        - NONE
+        - AES_GCM_SIV_128
+        - AES_GCM_SIV_256
+    
+    SecHubDomainEncryptionData:
+      title: SecHubDomainEncryptionData
+      type: object
+      properties:
+        id: 
+          description: Identifer for encryption configuration inside the domain
+          type: string
+        algorithm:
+          type: object     
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'     
+        passwordSource:
+          type: object
+          $ref: '#/components/schemas/SecHubPasswordSource'
+        created:
+          description: Creation timestamp
+          type: string
+          format: date-time
+        createdFrom:
+          description: User id of admin who has created the configuration
+          type: string
+        usage:
+          description: Generic information about encryption usages inside domain
+          type: object
+          additionalProperties: true
+    
+    SecHubDomainEncryptionStatus:
+      title: SecHubDomainEncryptionStatus
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/SecHubDomainEncryptionData'
+            
+    SecHubEncryptionStatus:
+      title: SecHubEncryptionStatus
+      type: object
+      properties:
+        type: 
+          type: string
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubDomainEncryptionStatus'
+         
+    SecHubEncryptionData:
+      title: SecHubEncryptionData
+      type: object
+      properties:
+        algorithm:
+          description: Algorithm to use for encryption rotation
+          type: object     
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'   
+        passwordSourceType:
+          description: Password source type to use for algorithm
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'    
+        passwordSourceData:
+          description: Password source data for used type. E.g. for ENVIRONMENT_VARIABLE the name of the variable
+          type: string
     ###########
     ## Other ##
     ###########
@@ -3303,6 +3395,40 @@ paths:
       tags:
         - Configuration
 
+  ################
+  ## Encryption ##
+  ################
+  /api/admin/encryption/status:
+    get:
+      summary: Admin fetches encryption status 
+      description: "An administrator fetches encryption status from all domains where encryption is used."
+      operationId: adminFetchesEncryptionStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubEncryptionStatus'
+      tags:
+        - Encryption
+        
+  /api/admin/encryption/rotate:
+    post:
+      summary: Admin starts encryption rotation
+      description: "An administrator starts encryption rotation."
+      operationId: adminStartsEncryptionRotation
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SecHubEncryptionData'
+      responses:
+        "200":
+          description: "Ok"   
+      x-accepts: application/json
+      tags:
+        - Encryption
+      
   ###########
   ## Other ##
   ###########

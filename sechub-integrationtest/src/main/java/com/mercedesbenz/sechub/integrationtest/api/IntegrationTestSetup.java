@@ -219,6 +219,8 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.error("#");
                 LOG.error("#########################################################################");
                 LOG.error("#    Wasnt able to prepare scenario:{}", scenario.getName());
+                LOG.error("#    Reason: {}", e.getMessage());
+                LOG.error("#    (for more details look in unit test stack trace output)");
                 LOG.error("#########################################################################");
                 LOG.error("Last url :" + TestRestHelper.getLastUrl());
                 LOG.error("Last data:" + TestRestHelper.getLastData());

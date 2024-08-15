@@ -63,7 +63,7 @@ class PDSMessageCollectorTest {
 
         String messageText = "I am a message!";
         TestFileWriter writer = new TestFileWriter();
-        writer.save(new File(tempDir, fileName), messageText, false);
+        writer.writeTextToFile(new File(tempDir, fileName), messageText, false);
 
         /* execute */
         List<SecHubMessage> result = collectorToTest.collect(tempDir);
@@ -86,7 +86,7 @@ class PDSMessageCollectorTest {
 
         String messageText = "I am a warn message!";
         TestFileWriter writer = new TestFileWriter();
-        writer.save(new File(tempDir, fileName), messageText, false);
+        writer.writeTextToFile(new File(tempDir, fileName), messageText, false);
 
         /* execute */
         List<SecHubMessage> result = collectorToTest.collect(tempDir);
@@ -109,7 +109,7 @@ class PDSMessageCollectorTest {
 
         String messageText = "I am an error message!";
         TestFileWriter writer = new TestFileWriter();
-        writer.save(new File(tempDir, fileName), messageText, false);
+        writer.writeTextToFile(new File(tempDir, fileName), messageText, false);
 
         /* execute */
         List<SecHubMessage> result = collectorToTest.collect(tempDir);

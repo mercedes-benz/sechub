@@ -49,10 +49,10 @@ public class PDSExecutionEnvironmentService {
             throw new IllegalArgumentException("pds job uuid may not be null!");
         }
         if (config == null) {
-            throw new IllegalArgumentException("pds job config may not be null!");
+            throw new IllegalArgumentException("pds job configuration may not be null!");
         }
         if (builder == null) {
-            throw new IllegalArgumentException("pds job config may not be null!");
+            throw new IllegalArgumentException("pds job configuration may not be null!");
         }
         String productId = config.getProductId();
         if (productId == null) {

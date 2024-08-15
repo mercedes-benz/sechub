@@ -110,7 +110,7 @@ public class PublicModelFileGenerator {
         template.addLine("");
         template.addLine("}");
 
-        context.getTextFileWriter().save(genFile, template.getCode(), overwritePublicModelFiles);
+        context.getTextFileWriter().writeTextToFile(genFile, template.getCode(), overwritePublicModelFiles);
 
     }
 

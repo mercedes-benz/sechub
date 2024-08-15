@@ -8,15 +8,15 @@ import java.util.TreeSet;
 
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel.Domain;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel.DomainPart;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 
 public class DomainMessagingFilesGenerator {
 
-    private TextFileWriter writer;
+    private DocGenTextFileWriter writer;
     private DomainMessagingModelPlantUMLGenerator domainMessagingModelPlantUMLGenerator;
 
-    public DomainMessagingFilesGenerator(TextFileWriter writer) {
+    public DomainMessagingFilesGenerator(DocGenTextFileWriter writer) {
         this.writer = writer;
         this.domainMessagingModelPlantUMLGenerator = new DomainMessagingModelPlantUMLGenerator();
     }
@@ -57,7 +57,7 @@ public class DomainMessagingFilesGenerator {
             sb.append("\n");
             sb.append("include::message2usecases_" + createMessagingLinkId(id) + ".adoc[]\n");
         }
-        writer.save(messagingFile, sb.toString());
+        writer.writeTextToFile(messagingFile, sb.toString());
     }
 
     public static String createMessagingLinkId(MessageID messageId) {
@@ -76,7 +76,7 @@ public class DomainMessagingFilesGenerator {
             MessageID[] messageIdsToInspect) throws IOException {
         String generatedPlantuml = domainMessagingModelPlantUMLGenerator.generate(model, title, messageIdsToInspect, true);
         File targetFile = new File(diagramsGenFolder, targetFileName);
-        writer.save(targetFile, generatedPlantuml);
+        writer.writeTextToFile(targetFile, generatedPlantuml);
     }
 
     public DomainMessagingModel createReducedClone(DomainMessagingModel originModel) {

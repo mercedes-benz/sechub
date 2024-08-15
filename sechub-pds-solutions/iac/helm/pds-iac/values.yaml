@@ -5,77 +5,94 @@
 replicaCount: 1
 
 image:
-    registry: "ghcr.io/mercedes-benz/sechub/pds-iac"
-    tag: "latest"
+  registry: "ghcr.io/mercedes-benz/sechub/pds-iac"
+  tag: "latest"
 
 resources:
-    requests:
-        # Initial container memory size
-        memory: 256Mi
-    limits:
-        # Maximum container memory size
-        memory: 1Gi
+  requests:
+    # Initial container memory size
+    memory: 256Mi
+  limits:
+    # Maximum container memory size
+    memory: 1Gi
 
 pds:
-    startMode: localserver
-    # Maximum upload size for source code: 50 MiB by default (50 * 1024 * 1024 = 52428800)
-    maxFileUploadBytes: "52428800"
-    config:
-        execute:
-            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
-            queueMax: 10
-            # Maximum number of jobs that are processed in parallel by PDS
-            workerThreadCount: 10
-    heartbeatLogging: "true"
-    logging:
-        type:
-            enabled: false
-            appenderName: "LOGSTASH_JSON"
-    debug:
-        keepReportsInWorkspace: false
-    javaDebug:
-        enabled: false
-    keepContainerAliveAfterPDSCrashed: false
+  startMode: localserver
+  # Maximum upload size for source code: 50 MiB by default (50 * 1024 * 1024 = 52428800)
+  maxFileUploadBytes: "52428800"
+  config:
+    execute:
+      # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+      queueMax: 10
+      # Maximum number of jobs that are processed in parallel by PDS
+      workerThreadCount: 10
+  encryption:
+    # Encryption algorithm can be one of: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256"
+    algorithm: "NONE"
+    # Encryption key: The base64 encoded secret key used for encryption.
+    #        Example: echo -n '%&/:,;-_()mysecretkey' | base64
+    secretKey: ""
+  archive:
+    # Limiting parameters regarding the extraction of archives:
+    extraction:
+      # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
+      maxFileFizeUncompressed: 1GB
+      # Defines how many entries the archive may have
+      maxEntries: 100000
+      # The maximum directory depth for an entry inside the archive
+      maxDirectoryDepth: 100
+      # The timeout of the archive extraction process
+      timeout: 1m
+  heartbeatLogging: "true"
+  logging:
+    type:
+      enabled: false
+      appenderName: "LOGSTASH_JSON"
+  debug:
+    keepReportsInWorkspace: false
+  javaDebug:
+    enabled: false
+  keepContainerAliveAfterPDSCrashed: false
 
 users:
-    technical:
-        id: "techuser"
-        apiToken: "<api token of techuser>"
-    admin:
-        id: "admin"
-        apiToken: "<api token of admin user>"
+  technical:
+    id: "techuser"
+    apiToken: "<api token of techuser>"
+  admin:
+    id: "admin"
+    apiToken: "<api token of admin user>"
 
 storage:
-    local:
-        enabled: true
-    s3:
-        enabled: false
-        endpoint: "https://<minio-or-s3-server>:<port>"
-        bucketname: "<my-bucketname>"
-        accesskey: "<my-accesskey>"
-        secretkey: "<my-secretkey>"
-    sharedVolume:
-        enabled: false
-        upload:
-            dir: "/mount/nfs/shares/<sharename>"
+  local:
+    enabled: true
+  s3:
+    enabled: false
+    endpoint: "https://<minio-or-s3-server>:<port>"
+    bucketname: "<my-bucketname>"
+    accesskey: "<my-accesskey>"
+    secretkey: "<my-secretkey>"
+  sharedVolume:
+    enabled: false
+    upload:
+      dir: "/mount/nfs/shares/<sharename>"
 
 database:
-    postgres:
-        enabled: false
-        connection: "jdbc:postgresql://database:5432/pds"
-        username: "pds_iac"
-        password: "<password-of-db-user>"
+  postgres:
+    enabled: false
+    connection: "jdbc:postgresql://database:5432/pds"
+    username: "pds_iac"
+    password: "<password-of-db-user>"
 
 networkPolicy:
-    enabled: false
-    ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                    name: sechub-server
-            - podSelector:
-                matchLabels:
-                    name: sechub-adminserver
+  enabled: false
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            name: sechub-server
+      - podSelector:
+          matchLabels:
+            name: sechub-adminserver
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.
@@ -83,7 +100,7 @@ networkPolicy:
 deploymentComment: "my deployment comment"
 
 # optional: Add annotations to template.metadata.annotations
-#           Can contain multiple lines. Example for Prometheus actuator:
+#       Can contain multiple lines. Example for Prometheus actuator:
 # templateMetadataAnnotations: |-
 #   prometheus.io/scrape: "true"
 #   prometheus.io/probe: "true"

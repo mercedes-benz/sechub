@@ -407,7 +407,7 @@ public class SecHubClientExecutor {
                 if (!testFile1.exists()) {
                     try {
                         TestFileWriter writer = new TestFileWriter();
-                        writer.save("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
+                        writer.writeTextToFile("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);
                     }

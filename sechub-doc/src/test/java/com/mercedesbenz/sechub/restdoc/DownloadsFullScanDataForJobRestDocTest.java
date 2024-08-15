@@ -79,8 +79,7 @@ public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryFo
         d.metaData = "{}";
         data.allScanData.add(d);
 
-        String config = "{}";
-        ProjectScanLog log = new ProjectScanLog("theProject", jobUUID, "spartakus", config);
+        ProjectScanLog log = new ProjectScanLog("theProject", jobUUID, "spartakus");
         data.allScanLogs.add(log);
 
         when(fullScanDataService.getFullScanData(jobUUID)).thenReturn(data);

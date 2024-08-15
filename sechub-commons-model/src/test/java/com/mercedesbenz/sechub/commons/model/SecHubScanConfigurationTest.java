@@ -18,7 +18,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_example1_JSON_can_be_deserialized_and_contains_expected_login_url() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_config_example1.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_config_example1.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -31,7 +31,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_and_contains_expected_source_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_config_source_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_config_source_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -46,7 +46,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_even_with_unknown_key() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -76,7 +76,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_fantasy_scan_type_only_no_official_scan_types_inside_but_can_be_read() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -92,7 +92,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_contains_data_section_when_only_fantasy_scan_type_defined() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -110,7 +110,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_and_contains_expected_binary_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_config_binary_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_config_binary_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -125,7 +125,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_source_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_source_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_secret_scan_config_source_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -140,7 +140,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_binary_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_binary_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_secret_scan_config_binary_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -155,7 +155,7 @@ class SecHubScanConfigurationTest {
     void sechub_remote_source_code_scan_configuration_contains_location_and_type() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -199,7 +199,7 @@ class SecHubScanConfigurationTest {
     void sechub_remote_binary_code_scan_configuration_contains_location_and_type() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);

@@ -95,8 +95,15 @@ ext {
       cyclonedx_gradle_plugin:                 "1.7.4",
 
      /* Prepare wrapper */
-     jgit_core:                                "6.9.0.202403050737-r"
-    
+     jgit_core:                                "6.9.0.202403050737-r",
+
+     /* ArchUnit */
+     arch_unit:                                "1.3.0",
+
+      /* encryption */
+      // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+      bouncy_castle_bcprov_jdk8:                "1.78.1"
+
    ]    
    
    library = [
@@ -195,6 +202,10 @@ ext {
 
         jgit_core:                              "org.eclipse.jgit:org.eclipse.jgit:${libraryVersion.jgit_core}",
 
+        arch_unit:                             "com.tngtech.archunit:archunit-junit5:${libraryVersion.arch_unit}",
+
+        bouncy_castle_bcprov_jdk8:              "org.bouncycastle:bcprov-jdk18on:${libraryVersion.bouncy_castle_bcprov_jdk8}"
+
         /* OpenAPI generator */
         jacksonAnnotations:                     "com.fasterxml.jackson.core:jackson-annotations:${libraryVersion.jacksonAnnotations}",
         jacksonDatabind:                        "com.fasterxml.jackson.core:jackson-databind:${libraryVersion.jacksonDatabind}",
@@ -202,6 +213,7 @@ ext {
         jacksonDatabindNullable:                "org.openapitools:jackson-databind-nullable:${libraryVersion.jacksonDatabindNullable}",
         javaxAnnotationApi:                     "javax.annotation:javax.annotation-api:${libraryVersion.javaxAnnotationApi}",
         findbugs:                               "com.google.code.findbugs:jsr305:${libraryVersion.findbugs}",
+
    ]
    
 

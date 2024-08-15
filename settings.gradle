@@ -15,6 +15,9 @@ include 'sechub-cli',
 'sechub-commons-pds',
 'sechub-commons-archive',
 
+/* encryption */
+'sechub-commons-encryption',
+
 /* server POD area */
 'sechub-server',       // executable spring boot jar
 'sechub-server-core',  // core project for test compile dependencies and more
@@ -29,6 +32,9 @@ include 'sechub-cli',
 
 /* integration test*/
 'sechub-integrationtest',
+
+/* Arch Unit */
+'sechub-archunit-test',
 
 /* server parts */
 'sechub-schedule',
@@ -92,6 +98,9 @@ include 'sechub-cli',
 // Wrapper Xray
 'sechub-wrapper-xray',
 
+// secret validator
+'sechub-wrapper-secret-validator',
+
 /* System Test */
 'sechub-systemtest',
 
@@ -104,6 +113,8 @@ include 'sechub-cli',
 /* WebUI */
 'sechub-webui',
 'sechub-webui-solution'
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

@@ -15,10 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class ComboxSelectionDialogUI {
+public class ComboxSelectionDialogUI<T> {
 
     private JLabel label;
-    private JComboBox<String> combobox;
+    private JComboBox<T> combobox;
 
     private JButton cancelButton;
     private JButton okButton;
@@ -27,7 +27,7 @@ public class ComboxSelectionDialogUI {
 
     private JDialog dialog;
 
-    public ComboxSelectionDialogUI(JFrame parentFrame, String title, String labelText, List<String> comboboxValues, String initialValue) {
+    public ComboxSelectionDialogUI(JFrame parentFrame, String title, String labelText, List<T> comboboxValues, T initialValue) {
         dialog = new JDialog(parentFrame, title, true);
 
         JPanel content = new JPanel(new BorderLayout());
@@ -45,12 +45,12 @@ public class ComboxSelectionDialogUI {
 
     }
 
-    private JPanel createComboBoxPanel(String labelText, List<String> values, String initialValue) {
+    private JPanel createComboBoxPanel(String labelText, List<T> values, T initialValue) {
         JPanel comboboxPanel = new JPanel(new BorderLayout());
         label = new JLabel(labelText);
 
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (String value : values) {
+        DefaultComboBoxModel<T> model = new DefaultComboBoxModel<>();
+        for (T value : values) {
             model.addElement(value);
         }
 
@@ -83,8 +83,9 @@ public class ComboxSelectionDialogUI {
         combobox.requestFocusInWindow();
     }
 
-    public String getSelectionFromCombobox() {
-        String inputValue = (String) combobox.getSelectedItem();
+    public T getSelectionFromCombobox() {
+        @SuppressWarnings("unchecked")
+        T inputValue = (T) combobox.getSelectedItem();
         return inputValue;
     }
 

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.docgen.spring.SpringScheduleExtractor.SpringSched
 import com.mercedesbenz.sechub.docgen.spring.SpringValueExtractor;
 import com.mercedesbenz.sechub.docgen.spring.SpringValueExtractor.SpringValue;
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 
 class KubernetesTemplateFilesGenerator implements Generator {
 
@@ -27,12 +27,12 @@ class KubernetesTemplateFilesGenerator implements Generator {
 
     SpringValueExtractor springValueExtractor;
     SpringScheduleExtractor springScheduledExtractor;
-    TextFileWriter writer;
+    DocGenTextFileWriter writer;
 
     public KubernetesTemplateFilesGenerator() {
         this.springValueExtractor = new SpringValueExtractor();
         this.springScheduledExtractor = new SpringScheduleExtractor();
-        this.writer = new TextFileWriter();
+        this.writer = new DocGenTextFileWriter();
     }
 
     public static void main(String[] args) throws Exception {
@@ -59,10 +59,10 @@ class KubernetesTemplateFilesGenerator implements Generator {
         list.add(newSecret("sechub.server.ssl.keystore.file", "ssl", "The server ssl certificate file", "server-certificate.p12"));
 
         /*
-         * config (normally unnecessary because automatical generated, but we want .json
-         * as file ending, so here necessary
+         * configuration (normally unnecessary because automatical generated, but we
+         * want .json as file ending, so here necessary
          */
-        list.add(newSecret("sechub.scan.config.initial", "config", "The initial scan configuration", "sechub_scan_config_initial.json"));
+        list.add(newSecret("sechub.scan.config.initial", "configuration", "The initial scan configuration", "sechub_scan_config_initial.json"));
 
         Collections.sort(list);
         generateDeploymentFilePart(result, list);
@@ -71,7 +71,7 @@ class KubernetesTemplateFilesGenerator implements Generator {
         generateSecretShellScriptsAndMissingSecretFiles(result);
         /* last but not least create output file */
         File generatedDeploymentFilePart = new File(ensureKubernetesGenFolder(), "sechub-server-environment-deployment-parts.gen.yaml");
-        writer.save(generatedDeploymentFilePart, result.serverDeploymentYaml);
+        writer.writeTextToFile(generatedDeploymentFilePart, result.serverDeploymentYaml);
         output("Written generated deployment file:" + generatedDeploymentFilePart);
 
     }
@@ -213,7 +213,7 @@ class KubernetesTemplateFilesGenerator implements Generator {
             String shellName = createShellScriptName(secretName);
             allShellScriptNames.add(shellName);
             File targetFile = new File(targetFolder, shellName);
-            writer.save(targetFile, sb.toString(), true);
+            writer.writeTextToFile(targetFile, sb.toString(), true);
             output("Updated/Created:" + targetFile);
 
         }
@@ -253,7 +253,7 @@ class KubernetesTemplateFilesGenerator implements Generator {
             sb.append("./").append(shellScriptName).append("\n");
         }
         File targetFile = new File(targetFolder, createShellScriptName("all"));
-        writer.save(targetFile, sb.toString(), true);
+        writer.writeTextToFile(targetFile, sb.toString(), true);
         output("Updated/Created:" + targetFile);
     }
 
