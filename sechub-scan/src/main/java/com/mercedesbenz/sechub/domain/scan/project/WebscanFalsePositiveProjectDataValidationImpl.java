@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValidation<WebscanFalsePositiveProjectData>
         implements WebscanFalsePositiveProjectDataValidation {
 
+    private static final String VALIDATOR_NAME = "webscan false positive project data validation";
     private static final String WILDCARD_ONLY_REGEX = "^[\\.\\*/:]+$";
     private static final Pattern WILDCARD_ONLY_PATTERN = Pattern.compile(WILDCARD_ONLY_REGEX);
 
@@ -29,7 +30,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
 
     @Override
     protected String getValidatorName() {
-        return "webscan false positive project data validation";
+        return VALIDATOR_NAME;
     }
 
     @Override
@@ -53,17 +54,16 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
         if (cweId == null || cweId >= 0) {
             return;
         }
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_CWEID;
-        if (cweId < 0) {
-            context.addError(getValidatorName(), ": The value for '" + name
-                    + "' must not be negative. Do not specify any CWE if the targeted finding has none or specify the correct value.");
-        }
+        String name = "%s.%s".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_CWEID);
+        context.addError(getValidatorName(),
+                ": The value for '%s' must not be negative. Do not specify any CWE if the targeted finding has none or specify the correct value."
+                        .formatted(name));
     }
 
     private void validateHostPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> hostPatterns) {
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_HOSTPATTERNS + "[]";
+        String name = "%s.%s[]".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_HOSTPATTERNS);
         if (hostPatterns == null || hostPatterns.isEmpty()) {
-            context.addError(getValidatorName(), ": The list of '" + name + "' must contain at least one entry!");
+            context.addError(getValidatorName(), ": The list of '%s' must contain at least one entry!".formatted(name));
             return;
         }
         validateSize(context, hostPatterns, name);
@@ -73,10 +73,10 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
     }
 
     private void validateUrlPathPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> urlPathPatterns) {
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_URLPATHPATTERNS + "[]";
+        String name = "%s.%s[]".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_URLPATHPATTERNS);
 
         if (urlPathPatterns == null || urlPathPatterns.isEmpty()) {
-            context.addError(getValidatorName(), ": The list of '" + name + "' must contain at least one entry!");
+            context.addError(getValidatorName(), ": The list of '%s' must contain at least one entry!".formatted(name));
             return;
         }
         validateSize(context, urlPathPatterns, name);
@@ -86,17 +86,17 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
     }
 
     private void validateMethods(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> methods) {
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_METHODS + "[]";
+        String name = "%s.%s[]".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_METHODS);
         validateRequirementsForOptionalList(context, methods, name);
     }
 
     private void validatePorts(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> ports) {
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_PORTS + "[]";
+        String name = "%s.%s[]".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_PORTS);
         validateRequirementsForOptionalList(context, ports, name);
     }
 
     private void validateProtocols(ValidationContext<WebscanFalsePositiveProjectData> context, List<String> protocols) {
-        String name = FalsePositiveProjectData.PROPERTY_WEBSCAN + "." + WebscanFalsePositiveProjectData.PROPERTY_PROTOCOLS + "[]";
+        String name = "%s.%s[]".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_PROTOCOLS);
         validateRequirementsForOptionalList(context, protocols, name);
     }
 
@@ -104,11 +104,11 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
             String... allowedSeparators) {
         for (String entry : list) {
             if (entry.contains("\\")) {
-                context.addError(getValidatorName(), ": Inside '" + name + "' no backslashes are allowed!");
+                context.addError(getValidatorName(), ": Inside '%s' no backslashes are allowed!".formatted(name));
                 continue;
             }
             if (WILDCARD_ONLY_PATTERN.matcher(name).matches()) {
-                context.addError(getValidatorName(), ": Inside '" + name + "' each element must consist of more than just wildcards!");
+                context.addError(getValidatorName(), ": Inside '%s' each element must consist of more than just wildcards!".formatted(name));
                 continue;
             }
         }
@@ -125,7 +125,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
         validateMaxSize(context, list, WEBSCAN_PROJECT_DATA_LIST_MAX_SIZE, name);
 
         for (String entry : list) {
-            validateMaxLength(context, entry, WEBSCAN_PROJECT_DATA_LIST_ENTRY_MAX_SIZE, ": Entry: '" + entry + "' inside '" + name + "'");
+            validateMaxLength(context, entry, WEBSCAN_PROJECT_DATA_LIST_ENTRY_MAX_SIZE, ": Entry: '%s' inside '%s'".formatted(entry, name));
         }
     }
 

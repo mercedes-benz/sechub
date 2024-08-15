@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.project;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,9 @@ public class FalsePositiveDataConfigMerger {
 
         SecHubFinding finding = fetchFindingInReportOrFail(report, falsePositiveJobData);
 
-        FalsePositiveEntry existingEntry = findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData);
-        if (existingEntry != null) {
-            LOG.warn("False positive entry for job:{}, findingId:{} not added, because already existing", falsePositiveJobData.getJobUUID(),
-                    falsePositiveJobData.getFindingId());
-            return;
-        }
+        findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData)
+                .ifPresent(entry -> LOG.warn("False positive entry for job:{}, findingId:{} not added, because already existing",
+                        falsePositiveJobData.getJobUUID(), falsePositiveJobData.getFindingId()));
 
         FalsePositiveMetaData metaData = metaDataFactory.createMetaData(finding);
 
@@ -75,19 +73,12 @@ public class FalsePositiveDataConfigMerger {
     }
 
     public void removeJobDataWithMetaDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData jobDataToRemove) {
-        FalsePositiveEntry entry = findExistingFalsePositiveEntryInConfig(config, jobDataToRemove);
-        if (entry == null) {
-            return;
-        }
-        config.getFalsePositives().remove(entry);
+        findExistingFalsePositiveEntryInConfig(config, jobDataToRemove).ifPresent(entry -> config.getFalsePositives().remove(entry));
+
     }
 
     public void removeProjectDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectDataToRemove) {
-        FalsePositiveEntry entry = findExistingProjectDataFalsePositiveEntryInConfig(config, projectDataToRemove);
-        if (entry == null) {
-            return;
-        }
-        config.getFalsePositives().remove(entry);
+        findExistingProjectDataFalsePositiveEntryInConfig(config, projectDataToRemove).ifPresent(entry -> config.getFalsePositives().remove(entry));
 
     }
 
@@ -95,7 +86,7 @@ public class FalsePositiveDataConfigMerger {
         return findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData) != null;
     }
 
-    private FalsePositiveEntry findExistingProjectDataFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
+    private Optional<FalsePositiveEntry> findExistingProjectDataFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
             FalsePositiveProjectData projectDataToRemove) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
@@ -105,13 +96,14 @@ public class FalsePositiveDataConfigMerger {
             }
 
             if (projectDataFromEntry.getId().equals(projectDataToRemove.getId())) {
-                return existingFPEntry;
+                return Optional.of(existingFPEntry);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private FalsePositiveEntry findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
+    private Optional<FalsePositiveEntry> findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
+            FalsePositiveJobData falsePositiveJobData) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveJobData jobData = existingFPEntry.getJobData();
             if (jobData == null) {
@@ -125,9 +117,9 @@ public class FalsePositiveDataConfigMerger {
             if (jobData.getFindingId() != falsePositiveJobData.getFindingId()) {
                 continue;
             }
-            return existingFPEntry;
+            return Optional.of(existingFPEntry);
         }
-        return null;
+        return Optional.empty();
     }
 
     private SecHubFinding fetchFindingInReportOrFail(ScanSecHubReport report, FalsePositiveJobData falsePositiveJobData) {

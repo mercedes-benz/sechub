@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-[[sechub-doclink-uc-user-unmarks-false-positives]]
+[[sechub-doclink-uc-user-unmarks-false-positives-jobdata]]
 A user wants to unmark existing false positives
 This means the false positives has been marked before. 
 

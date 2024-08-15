@@ -5,11 +5,14 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
@@ -17,8 +20,8 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserFetchesFalsePositiveConfigurationOfProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositives;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveProjectData;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByJobData;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByProjectData;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -50,7 +53,7 @@ public class FalsePositiveRestController {
     }
 
     /* @formatter:off */
-    @UseCaseUserUnmarksFalsePositives(@Step(number=1,name="REST API call to remove existing false positive definition",needsRestDoc=true))
+    @UseCaseUserUnmarksFalsePositiveByJobData(@Step(number=1,name="REST API call to remove existing false positive definition",needsRestDoc=true))
     @RequestMapping(path = "/false-positive/{jobUUID}/{findingId}", method = RequestMethod.DELETE)
     public void removeFalsePositiveFromProjectByJobUUIDAndFindingId(
             @PathVariable("projectId") String projectId,
@@ -63,8 +66,9 @@ public class FalsePositiveRestController {
     }
 
     /* @formatter:off */
-    @UseCaseUserUnmarksFalsePositiveProjectData(@Step(number=1,name="REST API call to remove existing false positive project data definition by id",needsRestDoc=true))
-    @RequestMapping(path = "/false-positive/project-data/{id}", method = RequestMethod.DELETE)
+    @UseCaseUserUnmarksFalsePositiveByProjectData(@Step(number=1,name="REST API call to remove existing false positive project data definition by id",needsRestDoc=true))
+    @DeleteMapping(path = "/false-positive/project-data/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeFalsePositiveFromProjectByProjectDataId(
             @PathVariable("projectId") String projectId,
             @PathVariable("id") String id

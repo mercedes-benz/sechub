@@ -15,13 +15,13 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-        id=UseCaseIdentifier.UC_USER_UNMARKS_FALSE_POSITIVES_PROJECT_DATA,
-        group=UseCaseGroup.SECHUB_EXECUTION,
-        apiName="userUnmarksFalsePositivesProjectData",
-        title="User unmarks existing false positive project data definitons",
-        description="user/unmark_false_positives_project_data.adoc")
-public @interface UseCaseUserUnmarksFalsePositiveProjectData {
+		id=UseCaseIdentifier.UC_USER_UNMARKS_FALSE_POSITIVES,
+		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userUnmarksFalsePositives",
+		title="User unmarks existing false positive definitons",
+		description="user/unmark_false_positives_jobdata.adoc")
+public @interface UseCaseUserUnmarksFalsePositiveByJobData {
 
-    Step value();
+	Step value();
 }
 /* @formatter:on */

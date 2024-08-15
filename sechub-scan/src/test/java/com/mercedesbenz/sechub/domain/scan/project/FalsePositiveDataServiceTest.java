@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -16,28 +17,34 @@ public class FalsePositiveDataServiceTest {
 
     private static final String PROJECT_ID = "testprojectId";
     private FalsePositiveDataService serviceToTest;
-    private FalsePositiveDataListValidation falsePositiveListValidation;
-    private ScanProjectConfigService configService;
-    private ScanAssertService scanAssertService;
-    private UserInputAssertion userInputAssertion;
+
+    private static final FalsePositiveDataListValidation falsePositiveListValidation = mock();
+
+    private static final ScanProjectConfigService configService = mock();
+    private static final ScanAssertService scanAssertService = mock();
+    private static final UserInputAssertion userInputAssertion = mock();
+    private static final AuditLogService auditLogService = mock();
+
     private ScanProjectConfig config;
-    private AuditLogService auditLogService;
 
     @Before
     public void before() {
-        serviceToTest = new FalsePositiveDataService();
+        /* @formatter:off */
+        Mockito.reset(userInputAssertion,
+                configService,
+                falsePositiveListValidation,
+                scanAssertService,
+                auditLogService);
 
-        falsePositiveListValidation = mock(FalsePositiveDataListValidation.class);
-        configService = mock(ScanProjectConfigService.class);
-        userInputAssertion = mock(UserInputAssertion.class);
-        scanAssertService = mock(ScanAssertService.class);
-        auditLogService = mock(AuditLogService.class);
-
-        serviceToTest.falsePositiveDataListValidation = falsePositiveListValidation;
-        serviceToTest.configService = configService;
-        serviceToTest.scanAssertService = scanAssertService;
-        serviceToTest.userInputAssertion = userInputAssertion;
-        serviceToTest.auditLogService = auditLogService;
+        serviceToTest = new FalsePositiveDataService(null,
+                userInputAssertion,
+                configService,
+                falsePositiveListValidation,
+                null,
+                null,
+                scanAssertService,
+                auditLogService);
+        /* @formatter:on */
 
         when(falsePositiveListValidation.validate(any(FalsePositiveDataList.class))).thenReturn(new ValidationResult());
 

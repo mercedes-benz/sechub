@@ -51,8 +51,8 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecur
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserFetchesFalsePositiveConfigurationOfProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositives;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveProjectData;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByJobData;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByProjectData;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -182,12 +182,12 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositives.class)
+    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositiveByJobData.class)
     public void restdoc_unmark_false_positives() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(), JOB_UUID.pathElement(),
                 FINDING_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositives.class;
+        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositiveByJobData.class;
 
         int findingId = 42;
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
@@ -218,11 +218,11 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositiveProjectData.class)
+    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositiveByProjectData.class)
     public void restdoc_unmark_false_positive_project_data() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveProjectDataEntryFromProject(PROJECT_ID.pathElement(), PROJECT_DATA_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositiveProjectData.class;
+        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositiveByProjectData.class;
 
         String projectDataId = "unique-identifier";
 
@@ -231,7 +231,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 delete(apiEndpoint,PROJECT1_ID,projectDataId).
                 header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         ).
-        andExpect(status().isOk()).
+        andExpect(status().isNoContent()).
         /*andDo(print()).*/
         andDo(defineRestService().
                 with().

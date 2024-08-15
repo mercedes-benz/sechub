@@ -71,7 +71,7 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         try {
             targetUrl = new URL(target.trim());
         } catch (MalformedURLException e) {
-            LOG.error("Sereco vulnerability webscan target URL: {} is not a valid URL!", target, e);
+            LOG.debug("Sereco vulnerability webscan target URL: {} is not a valid URL!", target, e);
             return false;
         }
 
@@ -97,7 +97,7 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         /* -------------------METHODS-------------------------- */
         /* ---------------------------------------------------- */
         String method = vulnerabilityWeb.getRequest().getMethod();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIngoreIfNotSet(method, webScanData.getMethods())) {
+        if (!webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(method, webScanData.getMethods())) {
             return false;
         }
 
@@ -106,7 +106,7 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         /* ---------------------------------------------------- */
         int targetUrlPort = targetUrl.getPort();
         String port = targetUrlPort != -1 ? "" + targetUrlPort : "" + targetUrl.getDefaultPort();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingPortOrIngoreIfNotSet(port, webScanData.getPorts())) {
+        if (!webscanFalsePositiveProjectDataSupport.isMatchingPortOrIgnoreIfNotSet(port, webScanData.getPorts())) {
             return false;
         }
 
@@ -114,7 +114,7 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         /* -------------------PROTOCOLS------------------------ */
         /* ---------------------------------------------------- */
         String protocol = vulnerabilityWeb.getRequest().getProtocol();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingProtocolOrIngoreIfNotSet(protocol, webScanData.getProtocols())) {
+        if (!webscanFalsePositiveProjectDataSupport.isMatchingProtocolOrIgnoreIfNotSet(protocol, webScanData.getProtocols())) {
             return false;
         }
 

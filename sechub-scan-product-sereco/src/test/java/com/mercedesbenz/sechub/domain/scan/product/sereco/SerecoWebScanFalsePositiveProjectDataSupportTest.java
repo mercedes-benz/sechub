@@ -105,7 +105,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void methods_not_set_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingMethodOrIngoreIfNotSet("anything", null);
+        boolean result = supportToTest.isMatchingMethodOrIgnoreIfNotSet("anything", null);
 
         /* test */
         assertTrue(result);
@@ -114,7 +114,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void methods_empty_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingMethodOrIngoreIfNotSet("anything", Collections.emptyList());
+        boolean result = supportToTest.isMatchingMethodOrIgnoreIfNotSet("anything", Collections.emptyList());
 
         /* test */
         assertTrue(result);
@@ -126,7 +126,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> methods = List.of("POST", "GET", "DELETE");
 
         /* execute */
-        boolean result = supportToTest.isMatchingMethodOrIngoreIfNotSet("GET", methods);
+        boolean result = supportToTest.isMatchingMethodOrIgnoreIfNotSet("GET", methods);
 
         /* test */
         assertTrue(result);
@@ -138,7 +138,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> methods = List.of("POST", "GET", "DELETE");
 
         /* execute */
-        boolean result = supportToTest.isMatchingMethodOrIngoreIfNotSet("no-in-list", methods);
+        boolean result = supportToTest.isMatchingMethodOrIgnoreIfNotSet("no-in-list", methods);
 
         /* test */
         assertFalse(result);
@@ -149,7 +149,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void ports_not_set_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingPortOrIngoreIfNotSet("anything", null);
+        boolean result = supportToTest.isMatchingPortOrIgnoreIfNotSet("anything", null);
 
         /* test */
         assertTrue(result);
@@ -158,7 +158,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void ports_empty_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingPortOrIngoreIfNotSet("anything", Collections.emptyList());
+        boolean result = supportToTest.isMatchingPortOrIgnoreIfNotSet("anything", Collections.emptyList());
 
         /* test */
         assertTrue(result);
@@ -170,7 +170,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> ports = List.of("8080", "443", "80");
 
         /* execute */
-        boolean result = supportToTest.isMatchingPortOrIngoreIfNotSet("80", ports);
+        boolean result = supportToTest.isMatchingPortOrIgnoreIfNotSet("80", ports);
 
         /* test */
         assertTrue(result);
@@ -182,7 +182,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> ports = List.of("8080", "443", "80");
 
         /* execute */
-        boolean result = supportToTest.isMatchingPortOrIngoreIfNotSet("no-in-list", ports);
+        boolean result = supportToTest.isMatchingPortOrIgnoreIfNotSet("no-in-list", ports);
 
         /* test */
         assertFalse(result);
@@ -193,7 +193,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void protocols_not_set_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingProtocolOrIngoreIfNotSet("anything", null);
+        boolean result = supportToTest.isMatchingProtocolOrIgnoreIfNotSet("anything", null);
 
         /* test */
         assertTrue(result);
@@ -202,7 +202,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     @Test
     void protocols_empty_in_webscan_data_being_null_returns_true() {
         /* execute */
-        boolean result = supportToTest.isMatchingProtocolOrIngoreIfNotSet("anything", Collections.emptyList());
+        boolean result = supportToTest.isMatchingProtocolOrIgnoreIfNotSet("anything", Collections.emptyList());
 
         /* test */
         assertTrue(result);
@@ -214,7 +214,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> protocols = List.of("wss", "https");
 
         /* execute */
-        boolean result = supportToTest.isMatchingProtocolOrIngoreIfNotSet("https", protocols);
+        boolean result = supportToTest.isMatchingProtocolOrIgnoreIfNotSet("https", protocols);
 
         /* test */
         assertTrue(result);
@@ -226,7 +226,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         List<String> protocols = List.of("wss", "https");
 
         /* execute */
-        boolean result = supportToTest.isMatchingProtocolOrIngoreIfNotSet("no-in-list", protocols);
+        boolean result = supportToTest.isMatchingProtocolOrIgnoreIfNotSet("no-in-list", protocols);
 
         /* test */
         assertFalse(result);

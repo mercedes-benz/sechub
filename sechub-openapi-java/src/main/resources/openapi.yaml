@@ -1253,7 +1253,8 @@ components:
         cweId:
           required: true
           description: CWE ID for a category of findings to identify the type of false positive finding
-          type: number
+          type: integer
+          format: int32
         hostPatterns:
           required: true
           description: list of host name or ip address patterns this false positive entry shall match (can contain wildcards)

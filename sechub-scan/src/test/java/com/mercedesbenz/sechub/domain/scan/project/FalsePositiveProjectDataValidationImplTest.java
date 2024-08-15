@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
@@ -15,18 +16,15 @@ class FalsePositiveProjectDataValidationImplTest {
 
     private FalsePositiveProjectDataValidationImpl validationToTest;
 
-    private FalsePositiveProjectDataIdValidation idValidation;
-    private WebscanFalsePositiveProjectDataValidation webscanValidation;
+    private static final FalsePositiveProjectDataIdValidation idValidation = mock();
+    private static final WebscanFalsePositiveProjectDataValidation webscanValidation = mock();
 
+    @SuppressWarnings("unchecked")
     @BeforeEach
     void beforeEach() {
-        validationToTest = new FalsePositiveProjectDataValidationImpl();
+        Mockito.reset(idValidation, webscanValidation);
 
-        idValidation = mock(FalsePositiveProjectDataIdValidation.class);
-        webscanValidation = mock(WebscanFalsePositiveProjectDataValidation.class);
-
-        validationToTest.idValidation = idValidation;
-        validationToTest.webscanValidation = webscanValidation;
+        validationToTest = new FalsePositiveProjectDataValidationImpl(idValidation, webscanValidation);
 
         when(idValidation.validate(any())).thenReturn(new ValidationResult());
         when(webscanValidation.validate(any())).thenReturn(new ValidationResult());

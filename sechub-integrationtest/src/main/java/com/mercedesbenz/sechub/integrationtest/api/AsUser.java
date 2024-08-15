@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
-import static org.junit.Assert.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.assertProject;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.ensureExecutorConfigUUID;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.waitForJobDoneAndEvenWaitWhileJobIsFailing;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -1140,9 +1144,7 @@ public class AsUser {
         }
 
         private void unmarkFalsePositiveProjectDataByREST() {
-            Iterator<String> iterator = projectDataIds.iterator();
-            while (iterator.hasNext()) {
-                String projectDataId = iterator.next();
+            for (String projectDataId : projectDataIds) {
                 String url = getUrlBuilder().buildUserRemovesFalsePositiveProjectDataEntryFromProject(project.getProjectId(), projectDataId);
                 getRestHelper().delete(url);
             }
@@ -1206,9 +1208,7 @@ public class AsUser {
             if (!projectDataList.isEmpty()) {
                 content += "\"projectData\":[";
             }
-            Iterator<FalsePositiveProjectData> iterator = projectDataList.iterator();
-            while (iterator.hasNext()) {
-                FalsePositiveProjectData projectData = iterator.next();
+            for (FalsePositiveProjectData projectData : projectDataList) {
                 content += JSONConverter.get().toJSON(projectData);
 
                 if (it.hasNext()) {

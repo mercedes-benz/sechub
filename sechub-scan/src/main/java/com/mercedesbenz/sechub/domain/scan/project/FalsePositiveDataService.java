@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
@@ -24,33 +23,41 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class FalsePositiveDataService {
 
+    private static final String EMPTY_JSON = "{}";
+
     private static final ScanProjectConfigID CONFIG_ID = ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION;
 
     private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveDataService.class);
 
-    @Autowired
-    ScanReportRepository scanReportRepository;
+    private final ScanReportRepository scanReportRepository;
+    private final UserInputAssertion userInputAssertion;
+    private final ScanProjectConfigService configService;
+    private final FalsePositiveDataListValidation falsePositiveDataListValidation;
+    private final FalsePositiveDataConfigMerger merger;
+    private final UserContextService userContextService;
+    private final ScanAssertService scanAssertService;
+    private final AuditLogService auditLogService;
 
-    @Autowired
-    UserInputAssertion userInputAssertion;
+    /* @formatter:off */
+    public FalsePositiveDataService(ScanReportRepository scanReportRepository,
+            UserInputAssertion userInputAssertion,
+            ScanProjectConfigService configService,
+            FalsePositiveDataListValidation falsePositiveDataListValidation,
+            FalsePositiveDataConfigMerger merger,
+            UserContextService userContextService,
+            ScanAssertService scanAssertService,
+            AuditLogService auditLogService) {
 
-    @Autowired
-    ScanProjectConfigService configService;
-
-    @Autowired
-    FalsePositiveDataListValidation falsePositiveDataListValidation;
-
-    @Autowired
-    FalsePositiveDataConfigMerger merger;
-
-    @Autowired
-    UserContextService userContextService;
-
-    @Autowired
-    ScanAssertService scanAssertService;
-
-    @Autowired
-    AuditLogService auditLogService;
+        this.scanReportRepository = scanReportRepository;
+        this.userInputAssertion = userInputAssertion;
+        this.configService = configService;
+        this.falsePositiveDataListValidation = falsePositiveDataListValidation;
+        this.merger = merger;
+        this.userContextService = userContextService;
+        this.scanAssertService = scanAssertService;
+        this.auditLogService = auditLogService;
+        /* @formatter:on */
+    }
 
     public void addFalsePositives(String projectId, FalsePositiveDataList data) {
         validateUserInputAndProjectAccess(projectId, data);
@@ -168,9 +175,9 @@ public class FalsePositiveDataService {
     }
 
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {
-        ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, "{}"); // access check
-                                                                                                        // unnecessary,
-                                                                                                        // already done
+        ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, EMPTY_JSON); // access check
+        // unnecessary,
+        // already done
 
         FalsePositiveProjectConfiguration falsePositiveConfiguration = FalsePositiveProjectConfiguration.fromJSONString(projectConfig.getData());
         return falsePositiveConfiguration;

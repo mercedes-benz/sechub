@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.project;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.sharedkernel.validation.AbstractValidation;
@@ -12,36 +11,45 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFacto
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
-import jakarta.annotation.PostConstruct;
-
 @Component
 public class FalsePositiveDataListValidationImpl extends AbstractValidation<FalsePositiveDataList> implements FalsePositiveDataListValidation {
 
-    @Autowired
-    ApiVersionValidationFactory apiVersionValidationFactory;
+    private static final String API_VERSION_1_0 = "1.0";
+    private static final int MINIMUM_FP_DATA_LIST_SIZE = 0;
+    private static final int MAXIMUM_FP_DATA_LIST_SIZE = 500;
+
+    private static final String VALIDATOR_NAME = "false positive list validation";
+
+    private final ApiVersionValidationFactory apiVersionValidationFactory;
 
     private ApiVersionValidation apiVersionValidation;
 
-    @Autowired
-    FalsePositiveJobDataValidation falsePositiveJobDataValidation;
+    private final FalsePositiveJobDataValidation falsePositiveJobDataValidation;
 
-    @Autowired
-    FalsePositiveProjectDataValidation falsePositiveProjectDataValidation;
+    private final FalsePositiveProjectDataValidation falsePositiveProjectDataValidation;
 
-    @PostConstruct
-    void postConstruct() {
-        apiVersionValidation = apiVersionValidationFactory.createValidationAccepting("1.0");
+    /* @formatter:off */
+    public FalsePositiveDataListValidationImpl(ApiVersionValidationFactory apiVersionValidationFactory,
+            FalsePositiveJobDataValidation falsePositiveJobDataValidation,
+            FalsePositiveProjectDataValidation falsePositiveProjectDataValidation) {
+
+        this.apiVersionValidationFactory = apiVersionValidationFactory;
+        this.falsePositiveJobDataValidation = falsePositiveJobDataValidation;
+        this.falsePositiveProjectDataValidation = falsePositiveProjectDataValidation;
+        /* @formatter:on */
+
+        apiVersionValidation = this.apiVersionValidationFactory.createValidationAccepting(API_VERSION_1_0);
     }
 
     @Override
     protected void setup(AbstractValidation<FalsePositiveDataList>.ValidationConfig config) {
-        config.minLength = 0; // empty list is also accepted
-        config.maxLength = 500; // we allow maximum 500 entries in one list
+        config.minLength = MINIMUM_FP_DATA_LIST_SIZE;
+        config.maxLength = MAXIMUM_FP_DATA_LIST_SIZE;
     }
 
     @Override
     protected String getValidatorName() {
-        return "false positive list validation";
+        return VALIDATOR_NAME;
     }
 
     @Override
@@ -108,8 +116,8 @@ public class FalsePositiveDataListValidationImpl extends AbstractValidation<Fals
         int combinedSize = jobDataList.size() + projectDataList.size();
 
         if (combinedSize > getConfig().maxLength) {
-            context.addError(getValidatorName(),
-                    ": The number of specified false positives in jobDataList and projectDataList must not be greater than: " + getConfig().maxLength);
+            context.addError(getValidatorName(), ": The number of specified false positives in jobDataList and projectDataList must not be greater than: %s"
+                    .formatted(getConfig().maxLength));
         }
     }
 

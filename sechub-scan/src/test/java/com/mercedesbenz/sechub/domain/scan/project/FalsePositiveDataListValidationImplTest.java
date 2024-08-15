@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidation;
@@ -28,10 +29,10 @@ class FalsePositiveDataListValidationImplTest {
 
     private static final int MAXIMUM_ACCEPTED_AMOUNT_OF_ENTRIES = 500;
     private FalsePositiveDataListValidationImpl validationToTest;
-    private ApiVersionValidation apiVersionValidation;
-    private ApiVersionValidationFactory apiVersionValidationFactory;
-    private FalsePositiveJobDataValidation falsePositiveJobDataValidation;
-    private FalsePositiveProjectDataValidation falsePositiveProjectDataValidation;
+    private static final ApiVersionValidation apiVersionValidation = mock();
+    private static final ApiVersionValidationFactory apiVersionValidationFactory = mock();
+    private static final FalsePositiveJobDataValidation falsePositiveJobDataValidation = mock();
+    private static final FalsePositiveProjectDataValidation falsePositiveProjectDataValidation = mock();
 
     @BeforeAll
     static void beforeAll() {
@@ -42,23 +43,20 @@ class FalsePositiveDataListValidationImplTest {
 
     @BeforeEach
     void beforeEach() {
-        apiVersionValidation = mock(ApiVersionValidation.class);
+        /* @formatter:off */
+        Mockito.reset(apiVersionValidation,
+                apiVersionValidationFactory,
+                falsePositiveJobDataValidation,
+                falsePositiveProjectDataValidation);
+        /* @formatter:on */
 
-        apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
         when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiVersionValidation);
 
-        falsePositiveJobDataValidation = mock(FalsePositiveJobDataValidation.class);
-        falsePositiveProjectDataValidation = mock(FalsePositiveProjectDataValidation.class);
-
-        validationToTest = new FalsePositiveDataListValidationImpl();
-        validationToTest.apiVersionValidationFactory = apiVersionValidationFactory;
-        validationToTest.falsePositiveJobDataValidation = falsePositiveJobDataValidation;
-        validationToTest.falsePositiveProjectDataValidation = falsePositiveProjectDataValidation;
-
-        // call the post construct method like spring boot does - does some necessary
-        // intialization
-        validationToTest.postConstruct();
-
+        /* @formatter:off */
+        validationToTest = new FalsePositiveDataListValidationImpl(apiVersionValidationFactory,
+                falsePositiveJobDataValidation,
+                falsePositiveProjectDataValidation);
+        /* @formatter:on */
     }
 
     @ParameterizedTest

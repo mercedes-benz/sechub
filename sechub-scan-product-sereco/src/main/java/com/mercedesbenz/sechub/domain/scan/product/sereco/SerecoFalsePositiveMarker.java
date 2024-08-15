@@ -81,7 +81,8 @@ public class SerecoFalsePositiveMarker {
                 if (isJobDataFalsePositive(vulnerability, entry)) {
                     vulnerability.setFalsePositive(true);
                     FalsePositiveJobData jobData = entry.getJobData();
-                    vulnerability.setFalsePositiveReason("finding:" + jobData.getFindingId() + " in job:" + jobData.getJobUUID() + " marked as false positive");
+                    vulnerability
+                            .setFalsePositiveReason("finding: %s in job: %s marked as false positive".formatted(jobData.getFindingId(), jobData.getJobUUID()));
                     return;
                 }
             } else if (entry.getProjectData() != null) {
@@ -89,7 +90,7 @@ public class SerecoFalsePositiveMarker {
                 if (isProjectDataFalsePositive(vulnerability, entry, projectDataPatternMap)) {
                     vulnerability.setFalsePositive(true);
                     FalsePositiveProjectData projectData = entry.getProjectData();
-                    vulnerability.setFalsePositiveReason("vulnerability matches false positive project data entry with id: " + projectData.getId());
+                    vulnerability.setFalsePositiveReason("vulnerability matches false positive project data entry with id: %s".formatted(projectData.getId()));
                     return;
                 }
             }

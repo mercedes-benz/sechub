@@ -1,6 +1,0 @@
-// SPDX-License-Identifier: MIT
-[[sechub-doclink-uc-user-marks-false-positives-for-job]]
-A user wants to mark false positives for a finished job.
-This means the job has been executed, has finished without failure and job is NOT deleted.
-
-The user will be able to mark former job results by their given id as false positives.

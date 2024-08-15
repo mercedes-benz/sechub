@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.sharedkernel.validation.AbstractValidation;
@@ -10,15 +9,23 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 @Component
 public class FalsePositiveProjectDataValidationImpl extends AbstractValidation<FalsePositiveProjectData> implements FalsePositiveProjectDataValidation {
 
-    @Autowired
-    FalsePositiveProjectDataIdValidation idValidation;
+    private static final String VALIDATOR_NAME = "false positive project data validation";
 
-    @Autowired
-    WebscanFalsePositiveProjectDataValidation webscanValidation;
+    private static final int MAXIMUM_CHARS_FOR_COMMENTS = 500;
+
+    private final FalsePositiveProjectDataIdValidation idValidation;
+    private final WebscanFalsePositiveProjectDataValidation webscanValidation;
+
+    public FalsePositiveProjectDataValidationImpl(FalsePositiveProjectDataIdValidation idValidation,
+            WebscanFalsePositiveProjectDataValidation webscanValidation) {
+        this.idValidation = idValidation;
+        this.webscanValidation = webscanValidation;
+
+    }
 
     @Override
     protected void setup(AbstractValidation<FalsePositiveProjectData>.ValidationConfig config) {
-        config.maxLength = 500; // we allow maximum 500 chars for comments
+        config.maxLength = MAXIMUM_CHARS_FOR_COMMENTS;
     }
 
     @Override
@@ -31,7 +38,7 @@ public class FalsePositiveProjectDataValidationImpl extends AbstractValidation<F
 
         FalsePositiveProjectData target = getObjectToValidate(context);
 
-        String commentName = FalsePositiveDataList.PROPERTY_PROJECTDATA + "." + FalsePositiveProjectData.PROPERTY_COMMENT;
+        String commentName = "%s.%s".formatted(FalsePositiveDataList.PROPERTY_PROJECTDATA, FalsePositiveProjectData.PROPERTY_COMMENT);
 
         validateMaxLength(context, target.getComment(), getConfig().maxLength, commentName);
 
@@ -41,7 +48,7 @@ public class FalsePositiveProjectDataValidationImpl extends AbstractValidation<F
 
     @Override
     protected String getValidatorName() {
-        return "false positive project data validation";
+        return VALIDATOR_NAME;
     }
 
 }

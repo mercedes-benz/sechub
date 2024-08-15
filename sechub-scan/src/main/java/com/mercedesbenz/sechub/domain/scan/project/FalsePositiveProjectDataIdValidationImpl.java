@@ -10,6 +10,9 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
 @Component
 public class FalsePositiveProjectDataIdValidationImpl extends AbstractSimpleStringValidation implements FalsePositiveProjectDataIdValidation {
 
+    private static final String VALIDATOR_NAME = "false positive project data id validation";
+    private static final char UNDERSCORE = '_';
+    private static final char HYPHEN = '-';
     private static final int PROJECT_DATA_ID_MIN_SIZE = 1;
     private static final int PROJECT_DATA_ID_MAX_SIZE = 100;
 
@@ -23,11 +26,11 @@ public class FalsePositiveProjectDataIdValidationImpl extends AbstractSimpleStri
     protected void validate(ValidationContext<String> context) {
         validateNotNull(context);
         validateLength(context);
-        validateOnlyAlphabeticDigitOrAllowedParts(context, '-', '_');
+        validateOnlyAlphabeticDigitOrAllowedParts(context, HYPHEN, UNDERSCORE);
     }
 
     @Override
     protected String getValidatorName() {
-        return "false positive project data id validation";
+        return VALIDATOR_NAME;
     }
 }

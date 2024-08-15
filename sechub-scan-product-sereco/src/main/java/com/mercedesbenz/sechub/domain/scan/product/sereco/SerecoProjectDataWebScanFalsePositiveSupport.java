@@ -101,7 +101,7 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
      * @return <code>true</code> if the given port is inside ports or ports is empty
      *         or <code>null</code>
      */
-    public boolean isMatchingPortOrIngoreIfNotSet(String port, List<String> ports) {
+    public boolean isMatchingPortOrIgnoreIfNotSet(String port, List<String> ports) {
         notNull(port, " port may not be null");
         return listContainsTrimmedStringIgnoreCase(port.trim(), ports);
     }
@@ -114,7 +114,7 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
      * @return <code>true</code> if the given protocol is inside protocols or
      *         protocols is empty or <code>null</code>
      */
-    public boolean isMatchingProtocolOrIngoreIfNotSet(String protocol, List<String> protocols) {
+    public boolean isMatchingProtocolOrIgnoreIfNotSet(String protocol, List<String> protocols) {
         notNull(protocol, " protocol may not be null");
         return listContainsTrimmedStringIgnoreCase(protocol.trim(), protocols);
     }
@@ -127,7 +127,7 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
      * @return <code>true</code> if the given method is inside methods or methods is
      *         empty or <code>null</code>
      */
-    public boolean isMatchingMethodOrIngoreIfNotSet(String method, List<String> methods) {
+    public boolean isMatchingMethodOrIgnoreIfNotSet(String method, List<String> methods) {
         notNull(method, " method may not be null");
         return listContainsTrimmedStringIgnoreCase(method.trim(), methods);
     }
@@ -138,7 +138,7 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
             if (pattern == null) {
                 // At this point this should never happen because the map is meant to be created
                 // by the associated projectData
-                throw new IllegalStateException("Project data wildcard pattern: " + patternEntryKey + " was not part of the pattern map.");
+                throw new IllegalStateException("Project data wildcard pattern: %s was not part of the pattern map.".formatted(patternEntryKey));
             }
             if (pattern.matcher(stringToMatch).matches()) {
                 return true;
@@ -152,8 +152,8 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
             return true;
         }
         for (String projectDataPort : list) {
-            String projectDataPortTrimmmed = projectDataPort.trim();
-            if (projectDataPortTrimmmed.equalsIgnoreCase(trimmedString)) {
+            String projectDataPortTrimmed = projectDataPort.trim();
+            if (projectDataPortTrimmed.equalsIgnoreCase(trimmedString)) {
                 return true;
             }
         }

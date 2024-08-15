@@ -29,12 +29,10 @@ public class SerecoProjectDataFalsePositiveFinder {
         }
 
         ScanType scanType = vulnerability.getScanType();
-        switch (scanType) {
-        case WEB_SCAN:
+        if (scanType == ScanType.WEB_SCAN) {
             return webScanProjectDataStrategy.isFalsePositive(vulnerability, projectData, projectDataPatternMap);
-        default:
-            return false;
         }
+        return false;
     }
 
     private boolean isVulnerabilityValid(SerecoVulnerability vulnerability) {

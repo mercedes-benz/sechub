@@ -39,7 +39,7 @@ public class FalsePositiveProjectData {
 
     @Override
     public String toString() {
-        return "FalsePositiveProjectData [id=" + id + ", webScan=" + webScan + ", comment=" + comment + "]";
+        return "FalsePositiveProjectData [id=%s, webScan=%s, comment=%s]".formatted(id, webScan, comment);
     }
 
     @Override
