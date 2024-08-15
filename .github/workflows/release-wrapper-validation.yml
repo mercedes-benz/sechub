@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: Release Secretscan Validation Wrapper
-# name: Release Wrapper for Secret-Validation
+name: Release Wrapper for Secret-Validation
 
 on:
   workflow_dispatch:
@@ -24,12 +23,10 @@ jobs:
           echo "actor-email: '${{ inputs.actor-email }}'"
           echo "Secret-Validation-wrapper '${{ inputs.secretvalidation-wrapper-version }}' - Milestone '${{ inputs.secretvalidation-wrapper-milestone-number }}'"
 
-      - name: Checkout branch feature-3359-validation-wrapper-release-and-integration
+      - name: Checkout branch master
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
-          # ref: master
-          # temporary: development branch - please remove before merging!
-          ref: feature-3359-validation-wrapper-release-and-integration
+          ref: master
 
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
@@ -83,8 +80,8 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
-      - name: Switch back to feature-3359-validation-wrapper-release-and-integration branch
-        run: git checkout feature-3359-validation-wrapper-release-and-integration
+      - name: Switch back to master branch
+        run: git checkout master
 
       # -----------------------------------------
       # Build SecHub Secret-Validation Wrapper
@@ -117,8 +114,8 @@ jobs:
           path: sechub-wrapper-secretvalidation/build/libs
           retention-days: 14
 
-      - name: Switch back to feature-3359-validation-wrapper-release-and-integration branch
-        run: git checkout feature-3359-validation-wrapper-release-and-integration
+      - name: Switch back to master branch
+        run: git checkout master
 
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
