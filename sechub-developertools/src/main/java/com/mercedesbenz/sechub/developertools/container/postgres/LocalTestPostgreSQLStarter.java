@@ -109,7 +109,7 @@ public class LocalTestPostgreSQLStarter {
         Path created = Files.createFile(filePath);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#!/usr/bin/bash\n");
+        sb.append("#!/bin/bash\n");
         sb.append("\nPOSTGRES_DB_URL=" + container.getJdbcUrl());
         sb.append("\nPOSTGRES_DB_USERNAME=" + container.getUsername());
         sb.append("\nPOSTGRES_DB_PASSWORD=" + container.getPassword());

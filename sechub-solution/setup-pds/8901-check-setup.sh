@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 source "8900-helper.sh"

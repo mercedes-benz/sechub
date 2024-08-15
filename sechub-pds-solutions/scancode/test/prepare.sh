@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 DOWNLOAD_FOLDER="downloads"

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 function check_env_var_is_set {

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 declare -r secretvalidation_wrapper="$TOOL_FOLDER/sechub-wrapper-secret-validator.jar"
