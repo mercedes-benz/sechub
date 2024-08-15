@@ -71,6 +71,7 @@ project_unassign_user <project-id> <user-id> - Unassign user from project (revok
 scheduler_disable - Stop SecHub job scheduler
 scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
+server_encryption_status - Get current status of encryption (json format)
 server_info - Print infos about SecHub server (json format)
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
 server_version - Print version of SecHub server
@@ -719,6 +720,11 @@ function sechub_scheduler_status {
 }
 
 
+function sechub_server_encryption_status {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/encryption/status" | $RESULT_FILTER | jq '.domains'
+}
+
+
 function sechub_server_info {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/server" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -1121,6 +1127,9 @@ case "$action" in
     ;;
   scheduler_status)
     $failed || sechub_scheduler_status
+    ;;
+  server_encryption_status)
+    $failed || sechub_server_encryption_status
     ;;
   server_info)
     $failed || sechub_server_info
