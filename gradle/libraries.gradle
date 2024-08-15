@@ -204,7 +204,7 @@ ext {
 
         arch_unit:                             "com.tngtech.archunit:archunit-junit5:${libraryVersion.arch_unit}",
 
-        bouncy_castle_bcprov_jdk8:              "org.bouncycastle:bcprov-jdk18on:${libraryVersion.bouncy_castle_bcprov_jdk8}"
+        bouncy_castle_bcprov_jdk8:              "org.bouncycastle:bcprov-jdk18on:${libraryVersion.bouncy_castle_bcprov_jdk8}",
 
         /* OpenAPI generator */
         jacksonAnnotations:                     "com.fasterxml.jackson.core:jackson-annotations:${libraryVersion.jacksonAnnotations}",
@@ -212,7 +212,7 @@ ext {
         jacksonDatatypeJsr310:                  "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${libraryVersion.jacksonDatatypeJsr310}",
         jacksonDatabindNullable:                "org.openapitools:jackson-databind-nullable:${libraryVersion.jacksonDatabindNullable}",
         javaxAnnotationApi:                     "javax.annotation:javax.annotation-api:${libraryVersion.javaxAnnotationApi}",
-        findbugs:                               "com.google.code.findbugs:jsr305:${libraryVersion.findbugs}",
+        findbugs:                               "com.google.code.findbugs:jsr305:${libraryVersion.findbugs}"
 
    ]
    

@@ -3398,6 +3398,7 @@ paths:
   ################
   ## Encryption ##
   ################
+
   /api/admin/encryption/status:
     get:
       summary: Admin fetches encryption status 
@@ -3405,6 +3406,7 @@ paths:
       operationId: adminFetchesEncryptionStatus
       responses:
         "200":
+          description: "Ok"
           content:
             application/json:
               schema:

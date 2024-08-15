@@ -13,9 +13,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.*;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
-import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
-import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
 
 class RunSecHubJobDefinitionTransformerTest {
 
