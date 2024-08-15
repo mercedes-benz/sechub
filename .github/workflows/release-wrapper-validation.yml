@@ -90,7 +90,7 @@ jobs:
       # Build SecHub Secret-Validation Wrapper
       # -----------------------------------------
       - name: Build Secret-Validation Wrapper
-        run: ./gradlew :sechub-wrapper-validation:bootjar
+        run: ./gradlew :sechub-wrapper-secretvalidation:bootJar
 
       # -----------------------------------------
       # Upload build artifacts
