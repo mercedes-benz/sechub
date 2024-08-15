@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SystemTestConfigurationTest {
@@ -286,11 +286,19 @@ class SystemTestConfigurationTest {
         runSecHubJob1.getUploads().add(upload);
 
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
-        codeScan.getNamesOfUsedDataConfigurationObjects().add(DEFINED_REFERENCE_ID);
+        List<String> codeScanUsageByNames = codeScan.getUse();
+        if (codeScanUsageByNames == null) {
+            codeScanUsageByNames = new ArrayList<>();
+        }
+        codeScanUsageByNames.add(DEFINED_REFERENCE_ID);
         runSecHubJob1.setCodeScan(Optional.of(codeScan));
 
         SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
-        secretScan.getNamesOfUsedDataConfigurationObjects().add(DEFINED_REFERENCE_ID);
+        List<String> secretScanUsageByNames = secretScan.getUse();
+        if (secretScanUsageByNames == null) {
+            secretScanUsageByNames = new ArrayList<>();
+        }
+        secretScanUsageByNames.add(DEFINED_REFERENCE_ID);
         runSecHubJob1.setSecretScan(Optional.of(secretScan));
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));

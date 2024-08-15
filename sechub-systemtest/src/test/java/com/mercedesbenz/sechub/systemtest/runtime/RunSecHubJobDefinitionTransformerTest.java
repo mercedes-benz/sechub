@@ -12,16 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinition;
 import com.mercedesbenz.sechub.systemtest.config.RunSecHubJobDefinitionTransformer;
 import com.mercedesbenz.sechub.systemtest.config.UploadDefinition;
@@ -47,7 +38,7 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setProject("projectName1");
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
         assertEquals("projectName1", result.getProjectId());
@@ -59,7 +50,7 @@ class RunSecHubJobDefinitionTransformerTest {
         RunSecHubJobDefinition definition = new RunSecHubJobDefinition();
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
         assertEquals("1.0", result.getApiVersion());
@@ -74,10 +65,10 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setCodeScan(codeScanOpt);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        assertEquals(codeScan, result.getCodeScan().get());
+        assertEquals(codeScan, result.getCodeScan());
     }
 
     @Test
@@ -89,10 +80,10 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setWebScan(webScanOpt);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        assertEquals(webScan, result.getWebScan().get());
+        assertEquals(webScan, result.getWebScan());
     }
 
     @Test
@@ -104,10 +95,10 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setLicenseScan(licenseScanOpt);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        assertEquals(licenseScan, result.getLicenseScan().get());
+        assertEquals(licenseScan, result.getLicenseScan());
     }
 
     @Test
@@ -119,10 +110,10 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setInfraScan(infraScanOpt);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        assertEquals(infraScan, result.getInfraScan().get());
+        assertEquals(infraScan, result.getInfraScan());
     }
 
     @Test
@@ -134,10 +125,10 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.setSecretScan(secretScanOpt);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        assertEquals(secretScan, result.getSecretScan().get());
+        assertEquals(secretScan, result.getSecretScan());
     }
 
     @Test
@@ -157,25 +148,26 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.getUploads().add(upload);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        Optional<SecHubDataConfiguration> dataOpt = result.getData();
-        assertTrue(dataOpt.isPresent());
-        SecHubDataConfiguration data = dataOpt.get();
+        SecHubDataConfiguration data = result.getData();
+        assertNotNull(data);
         List<SecHubSourceDataConfiguration> sourceConfigurations = data.getSources();
+        assertNotNull(sourceConfigurations);
         assertEquals(1, sourceConfigurations.size());
         SecHubSourceDataConfiguration sourceConfig = sourceConfigurations.iterator().next();
-        String uniqueName1 = sourceConfig.getUniqueName();
+        String uniqueName1 = sourceConfig.getName();
         assertEquals(referenceId, uniqueName1);
 
-        Optional<SecHubFileSystemConfiguration> fileSystemConfigurationOpt = sourceConfig.getFileSystem();
-        assertTrue(fileSystemConfigurationOpt.isPresent());
-        SecHubFileSystemConfiguration fileSystemConfiguration = fileSystemConfigurationOpt.get();
+        SecHubFileSystemConfiguration fileSystemConfiguration = sourceConfig.getFileSystem();
+        assertNotNull(fileSystemConfiguration);
         List<String> folders = fileSystemConfiguration.getFolders();
+        assertNotNull(folders);
         assertTrue(folders.contains(folder));
 
         List<String> files = fileSystemConfiguration.getFiles();
+        assertNotNull(files);
         assertTrue(files.contains(file));
 
     }
@@ -196,25 +188,26 @@ class RunSecHubJobDefinitionTransformerTest {
         definition.getUploads().add(upload);
 
         /* execute */
-        SecHubConfigurationModel result = transformerToTest.transformToSecHubConfiguration(definition);
+        SecHubConfiguration result = transformerToTest.transformToSecHubConfiguration(definition);
 
         /* test */
-        Optional<SecHubDataConfiguration> dataOpt = result.getData();
-        assertTrue(dataOpt.isPresent());
-        SecHubDataConfiguration data = dataOpt.get();
+        SecHubDataConfiguration data = result.getData();
+        assertNotNull(data);
         List<SecHubBinaryDataConfiguration> binaryConfigurations = data.getBinaries();
+        assertNotNull(binaryConfigurations);
         assertEquals(1, binaryConfigurations.size());
         SecHubBinaryDataConfiguration binaryConfig = binaryConfigurations.iterator().next();
-        String uniqueName1 = binaryConfig.getUniqueName();
+        String uniqueName1 = binaryConfig.getName();
         assertEquals(referenceId, uniqueName1);
 
-        Optional<SecHubFileSystemConfiguration> fileSystemConfigurationOpt = binaryConfig.getFileSystem();
-        assertTrue(fileSystemConfigurationOpt.isPresent());
-        SecHubFileSystemConfiguration fileSystemConfiguration = fileSystemConfigurationOpt.get();
+        SecHubFileSystemConfiguration fileSystemConfiguration = binaryConfig.getFileSystem();
+        assertNotNull(fileSystemConfiguration);
         List<String> folders = fileSystemConfiguration.getFolders();
+        assertNotNull(folders);
         assertTrue(folders.contains(folder));
 
         List<String> files = fileSystemConfiguration.getFiles();
+        assertNotNull(files);
         assertTrue(files.contains(file));
 
     }

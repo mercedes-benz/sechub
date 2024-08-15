@@ -13,19 +13,25 @@ plugins {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.1'
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation library.jacksonAnnotations
+    implementation library.jacksonDatabind
+    implementation library.javaxAnnotationApi
+    implementation library.findbugs
+    implementation library.jacksonDatatypeJsr310
+    implementation library.jacksonDatabindNullable
+
+    // SecHub
+    implementation project(':sechub-commons-archive')
 }
+
+
+
 
 clean.doFirst {
     delete 'gen'
 }
 
-def openApiSpecPath = "${project.rootDir}/sechub-api-java/src/main/resources/openapi.yaml"
+def openApiSpecPath = "${project.rootDir}/sechub-openapi-java/src/main/resources/openapi.yaml"
 
 openApiGenerate {
     generatorName = 'java'
@@ -52,6 +58,11 @@ openApiGenerate {
             performBeanValidation      : 'false',
             useBeanValidation          : 'false',
             dateLibrary                : 'java8',
+            useTags                    : 'false',
+            modelNameSuffix            : '',
+            modelNamePrefix            : '',
+            modelPropertyNaming        : 'original',
+            useInnerModel              : 'false' ,
             serializableModel          : 'true',
             serializationLibrary       : 'jackson',
             artifactId                 : 'sechub-openapi-java-client',

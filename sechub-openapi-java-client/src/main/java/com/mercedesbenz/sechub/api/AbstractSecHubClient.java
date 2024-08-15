@@ -67,14 +67,10 @@ public abstract class AbstractSecHubClient implements SecHubClient {
         return serverUri;
     }
 
-    protected File calculateFullScanLogFile(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
+    protected File calculateFullScanLogFile(UUID sechubJobUUID, Path downloadFilePath) throws IOException {
         File file = null;
         if (downloadFilePath == null) {
-            try {
-                downloadFilePath = Files.createTempDirectory("sechub-fullscanlog");
-            } catch (IOException e) {
-                throw new SecHubClientException("Was not able to create temp directory", e);
-            }
+            downloadFilePath = Files.createTempDirectory("sechub-fullscanlog");
         }
         file = downloadFilePath.toFile();
         if (file.isDirectory()) {
@@ -120,7 +116,7 @@ public abstract class AbstractSecHubClient implements SecHubClient {
 
     interface SecHubClientListenerCaller {
 
-        public void inform(SecHubClientListener listener);
+        void inform(SecHubClientListener listener);
 
     }
 

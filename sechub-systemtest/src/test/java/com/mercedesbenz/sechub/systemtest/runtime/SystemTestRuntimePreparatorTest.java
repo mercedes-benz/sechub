@@ -7,8 +7,8 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +17,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.DefaultFallback;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
@@ -272,21 +265,39 @@ class SystemTestRuntimePreparatorTest {
     }
 
     private void assertJobScansUseReferenceId(RunSecHubJobDefinition job, String expectedReferenceId) {
-        if (job.getCodeScan().isPresent()) {
-            assertContainsReference(job.getCodeScan().get().getNamesOfUsedDataConfigurationObjects(), expectedReferenceId);
-        }
-        if (job.getSecretScan().isPresent()) {
-            assertContainsReference(job.getSecretScan().get().getNamesOfUsedDataConfigurationObjects(), expectedReferenceId);
-        }
-        if (job.getLicenseScan().isPresent()) {
-            assertContainsReference(job.getLicenseScan().get().getNamesOfUsedDataConfigurationObjects(), expectedReferenceId);
-        }
-        if (job.getWebScan().isPresent() && job.getWebScan().get().getApi().isPresent()) {
-            assertContainsReference(job.getWebScan().get().getApi().get().getNamesOfUsedDataConfigurationObjects(), expectedReferenceId);
-        }
+        job.getCodeScan().ifPresent(codeScan -> {
+            List<String> codeScanUsageByNames = codeScan.getUse();
+            if (codeScanUsageByNames != null) {
+                assertContainsReference(codeScanUsageByNames, expectedReferenceId);
+            }
+        });
+
+        job.getSecretScan().ifPresent(secretScan -> {
+            List<String> secretScanUsageByNames = secretScan.getUse();
+            if (secretScanUsageByNames != null) {
+                assertContainsReference(secretScanUsageByNames, expectedReferenceId);
+            }
+        });
+
+        job.getLicenseScan().ifPresent(licenseScan -> {
+            List<String> licenseScanUsageByNames = licenseScan.getUse();
+            if (licenseScanUsageByNames != null) {
+                assertContainsReference(licenseScanUsageByNames, expectedReferenceId);
+            }
+        });
+
+        job.getWebScan().ifPresent(webScan -> {
+            SecHubWebScanApiConfiguration api = webScan.getApi();
+            if (api != null) {
+                List<String> webScanApiUsageByNames = api.getUse();
+                if (webScanApiUsageByNames != null) {
+                    assertContainsReference(webScanApiUsageByNames, expectedReferenceId);
+                }
+            }
+        });
     }
 
-    private void assertContainsReference(Set<String> list, String exptectedReferenceId) {
+    private void assertContainsReference(List<String> list, String exptectedReferenceId) {
         if (list.contains(exptectedReferenceId)) {
             return;
         }
@@ -297,24 +308,24 @@ class SystemTestRuntimePreparatorTest {
     private void prepareScanConfigurationsForScanTypes(PreparationTestData data, RunSecHubJobDefinition secHubJob) {
         if (data.scope.isTypeContained(ScanType.CODE_SCAN)) {
             SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
-            prepareRefidIfDefined(data, codeScan);
+            prepareRefIdIfDefined(data, codeScan.getUse());
             secHubJob.setCodeScan(Optional.of(codeScan));
         }
         if (data.scope.isTypeContained(ScanType.SECRET_SCAN)) {
             SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
-            prepareRefidIfDefined(data, secretScan);
+            prepareRefIdIfDefined(data, secretScan.getUse());
             secHubJob.setSecretScan(Optional.of(secretScan));
         }
         if (data.scope.isTypeContained(ScanType.LICENSE_SCAN)) {
             SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
-            prepareRefidIfDefined(data, licenseScan);
+            prepareRefIdIfDefined(data, licenseScan.getUse());
             secHubJob.setLicenseScan(Optional.of(licenseScan));
         }
         if (data.scope.isTypeContained(ScanType.WEB_SCAN)) {
             SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
             SecHubWebScanApiConfiguration apiConfig = new SecHubWebScanApiConfiguration();
-            webScan.setApi(Optional.of(apiConfig));
-            prepareRefidIfDefined(data, apiConfig);
+            webScan.setApi(apiConfig);
+            prepareRefIdIfDefined(data, apiConfig.getUse());
             secHubJob.setWebScan(Optional.of(webScan));
         }
         if (data.scope.isTypeContained(ScanType.INFRA_SCAN)) {
@@ -324,11 +335,11 @@ class SystemTestRuntimePreparatorTest {
         }
     }
 
-    private void prepareRefidIfDefined(PreparationTestData data, SecHubDataConfigurationUsageByName target) {
+    private void prepareRefIdIfDefined(PreparationTestData data, List<String> usages) {
         if (data.scope.refId == null) {
             return;
         }
-        target.getNamesOfUsedDataConfigurationObjects().add(data.scope.refId);
+        usages.add(data.scope.refId);
     }
 
     private void prepareUpload(PreparationTestData data, RunSecHubJobDefinition secHubJob) {

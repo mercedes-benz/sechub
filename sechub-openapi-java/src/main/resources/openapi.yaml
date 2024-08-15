@@ -47,6 +47,7 @@ components:
     URI:
       title: URI
       type: string
+      format: uri
       example: "https://example.com"
 
     #########################
@@ -284,7 +285,8 @@ components:
       properties:
         labels:
           type: object
-          additionalProperties: true
+          additionalProperties:
+            type: string
 
     SecHubFileSystemConfiguration:
       title: SecHubFileSystemConfiguration
@@ -494,7 +496,8 @@ components:
       properties:
         duration:
           description: Duration of the scan as integer
-          type: number
+          type: integer
+          format: int32
         unit:
           $ref: '#/components/schemas/SecHubTimeUnit'
       required:
@@ -701,6 +704,14 @@ components:
           type: string
           format: uuid
 
+    ScheduleJobStatusResult:
+      title: ScheduleJobStatusResult
+      type: string
+      enum:
+        - NONE
+        - OK
+        - FAILED
+
     ScheduleJobStatus:
       title: JobStatus
       type: object
@@ -728,8 +739,8 @@ components:
           description: State of job
           type: string
         result:
-          description: Result of job
-          type: string
+          $ref: '#/components/schemas/ScheduleJobStatusResult'
+
         trafficLight:
           description: Traffic light of job after completion. Possible states are GREEN, YELLOW, RED, OFF.
           type: string
@@ -789,9 +800,11 @@ components:
         location:
           type: string
         line:
-          type: number
+          type: integer
+          format: int32
         column:
-          type: number
+          type: integer
+          format: int32
         source:
           type: string
         relevantPart:
@@ -845,7 +858,8 @@ components:
       type: object
       properties:
         statusCode:
-          type: number
+          type: integer
+          format: int32
         reasonPhrase:
           type: string
         protocol:
@@ -858,7 +872,8 @@ components:
       type: object
       properties:
         startLine:
-          type: number
+          type: integer
+          format: int32
 
     SecHubReportWebEvidence:
       title: SecHubReportWebEvidence
@@ -901,7 +916,8 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
+          format: int32
         description:
           type: string
         hostNames:
@@ -946,7 +962,8 @@ components:
         type:
           $ref: '#/components/schemas/ScanType'
         cweId:
-          type: number
+          type: integer
+          format: int32
         cveId:
           description: common vulnerability enumeration id - see https://cwe.mitre.org/ or null when not defined
           type: string
@@ -962,7 +979,8 @@ components:
       type: object
       properties:
         count:
-          type: number
+          type: integer
+          format: int32
         findings:
           type: array
           items:
@@ -988,11 +1006,13 @@ components:
       type: object
       properties:
         cweId:
-          type: number
+          type: integer
+          format: int32
         name:
           type: string
         count:
-          type: number
+          type: integer
+          format: int32
 
     ScanTypeSummaryDetailData:
       title: ScanTypeSummaryDetailData
@@ -1016,19 +1036,26 @@ components:
       type: object
       properties:
         total:
-          type: number
+          type: integer
+          format: int32
         critical:
-          type: number
+          type: integer
+          format: int32
         high:
-          type: number
+          type: integer
+          format: int32
         medium:
-          type: number
+          type: integer
+          format: int32
         low:
-          type: number
+          type: integer
+          format: int32
         unclassified:
-          type: number
+          type: integer
+          format: int32
         info:
-          type: number
+          type: integer
+          format: int32
         details:
           $ref: '#/components/schemas/ScanTypeSummaryDetailData'
 
@@ -1160,7 +1187,8 @@ components:
         evidence:
           type: string
         statusCode:
-          type: number
+          type: integer
+          format: int32
 
     FalsePositiveWebMetaData:
       title: FalsePositiveWebMetaData
@@ -1193,7 +1221,8 @@ components:
         cweId:
           description: CWE (common weakness enumeration). For code scans this is always
             set.
-          type: number
+          type: integer
+          format: int32
         cveId:
           description: CVE (common vulnerability and exposures). For infra scans this
             is always set.
@@ -1234,7 +1263,8 @@ components:
             \ job which shall be markeda as a false positive. *ATTENTION*: at the\
             \ moment only code scan false positive handling is supported. Infra and\
             \ web scan findings will lead to a non accepted error!"
-          type: number
+          type: integer
+          format: int32
         comment:
           description: A comment from author describing why this was marked as a false positive
           type: string
@@ -1282,7 +1312,7 @@ components:
         created: created
 
     FalsePositiveProjectConfiguration:
-      title: FalsePositives
+      title: FalsePositiveProjectConfiguration
       type: object
       properties:
         falsePositives:
@@ -1384,7 +1414,8 @@ components:
           description: Email address
           type: string
         version:
-          type: number
+          type: integer
+          format: int32
 
     SignUpList:
       title: SignUpList
@@ -1433,7 +1464,8 @@ components:
           type: object
         version:
           description: The version
-          type: number
+          type: integer
+          format: int32
 
     #############
     ## Testing ##
@@ -1540,7 +1572,8 @@ components:
         description:
           type: string
         version:
-          type: number
+          type: integer
+          format: int32
         configurations:
           type: array
           items:
@@ -1564,9 +1597,11 @@ components:
         setup:
           $ref: '#/components/schemas/ProductExecutorConfigSetup'
         version:
-          type: number
+          type: integer
+          format: int32
         executorVersion:
-          type: number
+          type: integer
+          format: int32
         enabled:
           type: boolean
         profiles:
@@ -1633,7 +1668,8 @@ components:
         unit:
           $ref: '#/components/schemas/CountableInDaysTimeUnit'
         amount:
-          type: number
+          type: integer
+          format: int32
 
     AdministrationAutoCleanupConfig:
       title: AdministrationAutoCleanupConfig
@@ -1655,7 +1691,8 @@ components:
         value:
           type: string
         version:
-          type: number
+          type: integer
+          format: int32
 
     ServerRuntimeData:
       title: ServerRuntimeData
@@ -2319,6 +2356,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
         - name: file
           description: The file to upload
           in: query
@@ -2452,12 +2490,14 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "200":
           content:
             application/zip:
               schema:
-                type: object
+                type: string
+                format: binary
           description: "200"
       tags:
         - SecHub Execution
@@ -2578,10 +2618,23 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: file
+          description: The file to upload
+          in: query
+          required: true
+          schema:
+            type: string
+            format: binary
         - name: x-file-size
           description: The file size of the tar-archive to upload in bytes. Needs to
             be a positive integer value.
           in: header
+          required: true
+          schema:
+            type: string
+        - name: checkSum
+          description: A sha256 checksum for file upload validation
+          in: query
           required: true
           schema:
             type: string

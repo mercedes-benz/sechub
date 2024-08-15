@@ -24,7 +24,7 @@ public class SystemTestRuntimeMetaData {
     private Map<PDSServerConfiguration, PdsSolutionData> pdsSolutionConfigurations = new LinkedHashMap<>();
     private TextFileReader textFileReader;
 
-    class PdsSolutionData {
+    static class PdsSolutionData {
         private PDSServerConfiguration serverConfiguration;
         private Path pathToServerConfiguration;
         private PDSSolutionDefinition solutionDefinition;

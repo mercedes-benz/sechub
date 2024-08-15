@@ -9,13 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport;
 
 public class SystemTestConfigurationBuilder {
@@ -715,29 +709,6 @@ public class SystemTestConfigurationBuilder {
                 }
             }
 
-            public abstract class AbstractWithUploadReferencesScanConfigBuilder<T extends AbstractWithUploadReferencesScanConfigBuilder<T, C>, C extends SecHubDataConfigurationUsageByName> {
-
-                private C configuration;
-
-                private AbstractWithUploadReferencesScanConfigBuilder(C configuration) {
-                    this.configuration = configuration;
-                }
-
-                protected C getConfiguration() {
-                    return configuration;
-                }
-
-                @SuppressWarnings("unchecked")
-                public T use(String... referenceIds) {
-                    configuration.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceIds));
-                    return (T) this;
-                }
-
-                public SecHubRunBuilder endScan() {
-                    return SecHubRunBuilder.this;
-                }
-            }
-
             public CodeScanConfigBuilder codeScan() {
                 return new CodeScanConfigBuilder();
             }
@@ -770,8 +741,8 @@ public class SystemTestConfigurationBuilder {
                     return SecHubRunBuilder.this;
                 }
 
-                public WebScanConfigBuilder url(String urlAsString) {
-                    webScanConfig.setUrl(URI.create(urlAsString));
+                public WebScanConfigBuilder url(URI uri) {
+                    webScanConfig.setUrl(uri);
                     return this;
                 }
             }
@@ -787,28 +758,56 @@ public class SystemTestConfigurationBuilder {
                 }
             }
 
-            public class SecretScanConfigBuilder extends AbstractWithUploadReferencesScanConfigBuilder<SecretScanConfigBuilder, SecHubSecretScanConfiguration> {
+            public class SecretScanConfigBuilder {
+                private final SecHubSecretScanConfiguration configuration;
+
+                private SecretScanConfigBuilder(SecHubSecretScanConfiguration configuration) {
+                    this.configuration = configuration;
+                }
+
                 private SecretScanConfigBuilder() {
-                    super(new SecHubSecretScanConfiguration());
-                    runSecHubJob.setSecretScan(Optional.of(getConfiguration()));
+                    this(new SecHubSecretScanConfiguration());
+                    runSecHubJob.setSecretScan(Optional.of(configuration));
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
                 }
             }
 
-            public class CodeScanConfigBuilder extends AbstractWithUploadReferencesScanConfigBuilder<CodeScanConfigBuilder, SecHubCodeScanConfiguration> {
+            public class CodeScanConfigBuilder {
+                private final SecHubCodeScanConfiguration configuration;
+
+                public CodeScanConfigBuilder(SecHubCodeScanConfiguration secHubCodeScanConfiguration) {
+                    this.configuration = secHubCodeScanConfiguration;
+                }
+
                 private CodeScanConfigBuilder() {
-                    super(new SecHubCodeScanConfiguration());
-                    runSecHubJob.setCodeScan(Optional.of(getConfiguration()));
+                    this(new SecHubCodeScanConfiguration());
+                    runSecHubJob.setCodeScan(Optional.of(configuration));
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
                 }
             }
 
-            public class LicenseScanConfigBuilder
-                    extends AbstractWithUploadReferencesScanConfigBuilder<LicenseScanConfigBuilder, SecHubLicenseScanConfiguration> {
+            public class LicenseScanConfigBuilder {
+                private final SecHubLicenseScanConfiguration configuration;
+
+                public LicenseScanConfigBuilder(SecHubLicenseScanConfiguration secHubLicenseScanConfiguration) {
+                    this.configuration = secHubLicenseScanConfiguration;
+                }
+
                 private LicenseScanConfigBuilder() {
-                    super(new SecHubLicenseScanConfiguration());
-                    runSecHubJob.setLicenseScan(Optional.of(getConfiguration()));
+                    this(new SecHubLicenseScanConfiguration());
+                    runSecHubJob.setLicenseScan(Optional.of(configuration));
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
                 }
             }
-
         }
 
         private TestBuilder(String testName) {

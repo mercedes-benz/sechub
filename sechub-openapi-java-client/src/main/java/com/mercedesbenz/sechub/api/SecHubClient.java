@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.api.internal.gen.*;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,7 +18,7 @@ import java.util.UUID;
 public interface SecHubClient {
 
     /**
-     * Adds an listener to the client. For some action on client side the listener
+     * Adds a listener to the client. For some action on client side the listener
      * will be informed. A listener can be added only one time no matter how many
      * times this method is called.
      *
@@ -44,16 +45,7 @@ public interface SecHubClient {
 
     boolean isTrustAll();
 
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Create.......................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    void createSignup(UserSignup signUp) throws SecHubClientException;
-
-    void createProject(Project project) throws SecHubClientException;
-
-    UUID createExecutorConfiguration(ExecutorConfiguration config) throws SecHubClientException;
-
-    void createExecutionProfile(String profileName, ExecutionProfileCreate profile) throws SecHubClientException;
+    boolean isServerAlive() throws ApiException;
 
     /**
      * Uploads data as defined in given configuration
@@ -66,92 +58,7 @@ public interface SecHubClient {
      *                         configuration model shall start from
      * @throws SecHubClientException
      */
-    void upload(String projectId, UUID jobUUID, SecHubConfigurationModel configuration, Path workingDirectory) throws SecHubClientException;
-
-    List<ExecutorConfigurationInfo> fetchAllExecutorConfigurationInfo() throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Status........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    SecHubStatus fetchSecHubStatus() throws SecHubClientException;
-
-    void triggerRefreshOfSecHubSchedulerStatus() throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Check........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    boolean isServerAlive() throws SecHubClientException;
-
-    boolean isProjectExisting(String projectId) throws SecHubClientException;
-
-    boolean isUserAssignedToProject(String userId, String projectId) throws SecHubClientException;
-
-    boolean isExecutionProfileExisting(String profileId) throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Fetch........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    List<OpenUserSignup> fetchAllOpenSignups() throws SecHubClientException;
-
-    List<String> fetchAllProjectIds() throws SecHubClientException;
-
-    List<String> fetchAllUserIds() throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Assign/Unassign................. + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    void acceptOpenSignup(String signupUserId) throws SecHubClientException;
-
-    void assignUserToProject(String userId, String projectId) throws SecHubClientException;
-
-    void unassignUserFromProject(String userId, String projectId) throws SecHubClientException;
-
-    void addExecutorConfigurationToProfile(UUID uuidOfExecutorConfigToAdd, String profileId) throws SecHubClientException;
-
-    void deleteProject(String projectId) throws SecHubClientException;
-
-    void deleteExecutionProfile(String profileId) throws SecHubClientException;
-
-    void deleteExecutorConfiguration(UUID executorUUID) throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Scheduling...................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    UUID createJob(SecHubConfigurationModel configuration) throws SecHubClientException;
-
-    JobStatus fetchJobStatus(String projectId, UUID jobUUID) throws SecHubClientException;
-
-    SecHubReport downloadSecHubReportAsJson(String projectId, UUID jobUUID) throws SecHubClientException;
-
-    /**
-     * Approve SecHub job for project. This will mark the job as ready to start
-     * inside SecHub
-     *
-     * @param projectId
-     * @param jobUUID
-     * @throws SecHubClientException
-     */
-    void approveJob(String projectId, UUID jobUUID) throws SecHubClientException;
-
-    /**
-     * Resolve SecHub server version
-     *
-     * @return server version as string
-     * @throws SecHubClientException
-     */
-    String getServerVersion() throws SecHubClientException;
-
-    /**
-     * Request a new API token for given email address
-     *
-     * @param emailAddress
-     * @throws SecHubClientException
-     */
-    void requestNewApiToken(String emailAddress) throws SecHubClientException;
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Other........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    void userUpload(String projectId, UUID jobUUID, SecHubConfiguration configuration, Path workingDirectory) throws ApiException;
 
     /**
      * Downloads the full scan log for a given sechub job uuid into wanted target
@@ -164,6 +71,30 @@ public interface SecHubClient {
      *                         temp folder will be used
      * @return path to download
      */
-    Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException;
+    Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws ApiException;
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................APIs............................ + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    ConfigurationApi atConfigurationApi();
+
+    JobAdministrationApi atJobAdministrationApi();
+
+    OtherApi atOtherApi();
+
+    ProjectAdministrationApi atProjectAdministrationApi();
+
+    SecHubExecutionApi atSecHubExecutionApi();
+
+    SignUpApi atSignUpApi();
+
+    SystemApi atSystemApi();
+
+    TestingApi atTestingApi();
+
+    UserAdministrationApi atUserAdministrationApi();
+
+    UserProfileApi atUserProfileApi();
 
 }

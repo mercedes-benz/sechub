@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSecHubDefinition;
 import com.mercedesbenz.sechub.systemtest.config.LocalSetupDefinition;
@@ -191,7 +191,7 @@ public class SystemTestRuntimeProductLauncher {
             }
             LOG.debug("SecHub server at {} is alive", client.getServerUri());
 
-        } catch (SecHubClientException e) {
+        } catch (ApiException e) {
             throw new SystemTestRuntimeException("Was not able to check if SecHub server is alive.", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -211,9 +211,9 @@ public class SystemTestRuntimeProductLauncher {
 
         for (int i = 0; !adminAccountAvailable && i < MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS; i++) {
             try {
-                sechubClient.fetchSecHubStatus();
+                sechubClient.atOtherApi().adminListStatusInformation();
                 adminAccountAvailable = true;
-            } catch (SecHubClientException e) {
+            } catch (ApiException e) {
                 try {
                     Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK);
                 } catch (InterruptedException e1) {
@@ -270,7 +270,7 @@ public class SystemTestRuntimeProductLauncher {
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(1000);
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForPDSSolutionAlive * ONE_SECOND_IN_MILLISECONDS;
+                boolean timedOut = millisecondsWaited > (long) maximumSecondsToWaitForPDSSolutionAlive * ONE_SECOND_IN_MILLISECONDS;
                 if (timedOut) {
                     throw new IllegalStateException("Check alive for PDS solution '" + pdsSolutionName + "' timed out after "
                             + (millisecondsWaited / ONE_SECOND_IN_MILLISECONDS) + " seconds.");

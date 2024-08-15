@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - 'gha_*'
+  pull_request:
+      branches:
+        - 'gha_*'
   # enable manual triggering of workflow
   workflow_dispatch:
 

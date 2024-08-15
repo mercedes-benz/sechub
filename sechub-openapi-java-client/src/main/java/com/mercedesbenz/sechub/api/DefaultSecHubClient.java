@@ -2,34 +2,25 @@
 package com.mercedesbenz.sechub.api;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.mercedesbenz.sechub.api.internal.ApiClientBuilder;
-import com.mercedesbenz.sechub.api.internal.OpenApiSecHubClientConversionHelper;
-import com.mercedesbenz.sechub.api.internal.WorkaroundAdminApi;
-import com.mercedesbenz.sechub.api.internal.WorkaroundProjectApi;
-import com.mercedesbenz.sechub.api.internal.gen.AdminApi;
-import com.mercedesbenz.sechub.api.internal.gen.AnonymousApi;
-import com.mercedesbenz.sechub.api.internal.gen.ProjectApi;
+import com.mercedesbenz.sechub.api.internal.gen.*;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiClient;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
-import com.mercedesbenz.sechub.api.internal.gen.model.*;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
-import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SealedObject;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,17 +34,17 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private CheckSumSupport checkSumSupport = new CheckSumSupport();
 
     private ApiClient apiClient;
-    private AnonymousApi anonymousApi;
-    private AdminApi adminApi;
-    private ProjectApi projectApi;
 
-    private WorkaroundAdminApi workaroundAdminApi;
-
-    private OpenApiSecHubClientConversionHelper conversionHelper;
-
-    private WorkaroundProjectApi workaroundProjectApi;
-
-    private SecHubStatusFactory sechubStatusFactory = new SecHubStatusFactory();
+    private final ConfigurationApi configurationApi;
+    private final JobAdministrationApi jobAdministrationApi;
+    private final OtherApi otherApi;
+    private final ProjectAdministrationApi projectAdministrationApi;
+    private final SecHubExecutionApi secHubExecutionApi;
+    private final SignUpApi signUpApi;
+    private final SystemApi systemApi;
+    private final TestingApi testingApi;
+    private final UserAdministrationApi userAdministrationApi;
+    private final UserProfileApi userProfileApi;
 
     public static DefaultSecHubClientBuilder builder() {
         return new DefaultSecHubClientBuilder();
@@ -63,64 +54,17 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         super(serverUri, userId, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
-
-        anonymousApi = new AnonymousApi(getApiClient());
-
-        adminApi = new AdminApi(getApiClient());
-        workaroundAdminApi = new WorkaroundAdminApi(getApiClient());
-
-        projectApi = new ProjectApi(getApiClient());
-        workaroundProjectApi = new WorkaroundProjectApi(getApiClient());
-
-        conversionHelper = new OpenApiSecHubClientConversionHelper();
-
+        configurationApi = new ConfigurationApi(apiClient);
+        jobAdministrationApi = new JobAdministrationApi(apiClient);
+        otherApi = new OtherApi(apiClient);
+        projectAdministrationApi = new ProjectAdministrationApi(apiClient);
+        secHubExecutionApi = new SecHubExecutionApi(apiClient);
+        signUpApi = new SignUpApi(apiClient);
+        systemApi = new SystemApi(apiClient);
+        testingApi = new TestingApi(apiClient);
+        userAdministrationApi = new UserAdministrationApi(apiClient);
+        userProfileApi = new UserProfileApi(apiClient);
     }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Create.......................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    @Override
-    public void createSignup(UserSignup signUp) throws SecHubClientException {
-        requireNonNull(signUp, "signUp may not be null!");
-
-        runOrFail(() -> anonymousApi.userSignup(signUp.getDelegate()), "User signup failed");
-    }
-
-    @Override
-    public void createProject(Project project) throws SecHubClientException {
-        requireNonNull(project, "project may not be null!");
-
-        runOrFail(() -> adminApi.adminCreatesProject(project.getDelegate()), "Cannot create project:" + project.getName());
-    }
-
-    @Override
-    public UUID createExecutorConfiguration(ExecutorConfiguration config) throws SecHubClientException {
-        requireNonNull(config, "config may not be null!");
-
-        return runOrFail(() -> {
-            OpenApiExecutorConfiguration delegate = config.getDelegate();
-            OpenApiExecutorConfigurationSetup setup = delegate.getSetup();
-            /*
-             * necessary because two different lists - delegate has its own, we overwrite
-             * here
-             */
-            setup.setJobParameters(ExecutorConfigurationSetupJobParameter.toDelegates(config.getSetup().getJobParameters()));
-            UUID result = workaroundAdminApi.adminCreatesExecutorConfiguration(delegate);
-            return result;
-        }, "Cannot create executor configuration");
-    }
-
-    @Override
-    public void createExecutionProfile(String profileName, ExecutionProfileCreate profile) throws SecHubClientException {
-        requireNonNull(profileName, "profileName may not be null!");
-        requireNonNull(profile, "profile may not be null!");
-
-        runOrFail(() -> adminApi.adminCreatesExecutionProfile(profileName, profile.getDelegate()), "Was not able to create profile:" + profileName);
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Upload.......................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     /**
      * Uploads data as defined in given configuration
@@ -131,22 +75,39 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
      *                         upload behavior (e.g. paths etc.)
      * @param workingDirectory directory where the relative paths inside
      *                         configuration model shall start from
-     * @throws SecHubClientException
+     * @throws ApiException
      */
     @Override
-    public void upload(String projectId, UUID jobUUID, SecHubConfigurationModel configuration, Path workingDirectory) throws SecHubClientException {
+    public void userUpload(String projectId, UUID jobUUID, SecHubConfiguration configuration, Path workingDirectory) throws ApiException {
         requireNonNull(projectId, "projectId may not be null!");
         requireNonNull(configuration, "configuration may not be null!");
 
-        Path uploadDirectory = runOrFail(() -> Files.createTempDirectory("sechub_client_upload"), "Temp directory creation was not possible");
-        ArchivesCreationResult createArchiveResult = runOrFail(() -> archiveSupport.createArchives(configuration, workingDirectory, uploadDirectory),
-                "Cannot create archives!");
+        Path uploadDirectory;
+        try {
+            uploadDirectory = Files.createTempDirectory("sechub_client_upload");
+        } catch (IOException e) {
+            throw new ApiException(e);
+        }
+
+        ArchiveSupport.ArchivesCreationResult createArchiveResult;
+        try {
+            // TODO: This is a workaround until the sechub commons model classes have been completely substituted by the
+            //  generated classes from the new openapi module
+            //  see https://github.com/mercedes-benz/sechub/issues/3284
+            SecHubConfigurationModel secHubConfigurationModel = mapper.reader()
+                    .forType(SecHubConfigurationModel.class)
+                    .readValue(mapper.writeValueAsString(configuration));
+
+            createArchiveResult = archiveSupport.createArchives(secHubConfigurationModel, workingDirectory, uploadDirectory);
+        } catch (IOException e) {
+            throw new ApiException(e);
+        }
 
         inform((listener) -> listener.beforeUpload(jobUUID, configuration, createArchiveResult));
 
         try {
-            uploadSources(projectId, jobUUID, createArchiveResult);
-            uploadBinaries(projectId, jobUUID, createArchiveResult);
+            userUploadSources(projectId, jobUUID, createArchiveResult);
+            userUploadBinaries(projectId, jobUUID, createArchiveResult);
 
             inform((listener) -> listener.afterUpload(jobUUID, configuration, createArchiveResult));
 
@@ -155,86 +116,15 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
             try {
                 archiveSupport.deleteArchives(createArchiveResult);
             } catch (IOException e) {
-                throw new IllegalStateException("Was not able to remove temporary archive data!", e);
+                throw new ApiException(e);
             }
         }
     }
 
-    private void uploadBinaries(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
-        if (!createArchiveResult.isBinaryArchiveCreated()) {
-            return;
-        }
-        Path tarFile = createArchiveResult.getBinaryArchiveFile();
-
-        String filesize = String.valueOf(tarFile.toFile().length());
-        String checksum = checkSumSupport.createSha256Checksum(tarFile);
-
-        runOrFail(() -> workaroundProjectApi.userUploadsBinaries(projectId, jobUUID.toString(), checksum, filesize, tarFile), "Binary upload (tar)");
-    }
-
-    private void uploadSources(String projectId, UUID jobUUID, ArchivesCreationResult createArchiveResult) throws SecHubClientException {
-        if (!createArchiveResult.isSourceArchiveCreated()) {
-            return;
-        }
-        Path zipFile = createArchiveResult.getSourceArchiveFile();
-        String checksum = checkSumSupport.createSha256Checksum(zipFile);
-
-        runOrFail(() -> workaroundProjectApi.userUploadsSourceCode(projectId, jobUUID.toString(), checksum, zipFile), "Source upload (zip)");
-    }
-
     @Override
-    public List<ExecutorConfigurationInfo> fetchAllExecutorConfigurationInfo() throws SecHubClientException {
-        OpenApiListOfExecutorConfigurations configList = runOrFail(() -> adminApi.adminFetchesExecutorConfigurationList(), "Fetch executor configurations");
-
-        List<OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner> list = configList.getExecutorConfigurations();
-        List<ExecutorConfigurationInfo> result = new ArrayList<>();
-
-        for (OpenApiListOfExecutorConfigurationsExecutorConfigurationsInner inner : list) {
-
-            ExecutorConfigurationInfo info = new ExecutorConfigurationInfo();
-            info.setEnabled(inner.getEnabled() == null ? false : inner.getEnabled());
-            info.setName(inner.getName());
-            info.setUuid(UUID.fromString(inner.getUuid()));
-
-            result.add(info);
-        }
-        return result;
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Status........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    @Override
-    public SecHubStatus fetchSecHubStatus() throws SecHubClientException {
-
-        Map<String, String> statusInformation = new TreeMap<>();
-
-        runOrFail(() -> {
-            List<OpenApiStatusInformationInner> statusInformationList = adminApi.adminListsStatusInformation();
-            for (OpenApiStatusInformationInner info : statusInformationList) {
-                String key = info.getKey();
-                if (key != null) {
-                    statusInformation.put(key, info.getValue());
-                }
-            }
-        }, "Was not able to fetch SecHub status!");
-
-        SecHubStatus status = sechubStatusFactory.createFromMap(statusInformation);
-        return status;
-    }
-
-    @Override
-    public void triggerRefreshOfSecHubSchedulerStatus() throws SecHubClientException {
-        runOrFail(() -> adminApi.adminTriggersRefreshOfSchedulerStatus(), "Was not able to trigger scheduler refresh");
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Check........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    @Override
-    public boolean isServerAlive() throws SecHubClientException {
+    public boolean isServerAlive() {
         try {
-            anonymousApi.anonymousCheckAliveHead();
+            systemApi.anonymousCheckAliveHead();
             return true;
         } catch (ApiException e) {
             return false;
@@ -242,226 +132,96 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     @Override
-    public boolean isProjectExisting(String projectId) throws SecHubClientException {
-        requireNonNull(projectId, "projectId may not be null!");
-        return runOrFail(() -> adminApi.adminListsAllProjects().contains(projectId),
-
-                "Cannot check if project '" + projectId + "' exists!");
-    }
-
-    @Override
-    public boolean isUserAssignedToProject(String userId, String projectId) throws SecHubClientException {
-        requireNonNull(userId, "userId may not be null!");
-        requireNonNull(projectId, "projectId may not be null!");
-
-        return runOrFail(() -> {
-            /* not very smart... but works : */
-            OpenApiProjectDetails details = adminApi.adminShowsProjectDetails(projectId);
-            List<String> userIds = details.getUsers();
-            return userIds.contains(userId);
-        }, "Cannot check if user '" + userId + "' is assigned to project '" + projectId + "'");
-    }
-
-    @Override
-    public boolean isExecutionProfileExisting(String profileId) throws SecHubClientException {
+    public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws ApiException  {
         try {
-            OpenApiExecutionProfileFetch result = adminApi.adminFetchesExecutionProfile(profileId);
-            return result != null;
-        } catch (ApiException e) {
-            if (e.getCode() == 404) {
-                /* not found */
-                return false;
+            File zipFile = atSecHubExecutionApi().adminDownloadFullScanDataForJob(sechubJobUUID);
+            File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
+
+            try (FileInputStream zipFileIn = new FileInputStream(zipFile);
+                 FileOutputStream targetFileOut = new FileOutputStream(targetFile)) {
+                IOUtils.write(IOUtils.toByteArray(zipFileIn), targetFileOut);
             }
-            throw new SecHubClientException("Was not able check if profile " + profileId + " does exist.", e);
+
+            return targetFile.toPath();
+        } catch (IOException e) {
+            throw new ApiException(e);
         }
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Fetch........................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    @Override
-    public List<OpenUserSignup> fetchAllOpenSignups() throws SecHubClientException {
-        return runOrFail(() -> OpenUserSignup.fromDelegates(adminApi.adminListsOpenUserSignups()), "Cannot fetch open signups");
-    }
-
-    @Override
-    public List<String> fetchAllProjectIds() throws SecHubClientException {
-        return runOrFail(() -> adminApi.adminListsAllProjects(), "Cannot fetch all project names");
-    }
-
-    @Override
-    public List<String> fetchAllUserIds() throws SecHubClientException {
-        return runOrFail(() -> adminApi.adminListsAllUsers(), "Cannot fetch all user names");
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Assign/Unassign................. + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    @Override
-    public void acceptOpenSignup(String signupUsername) throws SecHubClientException {
-        requireNonNull(signupUsername, "signupUsername may not be null!");
-
-        runOrFail(() -> adminApi.adminAcceptsSignup(signupUsername), "Cannot accept open signups");
-    }
-
-    @Override
-    public void assignUserToProject(String userId, String projectId) throws SecHubClientException {
-        requireNonNull(userId, "userId may not be null!");
-        requireNonNull(projectId, "projectId may not be null!");
-
-        runOrFail(() -> adminApi.adminAssignsUserToProject(projectId, userId),
-
-                "Was not able to assign user '" + userId + "' to project '" + projectId + "'");
-
-    }
-
-    @Override
-    public void unassignUserFromProject(String userId, String projectId) throws SecHubClientException {
-        requireNonNull(userId, "userId may not be null!");
-        requireNonNull(projectId, "projectId may not be null!");
-
-        runOrFail(() -> adminApi.adminUnassignsUserFromProject(projectId, userId),
-
-                "Was not able to unassign user '" + userId + "' from project '" + projectId + "'");
-
-    }
-
-    @Override
-    public void addExecutorConfigurationToProfile(UUID uuidOfExecutorConfigToAdd, String profileId) throws SecHubClientException {
-        requireNonNull(uuidOfExecutorConfigToAdd, "uuidOfExecutorConfigToAdd may not be null!");
-        requireNonNull(profileId, "profileId may not be null!");
-
-        runOrFail(() -> {
-            OpenApiExecutionProfileUpdate update = conversionHelper.fetchProfileAndConvertToUpdateObject(profileId, adminApi);
-
-            OpenApiExecutionProfileUpdateConfigurationsInner newItem = new OpenApiExecutionProfileUpdateConfigurationsInner();
-            newItem.setUuid(uuidOfExecutorConfigToAdd.toString());
-            update.addConfigurationsItem(newItem);
-
-            adminApi.adminUpdatesExecutionProfile(profileId, update);
-
-        }, "Cannot add executor config: " + uuidOfExecutorConfigToAdd + " to profile:" + profileId);
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Delete.......................... + */
+    /* + ................APIs............................ + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     @Override
-    public void deleteProject(String projectId) throws SecHubClientException {
-        requireNonNull(projectId, "projectId may not be null!");
-
-        runOrFail(() -> adminApi.adminDeleteProject(projectId), "Was not able to delete project: " + projectId);
+    public ConfigurationApi atConfigurationApi() {
+        return configurationApi;
     }
 
     @Override
-    public void deleteExecutionProfile(String profileId) throws SecHubClientException {
-        requireNonNull(profileId, "profileId may not be null!");
-
-        runOrFail(() -> adminApi.adminDeletesExecutionProfile(profileId), "Was not able to delete execution profile: " + profileId);
+    public JobAdministrationApi atJobAdministrationApi() {
+        return jobAdministrationApi;
     }
 
     @Override
-    public void deleteExecutorConfiguration(UUID executorUUID) throws SecHubClientException {
-        requireNonNull(executorUUID, "executor uuid may not be null!");
-
-        runOrFail(() -> adminApi.adminDeletesExecutorConfiguration(executorUUID.toString()), "Was not able to delete executor configuration: " + executorUUID);
+    public OtherApi atOtherApi() {
+        return otherApi;
     }
 
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Scheduling...................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     @Override
-    public UUID createJob(SecHubConfigurationModel configuration) throws SecHubClientException {
-        requireNonNull(configuration, "configuration may not be null!");
-        String projectId = configuration.getProjectId();
-        if (projectId == null) {
-            throw new IllegalStateException("Project id missing inside configuration!");
+    public ProjectAdministrationApi atProjectAdministrationApi() {
+        return projectAdministrationApi;
+    }
+
+    @Override
+    public SecHubExecutionApi atSecHubExecutionApi() {
+        return secHubExecutionApi;
+    }
+
+    @Override
+    public SignUpApi atSignUpApi() {
+        return signUpApi;
+    }
+
+    @Override
+    public SystemApi atSystemApi() {
+        return systemApi;
+    }
+
+    @Override
+    public TestingApi atTestingApi() {
+        return testingApi;
+    }
+
+    @Override
+    public UserAdministrationApi atUserAdministrationApi() {
+        return userAdministrationApi;
+    }
+
+    @Override
+    public UserProfileApi atUserProfileApi() {
+        return userProfileApi;
+    }
+
+    private void userUploadBinaries(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
+        if (!createArchiveResult.isBinaryArchiveCreated()) {
+            return;
         }
+        Path tarFilePath = createArchiveResult.getBinaryArchiveFile();
 
-        OpenApiScanJob openApiScanJob = conversionHelper.convertToOpenApiScanJob(configuration);
-        OpenApiJobId openApiJobId = runOrFail(() -> projectApi.userCreatesNewJob(projectId, openApiScanJob),
-                "Was not able to create a SecHub job for project:" + projectId);
-        String jobIdAsString = openApiJobId.getJobId();
+        String filesize = String.valueOf(tarFilePath.toFile().length());
+        String checksum = checkSumSupport.createSha256Checksum(tarFilePath);
 
-        UUID uuid = UUID.fromString(jobIdAsString);
-        return uuid;
+        secHubExecutionApi.userUploadsBinaries(projectId, jobUUID, tarFilePath.toFile(), filesize, checksum);
     }
 
-    @Override
-    public JobStatus fetchJobStatus(String projectId, UUID jobUUID) throws SecHubClientException {
-        OpenApiJobStatus status = runOrFail(() -> projectApi.userChecksJobStatus(projectId, jobUUID.toString()), "Fetch status");
-        return JobStatus.from(status);
-    }
-
-    @Override
-    public SecHubReport downloadSecHubReportAsJson(String projectId, UUID jobUUID) throws SecHubClientException {
-        SecHubReport report = runOrFail(() -> workaroundProjectApi.userDownloadsJobReport(projectId, jobUUID.toString()), "Download SecHub report (JSON)");
-        inform((listener) -> listener.afterReportDownload(jobUUID, report));
-
-        return report;
-    }
-
-    /**
-     * Approve SecHub job for project. This will mark the job as ready to start
-     * inside SecHub
-     *
-     * @param projectId
-     * @param jobUUID
-     * @throws SecHubClientException
-     */
-    @Override
-    public void approveJob(String projectId, UUID jobUUID) throws SecHubClientException {
-        runOrFail(() -> projectApi.userApprovesJob(projectId, jobUUID.toString()), "Job approve");
-    }
-
-    @Override
-    public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws SecHubClientException {
-        final File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
-        runOrFail(() -> workaroundAdminApi.adminDownloadsFullScanDataForJob(sechubJobUUID.toString(), targetFile), "Download full scan log");
-        return targetFile.toPath();
-    }
-
-    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Version...................... + */
-    /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    @Override
-    public String getServerVersion() throws SecHubClientException {
-        return runOrFail(() -> adminApi.adminFetchesServerRuntimeData().getServerVersion(), "Get server version");
-    }
-
-    @Override
-    public void requestNewApiToken(String emailAddress) throws SecHubClientException {
-        runOrFail(() -> anonymousApi.userRequestsNewApiToken(emailAddress), "User requests a new API Token");
-    }
-
-    private ApiClient getApiClient() {
-        return apiClient;
-    }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Helpers......................... + */
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    private void runOrFail(RunOrFail<ApiException> failable, String failureMessage) throws SecHubClientException {
-        try {
-            failable.runOrFail();
-        } catch (Exception e) {
-            throw createClientException(failureMessage, e);
+    private void userUploadSources(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
+        if (!createArchiveResult.isSourceArchiveCreated()) {
+            return;
         }
-    }
+        Path zipFilePath = createArchiveResult.getSourceArchiveFile();
+        String checksum = checkSumSupport.createSha256Checksum(zipFilePath);
 
-    private <T> T runOrFail(Callable<T> callable, String failureMessage) throws SecHubClientException {
-        try {
-            return callable.call();
-        } catch (Exception e) {
-            throw createClientException(failureMessage, e);
-        }
-    }
-
-    private SecHubClientException createClientException(String message, Exception cause) throws SecHubClientException {
-        return new SecHubClientException(message + " - " + cause.getMessage(), cause);
+        secHubExecutionApi.userUploadSourceCode(projectId, jobUUID, zipFilePath.toFile(), checksum);
     }
 
     public static class DefaultSecHubClientBuilder {

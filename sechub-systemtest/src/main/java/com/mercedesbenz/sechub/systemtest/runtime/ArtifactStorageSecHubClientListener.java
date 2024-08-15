@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClientListener;
 import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
 /**
  * This class stores files inside the runtime artifacts folder of the current
@@ -37,7 +37,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
     }
 
     @Override
-    public void beforeUpload(UUID secHubJobUUID, SecHubConfigurationModel model, ArchivesCreationResult archiveCreationResult) {
+    public void beforeUpload(UUID secHubJobUUID, SecHubConfiguration secHubConfiguration, ArchivesCreationResult archiveCreationResult) {
         Path targetFolder = ensureArtifactsFolderForTest();
 
         storeSecHubJobUUIDFile(secHubJobUUID, targetFolder);
