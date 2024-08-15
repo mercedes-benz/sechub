@@ -150,26 +150,26 @@ jobs:
       - name: Create files and sha256 checksum for Secret-Validation Wrapper jar
         run: |
           cd sechub-wrapper-validation/build/libs/
-          sha256sum sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar > sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
+          sha256sum sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar > sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
 
-      - name: Upload asset sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar
+      - name: Upload asset sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
         uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_secretvalidation-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar
-          asset_name: sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar
+          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
+          asset_name: sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar
           asset_content_type: application/zip
 
-      - name: Upload asset sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
+      - name: Upload asset sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
         uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_secretvalidation-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
-          asset_name: sechub-wrapper-validation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
+          asset_path: sechub-wrapper-validation/build/libs/sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
+          asset_name: sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum
           asset_content_type: text/plain
 
       # -----------------------------------------
