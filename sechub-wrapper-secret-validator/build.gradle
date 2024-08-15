@@ -30,13 +30,13 @@ compileJava {
 bootJar {
 
      doLast {
-            /* Here we copy the created wrapper jar as "sechub-wrapper-secret-validator.jar" into the
+            /* Here we copy the created wrapper jar as "sechub-wrapper-secretvalidation.jar" into the
              * pds-tools folder inside the sechub-integrationtest gradle subproject.
              *
              *  This enables integration test script to use the solution secret-validator.sh script
              *  and just set as tool folder: ${project.buildDir}/pds-tools
              */
-            File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-secret-validator.jar")
+            File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-secretvalidation.jar")
 
             if (integratonTestLaunchFile.exists()){
                 java.nio.file.Files.delete(integratonTestLaunchFile.toPath())
@@ -44,7 +44,7 @@ bootJar {
                 integratonTestLaunchFile.getParentFile().mkdirs();
             }
 
-            File buildFile = new File("${project.buildDir}/libs/sechub-wrapper-secret-validator-${project.version}.jar")
+            File buildFile = new File("${project.buildDir}/libs/sechub-wrapper-secretvalidation-${project.version}.jar")
             java.nio.file.Files.copy(buildFile.toPath(),integratonTestLaunchFile.toPath())
     }
 
