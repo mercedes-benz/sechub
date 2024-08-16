@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 declare -r secretvalidation_wrapper="$TOOL_FOLDER/sechub-wrapper-secretvalidation.jar"
@@ -12,7 +12,7 @@ if [[ "$PDS_INTEGRATIONTEST_ENABLED" = "true" ]] ; then
     exit $?
 fi
 
-
+PATH+=":$TOOL_FOLDER/gitleaks"
 source "$SCRIPT_FOLDER/common.sh"
 
 echo "Look for potential .git folder to perform history scan."
@@ -49,4 +49,7 @@ fi
 
 echo "Running Gitleaks"
 cd "$scan_target_directory"
-"$TOOL_FOLDER"/gitleaks detect $gitleaks_options
+gitleaks detect $gitleaks_options
+
+# Call Secret-Validation Wrapper
+# ToDo
