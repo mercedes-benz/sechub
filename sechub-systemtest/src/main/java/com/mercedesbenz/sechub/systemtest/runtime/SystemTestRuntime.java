@@ -6,10 +6,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.SystemTestParameters;
@@ -175,7 +175,6 @@ public class SystemTestRuntime {
                     throw new RuntimeException(e);
                 }
             }
-
 
             logResult(context, result);
         }
