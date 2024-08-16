@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +92,7 @@ public class SystemTestRuntime {
         }
     }
 
+    @SuppressWarnings("all")
     private SystemTestResult runAfterInitialization(SystemTestRuntimeContext context) {
         switchToStage("Setup", context);
 
@@ -158,6 +160,22 @@ public class SystemTestRuntime {
             }
 
             terminateAndWaitForStillRunningProcesses(context);
+
+            try {
+                localSecHubProductConfigurator.deleteExistingProjects(context);
+            } catch (ApiException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                localSecHubProductConfigurator.deleteExistingProfiles(context);
+            } catch (ApiException e) {
+                if (e.getCode() != 404) {
+                    LOG.error("Failed to delete existing profiles with reason {}", e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            }
+
 
             logResult(context, result);
         }

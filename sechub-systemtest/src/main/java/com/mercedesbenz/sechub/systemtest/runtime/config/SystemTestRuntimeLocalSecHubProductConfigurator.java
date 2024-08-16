@@ -40,10 +40,6 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             return;
         }
 
-        /* remove old stuff of former run - we insist on a clean setup on local runs! */
-        deleteExistingProjects(context);
-        deleteExistingProfiles(context);
-
         createProjects(context);
         assignAdminAsUserToProjects(context);
 
@@ -53,7 +49,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         addExecutorConfigurationsToProfiles(context, profileIdsToExecutorUUIDs);
     }
 
-    private void deleteExistingProjects(SystemTestRuntimeContext context) throws ApiException {
+    public void deleteExistingProjects(SystemTestRuntimeContext context) throws ApiException {
         SecHubClient client = context.getLocalAdminSecHubClient();
 
         for (String projectId : context.createSetForLocalSecHubProjectIdDefinitions()) {
@@ -69,7 +65,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
     }
 
-    private void deleteExistingProfiles(SystemTestRuntimeContext context) throws ApiException {
+    public void deleteExistingProfiles(SystemTestRuntimeContext context) throws ApiException {
         Set<String> profileIds = context.createSetForLocalSecHubProfileIdsInExecutors();
 
         SecHubClient client = context.getLocalAdminSecHubClient();
