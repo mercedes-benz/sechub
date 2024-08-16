@@ -19,6 +19,8 @@ dependencies {
     implementation library.findbugs
     implementation library.jacksonDatatypeJsr310
     implementation library.jacksonDatabindNullable
+    implementation library.httpmime
+
 
     // SecHub
     implementation project(':sechub-commons-archive')

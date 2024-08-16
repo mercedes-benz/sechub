@@ -221,7 +221,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         Path zipFilePath = createArchiveResult.getSourceArchiveFile();
         String checksum = checkSumSupport.createSha256Checksum(zipFilePath);
 
-        secHubExecutionApi.userUploadSourceCode(projectId, jobUUID, zipFilePath.toFile(), checksum);
+        secHubExecutionApi.userUploadSourceCode(projectId, jobUUID, checksum, zipFilePath.toFile());
     }
 
     public static class DefaultSecHubClientBuilder {

@@ -40,6 +40,23 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             return;
         }
 
+        // Make sure that existing projects are removed
+        try {
+            deleteExistingProjects(context);
+        } catch (ApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Make sure that existing profiles are removed
+        try {
+            deleteExistingProfiles(context);
+        } catch (ApiException e) {
+            if (e.getCode() != 404) {
+                LOG.error("Failed to delete existing profiles with reason {}", e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+
         createProjects(context);
         assignAdminAsUserToProjects(context);
 
@@ -49,7 +66,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         addExecutorConfigurationsToProfiles(context, profileIdsToExecutorUUIDs);
     }
 
-    public void deleteExistingProjects(SystemTestRuntimeContext context) throws ApiException {
+    private void deleteExistingProjects(SystemTestRuntimeContext context) throws ApiException {
         SecHubClient client = context.getLocalAdminSecHubClient();
 
         for (String projectId : context.createSetForLocalSecHubProjectIdDefinitions()) {
@@ -65,7 +82,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
     }
 
-    public void deleteExistingProfiles(SystemTestRuntimeContext context) throws ApiException {
+    private void deleteExistingProfiles(SystemTestRuntimeContext context) throws ApiException {
         Set<String> profileIds = context.createSetForLocalSecHubProfileIdsInExecutors();
 
         SecHubClient client = context.getLocalAdminSecHubClient();
@@ -167,16 +184,16 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         config.setExecutorVersion(executorConfigDefinition.getVersion());
         config.setProductIdentifier(productIdentifier);
 
-        ProductExecutorConfigSetup setup = config.getSetup();
-        if (setup != null) {
-            setup.setBaseUrl(executorConfigDefinition.getBaseURL());
-        }
+        ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
+        setup.setBaseURL(executorConfigDefinition.getBaseURL());
+        config.setSetup(setup);
 
         handleCredentials(executorConfigDefinition, setup, context);
         handleParametersForNewExecutorConfiguration(executorConfigDefinition, setup, pdsProductId, scanType);
 
         /* store executor configuration */
-        UUID uuid = client.atConfigurationApi().adminCreatExecutorConfiguration(config);
+        String uuidString = client.atConfigurationApi().adminCreateExecutorConfiguration(config);
+        UUID uuid = UUID.fromString(uuidString);
 
         /* map profiles with created executor configuration */
         Set<String> profileIds = executorConfigDefinition.getProfiles();
@@ -282,12 +299,13 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                     continue;
                 }
                 ProductExecutorConfig productExecutorConfig = new ProductExecutorConfig();
-                productExecutorConfig.setuUID(executorConfigurationUUID);
+                productExecutorConfig.setUuid(executorConfigurationUUID);
                 productExecutorConfigs.add(productExecutorConfig);
             }
 
             productExecutionProfile.setConfigurations(productExecutorConfigs);
-            client.atConfigurationApi().adminCreateExecutionProfile(profileId, productExecutionProfile);
+
+            client.atConfigurationApi().adminUpdateExecutionProfile(profileId, productExecutionProfile);
         }
     }
 

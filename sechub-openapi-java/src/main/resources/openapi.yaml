@@ -1556,7 +1556,7 @@ components:
       title: ProductExecutorConfigSetup
       type: object
       properties:
-        baseUrl:
+        baseURL:
           type: string
         credentials:
           $ref: '#/components/schemas/ProductExecutorConfigSetupCredentials'
@@ -1589,7 +1589,7 @@ components:
       title: ProductExecutorConfig
       type: object
       properties:
-        uUID:
+        uuid:
           type: string
           format: uuid
         name:
@@ -2449,24 +2449,28 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: file
-          description: The file to upload
-          in: query
-          required: true
-          schema:
-            type: string
-            format: binary
         - name: checkSum
           description: A sha256 checksum for file upload validation
           in: query
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
         "200":
           description: "Ok"
         "406":
           description: "Not acceptable"
+      x-content-type: multipart/form-data
       tags:
         - SecHub Execution
 
@@ -3085,7 +3089,7 @@ paths:
     post:
       summary: Admin creates an executor configuration
       description: An administrator creates an executor a new configuration entry.
-      operationId: adminCreatExecutorConfiguration
+      operationId: adminCreateExecutorConfiguration
       requestBody:
         content:
           application/json;charset=UTF-8:
@@ -3094,17 +3098,14 @@ paths:
       responses:
         "201":
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
-                format: uuid
           description: "Created"
         "406":
           description: "Not acceptable"
       tags:
         - Configuration
-      x-content-type: application/json;charset=UTF-8
-      x-accepts: application/json
 
   /api/admin/config/executors:
     get:
