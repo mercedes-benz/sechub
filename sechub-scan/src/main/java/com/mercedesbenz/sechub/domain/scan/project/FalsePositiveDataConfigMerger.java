@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.project;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,8 @@ public class FalsePositiveDataConfigMerger {
 
         SecHubFinding finding = fetchFindingInReportOrFail(report, falsePositiveJobData);
 
-        Optional<FalsePositiveEntry> optEntry = findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData);
-
-        if (optEntry.isPresent()) {
+        FalsePositiveEntry existingEntry = findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData);
+        if (existingEntry != null) {
             LOG.warn("False positive entry for job:{}, findingId:{} not added, because already existing", falsePositiveJobData.getJobUUID(),
                     falsePositiveJobData.getFindingId());
             return;
@@ -65,11 +63,11 @@ public class FalsePositiveDataConfigMerger {
             FalsePositiveEntry existingFPEntry = falsePositives.get(index);
             FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
             if (projectDataFromEntry == null) {
-                // the entry is a jobData entry with metaData so no projectData
+                LOG.debug("The entry is a jobData entry with metaData so no projectData");
                 continue;
             }
             if (projectDataFromEntry.getId().equals(projectData.getId())) {
-                LOG.warn("False positive project data entry with id: '{}', will be overwriten with new data!", projectData.getId());
+                LOG.warn("False positive project data entry with id: '{}', will be overwritten with new data!", projectData.getId());
                 falsePositives.set(index, projectDataEntry);
                 return;
             }
@@ -78,12 +76,18 @@ public class FalsePositiveDataConfigMerger {
     }
 
     public void removeJobDataWithMetaDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData jobDataToRemove) {
-        findExistingFalsePositiveEntryInConfig(config, jobDataToRemove).ifPresent(entry -> config.getFalsePositives().remove(entry));
+        FalsePositiveEntry entry = findExistingFalsePositiveEntryInConfig(config, jobDataToRemove);
+        if (entry != null) {
+            config.getFalsePositives().remove(entry);
+        }
 
     }
 
     public void removeProjectDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectDataToRemove) {
-        findExistingProjectDataFalsePositiveEntryInConfig(config, projectDataToRemove).ifPresent(entry -> config.getFalsePositives().remove(entry));
+        FalsePositiveEntry entry = findExistingProjectDataFalsePositiveEntryInConfig(config, projectDataToRemove);
+        if (entry != null) {
+            config.getFalsePositives().remove(entry);
+        }
 
     }
 
@@ -91,28 +95,27 @@ public class FalsePositiveDataConfigMerger {
         return findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData) != null;
     }
 
-    private Optional<FalsePositiveEntry> findExistingProjectDataFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
+    private FalsePositiveEntry findExistingProjectDataFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
             FalsePositiveProjectData projectDataToRemove) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
             if (projectDataFromEntry == null) {
-                // the entry is a jobData entry with metaData so no projectData
+                LOG.debug("The entry is a jobData entry with metaData so no projectData");
                 continue;
             }
 
             if (projectDataFromEntry.getId().equals(projectDataToRemove.getId())) {
-                return Optional.of(existingFPEntry);
+                return existingFPEntry;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    private Optional<FalsePositiveEntry> findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config,
-            FalsePositiveJobData falsePositiveJobData) {
+    private FalsePositiveEntry findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveJobData jobData = existingFPEntry.getJobData();
             if (jobData == null) {
-                // the entry is a projectData entry so no jobData and metaData
+                LOG.debug("The entry is a projectData entry so no jobData and metaData");
                 continue;
             }
 
@@ -122,9 +125,9 @@ public class FalsePositiveDataConfigMerger {
             if (jobData.getFindingId() != falsePositiveJobData.getFindingId()) {
                 continue;
             }
-            return Optional.of(existingFPEntry);
+            return existingFPEntry;
         }
-        return Optional.empty();
+        return null;
     }
 
     private SecHubFinding fetchFindingInReportOrFail(ScanSecHubReport report, FalsePositiveJobData falsePositiveJobData) {
