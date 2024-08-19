@@ -32,7 +32,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y wget && \
     apt-get clean
 
-# Download the Xray Wrapper
+# Download the Secret-Validation Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download wrapper jar
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECRETVALIDATION_WRAPPER_VERSION-secretvalidation-wrapper/sechub-wrapper-secretvalidation-$SECRETVALIDATION_WRAPPER_VERSION.jar" && \
@@ -67,7 +67,7 @@ RUN echo "build stage"
 
 
 #-------------------
-# PDS + Xray Image
+# PDS + Gitleaks Image
 #-------------------
 
 FROM ${BASE_IMAGE}
