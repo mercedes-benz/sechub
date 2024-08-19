@@ -7,6 +7,12 @@ replicaCount: 1
 image:
   registry: "ghcr.io/mercedes-benz/sechub/pds-gitleaks"
   tag: "latest"
+  # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
+  #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #   Example:
+  # imagePullSecrets: |-
+  #   - name: sechub-pull-secret
+  #   - name: sps2
 
 resources:
   requests:
