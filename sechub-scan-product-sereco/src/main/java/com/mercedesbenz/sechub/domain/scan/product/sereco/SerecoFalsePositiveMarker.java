@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -36,17 +35,23 @@ public class SerecoFalsePositiveMarker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveMarker.class);
 
-    @Autowired
-    SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder;
+    private final SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder;
+    private final SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder;
+    private final ScanProjectConfigService scanProjectConfigService;
+    private final SerecoProjectDataPatternMapFactory projectDataPatternMapFactory;
 
-    @Autowired
-    SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder;
+    /* @formatter:off */
+    public SerecoFalsePositiveMarker(SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder,
+            SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder,
+            ScanProjectConfigService scanProjectConfigService,
+            SerecoProjectDataPatternMapFactory projectDataPatternMapFactory) {
 
-    @Autowired
-    ScanProjectConfigService scanProjectConfigService;
-
-    @Autowired
-    SerecoProjectDataPatternMapFactory projectDataPatternMapFactory;
+        this.jobDataFalsePositiveFinder = jobDataFalsePositiveFinder;
+        this.projectDataFalsePositiveFinder = projectDataFalsePositiveFinder;
+        this.scanProjectConfigService = scanProjectConfigService;
+        this.projectDataPatternMapFactory = projectDataPatternMapFactory;
+        /* @formatter:on */
+    }
 
     public void markFalsePositives(String projectId, List<SerecoVulnerability> all) {
         notEmpty(projectId, "project id may not be null or empty!");

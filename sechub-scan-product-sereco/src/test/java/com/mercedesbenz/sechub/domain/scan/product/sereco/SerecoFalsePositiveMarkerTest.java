@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
@@ -30,31 +31,31 @@ public class SerecoFalsePositiveMarkerTest {
 
     private static final String PROJECT_ID = "project1";
     private SerecoFalsePositiveMarker markerToTest;
-    private ScanProjectConfigService scanProjectConfigService;
     private ScanProjectConfig config;
-    private SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder;
     private FalsePositiveProjectConfiguration projectConfig;
 
-    private SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder;
-    private SerecoProjectDataPatternMapFactory projectDataPatternMapFactory;
+    private static final ScanProjectConfigService scanProjectConfigService = mock();
+    private static final SerecoJobDataFalsePositiveFinder jobDataFalsePositiveFinder = mock();
+
+    private static final SerecoProjectDataFalsePositiveFinder projectDataFalsePositiveFinder = mock();
+    private static final SerecoProjectDataPatternMapFactory projectDataPatternMapFactory = mock();
 
     @BeforeEach
     void beforeEach() throws Exception {
-        markerToTest = new SerecoFalsePositiveMarker();
+        /* @formatter:off */
+        Mockito.reset(jobDataFalsePositiveFinder,
+                projectDataFalsePositiveFinder,
+                scanProjectConfigService,
+                projectDataPatternMapFactory);
 
-        scanProjectConfigService = mock(ScanProjectConfigService.class);
-        jobDataFalsePositiveFinder = mock(SerecoJobDataFalsePositiveFinder.class);
-
-        projectDataFalsePositiveFinder = mock(SerecoProjectDataFalsePositiveFinder.class);
-        projectDataPatternMapFactory = mock(SerecoProjectDataPatternMapFactory.class);
+        markerToTest = new SerecoFalsePositiveMarker(jobDataFalsePositiveFinder,
+                projectDataFalsePositiveFinder,
+                scanProjectConfigService,
+                projectDataPatternMapFactory);
+        /* @formatter:on */
 
         config = new ScanProjectConfig(ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION, PROJECT_ID);
         when(scanProjectConfigService.get(PROJECT_ID, ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION, false)).thenReturn(config);
-        markerToTest.scanProjectConfigService = scanProjectConfigService;
-        markerToTest.jobDataFalsePositiveFinder = jobDataFalsePositiveFinder;
-
-        markerToTest.projectDataFalsePositiveFinder = projectDataFalsePositiveFinder;
-        markerToTest.projectDataPatternMapFactory = projectDataPatternMapFactory;
 
         projectConfig = new FalsePositiveProjectConfiguration();
     }

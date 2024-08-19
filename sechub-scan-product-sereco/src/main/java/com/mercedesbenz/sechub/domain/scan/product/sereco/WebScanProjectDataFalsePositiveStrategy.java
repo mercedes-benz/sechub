@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -24,8 +23,11 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
 
     private static final Logger LOG = LoggerFactory.getLogger(WebScanProjectDataFalsePositiveStrategy.class);
 
-    @Autowired
-    SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport;
+    private final SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport;
+
+    public WebScanProjectDataFalsePositiveStrategy(SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport) {
+        this.webscanFalsePositiveProjectDataSupport = webscanFalsePositiveProjectDataSupport;
+    }
 
     @Override
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveProjectData projectData, Map<String, Pattern> projectDataPatternMap) {

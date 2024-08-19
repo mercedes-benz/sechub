@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
@@ -28,16 +29,13 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
     private WebScanProjectDataFalsePositiveStrategy strategyToTest;
 
-    private SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport;
+    private static final SerecoProjectDataWebScanFalsePositiveSupport webscanFalsePositiveProjectDataSupport = mock();
 
     @BeforeEach
     void beforeEach() {
-        strategyToTest = new WebScanProjectDataFalsePositiveStrategy();
+        Mockito.reset(webscanFalsePositiveProjectDataSupport);
 
-        webscanFalsePositiveProjectDataSupport = mock(SerecoProjectDataWebScanFalsePositiveSupport.class);
-
-        strategyToTest.webscanFalsePositiveProjectDataSupport = webscanFalsePositiveProjectDataSupport;
-
+        strategyToTest = new WebScanProjectDataFalsePositiveStrategy(webscanFalsePositiveProjectDataSupport);
     }
 
     @Test

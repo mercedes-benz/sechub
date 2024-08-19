@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
@@ -21,15 +22,13 @@ class SerecoProjectDataFalsePositiveFinderTest {
 
     private SerecoProjectDataFalsePositiveFinder finderToTest;
 
-    private WebScanProjectDataFalsePositiveStrategy webScanProjectDataStrategy;
+    private static final WebScanProjectDataFalsePositiveStrategy webScanProjectDataStrategy = mock();
 
     @BeforeEach
     void beforeEach() {
-        finderToTest = new SerecoProjectDataFalsePositiveFinder();
+        Mockito.reset(webScanProjectDataStrategy);
 
-        webScanProjectDataStrategy = mock(WebScanProjectDataFalsePositiveStrategy.class);
-
-        finderToTest.webScanProjectDataStrategy = webScanProjectDataStrategy;
+        finderToTest = new SerecoProjectDataFalsePositiveFinder(webScanProjectDataStrategy);
     }
 
     @Test
