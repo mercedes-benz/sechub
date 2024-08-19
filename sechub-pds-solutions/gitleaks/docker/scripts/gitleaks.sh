@@ -47,9 +47,13 @@ else
     echo ".git folder was uploaded for the secret scan. Perform secret scan with history deepscan." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/history-scan.txt
 fi
 
-echo "Running Gitleaks"
+echo "### Running Gitleaks"
 cd "$scan_target_directory"
 gitleaks detect $gitleaks_options
 
-# Call Secret-Validation Wrapper
-# ToDo
+# Secret-Validation Wrapper
+## Define config file
+export SECRET_VALIDATOR_CONFIGFILE="$TOOL_FOLDER"/sechub-wrapper-secretvalidation-config.json
+echo "### Calling Secret-Validation Wrapper"
+java -jar "$TOOL_FOLDER"/secret-validation-wrapper.jar
+# java -Dhttp.proxyHost=localhost -Dhttp.proxyPort=1234 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=1234 -jar "$TOOL_FOLDER"/secret-validation-wrapper.jar

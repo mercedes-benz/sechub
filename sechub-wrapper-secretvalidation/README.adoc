@@ -9,54 +9,59 @@ This values can then be used by the `sechub-sereco` module to improve the severi
 
 In case the secret was valid,the key `secretscan.validated.by.url` will be added to the PropertyBag as well with the value containing the URL the secret was valid for.
 
-=== Usage
-
-==== Start wrapper
+=== Use wrapper
 The wrapper application is an executable jar and needs no command line arguments.
+
+[source, bash]
+----
+java -jar sechub-wrapper-secretvalidation.jar
+----
+
 It can automatically use all 
 https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
 and following special mandatory environment variable:
 
-----
-SECRET_VALIDATOR_CONFIGFILE
-----
-
-[IMPORTANT]
-====
-The file, which must be configured by `SECRET_VALIDATOR_CONFIGFILE`, contains the configuration for each secret type, which basically tells the wrapper application how to validate secrets of a certain type.
-For each product a custom file is necessary, where some kind of finding identifier should be used, like the SARIF `ruleId` to identify each configuration.
+[horizontal]
+*SECRET_VALIDATOR_CONFIGFILE*::
+The file, which must be configured by `SECRET_VALIDATOR_CONFIGFILE`, contains the configuration for each secret type which basically tells the wrapper application how to validate secrets of a certain type. +
+For each product a custom file is necessary where some kind of finding identifier should be used, like the SARIF `ruleId` to identify each configuration. +
 From the https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables]
 only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report from a secret scanning tool no validations can be done.
-====
 
-===== Configuration file example
-```json
+==== Configuration file
+Configuration file example:
+
+[source, json]
+----
 {
-  "validatorConfigList" : [ { <1>
-    "ruleId" : "sarif-result-rule-id", <2>
-    "categorization" : { <3>
-      "defaultSeverity" : "high",
-      "validationFailedSeverity" : "medium",
-      "validationSuccessSeverity" : "critical"
-    },
-    "requests" : [ { <4>
-      "proxyRequired" : true,
-      "url" : "https://api.example.com",
-      "headers" : [ {
-        "name" : "Authorization",
-        "valuePrefix" : "Bearer"
-      } ],
-      "expectedResponse" : { <5>
-        "httpStatus" : 200,
-        "contains" : {
-          "allOf" : [ "is", "there" ],
-          "oneOf" : [ "success", "authorized" ]
+  "validatorConfigList": [ <1>
+    {
+      "ruleId": "sarif-result-rule-id", <2>
+      "categorization": { <3>
+        "defaultSeverity": "high",
+        "validationFailedSeverity": "medium",
+        "validationSuccessSeverity": "critical"
+      },
+      "requests": [ <4>
+        {
+          "proxyRequired": true,
+          "url": "https://api.example.com",
+          "headers": [
+            { "name": "Authorization", "valuePrefix": "Bearer" }
+          ],
+          "expectedResponse": { <5>
+            "httpStatus": 200,
+            "contains": {
+              "allOf": [ "is", "there" ],
+              "oneOf": [ "success", "authorized" ]
+            }
+          }
         }
-      }
-    } ]
-  } ]
+      ]
+    }
+  ]
 }
-```
+----
 <1> Define a list of configuration entries. One entry represents a type of secret identified by a dedicated rule id.
 <2> The `ruleId` identifies this configuration so the requests defined in the later section are performed for each finding of this type.
 <3> The `categorization` configuration. If empty no categorization will be performed, otherwise:
@@ -74,32 +79,30 @@ It is an array because it could be useful in the future. Currently the header is
 like a specific `httpStatus` code or the response body should contain `allOf` or `oneOf` certain strings.
 
 
-
-There exists also some optional variables:
-
-----
-SECRET_VALIDATOR_TRUSTALLCERTIFICATES
----- 
-
-[TIP]
-====
+Optional environment variable:
+[horizontal]
+*SECRET_VALIDATOR_TRUSTALLCERTIFICATES*::
 When `SECRET_VALIDATOR_TRUSTALLCERTIFICATES` set to `true`, certificate errors on validation web requests will be ignored.
 This can be useful, in certain situations or setups.
-====
 
-===== Proxy configuration
-Inside the configuration file each request has to configure if a proxy server is required to access this specific URL or not.
-The wrapper is implemented to use the default proxy of the system properties. To configure a proxy, launch the application with the following arguments.
-For each request it will then be decided if the proxy is needed or not according to the configuration file provided:
+==== Proxy configuration
+Inside the configuration file each request has to be configured if a proxy server is required to access this URL or not. +
+The wrapper is implemented to use the default proxy of the system properties. To configure a proxy, launch the application with the following arguments:
 
+[source, bash]
 ----
-java -Dhttp.proxyHost=localhost -Dhttp.proxyPort=1234 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=1234 -jar secret-validation-wrapper.jar
+java -Dhttp.proxyHost=localhost -Dhttp.proxyPort=1234 \
+     -Dhttps.proxyHost=localhost -Dhttps.proxyPort=1234 \
+     -jar sechub-wrapper-secretvalidation.jar
 ----
 
-==== Testing the wrapper
-For testing purposes there is another implementation present which is only available and used if the wrapper is started with the `integrationtest` profile:
+=== Testing
+For testing purposes there is another implementation present which is only available and used if the wrapper is started with the "integrationtest" profile:
+
+[source, bash]
 ----
-java -Dspring.profiles.active=integrationtest -jar secret-validation-wrapper.jar
+java -Dspring.profiles.active=integrationtest -jar sechub-wrapper-secretvalidation.jar
 ----
-If the `integrationtest` profile is used the application will flag all findings in the SARIF report as valid, that has a none empty list of requests configured.
+
+If the "integrationtest" profile is used the application will flag all findings in the SARIF report as valid, that has a non-empty list of requests configured.
 In case no requests are configured the finding will be flagged as invalid.
