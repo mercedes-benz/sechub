@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.*;
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.*;
-import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataList.*;
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.*;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData.*;
+import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.*;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
@@ -40,18 +42,7 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodeMetaData;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataConfigMerger;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataList;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataListValidation;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataService;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
-import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveRestController;
-import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.domain.scan.project.*;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -59,8 +50,9 @@ import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserFetchesFalsePositiveConfigurationOfProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositivesForJob;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositives;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByJobData;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByProjectData;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -90,13 +82,13 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
     private ScanProjectConfigService configService;
 
     @MockBean
-    private FalsePositiveJobDataService falsePositiveJobDataService;
+    private FalsePositiveDataService falsePositiveDataService;
 
     @MockBean
-    private FalsePositiveJobDataListValidation falsePositiveJobDataListValidation;
+    private FalsePositiveDataListValidation falsePositiveDataListValidation;
 
     @MockBean
-    private FalsePositiveJobDataConfigMerger merger;
+    private FalsePositiveDataConfigMerger merger;
 
     @MockBean
     private UserContextService userContextService;
@@ -109,21 +101,37 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserMarksFalsePositivesForJob.class)
-    public void restdoc_mark_false_positives_for_job() throws Exception {
+    @UseCaseRestDoc(useCase = UseCaseUserMarksFalsePositives.class)
+    public void restdoc_mark_false_positives() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserAddsFalsePositiveJobDataListForProject(PROJECT_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserMarksFalsePositivesForJob.class;
+        String apiEndpoint = https(PORT_USED).buildUserAddsFalsePositiveDataListForProject(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserMarksFalsePositives.class;
 
-        FalsePositiveJobDataList jobDataList = new FalsePositiveJobDataList();
-        jobDataList.setApiVersion("1.0");
-        List<FalsePositiveJobData> list = jobDataList.getJobData();
+        FalsePositiveDataList dataList = new FalsePositiveDataList();
+        dataList.setApiVersion("1.0");
+        List<FalsePositiveJobData> list = dataList.getJobData();
         FalsePositiveJobData data = new FalsePositiveJobData();
         data.setComment("an optional comment why this is a false positive...");
         data.setFindingId(42);
         data.setJobUUID(UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936"));
         list.add(data);
-        String content = jobDataList.toJSON();
+
+        WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
+        webScan.setCweId(564);
+        webScan.setMethods(List.of("GET", "POST"));
+        webScan.setPorts(List.of("8443", "8080"));
+        webScan.setProtocols(List.of("HTTP", "HTTPS"));
+        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
+        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+
+        FalsePositiveProjectData projectData = new FalsePositiveProjectData();
+        projectData.setId("unique-identifier");
+        projectData.setComment("an optional comment for this false positive project entry");
+        projectData.setWebScan(webScan);
+
+        dataList.getProjectData().add(projectData);
+
+        String content = dataList.toJSON();
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
@@ -138,7 +146,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.FALSE_POSITVES_FOR_JOB.getSchema()).
+                    requestSchema(OpenApiSchema.FALSE_POSITIVES.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -146,12 +154,24 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
 	                		),
                             requestFields(
                                     fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-                                    fieldWithPath(PROPERTY_TYPE).description("The type of the json content. Currently only accepted value is '"+FalsePositiveJobDataList.ACCEPTED_TYPE+"'."),
+                                    fieldWithPath(PROPERTY_TYPE).description("The type of the json content. Currently only accepted value is '"+FalsePositiveDataList.ACCEPTED_TYPE+"' but we also still accept the deprecated type '"+FalsePositiveDataList.DEPRECATED_ACCEPTED_TYPE+"'."),
 
                                     fieldWithPath(PROPERTY_JOBDATA).description("Job data list containing false positive setup based on former jobs"),
                                     fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
-                                    fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"),
-                                    fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive")
+                                    fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive."),
+                                    fieldWithPath(PROPERTY_JOBDATA+"[]."+ FalsePositiveJobData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive"),
+
+                                    fieldWithPath(PROPERTY_PROJECTDATA).description("Porject data list containing false positive setup for the project"),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_ID).description("Identifier which is used to update or remove the respective false positive entry."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
+
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The projectId of the project where users adds false positives for")
@@ -162,12 +182,12 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositives.class)
+    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositiveByJobData.class)
     public void restdoc_unmark_false_positives() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(), JOB_UUID.pathElement(),
                 FINDING_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositives.class;
+        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositiveByJobData.class;
 
         int findingId = 42;
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
@@ -192,6 +212,39 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                                     parameterWithName(JOB_UUID.paramName()).description("Job uuid"),
                                     parameterWithName(FINDING_ID.paramName()).description("Finding id - in combination with job UUID this defines the false positive to remove")
+                         )
+                ));
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositiveByProjectData.class)
+    public void restdoc_unmark_false_positive_project_data() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveProjectDataEntryFromProject(PROJECT_ID.pathElement(), PROJECT_DATA_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositiveByProjectData.class;
+
+        String projectDataId = "unique-identifier";
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                delete(apiEndpoint,PROJECT1_ID,projectDataId).
+                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        ).
+        andExpect(status().isNoContent()).
+        /*andDo(print()).*/
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
+                            requestHeaders(
+
+                            ),
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                                    parameterWithName(PROJECT_DATA_ID.paramName()).description("Identifier which is used to remove the respective false positive entry.")
                          )
                 ));
         /* @formatter:on */
@@ -241,8 +294,24 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
 
         entry.setMetaData(metaData);
 
+        WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
+        webScan.setCweId(564);
+        webScan.setMethods(List.of("GET", "POST"));
+        webScan.setPorts(List.of("8443", "8080"));
+        webScan.setProtocols(List.of("HTTP", "HTTPS"));
+        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
+        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+
+        FalsePositiveProjectData projectData = new FalsePositiveProjectData();
+        projectData.setId("unique-identifier");
+        projectData.setComment("an optional comment for this false positive project entry");
+        projectData.setWebScan(webScan);
+
+        entry.setProjectData(projectData);
+
         fpList.add(entry);
-        when(falsePositiveJobDataService.fetchFalsePositivesProjectConfiguration(PROJECT1_ID)).thenReturn(config);
+
+        when(falsePositiveDataService.fetchFalsePositivesProjectConfiguration(PROJECT1_ID)).thenReturn(config);
 
         /* execute + test @formatter:off */
         String metaDataPath = PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_METADATA;
@@ -258,7 +327,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.FALSE_POSITVES.getSchema()).
+                    responseSchema(OpenApiSchema.FALSE_POSITIVES.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -291,7 +360,19 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA).description("Job data parts, can be used as key to identify false positives"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+PROPERTY_COMMENT).optional().description("A comment from author describing why this was marked as a false positive")
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+FalsePositiveJobData.PROPERTY_COMMENT).optional().description("A comment from author describing why this was marked as a false positive"),
+
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA).optional().description("Porject data list containing false positive setup for the project."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_ID).description("Identifier which is used to update or remove the respective false positive entry."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
+
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project id")
