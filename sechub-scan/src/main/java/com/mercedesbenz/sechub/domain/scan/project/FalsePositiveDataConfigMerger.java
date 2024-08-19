@@ -35,9 +35,13 @@ public class FalsePositiveDataConfigMerger {
 
         SecHubFinding finding = fetchFindingInReportOrFail(report, falsePositiveJobData);
 
-        findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData)
-                .ifPresent(entry -> LOG.warn("False positive entry for job:{}, findingId:{} not added, because already existing",
-                        falsePositiveJobData.getJobUUID(), falsePositiveJobData.getFindingId()));
+        Optional<FalsePositiveEntry> optEntry = findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData);
+
+        if (optEntry.isPresent()) {
+            LOG.warn("False positive entry for job:{}, findingId:{} not added, because already existing", falsePositiveJobData.getJobUUID(),
+                    falsePositiveJobData.getFindingId());
+            return;
+        }
 
         FalsePositiveMetaData metaData = metaDataFactory.createMetaData(finding);
 
@@ -65,6 +69,7 @@ public class FalsePositiveDataConfigMerger {
                 continue;
             }
             if (projectDataFromEntry.getId().equals(projectData.getId())) {
+                LOG.warn("False positive project data entry with id: '{}', will be overwriten with new data!", projectData.getId());
                 falsePositives.set(index, projectDataEntry);
                 return;
             }
