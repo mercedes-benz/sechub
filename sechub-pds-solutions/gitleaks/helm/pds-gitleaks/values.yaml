@@ -22,6 +22,16 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
+# Settings for the secret-validation wrapper:
+secretvalidation:
+  ssl:
+    # Whether to trust all certificates
+    trustallcertificates: false
+  proxy:
+    # Optional: Here you can define your http proxy
+    host: none
+    port: 3128
+
 pds:
   startMode: localserver
   # Maximum upload size for source code: 50 MiB by default (50 * 1024 * 1024 = 52428800)

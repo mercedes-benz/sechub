@@ -55,5 +55,6 @@ gitleaks detect $gitleaks_options
 ## Define config file
 export SECRET_VALIDATOR_CONFIGFILE="$TOOL_FOLDER"/sechub-wrapper-secretvalidation-config.json
 echo "### Calling Secret-Validation Wrapper"
-java -jar "$TOOL_FOLDER"/secret-validation-wrapper.jar
-# java -Dhttp.proxyHost=localhost -Dhttp.proxyPort=1234 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=1234 -jar "$TOOL_FOLDER"/secret-validation-wrapper.jar
+java -Dhttp.proxyHost="$SECRET_VALIDATOR_PROXY_HOST" -Dhttp.proxyPort="$SECRET_VALIDATOR_PROXY_PORT" \
+     -Dhttps.proxyHost="$SECRET_VALIDATOR_PROXY_HOST" -Dhttps.proxyPort="$SECRET_VALIDATOR_PROXY_PORT" \
+     -jar "$TOOL_FOLDER"/sechub-wrapper-secretvalidation.jar
