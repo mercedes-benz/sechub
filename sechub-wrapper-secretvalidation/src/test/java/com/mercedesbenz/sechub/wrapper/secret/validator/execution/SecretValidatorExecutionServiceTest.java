@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -64,7 +63,7 @@ class SecretValidatorExecutionServiceTest {
         when(ruleConfigurations.get(any())).thenReturn(null);
 
         SecretValidatorExecutionContext executionContext = SecretValidatorExecutionContext.builder().setSarifReport(report)
-                .setValidatorConfiguration(ruleConfigurations).setTrustAllCertificates(true).build();
+                .setValidatorConfiguration(ruleConfigurations).setConnectionRetries(5L).build();
         when(contextFactory.create()).thenReturn(executionContext);
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(false);
@@ -74,7 +73,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, never()).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
@@ -89,7 +88,7 @@ class SecretValidatorExecutionServiceTest {
         when(ruleConfigurations.get(any())).thenReturn(null);
 
         SecretValidatorExecutionContext executionContext = SecretValidatorExecutionContext.builder().setSarifReport(report)
-                .setValidatorConfiguration(ruleConfigurations).setTrustAllCertificates(true).build();
+                .setValidatorConfiguration(ruleConfigurations).setConnectionRetries(5L).build();
         when(contextFactory.create()).thenReturn(executionContext);
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(true);
@@ -99,7 +98,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, never()).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
@@ -116,7 +115,7 @@ class SecretValidatorExecutionServiceTest {
         when(ruleConfigurations.get(any())).thenReturn(config);
 
         SecretValidatorExecutionContext executionContext = SecretValidatorExecutionContext.builder().setSarifReport(report)
-                .setValidatorConfiguration(ruleConfigurations).setTrustAllCertificates(true).build();
+                .setValidatorConfiguration(ruleConfigurations).setConnectionRetries(5L).build();
         when(contextFactory.create()).thenReturn(executionContext);
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(true);
@@ -126,7 +125,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, never()).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
@@ -144,7 +143,7 @@ class SecretValidatorExecutionServiceTest {
         when(ruleConfigurations.get(any())).thenReturn(config);
 
         SecretValidatorExecutionContext executionContext = SecretValidatorExecutionContext.builder().setSarifReport(report)
-                .setValidatorConfiguration(ruleConfigurations).setTrustAllCertificates(true).build();
+                .setValidatorConfiguration(ruleConfigurations).setConnectionRetries(5L).build();
         when(contextFactory.create()).thenReturn(executionContext);
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(true);
@@ -154,7 +153,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, never()).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
     }
@@ -173,7 +172,7 @@ class SecretValidatorExecutionServiceTest {
         when(ruleConfigurations.get(any())).thenReturn(config);
 
         SecretValidatorExecutionContext executionContext = SecretValidatorExecutionContext.builder().setSarifReport(report)
-                .setValidatorConfiguration(ruleConfigurations).setTrustAllCertificates(true).build();
+                .setValidatorConfiguration(ruleConfigurations).setConnectionRetries(5L).build();
         when(contextFactory.create()).thenReturn(executionContext);
 
         when(sarifValidationSupport.findingCanBeValidated(any())).thenReturn(true);
@@ -184,7 +183,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, never()).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, never()).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, never()).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(1)).findingCanBeValidated(any());
         verify(sarifValidationSupport, times(1)).findingLocationCanBeValidated(any());
@@ -197,7 +196,7 @@ class SecretValidatorExecutionServiceTest {
         when(contextFactory.create()).thenReturn(executionContext);
 
         SecretValidationResult secretValidationResult = new SecretValidationResult();
-        when(validationService.validateFindingByRegion(any(), any(), anyBoolean())).thenReturn(secretValidationResult);
+        when(validationService.validateFindingByRegion(any(), any(), any())).thenReturn(secretValidationResult);
 
         doNothing().when(sarifEnhancementService).addSerecoSeverityInfo(any(), any(), any());
 
@@ -209,7 +208,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* test */
         verify(contextFactory, times(1)).create();
-        verify(validationService, times(6)).validateFindingByRegion(any(), any(), anyBoolean());
+        verify(validationService, times(6)).validateFindingByRegion(any(), any(), any());
         verify(sarifEnhancementService, times(6)).addSerecoSeverityInfo(any(), any(), any());
         verify(sarifValidationSupport, times(6)).findingCanBeValidated(any());
         verify(sarifValidationSupport, times(6)).findingLocationCanBeValidated(any());
@@ -223,7 +222,7 @@ class SecretValidatorExecutionServiceTest {
 
         /* @formatter:off */
         return SecretValidatorExecutionContext.builder()
-                                        .setTrustAllCertificates(true)
+                                        .setConnectionRetries(5L)
                                         .setSarifReport(report)
                                         .setValidatorConfiguration(ruleConfigurations)
                                         .build();

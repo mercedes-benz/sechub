@@ -33,11 +33,11 @@ class SecretValidatorExecutionContextFactoryTest {
 
         invalidsecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(invalidSarifFile);
 
-        invalidProperties = new SecretValidatorProperties(invalidConfigFile, false);
+        invalidProperties = new SecretValidatorProperties(invalidConfigFile, 5L);
 
         validSecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(validSarifFile);
 
-        validProperties = new SecretValidatorProperties(validConfigFile, false);
+        validProperties = new SecretValidatorProperties(validConfigFile, 5L);
     }
 
     @Test

@@ -10,10 +10,10 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding;
 public class SecretValidatorProperties {
 
     private final File configFile;
-    private final boolean trustAllCertificates;
+    private long connectionRetries;
 
     @ConstructorBinding
-    public SecretValidatorProperties(File configFile, boolean trustAllCertificates) {
+    public SecretValidatorProperties(File configFile, long connectionRetries) {
         if (configFile == null) {
             throw new IllegalArgumentException("The secret validator configuration file is null!");
         }
@@ -27,15 +27,14 @@ public class SecretValidatorProperties {
             throw new IllegalArgumentException("The secret validator configuration file " + configFile + "  is not readable!");
         }
 
-        this.trustAllCertificates = trustAllCertificates;
+        this.connectionRetries = connectionRetries;
     }
 
     public File getConfigFile() {
         return configFile;
     }
 
-    public boolean isTrustAllCertificates() {
-        return trustAllCertificates;
+    public long getConnectionRetries() {
+        return connectionRetries;
     }
-
 }

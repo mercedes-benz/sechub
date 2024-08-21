@@ -24,7 +24,7 @@ public class SecretValidationServiceImpl implements SecretValidationService {
     SecretValidatorWebRequestService webRequestService;
 
     @Override
-    public SecretValidationResult validateFindingByRegion(Region findingRegion, List<SecretValidatorRequest> requests, boolean trustAllCertificates) {
+    public SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests) {
         ArtifactContent snippet = findingRegion.getSnippet();
         SecretValidationResult validationResult = new SecretValidationResult();
         if (snippet == null) {
@@ -39,7 +39,7 @@ public class SecretValidationServiceImpl implements SecretValidationService {
             validationResult.setValidationStatus(SecretValidationStatus.SARIF_SNIPPET_NOT_SET);
             return validationResult;
         }
-        return webRequestService.validateFinding(snippetText, requests, trustAllCertificates);
+        return webRequestService.validateFinding(snippetText, ruleId, requests);
     }
 
 }

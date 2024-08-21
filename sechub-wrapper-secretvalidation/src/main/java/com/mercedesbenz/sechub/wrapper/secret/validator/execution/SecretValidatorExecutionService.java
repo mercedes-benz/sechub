@@ -75,8 +75,7 @@ public class SecretValidatorExecutionService {
                 continue;
             }
             Region findingRegion = location.getPhysicalLocation().getRegion();
-            SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRequests(),
-                    executionContext.isTrustAllCertificates());
+            SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRuleId(), config.getRequests());
             sarifEnhancementService.addSerecoSeverityInfo(validationResult, findingRegion, config.getCategorization());
         }
     }

@@ -43,7 +43,7 @@ public class SecretValidatorExecutionContextFactory {
                 SecretValidatorExecutionContext.builder()
                                                .setSarifReport(report)
                                                .setValidatorConfiguration(ruleConfigurations)
-                                               .setTrustAllCertificates(properties.isTrustAllCertificates())
+                                               .setConnectionRetries(properties.getConnectionRetries())
                                                .build();
         /* @formatter:on */
         return context;
