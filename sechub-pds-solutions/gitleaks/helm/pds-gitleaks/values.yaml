@@ -24,6 +24,7 @@ resources:
 
 # Settings for the secret-validation wrapper:
 secretvalidation:
+  enabled: true
   ssl:
     # Whether to trust all certificates
     trustallcertificates: false
