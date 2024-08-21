@@ -58,5 +58,5 @@ if [ "$SECRET_VALIDATOR_ENABLED" = "true" ] ; then
   echo "### Calling Secret-Validation Wrapper"
   java -Dhttp.proxyHost="$SECRET_VALIDATOR_PROXY_HOST" -Dhttp.proxyPort="$SECRET_VALIDATOR_PROXY_PORT" \
        -Dhttps.proxyHost="$SECRET_VALIDATOR_PROXY_HOST" -Dhttps.proxyPort="$SECRET_VALIDATOR_PROXY_PORT" \
-       -jar "$TOOL_FOLDER"/sechub-wrapper-secretvalidation.jar
+       -jar "$secretvalidation_wrapper"
 fi
