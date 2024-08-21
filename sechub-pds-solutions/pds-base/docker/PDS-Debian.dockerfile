@@ -178,7 +178,7 @@ COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$PDS_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet bind9-host curl netcat-openbsd tree && \
+    apt-get install --assume-yes --quiet bind9-host curl netcat-openbsd tree vim-tiny && \
     apt-get clean
 
 COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
