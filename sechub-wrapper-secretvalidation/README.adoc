@@ -15,10 +15,12 @@ In case the secret was valid,the key `secretscan.validated.by.url` will be added
 The wrapper application is an executable jar and needs no command line arguments.
 It can automatically use all 
 https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
-and following special mandatory environment variable:
+and following special mandatory environment variable. Regarding the following mandatory parameters in a pds-soultion the environment variable `PDS_JOB_RESULT_FILE` should always be available,
+since this application is supposed to run after the secret scanning tool, when a SARIF report was already written to `$PDS_JOB_RESULT_FILE`:
 
 ----
 SECRET_VALIDATOR_CONFIGFILE
+PDS_JOB_RESULT_FILE
 ----
 
 [IMPORTANT]
