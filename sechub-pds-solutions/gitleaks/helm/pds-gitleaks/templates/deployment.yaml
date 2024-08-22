@@ -66,8 +66,10 @@ spec:
 {{- if .Values.secretvalidation.enabled }}
             - name: SECRET_VALIDATOR_ENABLED
               value: "true"
-            - name: SECRET_VALIDATOR_TRUSTALLCERTIFICATES
-              value: "{{ .Values.secretvalidation.ssl.trustallcertificates }}"
+            - name: SECRET_VALIDATOR_MAXIMUMRETRIES
+              value: "{{ .Values.secretvalidation.request.maxRetries }}"
+            - name: SECRET_VALIDATOR_TIMEOUTSECONDS
+              value: "{{ .Values.secretvalidation.request.timeout }}"
             - name: SECRET_VALIDATOR_PROXY_HOST
               value: "{{ .Values.secretvalidation.proxy.host }}"
             - name: SECRET_VALIDATOR_PROXY_PORT

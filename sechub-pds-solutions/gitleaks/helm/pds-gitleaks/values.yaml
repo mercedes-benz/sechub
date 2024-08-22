@@ -25,13 +25,15 @@ resources:
 # Settings for the secret-validation wrapper:
 secretvalidation:
   enabled: true
-  ssl:
-    # Whether to trust all certificates
-    trustallcertificates: false
   proxy:
     # Optional: Here you can define your http proxy
     host: none
     port: 3128
+  request:
+    # Number of retries in case of failures
+    maxRetries: 1
+    # Timeout in seconds for a connection attempt
+    timeout: 5
 
 pds:
   startMode: localserver
