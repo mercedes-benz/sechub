@@ -1244,7 +1244,81 @@ components:
         jobUUID: jobUUID
         findingId: 1
         comment: comment
-
+        
+    WebscanFalsePositiveProjectData:
+      title: WebscanFalsePositiveProjectData
+      description: Project data parts, that identify false positives of webscans
+      type: object
+      properties:
+        cweId:
+          required: true
+          description: CWE ID for a category of findings to identify the type of false positive finding
+          type: integer
+          format: int32
+        hostPatterns:
+          required: true
+          description: list of host name or ip address patterns this false positive entry shall match (can contain wildcards)
+          type: array
+          items:
+            type: string
+        urlPathPatterns:
+          required: true
+          description: list of URL path patterns this false positive entry shall match (can contain wildcards)
+          type: array
+          items:
+            type: string
+        protocols:
+          required: false
+          description: list of protocols this false positive entry shall match (does not use wildcards)
+          type: array
+          items:
+            type: string
+        methods:
+          required: false
+          description: list of (HTTP) methods this false positive entry shall match (does not use wildcards)
+          type: array
+          items:
+            type: string
+        ports:
+          required: false
+          description: list of ports this false positive entry shall match (does not use wildcards)
+          type: array
+          items:
+            type: string
+      example:
+        cweId: 79
+        hostPatterns: ["api.example.com", "*.my-example.com", "127.0.*.1"]
+        urlPathPatterns: ["/rest/api/users/*", "/rest/api/project/alpha"]
+        protocols: ["HTTPS", "WSS", "HTTP"]
+        methods: ["GET", "DELETE"]
+        ports: ["8080", "9090"]
+        
+        
+    FalsePositiveProjectData:
+      title: FalsePositiveProjectData
+      description: Project data parts, can be used to specify patterns that indentify false positives
+      type: object
+      properties:
+        id:
+          required: true
+          description: ID to identify this entry, can be used to overwrite or delete the entry for this project
+          type: string
+        comment:
+          description: A comment from author describing why this was marked as a false positive
+          type: string
+        webScan:
+          $ref: '#/components/schemas/WebscanFalsePositiveProjectData'
+      example:
+        id: unique-id
+        comment: comment
+        webScan:
+          cweId: 79
+          hostPatterns: ["api.example.com", "*.my-example.com", "127.0.*.1"]
+          urlPathPatterns: ["/rest/api/users/*", "/rest/api/project/alpha"]
+          protocols: ["HTTPS", "WSS", "HTTP"]
+          methods: ["GET", "DELETE"]
+          ports: ["8080", "9090"]
+          
     FalsePositiveEntry:
       title: FalsePositiveEntry
       type: object
@@ -1256,6 +1330,8 @@ components:
           type: string
         metaData:
           $ref: '#/components/schemas/FalsePositiveMetaData'
+        projectData:
+          $ref: '#/components/schemas/FalsePositiveProjectData'
         created:
           description: Creation timestamp
           type: string
@@ -1281,6 +1357,16 @@ components:
           cveId: cveId
           name: name
           scanType: scanType
+        projectData:
+          id: unique-id
+          comment: comment
+          webScan:
+            cweId: 79
+            hostPatterns: ["api.example.com", "*.my-example.com", "127.0.*.1"]
+            urlPathPatterns: ["/rest/api/users/*", "/rest/api/project/alpha"]
+            protocols: ["HTTPS", "WSS", "HTTP"]
+            methods: ["GET", "DELETE"]
+            ports: ["8080", "9090"]
         created: created
 
     FalsePositiveProjectConfiguration:
@@ -1338,9 +1424,21 @@ components:
               comment: comment
             created: created
             author: author
+          - projectData:
+              id: unique-id
+              comment: comment
+              webScan:
+                cweId: 79
+                hostPatterns: ["api.example.com", "*.my-example.com", "127.0.*.1"]
+                urlPathPatterns: ["/rest/api/users/*", "/rest/api/project/alpha"]
+                protocols: ["HTTPS", "WSS", "HTTP"]
+                methods: ["GET", "DELETE"]
+                ports: ["8080", "9090"]
+            created: created
+            author: author
 
-    FalsePositivesForJob:
-      title: FalsePositivesForJob
+    FalsePositives:
+      title: FalsePositives
       type: object
       properties:
         apiVersion:
@@ -1348,13 +1446,18 @@ components:
           type: string
         type:
           description: The type of the json content. Currently only accepted value
-            is 'falsePositiveJobDataList'.
+            is 'falsePositiveDataList' and the deprecated 'falsePositiveJobDataList'.
           type: string
         jobData:
           description: Job data list containing false positive setup based on former jobs
           type: array
           items:
             $ref: '#/components/schemas/FalsePositiveJobData'
+        projectData:
+          description: Project data list containing false positive setup
+          type: array
+          items:
+            $ref: '#/components/schemas/FalsePositiveProjectData'
 
 
     #############
@@ -2582,8 +2685,8 @@ paths:
         - SecHub Execution
       x-content-type: application/json
     put:
-      description: User marks false positives for finished sechub job
-      operationId: userMarkFalsePositivesForJob
+      description: User marks false positives 
+      operationId: userMarkFalsePositives
       parameters:
         - description: The projectId of the project where users adds false positives
             for
@@ -2598,7 +2701,7 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/FalsePositivesForJob'
+              $ref: '#/components/schemas/FalsePositives'
       responses:
         "200":
           description: "Ok"
@@ -2634,6 +2737,34 @@ paths:
         - name: findingId
           description: Finding id - in combination with job UUID this defines the false
             positive to remove
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/false-positive/{id}:
+    delete:
+      summary: User unmarks existing false positive definitons
+      description: User unmarks existing false positive definitons
+      operationId: userUnmarkFalsePositives
+      parameters:
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          description: The id of the projectData entry the shall be deleted from FalsePositiveProjectConfiguration
           in: path
           required: true
           schema:

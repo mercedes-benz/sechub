@@ -6,36 +6,53 @@ hide empty fields
 package com.mercedesbenz.sechub.domain.scan.product.sereco{
 'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveMarker
    class SerecoFalsePositiveMarker ##[bold]black {
-    ~SerecoFalsePositiveFinder : falsePositiveCodeFinder
+    ~SerecoJobDataFalsePositiveFinder : jobDatafalsePositiveCodeFinder
     ~ScanProjectConfigService : scanProjectConfigService
+    ~SerecoProjectDataFalsePositiveFinder: projectDataFalsePositiveFinder
+    ~SerecoProjectDataPatternMapFactory: projectDataPatternMapFactory
   }
-  SerecoFalsePositiveMarker *-- SerecoFalsePositiveFinder
+  SerecoFalsePositiveMarker *-- SerecoJobDataFalsePositiveFinder
+  SerecoFalsePositiveMarker *-- SerecoProjectDataFalsePositiveFinder
+  SerecoFalsePositiveMarker *-- SerecoProjectDataPatternMapFactory
   SerecoFalsePositiveMarker -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry
   SerecoFalsePositiveMarker *-- com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService
   SerecoFalsePositiveMarker -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
-'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveFinder
-   class SerecoFalsePositiveFinder{
-    ~SerecoFalsePositiveCodeScanStrategy : codeSCanStrategy
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoJobDataFalsePositiveFinder
+   class SerecoJobDataFalsePositiveFinder{
+    ~CodeScanJobDataFalsePositiveStrategy : jobDataCodeScanStrategy
+    ~SecretScanJobDataFalsePositiveStrategy: jobDataSecretScanStrategy
+    ~WebScanJobDataFalsePositiveStrategy: jobDataSebScanStrategy
   }
-  SerecoFalsePositiveFinder *-- SerecoFalsePositiveCodeScanStrategy
-  SerecoFalsePositiveFinder *-- SerecoFalsePositiveWebScanStrategy
-  SerecoFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
-  SerecoFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
-'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoFalsePositiveCodeScanStrategy
-   class SerecoFalsePositiveCodeScanStrategy{
+  SerecoJobDataFalsePositiveFinder *-- CodeScanJobDataFalsePositiveStrategy
+  SerecoJobDataFalsePositiveFinder *-- WebScanJobDataFalsePositiveStrategy
+  SerecoJobDataFalsePositiveFinder *-- SecretScanJobDataFalsePositiveStrategy
+  SerecoJobDataFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
+  SerecoJobDataFalsePositiveFinder -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
+'com.mercedesbenz.sechub.domain.scan.product.sereco.CodeScanJobDataFalsePositiveStrategy
+   class CodeScanJobDataFalsePositiveStrategy{
     ~SerecoSourceRelevantPartResolver : relevantPartResolver
   }
-  SerecoFalsePositiveCodeScanStrategy *-- SerecoSourceRelevantPartResolver
-  SerecoFalsePositiveCodeScanStrategy -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData
-  SerecoFalsePositiveCodeScanStrategy .[#green]. com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
-  SerecoFalsePositiveCodeScanStrategy -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement
-  SerecoFalsePositiveCodeScanStrategy .[#green]. com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
+  CodeScanJobDataFalsePositiveStrategy *-- SerecoSourceRelevantPartResolver
+  CodeScanJobDataFalsePositiveStrategy -[#blue]- com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData
+  CodeScanJobDataFalsePositiveStrategy .[#green]. com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
+  CodeScanJobDataFalsePositiveStrategy -[#blue]- com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement
+  CodeScanJobDataFalsePositiveStrategy .[#green]. com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
 'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoSourceRelevantPartResolver
    class SerecoSourceRelevantPartResolver{
   }
-   class SerecoFalsePositiveWebScanStrategy{
+   class WebScanJobDataFalsePositiveStrategy{
     
   }
+'com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoProjectDataFalsePositiveFinder
+   class SerecoProjectDataFalsePositiveFinder{
+    ~WebScanProjectDataFalsePositiveStrategy: webScanProjectDataStrategy
+  }
+  SerecoProjectDataFalsePositiveFinder *-- WebScanProjectDataFalsePositiveStrategy
+  
+'com.mercedesbenz.sechub.domain.scan.product.sereco.WebScanProjectDataFalsePositiveStrategy
+   class WebScanProjectDataFalsePositiveStrategy{
+  }
+  WebScanProjectDataFalsePositiveStrategy .[#green]. com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData
+  WebScanProjectDataFalsePositiveStrategy .[#green]. com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability
 }
-
 @enduml

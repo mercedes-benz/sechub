@@ -37,6 +37,8 @@ public enum RestDocPathParameter {
 
     WITH_META_DATA("withMetaData"),
 
+    PROJECT_DATA_ID("id"),
+
     ;
 
     private String restDocName;
