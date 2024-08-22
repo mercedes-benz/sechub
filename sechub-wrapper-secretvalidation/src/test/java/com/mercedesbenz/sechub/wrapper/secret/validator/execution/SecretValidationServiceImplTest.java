@@ -40,13 +40,13 @@ class SecretValidationServiceImplTest {
         String ruleId = "rule-id";
         Region region = new Region();
         List<SecretValidatorRequest> requests = new ArrayList<>();
-        when(webRequestService.validateFinding(null, ruleId, requests)).thenReturn(new SecretValidationResult());
+        when(webRequestService.validateFinding(null, ruleId, requests, 0L)).thenReturn(new SecretValidationResult());
 
         /* execute */
-        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests);
+        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests, 0L);
 
         /* test */
-        verify(webRequestService, never()).validateFinding(null, ruleId, requests);
+        verify(webRequestService, never()).validateFinding(null, ruleId, requests, 0L);
         assertEquals(SecretValidationStatus.SARIF_SNIPPET_NOT_SET, validateFindingByRegion.getValidationStatus());
 
     }
@@ -58,13 +58,13 @@ class SecretValidationServiceImplTest {
         Region region = new Region();
         region.setSnippet(new ArtifactContent());
         List<SecretValidatorRequest> requests = new ArrayList<>();
-        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests)).thenReturn(new SecretValidationResult());
+        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests, 0L)).thenReturn(new SecretValidationResult());
 
         /* execute */
-        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests);
+        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests, 0L);
 
         /* test */
-        verify(webRequestService, never()).validateFinding(region.getSnippet().getText(), ruleId, requests);
+        verify(webRequestService, never()).validateFinding(region.getSnippet().getText(), ruleId, requests, 0L);
         assertEquals(SecretValidationStatus.SARIF_SNIPPET_NOT_SET, validateFindingByRegion.getValidationStatus());
 
     }
@@ -78,13 +78,13 @@ class SecretValidationServiceImplTest {
         snippet.setText("   ");
         region.setSnippet(snippet);
         List<SecretValidatorRequest> requests = new ArrayList<>();
-        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests)).thenReturn(new SecretValidationResult());
+        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests, 0L)).thenReturn(new SecretValidationResult());
 
         /* execute */
-        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests);
+        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests, 0L);
 
         /* test */
-        verify(webRequestService, never()).validateFinding(region.getSnippet().getText(), ruleId, requests);
+        verify(webRequestService, never()).validateFinding(region.getSnippet().getText(), ruleId, requests, 0L);
         assertEquals(SecretValidationStatus.SARIF_SNIPPET_NOT_SET, validateFindingByRegion.getValidationStatus());
 
     }
@@ -98,13 +98,13 @@ class SecretValidationServiceImplTest {
         snippet.setText("secret");
         region.setSnippet(snippet);
         List<SecretValidatorRequest> requests = new ArrayList<>();
-        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests)).thenReturn(new SecretValidationResult());
+        when(webRequestService.validateFinding(region.getSnippet().getText(), ruleId, requests, 0L)).thenReturn(new SecretValidationResult());
 
         /* execute */
-        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests);
+        SecretValidationResult validateFindingByRegion = serviceToTest.validateFindingByRegion(region, ruleId, requests, 0L);
 
         /* test */
-        verify(webRequestService, times(1)).validateFinding(region.getSnippet().getText(), ruleId, requests);
+        verify(webRequestService, times(1)).validateFinding(region.getSnippet().getText(), ruleId, requests, 0L);
         assertEquals(SecretValidationStatus.NO_VALIDATION_CONFIGURED, validateFindingByRegion.getValidationStatus());
 
     }

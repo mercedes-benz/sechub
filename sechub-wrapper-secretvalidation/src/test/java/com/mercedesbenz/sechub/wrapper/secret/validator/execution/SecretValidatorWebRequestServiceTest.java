@@ -38,7 +38,7 @@ class SecretValidatorWebRequestServiceTest {
     @Test
     void no_finding_snippet_text_available_results_in_finding_being_skipped_from_validation() {
         /* execute */
-        SecretValidationResult validationResult = serviceTotest.validateFinding(null, "example-rule-id", new ArrayList<>());
+        SecretValidationResult validationResult = serviceTotest.validateFinding(null, "example-rule-id", new ArrayList<>(), 0L);
 
         /* test */
         assertEquals(SecretValidationStatus.SARIF_SNIPPET_NOT_SET, validationResult.getValidationStatus());
@@ -47,7 +47,7 @@ class SecretValidatorWebRequestServiceTest {
     @Test
     void no_requests_defined_results_in_finding_being_skipped_from_validation() {
         /* execute */
-        SecretValidationResult validationResult = serviceTotest.validateFinding("not-empty", "example-rule-id", new ArrayList<>());
+        SecretValidationResult validationResult = serviceTotest.validateFinding("not-empty", "example-rule-id", new ArrayList<>(), 0L);
 
         /* test */
         assertEquals(SecretValidationStatus.NO_VALIDATION_CONFIGURED, validationResult.getValidationStatus());
@@ -60,7 +60,7 @@ class SecretValidatorWebRequestServiceTest {
         requests.add(new SecretValidatorRequest());
 
         /* execute */
-        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests);
+        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests, 0L);
 
         /* test */
         // no validation request was performed ends up with the following status, only
@@ -72,6 +72,8 @@ class SecretValidatorWebRequestServiceTest {
     @ValueSource(booleans = { true, false })
     void proxy_required_calls_the_correct_http_client_returns_expected_validation_result(boolean expectedValidation) throws IOException, InterruptedException {
         /* prepare */
+        long connectionRetries = 2L;
+
         List<SecretValidatorRequest> requests = createListOfRequests(true);
         @SuppressWarnings("unchecked")
         HttpResponse<String> response = mock(HttpResponse.class);
@@ -79,7 +81,7 @@ class SecretValidatorWebRequestServiceTest {
         when(responseValidationService.isValidResponse(any(), any())).thenReturn(expectedValidation);
 
         /* execute */
-        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests);
+        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests, connectionRetries);
 
         /* test */
         if (expectedValidation) {
@@ -89,7 +91,7 @@ class SecretValidatorWebRequestServiceTest {
             assertEquals(SecretValidationStatus.INVALID, validationResult.getValidationStatus());
         }
 
-        verify(httpClientWrapper, times(1)).sendProxiedRequestVerifyCertificate(any());
+        verify(httpClientWrapper, times(3)).sendProxiedRequestVerifyCertificate(any());
 
         verify(httpClientWrapper, never()).sendProxiedRequestIgnoreCertificate(any());
         verify(httpClientWrapper, never()).sendDirectRequestVerifyCertificate(any());
@@ -100,6 +102,7 @@ class SecretValidatorWebRequestServiceTest {
     @ValueSource(booleans = { true, false })
     void no_proxy_required_calls_the_correct_http_client_results_validation_result(boolean expectedValidation) throws IOException, InterruptedException {
         /* prepare */
+        long connectionRetries = 3L;
         List<SecretValidatorRequest> requests = createListOfRequests(false);
 
         @SuppressWarnings("unchecked")
@@ -108,7 +111,7 @@ class SecretValidatorWebRequestServiceTest {
         when(responseValidationService.isValidResponse(any(), any())).thenReturn(expectedValidation);
 
         /* execute */
-        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests);
+        SecretValidationResult validationResult = serviceTotest.validateFinding("no-empty", "example-rule-id", requests, connectionRetries);
 
         /* test */
         if (expectedValidation) {
@@ -118,7 +121,7 @@ class SecretValidatorWebRequestServiceTest {
             assertEquals(SecretValidationStatus.INVALID, validationResult.getValidationStatus());
         }
 
-        verify(httpClientWrapper, times(1)).sendDirectRequestVerifyCertificate(any());
+        verify(httpClientWrapper, times(4)).sendDirectRequestVerifyCertificate(any());
 
         verify(httpClientWrapper, never()).sendProxiedRequestVerifyCertificate(any());
         verify(httpClientWrapper, never()).sendProxiedRequestIgnoreCertificate(any());

@@ -31,7 +31,7 @@ public class SecretValidatorWebRequestService {
         this.httpClientWrapper = httpClientWrapper;
     }
 
-    public SecretValidationResult validateFinding(String snippetText, String ruleId, List<SecretValidatorRequest> requests) {
+    public SecretValidationResult validateFinding(String snippetText, String ruleId, List<SecretValidatorRequest> requests, long connectionRetries) {
         SecretValidationResult validationResult = assertValidParams(snippetText, requests);
         if (validationResult != null) {
             return validationResult;
@@ -44,13 +44,21 @@ public class SecretValidatorWebRequestService {
             if (isRequestValid(request)) {
                 response = createAndExecuteHttpRequest(snippetText, request);
 
+                // perform retries until the response is not null or we reached our maximum
+                // amount of retries
+                int retries = 0;
+                while (response == null || retries < connectionRetries) {
+                    response = createAndExecuteHttpRequest(snippetText, request);
+                    retries++;
+                }
+
                 if (responseValidationService.isValidResponse(response, request.getExpectedResponse())) {
                     LOG.info("Finding of type: {} is valid!", ruleId);
                     return createValidationResult(SecretValidationStatus.VALID, request.getUrl());
                 }
             }
             if (response == null) {
-                failedRequests += 1;
+                failedRequests++;
             }
         }
         // all requests failed

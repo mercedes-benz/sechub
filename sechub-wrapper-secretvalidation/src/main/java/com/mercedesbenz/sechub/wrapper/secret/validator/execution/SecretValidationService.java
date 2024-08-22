@@ -9,6 +9,6 @@ import de.jcup.sarif_2_1_0.model.Region;
 
 public interface SecretValidationService {
 
-    SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests);
+    SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests, long connectionRetries);
 
 }
