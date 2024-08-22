@@ -21,9 +21,9 @@ public class SecretValidatorWebRequestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidatorWebRequestService.class);
 
-    private SecretValidatorHttpClientWrapper httpClientWrapper;
+    private final SecretValidatorHttpClientWrapper httpClientWrapper;
 
-    private ResponseValidationService responseValidationService;
+    private final ResponseValidationService responseValidationService;
 
     public SecretValidatorWebRequestService(ResponseValidationService responseValidationService, SecretValidatorHttpClientWrapper httpClientWrapper) {
 

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -35,24 +36,16 @@ class SecretValidatorExecutionServiceTest {
 
     private SecretValidatorExecutionService serviceToTest;
 
-    private SecretValidatorExecutionContextFactory contextFactory;
-    private SecretValidationServiceImpl validationService;
-    private SerecoSeveritySarifEnhancementService sarifEnhancementService;
-    private SarifValidationSupport sarifValidationSupport;
+    private static final SecretValidatorExecutionContextFactory contextFactory = mock();
+    private static final SecretValidationServiceImpl validationService = mock();
+    private static final SerecoSeveritySarifEnhancementService sarifEnhancementService = mock();
+    private static final SarifValidationSupport sarifValidationSupport = mock();
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new SecretValidatorExecutionService();
+        Mockito.reset(contextFactory, validationService, sarifEnhancementService, sarifValidationSupport);
 
-        contextFactory = mock(SecretValidatorExecutionContextFactory.class);
-        validationService = mock(SecretValidationServiceImpl.class);
-        sarifEnhancementService = mock(SerecoSeveritySarifEnhancementService.class);
-        sarifValidationSupport = mock(SarifValidationSupport.class);
-
-        serviceToTest.contextFactory = contextFactory;
-        serviceToTest.validationService = validationService;
-        serviceToTest.sarifEnhancementService = sarifEnhancementService;
-        serviceToTest.sarifValidationSupport = sarifValidationSupport;
+        serviceToTest = new SecretValidatorExecutionService(contextFactory, validationService, sarifEnhancementService, sarifValidationSupport);
     }
 
     @Test

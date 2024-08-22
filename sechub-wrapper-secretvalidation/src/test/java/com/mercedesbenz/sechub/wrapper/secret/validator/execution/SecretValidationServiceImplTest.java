@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorRequest;
 
@@ -23,15 +24,13 @@ class SecretValidationServiceImplTest {
 
     private SecretValidationServiceImpl serviceToTest;
 
-    private SecretValidatorWebRequestService webRequestService;
+    private static final SecretValidatorWebRequestService webRequestService = mock();
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new SecretValidationServiceImpl();
+        Mockito.reset(webRequestService);
 
-        webRequestService = mock(SecretValidatorWebRequestService.class);
-        serviceToTest.webRequestService = webRequestService;
-
+        serviceToTest = new SecretValidationServiceImpl(webRequestService);
     }
 
     @Test

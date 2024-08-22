@@ -29,11 +29,11 @@ public class SecretValidatorHttpClientWrapper {
 
     private static final String TLS = "TLS";
 
-    private HttpClient proxiedHttpClientVerifyCertificate;
+    private final HttpClient proxiedHttpClientVerifyCertificate;
     private HttpClient proxiedHttpClientIgnoreCertificate;
 
-    private HttpClient directHttpClientVerifyCertificate;
-    private HttpClient directHttpClientIgnoreCertificate;
+    private final HttpClient directHttpClientVerifyCertificate;
+    private final HttpClient directHttpClientIgnoreCertificate;
 
     public SecretValidatorHttpClientWrapper(SecretValidatorProperties properties) {
         TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();

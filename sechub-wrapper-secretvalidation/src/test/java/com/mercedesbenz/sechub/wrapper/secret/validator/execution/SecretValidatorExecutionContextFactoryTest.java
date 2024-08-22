@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.properties.SecretValidatorPDSJobResult;
@@ -15,35 +14,22 @@ import com.mercedesbenz.sechub.wrapper.secret.validator.properties.SecretValidat
 
 class SecretValidatorExecutionContextFactoryTest {
 
-    private SecretValidatorExecutionContextFactory factoryToTest;
-
-    private SecretValidatorPDSJobResult invalidsecretValidatorPDSJobResult;
-    private SecretValidatorPDSJobResult validSecretValidatorPDSJobResult;
-    private SecretValidatorProperties invalidProperties;
-    private SecretValidatorProperties validProperties;
-
+    /* @formatter:off */
     private static final File invalidSarifFile = new File("src/test/resources/config-test-files/invalid-files/invalid-sarif.txt");
     private static final File invalidConfigFile = new File("src/test/resources/config-test-files/invalid-files/invalid-validator-config.txt");
     private static final File validSarifFile = new File("src/test/resources/config-test-files/valid-files/test-result.txt");
     private static final File validConfigFile = new File("src/test/resources/config-test-files/valid-files/test-config.json");
 
-    @BeforeEach
-    void beforeEach() {
-        factoryToTest = new SecretValidatorExecutionContextFactory();
-
-        invalidsecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(invalidSarifFile);
-
-        invalidProperties = new SecretValidatorProperties(invalidConfigFile, 5, 4L);
-
-        validSecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(validSarifFile);
-
-        validProperties = new SecretValidatorProperties(validConfigFile, 5, 4L);
-    }
+    private static final SecretValidatorPDSJobResult invalidsecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(invalidSarifFile);
+    private static final SecretValidatorPDSJobResult validSecretValidatorPDSJobResult = new SecretValidatorPDSJobResult(validSarifFile);
+    private static final SecretValidatorProperties invalidProperties = new SecretValidatorProperties(invalidConfigFile, 5, 4L);
+    private static final SecretValidatorProperties validProperties = new SecretValidatorProperties(validConfigFile, 5, 4L);
+    /* @formatter:on */
 
     @Test
     void invalid_sarif_pds_job_result_file_throws_exception() {
         /* prepare */
-        factoryToTest.pdsResult = invalidsecretValidatorPDSJobResult;
+        SecretValidatorExecutionContextFactory factoryToTest = new SecretValidatorExecutionContextFactory(invalidsecretValidatorPDSJobResult, validProperties);
 
         /* execute + test */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
@@ -53,8 +39,7 @@ class SecretValidatorExecutionContextFactoryTest {
     @Test
     void invalid_secret_validator_config_file_throws_exception() {
         /* prepare */
-        factoryToTest.pdsResult = validSecretValidatorPDSJobResult;
-        factoryToTest.properties = invalidProperties;
+        SecretValidatorExecutionContextFactory factoryToTest = new SecretValidatorExecutionContextFactory(validSecretValidatorPDSJobResult, invalidProperties);
 
         /* execute + test */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> factoryToTest.create());
@@ -64,8 +49,7 @@ class SecretValidatorExecutionContextFactoryTest {
     @Test
     void valid_files_return_valid_execution_context() {
         /* prepare */
-        factoryToTest.pdsResult = validSecretValidatorPDSJobResult;
-        factoryToTest.properties = validProperties;
+        SecretValidatorExecutionContextFactory factoryToTest = new SecretValidatorExecutionContextFactory(validSecretValidatorPDSJobResult, validProperties);
 
         /* execute */
         SecretValidatorExecutionContext secretValidatorExecutionContext = factoryToTest.create();

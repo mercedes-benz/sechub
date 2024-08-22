@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorCategorization;
@@ -23,17 +22,23 @@ import de.jcup.sarif_2_1_0.model.SarifSchema210;
 public class SecretValidatorExecutionService {
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidatorExecutionService.class);
 
-    @Autowired
-    SecretValidatorExecutionContextFactory contextFactory;
+    private final SecretValidatorExecutionContextFactory contextFactory;
+    private final SecretValidationService validationService;
+    private final SerecoSeveritySarifEnhancementService sarifEnhancementService;
+    private final SarifValidationSupport sarifValidationSupport;
 
-    @Autowired
-    SecretValidationService validationService;
+    /* @formatter:off */
+    public SecretValidatorExecutionService(SecretValidatorExecutionContextFactory contextFactory,
+            SecretValidationService validationService,
+            SerecoSeveritySarifEnhancementService sarifEnhancementService,
+            SarifValidationSupport sarifValidationSupport) {
 
-    @Autowired
-    SerecoSeveritySarifEnhancementService sarifEnhancementService;
-
-    @Autowired
-    SarifValidationSupport sarifValidationSupport;
+        this.contextFactory = contextFactory;
+        this.validationService = validationService;
+        this.sarifEnhancementService = sarifEnhancementService;
+        this.sarifValidationSupport = sarifValidationSupport;
+        /* @formatter:on */
+    }
 
     public SarifSchema210 execute() {
         SecretValidatorExecutionContext executionContext = contextFactory.create();

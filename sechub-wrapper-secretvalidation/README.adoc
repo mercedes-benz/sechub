@@ -96,7 +96,7 @@ This can be useful, in certain situations or setups.
 ====
 
 ===== Default spring boot configuration
-The defaults can be found inside the link:src/main/resources/application.properties[View application.properties] file:
+The defaults can be found inside the link:src/main/resources/application.properties[application.properties] file:
 
 ===== Proxy configuration
 Inside the configuration file each request has to configure if a proxy server is required to access this specific URL or not.
