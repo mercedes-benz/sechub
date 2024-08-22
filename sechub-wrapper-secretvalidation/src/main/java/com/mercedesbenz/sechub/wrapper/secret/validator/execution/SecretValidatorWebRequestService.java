@@ -31,30 +31,27 @@ public class SecretValidatorWebRequestService {
         this.httpClientWrapper = httpClientWrapper;
     }
 
-    public SecretValidationResult validateFinding(String snippetText, String ruleId, List<SecretValidatorRequest> requests, long connectionRetries) {
+    public SecretValidationResult validateFinding(String snippetText, String ruleId, List<SecretValidatorRequest> requests, int maximumRetries) {
         SecretValidationResult validationResult = assertValidParams(snippetText, requests);
         if (validationResult != null) {
             return validationResult;
         }
 
         int failedRequests = 0;
-        for (SecretValidatorRequest request : requests) {
+        for (SecretValidatorRequest configuredRequest : requests) {
             HttpResponse<String> response = null;
 
-            if (isRequestValid(request)) {
-                response = createAndExecuteHttpRequest(snippetText, request);
+            if (isRequestValid(configuredRequest)) {
+                HttpRequest httpRequest = createHttpRequest(snippetText, configuredRequest);
+                response = executeHttpRequest(configuredRequest, httpRequest);
 
-                // perform retries until the response is not null or we reached our maximum
-                // amount of retries
-                int retries = 0;
-                while (response == null || retries < connectionRetries) {
-                    response = createAndExecuteHttpRequest(snippetText, request);
-                    retries++;
+                if (response == null) {
+                    response = retryConnection(maximumRetries, configuredRequest, httpRequest);
                 }
 
-                if (responseValidationService.isValidResponse(response, request.getExpectedResponse())) {
+                if (responseValidationService.isValidResponse(response, configuredRequest.getExpectedResponse())) {
                     LOG.info("Finding of type: {} is valid!", ruleId);
-                    return createValidationResult(SecretValidationStatus.VALID, request.getUrl());
+                    return createValidationResult(SecretValidationStatus.VALID, configuredRequest.getUrl());
                 }
             }
             if (response == null) {
@@ -67,6 +64,17 @@ public class SecretValidatorWebRequestService {
             return createValidationResult(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED);
         }
         return createValidationResult(SecretValidationStatus.INVALID);
+    }
+
+    private HttpResponse<String> retryConnection(int maximumRetries, SecretValidatorRequest configuredRequest, HttpRequest httpRequest) {
+        HttpResponse<String> response = null;
+        for (int retries = 0; retries < maximumRetries; retries++) {
+            response = executeHttpRequest(configuredRequest, httpRequest);
+            if (response != null) {
+                return response;
+            }
+        }
+        return response;
     }
 
     private SecretValidationResult assertValidParams(String snippetText, List<SecretValidatorRequest> requests) {
@@ -94,10 +102,9 @@ public class SecretValidatorWebRequestService {
         return true;
     }
 
-    private HttpResponse<String> createAndExecuteHttpRequest(String snippetText, SecretValidatorRequest request) {
-        HttpRequest httpRequest = createHttpRequest(snippetText, request);
-        boolean proxyRequired = request.isProxyRequired();
-        boolean verifyCertificate = request.isVerifyCertificate();
+    private HttpResponse<String> executeHttpRequest(SecretValidatorRequest configuredRequest, HttpRequest httpRequest) {
+        boolean proxyRequired = configuredRequest.isProxyRequired();
+        boolean verifyCertificate = configuredRequest.isVerifyCertificate();
         if (proxyRequired) {
             if (verifyCertificate) {
                 return httpClientWrapper.sendProxiedRequestVerifyCertificate(httpRequest);

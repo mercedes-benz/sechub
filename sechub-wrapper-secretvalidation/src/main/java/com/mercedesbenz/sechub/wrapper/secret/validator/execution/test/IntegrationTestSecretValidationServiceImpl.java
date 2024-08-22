@@ -28,7 +28,7 @@ import de.jcup.sarif_2_1_0.model.Region;
 public class IntegrationTestSecretValidationServiceImpl implements SecretValidationService {
 
     @Override
-    public SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests, long connectionRetries) {
+    public SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests, int maximumRetries) {
         if (requests == null || requests.isEmpty()) {
             SecretValidationResult validationResult = new SecretValidationResult();
             validationResult.setValidationStatus(SecretValidationStatus.INVALID);

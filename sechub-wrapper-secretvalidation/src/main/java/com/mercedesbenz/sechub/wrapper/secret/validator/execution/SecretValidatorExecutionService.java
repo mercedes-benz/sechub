@@ -46,7 +46,7 @@ public class SecretValidatorExecutionService {
             for (Result finding : findings) {
                 SecretValidatorConfigurationModel config = validatorConfiguration.get(finding.getRuleId());
                 if (isValidationPossible(config, finding)) {
-                    validateFindingAndEnhanceSarif(config, finding, executionContext.getConnectionRetries());
+                    validateFindingAndEnhanceSarif(config, finding, executionContext.getMaximumRetries());
                 }
             }
         }
@@ -69,14 +69,14 @@ public class SecretValidatorExecutionService {
         return true;
     }
 
-    private void validateFindingAndEnhanceSarif(SecretValidatorConfigurationModel config, Result finding, long connectionRetries) {
+    private void validateFindingAndEnhanceSarif(SecretValidatorConfigurationModel config, Result finding, int maximumRetries) {
         for (Location location : finding.getLocations()) {
             if (!sarifValidationSupport.findingLocationCanBeValidated(location)) {
                 continue;
             }
             Region findingRegion = location.getPhysicalLocation().getRegion();
             SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRuleId(), config.getRequests(),
-                    connectionRetries);
+                    maximumRetries);
             sarifEnhancementService.addSerecoSeverityInfo(validationResult, findingRegion, config.getCategorization());
         }
     }

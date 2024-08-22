@@ -16,7 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource(properties = { "secret.validator.config-file=src/test/resources/config-test-files/valid-files/test-config.json",
-        "secret.validator.connection-retries=5", "pds.job.result.file=src/test/resources/config-test-files/valid-files/test-result.txt" })
+        "secret.validator.maximum-retries=5", "secret.validator.timeout-seconds=7",
+        "pds.job.result.file=src/test/resources/config-test-files/valid-files/test-result.txt" })
 @ActiveProfiles("test")
 class SecretValidatorConfigurationSpringBootTest {
 
@@ -31,7 +32,8 @@ class SecretValidatorConfigurationSpringBootTest {
         /* test */
 
         // check if all SecretValidatorProperties are as expected
-        assertEquals(5L, properties.getConnectionRetries());
+        assertEquals(5L, properties.getMaximumRetries());
+        assertEquals(7, properties.getTimeoutSeconds());
         assertEquals("src/test/resources/config-test-files/valid-files/test-config.json", properties.getConfigFile().toString());
 
         // check if the PDS job result file is as expected

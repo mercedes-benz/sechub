@@ -80,15 +80,27 @@ like a specific `httpStatus` code or the response body should contain `allOf` or
 There exists also some optional variables:
 
 ----
-SECRET_VALIDATOR_CONNECTIONRETRIES
+SECRET_VALIDATOR_MAXIMUMRETRIES
+SECRET_VALIDATOR_TIMEOUTSECONDS
 ---- 
 
 [TIP]
 ====
-The property `secret.validator.connection-retries`or the corresponding environment variable `SECRET_VALIDATOR_CONNECTIONRETRIES` can be set to specify the number of retries for each of the request, to be more resistant to network issues.
+The property `secret.validator.maximum-retries` or the corresponding environment variable `SECRET_VALIDATOR_MAXIMUMRETRIES` can be used to specify the `number of retries` for each of the request, to be more resistant to network issues.
 The default value is `3` meaning in the worst case `4` requests will be performed on connection issues.
+
+The property `secret.validator.timeout-seconds` or the corresponding environment variable `SECRET_VALIDATOR_TIMEOUTSECONDS` can be used to specify the number of `seconds` for each of the request before returning because of a timeout.
+The default value is `5` seconds. This means on default after maximum `5` seconds the next request will be performed.
+
 This can be useful, in certain situations or setups.
 ====
+
+===== Default spring boot configuration
+The defaults can be found inside the <<src/main/resources/application.properties, application.properties>> file:
+[source,properties]
+----
+include::src/main/resources/application.properties[]
+----
 
 ===== Proxy configuration
 Inside the configuration file each request has to configure if a proxy server is required to access this specific URL or not.

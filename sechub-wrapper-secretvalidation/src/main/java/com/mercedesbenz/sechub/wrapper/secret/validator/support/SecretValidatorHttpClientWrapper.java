@@ -10,6 +10,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -18,6 +19,8 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.mercedesbenz.sechub.wrapper.secret.validator.properties.SecretValidatorProperties;
 
 @Component
 public class SecretValidatorHttpClientWrapper {
@@ -32,24 +35,30 @@ public class SecretValidatorHttpClientWrapper {
     private HttpClient directHttpClientVerifyCertificate;
     private HttpClient directHttpClientIgnoreCertificate;
 
-    public SecretValidatorHttpClientWrapper() {
+    public SecretValidatorHttpClientWrapper(SecretValidatorProperties properties) {
         TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();
         SSLContext sslContext = createSSLContextForTrustManager(pseudoTrustManager);
+
+        Duration timeout = Duration.ofSeconds(properties.getTimeoutSeconds());
         /* @formatter:off */
         proxiedHttpClientVerifyCertificate = HttpClient.newBuilder()
                                                           .proxy(ProxySelector.getDefault())
+                                                          .connectTimeout(timeout)
                                                        .build();
 
         proxiedHttpClientIgnoreCertificate = HttpClient.newBuilder()
                                                           .proxy(ProxySelector.getDefault())
                                                           .sslContext(sslContext)
+                                                          .connectTimeout(timeout)
                                                        .build();
 
         directHttpClientVerifyCertificate = HttpClient.newBuilder()
+                                                          .connectTimeout(timeout)
                                                       .build();
 
         directHttpClientIgnoreCertificate = HttpClient.newBuilder()
                                                           .sslContext(sslContext)
+                                                          .connectTimeout(timeout)
                                                       .build();
         /* @formatter:on */
     }
