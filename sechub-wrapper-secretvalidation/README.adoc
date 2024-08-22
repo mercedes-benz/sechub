@@ -89,7 +89,7 @@ SECRET_VALIDATOR_TIMEOUTSECONDS
 [TIP]
 ====
 The property `secret.validator.maximum-retries` or the corresponding environment variable `SECRET_VALIDATOR_MAXIMUMRETRIES` can be used to specify the `number of retries` for each of the request, to be more resistant to network issues.
-The default value is `3` meaning in the worst case `4` requests will be performed on connection issues.
+The default value is `3` meaning in the worst case scenario `4` requests will be performed for each secret.
 
 The property `secret.validator.timeout-seconds` or the corresponding environment variable `SECRET_VALIDATOR_TIMEOUTSECONDS` can be used to specify the number of `seconds` for each of the request before returning because of a timeout.
 The default value is `5` seconds. This means on default after maximum `5` seconds the next request will be performed.
