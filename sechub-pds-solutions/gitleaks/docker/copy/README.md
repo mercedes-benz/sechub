@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # Purpose of this directory
 The purpose of this directory is to place a secretvalidation-wrapper .jar into here.
 
