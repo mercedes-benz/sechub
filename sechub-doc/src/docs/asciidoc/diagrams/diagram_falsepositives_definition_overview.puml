@@ -4,37 +4,38 @@ skinparam linetype ortho
 hide empty methods
 hide empty fields
 package com.mercedesbenz.sechub.domain.scan.project{
-'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataService
-   class FalsePositiveJobDataService ##[bold]black {
+'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataService
+   class FalsePositiveDataService ##[bold]black {
     ~ScanReportRepository : scanReportRepository
     ~ScanProjectConfigService : configService
-    ~FalsePositiveJobDataListValidation : falsePositiveJobDataListValidation
-    ~FalsePositiveJobDataConfigMerger : merger
+    ~FalsePositiveDataListValidation : falsePositiveJobDataListValidation
+    ~FalsePositiveDataConfigMerger : merger
   }
-  FalsePositiveJobDataService *-- FalsePositiveJobDataConfigMerger
-  FalsePositiveJobDataService -[#blue]- FalsePositiveJobDataList
-  FalsePositiveJobDataService *-- FalsePositiveJobDataListValidation
-  FalsePositiveJobDataService -[#blue]- FalsePositiveProjectConfiguration
-  FalsePositiveJobDataService *-- ScanProjectConfigService
-  FalsePositiveJobDataService *-- com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository
-'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataConfigMerger
-   class FalsePositiveJobDataConfigMerger{
+  FalsePositiveDataService *-- FalsePositiveDataConfigMerger
+  FalsePositiveDataService -[#blue]- FalsePositiveDataList
+  FalsePositiveDataService *-- FalsePositiveDataListValidation
+  FalsePositiveDataService -[#blue]- FalsePositiveProjectConfiguration
+  FalsePositiveDataService *-- ScanProjectConfigService
+  FalsePositiveDataService *-- com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository
+'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataConfigMerger
+   class FalsePositiveDataConfigMerger{
   }
-  FalsePositiveJobDataConfigMerger .[#green]. com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack
-  FalsePositiveJobDataConfigMerger -[#blue]- com.mercedesbenz.sechub.commons.model.SecHubFinding
-  FalsePositiveJobDataConfigMerger .. FalsePositiveCodePartMetaData
-  FalsePositiveJobDataConfigMerger .. FalsePositiveEntry
-  FalsePositiveJobDataConfigMerger -[#blue]- FalsePositiveJobData
-  FalsePositiveJobDataConfigMerger -[#blue]- FalsePositiveMetaData
-  FalsePositiveJobDataConfigMerger -[#blue]- FalsePositiveProjectConfiguration
-  FalsePositiveJobDataConfigMerger -[#blue]- com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport
-'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataList
-   class FalsePositiveJobDataList{
+  FalsePositiveDataConfigMerger .[#green]. com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack
+  FalsePositiveDataConfigMerger -[#blue]- com.mercedesbenz.sechub.commons.model.SecHubFinding
+  FalsePositiveDataConfigMerger .. FalsePositiveCodePartMetaData
+  FalsePositiveDataConfigMerger .. FalsePositiveEntry
+  FalsePositiveDataConfigMerger -[#blue]- FalsePositiveJobData
+  FalsePositiveDataConfigMerger -[#blue]- FalsePositiveMetaData
+  FalsePositiveDataConfigMerger -[#blue]- FalsePositiveProjectConfiguration
+  FalsePositiveDataConfigMerger -[#blue]- com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport
+'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList
+   class FalsePositiveDataList{
     -String : apiVersion
     -String : type
     -FalsePositiveJobData : jobData
   }
-  FalsePositiveJobDataList -[#blue]- FalsePositiveJobData
+  FalsePositiveDataList -[#blue]- FalsePositiveJobData
+  FalsePositiveDataList -[#blue]- FalsePositiveProjectData
 'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration
    class FalsePositiveProjectConfiguration{
     -List<FalsePositiveEntry> : falsePositives
@@ -57,6 +58,22 @@ package com.mercedesbenz.sechub.domain.scan.project{
     -String : relevantPart
     -String : sourceCode
   }
+'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData
+   class FalsePositiveProjectData{
+    -String : id
+    -String : comment
+    -WebscanFalsePositiveProjectData: webScan
+  }
+'com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData
+   class WebscanFalsePositiveProjectData{
+    -Integer : cweId
+    -List<String> : hostPatterns
+    -List<String> : urlPathPatterns
+    -List<String> : protocols
+    -List<String> : ports
+    -List<String> : methods
+  }
+  FalsePositiveProjectData *-- WebscanFalsePositiveProjectData
 'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry
    class FalsePositiveEntry{
     -FalsePositiveJobData : jobData
@@ -66,6 +83,7 @@ package com.mercedesbenz.sechub.domain.scan.project{
   }
   FalsePositiveEntry -[#blue]- FalsePositiveJobData
   FalsePositiveEntry -[#blue]- FalsePositiveMetaData
+  FalsePositiveEntry -[#blue]- FalsePositiveProjectData
 'com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData
    class FalsePositiveMetaData{
     -ScanType : scanType
@@ -110,4 +128,6 @@ package com.mercedesbenz.sechub.domain.scan.project{
     -String: evidence
     -int: statuscode
   }
+  
+
 @enduml
