@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
@@ -23,11 +22,13 @@ import de.jcup.sarif_2_1_0.model.SarifSchema210;
 public class SecretValidatorExecutionContextFactory {
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidatorExecutionContextFactory.class);
 
-    @Autowired
-    SecretValidatorPDSJobResult pdsResult;
+    private final SecretValidatorPDSJobResult pdsResult;
+    private final SecretValidatorProperties properties;
 
-    @Autowired
-    SecretValidatorProperties properties;
+    public SecretValidatorExecutionContextFactory(SecretValidatorPDSJobResult pdsResult, SecretValidatorProperties properties) {
+        this.pdsResult = pdsResult;
+        this.properties = properties;
+    }
 
     TextFileReader reader = new TextFileReader();
 
@@ -43,7 +44,7 @@ public class SecretValidatorExecutionContextFactory {
                 SecretValidatorExecutionContext.builder()
                                                .setSarifReport(report)
                                                .setValidatorConfiguration(ruleConfigurations)
-                                               .setTrustAllCertificates(properties.isTrustAllCertificates())
+                                               .setMaximumRetries(properties.getMaximumRetries())
                                                .build();
         /* @formatter:on */
         return context;

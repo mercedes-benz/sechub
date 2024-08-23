@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 2.0.0</span>
+<span id="revnumber"> Server 2.1.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -1148,7 +1148,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_041">10.10.42. UC_041-Admin restarts a job</a></li>
 <li><a href="#section-usecase-UC_042">10.10.43. UC_042-Admin restarts a job (hard)</a></li>
 <li><a href="#section-usecase-UC_043">10.10.44. UC_043-Admin receives notification about start of a new scheduler instance</a></li>
-<li><a href="#section-usecase-UC_044">10.10.45. UC_044-User marks false positives for finished sechub job</a></li>
+<li><a href="#section-usecase-UC_044">10.10.45. UC_044-User marks false positives</a></li>
 <li><a href="#section-usecase-UC_045">10.10.46. UC_045-User unmarks existing false positive definitons</a></li>
 <li><a href="#section-usecase-UC_046">10.10.47. UC_046-User fetches false positive configuration of project</a></li>
 <li><a href="#section-usecase-UC_047">10.10.48. UC_047-Admin creates an executor configuration</a></li>
@@ -1193,6 +1193,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_075">10.10.76. UC_075-Scheduler rotates data encryption</a></li>
 <li><a href="#section-usecase-UC_076">10.10.77. UC_076-Admin fetches encryption status</a></li>
 <li><a href="#section-usecase-UC_077">10.10.78. UC_077-SecHub does cleanup encryption</a></li>
+<li><a href="#section-usecase-UC_078">10.10.79. UC_078-User unmarks existing false positive project data definitons</a></li>
 </ul>
 </li>
 </ul>
@@ -1268,46 +1269,47 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-ucrestdoc-UC_010-html">11.1.29.2. HTML variant</a></li>
 </ul>
 </li>
-<li><a href="#user-marks-false-positives-for-finished-sechub-job">11.1.30. User marks false positives for finished sechub job</a></li>
+<li><a href="#user-marks-false-positives">11.1.30. User marks false positives</a></li>
 <li><a href="#user-unmarks-existing-false-positive-definitons">11.1.31. User unmarks existing false positive definitons</a></li>
 <li><a href="#user-fetches-false-positive-configuration-of-project">11.1.32. User fetches false positive configuration of project</a></li>
 <li><a href="#user-uploads-binaries">11.1.33. User uploads binaries</a></li>
 <li><a href="#user-downloads-job-report-in-spdx-format">11.1.34. User downloads job report in SPDX format</a></li>
-<li><a href="#user-self-registration">11.1.35. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">11.1.36. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">11.1.37. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">11.1.38. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">11.1.39. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">11.1.40. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">11.1.41. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">11.1.42. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">11.1.43. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">11.1.44. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.45. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">11.1.46. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">11.1.47. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">11.1.48. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">11.1.49. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">11.1.50. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">11.1.51. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">11.1.52. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">11.1.53. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">11.1.54. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">11.1.55. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">11.1.56. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">11.1.57. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">11.1.58. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">11.1.59. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-fetches-auto-cleanup-configuration">11.1.60. Admin fetches auto cleanup configuration</a></li>
-<li><a href="#admin-updates-auto-cleanup-configuration">11.1.61. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-starts-encryption-rotation">11.1.62. Admin starts encryption rotation</a></li>
-<li><a href="#admin-fetches-encryption-status">11.1.63. Admin fetches encryption status</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.64. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.65. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.66. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.67. Admin lists status information</a></li>
-<li><a href="#admin-fetches-server-runtime-data">11.1.68. Admin fetches server runtime data</a></li>
-<li><a href="#user-lists-jobs-for-project">11.1.69. User lists jobs for project</a></li>
+<li><a href="#user-unmarks-existing-false-positive-project-data-definitons">11.1.35. User unmarks existing false positive project data definitons</a></li>
+<li><a href="#user-self-registration">11.1.36. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">11.1.37. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">11.1.38. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">11.1.39. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">11.1.40. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">11.1.41. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">11.1.42. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">11.1.43. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">11.1.44. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">11.1.45. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.46. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">11.1.47. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">11.1.48. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">11.1.49. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">11.1.50. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">11.1.51. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">11.1.52. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">11.1.53. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">11.1.54. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">11.1.55. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">11.1.56. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">11.1.57. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">11.1.58. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">11.1.59. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">11.1.60. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-fetches-auto-cleanup-configuration">11.1.61. Admin fetches auto cleanup configuration</a></li>
+<li><a href="#admin-updates-auto-cleanup-configuration">11.1.62. Admin updates auto cleanup configuration</a></li>
+<li><a href="#admin-starts-encryption-rotation">11.1.63. Admin starts encryption rotation</a></li>
+<li><a href="#admin-fetches-encryption-status">11.1.64. Admin fetches encryption status</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.65. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.66. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.67. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.68. Admin lists status information</a></li>
+<li><a href="#admin-fetches-server-runtime-data">11.1.69. Admin fetches server runtime data</a></li>
+<li><a href="#user-lists-jobs-for-project">11.1.70. User lists jobs for project</a></li>
 </ul>
 </li>
 </ul>
@@ -1535,7 +1537,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.0.0 - Build date: 20240808080534</code></p>
+<p>Documentation version: <code>Server 2.1.0 - Build date: 20240823095620</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -7172,8 +7174,9 @@ available and problems on false positive marking can be reproduced and fixed.</p
 <div class="sect5">
 <h6 id="section-concept-false-positive-general-api-centric">10.5.1.2.1. API centric</h6>
 <div id="section-false-positives-define-by-API" class="paragraph">
-<p>Define false positive handling in <code>JSON</code> by referencing a former SecHub job UUID and the
-corresponding finding entry (by id) and post it to REST API.</p>
+<p>Define false positive be done sending false positive information via <code>JSON</code> either
+by referencing a former SecHub job UUID and the corresponding finding entry (by id) or
+by specifying a project data section where specific patterns that match false positive findings are declared and post it to REST API.</p>
 </div>
 <div class="paragraph">
 <p><strong>JSON</strong></p>
@@ -7182,7 +7185,7 @@ corresponding finding entry (by id) and post it to REST API.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
   <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
     {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
@@ -7193,6 +7196,20 @@ corresponding finding entry (by id) and post it to REST API.</p>
       <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
       <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
     }
+  ],
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">projectData</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="6"></i><b>(6)</b>
+  {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">unique-id</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">It was verified that there is no SQL-injection vulnerability at this location</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="8"></i><b>(8)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>: <span class="integer">89</span>, <i class="conum" data-value="9"></i><b>(9)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">hostPatterns</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.*.1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">api.example.com</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dev.*.example.com</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="10"></i><b>(10)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">urlPathPatterns</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/products/search*</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/users/profile</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="11"></i><b>(11)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">protocols</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">HTTPS</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">WSS</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="12"></i><b>(12)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">methods</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">DELETE</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="13"></i><b>(13)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">ports</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">8080</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">443</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="14"></i><b>(14)</b>
+      }
+  }
   ]
 }</code></pre>
 </div>
@@ -7219,7 +7236,79 @@ corresponding finding entry (by id) and post it to REST API.</p>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>comment <em>(optional)</em> are only to define why this is a false positive.</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>projectData <em>(optional)</em> that can be used to mark more than a single finding as false positive.
+Currently only available for web scans. This is not necessarily bound to a SecHub report,
+but it might be easier to create this type of false positive configuration with a SecHub report after a scan.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><code>id</code> that identifies this entry. If the same <code>id</code> is used again,
+the existing false positive entry will be overwritten. The <code>id</code> is also mandatory to unmark this entry.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><code>webScan</code> <em>(optional)</em> section can be used to define false positive patterns for web scans to provide more possibilities to the user.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><code>cweId</code> is used to mark a certain type of finding as false positive.
+When handling web scan project data this will be treated as a mandatory field,
+but it can be omitted inside this configuration an will then match findings that do not have any <code>cweId</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><code>hostPatterns</code> are used to specify your hosts this entry shall be used for. This is a mandatory field which needs at least one entry.
+Asterisks can be used as wildcards e.g. if you have different environments like '*.example.com', would match anything ending with '.example.com'.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><code>urlPathPatterns</code> are also mandatory and there must be at least one entry.
+Asterisks can be used here as wildcards as well. This can be useful to ignore random input of the scanner,
+e.g. inside query parameters or REST API path variables.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td><code>protocols</code> <em>(optional)</em> can be used to further restrict the false positive matching, to specific communication protocols, like HTTPS, WSS, etc.
+Like any other <em>optional</em> field, if this is missing it is simply ignored.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td><code>methods</code> <em>(optional)</em> can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
+Like any other <em>optional</em> field, if this is missing it is simply ignored.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td><code>ports</code>  <em>(optional)</em> can be used to further restrict the false positive matching, to specific ports protocols.
+Like any other <em>optional</em> field, if this is missing it is simply ignored.</td>
+</tr>
 </table>
+</div>
+<div class="paragraph">
+<p>There are some important information on the asterisk wildcard approach, regarding web scans:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To be a false positive only one entry of each of the lists above must match the finding.</p>
+</li>
+<li>
+<p>Specifying wildcards only inside <code>hostPatterns</code> or <code>urlPathPatterns</code> is not allowed.</p>
+</li>
+<li>
+<p>Wildcards are only allowed inside mandatory parts, like <code>hostPatterns</code> or <code>urlPathPatterns</code>.</p>
+</li>
+<li>
+<p>Wildcards tell the false positive handling to match anything until the next NOT wildcard character (asterisk).</p>
+</li>
+<li>
+<p>Multiple wildcards can be used in one string.</p>
+</li>
+<li>
+<p>No wildcards at the beginning or the end means the beginning or the end of the given part must match exactly otherwise it will not be matched as a false positive.</p>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7229,13 +7318,21 @@ corresponding finding entry (by id) and post it to REST API.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>This is a very easy, generic approach - and also future-proof: The only dependency is to the job,
+<p>The <code>jobData</code> approach is very easy, generic - and also future-proof: The only dependency is to the job,
 <code>UUID</code>, for which the report must still exist while the definition is done. Every false-positive in
 any kind of scan can be handled like that.</p>
 </div>
 <div class="paragraph">
 <p>The <code>REST</code> controller logic does read the job result data and creates internally false positive
-meta data. If we delete later the SecHub job it cannot destroy our false positive setup in SecHub.</p>
+meta data. If we delete the SecHub job later it cannot destroy our false positive setup in SecHub.</p>
+</div>
+<div class="paragraph">
+<p>The <code>projectData</code> approach is more powerful for the user.
+Since it is more powerful with the wildcard approach it requires more intial setup from the user.</p>
+</div>
+<div class="paragraph">
+<p>There are no dependencies because all information necessary to identify certain findings are specified via <code>REST</code>.
+Each entry can be overridden or removed by the given <code>id</code>.</p>
 </div>
 </td>
 </tr>
@@ -7307,8 +7404,8 @@ So this will still need some time.</p>
 <div class="sect4">
 <h5 id="definition-phase">10.5.2.1. Definition phase</h5>
 <div class="paragraph">
-<p>When a user has a SecHub report with some findings - the user can define false positives by
-the report UUID and the finding id which represents the false positive.</p>
+<p>When a user has a SecHub report with some findings - the user can define false positives in two different ways. By
+the report UUID and the finding id which represents the false positive or by providing additional information like patterns to identify a false positive.</p>
 </div>
 <div class="paragraph">
 <p>The configuration is described at  <a href="#section-false-positives-define-by-API">how to define false positives by API</a>.</p>
@@ -7321,19 +7418,24 @@ the report UUID and the finding id which represents the false positive.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The user gives only information about which finding in an existing report is seen as a false positive. While a new
+<p>When using the first approach by providing report UUID and the finding id, the user only gives information about which finding in an existing report is seen as a false positive. While a new
 false positive is created, SecHub inspects the report and fetches all necessary meta data internally - depending on the scan type.</p>
 </div>
 <div class="paragraph">
 <p>These meta data will be stored independently from the report. So even if the report will be deleted afterwards, the false-positive handling
 will still work!</p>
 </div>
+<div class="paragraph">
+<p>When using the second approach the user provides additional data that helps identifying a false positive or even a specific group of false positives.
+This approach requires more effort from a user to provide the data which identify the wanted false positives.
+But it can be very helpful especially for web scans, where some finding parts dynamically change, like scanner payloads in query parameters or URL paths.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>At this phase duplicate checks are only done for tuples of report UUID and finding id!<br>
+<p>At this phase duplicate checks are only done for tuples of report UUID and finding id! The second approach with the additional projectData works a differently, since entries with the same <code>id</code> will be updated!<br>
 <strong>Meta data is only collected in definition phase, but NOT inspected!</strong> !</p>
 </div>
 <div class="admonitionblock note">
@@ -7344,7 +7446,10 @@ will still work!</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Here a simple example for better understanding:</p>
+<p>Here a simple example for better understanding.</p>
+</div>
+<div class="paragraph">
+<p>On the first approach with finding id and report UUID:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7360,6 +7465,22 @@ because SecHub does NOT inspect at this time that we have duplicates here!</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>On the second approach with the additional data for the project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A user has specific type of finding that are all false positives</p>
+</li>
+<li>
+<p>The user marks all of them by providing information to identify these false positives</p>
+</li>
+<li>
+<p>One false positive entry with this approach can be used to mark a gruop of false positives.</p>
+</li>
+</ul>
+</div>
 </td>
 </tr>
 </table>
@@ -7371,7 +7492,7 @@ because SecHub does NOT inspect at this time that we have duplicates here!</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diagram_falsepositives_definition_overview.svg" alt="Diagram" width="1589" height="1024">
+<img src="images/diagram_falsepositives_definition_overview.svg" alt="Diagram" width="1584" height="1075">
 </div>
 <div class="title">Figure 6. Overview definition phase</div>
 </div>
@@ -7389,7 +7510,7 @@ The entry does contain a <code>FalsePositiveProjectConfiguration</code> object a
 <p>The <code>FalsePositiveProjectConfiguration</code> object contains a list of <code>FalsePositiveEntry</code> objects.</p>
 </div>
 <div class="paragraph">
-<p>Every <code>FalsePositveEntry</code> object contains</p>
+<p>Every <code>FalsePositveEntry</code> object contains either</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7397,6 +7518,13 @@ The entry does contain a <code>FalsePositiveProjectConfiguration</code> object a
 <p><code>FalsePositiveJobData</code><br>
 contains job uuid, finding id and comment - this information is provided by user.</p>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p><code>FalsePositiveMetaData</code> <br>
 contains meta information about findings - this information is gathered and calculated by SecHub internally when
@@ -7408,32 +7536,53 @@ been deleted, we still have the false positive meta information).</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>FalsePositiveProjectData</code> <br>
+contains information to identify a finding or a group of findings as false positives. Currently it can only be used for web scans.
+In <a href="#section-false-positives-define-by-API">how to define false positives by API</a> the example shows all <em>mandatory</em> and <em>optional</em> parameters.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>but never both in one <code>FalsePositveEntry</code>.</p>
+</div>
 </div>
 <div class="sect5">
 <h6 id="definition-by-user">10.5.2.1.4. Definition by user</h6>
 <div class="paragraph">
-<p>A user does define a <code>FalsePositiveJobDataList</code> object which contains only <code>FalsePositiveJobData</code> inside. Such a list will
-be used to add but also to remove false positives.</p>
+<p>A user does define a <code>FalsePositiveDataList</code> object which contains a list of <code>FalsePositiveJobData</code> or <code>FalsePositiveProjectData</code>. Such a list will
+be used to add false positives.</p>
+</div>
+<div class="paragraph">
+<p>To remove a <code>FalsePositiveJobData</code> entry from the <code>FalsePositiveProjectConfiguration</code>, the user has to provide the job UUID and finding id already used to define this entry.</p>
+</div>
+<div class="paragraph">
+<p>To remove a <code>FalsePositiveJobData</code> entry from the <code>FalsePositiveProjectConfiguration</code>, the user has to provide the id defined with the corresponding entry.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="merging">10.5.2.1.5. Merging</h6>
 <div class="paragraph">
 <p>When a user adds or removes false positive definitions, the <code>FalsePositiveProjectConfiguration</code> will be updated by
-<code>FalsePositiveJobDataConfigMerger</code>.</p>
+<code>FalsePositiveDataConfigMerger</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="job-execution-phase">10.5.2.2. Job execution phase</h5>
 <div class="paragraph">
-<p>Here <code>Sereco</code> is in charge, which does only inspect the meta data.</p>
+<p>Here <code>Sereco</code> is in charge, which does inspect each <code>FalsePositveEntry</code> and use either the meta data or the project data depending on the entry.</p>
 </div>
 <div class="sect5">
 <h6 id="overview-3">10.5.2.2.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/diagram_falsepositives_runtime_overview.svg" alt="Diagram" width="2087" height="448">
+<img src="images/diagram_falsepositives_runtime_overview.svg" alt="Diagram" width="2971" height="498">
 </div>
 <div class="title">Figure 7. Overview runtime phase</div>
 </div>
@@ -9213,7 +9362,7 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_011">UC_011-User starts scan by client</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_044">UC_044-User marks false positives for finished sechub job</a></p>
+<p><a href="#section-usecase-UC_044">UC_044-User marks false positives</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons</a></p>
@@ -9226,6 +9375,9 @@ The complete documentation about use cases is generated. If you want to change c
 </li>
 <li>
 <p><a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_078">UC_078-User unmarks existing false positive project data definitons</a></p>
 </li>
 </ul>
 </div>
@@ -12761,19 +12913,23 @@ but not finished jobs before scheduler start.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_044">10.10.45. UC_044-User marks false positives for finished sechub job</h4>
-<div id="sechub-doclink-uc-user-marks-false-positives-for-job" class="paragraph">
-<p>A user wants to mark false positives for a finished job.
-This means the job has been executed, has finished without failure and job is NOT deleted.</p>
+<h4 id="section-usecase-UC_044">10.10.45. UC_044-User marks false positives</h4>
+<div id="sechub-doclink-uc-user-marks-false-positives" class="paragraph">
+<p>A user wants to mark false positives either for a finished job or with project data not necessarily connected to a finished job.</p>
 </div>
 <div class="paragraph">
-<p>The user will be able to mark former job results by their given id as false positives.</p>
+<p>To mark false positives using job data the job must have been executed, finished without failure and job NOT been deleted.
+The user will be able to mark former job results by their given id as false positives.</p>
+</div>
+<div class="paragraph">
+<p>To mark false positives using no job must have been run, but it will help identify findings as false positives of course.
+The project data are not related to any job information.</p>
 </div>
 <div class="paragraph">
 <p><strong>Technical information</strong></p>
 </div>
 <div class="paragraph">
-<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositivesForJob</code></p>
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositives</code></p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -12798,20 +12954,20 @@ This means the job has been executed, has finished without failure and job is NO
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call to define false positives by JSON data containing identifiers for existing job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call to define false positives by JSON data containing identifiers for existing jobs or false positive project data</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>addFalsePositivesByJobData</code> in class `com.mercedesbenz.sechub.domain.scan.project.FalsePositiveRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>addFalsePositiveData</code> in class `com.mercedesbenz.sechub.domain.scan.project.FalsePositiveRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#section-ucrestdoc-uc-UC_044">REST API documentation for usecase UC_044-User marks false positives for finished sechub job </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_044">REST API documentation for usecase UC_044-User marks false positives </a></p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="section-usecase-UC_045">10.10.46. UC_045-User unmarks existing false positive definitons</h4>
-<div id="sechub-doclink-uc-user-unmarks-false-positives" class="paragraph">
+<div id="sechub-doclink-uc-user-unmarks-false-positives-jobdata" class="paragraph">
 <p>A user wants to unmark existing false positives
 This means the false positives has been marked before.</p>
 </div>
@@ -12834,7 +12990,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <p><strong>Technical information</strong></p>
 </div>
 <div class="paragraph">
-<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives</code></p>
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByJobData</code></p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -14875,6 +15031,67 @@ start the server with <code>SECRET_1_AES_256</code>, but only with <code>SECRET_
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_078">10.10.79. UC_078-User unmarks existing false positive project data definitons</h4>
+<div id="sechub-doclink-uc-user-unmarks-false-positives-projectdata" class="paragraph">
+<p>A user wants to unmark existing false positives
+This means the false positives has been marked before.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This will NOT change any former job report where the false positive to unmark has been filtered!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After next scan job the former false positive is no longer filtering the finding.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositiveByProjectData</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call to remove existing false positive project data definition by id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>removeFalsePositiveFromProjectByProjectDataId</code> in class `com.mercedesbenz.sechub.domain.scan.project.FalsePositiveRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_078">REST API documentation for usecase UC_078-User unmarks existing false positive project data definitons </a></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -15035,7 +15252,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_010">REST API for UC_010-User downloads sechub job report </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_044">REST API for UC_044-User marks false positives for finished sechub job </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_044">REST API for UC_044-User marks false positives </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_045">REST API for UC_045-User unmarks existing false positive definitons </a></p>
@@ -15048,6 +15265,9 @@ The complete documentation about REST API is generated. If you want to change co
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_070">REST API for UC_070-User downloads job report in SPDX format </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_078">REST API for UC_078-User unmarks existing false positive project data definitons </a></p>
 </li>
 </ul>
 </div>
@@ -16026,7 +16246,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/50a3de31-e207-4ac3-a6da-0f46e478d7ff' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/0c5d212b-2caa-496f-b019-7fba0538e004' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -17191,7 +17411,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">fc559da4-0535-46c7-941f-1a76d09a2ca1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-07T08:05:51.724664496</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:51.724691357</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">bc7decbc-3281-4e8e-9a52-f11f3a1f76fc</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-22T09:56:37.567632928</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:56:37.567651473</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -17801,7 +18021,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e80bc191-1fab-4e51-9c53-44b956b37b88</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9d8a0959-0578-417c-a71b-243434efdacb</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -17980,7 +18200,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">278d510e-e7b2-4d07-b593-7fa77b54eef8</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1bd055ea-443d-4461-9e79-d56c8fbccab6</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18139,7 +18359,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">07c86999-76c1-4a12-90b7-4b97a7632579</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2af233cb-e717-4426-8209-fa2b9bd7daca</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18298,7 +18518,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">18b74d14-fd93-4beb-9ed0-623ba27171df</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cc1c6a6f-86b8-435f-b379-1f76addc21ab</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18452,7 +18672,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a47a9992-6b75-46db-a77a-5590b115e8e4</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">541dbe04-d641-4b8b-9ac5-8fde01abf66d</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18621,7 +18841,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ad2715a7-ed7c-49c5-9b0d-ef7b80f276c1</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0e3930f8-4911-4e4e-a278-aee540ec162e</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18785,7 +19005,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f4542da9-59bb-41d2-a120-39a5f14e286a</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">61090ac1-7f2d-423b-aa9d-eb0998ff1dc0</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -18944,7 +19164,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">361d942a-c955-42ba-baea-41bfccfe08e3</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6f28ec92-7720-484b-b357-3cb7fddb5952</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19118,7 +19338,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">48c03859-a741-4e25-9ade-314a1583e45f</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">98964e58-0c5e-4c44-a3a1-78db898ebf78</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19312,7 +19532,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">046e0236-dd5f-4b07-8c57-3c45801b6c37</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5e8b7950-8e53-4d0b-9736-a4423fb46fc7</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19476,7 +19696,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">dd1b6f6b-7a47-408d-a919-0f06c9b43200</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a391b64e-a21b-40f0-92ad-c91480338e73</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19565,7 +19785,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d26d431f-532e-403d-8649-41840afaf02a/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab20be15-2b5e-4ec9-b8b2-36b4ad842bf8/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -19662,7 +19882,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2599f5c1-4bb0-4ca2-9745-49411e356282/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e44c859f-66fa-4f41-bdeb-00ea47ad8438/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19814,7 +20034,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/acd54ae3-6a88-4002-85f0-c7026639380a' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/aa96859a-509e-4761-9b1a-0fd448ac9275' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -19823,7 +20043,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">acd54ae3-6a88-4002-85f0-c7026639380a</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:50:50.192109111</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:50.192137775</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">aa96859a-509e-4761-9b1a-0fd448ac9275</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:41:36.176718254</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:56:36.176745655</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -19898,7 +20118,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5e4d6d16-930d-4a32-9277-b178d2e0a033' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/04b496b8-7bdb-4319-9bd5-d6a9ff143003' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -19970,7 +20190,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/d2552d0b-e265-4673-ad90-e43e0f61a610' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/ec741b51-508d-4557-ba7f-8af620c6bb19' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -19978,9 +20198,9 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-marks-false-positives-for-finished-sechub-job">11.1.30. User marks false positives for finished sechub job</h4>
+<h4 id="user-marks-false-positives">11.1.30. User marks false positives</h4>
 <div id="section-ucrestdoc-uc-UC_044" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives for finished sechub job </a></p>
+<p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives </a></p>
 </div>
 <div id="section-ucrestdoc-UC_044-" class="paragraph">
 <p><strong class="big">Definition</strong></p>
@@ -20074,7 +20294,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the json content. Currently only accepted value is 'falsePositiveDataList' but we also still accept the deprecated type 'falsePositiveJobDataList'.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData</code></p></td>
@@ -20089,12 +20309,62 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].findingId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. <strong>ATTENTION</strong>: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].comment</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A comment describing why this is a false positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Porject data list containing false positive setup for the project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifier which is used to update or remove the respective false positive entry.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comment describing why this is a false positive.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a section for false positives which occur during webscans.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.hostPatterns[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '<strong>.host.com'. Each entry must contain more than just wildcards, '</strong>.<strong>.</strong>' or '*' are not allowed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.urlPathPatterns[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '<strong>/api/users/</strong>'. Each entry must contain more than just wildcards, '<strong>/</strong>/<strong>' or '</strong>' are not allowed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.methods[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.ports[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.protocols[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectData[].webScan.cweId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -20108,7 +20378,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/false-positives' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;type&quot;:&quot;falsePositiveJobDataList&quot;,&quot;jobData&quot;:[{&quot;jobUUID&quot;:&quot;f1d02a9d-5e1b-4f52-99e5-401854ccf936&quot;,&quot;findingId&quot;:42,&quot;comment&quot;:&quot;an optional comment why this is a false positive...&quot;}]}'</code></pre>
+    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;type&quot;:&quot;falsePositiveDataList&quot;,&quot;jobData&quot;:[{&quot;jobUUID&quot;:&quot;f1d02a9d-5e1b-4f52-99e5-401854ccf936&quot;,&quot;findingId&quot;:42,&quot;comment&quot;:&quot;an optional comment why this is a false positive...&quot;}],&quot;projectData&quot;:[{&quot;id&quot;:&quot;unique-identifier&quot;,&quot;webScan&quot;:{&quot;cweId&quot;:564,&quot;ports&quot;:[&quot;8443&quot;,&quot;8080&quot;],&quot;protocols&quot;:[&quot;HTTP&quot;,&quot;HTTPS&quot;],&quot;urlPathPatterns&quot;:[&quot;/rest/api/project/*&quot;,&quot;/other/rest/api/&quot;],&quot;hostPatterns&quot;:[&quot;sub.host.com&quot;,&quot;*.other.host.com&quot;],&quot;methods&quot;:[&quot;GET&quot;,&quot;POST&quot;]},&quot;comment&quot;:&quot;an optional comment for this false positive project entry&quot;}]}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -20416,6 +20686,56 @@ The complete documentation about REST API is generated. If you want to change co
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A comment from author describing why this was marked as a false positive</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Porject data list containing false positive setup for the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifier which is used to update or remove the respective false positive entry.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comment describing why this is a false positive.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a section for false positives which occur during webscans.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.hostPatterns[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '<strong>.host.com'. Each entry must contain more than just wildcards, '</strong>.<strong>.</strong>' or '*' are not allowed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.urlPathPatterns[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '<strong>/api/users/</strong>'. Each entry must contain more than just wildcards, '<strong>/</strong>/<strong>' or '</strong>' are not allowed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.methods[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.ports[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.protocols[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].projectData.webScan.cweId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -20434,7 +20754,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">falsePositives</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f1d02a9d-5e1b-4f52-99e5-401854ccf936</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>:<span class="integer">42</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">Only used in documentation build not in deployment</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">developer1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">start</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">sourceCode</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">end</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">sourceCode</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>}},<span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>:<span class="integer">36</span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2020-06-12 11:53:15</span><span class="delimiter">&quot;</span></span>}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">falsePositives</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f1d02a9d-5e1b-4f52-99e5-401854ccf936</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>:<span class="integer">42</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">Only used in documentation build not in deployment</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">developer1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">start</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">sourceCode</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">end</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">sourceCode</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>}},<span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>:<span class="integer">36</span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">projectData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">unique-identifier</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>:<span class="integer">564</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ports</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">8443</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">8080</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">protocols</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">HTTP</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">HTTPS</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">urlPathPatterns</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/project/*</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">/other/rest/api/</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">hostPatterns</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">sub.host.com</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">*.other.host.com</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">methods</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">POST</span><span class="delimiter">&quot;</span></span>]},<span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">an optional comment for this false positive project entry</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2020-06-12 11:53:15</span><span class="delimiter">&quot;</span></span>}]}</code></pre>
 </div>
 </div>
 </div>
@@ -20528,7 +20848,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/897847f1-3e25-44cc-a4cf-67508dbd295a/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/4c239794-a2fe-4c06-93c1-aa81672f8749/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -20609,14 +20929,106 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/28097c41-5d4d-4355-a509-ce22bdb69537' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/28d9d710-6053-46a3-ac91-8b7fc4ede1e0' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">11.1.35. User self registration</h4>
+<h4 id="user-unmarks-existing-false-positive-project-data-definitons">11.1.35. User unmarks existing false positive project data definitons</h4>
+<div id="section-ucrestdoc-uc-UC_078" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_078">UC_078-User unmarks existing false positive project data definitons </a></p>
+</div>
+<div id="section-ucrestdoc-UC_078-" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 111. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/false-positive/project-data/{id}</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">204 NO_CONTENT</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 112. https://localhost:8081/api/project/{projectId}/false-positive/project-data/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifier which is used to remove the respective false positive entry.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/false-positive/project-data/unique-identifier' -i -u 'user:secret' -X DELETE</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-self-registration">11.1.36. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -20624,7 +21036,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20703,7 +21115,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">11.1.36. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">11.1.37. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -20711,7 +21123,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20807,7 +21219,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">11.1.37. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">11.1.38. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -20815,7 +21227,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 115. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20845,7 +21257,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 116. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20895,7 +21307,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">11.1.38. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">11.1.39. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -20903,7 +21315,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. General request information</caption>
+<caption class="title">Table 117. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -20933,7 +21345,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 118. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20983,7 +21395,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">11.1.39. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">11.1.40. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -20991,7 +21403,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. General request information</caption>
+<caption class="title">Table 119. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21021,7 +21433,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 120. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21057,7 +21469,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">11.1.40. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">11.1.41. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -21065,7 +21477,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. General request information</caption>
+<caption class="title">Table 121. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21167,12 +21579,12 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1761a2a9-37a9-48e1-98e5-63e3c2785c67</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:55.044912463</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c739e0cc-c0fc-40dc-bf9d-410b963cb727</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:56:40.748649884</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">11.1.41. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">11.1.42. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -21180,7 +21592,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. General request information</caption>
+<caption class="title">Table 122. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21210,7 +21622,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 123. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21251,7 +21663,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/08eaf3b6-4d6e-4ad9-a7ac-7d88b4884d13' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/0449764d-8f50-4674-9296-feea9f6c6e6e' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21261,7 +21673,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">11.1.42. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">11.1.43. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -21269,7 +21681,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. General request information</caption>
+<caption class="title">Table 124. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21299,7 +21711,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 125. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21340,7 +21752,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/98470906-23a7-4233-8228-4e213cb5b173' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/96a0df4a-d99f-4ec2-aebf-ca7686ee893f' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21350,7 +21762,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">11.1.43. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">11.1.44. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -21358,7 +21770,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 124. General request information</caption>
+<caption class="title">Table 126. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21388,7 +21800,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 125. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 127. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21429,7 +21841,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/c3a07e23-27f4-4a02-9313-c5e8ee6aa8f7' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a836178f-8a32-428d-887d-1967851dfa1a' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -21439,7 +21851,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">11.1.44. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">11.1.45. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -21447,7 +21859,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 126. General request information</caption>
+<caption class="title">Table 128. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21508,7 +21920,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.45. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.46. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -21516,7 +21928,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 127. General request information</caption>
+<caption class="title">Table 129. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21580,7 +21992,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">11.1.46. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">11.1.47. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -21588,7 +22000,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 128. General request information</caption>
+<caption class="title">Table 130. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21618,7 +22030,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 129. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 131. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21704,7 +22116,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">11.1.47. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">11.1.48. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -21712,7 +22124,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 130. General request information</caption>
+<caption class="title">Table 132. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21742,7 +22154,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 131. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 133. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -21831,7 +22243,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">11.1.48. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">11.1.49. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -21839,7 +22251,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 132. General request information</caption>
+<caption class="title">Table 134. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -21962,12 +22374,12 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json"><span class="integer">19</span><span class="error">a</span><span class="float">513e8</span><span class="error">-</span><span class="error">f</span><span class="integer">664</span><span class="integer">-43</span><span class="error">f</span><span class="integer">3</span><span class="error">-</span><span class="error">a</span><span class="error">d</span><span class="integer">0</span><span class="error">e</span><span class="error">-</span><span class="error">e</span><span class="error">c</span><span class="integer">881</span><span class="error">c</span><span class="integer">7762</span><span class="error">f</span><span class="integer">7</span></code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json"><span class="integer">885</span><span class="error">d</span><span class="float">3e89</span><span class="integer">-2293</span><span class="integer">-416</span><span class="error">d</span><span class="error">-</span><span class="error">a</span><span class="integer">0</span><span class="integer">50</span><span class="integer">-0</span><span class="error">f</span><span class="integer">9748</span><span class="error">a</span><span class="integer">4</span><span class="error">f</span><span class="integer">27</span><span class="error">e</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">11.1.49. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">11.1.50. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -21975,7 +22387,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 133. General request information</caption>
+<caption class="title">Table 135. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22005,7 +22417,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 134. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 136. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22046,7 +22458,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/22fb2f08-7b58-4d57-acbb-00f12619c6e1' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/1d01ca8b-14f8-40f2-b55a-8899942e3cd4' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -22056,7 +22468,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">11.1.50. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">11.1.51. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -22064,7 +22476,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 135. General request information</caption>
+<caption class="title">Table 137. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22161,12 +22573,12 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7d298d34-1148-4803-975d-226862654d0b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">271e5de2-6cb6-4b4a-a3b0-172f1b964f04</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">11.1.51. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">11.1.52. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -22174,7 +22586,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 136. General request information</caption>
+<caption class="title">Table 138. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22204,7 +22616,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 137. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 139. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22314,7 +22726,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b60c002d-6882-41b7-9378-a1279f10fca9' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7f4f4bd0-dd02-4340-a2fd-854c158720cf' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -22323,12 +22735,12 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b60c002d-6882-41b7-9378-a1279f10fca9</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7f4f4bd0-dd02-4340-a2fd-854c158720cf</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">11.1.52. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">11.1.53. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -22336,7 +22748,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 138. General request information</caption>
+<caption class="title">Table 140. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22366,7 +22778,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 139. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 141. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22471,7 +22883,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/70e7df3d-e2c9-4416-b64e-4d93d5500933' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/76b10e2d-c1a7-47ae-a611-32ce720ece9e' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -22482,7 +22894,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">11.1.53. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">11.1.54. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -22490,7 +22902,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 140. General request information</caption>
+<caption class="title">Table 142. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22520,7 +22932,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 141. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 143. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22611,7 +23023,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">11.1.54. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">11.1.55. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -22619,7 +23031,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 142. General request information</caption>
+<caption class="title">Table 144. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22649,7 +23061,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 143. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 145. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22700,7 +23112,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">11.1.55. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">11.1.56. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -22708,7 +23120,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 144. General request information</caption>
+<caption class="title">Table 146. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22738,7 +23150,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 145. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 147. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22815,7 +23227,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;44742c74-0b9b-46c2-afa7-1c0e8e7f3291&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;ffc9e7f5-b294-4078-8f8f-12b9ad5cd45b&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -22824,7 +23236,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">11.1.56. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">11.1.57. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -22832,7 +23244,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 146. General request information</caption>
+<caption class="title">Table 148. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -22862,7 +23274,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 147. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 149. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -22971,12 +23383,12 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ce989c37-b285-4975-a802-3930530d627b</span><span class="delimiter">&quot;</span></span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ba0270e0-da2a-4a4c-bdb6-0354f3e8af8c</span><span class="delimiter">&quot;</span></span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">11.1.57. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">11.1.58. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -22984,7 +23396,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 148. General request information</caption>
+<caption class="title">Table 150. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23086,7 +23498,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">11.1.58. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">11.1.59. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -23094,7 +23506,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 149. General request information</caption>
+<caption class="title">Table 151. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23124,7 +23536,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 150. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 152. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -23179,7 +23591,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">11.1.59. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">11.1.60. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -23187,7 +23599,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 151. General request information</caption>
+<caption class="title">Table 153. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23217,7 +23629,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 152. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 154. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -23272,7 +23684,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-auto-cleanup-configuration">11.1.60. Admin fetches auto cleanup configuration</h4>
+<h4 id="admin-fetches-auto-cleanup-configuration">11.1.61. Admin fetches auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_064" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_064">UC_064-Admin fetches auto cleanup configuration </a></p>
 </div>
@@ -23280,7 +23692,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 153. General request information</caption>
+<caption class="title">Table 155. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23343,7 +23755,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-auto-cleanup-configuration">11.1.61. Admin updates auto cleanup configuration</h4>
+<h4 id="admin-updates-auto-cleanup-configuration">11.1.62. Admin updates auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_065" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_065">UC_065-Admin updates auto cleanup configuration </a></p>
 </div>
@@ -23351,7 +23763,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 154. General request information</caption>
+<caption class="title">Table 156. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23411,7 +23823,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-starts-encryption-rotation">11.1.62. Admin starts encryption rotation</h4>
+<h4 id="admin-starts-encryption-rotation">11.1.63. Admin starts encryption rotation</h4>
 <div id="section-ucrestdoc-uc-UC_073" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_073">UC_073-Admin starts encryption rotation </a></p>
 </div>
@@ -23419,7 +23831,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 155. General request information</caption>
+<caption class="title">Table 157. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23483,7 +23895,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-encryption-status">11.1.63. Admin fetches encryption status</h4>
+<h4 id="admin-fetches-encryption-status">11.1.64. Admin fetches encryption status</h4>
 <div id="section-ucrestdoc-uc-UC_076" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_076">UC_076-Admin fetches encryption status </a></p>
 </div>
@@ -23491,7 +23903,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 156. General request information</caption>
+<caption class="title">Table 158. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23623,7 +24035,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.64. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.65. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -23631,7 +24043,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 157. General request information</caption>
+<caption class="title">Table 159. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23690,7 +24102,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.65. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.66. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -23698,7 +24110,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 158. General request information</caption>
+<caption class="title">Table 160. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23757,7 +24169,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.66. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.67. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -23765,7 +24177,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 159. General request information</caption>
+<caption class="title">Table 161. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23824,7 +24236,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.67. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.68. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -23832,7 +24244,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 160. General request information</caption>
+<caption class="title">Table 162. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -23924,7 +24336,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-server-runtime-data">11.1.68. Admin fetches server runtime data</h4>
+<h4 id="admin-fetches-server-runtime-data">11.1.69. Admin fetches server runtime data</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data </a></p>
 </div>
@@ -23932,7 +24344,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 161. General request information</caption>
+<caption class="title">Table 163. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -24004,7 +24416,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-lists-jobs-for-project">11.1.69. User lists jobs for project</h4>
+<h4 id="user-lists-jobs-for-project">11.1.70. User lists jobs for project</h4>
 <div id="section-ucrestdoc-uc-UC_071" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_071">UC_071-User lists jobs for project </a></p>
 </div>
@@ -24012,7 +24424,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 162. General request information</caption>
+<caption class="title">Table 164. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -24042,7 +24454,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 163. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 165. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -24166,7 +24578,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">048f9167-5b7a-41fb-a235-8e3a7e996efa</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:48:50.319019742</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T07:50:50.319048296</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-08T08:05:50.319059717</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">70572d6d-79be-4cbc-887a-a01a3f67169d</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:39:36.296296402</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:41:36.296322792</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-08-23T09:56:36.296333331</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -26011,7 +26423,7 @@ one will be deleted.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.0.0<br>
+ Server 2.1.0<br>
 </div>
 </div>
 </body>

@@ -15,7 +15,7 @@ public class SecretValidatorExecutionContext {
 
     private Map<String, SecretValidatorConfigurationModel> validatorConfiguration = new HashMap<>();
 
-    private boolean trustAllCertificates;
+    private int maximumRetries;
 
     private SecretValidatorExecutionContext() {
     }
@@ -28,8 +28,8 @@ public class SecretValidatorExecutionContext {
         return Collections.unmodifiableMap(validatorConfiguration);
     }
 
-    public boolean isTrustAllCertificates() {
-        return trustAllCertificates;
+    public int getMaximumRetries() {
+        return maximumRetries;
     }
 
     public static SecretValidatorExecutionContextBuilder builder() {
@@ -42,7 +42,7 @@ public class SecretValidatorExecutionContext {
 
         private Map<String, SecretValidatorConfigurationModel> validatorConfiguration = new HashMap<>();
 
-        private boolean trustAllCertificates;
+        private int maximumRetries;
 
         public SecretValidatorExecutionContextBuilder setSarifReport(SarifSchema210 report) {
             this.sarifReport = report;
@@ -54,8 +54,8 @@ public class SecretValidatorExecutionContext {
             return this;
         }
 
-        public SecretValidatorExecutionContextBuilder setTrustAllCertificates(boolean trustAllCertificates) {
-            this.trustAllCertificates = trustAllCertificates;
+        public SecretValidatorExecutionContextBuilder setMaximumRetries(int maximumRetries) {
+            this.maximumRetries = maximumRetries;
             return this;
         }
 
@@ -63,7 +63,7 @@ public class SecretValidatorExecutionContext {
             SecretValidatorExecutionContext secretValidatorExecutionContext = new SecretValidatorExecutionContext();
             secretValidatorExecutionContext.sarifReport = this.sarifReport;
             secretValidatorExecutionContext.validatorConfiguration = this.validatorConfiguration;
-            secretValidatorExecutionContext.trustAllCertificates = this.trustAllCertificates;
+            secretValidatorExecutionContext.maximumRetries = this.maximumRetries;
 
             return secretValidatorExecutionContext;
         }

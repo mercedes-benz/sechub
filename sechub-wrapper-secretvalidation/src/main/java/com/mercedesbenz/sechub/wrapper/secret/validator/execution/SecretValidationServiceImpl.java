@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +19,14 @@ public class SecretValidationServiceImpl implements SecretValidationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidationServiceImpl.class);
 
-    @Autowired
-    SecretValidatorWebRequestService webRequestService;
+    private final SecretValidatorWebRequestService webRequestService;
+
+    public SecretValidationServiceImpl(SecretValidatorWebRequestService webRequestService) {
+        this.webRequestService = webRequestService;
+    }
 
     @Override
-    public SecretValidationResult validateFindingByRegion(Region findingRegion, List<SecretValidatorRequest> requests, boolean trustAllCertificates) {
+    public SecretValidationResult validateFindingByRegion(Region findingRegion, String ruleId, List<SecretValidatorRequest> requests, int maximumRetries) {
         ArtifactContent snippet = findingRegion.getSnippet();
         SecretValidationResult validationResult = new SecretValidationResult();
         if (snippet == null) {
@@ -39,7 +41,7 @@ public class SecretValidationServiceImpl implements SecretValidationService {
             validationResult.setValidationStatus(SecretValidationStatus.SARIF_SNIPPET_NOT_SET);
             return validationResult;
         }
-        return webRequestService.validateFinding(snippetText, requests, trustAllCertificates);
+        return webRequestService.validateFinding(snippetText, ruleId, requests, maximumRetries);
     }
 
 }

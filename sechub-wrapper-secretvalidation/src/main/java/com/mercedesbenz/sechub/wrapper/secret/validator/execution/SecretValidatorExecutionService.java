@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorCategorization;
@@ -23,17 +22,23 @@ import de.jcup.sarif_2_1_0.model.SarifSchema210;
 public class SecretValidatorExecutionService {
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidatorExecutionService.class);
 
-    @Autowired
-    SecretValidatorExecutionContextFactory contextFactory;
+    private final SecretValidatorExecutionContextFactory contextFactory;
+    private final SecretValidationService validationService;
+    private final SerecoSeveritySarifEnhancementService sarifEnhancementService;
+    private final SarifValidationSupport sarifValidationSupport;
 
-    @Autowired
-    SecretValidationService validationService;
+    /* @formatter:off */
+    public SecretValidatorExecutionService(SecretValidatorExecutionContextFactory contextFactory,
+            SecretValidationService validationService,
+            SerecoSeveritySarifEnhancementService sarifEnhancementService,
+            SarifValidationSupport sarifValidationSupport) {
 
-    @Autowired
-    SerecoSeveritySarifEnhancementService sarifEnhancementService;
-
-    @Autowired
-    SarifValidationSupport sarifValidationSupport;
+        this.contextFactory = contextFactory;
+        this.validationService = validationService;
+        this.sarifEnhancementService = sarifEnhancementService;
+        this.sarifValidationSupport = sarifValidationSupport;
+        /* @formatter:on */
+    }
 
     public SarifSchema210 execute() {
         SecretValidatorExecutionContext executionContext = contextFactory.create();
@@ -46,7 +51,7 @@ public class SecretValidatorExecutionService {
             for (Result finding : findings) {
                 SecretValidatorConfigurationModel config = validatorConfiguration.get(finding.getRuleId());
                 if (isValidationPossible(config, finding)) {
-                    validateFindingAndEnhanceSarif(executionContext, config, finding);
+                    validateFindingAndEnhanceSarif(config, finding, executionContext.getMaximumRetries());
                 }
             }
         }
@@ -69,14 +74,14 @@ public class SecretValidatorExecutionService {
         return true;
     }
 
-    private void validateFindingAndEnhanceSarif(SecretValidatorExecutionContext executionContext, SecretValidatorConfigurationModel config, Result finding) {
+    private void validateFindingAndEnhanceSarif(SecretValidatorConfigurationModel config, Result finding, int maximumRetries) {
         for (Location location : finding.getLocations()) {
             if (!sarifValidationSupport.findingLocationCanBeValidated(location)) {
                 continue;
             }
             Region findingRegion = location.getPhysicalLocation().getRegion();
-            SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRequests(),
-                    executionContext.isTrustAllCertificates());
+            SecretValidationResult validationResult = validationService.validateFindingByRegion(findingRegion, config.getRuleId(), config.getRequests(),
+                    maximumRetries);
             sarifEnhancementService.addSerecoSeverityInfo(validationResult, findingRegion, config.getCategorization());
         }
     }
