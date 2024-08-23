@@ -7,6 +7,12 @@ replicaCount: 1
 image:
   registry: "ghcr.io/mercedes-benz/sechub/pds-gitleaks"
   tag: "latest"
+  # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
+  #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #   Example:
+  # imagePullSecrets: |-
+  #   - name: sechub-pull-secret
+  #   - name: sps2
 
 resources:
   requests:
@@ -15,6 +21,19 @@ resources:
   limits:
     # Maximum container memory size
     memory: 1Gi
+
+# Settings for the secret-validation wrapper:
+secretvalidation:
+  enabled: true
+  proxy:
+    # Optional: Here you can define your http proxy
+    host: none
+    port: 3128
+  request:
+    # Number of retries in case of failures
+    maxRetries: 1
+    # Timeout in seconds for a connection attempt
+    timeout: 5
 
 pds:
   startMode: localserver

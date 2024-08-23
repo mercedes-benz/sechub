@@ -1,9 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 # Start gitleaks to ensure it is installed correctly
+PATH+=":$TOOL_FOLDER/gitleaks"
 echo "Installed GitLeaks version:"
-"$TOOL_FOLDER"/gitleaks version
+gitleaks version
 
 if [ "$?" -ne 0 ] ; then
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

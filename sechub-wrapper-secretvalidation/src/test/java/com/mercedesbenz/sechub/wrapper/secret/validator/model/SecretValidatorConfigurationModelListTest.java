@@ -24,6 +24,7 @@ class SecretValidatorConfigurationModelListTest {
                     "requests" : [ {
                       "url" : "https://api.example.com",
                       "proxyRequired" : true,
+                      "verifyCertificate" : false,
                       "headers" : [ {
                         "name" : "Authorization",
                         "valuePrefix" : "Bearer"
@@ -41,7 +42,7 @@ class SecretValidatorConfigurationModelListTest {
                 """;
 
         String expected = "{\"validatorConfigList\":[{\"ruleId\":\"rule-id\",\"categorization\":{\"defaultSeverity\":\"high\",\"validationFailedSeverity\":\"medium\",\"validationSuccessSeverity\":\"critical\"},"
-                + "\"requests\":[{\"url\":\"https://api.example.com\",\"proxyRequired\":true,\"headers\":[{\"name\":\"Authorization\",\"valuePrefix\":\"Bearer\"}],"
+                + "\"requests\":[{\"url\":\"https://api.example.com\",\"proxyRequired\":true,\"verifyCertificate\":false,\"headers\":[{\"name\":\"Authorization\",\"valuePrefix\":\"Bearer\"}],"
                 + "\"expectedResponse\":{\"httpStatus\":200,\"contains\":{\"allOf\":[\"is\",\"there\"],\"oneOf\":[\"success\"]}}}]}]}";
 
         /* execute */

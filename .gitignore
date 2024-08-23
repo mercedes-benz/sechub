@@ -64,6 +64,7 @@ java-gen/
 # Containerized solutions
 copy/
 !copy/README.adoc
+!copy/README.md
 
 *.deb
 *.apk
