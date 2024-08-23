@@ -71,6 +71,7 @@ jobs:
           export PREPARE_WRAPPER_VERSION
           export PMD_VERSION
           export SCANCODE_VERSION
+          export SECRETVALIDATION_WRAPPER_VERSION
           export SPDX_TOOL_VERSION
           export TERN_VERSION
           export XRAY_WRAPPER_VERSION

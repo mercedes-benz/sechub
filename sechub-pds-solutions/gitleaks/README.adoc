@@ -7,6 +7,10 @@
 
 https://github.com/zricethezav/gitleaks[Gitleaks] is a free and open source secret scanner tool. Gitleaks is a command line interface (CLI) tool. By combining Gitleaks  with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Gitleaks can be used with SecHub. Another scenario is to use Gitleaks+PDS standalone.
 
+As an addition we have developed the SecHub Secret-Validation Wrapper. With its help, you can try to validate found possible secrets.
+If the validation is successful the severity of that finding will be set to "critical" because the finding is confirmed.
+You can find details in the `sechub-wrapper-secretvalidation/` folder in this repository.
+
 Furthermore, the combination of Gitleaks and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
 This folder contains the necessary scripts to run Gitleaks+PDS inside a container locally.

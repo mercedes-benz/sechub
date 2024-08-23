@@ -5,7 +5,6 @@
     {
       "id": "PDS_GITLEAKS",
       "path": "/pds/scripts/gitleaks.sh",
-      "envWhitelist" : [ "SCRIPT_FOLDER", "TOOL_FOLDER"],
       "scanType": "secretScan",
       "description": "Run the secret scanner Gitleaks.",
       "parameters": {
@@ -22,12 +21,20 @@
             "default": true
           }
         ]
-      }
+      },
+      "envWhitelist": [
+        "SCRIPT_FOLDER",
+        "SECRET_VALIDATOR_ENABLED",
+        "SECRET_VALIDATOR_MAXIMUMRETRIES",
+        "SECRET_VALIDATOR_PROXY_HOST",
+        "SECRET_VALIDATOR_PROXY_PORT",
+        "SECRET_VALIDATOR_TIMEOUTSECONDS",
+        "TOOL_FOLDER"
+      ]
     },
     {
       "id": "PDS_GITLEAKS_MOCK",
       "path": "/pds/scripts/gitleaks_mock.sh",
-      "envWhitelist" : [ "MOCK_FOLDER", "SCRIPT_FOLDER" ],
       "scanType": "secretScan",
       "description": "Run the secret scanner Gitleaks.",
       "parameters": {
@@ -44,7 +51,8 @@
             "default": true
           }
         ]
-      }
+      },
+      "envWhitelist" : [ "MOCK_FOLDER", "SCRIPT_FOLDER" ]
     }
   ]
 }

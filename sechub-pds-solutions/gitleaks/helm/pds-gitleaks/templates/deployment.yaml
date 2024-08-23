@@ -63,6 +63,18 @@ spec:
               value: "{{ .Values.pds.encryption.secretKey }}"
             - name: PDS_HEARTBEAT_LOGGING
               value: "{{ .Values.pds.heartbeatLogging }}"
+{{- if .Values.secretvalidation.enabled }}
+            - name: SECRET_VALIDATOR_ENABLED
+              value: "true"
+            - name: SECRET_VALIDATOR_MAXIMUMRETRIES
+              value: "{{ .Values.secretvalidation.request.maxRetries }}"
+            - name: SECRET_VALIDATOR_TIMEOUTSECONDS
+              value: "{{ .Values.secretvalidation.request.timeout }}"
+            - name: SECRET_VALIDATOR_PROXY_HOST
+              value: "{{ .Values.secretvalidation.proxy.host }}"
+            - name: SECRET_VALIDATOR_PROXY_PORT
+              value: "{{ .Values.secretvalidation.proxy.port }}"
+{{- end }}
 {{- if .Values.deploymentComment }}
             # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
             # This way, you can force deployments e.g. when secrets have changed.
@@ -144,3 +156,7 @@ spec:
             failureThreshold: 3
             successThreshold: 1
             timeoutSeconds: 3
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{ .Values.image.imagePullSecrets | indent 8 | trim }}
+{{- end }}
