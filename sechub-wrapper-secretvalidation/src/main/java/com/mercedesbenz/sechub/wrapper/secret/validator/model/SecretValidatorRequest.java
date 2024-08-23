@@ -13,6 +13,7 @@ public class SecretValidatorRequest {
 
     private URL url;
     private boolean proxyRequired;
+    private boolean verifyCertificate = true;
     private List<SecretValidatorRequestHeader> headers = new ArrayList<>();
     private SecretValidatorResponse expectedResponse;
 
@@ -57,6 +58,14 @@ public class SecretValidatorRequest {
 
     public void setExpectedResponse(SecretValidatorResponse expectedResponse) {
         this.expectedResponse = expectedResponse;
+    }
+
+    public void setVerifyCertificate(boolean verifyCertificate) {
+        this.verifyCertificate = verifyCertificate;
+    }
+
+    public boolean isVerifyCertificate() {
+        return verifyCertificate;
     }
 
 }

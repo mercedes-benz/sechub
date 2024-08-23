@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.secret.validator.execution;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -12,48 +10,71 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorRequest;
 import com.mercedesbenz.sechub.wrapper.secret.validator.model.SecretValidatorRequestHeader;
-import com.mercedesbenz.sechub.wrapper.secret.validator.support.SecretValidatorHttpClientFactory;
+import com.mercedesbenz.sechub.wrapper.secret.validator.support.SecretValidatorHttpClientWrapper;
 
 @Service
 public class SecretValidatorWebRequestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecretValidatorWebRequestService.class);
 
-    @Autowired
-    SecretValidatorHttpClientFactory httpClientFactory;
+    private final SecretValidatorHttpClientWrapper httpClientWrapper;
 
-    @Autowired
-    ResponseValidationService responseValidationService;
+    private final ResponseValidationService responseValidationService;
 
-    public SecretValidationResult validateFinding(String snippetText, List<SecretValidatorRequest> requests, boolean trustAllCertificates) {
+    public SecretValidatorWebRequestService(ResponseValidationService responseValidationService, SecretValidatorHttpClientWrapper httpClientWrapper) {
+
+        this.responseValidationService = responseValidationService;
+        this.httpClientWrapper = httpClientWrapper;
+    }
+
+    public SecretValidationResult validateFinding(String snippetText, String ruleId, List<SecretValidatorRequest> requests, int maximumRetries) {
         SecretValidationResult validationResult = assertValidParams(snippetText, requests);
         if (validationResult != null) {
             return validationResult;
         }
 
-        HttpClient proxyHttpClient = httpClientFactory.createProxyHttpClient(trustAllCertificates);
-        HttpClient directHttpClient = httpClientFactory.createDirectHttpClient(trustAllCertificates);
-        HttpResponse<String> response = null;
-        for (SecretValidatorRequest request : requests) {
+        int failedRequests = 0;
+        for (SecretValidatorRequest configuredRequest : requests) {
+            HttpResponse<String> response = null;
 
-            if (isRequestValid(request)) {
-                response = createAndExecuteHttpRequest(snippetText, proxyHttpClient, directHttpClient, request);
+            if (isRequestValid(configuredRequest)) {
+                HttpRequest httpRequest = createHttpRequest(snippetText, configuredRequest);
+                response = executeHttpRequest(configuredRequest, httpRequest);
 
-                if (responseValidationService.isValidResponse(response, request.getExpectedResponse())) {
-                    LOG.info("Finding is valid!");
-                    return createValidationResult(SecretValidationStatus.VALID, request.getUrl());
+                if (response == null) {
+                    response = retryConnection(maximumRetries, configuredRequest, httpRequest);
+                }
+
+                if (responseValidationService.isValidResponse(response, configuredRequest.getExpectedResponse())) {
+                    LOG.info("Finding of type: {} is valid!", ruleId);
+                    return createValidationResult(SecretValidationStatus.VALID, configuredRequest.getUrl());
                 }
             }
+            if (response == null) {
+                failedRequests++;
+            }
         }
-        if (response == null) {
+        // all requests failed
+        if (failedRequests == requests.size()) {
+            LOG.warn("All requests for finding of type: {} seem to have failed", ruleId);
             return createValidationResult(SecretValidationStatus.ALL_VALIDATION_REQUESTS_FAILED);
         }
         return createValidationResult(SecretValidationStatus.INVALID);
+    }
+
+    private HttpResponse<String> retryConnection(int maximumRetries, SecretValidatorRequest configuredRequest, HttpRequest httpRequest) {
+        HttpResponse<String> response = null;
+        for (int retries = 0; retries < maximumRetries; retries++) {
+            response = executeHttpRequest(configuredRequest, httpRequest);
+            if (response != null) {
+                return response;
+            }
+        }
+        return response;
     }
 
     private SecretValidationResult assertValidParams(String snippetText, List<SecretValidatorRequest> requests) {
@@ -81,20 +102,21 @@ public class SecretValidatorWebRequestService {
         return true;
     }
 
-    private HttpResponse<String> createAndExecuteHttpRequest(String snippetText, HttpClient proxyHttpClient, HttpClient directHttpClient,
-            SecretValidatorRequest request) {
-        HttpResponse<String> response = null;
-        try {
-            HttpRequest httpRequest = createHttpRequest(snippetText, request);
-            if (request.isProxyRequired()) {
-                response = proxyHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            } else {
-                response = directHttpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    private HttpResponse<String> executeHttpRequest(SecretValidatorRequest configuredRequest, HttpRequest httpRequest) {
+        boolean proxyRequired = configuredRequest.isProxyRequired();
+        boolean verifyCertificate = configuredRequest.isVerifyCertificate();
+        if (proxyRequired) {
+            if (verifyCertificate) {
+                return httpClientWrapper.sendProxiedRequestVerifyCertificate(httpRequest);
             }
-        } catch (IOException | InterruptedException e) {
-            LOG.error("Performing validation request failed!", e);
+            return httpClientWrapper.sendProxiedRequestIgnoreCertificate(httpRequest);
+
+        } else {
+            if (verifyCertificate) {
+                return httpClientWrapper.sendDirectRequestVerifyCertificate(httpRequest);
+            }
+            return httpClientWrapper.sendDirectRequestIgnoreCertificate(httpRequest);
         }
-        return response;
     }
 
     private HttpRequest createHttpRequest(String snippetText, SecretValidatorRequest request) {

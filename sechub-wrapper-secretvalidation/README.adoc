@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-== Secret valdiation Wrapper
+== Secret validation Wrapper
 
 This wrapper is a Spring Boot application, that is supposed to run on PDS solutions performing secret scans.
 After the secret scanning tool is done it will try to validate secrets found and enhance the SARIF report with a custom PropertyBag for each finding location.
@@ -15,10 +15,12 @@ In case the secret was valid,the key `secretscan.validated.by.url` will be added
 The wrapper application is an executable jar and needs no command line arguments.
 It can automatically use all 
 https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
-and following special mandatory environment variable:
+and following special mandatory environment variable. Regarding the following mandatory parameters in a pds-soultion the environment variable `PDS_JOB_RESULT_FILE` should always be available,
+since this application is supposed to run after the secret scanning tool, when a SARIF report was already written to `$PDS_JOB_RESULT_FILE`:
 
 ----
 SECRET_VALIDATOR_CONFIGFILE
+PDS_JOB_RESULT_FILE
 ----
 
 [IMPORTANT]
@@ -41,6 +43,7 @@ only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report
     },
     "requests" : [ { <4>
       "proxyRequired" : true,
+      "verifyCertificate": false,
       "url" : "https://api.example.com",
       "headers" : [ {
         "name" : "Authorization",
@@ -67,6 +70,7 @@ only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report
 This is an array because for some secrets it might be necessary to validate against multiple servers e.g. when a company uses multiple AWS instances.
 It might be necessary to perform validation requests to all possible AWS instances to check if a secret is valid for any of them:
 - `proxyRequired` specifies if the URL can only be accessed using a proxy server.
+- `verifyCertificate` specifies if the certificate for this URL shall be verified or ignored. The default value is `true`, meaning the certificate will be verified and certificate errors are not ignored.
 - `url` specifies the URL the request will be performed to.
 - `headers` specifies the header `name` and `valuePrefix` if necessary for the secret found.
 It is an array because it could be useful in the future. Currently the header is used for the secret because it is assumed to be a token send via HTTP header.
@@ -78,14 +82,23 @@ like a specific `httpStatus` code or the response body should contain `allOf` or
 There exists also some optional variables:
 
 ----
-SECRET_VALIDATOR_TRUSTALLCERTIFICATES
+SECRET_VALIDATOR_MAXIMUMRETRIES
+SECRET_VALIDATOR_TIMEOUTSECONDS
 ---- 
 
 [TIP]
 ====
-When `SECRET_VALIDATOR_TRUSTALLCERTIFICATES` set to `true`, certificate errors on validation web requests will be ignored.
+The property `secret.validator.maximum-retries` or the corresponding environment variable `SECRET_VALIDATOR_MAXIMUMRETRIES` can be used to specify the `number of retries` for each of the request, to be more resistant to network issues.
+The default value is `3` meaning in the worst case scenario `4` requests will be performed for each secret.
+
+The property `secret.validator.timeout-seconds` or the corresponding environment variable `SECRET_VALIDATOR_TIMEOUTSECONDS` can be used to specify the number of `seconds` for each of the request before returning because of a timeout.
+The default value is `5` seconds. This means on default after maximum `5` seconds the next request will be performed.
+
 This can be useful, in certain situations or setups.
 ====
+
+===== Default spring boot configuration
+The defaults can be found inside the link:src/main/resources/application.properties[application.properties] file:
 
 ===== Proxy configuration
 Inside the configuration file each request has to configure if a proxy server is required to access this specific URL or not.

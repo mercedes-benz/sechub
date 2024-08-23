@@ -14,7 +14,7 @@ class SecretValidatorPropertiesTest {
     @Test
     void validator_config_file_is_null_throws_exception() {
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(null, false));
+        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(null, 5, 4L));
     }
 
     @Test
@@ -24,7 +24,7 @@ class SecretValidatorPropertiesTest {
         when(notExisting.exists()).thenReturn(false);
 
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(notExisting, false));
+        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(notExisting, 5, 4L));
     }
 
     @Test
@@ -35,7 +35,7 @@ class SecretValidatorPropertiesTest {
         when(notReadable.canRead()).thenReturn(false);
 
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(notReadable, false));
+        assertThrows(IllegalArgumentException.class, () -> new SecretValidatorProperties(notReadable, 5, 4L));
     }
 
     @Test
@@ -44,11 +44,12 @@ class SecretValidatorPropertiesTest {
         File validConfigFile = new File("src/test/resources/config-test-files/valid-files/test-config.json");
 
         /* execute */
-        SecretValidatorProperties properties = new SecretValidatorProperties(validConfigFile, true);
+        SecretValidatorProperties properties = new SecretValidatorProperties(validConfigFile, 5, 4L);
 
         /* test */
         assertEquals(validConfigFile, properties.getConfigFile());
-        assertTrue(properties.isTrustAllCertificates());
+        assertEquals(5L, properties.getMaximumRetries());
+        assertEquals(4, properties.getTimeoutSeconds());
     }
 
 }
