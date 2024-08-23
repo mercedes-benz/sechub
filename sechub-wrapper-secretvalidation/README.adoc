@@ -7,7 +7,7 @@ It will add a custom severity with the key `secretscan.sereco.severity` with
 one of the following values `["info", "unclassified", "low", "medium", "high", "critical"]` to a SARIF PropertyBag which contains a generic map for custom values.
 This values can then be used by the `sechub-sereco` module to improve the severity categorization of a finding. We add this custom severities with a `PropertyBag` because the SARIF default called `Level` does not support `CRITICAL`.
 
-In case the secret was valid,the key `secretscan.validated.by.url` will be added to the PropertyBag as well with the value containing the URL the secret was valid for.
+In case the secret was valid, the key `secretscan.validated.by.url` will be added to the PropertyBag as well with the value containing the URL the secret was valid for.
 
 === Use wrapper
 The wrapper application is an executable jar and needs no command line arguments.
@@ -17,17 +17,17 @@ The wrapper application is an executable jar and needs no command line arguments
 java -jar sechub-wrapper-secretvalidation.jar
 ----
 
-It can automatically use all 
-https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
-and following special mandatory environment variable:
+It needs the following mandatory environment variables set:
 
 [horizontal]
 *SECRET_VALIDATOR_CONFIGFILE*::
-The file, which must be configured by `SECRET_VALIDATOR_CONFIGFILE`, contains the configuration for each secret type which basically tells the wrapper application how to validate secrets of a certain type. +
+The file, which must be configured by `SECRET_VALIDATOR_CONFIGFILE`, contains the configuration for each secret type in JSON format which basically tells the wrapper application how to validate secrets of a certain type. +
 For each product a custom file is necessary where some kind of finding identifier should be used, like the SARIF `ruleId` to identify each configuration. +
-From the https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables]
-only the `PDS_JOB_RESULT_FILE` is mandatory because without a valid SARIF report from a secret scanning tool no validations can be done.
-====
+*PDS_JOB_RESULT_FILE*::
+This points to the input report file in SARIF format for the secret validation. +
+When called from a SecHub PDS then `PDS_JOB_RESULT_FILE` is already defined.
+See: https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] +
+The Secret Validation Wrapper updates this file according to the validation results.
 
 ==== Configuration file
 Configuration file example:
@@ -45,8 +45,9 @@ Configuration file example:
       },
       "requests": [ <4>
         {
-          "proxyRequired": true,
           "url": "https://api.example.com",
+          "proxyRequired": true,
+          "verifyCertificate": false,
           "headers": [
             { "name": "Authorization", "valuePrefix": "Bearer" }
           ],
@@ -80,12 +81,17 @@ It is an array because it could be useful in the future. Currently the header is
 like a specific `httpStatus` code or the response body should contain `allOf` or `oneOf` certain strings.
 
 
-Optional environment variable:
+Optional environment variables:
 [horizontal]
-*SECRET_VALIDATOR_TRUSTALLCERTIFICATES*::
-When `SECRET_VALIDATOR_TRUSTALLCERTIFICATES` set to `true`, certificate errors on validation web requests will be ignored.
-This can be useful, in certain situations or setups.
-====
+*SECRET_VALIDATOR_MAXIMUMRETRIES*::
+The property `secret.validator.maximum-retries` or the corresponding environment variable `SECRET_VALIDATOR_MAXIMUMRETRIES` can be used to specify the number of retries for each of the request, to be more resistant to network issues. The default value is `3`` meaning in the worst case scenario `4`` requests will be performed for each secret.
+
+*SECRET_VALIDATOR_TIMEOUTSECONDS*::
+The property secret.validator.timeout-seconds or the corresponding environment variable SECRET_VALIDATOR_TIMEOUTSECONDS can be used to specify the number of seconds for each of the request before returning because of a timeout. The default value is 5 seconds. This means on default after maximum 5 seconds the next request will be performed.
+
+===== Default spring boot configuration
+The defaults can be found inside the link:src/main/resources/application.properties[application.properties] file.
+
 
 ==== Proxy configuration
 Inside the configuration file each request has to be configured if a proxy server is required to access this URL or not. +
@@ -103,7 +109,8 @@ For testing purposes there is another implementation present which is only avail
 
 [source, bash]
 ----
-java -Dspring.profiles.active=integrationtest -jar sechub-wrapper-secretvalidation.jar
+java -Dspring.profiles.active=integrationtest \
+     -jar sechub-wrapper-secretvalidation.jar
 ----
 
 If the "integrationtest" profile is used the application will flag all findings in the SARIF report as valid, that has a non-empty list of requests configured.
