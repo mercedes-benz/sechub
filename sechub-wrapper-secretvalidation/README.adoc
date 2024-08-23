@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-== Secret valdiation Wrapper
+== Secret validation Wrapper
 
 This wrapper is a Spring Boot application, that is supposed to run on PDS solutions performing secret scans.
 After the secret scanning tool is done it will try to validate secrets found and enhance the SARIF report with a custom PropertyBag for each finding location.

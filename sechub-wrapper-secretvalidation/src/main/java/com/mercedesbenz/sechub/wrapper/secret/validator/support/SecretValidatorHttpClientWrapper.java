@@ -30,7 +30,7 @@ public class SecretValidatorHttpClientWrapper {
     private static final String TLS = "TLS";
 
     private final HttpClient proxiedHttpClientVerifyCertificate;
-    private HttpClient proxiedHttpClientIgnoreCertificate;
+    private final HttpClient proxiedHttpClientIgnoreCertificate;
 
     private final HttpClient directHttpClientVerifyCertificate;
     private final HttpClient directHttpClientIgnoreCertificate;
