@@ -260,17 +260,7 @@ Select this file by the `-file` argument and start action `markFalsePositives`.
 sechub -file ${json-file} markFalsePositives
 ----
 
-*Example JSON:*
-
-[source, json]
-----
-include::../shared/false-positives/false-positives-REST-API-content-example1.json[]
-----
-<1> api version
-<2> type - must be `falsePositiveJobDataList`
-<3> job-UUID of the report where the finding was
-<4> finding ID of finding in the report, which shall be marked as false positive
-<5> Comment (optional) describing the reason why this is a false positive
+include::../shared/false-positives/false-positives-howto-define-by-api.adoc[]
 
 IMPORTANT: `markFalsePositives` only adds new false positives. +
   Providing an empty list here does *NOT delete* the already declared false positives! +

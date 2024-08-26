@@ -35,7 +35,7 @@ Some people prefer code/API-centric way to define false positives, some prefer a
 
 [[section-concept-false-positive-general-api-centric]]
 ====== API centric
- 
+
 include::../false-positives/false-positives-howto-define-by-api.adoc[]
 
 
