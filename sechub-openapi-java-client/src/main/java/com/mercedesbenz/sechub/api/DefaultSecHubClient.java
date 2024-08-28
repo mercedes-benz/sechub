@@ -224,6 +224,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         secHubExecutionApi.userUploadSourceCode(projectId, jobUUID, checksum, zipFilePath.toFile());
     }
 
+
     public static class DefaultSecHubClientBuilder {
         private URI serverUri;
         private String userName;

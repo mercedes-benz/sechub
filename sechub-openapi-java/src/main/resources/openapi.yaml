@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: SecHub API
@@ -1679,7 +1679,7 @@ components:
       properties:
         cleanupTime:
           $ref: '#/components/schemas/CleanupTime'
-          
+
     ################
     ## Encryption ##
     ################
@@ -1689,17 +1689,17 @@ components:
       enum:
         - NONE
         - ENVIRONMENT_VARIABLE
-        
+
     SecHubPasswordSource:
       title: SecHubPasswordSource
       type: object
-      properties: 
+      properties:
          type:
            type: object
-           $ref: '#/components/schemas/SecHubCipherPasswordSourceType'  
+           $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
          data:
            type: string
-      
+
     SecHubCipherAlgorithm:
       title: SecHubCipherAlgorithm
       type: string
@@ -1707,17 +1707,17 @@ components:
         - NONE
         - AES_GCM_SIV_128
         - AES_GCM_SIV_256
-    
+
     SecHubDomainEncryptionData:
       title: SecHubDomainEncryptionData
       type: object
       properties:
-        id: 
+        id:
           description: Identifer for encryption configuration inside the domain
           type: string
         algorithm:
-          type: object     
-          $ref: '#/components/schemas/SecHubCipherAlgorithm'     
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
         passwordSource:
           type: object
           $ref: '#/components/schemas/SecHubPasswordSource'
@@ -1732,7 +1732,7 @@ components:
           description: Generic information about encryption usages inside domain
           type: object
           additionalProperties: true
-    
+
     SecHubDomainEncryptionStatus:
       title: SecHubDomainEncryptionStatus
       type: object
@@ -1741,32 +1741,32 @@ components:
           type: string
         data:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/SecHubDomainEncryptionData'
-            
+
     SecHubEncryptionStatus:
       title: SecHubEncryptionStatus
       type: object
       properties:
-        type: 
+        type:
           type: string
         domains:
           type: array
           items:
             $ref: '#/components/schemas/SecHubDomainEncryptionStatus'
-         
+
     SecHubEncryptionData:
       title: SecHubEncryptionData
       type: object
       properties:
         algorithm:
           description: Algorithm to use for encryption rotation
-          type: object     
-          $ref: '#/components/schemas/SecHubCipherAlgorithm'   
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
         passwordSourceType:
           description: Password source type to use for algorithm
           type: object
-          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'    
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
         passwordSourceData:
           description: Password source data for used type. E.g. for ENVIRONMENT_VARIABLE the name of the variable
           type: string
@@ -2465,6 +2465,12 @@ paths:
                 file:
                   type: string
                   format: binary
+                  description: The zip file to upload
+              required:
+                - file
+            encoding:
+              file:
+                contentType: application/zip
       responses:
         "200":
           description: "Ok"
@@ -3402,7 +3408,7 @@ paths:
 
   /api/admin/encryption/status:
     get:
-      summary: Admin fetches encryption status 
+      summary: Admin fetches encryption status
       description: "An administrator fetches encryption status from all domains where encryption is used."
       operationId: adminFetchesEncryptionStatus
       responses:
@@ -3414,7 +3420,7 @@ paths:
                 $ref: '#/components/schemas/SecHubEncryptionStatus'
       tags:
         - Encryption
-        
+
   /api/admin/encryption/rotate:
     post:
       summary: Admin starts encryption rotation
@@ -3427,11 +3433,11 @@ paths:
               $ref: '#/components/schemas/SecHubEncryptionData'
       responses:
         "200":
-          description: "Ok"   
+          description: "Ok"
       x-accepts: application/json
       tags:
         - Encryption
-      
+
   ###########
   ## Other ##
   ###########

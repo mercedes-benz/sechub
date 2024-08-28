@@ -53,11 +53,11 @@ spring:
   servlet: 
     # MultiPart file-size limits,
     # https://spring.io/guides/gs/uploading-files/
-    multipart.max-file-size: 5MB
-    multipart.max-request-size: 5MB
-    multipart.resolve-lazily: true
-  http: 
-    multipart.enabled: false
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+      resolve-lazily: true
+      enabled: true
 # --------------------------------------
 # - Security
 # --------------------------------------
@@ -119,3 +119,8 @@ management:
     export:
       prometheus:
         enabled: true
+
+
+logging:
+  level:
+    root: TRACE

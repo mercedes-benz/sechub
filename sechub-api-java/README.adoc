@@ -14,7 +14,7 @@ The goal of the API is to:
 
 === Usage
 
-Create an instance of `com.mercedesbenz.sechub.api.DefaultSecHubClient` and use the client methods.
+Create an instance of `com.mercedesbenz.sechub.api.OldDefaultSecHubClient` and use the client methods.
 
 For a working example please look into `sechub-examples/example-sechub-api-java`.
 
