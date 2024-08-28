@@ -83,7 +83,7 @@ public class DomainAccessRulesTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            return allDomainsToTest.stream().map(domain -> Arguments.of(domain));
+            return allDomainsToTest.stream().map(Arguments::of);
         }
     }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.tngtech.archunit.core.importer.ImportOption;
-import com.tngtech.archunit.core.importer.Location;
 
 /*
  * This class provides build system specific import options for ArchUnit.
@@ -17,7 +16,7 @@ import com.tngtech.archunit.core.importer.Location;
 class ArchUnitRuntimeSupport {
 
     /* @formatter:off */
-    private Map<String, String> buildSystemToBinaryFolder = Map.of(
+    private final Map<String, String> buildSystemToBinaryFolder = Map.of(
             "gradle", "/build/classes/",
             "intelliJ", "/out/",
             "eclipse", "/bin/");
@@ -31,12 +30,7 @@ class ArchUnitRuntimeSupport {
 
         List<ImportOption> importOptions = new ArrayList<>();
         for (String binaryFolder : binaryFolderToIgnoreMap.values()) {
-            importOptions.add(new ImportOption() {
-                @Override
-                public boolean includes(Location location) {
-                    return !location.contains(binaryFolder);
-                }
-            });
+            importOptions.add(location -> !location.contains(binaryFolder));
         }
 
         return importOptions;
@@ -48,13 +42,9 @@ class ArchUnitRuntimeSupport {
             buildSystem = "gradle";
         }
 
-        switch (buildSystem) {
-        case "gradle":
-        case "intelliJ":
-        case "eclipse":
-            return buildSystem;
-        default:
-            throw new IllegalStateException("Unsupported build system: " + buildSystem);
-        }
+        return switch (buildSystem) {
+        case "gradle", "intelliJ", "eclipse" -> buildSystem;
+        default -> throw new IllegalStateException("Unsupported build system: " + buildSystem);
+        };
     }
 }

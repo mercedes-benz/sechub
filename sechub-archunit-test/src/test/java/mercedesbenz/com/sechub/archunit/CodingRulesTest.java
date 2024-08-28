@@ -18,12 +18,10 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 @AnalyzeClasses
 public class CodingRulesTest {
 
-    private JavaClasses importedClasses;
-
     @Test
     void classes_should_not_throw_generic_exceptions() {
         /* prepare */
-        ignoreTestGeneratedAndDeprecatedPackages();
+        JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
         NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);
@@ -33,7 +31,7 @@ public class CodingRulesTest {
     void classes_should_not_use_deprecated_members() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
@@ -68,7 +66,7 @@ public class CodingRulesTest {
     @Test
     void assertion_error_must_have_detailed_message() {
         /* prepare */
-        ignoreTestGeneratedAndDeprecatedPackages();
+        JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
         ASSERTIONS_SHOULD_HAVE_DETAIL_MESSAGE.check(importedClasses);
@@ -78,7 +76,7 @@ public class CodingRulesTest {
     void test_classes_should_be_in_the_same_package_as_implementation() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreSechubOpenAPIJava)
@@ -98,7 +96,7 @@ public class CodingRulesTest {
     @Test
     void classes_should_not_use_java_util_logging() {
         /* prepare */
-        ignoreTestGeneratedAndDeprecatedPackages();
+        JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
         NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING.check(importedClasses);
@@ -108,7 +106,7 @@ public class CodingRulesTest {
     void classes_should_not_use_standard_streams() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
@@ -128,9 +126,9 @@ public class CodingRulesTest {
         /* @formatter:on */
     }
 
-    private void ignoreTestGeneratedAndDeprecatedPackages() {
+    private JavaClasses ignoreTestGeneratedAndDeprecatedPackages() {
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        return new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)

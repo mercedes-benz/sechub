@@ -15,13 +15,11 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 @AnalyzeClasses
 public class NamingConventionTest {
 
-    private JavaClasses importedClasses;
-
     @Test
     void classes_in_test_packages_containing_test_or_assert_in_name() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreSechubOpenAPIJava)
@@ -49,7 +47,7 @@ public class NamingConventionTest {
     void service_annotated_classes_contain_service_or_executor_in_name() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
