@@ -20,13 +20,12 @@ public class NamingConventionTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
-                .importPath(SECHUB_ROOT_FOLDER);
+                .importPackages(SECHUB_PACKAGE);
 
         /* execute + test */
         classes()
@@ -48,12 +47,11 @@ public class NamingConventionTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
-                .importPath("../../sechub/");
+                .importPackages(SECHUB_PACKAGE);
 
         /* execute + test */
         classes()

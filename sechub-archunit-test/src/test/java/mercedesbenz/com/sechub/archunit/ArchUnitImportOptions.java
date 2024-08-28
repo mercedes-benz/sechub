@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
-import java.util.List;
-
 import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
 
-    public static final String SECHUB_ROOT_FOLDER = "../";
-    static List<ImportOption> ignoreBuildFolders = new ArchUnitRuntimeSupport().createImportOptionsForBuildSystem();
+    public static String SECHUB_PACKAGE = "com.mercedesbenz.sechub";
 
     /* Ignore specific directories */
     static ImportOption ignoreAllTests = location -> {
