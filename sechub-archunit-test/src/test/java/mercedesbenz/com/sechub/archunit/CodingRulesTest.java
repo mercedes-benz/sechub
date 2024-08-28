@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import com.tngtech.archunit.core.domain.JavaAccess;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
@@ -32,8 +31,6 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreNessusAdapter)
@@ -76,7 +73,6 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreDocGen)
@@ -105,8 +101,6 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreIntegrationTest)
@@ -126,8 +120,6 @@ public class CodingRulesTest {
     private JavaClasses ignoreTestGeneratedAndDeprecatedPackages() {
         /* @formatter:off */
         return new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreNessusAdapter)
