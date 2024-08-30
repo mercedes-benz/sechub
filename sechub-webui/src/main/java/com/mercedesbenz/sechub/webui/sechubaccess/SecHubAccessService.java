@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 import com.mercedesbenz.sechub.api.MockedSecHubClient;
+import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
 

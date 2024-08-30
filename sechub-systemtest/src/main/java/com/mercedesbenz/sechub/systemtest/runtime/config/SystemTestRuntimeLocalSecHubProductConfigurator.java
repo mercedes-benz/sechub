@@ -271,8 +271,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         SecHubConfigurationDefinition config = context.getLocalSecHubConfigurationOrFail();
 
         ProductExecutionProfile productExecutionProfile = new ProductExecutionProfile();
-        ProductExecutorConfig productExecutorConfig = new ProductExecutorConfig();
-        productExecutorConfig.setEnabled(true);
+        productExecutionProfile.setEnabled(true);
 
         List<String> projectIdsForThisProfile = new ArrayList<>();
         for (ProjectDefinition projectDefinition : config.getProjects().get()) {
@@ -291,6 +290,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
 
         for (String profileId : profileIdsToExecutorUUIDs.keySet()) {
             ProductExecutionProfile productExecutionProfile = new ProductExecutionProfile();
+            productExecutionProfile.setEnabled(true);
             List<ProductExecutorConfig> productExecutorConfigs = new ArrayList<>();
 
             for (UUID executorConfigurationUUID : profileIdsToExecutorUUIDs.get(profileId)) {
