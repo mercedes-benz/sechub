@@ -1,49 +1,11 @@
 // SPDX-License-Identifier: MIT
 [[section-false-positives-define-by-API]]
-Define false positive be done sending false positive information via `JSON` either
-by referencing a former {sechub} job UUID and the corresponding finding entry (by id) or
-by specifying a project data section where specific patterns that match false positive findings are declared and post it to REST API. 
+Defining false positives is done by sending false positive information via `JSON` either
 
-*JSON*
+- by referencing *job results* from former {sechub} job UUID and the corresponding finding entry (by id) or
+- by specifying a *project data* section where specific patterns that match false positive findings are declared
 
-[source,json]
-----
-include::false-positives-REST-API-content-example1.json[]
-----
-<1> API version
-<2> a type identifier for false positives, so it's clear what this file represents
-<3> job UUID for which the given identifiers are representative
-<4> the finding id (number) in the report
-<5> comment _(optional)_ are only to define why this is a false positive.
-<6> projectData _(optional)_ that can be used to mark more than a single finding as false positive.
-Currently only available for web scans. This is not necessarily bound to a SecHub report,
-but it might be easier to create this type of false positive configuration with a SecHub report after a scan.
-<7> `id` that identifies this entry. If the same `id` is used again,
-the existing false positive entry will be overwritten. The `id` is also mandatory to unmark this entry. 
-<8> `webScan` _(optional)_ section can be used to define false positive patterns for web scans to provide more possibilities to the user.
-<9> `cweId` is used to mark a certain type of finding as false positive.
-When handling web scan project data this will be treated as a mandatory field,
-but it can be omitted inside this configuration an will then match findings that do not have any `cweId`.
-<10> `hostPatterns` are used to specify your hosts this entry shall be used for. This is a mandatory field which needs at least one entry.
-Asterisks can be used as wildcards e.g. if you have different environments like '*.example.com', would match anything ending with '.example.com'. 
-<11> `urlPathPatterns` are also mandatory and there must be at least one entry.
-Asterisks can be used here as wildcards as well. This can be useful to ignore random input of the scanner,
-e.g. inside query parameters or REST API path variables.
-<12> `protocols` _(optional)_ can be used to further restrict the false positive matching, to specific communication protocols, like HTTPS, WSS, etc.
-Like any other _optional_ field, if this is missing it is simply ignored.
-<13> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
-Like any other _optional_ field, if this is missing it is simply ignored.
-<14> `ports`  _(optional)_ can be used to further restrict the false positive matching, to specific ports protocols.
-Like any other _optional_ field, if this is missing it is simply ignored.
-
-There are some important information on the asterisk wildcard approach, regarding web scans:
-
-. To be a false positive only one entry of each of the lists above must match the finding.
-. Specifying wildcards only inside `hostPatterns` or `urlPathPatterns` is not allowed.
-. Wildcards are only allowed inside mandatory parts, like `hostPatterns` or `urlPathPatterns`.
-. Wildcards tell the false positive handling to match anything until the next NOT wildcard character (asterisk).
-. Multiple wildcards can be used in one string.
-. No wildcards at the beginning or the end means the beginning or the end of the given part must match exactly otherwise it will not be matched as a false positive.
+and post it to the SecHub server REST API. 
 
 [NOTE]
 ====
@@ -51,9 +13,12 @@ The `jobData` approach is very easy, generic - and also future-proof: The only d
 `UUID`, for which the report must still exist while the definition is done. Every false-positive in 
 any kind of scan can be handled like that.
 
-The `REST` controller logic does read the job result data and creates internally false positive 
-meta data. If we delete the {sechub} job later it cannot destroy our false positive setup in {sechub}. 
+The `REST` controller logic reads the job result data and creates internally false positive 
+meta data.
+====
 
+[NOTE]
+====
 The `projectData` approach is more powerful for the user.
 Since it is more powerful with the wildcard approach it requires more intial setup from the user.
 
@@ -61,12 +26,42 @@ There are no dependencies because all information necessary to identify certain 
 Each entry can be overridden or removed by the given `id`.
 ====
 
-*ID handling* +
+*Example JSON*
 
-We must ensure identifiers are always correct and continue even for false positives.
-An example:
+[source,json]
+----
+include::false-positives-REST-API-content-example1.json[]
+----
+<1> API version
+<2> type - must be `falsePositiveJobDataList`
+<3> List of jobData _(optional)_ that is used to mark a single finding as false positive
+<4> SecHub Job-UUID of the report where the finding was
+<5> finding-ID which shall be marked as false positive
+<6> A comment (optional) describing the reason why this is a false positive
+<7> List of projectData _(optional)_ that can be used to mark more than a single finding as false positive.
+Currently only available for web scans. This is not necessarily bound to a SecHub report,
+but it might be easier to create this type of false positive configuration with a SecHub report after a scan.
+<8> `id` that identifies this entry. If the same `id` is used again,
+the existing false positive entry will be overwritten. The `id` is also mandatory to unmark this entry. 
+<9> `webScan` _(optional)_ section can be used to define false positive patterns for web scans to provide more possibilities to the user.
+<10> `cweId` is used to mark a certain type of finding as false positive.
+When handling web scan project data this will be treated as a mandatory field,
+but it can be omitted inside this configuration an will then match findings that do not have any `cweId`.
+<11> `hostPatterns` are used to specify your hosts this entry shall be used for. This is a mandatory field which needs at least one entry.
+Asterisks can be used as wildcards e.g. if you have different environments like '*.example.com', would match anything ending with '.example.com'. 
+<12> `urlPathPatterns` are also mandatory and there must be at least one entry.
+Asterisks can be used here as wildcards as well. This can be useful to ignore random input of the scanner,
+e.g. inside query parameters or REST API path variables.
+<13> `protocols` _(optional)_ can be used to further restrict the false positive matching, to specific communication protocols, like HTTPS, WSS, etc.
+Like any other _optional_ field, if this is missing it is simply ignored.
+<14> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
+Like any other _optional_ field, if this is missing it is simply ignored.
+<15> `ports`  _(optional)_ can be used to further restrict the false positive matching, to specific ports protocols.
+Like any other _optional_ field, if this is missing it is simply ignored.
 
-We have a {sechub} job 1 were we mark the first finding with id 1 as a false positve.
-Executing now {sechub} job 2 finding with id 1 must be filtered. But findings may no longer 
-start with identifier 1! Because the finding already exists.
-
+Important information on the wildcard approach in `projectData`, regarding web scans: +
+- To be a false positive a finding must match any single entry from one of the lists above. +
+- Wildcards (`pass:[*]`) can be used inside mandatory parts, like `hostPatterns` or `urlPathPatterns`. +
+- Wildcards match anything until the next NON-wildcard character. +
+- Multiple wildcards can be used in one string. +
+- In `hostPatterns` or `urlPathPatterns` specifying only a wildcard (`pass:[*]`) is not allowed.
