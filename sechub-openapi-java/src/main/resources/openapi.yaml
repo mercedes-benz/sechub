@@ -728,15 +728,12 @@ components:
         created:
           description: Creation timestamp of job
           type: string
-          format: date-time
         started:
           description: Start timestamp of job execution
           type: string
-          format: date-time
         ended:
           description: End timestamp of job execution
           type: string
-          format: date-time
         state:
           description: State of job
           type: string
@@ -750,7 +747,7 @@ components:
           description: List of messages
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SecHubMessage'
 
     SecHubMessageType:
       title: SecHubMessageType
@@ -1100,7 +1097,7 @@ components:
         status:
           $ref: '#/components/schemas/SecHubStatus'
         trafficLight:
-          $ref: '#/components/schemas/TrafficLight'
+          type: string
         result:
           $ref: '#/components/schemas/SecHubResult'
         jobUUID:

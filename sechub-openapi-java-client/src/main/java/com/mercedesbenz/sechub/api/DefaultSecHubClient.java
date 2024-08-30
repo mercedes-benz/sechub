@@ -28,12 +28,10 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSecHubClient.class);
 
-    private static JsonMapper mapper = JsonMapperFactory.createMapper();
+    private static final JsonMapper mapper = JsonMapperFactory.createMapper();
 
-    private ArchiveSupport archiveSupport = new ArchiveSupport();
-    private CheckSumSupport checkSumSupport = new CheckSumSupport();
-
-    private ApiClient apiClient;
+    private final ArchiveSupport archiveSupport = new ArchiveSupport();
+    private final CheckSumSupport checkSumSupport = new CheckSumSupport();
 
     private final ConfigurationApi configurationApi;
     private final JobAdministrationApi jobAdministrationApi;
@@ -45,6 +43,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private final TestingApi testingApi;
     private final UserAdministrationApi userAdministrationApi;
     private final UserProfileApi userProfileApi;
+    private final SecHubExecutionWorkaroundApi secHubExecutionWorkaroundApi;
 
     public static DefaultSecHubClientBuilder builder() {
         return new DefaultSecHubClientBuilder();
@@ -53,7 +52,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private DefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
         super(serverUri, userId, apiToken, trustAll);
 
-        apiClient = new ApiClientBuilder().createApiClient(this, mapper);
+        ApiClient apiClient = new ApiClientBuilder().createApiClient(this, mapper);
         configurationApi = new ConfigurationApi(apiClient);
         jobAdministrationApi = new JobAdministrationApi(apiClient);
         otherApi = new OtherApi(apiClient);
@@ -64,6 +63,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         testingApi = new TestingApi(apiClient);
         userAdministrationApi = new UserAdministrationApi(apiClient);
         userProfileApi = new UserProfileApi(apiClient);
+        secHubExecutionWorkaroundApi = new SecHubExecutionWorkaroundApi(apiClient);
     }
 
     /**
@@ -106,8 +106,8 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         inform((listener) -> listener.beforeUpload(jobUUID, configuration, createArchiveResult));
 
         try {
-            userUploadSources(projectId, jobUUID, createArchiveResult);
-            userUploadBinaries(projectId, jobUUID, createArchiveResult);
+            userUploadsSourceCode(projectId, jobUUID, createArchiveResult);
+            userUploadsBinaries(projectId, jobUUID, createArchiveResult);
 
             inform((listener) -> listener.afterUpload(jobUUID, configuration, createArchiveResult));
 
@@ -134,14 +134,8 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public Path downloadFullScanLog(UUID sechubJobUUID, Path downloadFilePath) throws ApiException  {
         try {
-            File zipFile = atSecHubExecutionApi().adminDownloadFullScanDataForJob(sechubJobUUID);
-            File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
-
-            try (FileInputStream zipFileIn = new FileInputStream(zipFile);
-                 FileOutputStream targetFileOut = new FileOutputStream(targetFile)) {
-                IOUtils.write(IOUtils.toByteArray(zipFileIn), targetFileOut);
-            }
-
+            final File targetFile = calculateFullScanLogFile(sechubJobUUID, downloadFilePath);
+            secHubExecutionWorkaroundApi.adminDownloadsFullScanDataForJob(sechubJobUUID, targetFile);
             return targetFile.toPath();
         } catch (IOException e) {
             throw new ApiException(e);
@@ -202,7 +196,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         return userProfileApi;
     }
 
-    private void userUploadBinaries(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
+    private void userUploadsBinaries(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
         if (!createArchiveResult.isBinaryArchiveCreated()) {
             return;
         }
@@ -211,19 +205,18 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         String filesize = String.valueOf(tarFilePath.toFile().length());
         String checksum = checkSumSupport.createSha256Checksum(tarFilePath);
 
-        secHubExecutionApi.userUploadsBinaries(projectId, jobUUID, tarFilePath.toFile(), filesize, checksum);
+        secHubExecutionWorkaroundApi.userUploadsBinaries(projectId, jobUUID, checksum, filesize, tarFilePath);
     }
 
-    private void userUploadSources(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
+    private void userUploadsSourceCode(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {
         if (!createArchiveResult.isSourceArchiveCreated()) {
             return;
         }
         Path zipFilePath = createArchiveResult.getSourceArchiveFile();
         String checksum = checkSumSupport.createSha256Checksum(zipFilePath);
 
-        secHubExecutionApi.userUploadSourceCode(projectId, jobUUID, checksum, zipFilePath.toFile());
+        secHubExecutionWorkaroundApi.userUploadsSourceCode(projectId, jobUUID, checksum, zipFilePath);
     }
-
 
     public static class DefaultSecHubClientBuilder {
         private URI serverUri;

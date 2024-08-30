@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
 import javax.crypto.SealedObject;
@@ -67,7 +68,7 @@ public abstract class AbstractSecHubClient implements SecHubClient {
         return serverUri;
     }
 
-    protected File calculateFullScanLogFile(UUID sechubJobUUID, Path downloadFilePath) throws IOException {
+    protected File calculateFullScanLogFile(UUID sechubJobUUID, Path downloadFilePath) throws IOException, ApiException {
         File file = null;
         if (downloadFilePath == null) {
             downloadFilePath = Files.createTempDirectory("sechub-fullscanlog");

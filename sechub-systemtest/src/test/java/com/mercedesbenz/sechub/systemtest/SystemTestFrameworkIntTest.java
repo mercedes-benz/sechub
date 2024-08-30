@@ -93,7 +93,7 @@ class SystemTestFrameworkIntTest {
                                 /* add mandatory parameters for this product:*/
                                 parameter("product1.qualititycheck.enabled","true").
                                 parameter("product1.level","A").
-                                /* next parameter only necessary, because we are in integration test mode but we want to have real PDS server response */
+                                /* next parameter only necessary, because we are in integration test mode, but we want to have real PDS server response */
                                 parameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED, "true").
                             endExecutor().
                         endConfigure().
