@@ -63,7 +63,7 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
      *
      * @param targetUrl
      * @param projectDataPatternMap
-     * @return
+     * @return <code>true</code> if the given host matches any of the given patterns
      */
     public boolean isMatchingUrlPattern(String targetUrl, Map<String, Pattern> projectDataPatternMap) {
         notNull(targetUrl, " host may not be null");
