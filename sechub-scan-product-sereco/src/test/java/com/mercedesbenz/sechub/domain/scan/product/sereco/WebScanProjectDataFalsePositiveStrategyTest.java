@@ -1,8 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
@@ -130,25 +136,21 @@ class WebScanProjectDataFalsePositiveStrategyTest {
         verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(testDataContainer.projectData.getWebScan(),
                 testDataContainer.vulnerability);
         // nothing else is called
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingHostPattern(any(), any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingUrlPathPattern(any(), any(), any());
+        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingUrlPattern(any(), any());
         verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingMethodOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingProtocolOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingPortOrIgnoreIfNotSet(any(), any());
 
         assertFalse(isFalsePositive);
     }
 
     @Test
-    void host_pattern_comparison_fails_results_in_result_being_false() {
+    void url_pattern_comparison_fails_results_in_result_being_false() {
         /* prepare */
         FalsePositiveTestDataContainer testDataContainer = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
 
         WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
         when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
 
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(false);
+        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap)).thenReturn(false);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testDataContainer.vulnerability, testDataContainer.projectData,
@@ -156,44 +158,9 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
         /* test */
         verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        // nothing else is called
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingUrlPathPattern(any(), any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingMethodOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingProtocolOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingPortOrIgnoreIfNotSet(any(), any());
-
-        assertFalse(isFalsePositive);
-    }
-
-    @Test
-    void url_path_pattern_comparison_fails_results_in_result_being_false() {
-        /* prepare */
-        FalsePositiveTestDataContainer testDataContainer = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
-
-        WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
-        when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-
-        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(false);
-
-        /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(testDataContainer.vulnerability, testDataContainer.projectData,
-                testDataContainer.projectDataPatternMap);
-
-        /* test */
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap);
+        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap);
         // nothing else is called
         verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingMethodOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingProtocolOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingPortOrIgnoreIfNotSet(any(), any());
 
         assertFalse(isFalsePositive);
     }
@@ -205,10 +172,8 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
         WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
         when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
+
+        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap)).thenReturn(true);
 
         when(webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods())).thenReturn(false);
 
@@ -218,32 +183,23 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
         /* test */
         verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap);
+        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap);
         verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods());
-        // nothing else is called
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingProtocolOrIgnoreIfNotSet(any(), any());
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingPortOrIgnoreIfNotSet(any(), any());
 
         assertFalse(isFalsePositive);
     }
 
     @Test
-    void port_comparison_fails_results_in_result_being_false() {
+    void all_conditions_are_satisfied_results_in_result_being_true() {
         /* prepare */
         FalsePositiveTestDataContainer testDataContainer = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
 
         WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
         when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods())).thenReturn(true);
 
-        when(webscanFalsePositiveProjectDataSupport.isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts())).thenReturn(false);
+        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap)).thenReturn(true);
+
+        when(webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods())).thenReturn(true);
 
         /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(testDataContainer.vulnerability, testDataContainer.projectData,
@@ -251,79 +207,8 @@ class WebScanProjectDataFalsePositiveStrategyTest {
 
         /* test */
         verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap);
+        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPattern(TARGET1, testDataContainer.projectDataPatternMap);
         verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods());
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts());
-        // nothing else is called
-        verify(webscanFalsePositiveProjectDataSupport, never()).isMatchingProtocolOrIgnoreIfNotSet(PROTOCOL1, null);
-
-        assertFalse(isFalsePositive);
-    }
-
-    @Test
-    void protocol_comparison_fails_results_in_result_being_false() {
-        /* prepare */
-        FalsePositiveTestDataContainer testDataContainer = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
-
-        WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
-        when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods())).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts())).thenReturn(true);
-
-        when(webscanFalsePositiveProjectDataSupport.isMatchingProtocolOrIgnoreIfNotSet(PROTOCOL1, webScan.getProtocols())).thenReturn(false);
-
-        /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(testDataContainer.vulnerability, testDataContainer.projectData,
-                testDataContainer.projectDataPatternMap);
-
-        /* test */
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods());
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts());
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingProtocolOrIgnoreIfNotSet(PROTOCOL1, webScan.getProtocols());
-
-        assertFalse(isFalsePositive);
-    }
-
-    @Test
-    void alle_conditions_are_satisfied_results_in_result_being_true() {
-        /* prepare */
-        FalsePositiveTestDataContainer testDataContainer = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
-
-        WebscanFalsePositiveProjectData webScan = testDataContainer.projectData.getWebScan();
-        when(webscanFalsePositiveProjectDataSupport.areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap)).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods())).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts())).thenReturn(true);
-        when(webscanFalsePositiveProjectDataSupport.isMatchingProtocolOrIgnoreIfNotSet(PROTOCOL1, webScan.getProtocols())).thenReturn(true);
-
-        /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(testDataContainer.vulnerability, testDataContainer.projectData,
-                testDataContainer.projectDataPatternMap);
-
-        /* test */
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).areBothHavingSameCweIdOrBothNoCweId(webScan, testDataContainer.vulnerability);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingHostPattern("api.example.com", webScan.getHostPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingUrlPathPattern("/rest/users/projects", webScan.getUrlPathPatterns(),
-                testDataContainer.projectDataPatternMap);
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingMethodOrIgnoreIfNotSet(METHOD1, webScan.getMethods());
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingPortOrIgnoreIfNotSet("443", webScan.getPorts());
-        verify(webscanFalsePositiveProjectDataSupport, times(1)).isMatchingProtocolOrIgnoreIfNotSet(PROTOCOL1, webScan.getProtocols());
 
         assertTrue(isFalsePositive);
     }
@@ -344,11 +229,8 @@ class WebScanProjectDataFalsePositiveStrategyTest {
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
 
         webScan.setCweId(CWE_ID_4711);
-        webScan.setHostPatterns(List.of("*.example.com"));
         webScan.setMethods(List.of("GET", "POST"));
-        webScan.setPorts(List.of("80", "443"));
-        webScan.setProtocols(List.of("http", "https"));
-        webScan.setUrlPathPatterns(List.of("/rest/users/projects"));
+        webScan.setUrlPattern("https://api.example.com");
 
         projectData.setWebScan(webScan);
 

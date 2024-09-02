@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -117,8 +116,7 @@ public class PDSSolutionMockModeScenario21IntTest {
         WebscanFalsePositiveProjectData webscan = new WebscanFalsePositiveProjectData();
         // we set only mandatory parameters
         webscan.setCweId(89);
-        webscan.setHostPatterns(List.of("localhost"));
-        webscan.setUrlPathPatterns(List.of("/rest/products/search*"));
+        webscan.setUrlPattern("http://localhost:3000/rest/products/search*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         String projectDataId = "6a7fe94a-564f-11ef-87de-3f13a69f3e5d";

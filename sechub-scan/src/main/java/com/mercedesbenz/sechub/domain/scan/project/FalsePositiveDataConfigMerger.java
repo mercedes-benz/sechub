@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,27 +50,19 @@ public class FalsePositiveDataConfigMerger {
 
     }
 
-    public void addFalsePositiveProjectDataEntryOrUpdateExisting(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectData,
-            String userId) {
+    public void addFalsePositiveProjectDataEntry(FalsePositiveProjectConfiguration config, FalsePositiveProjectData projectData, String userId) {
+        FalsePositiveEntry existingEntry = findExistingProjectDataFalsePositiveEntryInConfig(config, projectData);
+
+        if (existingEntry != null) {
+            LOG.warn("False positive projectData entry:'{}' not added, because already existing", projectData.getId());
+            return;
+        }
+
         FalsePositiveEntry projectDataEntry = new FalsePositiveEntry();
         projectDataEntry.setAuthor(userId);
         projectDataEntry.setProjectData(projectData);
 
-        List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
-        for (int index = 0; index < falsePositives.size(); index++) {
-            FalsePositiveEntry existingFPEntry = falsePositives.get(index);
-            FalsePositiveProjectData projectDataFromEntry = existingFPEntry.getProjectData();
-            if (projectDataFromEntry == null) {
-                LOG.debug("The entry is a jobData entry with metaData so no projectData");
-                continue;
-            }
-            if (projectDataFromEntry.getId().equals(projectData.getId())) {
-                LOG.warn("False positive project data entry with id: '{}', will be overwritten with new data!", projectData.getId());
-                falsePositives.set(index, projectDataEntry);
-                return;
-            }
-        }
-        falsePositives.add(projectDataEntry);
+        config.getFalsePositives().add(projectDataEntry);
     }
 
     public void removeJobDataWithMetaDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData jobDataToRemove) {

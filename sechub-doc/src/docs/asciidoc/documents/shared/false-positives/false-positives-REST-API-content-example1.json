@@ -18,11 +18,8 @@
       "comment": "It was verified that there is no SQL-injection vulnerability at this location",
       "webScan": { //<9>
           "cweId": 89, //<10>
-          "hostPatterns": [ "127.0.*.1", "api.example.com", "dev.*.example.com"], //<11>
-          "urlPathPatterns": [ "/rest/products/search*", "/rest/users/profile" ], //<12>
-          "protocols": [ "HTTPS", "WSS" ], //<13>
-          "methods": [ "GET", "DELETE" ], //<14>
-          "ports": [ "8080", "443" ] //<15>
+          "urlPattern": [ "/rest/products/search*", "/rest/users/profile" ], //<11>
+          "methods": [ "GET", "DELETE" ] //<12>
       }
     }
   ]

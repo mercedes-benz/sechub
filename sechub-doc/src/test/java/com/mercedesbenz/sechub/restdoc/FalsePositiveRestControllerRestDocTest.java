@@ -1,20 +1,35 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.*;
-import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.*;
-import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.*;
-import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData.*;
-import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.Mockito.*;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.PROPERTY_API_VERSION;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.PROPERTY_JOBDATA;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.PROPERTY_PROJECTDATA;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList.PROPERTY_TYPE;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.PROPERTY_FINDINGID;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.PROPERTY_JOBUUID;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.PROPERTY_FALSE_POSITIVES;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData.PROPERTY_ID;
+import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData.PROPERTY_WEBSCAN;
+import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.PROPERTY_CWEID;
+import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.PROPERTY_METHODS;
+import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.PROPERTY_URLPATTERN;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.FINDING_ID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_DATA_ID;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
 import java.util.Date;
@@ -42,7 +57,20 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
-import com.mercedesbenz.sechub.domain.scan.project.*;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodeMetaData;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataConfigMerger;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataList;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataListValidation;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveDataService;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveRestController;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -119,10 +147,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
         webScan.setCweId(564);
         webScan.setMethods(List.of("GET", "POST"));
-        webScan.setPorts(List.of("8443", "8080"));
-        webScan.setProtocols(List.of("HTTP", "HTTPS"));
-        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan.setUrlPattern("https://*.example.com/api/*/search");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId("unique-identifier");
@@ -166,11 +191,8 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
 
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATTERN).description("Defines a url pattern for false positives which occur during webscans. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(
@@ -297,10 +319,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
         webScan.setCweId(564);
         webScan.setMethods(List.of("GET", "POST"));
-        webScan.setPorts(List.of("8443", "8080"));
-        webScan.setProtocols(List.of("HTTP", "HTTPS"));
-        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan.setUrlPattern("https://*.example.com/api/*/search");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId("unique-identifier");
@@ -367,11 +386,8 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
 
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATTERN).description("Defines a url pattern for false positives which occur during webscans. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(

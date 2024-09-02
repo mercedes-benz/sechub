@@ -23,7 +23,7 @@ The `projectData` approach is more powerful for the user.
 Since it is more powerful with the wildcard approach it requires more intial setup from the user.
 
 There are no dependencies because all information necessary to identify certain findings are specified via `REST`.
-Each entry can be overridden or removed by the given `id`.
+Each entry can be removed by the given `id`.
 ====
 
 *Example JSON*
@@ -33,7 +33,7 @@ Each entry can be overridden or removed by the given `id`.
 include::false-positives-REST-API-content-example1.json[]
 ----
 <1> API version
-<2> type - must be `falsePositiveJobDataList`
+<2> type - must be `falsePositiveDataList` or the deprecated type `falsePositiveJobDataList`.
 <3> List of jobData _(optional)_ that is used to mark a single finding as false positive
 <4> SecHub Job-UUID of the report where the finding was
 <5> finding-ID which shall be marked as false positive
@@ -45,23 +45,17 @@ but it might be easier to create this type of false positive configuration with 
 the existing false positive entry will be overwritten. The `id` is also mandatory to unmark this entry. 
 <9> `webScan` _(optional)_ section can be used to define false positive patterns for web scans to provide more possibilities to the user.
 <10> `cweId` is used to mark a certain type of finding as false positive.
-When handling web scan project data this will be treated as a mandatory field,
+When handling web scan project data this will be treated as a _mandatory_ field,
 but it can be omitted inside this configuration an will then match findings that do not have any `cweId`.
-<11> `hostPatterns` are used to specify your hosts this entry shall be used for. This is a mandatory field which needs at least one entry.
-Asterisks can be used as wildcards e.g. if you have different environments like '*.example.com', would match anything ending with '.example.com'. 
-<12> `urlPathPatterns` are also mandatory and there must be at least one entry.
-Asterisks can be used here as wildcards as well. This can be useful to ignore random input of the scanner,
-e.g. inside query parameters or REST API path variables.
-<13> `protocols` _(optional)_ can be used to further restrict the false positive matching, to specific communication protocols, like HTTPS, WSS, etc.
-Like any other _optional_ field, if this is missing it is simply ignored.
-<14> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
-Like any other _optional_ field, if this is missing it is simply ignored.
-<15> `ports`  _(optional)_ can be used to further restrict the false positive matching, to specific ports protocols.
+<11> `urlPattern` specifies a URL pattern to identify a false positive. This is a `mandatory` field. 
+Asterisks can be used as wildcards e.g. if you have different environments like DEV, INT, PROD or you have variable parts like in API calls or query paramaters `https://*.example.com/rest/*/search`.
+<12> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
 Like any other _optional_ field, if this is missing it is simply ignored.
 
+
 Important information on the wildcard approach in `projectData`, regarding web scans: +
-- To be a false positive a finding must match any single entry from one of the lists above. +
-- Wildcards (`pass:[*]`) can be used inside mandatory parts, like `hostPatterns` or `urlPathPatterns`. +
+- To be a false positive a finding the `cweId` and the `urlPattern`. A list of (HTTP) `methods` can be specified to limit the false positive. If no `methods` are specified, this false positive entry will not be restricted to any method. +
+- Wildcards (`pass:[*]`) can be used inside `urlPattern`. +
 - Wildcards match anything until the next NON-wildcard character. +
-- Multiple wildcards can be used in one string. +
-- In `hostPatterns` or `urlPathPatterns` specifying only a wildcard (`pass:[*]`) is not allowed.
+- Multiple wildcards can be used in one `urlPattern`. +
+- A `urlPattern` which consists of only wildcards (`pass:[*]`) is not allowed.
