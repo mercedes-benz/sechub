@@ -165,7 +165,6 @@ class SystemTestFrameworkIntTest {
     @EnabledIfSystemProperty(named = "sechub.integrationtest.running", matches = "true")
     void even_integration_test_setup_can_be_tested__codescan_with_binary_and_sources() throws IOException {
         /* @formatter:off */
-
         /* prepare */
         SystemTestConfiguration configuration = configure().
                 addVariable("testSourceUploadFolder", "${runtime."+RuntimeVariable.CURRENT_TEST_FOLDER.getVariableName()+"}/testsources").

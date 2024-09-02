@@ -815,15 +815,15 @@ components:
       title: ScanType
       type: string
       enum:
-        - CODE_SCAN
-        - WEB_SCAN
-        - INFRA_SCAN
-        - LICENSE_SCAN
-        - SECRET_SCAN
-        - REPORT
-        - ANALYTICS
-        - PREPARE
-        - UNKNOWN
+        - codeScan
+        - webScan
+        - infraScan
+        - licenseScan
+        - secretScan
+        - report
+        - analytics
+        - prepare
+        - unknown
 
     SecHubReportWebBody:
       title: SecHubReportWebBody
@@ -1018,17 +1018,29 @@ components:
       type: object
       properties:
         critical:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         high:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         medium:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         low:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         unclassified:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         info:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
 
     SecHubReportScanTypeSummary:
       title: SecHubReportScanTypeSummary
