@@ -38,7 +38,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
         }
         /* validate mandatory parts */
         validateCweId(context, webScan.getCweId());
-        validateUrlPatterns(context, webScan.getUrlPattern());
+        validateUrlPattern(context, webScan.getUrlPattern());
 
         /* validate optional parts */
         validateMethods(context, webScan.getMethods());
@@ -54,7 +54,7 @@ public class WebscanFalsePositiveProjectDataValidationImpl extends AbstractValid
                         .formatted(name));
     }
 
-    private void validateUrlPatterns(ValidationContext<WebscanFalsePositiveProjectData> context, String urlPattern) {
+    private void validateUrlPattern(ValidationContext<WebscanFalsePositiveProjectData> context, String urlPattern) {
         String name = "%s.%s".formatted(FalsePositiveProjectData.PROPERTY_WEBSCAN, WebscanFalsePositiveProjectData.PROPERTY_URLPATTERN);
         if (urlPattern == null || urlPattern.isBlank()) {
             context.addError(getValidatorName(), ": The '%s' is mandatory and must not be empty!".formatted(name));

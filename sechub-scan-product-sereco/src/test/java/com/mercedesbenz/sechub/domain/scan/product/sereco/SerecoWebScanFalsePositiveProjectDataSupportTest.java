@@ -144,18 +144,10 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         assertFalse(result);
     }
 
-    /*----------------------------------------HOSTPATTERNS-----------------------------------------------*/
+    /*----------------------------------------URLPATTERNS-----------------------------------------------*/
 
     @Test
-    void for_hostPatterns_pattern_in_map_is_null_throws_exception() {
-        /* execute + test */
-        // At this point this should never happen because the map is meant to be created
-        // by the associated projectData
-        assertThrows(IllegalStateException.class, () -> supportToTest.isMatchingUrlPattern(matchingUrl, new HashMap<>()));
-    }
-
-    @Test
-    void for_hostPatterns_not_matching_returns_false() {
+    void for_urlPattern_not_matching_returns_false() {
         /* prepare */
         when(MOCKED_MATCHER.matches()).thenReturn(false);
 
@@ -167,7 +159,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     }
 
     @Test
-    void for_hostPatterns_is_matching_returns_true() {
+    void for_urlPattern_is_matching_returns_true() {
         /* prepare */
         when(MOCKED_MATCHER.matches()).thenReturn(true);
 
