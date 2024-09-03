@@ -183,8 +183,7 @@ public class SerecoFalsePositiveMarkerTest {
 
     private FalsePositiveProjectData addEntryProjectDataWithWebscanAndReturnProjectData(FalsePositiveProjectConfiguration projectConfig) {
         WebscanFalsePositiveProjectData webscan = new WebscanFalsePositiveProjectData();
-        webscan.setHostPatterns(new ArrayList<>());
-        webscan.setUrlPathPatterns(new ArrayList<>());
+        webscan.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setWebScan(webscan);
