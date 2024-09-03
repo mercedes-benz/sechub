@@ -1283,40 +1283,39 @@ components:
         jobUUID: jobUUID
         findingId: 1
         comment: comment
-        
+
     WebscanFalsePositiveProjectData:
       title: WebscanFalsePositiveProjectData
       description: Project data parts, that identify false positives of webscans
       type: object
       properties:
         cweId:
-          required: true
           description: CWE ID for a category of findings to identify the type of false positive finding
           type: integer
           format: int32
         urlPattern:
-          required: true
           description: list of host name or ip address patterns this false positive entry shall match (can contain wildcards)
           type: string
         methods:
-          required: false
           description: list of (HTTP) methods this false positive entry shall match (does not use wildcards)
           type: array
           items:
             type: string
+      required:
+        - cweId
+        - urlPattern
       example:
         cweId: 79
         urlPattern: https://*.example.com/api/*/search
         methods: [GET, DELETE]
-        
-        
+
+
     FalsePositiveProjectData:
       title: FalsePositiveProjectData
       description: Project data parts, can be used to specify patterns that indentify false positives
       type: object
       properties:
         id:
-          required: true
           description: ID to identify this entry, can be used to overwrite or delete the entry for this project
           type: string
         comment:
@@ -1324,6 +1323,8 @@ components:
           type: string
         webScan:
           $ref: '#/components/schemas/WebscanFalsePositiveProjectData'
+      required:
+        - id
       example:
         id: unique-id
         comment: comment
@@ -1331,7 +1332,7 @@ components:
           cweId: 79
           urlPattern: https://*.example.com/api/*/search
           methods: [GET, DELETE]
-          
+
     FalsePositiveEntry:
       title: FalsePositiveEntry
       type: object
@@ -1776,11 +1777,11 @@ components:
       title: SecHubPasswordSource
       type: object
       properties:
-         type:
-           type: object
-           $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
-         data:
-           type: string
+        type:
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
+        data:
+          type: string
 
     SecHubCipherAlgorithm:
       title: SecHubCipherAlgorithm
@@ -2714,7 +2715,7 @@ paths:
         - SecHub Execution
       x-content-type: application/json
     put:
-      description: User marks false positives 
+      description: User marks false positives
       operationId: userMarkFalsePositives
       parameters:
         - description: The projectId of the project where users adds false positives
@@ -2749,7 +2750,7 @@ paths:
     delete:
       summary: User unmarks existing false positive definitons
       description: User unmarks existing false positive definitons
-      operationId: userUnmarkFalsePositives
+      operationId: userUnmarksJobFalsePositives
       parameters:
         - name: projectId
           description: The project id
@@ -2784,7 +2785,7 @@ paths:
     delete:
       summary: User unmarks existing false positive definitons
       description: User unmarks existing false positive definitons
-      operationId: userUnmarkFalsePositives
+      operationId: userUnmarksFalsePositives
       parameters:
         - name: projectId
           description: The project id
