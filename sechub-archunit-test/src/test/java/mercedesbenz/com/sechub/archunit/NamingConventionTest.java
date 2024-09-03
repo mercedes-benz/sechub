@@ -23,7 +23,8 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         classes()
@@ -47,7 +48,8 @@ public class NamingConventionTest {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         classes()

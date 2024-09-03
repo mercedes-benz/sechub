@@ -44,7 +44,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreSchedulerSourcecodeUploadService)
                 .withImportOption(ignoreSystemTest)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         /* custom version of DEPRECATED_API_SHOULD_NOT_BE_USED */
@@ -80,7 +81,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSechubTest)
                 .withImportOption(ignoreSystemTest)
                 .withImportOption(ignoreGenApi)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         testClassesShouldResideInTheSamePackageAsImplementation().check(importedClasses);
@@ -110,7 +112,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreBuildSrc)
                 .withImportOption(ignoreAnalyzerCLI)
                 .withImportOption(ignoreExamples)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(importedClasses);
@@ -129,7 +132,8 @@ public class CodingRulesTest {
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreDevelopertools)
-                .importPackages(SECHUB_PACKAGE);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
         /* @formatter:on */
     }
 }

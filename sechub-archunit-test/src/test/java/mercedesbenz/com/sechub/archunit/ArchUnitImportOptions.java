@@ -5,7 +5,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
 
-    public static String SECHUB_PACKAGE = "com.mercedesbenz.sechub";
+    public static String SECHUB_ROOT_PATH = "../";
 
     /* Ignore specific directories */
     static ImportOption ignoreAllTests = location -> {
@@ -98,5 +98,9 @@ public class ArchUnitImportOptions {
 
     static ImportOption ignoreSchedulerSourcecodeUploadService = location -> {
         return !location.contains("SchedulerSourcecodeUploadService"); // ignore any URI to sources that contains '/SchedulerSourcecodeUploadService'
+    };
+
+    static ImportOption ignoreJarFiles = location -> {
+        return !location.contains(".jar"); // ignore jar files'
     };
 }
