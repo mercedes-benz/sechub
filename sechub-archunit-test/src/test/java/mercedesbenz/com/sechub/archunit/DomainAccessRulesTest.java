@@ -17,7 +17,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
@@ -47,11 +46,9 @@ public class DomainAccessRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
-                .withImportOptions(ignoreBuildFolders)
                 .withImportOption(ignoreDevelopertools)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
-                .importPath(SECHUB_ROOT_FOLDER);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         noClasses()
@@ -82,8 +79,8 @@ public class DomainAccessRulesTest {
     private static class DomainDataArgumentProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            return allDomainsToTest.stream().map(domain -> Arguments.of(domain));
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return allDomainsToTest.stream().map(Arguments::of);
         }
     }
 }
