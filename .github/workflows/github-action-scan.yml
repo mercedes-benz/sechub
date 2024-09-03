@@ -10,16 +10,12 @@ on:
     branches:
       - 'main'
       - 'develop'
-    # This specifies the source branches to exclude from triggering the workflow
-    # We don't want to trigger this workflow for feature increments
-    branches-ignore:
-      - 'feature_*'
-      - 'feature-*'
   # enable manual triggering of workflow
   workflow_dispatch:
 
 jobs:
   build-scan:
+    if: "startsWith(github.head_ref, 'gha_') || startsWith(github.head_ref, 'gha-')"
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
     
