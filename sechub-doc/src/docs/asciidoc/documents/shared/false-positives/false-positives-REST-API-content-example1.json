@@ -18,7 +18,7 @@
       "comment": "It was verified that there is no SQL-injection vulnerability at this location",
       "webScan": { //<9>
           "cweId": 89, //<10>
-          "urlPattern": "https://*.example.com/rest/products/search*", //<11>
+          "urlPattern": "https://*.example.com/rest/products/search?*", //<11>
           "methods": [ "GET", "DELETE" ] //<12>
       }
     }

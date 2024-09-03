@@ -24,9 +24,10 @@ type FalsePositivesList struct {
 
 // FalsePositivesConfig - struct containing information for defining false-positives
 type FalsePositivesConfig struct {
-	APIVersion string                  `json:"apiVersion"`
-	Type       string                  `json:"type"`
-	JobData    []FalsePositivesJobData `json:"jobData"`
+	APIVersion  string                      `json:"apiVersion"`
+	Type        string                      `json:"type"`
+	JobData     []FalsePositivesJobData     `json:"jobData"`
+	ProjectData []FalsePositivesProjectData `json:"projectData"`
 }
 
 // FalsePositivesJobData - contains data related to a scan job for defining false-positives
@@ -34,6 +35,20 @@ type FalsePositivesJobData struct {
 	JobUUID   string `json:"jobUUID"`
 	FindingID int    `json:"findingId"`
 	Comment   string `json:"comment"`
+}
+
+// FalsePositivesProjectData - contains data related to a project for defining false-positives
+type FalsePositivesProjectData struct {
+	ID        string                              `json:"id"`
+	Comment   string                              `json:"comment"`
+	WebScan   FalsePositivesProjectDataForWebScan `json:"webScan"`
+}
+
+// FalsePositivesProjectDataForWebScan - define pattern for false-posisitves in web scans
+type FalsePositivesProjectDataForWebScan struct {
+	CweID      int      `json:"cweId"`
+	UrlPattern string   `json:"urlPattern"`
+	Methods    []string `json:"methods"`
 }
 
 // FalsePositivesDefinition - the struct that comes from SecHub server with getFalsePositives
