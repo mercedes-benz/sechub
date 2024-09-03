@@ -41,11 +41,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
 
         // Make sure that existing projects are removed
-        try {
-            deleteExistingProjects(context);
-        } catch (ApiException e) {
-            throw new RuntimeException(e);
-        }
+        deleteExistingProjects(context);
 
         // Make sure that existing profiles are removed
         try {
@@ -53,7 +49,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         } catch (ApiException e) {
             if (e.getCode() != 404) {
                 LOG.error("Failed to delete existing profiles with reason {}", e.getMessage());
-                throw new RuntimeException(e);
+                throw e;
             }
         }
 
