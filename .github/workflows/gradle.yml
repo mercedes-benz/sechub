@@ -6,11 +6,13 @@ on:
     branches:
       - 'main'
       - 'develop'
+    # We ignore everything where tag starts with v* - this is done by release build!
+    tags-ignore:
+      - v*
   pull_request:
     branches:
       - 'feature_*'
       - 'feature-*'
-      # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
 
