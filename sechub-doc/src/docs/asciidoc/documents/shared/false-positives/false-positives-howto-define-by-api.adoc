@@ -54,8 +54,11 @@ Like any other _optional_ field, if this is missing it is simply ignored.
 
 
 Important information on the wildcard approach in `projectData`, regarding web scans: +
-- To be a false positive a finding the `cweId` and the `urlPattern`. A list of (HTTP) `methods` can be specified to limit the false positive. If no `methods` are specified, this false positive entry will not be restricted to any method. +
+- To be a false positive a finding must match the `cweId` and the `urlPattern` of at least one of the false positive entries.
+  An _optional_ list of (HTTP) `methods` can be specified to limit the false positive entry to certain `methods`,
+  e.g if you specify `"methods": [ "GET", "DELETE" ]` like in the example above that means even if the `cweId` and the `urlPattern` are matching, if the finding was found with a `POST` request it would not be a false positive.
+  If no `methods` are specified, this false positive entry will not be restricted to any method. +
 - Wildcards (`pass:[*]`) can be used inside `urlPattern`. +
 - Wildcards match anything until the next NON-wildcard character. +
 - Multiple wildcards can be used in one `urlPattern`. +
-- A `urlPattern` which consists of only wildcards (`pass:[*]`) is not allowed.
+- An `urlPattern` which contains only wildcards (`pass:[*]`) is not allowed.
