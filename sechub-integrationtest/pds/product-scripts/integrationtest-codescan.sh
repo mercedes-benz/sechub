@@ -59,11 +59,11 @@ fi
 #
 # Handle extreaction
 #
-if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
+if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" == "true" ]]; then
    mergeFolderFilesRecursivelyIntoResultFile "sources", "$PDS_JOB_EXTRACTED_SOURCES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 
-if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
+if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]; then
    mergeFolderFilesRecursivelyIntoResultFile "binaries" "$PDS_JOB_EXTRACTED_BINARIES_FOLDER" "${PDS_JOB_RESULT_FILE}" "$PDS_DEBUG_ENABLED"
 fi
 

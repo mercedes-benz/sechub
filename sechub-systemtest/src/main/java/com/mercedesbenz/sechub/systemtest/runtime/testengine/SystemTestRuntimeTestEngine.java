@@ -397,7 +397,7 @@ public class SystemTestRuntimeTestEngine {
         }
         testContext.getSecHubRunData().report = report;
         testContext.markCurrentSecHubJob(jobUUID);
-
+        testContext.storeSecHubResultFile();
     }
 
     private void waitMilliseconds(int milliSeconds) {
@@ -670,7 +670,22 @@ public class SystemTestRuntimeTestEngine {
             try {
                 textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
             } catch (IOException e) {
-                LOG.error("Was not able to store sechub config file: {}", targetFile, e);
+                LOG.error("Was not able to store SecHub config file: {}", targetFile, e);
+            }
+        }
+
+        private void storeSecHubResultFile() {
+            Path targetFolder = resolveWorkingDirectoryRealPathForCurrentTest(this);
+
+            String prettyPrintedJson = JSONConverter.get().toJSON(getSecHubRunData().getReport(), true);
+
+            String fileName = "sechub-report-%s.json".formatted(getSecHubRunData().getSecHubJobUUID());
+            File targetFile = new File(targetFolder.toFile(), fileName);
+
+            try {
+                textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
+            } catch (IOException e) {
+                LOG.error("Was not able to store SecHub report file: {}", targetFile, e);
             }
         }
 

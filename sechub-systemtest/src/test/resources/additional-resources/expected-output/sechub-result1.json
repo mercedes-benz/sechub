@@ -1,5 +1,15 @@
 {
-  "jobUUID" : "{sechub.jobuuid}",
+  "messages" : [ {
+    "type" : "ERROR",
+    "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "
+  }, {
+    "type" : "WARNING",
+    "text" : "warn for PDS job: {*:36}"
+  }, {
+    "type" : "INFO",
+    "text" : "info for PDS job: {*:36}"
+  } ],
+  "status" : "SUCCESS",
   "trafficLight" : "YELLOW",
   "result" : {
     "count" : 4,
@@ -53,10 +63,9 @@
       "type" : "codeScan"
     } ]
   },
-  "status" : "SUCCESS",
+  "jobUUID" : "{sechub.jobuuid}",
   "reportVersion" : "1.0",
   "metaData" : {
-    "labels" : { },
     "summary" : {
       "codeScan" : {
         "total" : 4,
@@ -82,15 +91,5 @@
         }
       }
     }
-  },
-  "messages" : [ {
-    "type" : "ERROR",
-    "text" : "error for PDS job: {*:36} but with\n    a multine ....\n    "
-  }, {
-    "type" : "WARNING",
-    "text" : "warn for PDS job: {*:36}"
-  }, {
-    "type" : "INFO",
-    "text" : "info for PDS job: {*:36}"
-  } ]
+  }
 }

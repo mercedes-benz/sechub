@@ -81,7 +81,8 @@ openApiGenerate {
             scmConnection              : '',
             scmDeveloperConnection     : '',
             scmUrl                     : 'https://github.com/mercedes-benz/sechub',
-            useJakartaEe               : 'false'
+            useJakartaEe               : 'false',
+            additionalModelTypeAnnotations: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)'
     ]
 }
 
