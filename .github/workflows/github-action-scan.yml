@@ -4,7 +4,12 @@ name: Build SecHub GHA (scan)
 on:
   push:
     branches:
+      - 'main'
+      - 'develop'
+  pull_request:
+    branches:
       - 'gha_*'
+      - 'gha-*'
   # enable manual triggering of workflow
   workflow_dispatch:
 

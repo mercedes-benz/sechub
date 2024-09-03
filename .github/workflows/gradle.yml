@@ -3,12 +3,17 @@ name: Java & Go CI
 
 on:
   push:
-    branches-ignore:
-      # We do NOT build github action development branches here (because no Java or Go code is changed)
-      - 'gha_*'
+    branches:
+      - 'main'
+      - 'develop'
+  pull_request:
+    branches:
+      - 'feature_*'
+      - 'feature-*'
       # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
+
   # enable manual triggering of workflow
   workflow_dispatch:
 
