@@ -1,6 +1,6 @@
 {
   "apiVersion": "1.0", //<1>
-  "type": "falsePositiveJobDataList", //<2>
+  "type": "falsePositiveDataList", //<2>
   "jobData": [
     {
       "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd", //<3>
@@ -11,5 +11,19 @@
       "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
       "findingId": 15
     }
+  ],
+  "projectData": [ //<6>
+  {
+      "id": "unique-id", //<7>
+      "comment": "It was verified that there is no SQL-injection vulnerability at this location",
+      "webScan": { //<8>
+          "cweId": 89, //<9>
+          "hostPatterns": [ "127.0.*.1", "api.example.com", "dev.*.example.com"], //<10>
+          "urlPathPatterns": [ "/rest/products/search*", "/rest/users/profile" ], //<11>
+          "protocols": [ "HTTPS", "WSS" ], //<12>
+          "methods": [ "GET", "DELETE" ], //<13>
+          "ports": [ "8080", "443" ] //<14>
+      }
+  }
   ]
 }

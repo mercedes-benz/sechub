@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-unmarks-false-positives-jobdata]]
+A user wants to unmark existing false positives
+This means the false positives has been marked before. 
+
+NOTE: This will NOT change any former job report where the false positive to unmark has been filtered! 
+
+After next scan job the former false positive is no longer filtering the finding.

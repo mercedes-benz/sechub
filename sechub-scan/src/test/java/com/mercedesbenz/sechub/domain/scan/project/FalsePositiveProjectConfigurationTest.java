@@ -124,7 +124,6 @@ public class FalsePositiveProjectConfigurationTest {
 
         /* execute */
         String json = configToTest.toJSON();
-        System.out.println(json);
 
         /* test */
         FalsePositiveProjectConfiguration loaded = FalsePositiveProjectConfiguration.fromJSONString(json);

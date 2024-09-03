@@ -15,11 +15,11 @@ import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
 class SerecoFalsePositiveSupportTest {
-    private SerecoFalsePositiveSupport supportToTest;
+    private SerecoJobDataFalsePositiveSupport supportToTest;
 
     @BeforeEach
     void beforeEach() {
-        supportToTest = new SerecoFalsePositiveSupport();
+        supportToTest = new SerecoJobDataFalsePositiveSupport();
     }
 
     @ParameterizedTest()

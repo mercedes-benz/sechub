@@ -9,26 +9,22 @@ import org.springframework.stereotype.Service;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
 public class NamingConventionTest {
 
-    private JavaClasses importedClasses;
-
     @Test
     void classes_in_test_packages_containing_test_or_assert_in_name() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
-                .withImportOptions(ignoreBuildFolders)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
-                .importPath(SECHUB_ROOT_FOLDER);
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         classes()
@@ -49,13 +45,11 @@ public class NamingConventionTest {
     void service_annotated_classes_contain_service_or_executor_in_name() {
         /* prepare */
         /* @formatter:off */
-        importedClasses = new ClassFileImporter()
-                .withImportOptions(ignoreBuildFolders)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_JARS)
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
-                .importPath("../../sechub/");
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         classes()

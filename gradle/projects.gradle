@@ -54,7 +54,7 @@ projectType = [
                     project(':sechub-wrapper-checkmarx'),
                     project(':sechub-wrapper-prepare'),
 
-                    project(':sechub-wrapper-secret-validator'),
+                    project(':sechub-wrapper-secretvalidation'),
 
                     /* archUnit */
                     project(':sechub-archunit-test')
@@ -103,7 +103,7 @@ projectType = [
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
                    project(':sechub-webui'),
-                   project(':sechub-wrapper-secret-validator'),
+                   project(':sechub-wrapper-secretvalidation'),
             ],
 
             springBootWebUIProjects:[

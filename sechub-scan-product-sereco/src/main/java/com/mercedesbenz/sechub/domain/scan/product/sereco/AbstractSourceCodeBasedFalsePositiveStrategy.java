@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-public abstract class AbstractSourceCodeBasedFalsePositiveStrategy implements SerecoFalsePositiveStrategy {
+public abstract class AbstractSourceCodeBasedFalsePositiveStrategy implements SerecoJobDataFalsePositiveStrategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSourceCodeBasedFalsePositiveStrategy.class);
 
@@ -24,7 +24,7 @@ public abstract class AbstractSourceCodeBasedFalsePositiveStrategy implements Se
     SerecoSourceRelevantPartResolver relevantPartResolver;
 
     @Autowired
-    SerecoFalsePositiveSupport falsePositiveSupport;
+    SerecoJobDataFalsePositiveSupport falsePositiveSupport;
 
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         return isFalsePositive(getScanType(), vulnerability, metaData);

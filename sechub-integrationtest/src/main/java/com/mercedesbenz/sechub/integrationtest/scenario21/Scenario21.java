@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <h3>Scenario 20</h3>
+ * <h3>Scenario 21</h3>
  *
  * <h4>Short description</h4> PDS solutions mock scenario for multiple PDS
  * solutions

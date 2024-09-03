@@ -99,7 +99,7 @@ include 'sechub-cli',
 'sechub-wrapper-xray',
 
 // secret validator
-'sechub-wrapper-secret-validator',
+'sechub-wrapper-secretvalidation',
 
 /* System Test */
 'sechub-systemtest',
