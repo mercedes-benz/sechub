@@ -5,11 +5,6 @@ on:
   push:
     branches:
       - 'gha_*'
-  pull_request:
-      # Run the workflow when the PR targets master or develpp
-      branches:
-        - 'master'
-        - 'develop'
   # enable manual triggering of workflow
   workflow_dispatch:
 
