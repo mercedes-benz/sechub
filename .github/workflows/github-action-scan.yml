@@ -8,8 +8,13 @@ on:
       - 'develop'
   pull_request:
     branches:
-      - 'gha_*'
-      - 'gha-*'
+      - 'main'
+      - 'development'
+    # This specifies the source branches to exclude from triggering the workflow
+    # We don't want to trigger this workflow for feature increments
+    branches-ignore:
+      - 'feature_*'
+      - 'feature-*'
   # enable manual triggering of workflow
   workflow_dispatch:
 

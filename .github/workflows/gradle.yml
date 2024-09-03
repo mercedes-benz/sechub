@@ -11,8 +11,13 @@ on:
       - v*
   pull_request:
     branches:
-      - 'feature_*'
-      - 'feature-*'
+      - 'main'
+      - 'development'
+    # This specifies the source branches to exclude from triggering the workflow
+    # We don't want to trigger this workflow for changes on GitHub actions files
+    branches-ignore:
+      - 'gha_*'
+      - 'gha-*'
     tags-ignore:
       - v*
 
