@@ -6,8 +6,10 @@ on:
     branches:
       - 'gha_*'
   pull_request:
+      # Run the workflow when the PR targets master or develpp
       branches:
-        - 'gha_*'
+        - 'master'
+        - 'develop'
   # enable manual triggering of workflow
   workflow_dispatch:
 
