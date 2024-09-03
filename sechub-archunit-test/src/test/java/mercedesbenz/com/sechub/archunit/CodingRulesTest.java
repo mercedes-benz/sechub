@@ -44,6 +44,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreSchedulerSourcecodeUploadService)
                 .withImportOption(ignoreSystemTest)
+                .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
                 .importPath(SECHUB_ROOT_PATH);
 
@@ -112,6 +113,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreBuildSrc)
                 .withImportOption(ignoreAnalyzerCLI)
                 .withImportOption(ignoreExamples)
+                .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
                 .importPath(SECHUB_ROOT_PATH);
 
@@ -132,6 +134,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreDevelopertools)
+                .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
                 .importPath(SECHUB_ROOT_PATH);
         /* @formatter:on */
