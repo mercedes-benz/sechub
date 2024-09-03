@@ -7,6 +7,7 @@ on:
       - 'main'
       - 'develop'
   pull_request:
+    # This workflow will run for all pull requests that target 'main' or 'develop'
     branches:
       - 'main'
       - 'develop'
@@ -15,6 +16,7 @@ on:
 
 jobs:
   build-scan:
+    # This job is only executed if the branch name starts with 'gha_' or 'gha-'
     if: "startsWith(github.head_ref, 'gha_') || startsWith(github.head_ref, 'gha-')"
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:

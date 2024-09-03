@@ -10,6 +10,7 @@ on:
     tags-ignore:
       - v*
   pull_request:
+    # This workflow will run for all pull requests that target 'main' or 'develop'
     branches:
       - 'main'
       - 'develop'
@@ -21,6 +22,7 @@ on:
 
 jobs:
   build:
+    # This job is only executed if the branch name starts with 'feature_' or 'feature-'
     if: "startsWith(github.head_ref, 'feature_') || startsWith(github.head_ref, 'feature-')"
     runs-on: ubuntu-latest
     steps:
