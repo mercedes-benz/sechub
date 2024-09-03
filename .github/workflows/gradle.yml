@@ -12,7 +12,7 @@ on:
   pull_request:
     branches:
       - 'main'
-      - 'development'
+      - 'develop'
     # This specifies the source branches to exclude from triggering the workflow
     # We don't want to trigger this workflow for changes on GitHub actions files
     branches-ignore:
