@@ -119,10 +119,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
         webScan.setCweId(564);
         webScan.setMethods(List.of("GET", "POST"));
-        webScan.setPorts(List.of("8443", "8080"));
-        webScan.setProtocols(List.of("HTTP", "HTTPS"));
-        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan.setUrlPattern("https://*.example.com/api/*/search");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId("unique-identifier");
@@ -166,11 +163,8 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
 
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATTERN).description("Defines a url pattern for false positives which occur during webscans. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
-                                    fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
                                     fieldWithPath(PROPERTY_PROJECTDATA+"[]."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(
@@ -297,10 +291,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
         webScan.setCweId(564);
         webScan.setMethods(List.of("GET", "POST"));
-        webScan.setPorts(List.of("8443", "8080"));
-        webScan.setProtocols(List.of("HTTP", "HTTPS"));
-        webScan.setHostPatterns(List.of("sub.host.com", "*.other.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan.setUrlPattern("https://*.example.com/api/*/search");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId("unique-identifier");
@@ -367,11 +358,8 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ FalsePositiveProjectData.PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN).optional().description("Defines a section for false positives which occur during webscans."),
 
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_HOSTPATTERNS+"[]").description("Defines a list of host patterns for false positives which occur during webscans. At least one entry must be present. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATHPATTERNS+"[]").description("Defines a list of urlPathPatterns for false positives which occur during webscans which make it easier e.g. to ignore query parameters. At least one entry must be present. Can be used with wildcards like '*/api/users/*'. Each entry must contain more than just wildcards, '*/*/*' or '*' are not allowed."),
+                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_URLPATTERN).description("Defines a url pattern for false positives which occur during webscans. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_METHODS+"[]").optional().description("Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PORTS+"[]").optional().description("Defines a list of server ports for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all server ports."),
-                                    fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_PROTOCOLS+"[]").optional().description("Defines a list of web request protocols like 'http', 'https', 'wss' for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all protocols."),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+PROPERTY_PROJECTDATA+"."+ PROPERTY_WEBSCAN+"."+ PROPERTY_CWEID).description("Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs.")
                             ),
                             pathParameters(

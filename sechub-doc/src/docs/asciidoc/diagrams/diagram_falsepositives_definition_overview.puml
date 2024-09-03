@@ -67,10 +67,7 @@ package com.mercedesbenz.sechub.domain.scan.project{
 'com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData
    class WebscanFalsePositiveProjectData{
     -Integer : cweId
-    -List<String> : hostPatterns
-    -List<String> : urlPathPatterns
-    -List<String> : protocols
-    -List<String> : ports
+    -String : urlPattern
     -List<String> : methods
   }
   FalsePositiveProjectData *-- WebscanFalsePositiveProjectData
