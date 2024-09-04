@@ -23,7 +23,7 @@ The `projectData` approach is more powerful for the user.
 Since it is more powerful with the wildcard approach it requires more intial setup from the user.
 
 There are no dependencies because all information necessary to identify certain findings are specified via `REST`.
-Each entry can be removed by the given `id`.
+Each entry can be updated or removed by the given `id`. Marking a projectData entry with a already existing `id` again, will update its content with the new data.
 ====
 
 *Example JSON*

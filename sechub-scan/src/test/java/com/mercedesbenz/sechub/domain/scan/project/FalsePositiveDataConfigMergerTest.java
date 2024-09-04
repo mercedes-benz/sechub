@@ -192,7 +192,7 @@ public class FalsePositiveDataConfigMergerTest {
         projectData.setWebScan(webScan);
 
         /* execute */
-        toTest.addFalsePositiveProjectDataEntry(config, projectData, TEST_AUTHOR);
+        toTest.addFalsePositiveProjectDataEntryOrUpdateExisting(config, projectData, TEST_AUTHOR);
 
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
@@ -207,7 +207,7 @@ public class FalsePositiveDataConfigMergerTest {
     }
 
     @Test
-    void add_one_project_data_entry_which_already_exists_results_in_entry_with_same_id_not_added_again() {
+    void add_one_project_data_entry_with_id_which_already_exists_results_in_entry_being_updated() {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan1 = new WebscanFalsePositiveProjectData();
@@ -234,7 +234,7 @@ public class FalsePositiveDataConfigMergerTest {
         projectData2.setWebScan(webScan2);
 
         /* execute */
-        toTest.addFalsePositiveProjectDataEntry(config, projectData2, TEST_AUTHOR);
+        toTest.addFalsePositiveProjectDataEntryOrUpdateExisting(config, projectData2, TEST_AUTHOR);
 
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
@@ -245,7 +245,7 @@ public class FalsePositiveDataConfigMergerTest {
         assertNull(existingEntry.getMetaData());
 
         assertEquals(TEST_AUTHOR, existingEntry.getAuthor());
-        assertEquals(projectData1, existingEntry.getProjectData());
+        assertEquals(projectData2, existingEntry.getProjectData());
     }
 
     @Test
@@ -277,7 +277,7 @@ public class FalsePositiveDataConfigMergerTest {
         projectData2.setWebScan(webScan2);
 
         /* execute */
-        toTest.addFalsePositiveProjectDataEntry(config, projectData2, TEST_AUTHOR);
+        toTest.addFalsePositiveProjectDataEntryOrUpdateExisting(config, projectData2, TEST_AUTHOR);
 
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
