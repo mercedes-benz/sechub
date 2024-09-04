@@ -254,20 +254,33 @@ func uploadFalsePositives(context *Context) {
 	// Read inputForContentProcessing into a JSON struct
 	falsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
 
-	// Upload the list in chunks of maximal MaxChunkSizeFalsePositives items
+	// Upload the jobData list in chunks of maximal MaxChunkSizeFalsePositives items
 	for i := 0; ; i++ {
 		uploadChunk := getFalsePositivesUploadChunk(falsePositivesList, i)
 		if len(uploadChunk.JobData) == 0 {
 			break
 		}
-		jsonBlob, err := json.Marshal(uploadChunk)
-		sechubUtil.HandleError(err, ExitCodeFailed)
-		context.inputForContentProcessing = jsonBlob
-		processContent(context)
-
-		// Send context.contentToSend to SecHub server
-		sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
+		uploadFalsePositivesChunk(context, uploadChunk)
 	}
+
+	// Upload fp projectData if present
+	if len(falsePositivesList.ProjectData) > 0 {
+		var falsePositivesProjectData FalsePositivesConfig
+		falsePositivesProjectData.APIVersion = falsePositivesList.APIVersion
+		falsePositivesProjectData.Type = falsePositivesList.Type
+		falsePositivesProjectData.ProjectData = falsePositivesList.ProjectData
+		uploadFalsePositivesChunk(context, falsePositivesProjectData)
+	}
+}
+
+func uploadFalsePositivesChunk(context *Context, uploadChunk FalsePositivesConfig) {
+	jsonBlob, err := json.Marshal(uploadChunk)
+	sechubUtil.HandleError(err, ExitCodeFailed)
+	context.inputForContentProcessing = jsonBlob
+	processContent(context)
+
+	// Send context.contentToSend to SecHub server
+	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)	
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {

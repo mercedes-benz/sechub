@@ -191,9 +191,9 @@ func Example_newFalsePositivesListFromBytes_projectData()  {
       "id": "my-id",
       "comment": "text1",
       "webScan": {
-          "cweId": 89,
-          "urlPattern": "https://myapp-*.example.com:80*/rest/*/search?*",
-          "methods": [ "GET", "DELETE" ]
+        "cweId": 89,
+        "urlPattern": "https://myapp-*.example.com:80*/rest/*/search?*",
+        "methods": [ "GET", "DELETE" ]
       }
     }
   ]
@@ -223,7 +223,7 @@ func Example_newFalsePositivesListFromBytes_projectDataWithoutCWE()  {
     {
       "id": "my-id",
       "webScan": {
-          "urlPattern": "https://myapp-*.example.com/rest/login?*"
+        "urlPattern": "https://myapp-*.example.com/rest/login?*"
       }
     }
   ]
