@@ -52,6 +52,7 @@ class WebscanFalsePositiveProjectDataValidationImplTest {
 
         /* test */
         assertTrue(result.isValid());
+        assertEquals(0, webScan.getCweId());
     }
 
     @Test

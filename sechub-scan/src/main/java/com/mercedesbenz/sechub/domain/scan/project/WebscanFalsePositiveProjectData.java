@@ -10,15 +10,15 @@ public class WebscanFalsePositiveProjectData implements ProjectData {
     public static final String PROPERTY_URLPATTERN = "urlPattern";
     public static final String PROPERTY_METHODS = "methods";
 
-    private Integer cweId;
+    private int cweId;
     private String urlPattern;
     private List<String> methods;
 
-    public Integer getCweId() {
+    public int getCweId() {
         return cweId;
     }
 
-    public void setCweId(Integer cweId) {
+    public void setCweId(int cweId) {
         this.cweId = cweId;
     }
 

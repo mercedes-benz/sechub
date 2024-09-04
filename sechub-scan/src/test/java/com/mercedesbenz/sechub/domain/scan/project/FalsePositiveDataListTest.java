@@ -1,19 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
 public class FalsePositiveDataListTest {
 
     @Test
-    public void json_content_as_described_in_example_of_documentation() {
+    void json_content_as_described_in_example_of_documentation() {
         /* prepare */
         String json = ScanDomainTestFileSupport.getTestfileSupport()
                 .loadTestFileFromRoot("/sechub-doc/src/docs/asciidoc/documents/shared/false-positives/false-positives-REST-API-content-example1.json");
@@ -34,6 +35,26 @@ public class FalsePositiveDataListTest {
         assertEquals(15, jd2.getFindingId());
         assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd2.getJobUUID().toString());
         assertNull(jd2.getComment());
+    }
+
+    @Test
+    void jobData_and_projectData_must_never_be_null() {
+        /* prepare */
+        String json = """
+                {
+                 "apiVersion": "1.0",
+                 "type": "falsePositiveDataList",
+                 "jobData": null,
+                 "projectData": null
+                }
+                """;
+
+        /* execute */
+        FalsePositiveDataList dataList = FalsePositiveDataList.fromString(json);
+
+        /* test */
+        assertTrue(dataList.getJobData().isEmpty());
+        assertTrue(dataList.getProjectData().isEmpty());
     }
 
 }

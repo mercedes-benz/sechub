@@ -47,6 +47,7 @@ the existing false positive entry will be overwritten. The `id` is also mandator
 <10> `cweId` is used to mark a certain type of finding as false positive.
 When handling web scan project data this will be treated as a _mandatory_ field,
 but it can be omitted inside this configuration an will then match findings that do not have any `cweId`.
+Since it is the integer ID of the CWE, fetching the false positive configuration will contain `"cweId": 0` since cweId zero does not exist.
 <11> `urlPattern` specifies a URL pattern to identify a false positive. This is a `mandatory` field. 
 Asterisks can be used as wildcards e.g. if you have different environments like DEV, INT, PROD or you have variable parts like in API calls or query paramaters `https://*.example.com/rest/*/search?*`.
 <12> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
