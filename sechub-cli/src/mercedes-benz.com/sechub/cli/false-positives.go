@@ -296,24 +296,40 @@ func unmarkFalsePositivesFromFile(context *Context) {
 }
 
 func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
-	if len(list.JobData) == 0 {
+	if len(list.JobData) == 0 && len(list.ProjectData) == 0 {
 		sechubUtil.Log("0 false-positives removed from project \""+context.config.projectID+"\"", context.config.quiet)
 		return
 	}
-
-	sechubUtil.Log("Removing as false-positives from project \""+context.config.projectID+"\":", context.config.quiet)
-	// Loop over list and push to SecHub server
-	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
-	urlPrefix := buildFalsePositiveAPICall(context)
 
 	// we don't want to send content here
 	context.inputForContentProcessing = []byte(``)
 	processContent(context)
 
-	for _, element := range list.JobData {
-		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: Finding #%d", element.JobUUID, element.FindingID), context.config.quiet)
-		sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID), context)
+	sechubUtil.Log("Removing as false-positives from project \""+context.config.projectID+"\":", context.config.quiet)
+	// Loop over lists and push to SecHub server
+
+	if len(list.JobData) > 0 {
+		// Iterate over JobData list:
+		// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
+		urlPrefix := buildFalsePositiveAPICall(context)
+
+		for _, element := range list.JobData {
+			sechubUtil.Log(fmt.Sprintf("- JobUUID %s: Finding #%d", element.JobUUID, element.FindingID), context.config.quiet)
+			sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID), context)
+		}
 	}
+
+	if len(list.ProjectData) > 0 {
+		// Iterate over JobData list:
+		// Url scheme: curl 'https://sechub.example.com//api/project/project1/false-positive/project-data/fp-id-1' -i -X DELETE
+		urlPrefix := buildFalsePositiveProjectDataAPICall(context)
+
+		for _, element := range list.ProjectData {
+			sechubUtil.Log(fmt.Sprintf("- project's false-positive-ID: \"%s\"", element.ID), context.config.quiet)
+			sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s", urlPrefix, element.ID), context)
+		}
+	}
+
 	sechubUtil.Log("Transfer completed", context.config.quiet)
 }
 
