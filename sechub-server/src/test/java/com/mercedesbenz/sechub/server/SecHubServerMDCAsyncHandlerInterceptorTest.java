@@ -132,6 +132,20 @@ public class SecHubServerMDCAsyncHandlerInterceptorTest {
     }
 
     @Test
+    public void when_url_is_user_removes_project_data_false_positives_from_project_no_job_uuid_is_expected() throws Exception {
+        /* prepare */
+        when(request.getRequestURI())
+                .thenReturn("https://localhost/api/project/myprojectId/false-positive/project-data/unique-id");
+
+        /* execute */
+        interceptorToTest.preHandle(request, response, handler);
+
+        /* test */
+        assertNull(MDC.get(LogConstants.MDC_SECHUB_JOB_UUID));
+        assertEquals("myprojectId", MDC.get(LogConstants.MDC_SECHUB_PROJECT_ID));
+    }
+
+    @Test
     public void when_url_is_user_buildApproveJobUrluuid_is_set_and_projectId_as_well() throws Exception {
         /* prepare */
         UUID uuid = UUID.randomUUID();
