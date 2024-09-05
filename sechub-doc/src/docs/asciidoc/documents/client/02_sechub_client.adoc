@@ -237,7 +237,7 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 Instead of creating a json file to unmark false positives, you can also do this interactively:
 Go to the project directory containing `sechub.json` and run `sechub interactiveUnmarkFalsePositives`
 
-{sechub} client will download the current false posisitves list and interactively ask each entry: `"Do you want to remove this false positive?"`
+{sechub} client will download the current false posisitives list and interactively ask each entry: `"Do you want to remove this false positive?"`
 Your choices are:
 
 - `y` Yes - Unmark this false positive.

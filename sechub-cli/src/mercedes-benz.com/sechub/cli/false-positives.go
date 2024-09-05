@@ -8,11 +8,12 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
-// Keyword for false-posisitves json file
+// Keyword for false-posisitives json file
 const falsePositivesListType = "falsePositiveJobDataList"
 
 // FalsePositivesList - structure for handling download of false-positive lists
@@ -44,7 +45,7 @@ type FalsePositivesProjectData struct {
 	WebScan   FalsePositivesProjectDataForWebScan `json:"webScan"`
 }
 
-// FalsePositivesProjectDataForWebScan - define pattern for false-posisitves in web scans
+// FalsePositivesProjectDataForWebScan - contains the definition for false-posisitives in web scans
 type FalsePositivesProjectDataForWebScan struct {
 	CweID      int      `json:"cweId"`
 	UrlPattern string   `json:"urlPattern"`
@@ -58,10 +59,11 @@ type FalsePositivesDefinition struct {
 
 // FalsePositiveDefinition - a single false-positive definition from server
 type FalsePositiveDefinition struct {
-	JobData  FalsePositivesJobData           `json:"jobData"`
-	Author   string                          `json:"author"`
-	MetaData FalsePositiveDefinitionMetaData `json:"metaData"`
-	Created  string                          `json:"created"`
+	JobData     FalsePositivesJobData           `json:"jobData"`
+	ProjectData FalsePositivesProjectData       `json:"projectData"`
+	Author      string                          `json:"author"`
+	MetaData    FalsePositiveDefinitionMetaData `json:"metaData"`
+	Created     string                          `json:"created"`
 }
 
 // FalsePositiveDefinitionMetaData - metadata part of FalsePositiveDefinition
@@ -164,11 +166,11 @@ func readFileIntoContext(context *Context, fallbackFile string) {
 func defineFalsePositivesFromFile(context *Context) {
 	readFileIntoContext(context, DefaultSecHubFalsePositivesJSONFile)
 
-	// read json into go struct
+	// Read json into go struct
 	falsePositivesDefinitionList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be defined: %+v", falsePositivesDefinitionList))
 
-	// download false-positives list for project from SecHub server
+	// Download false-positives list for project from SecHub server
 	jsonFPBlob := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: "", outputFileName: ""}
 	var falsePositivesServerList FalsePositivesDefinition
 	err := json.Unmarshal(jsonFPBlob.serverResult, &falsePositivesServerList)
@@ -194,7 +196,7 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 	falsePositivesToRemove.APIVersion = CurrentAPIVersion
 	falsePositivesToRemove.Type = falsePositivesListType
 
-	// Loop through definition list and figure out, what to add and what to remove
+	// Loop through JobData definition list and figure out, what to add and what to remove
 	for _, newFalsePositive := range newFalsePositives.JobData {
 		matched := false
 		for i, falsePositive := range currentFalsePositives {
@@ -212,12 +214,38 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 		}
 	}
 
+	for _, newFalsePositive := range newFalsePositives.ProjectData {
+		matched := false
+		for i, falsePositive := range currentFalsePositives {
+			if newFalsePositive.ID == falsePositive.ProjectData.ID {
+				// Remove item from list if ID exists
+				currentFalsePositives[i] = currentFalsePositives[len(currentFalsePositives)-1] // Copy last item to current position
+				currentFalsePositives = currentFalsePositives[:len(currentFalsePositives)-1]   // Truncate slice
+
+				// Compare alle elements to decide if an update is needed
+				if (newFalsePositive.Comment == falsePositive.ProjectData.Comment) &&
+				   (newFalsePositive.WebScan.CweID == falsePositive.ProjectData.WebScan.CweID) &&
+				   (newFalsePositive.WebScan.UrlPattern == falsePositive.ProjectData.WebScan.UrlPattern) &&
+				   slices.Equal(newFalsePositive.WebScan.Methods, falsePositive.ProjectData.WebScan.Methods) {
+					matched = true
+				}
+				break
+			}
+		}
+		if !matched {
+			// Add False positive to list (will be updated if it exists on the server)
+			falsePositivesToAdd.ProjectData = append(falsePositivesToAdd.ProjectData, newFalsePositive)
+		}
+	}
+
 	// currentFalsePositives now contains all false positives to remove
 	for _, falsePositiveToBeRemoved := range currentFalsePositives {
-		var fp FalsePositivesJobData
-		fp.JobUUID = falsePositiveToBeRemoved.JobData.JobUUID
-		fp.FindingID = falsePositiveToBeRemoved.JobData.FindingID
-		falsePositivesToRemove.JobData = append(falsePositivesToRemove.JobData, fp)
+		if falsePositiveToBeRemoved.JobData.JobUUID != "" {
+			falsePositivesToRemove.JobData = append(falsePositivesToRemove.JobData, falsePositiveToBeRemoved.JobData)
+		}
+		if falsePositiveToBeRemoved.ProjectData.ID != "" {
+			falsePositivesToRemove.ProjectData = append(falsePositivesToRemove.ProjectData, falsePositiveToBeRemoved.ProjectData)
+		}
 	}
 
 	return falsePositivesToAdd, falsePositivesToRemove
@@ -397,14 +425,18 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 }
 
 func markFalsePositives(context *Context, list *FalsePositivesConfig) {
-	if len(list.JobData) == 0 {
+	if len(list.JobData) == 0 && len(list.ProjectData) == 0 {
 		sechubUtil.Log("0 false-positives added to project \""+context.config.projectID+"\"", context.config.quiet)
 		return
 	}
 
-	sechubUtil.Log("Adding as false-positives to project \""+context.config.projectID+"\":", context.config.quiet)
+	sechubUtil.Log("Adding/updating as false-positives in project \""+context.config.projectID+"\":", context.config.quiet)
 	for _, element := range list.JobData {
 		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: Finding #%d, Comment: %s", element.JobUUID, element.FindingID, element.Comment), context.config.quiet)
+	}
+
+	for _, element := range list.ProjectData {
+		sechubUtil.Log(fmt.Sprintf("- project's false-positive-ID: %s, Comment: %s", element.ID, element.Comment), context.config.quiet)
 	}
 
 	// upload to server

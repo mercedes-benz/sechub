@@ -45,7 +45,7 @@ func TestFalsePositivesSaveWritesAFile(t *testing.T) {
 	sechubTestUtil.AssertFileExists(expected, t)
 }
 
-func Example_defineFalsePositives() {
+func Example_defineFalsePositivesJobData() {
 	/* prepare */
 	definedFalsePositives := []FalsePositivesJobData{
 		{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1, Comment: "test1"},
@@ -73,7 +73,7 @@ func Example_defineFalsePositives() {
 	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:44444444-4444-4444-4444-444444444444 FindingID:4 Comment:}] ProjectData:[]}
 }
 
-func Example_defineFalsePositivesEmptyInputList() {
+func Example_defineFalsePositivesJobDataEmptyInputList() {
 	// An empty input list will remove all defined false-positives
 
 	/* prepare */
@@ -97,7 +97,7 @@ func Example_defineFalsePositivesEmptyInputList() {
 	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:11111111-1111-1111-1111-111111111111 FindingID:1 Comment:} {JobUUID:22222222-2222-2222-2222-222222222222 FindingID:2 Comment:}] ProjectData:[]}
 }
 
-func Example_defineFalsePositivesEmptyServerList() {
+func Example_defineFalsePositivesJobDataEmptyServerList() {
 	// An empty server list will simply add all defined false-positives
 
 	/* prepare */
@@ -118,6 +118,120 @@ func Example_defineFalsePositivesEmptyServerList() {
 
 	// Output:
 	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[{JobUUID:11111111-1111-1111-1111-111111111111 FindingID:1 Comment:test1} {JobUUID:22222222-2222-2222-2222-222222222222 FindingID:2 Comment:test2}] ProjectData:[]}
+	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[]}
+}
+
+func Example_defineFalsePositivesProjectData() {
+	/* prepare */
+	definedFalsePositives := []FalsePositivesProjectData{
+		{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "PUT"}}},
+		{ID: "test2", Comment: "test2", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}},
+		{ID: "test3", Comment: "test3", WebScan: FalsePositivesProjectDataForWebScan{CweID: 3, UrlPattern: "https://example3/*"}},
+		{ID: "test5", Comment: "test5", WebScan: FalsePositivesProjectDataForWebScan{CweID: 5, UrlPattern: "https://example5/*"}},
+	}
+	falsePositivesDefinitionList := FalsePositivesConfig{APIVersion: CurrentAPIVersion, Type: falsePositivesListType, ProjectData: definedFalsePositives}
+
+	falsePositivesServerList := []FalsePositiveDefinition{
+		{ProjectData: FalsePositivesProjectData{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "POST"}}}},
+		{ProjectData: FalsePositivesProjectData{ID: "test2", Comment: "test2 old", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}}},
+		{ProjectData: FalsePositivesProjectData{ID: "test4", Comment: "test4", WebScan: FalsePositivesProjectDataForWebScan{CweID: 4, UrlPattern: "https://example4/*"}}},
+	}
+
+	/* execute */
+	falsePositivesToAdd, falsePositivesToRemove := defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+
+	/* test */
+	fmt.Printf("Add: %+v\n", falsePositivesToAdd)
+	fmt.Printf("Remove: %+v\n", falsePositivesToRemove)
+
+	// Output:
+	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[{ID:test1 Comment:test1 WebScan:{CweID:1 UrlPattern:https://example1/* Methods:[GET PUT]}} {ID:test2 Comment:test2 WebScan:{CweID:2 UrlPattern:https://example2/* Methods:[]}} {ID:test3 Comment:test3 WebScan:{CweID:3 UrlPattern:https://example3/* Methods:[]}} {ID:test5 Comment:test5 WebScan:{CweID:5 UrlPattern:https://example5/* Methods:[]}}]}
+	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[{ID:test4 Comment:test4 WebScan:{CweID:4 UrlPattern:https://example4/* Methods:[]}}]}
+}
+
+func Example_defineFalsePositivesProjectDataEmptyInputList() {
+	// An empty input list will remove all defined false-positives
+
+	/* prepare */
+	definedFalsePositives := []FalsePositivesProjectData{}
+	falsePositivesDefinitionList := FalsePositivesConfig{APIVersion: CurrentAPIVersion, Type: falsePositivesListType, ProjectData: definedFalsePositives}
+
+	falsePositivesServerList := []FalsePositiveDefinition{
+		{ProjectData: FalsePositivesProjectData{ID: "test1"}},
+		{ProjectData: FalsePositivesProjectData{ID: "test2"}},
+	}
+
+	/* execute */
+	falsePositivesToAdd, falsePositivesToRemove := defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+
+	/* test */
+	fmt.Printf("Add: %+v\n", falsePositivesToAdd)
+	fmt.Printf("Remove: %+v\n", falsePositivesToRemove)
+
+	// Output:
+	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[]}
+	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[{ID:test1 Comment: WebScan:{CweID:0 UrlPattern: Methods:[]}} {ID:test2 Comment: WebScan:{CweID:0 UrlPattern: Methods:[]}}]}
+}
+
+func Example_defineFalsePositivesProjectDataEmptyServerList() {
+	// An empty server list will simply add all defined false-positives
+
+	/* prepare */
+	definedFalsePositives := []FalsePositivesProjectData{
+		{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "PUT"}}},
+		{ID: "test2", Comment: "test2", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}},
+	}
+	falsePositivesDefinitionList := FalsePositivesConfig{APIVersion: CurrentAPIVersion, Type: falsePositivesListType, ProjectData: definedFalsePositives}
+
+	falsePositivesServerList := []FalsePositiveDefinition{}
+
+	/* execute */
+	falsePositivesToAdd, falsePositivesToRemove := defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+
+	/* test */
+	fmt.Printf("Add: %+v\n", falsePositivesToAdd)
+	fmt.Printf("Remove: %+v\n", falsePositivesToRemove)
+
+	// Output:
+	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[{ID:test1 Comment:test1 WebScan:{CweID:1 UrlPattern:https://example1/* Methods:[GET PUT]}} {ID:test2 Comment:test2 WebScan:{CweID:2 UrlPattern:https://example2/* Methods:[]}}]}
+	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[]}
+}
+
+func Example_defineFalsePositivesWhenIdenticalToServerList() {
+	// When both lists are identical then no changes shall be made
+
+	/* prepare */
+	definedFalsePositivesJobData := []FalsePositivesJobData{
+		{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1},
+		{JobUUID: "22222222-2222-2222-2222-222222222222", FindingID: 2},
+	}
+	definedFalsePositivesProjectData := []FalsePositivesProjectData{
+		{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "PUT"}}},
+		{ID: "test2", Comment: "test2", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}},
+	}
+	falsePositivesDefinitionList := FalsePositivesConfig{
+		APIVersion: CurrentAPIVersion,
+		Type: falsePositivesListType,
+		JobData: definedFalsePositivesJobData,
+		ProjectData: definedFalsePositivesProjectData,
+	}
+
+	falsePositivesServerList := []FalsePositiveDefinition{
+		{JobData: FalsePositivesJobData{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1, Comment: "test1"}},
+		{JobData: FalsePositivesJobData{JobUUID: "22222222-2222-2222-2222-222222222222", FindingID: 2, Comment: "test2"}},
+		{ProjectData: FalsePositivesProjectData{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "PUT"}}}},
+		{ProjectData: FalsePositivesProjectData{ID: "test2", Comment: "test2", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}}},
+	}
+
+	/* execute */
+	falsePositivesToAdd, falsePositivesToRemove := defineFalsePositives(falsePositivesDefinitionList, falsePositivesServerList)
+
+	/* test */
+	fmt.Printf("Add: %+v\n", falsePositivesToAdd)
+	fmt.Printf("Remove: %+v\n", falsePositivesToRemove)
+
+	// Output:
+	// Add: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[]}
 	// Remove: {APIVersion:1.0 Type:falsePositiveJobDataList JobData:[] ProjectData:[]}
 }
 
