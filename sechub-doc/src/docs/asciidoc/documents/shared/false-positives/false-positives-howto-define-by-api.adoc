@@ -58,7 +58,7 @@ Asterisks can be used as wildcards e.g. if you have different environments like 
 
 
 Important information on the wildcard approach in `projectData`, regarding web scans: +
-- To be a false positive a finding must match the `cweId` and the `urlPattern` +
+- To be marked as a false positive a finding must match the given `cweId` and the `urlPattern` +
 - Wildcards (`pass:[*]`) can be used inside `urlPattern`. +
 - Wildcards match anything until the next NON-wildcard character. +
 - Multiple wildcards can be used in one `urlPattern`. +
