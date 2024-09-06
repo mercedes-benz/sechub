@@ -511,7 +511,7 @@ public class SystemTestRuntimeTestEngine {
      * @author Albert Tregnaghi
      *
      */
-    static class CannotProvideDebugInformationException extends Exception {
+    private static class CannotProvideDebugInformationException extends Exception {
 
         private static final long serialVersionUID = 1L;
 

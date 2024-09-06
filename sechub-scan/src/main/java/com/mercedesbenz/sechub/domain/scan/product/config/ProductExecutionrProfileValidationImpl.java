@@ -48,7 +48,7 @@ public class ProductExecutionrProfileValidationImpl extends AbstractValidation<P
         /* check we got at last a UUID inside each configuration */
         for (ProductExecutorConfig config : profile.getConfigurations()) {
             if (config.getUUID() == null) {
-                context.addError("config.uuid", " One configuration does not have UUID key set!");
+                context.addError("config.uuid", "One configuration does not have UUID key set!");
                 break;
             }
         }

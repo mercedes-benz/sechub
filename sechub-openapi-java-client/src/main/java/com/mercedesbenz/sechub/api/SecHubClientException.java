@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api;
 
-public class
-SecHubClientException extends Exception {
+public class SecHubClientException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
