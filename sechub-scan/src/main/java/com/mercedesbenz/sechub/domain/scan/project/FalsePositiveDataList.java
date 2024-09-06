@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
 
@@ -66,6 +67,16 @@ public class FalsePositiveDataList implements JSONable<FalsePositiveDataList> {
 
     public static FalsePositiveDataList fromString(String json) {
         return CONVERTER.fromJSON(json);
+    }
+
+    @JsonSetter
+    public void setJobData(List<FalsePositiveJobData> jobData) {
+        this.jobData = (jobData != null) ? jobData : new ArrayList<>();
+    }
+
+    @JsonSetter
+    public void setProjectData(List<FalsePositiveProjectData> projectData) {
+        this.projectData = (projectData != null) ? projectData : new ArrayList<>();
     }
 
 }

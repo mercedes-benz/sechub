@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
@@ -18,18 +16,16 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 @Component
 public class SerecoProjectDataWebScanFalsePositiveSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoProjectDataWebScanFalsePositiveSupport.class);
-
     public boolean areBothHavingSameCweIdOrBothNoCweId(WebscanFalsePositiveProjectData webScanData, SerecoVulnerability vulnerability) {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(webScanData, " webscanProjectData may not be null");
 
-        Integer cweIdOrNull = webScanData.getCweId();
+        int cweId = webScanData.getCweId();
 
         SerecoClassification serecoClassification = vulnerability.getClassification();
         String serecoCWE = serecoClassification.getCwe();
         if (serecoCWE == null || serecoCWE.isEmpty()) {
-            if (cweIdOrNull == null) {
+            if (cweId == 0) {
                 /*
                  * when not set in meta data and also not in vulnerability, than we assume it is
                  * the same
@@ -38,32 +34,17 @@ public class SerecoProjectDataWebScanFalsePositiveSupport {
             }
             return false;
         }
-        if (cweIdOrNull == null) {
-            return false;
-        }
-        try {
-            int serecoCWEint = Integer.parseInt(serecoCWE);
-            if (cweIdOrNull.intValue() != serecoCWEint) {
-                /* not same type of common vulnerability enumeration - so skip */
-                return false;
-            }
-
-        } catch (NumberFormatException e) {
-            LOG.error("Sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
-            return false;
-
-        }
-        return true;
+        String cweIdAsString = String.valueOf(cweId);
+        return cweIdAsString.equals(serecoCWE);
     }
 
     /**
-     * Iterates the given list of hostPatterns and uses each string value as key to
-     * get the corresponding compiled pattern from the given map. Then tries to
-     * match the given host against each pattern of the projectDataPatternMap.
+     * Then tries to match the given targetUrl against each pattern of the
+     * projectDataPatternMap.
      *
      * @param targetUrl
      * @param projectDataPatternMap
-     * @return <code>true</code> if the given host matches any of the given patterns
+     * @return <code>true</code> if the given URL matches any of the given patterns
      */
     public boolean isMatchingUrlPattern(String targetUrl, Map<String, Pattern> projectDataPatternMap) {
         notNull(targetUrl, " host may not be null");

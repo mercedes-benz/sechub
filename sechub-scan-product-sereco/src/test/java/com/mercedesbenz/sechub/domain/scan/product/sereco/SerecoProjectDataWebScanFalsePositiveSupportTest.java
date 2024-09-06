@@ -22,9 +22,9 @@ import org.mockito.Mockito;
 import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
-class SerecoWebScanFalsePositiveProjectDataSupportTest {
+class SerecoProjectDataWebScanFalsePositiveSupportTest {
 
-    private static String matchingUrl = "https://prod.example.com/rest/profile/search";
+    private static final String MATCHING_URL = "https://prod.example.com/rest/profile/search";
 
     private static final Pattern MOCKED_PATTERN = mock();
     private static final Matcher MOCKED_MATCHER = mock();
@@ -41,13 +41,11 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         patternMap = new HashMap<>();
         patternMap.put("id", MOCKED_PATTERN);
 
-        when(MOCKED_PATTERN.matcher(matchingUrl)).thenReturn(MOCKED_MATCHER);
+        when(MOCKED_PATTERN.matcher(MATCHING_URL)).thenReturn(MOCKED_MATCHER);
     }
 
     /*-------------------------------------CWE-IDs----------------------------------------------*/
     @ParameterizedTest
-    @EmptySource
-    @NullSource
     @ValueSource(strings = { "1", "-1", "0", "4711" })
     void both_having_the_same_cwe_id_returns_true(String cweId) {
         /* prepare */
@@ -64,8 +62,6 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     }
 
     @ParameterizedTest
-    @EmptySource
-    @NullSource
     @ValueSource(strings = { "1", "-1", "0", "4711" })
     void cwe_id_of_webscan_data_is_one_more_returns_false(String cweId) {
         /* prepare */
@@ -83,9 +79,8 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(ints = { 1, -1, 0, 4711 })
-    void cwe_id_of_vulnerability_is_one_more_returns_false(Integer cweId) {
+    void cwe_id_of_vulnerability_is_one_more_returns_false(int cweId) {
         /* prepare */
         WebscanFalsePositiveProjectData webScanData = new WebscanFalsePositiveProjectData();
         webScanData.setCweId(cweId);
@@ -98,6 +93,24 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
 
         /* test */
         assertFalse(areBothHavingSameCweIdOrBothNoCweId);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    void cwe_id_of_projectData_is_zero_and_cwe_of_sereco_vulnerability_is_unset_returns_true(String serecoCweId) {
+        /* prepare */
+        WebscanFalsePositiveProjectData webScanData = new WebscanFalsePositiveProjectData();
+        webScanData.setCweId(0);
+
+        SerecoVulnerability vulnerability = new SerecoVulnerability();
+        vulnerability.getClassification().setCwe(serecoCweId);
+
+        /* execute */
+        boolean areBothHavingSameCweIdOrBothNoCweId = supportToTest.areBothHavingSameCweIdOrBothNoCweId(webScanData, vulnerability);
+
+        /* test */
+        assertTrue(areBothHavingSameCweIdOrBothNoCweId);
     }
 
     /*-----------------------------------------------METHODS-----------------------------------------------*/
@@ -152,7 +165,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         when(MOCKED_MATCHER.matches()).thenReturn(false);
 
         /* execute */
-       boolean result = supportToTest.isMatchingUrlPattern(matchingUrl, patternMap);
+       boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
 
        /* test */
        assertFalse(result);
@@ -164,7 +177,7 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
         when(MOCKED_MATCHER.matches()).thenReturn(true);
 
         /* execute */
-       boolean result = supportToTest.isMatchingUrlPattern(matchingUrl, patternMap);
+       boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
 
        /* test */
        assertTrue(result);
@@ -172,29 +185,22 @@ class SerecoWebScanFalsePositiveProjectDataSupportTest {
 
     /*-------------------------------------HELPERS----------------------------------------------*/
 
-    private Integer createIntegerFromString(String cweId) {
+    private int createIntegerFromString(String cweId) {
         if (cweId == null) {
-            return null;
+            return 0;
         }
         if (cweId.isEmpty()) {
-            return null;
+            return 0;
         }
         return Integer.parseInt(cweId);
     }
 
-    private String createIntAsStringButPlusOne(Integer cweId) {
-        if (cweId == null) {
-            return "1";
-        }
-        int next = cweId.intValue() + 1;
-        return String.valueOf(next);
+    private String createIntAsStringButPlusOne(int cweId) {
+        return String.valueOf(cweId + 1);
     }
 
-    private Integer createAsIntButPlusOne(String cweId) {
-        Integer intvalue = createIntegerFromString(cweId);
-        if (intvalue == null) {
-            return 1;
-        }
+    private int createAsIntButPlusOne(String cweId) {
+        int intvalue = createIntegerFromString(cweId);
         return intvalue + 1;
     }
 
