@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
@@ -466,7 +467,7 @@ func interactiveUnmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
 
-	if len(FalsePositivesList.JobData) == 0 {
+	if len(FalsePositivesList.JobData) == 0 && len(FalsePositivesList.ProjectData) == 0 {
 		sechubUtil.Log("No false positives to unmark.", context.config.quiet)
 		return
 	}
@@ -489,8 +490,6 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 	sechubUtil.HandleError(err, ExitCodeFailed)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Read from Server:\n%+v", list))
 
-	// ToDo: sort report by severity,finding id
-
 	// iterate over entries and ask which to unmark
 	var ExpectedInputs = []sechubUtil.ConsoleInputItem{
 		{Input: "y", ShortDescription: "Yes"},
@@ -505,8 +504,16 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 		sechubUtil.HandleError(err, ExitCodeFailed)
 		if input == "y" {
 			// append finding to list
-			var listEntry = FalsePositivesJobData{falsepositive.JobData.JobUUID, falsepositive.JobData.FindingID, ""}
-			result.JobData = append(result.JobData, listEntry)
+			if falsepositive.JobData.JobUUID != "" {
+				var listEntry = FalsePositivesJobData{ JobUUID: falsepositive.JobData.JobUUID, FindingID: falsepositive.JobData.FindingID }
+				result.JobData = append(result.JobData, listEntry)
+			}
+
+			if falsepositive.ProjectData.ID != "" {
+				var listEntry = FalsePositivesProjectData{ ID: falsepositive.ProjectData.ID }
+				result.ProjectData = append(result.ProjectData, listEntry)
+			}
+
 		} else if input == "c" {
 			os.Exit(ExitCodeOK)
 		} else if input == "s" {
@@ -518,21 +525,47 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 }
 
 func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
-	// Example output:
-	// ------------------------------------------------------------------
-	// Creation of Temp File in Dir with Incorrect Permissions, codeScan severity: LOW
-	//   Origin: Finding ID 3 in job f94d815c-7f69-48c3-8433-8f03d52ce32a
-	//   File: java/com/mercedes-benz/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java
-	//   Code:                 File secHubServer = new File("./sechub-server");
-	// (Added by admin at 2020-07-10 13:41:06; comment: "Only temporary directory")
-	// ------------------------------------------------------------------
 	sechubUtil.PrintDashedLine()
-	fmt.Printf("%s, %s severity: %s\n", falsepositive.MetaData.Name, falsepositive.MetaData.ScanType, falsepositive.MetaData.Severity)
-	fmt.Printf("  Origin: Finding ID %d in job %s\n", falsepositive.JobData.FindingID, falsepositive.JobData.JobUUID)
-	// would be cool to have line and column in source code location
-	fmt.Printf("  File: %s\n", falsepositive.MetaData.Code.Start.Location)
-	fmt.Printf("  Code: %s\n", falsepositive.MetaData.Code.Start.SourceCode)
-	fmt.Printf("(Added by %s at %s; comment: %q)\n", falsepositive.Author, falsepositive.Created, falsepositive.JobData.Comment)
-	// added by name at date
+
+	// Is of type JobData?
+	if falsepositive.JobData.JobUUID != "" {
+		// Example output:
+		// ------------------------------------------------------------------
+		// Creation of Temp File in Dir with Incorrect Permissions, codeScan severity: LOW
+		//   Origin: Finding ID 3 in job f94d815c-7f69-48c3-8433-8f03d52ce32a
+		//   File: java/com/mercedes-benz/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java
+		//   Code:                 File secHubServer = new File("./sechub-server");
+		// (Added by admin at 2024-07-10 13:41:06; comment: "Only temporary directory")
+		// ------------------------------------------------------------------
+		fmt.Printf("%s, %s severity: %s\n", falsepositive.MetaData.Name, falsepositive.MetaData.ScanType, falsepositive.MetaData.Severity)
+		fmt.Printf("  Origin: Finding ID %d in job %s\n", falsepositive.JobData.FindingID, falsepositive.JobData.JobUUID)
+		// would be cool to have line and column in source code location
+		if falsepositive.MetaData.Code.Start.Location != "" {
+			fmt.Printf("  File: %s\n", falsepositive.MetaData.Code.Start.Location)
+			fmt.Printf("  Code: %s\n", falsepositive.MetaData.Code.Start.SourceCode)
+		}
+		fmt.Printf("(Added by %s at %s; comment: %q)\n", falsepositive.Author, falsepositive.Created, falsepositive.JobData.Comment)
+	}
+
+	// Is of type ProjectData?
+	if falsepositive.ProjectData.ID != "" {
+		// Example output:
+		// ------------------------------------------------------------------
+		// 	Project's false-positive-ID: "my-fp-definition1" (logout url)
+		// 	  urlPattern: https://myapp-*.example.com:80*/logout?*
+		// 	  CWE-ID: 89, Methods: GET, PUT, POST
+		// (Added by admin at 2024-09-06 08:01:03)
+		// ------------------------------------------------------------------
+		fmt.Printf("Project's false-positive-ID: %q (%s)\n", falsepositive.ProjectData.ID, falsepositive.ProjectData.Comment)
+		if falsepositive.ProjectData.WebScan.UrlPattern != "" {
+			fmt.Printf("  urlPattern: %s\n", falsepositive.ProjectData.WebScan.UrlPattern)
+			fmt.Printf("  CWE-ID: %d", falsepositive.ProjectData.WebScan.CweID)
+			if len (falsepositive.ProjectData.WebScan.Methods) > 0 {
+				fmt.Printf(", Methods: %s", strings.Join(falsepositive.ProjectData.WebScan.Methods, ", "))
+			}
+		}
+		fmt.Printf("\n(Added by %s at %s)\n", falsepositive.Author, falsepositive.Created)
+	}
+
 	sechubUtil.PrintDashedLine()
 }

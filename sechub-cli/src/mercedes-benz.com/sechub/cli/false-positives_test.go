@@ -217,8 +217,8 @@ func Example_defineFalsePositivesWhenIdenticalToServerList() {
 	}
 
 	falsePositivesServerList := []FalsePositiveDefinition{
-		{JobData: FalsePositivesJobData{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1, Comment: "test1"}},
-		{JobData: FalsePositivesJobData{JobUUID: "22222222-2222-2222-2222-222222222222", FindingID: 2, Comment: "test2"}},
+		{JobData: FalsePositivesJobData{JobUUID: "11111111-1111-1111-1111-111111111111", FindingID: 1}},
+		{JobData: FalsePositivesJobData{JobUUID: "22222222-2222-2222-2222-222222222222", FindingID: 2}},
 		{ProjectData: FalsePositivesProjectData{ID: "test1", Comment: "test1", WebScan: FalsePositivesProjectDataForWebScan{CweID: 1, UrlPattern: "https://example1/*", Methods: []string{"GET", "PUT"}}}},
 		{ProjectData: FalsePositivesProjectData{ID: "test2", Comment: "test2", WebScan: FalsePositivesProjectDataForWebScan{CweID: 2, UrlPattern: "https://example2/*"}}},
 	}
