@@ -243,8 +243,7 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 	for _, falsePositiveToBeRemoved := range currentFalsePositives {
 		if falsePositiveToBeRemoved.JobData.JobUUID != "" {
 			falsePositivesToRemove.JobData = append(falsePositivesToRemove.JobData, falsePositiveToBeRemoved.JobData)
-		}
-		if falsePositiveToBeRemoved.ProjectData.ID != "" {
+		} else if falsePositiveToBeRemoved.ProjectData.ID != "" {
 			falsePositivesToRemove.ProjectData = append(falsePositivesToRemove.ProjectData, falsePositiveToBeRemoved.ProjectData)
 		}
 	}
