@@ -250,10 +250,9 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
-Read your report carefully and figure out which of the findings are "false positives" (FP).
-After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
-You should add an optional comment, describing your decision to mark this as FP.
-Select this file by the `-file` argument and start action `markFalsePositives`.
+Read your report carefully and decide which of the findings you consider as "false positives" (FP).
+
+Create a json file as described below and start action `markFalsePositives`.
 
 **Minimum call syntax**
 ----
