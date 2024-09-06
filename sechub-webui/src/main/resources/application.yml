@@ -10,6 +10,8 @@ server:
     enabled-protocols: TLSv1.2,TLSv1.3
 
 spring:
+  config:
+    import: optional:classpath:application-local.yaml
   messages:
     basename: "i18n/messages"
   profiles:
@@ -18,3 +20,21 @@ spring:
       webui_dev: "webui_localserver,webui_mocked"
       webui_test: "webui_test"
       webui_integrationtest: "webui_localserver,webui_integrationtest-data"
+  security:
+    oauth2:
+      client:
+        registration:
+          oidc-client:
+            client-id: 32fb770c-cf4d-4671-812c-1806449af091
+            client-secret: aebeccde-9e56-4f1f-9c64-c7da409c6cc5
+            provider: https://sso-int.mercedes-benz.com
+            authorization-grant-type: authorization_code
+            scope: openid
+            redirect-uri: https://sechub.detss.corpintra.net/internal/login
+        provider:
+          oidc-provider:
+            authorization-uri: https://sso-int.mercedes-benz.com/as/authorization.oauth2
+            token-uri: https://sso-int.mercedes-benz.com/as/token.oauth2
+            user-info-uri: https://sso-int.mercedes-benz.com/idp/userinfo.openid
+            jwk-set-uri: https://sso-int.mercedes-benz.com/pf/JWKS
+            user-name-attribute: sub

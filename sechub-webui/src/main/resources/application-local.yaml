@@ -1,0 +1,8 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          oidc-client:
+            client-id: your-client-id
+            client-secret: your-client-secret

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
+import com.mercedesbenz.sechub.webui.RequestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,29 +17,28 @@ import com.mercedesbenz.sechub.webui.page.user.UserDetailInformationService;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
-    @Autowired
+	private static final String[] PERMITTED_PATHS = {
+			"/css/**",
+			"/js/**",
+			"/images/**"
+	};
+
+	@Autowired
     UserDetailInformationService userDetailInformationService;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
 
-        /* @formatter:off */
-    	httpSecurity.
-	        authorizeExchange(exchanges -> exchanges.
-	                pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
-	                pathMatchers("/login").permitAll().
-	                anyExchange().authenticated()
-	        ).
-	        formLogin(formLogin -> formLogin.
-	                loginPage("/login")
-	        ).
-			logout(logout -> logout.
-					logoutUrl("/logout").
-					requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
-			).
-			csrf((csrf) -> csrf.disable() // CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
-        );
-    	/* @formatter:on */
+    	httpSecurity
+				.authorizeExchange(exchanges -> exchanges
+						.pathMatchers(PERMITTED_PATHS).permitAll()
+						.pathMatchers(RequestConstants.LOGIN)
+						.permitAll()
+						.anyExchange()
+						.authenticated())
+				// CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
+				.csrf(ServerHttpSecurity.CsrfSpec::disable);
+
         return httpSecurity.build();
     }
 
