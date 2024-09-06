@@ -40,10 +40,10 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             return;
         }
 
-        // Make sure that existing projects are removed
+        /* Make sure that existing projects are removed */
         deleteExistingProjects(context);
 
-        // Make sure that existing profiles are removed
+        /* Make sure that existing profiles are removed */
         try {
             deleteExistingProfiles(context);
         } catch (ApiException e) {

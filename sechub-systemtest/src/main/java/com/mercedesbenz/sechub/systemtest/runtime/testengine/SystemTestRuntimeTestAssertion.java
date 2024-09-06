@@ -53,7 +53,7 @@ public class SystemTestRuntimeTestAssertion {
 
         if (sechubResultAssert.getHasTrafficLight().isPresent()) {
             TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
-            TrafficLight actual = TrafficLight.fromValue(report.getTrafficLight());
+            TrafficLight actual = report.getTrafficLight();
             if (!expected.equals(actual)) {
                 testContext.markAsFailed(
                         "SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight(),

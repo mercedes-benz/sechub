@@ -31,18 +31,15 @@ import com.mercedesbenz.sechub.systemtest.runtime.error.SystemTestScriptExecutio
  */
 public class SystemTestRuntimeProductLauncher {
 
-    private static final AtomicInteger parallelStepExecutionCounter = new AtomicInteger();
-
-    private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
-    private int maximumSecondsToWaitForSecHubAlive = 120;
-    private int maximumSecondsToWaitForPDSSolutionAlive = 120;
-
     private static final Logger LOG = LoggerFactory.getLogger(SystemTestRuntimeProductLauncher.class);
-
+    private static final AtomicInteger parallelStepExecutionCounter = new AtomicInteger();
+    private static final long ONE_SECOND_IN_MILLISECONDS = 1000L;
+    private static final long MAXIMUM_SECONDS_TO_WAIT_FOR_SEC_HUB_ALIVE = 120L;
+    private static final long MAXIMUM_SECONDS_TO_WAIT_FOR_PDS_SOLUTION_ALIVE = 120L;
     private static final int MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS = 60;
-    private static final int MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK = 1000;
+    private static final long MILLISECONDS_TO_WAIT_FOR_NEXT_ADMIN_AVAILABLE_CHECK = 1000L;
 
-    private ExecutionSupport execSupport;
+    private final ExecutionSupport execSupport;
 
     public SystemTestRuntimeProductLauncher(ExecutionSupport executionSupport) {
         this.execSupport = executionSupport;
@@ -179,11 +176,11 @@ public class SystemTestRuntimeProductLauncher {
         }
         try {
             long start = System.currentTimeMillis();
-            LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds (max).", client.getServerUri(), maximumSecondsToWaitForSecHubAlive);
+            LOG.info("Wait until SecHub server at {} is alive - will wait {} seconds (max).", client.getServerUri(), MAXIMUM_SECONDS_TO_WAIT_FOR_SEC_HUB_ALIVE);
             while (!client.isServerAlive()) {
                 Thread.sleep(MILLISECONDS_TO_WAIT_FOR_NEXT_ALIVE_CHECK());
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > maximumSecondsToWaitForSecHubAlive * ONE_SECOND_IN_MILLISECONDS;
+                boolean timedOut = millisecondsWaited > MAXIMUM_SECONDS_TO_WAIT_FOR_SEC_HUB_ALIVE * ONE_SECOND_IN_MILLISECONDS;
                 if (timedOut) {
                     throw new IllegalStateException(
                             "Check for SecHub server alive timed out after " + (millisecondsWaited / ONE_SECOND_IN_MILLISECONDS) + " seconds.");
@@ -266,11 +263,11 @@ public class SystemTestRuntimeProductLauncher {
         try {
             long start = System.currentTimeMillis();
             LOG.info("Wait until PDS solution '" + pdsSolutionName + "' at {} is alive - will wait {} seconds (max).", client.getServerUri(),
-                    maximumSecondsToWaitForPDSSolutionAlive);
+                    MAXIMUM_SECONDS_TO_WAIT_FOR_PDS_SOLUTION_ALIVE);
             while (!client.checkIsServerAlive()) {
                 Thread.sleep(1000);
                 long millisecondsWaited = System.currentTimeMillis() - start;
-                boolean timedOut = millisecondsWaited > (long) maximumSecondsToWaitForPDSSolutionAlive * ONE_SECOND_IN_MILLISECONDS;
+                boolean timedOut = millisecondsWaited > MAXIMUM_SECONDS_TO_WAIT_FOR_PDS_SOLUTION_ALIVE * ONE_SECOND_IN_MILLISECONDS;
                 if (timedOut) {
                     throw new IllegalStateException("Check alive for PDS solution '" + pdsSolutionName + "' timed out after "
                             + (millisecondsWaited / ONE_SECOND_IN_MILLISECONDS) + " seconds.");

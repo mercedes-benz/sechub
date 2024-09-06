@@ -68,7 +68,7 @@ class SystemTestRuntimeTestEngineTest {
         status.setResult(ScheduleJobStatusResult.OK);
         when(secHubExecutionApi.userCheckJobStatus(any(), any())).thenReturn(status);
         ScanSecHubReport report = new ScanSecHubReport();
-        report.setTrafficLight(EXPECTED_TRAFFIC_LIGHT_YELLOW.getValue());
+        report.setTrafficLight(EXPECTED_TRAFFIC_LIGHT_YELLOW);
 
         when(secHubExecutionApi.userDownloadJobReport(any(), any())).thenReturn(report);
 
@@ -93,7 +93,7 @@ class SystemTestRuntimeTestEngineTest {
         status.setResult(ScheduleJobStatusResult.OK);
         when(secHubExecutionApi.userCheckJobStatus(any(), any())).thenReturn(status);
         ScanSecHubReport report = new ScanSecHubReport();
-        report.setTrafficLight(TrafficLight.RED.getValue());
+        report.setTrafficLight(TrafficLight.RED);
 
         when(secHubExecutionApi.userDownloadJobReport(any(), any())).thenReturn(report);
 

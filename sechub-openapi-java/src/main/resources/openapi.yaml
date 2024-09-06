@@ -1109,7 +1109,7 @@ components:
         status:
           $ref: '#/components/schemas/SecHubStatus'
         trafficLight:
-          type: string
+          $ref: '#/components/schemas/TrafficLight'
         result:
           $ref: '#/components/schemas/SecHubResult'
         jobUUID:

@@ -9,7 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.*;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.systemtest.runtime.testengine.TestTemplateSupport;
 
 public class SystemTestConfigurationBuilder {
