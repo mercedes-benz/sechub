@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 [[section-false-positives-define-by-API]]
-Defining false positives is done by declaring false positive information in a `JSON` file - either
+Defining false positives is done by declaring false positive information in a `JSON` file
 
-- by referencing *<<section-false-positives-defined-via-jobData,job results>>* from former {sechub} job UUID and the corresponding finding entry (by id) or
+- by referencing *<<section-false-positives-defined-via-jobData,job results>>* from former {sechub} job UUID and the corresponding finding entry (by id) and/or
 - by specifying a *<<section-false-positives-defined-via-projectData,project data>>* section where specific patterns that match false positive findings are declared
 
 and post it to the SecHub server REST API. 
