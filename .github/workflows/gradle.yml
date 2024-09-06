@@ -4,16 +4,20 @@ name: Java & Go CI
 on:
   push:
     branches:
-      - 'main'
-      - 'develop'
+      - main
+      - master
+      - develop
+      - hotfix
     # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
   pull_request:
-    # This workflow will run for all pull requests that target 'main' or 'develop'
+    # This workflow will run for all pull requests that target following branches
     branches:
-      - 'main'
-      - 'develop'
+      - main
+      - master
+      - develop
+      - hotfix
     tags-ignore:
       - v*
 
