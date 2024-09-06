@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.6.1 modified (commit 1a88b65)</span>
+<span id="revnumber"> Client 1.7.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -772,7 +772,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.6.1 modified (commit 1a88b65) - Build date: 20240823095620</code></p>
+<p>Documentation version: <code>Client 1.7.0 - Build date: 20240906151452</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1326,7 +1326,7 @@ You can download and view your current false positives list with <a href="#getfa
 Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
 </div>
 <div class="paragraph">
-<p>SecHub client will download the current false posisitves list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
+<p>SecHub client will download the current false positives list and interactively ask each entry: <code>"Do you want to remove this false positive?"</code>
 Your choices are:</p>
 </div>
 <div class="ulist">
@@ -1352,10 +1352,10 @@ Your choices are:</p>
 <div class="sect4">
 <h5 id="section-client-false-positives-mark">2.4.3.10. markFalsePositives</h5>
 <div class="paragraph">
-<p>Read your report carefully and figure out which of the findings are "false positives" (FP).
-After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
-You should add an optional comment, describing your decision to mark this as FP.
-Select this file by the <code>-file</code> argument and start action <code>markFalsePositives</code>.</p>
+<p>Read your report carefully and decide which of the findings you consider as "false positives" (FP).</p>
+</div>
+<div class="paragraph">
+<p>Create a json file as described below and start action <code>markFalsePositives</code>.</p>
 </div>
 <div class="paragraph">
 <p><strong>Minimum call syntax</strong></p>
@@ -1365,38 +1365,72 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 <pre>sechub -file ${json-file} markFalsePositives</pre>
 </div>
 </div>
+<div id="section-false-positives-define-by-API" class="paragraph">
+<p>Defining false positives is done by declaring false positive information in a <code>JSON</code> file</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>by referencing <strong><a href="#section-false-positives-defined-via-jobData">job results</a></strong> from former SecHub job UUID and the corresponding finding entry (by id) and/or</p>
+</li>
+<li>
+<p>by specifying a <strong><a href="#section-false-positives-defined-via-projectData">project data</a></strong> section where specific patterns that match false positive findings are declared</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p><strong>Example JSON:</strong></p>
+<p>and post it to the SecHub server REST API.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>jobData</code> approach is very generic and easy to use: It references a SecHub report. Every false-positive in any kind of scan can be handled like that.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>projectData</code> approach is more powerful for the user because wildcards can be used.</p>
+</div>
+<div class="paragraph">
+<p>Each entry can be updated or removed by the given <code>id</code>.<br>
+Declaring a projectData entry with an already existing <code>id</code>, will update its content with the new data.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="section-false-positives-defined-via-jobData" class="paragraph">
+<p><strong>Example JSON using job results</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="3"></i><b>(3)</b>
     {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="4"></i><b>(4)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal, can be ignored because not in deployment</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Can be ignored because not in deployment</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="6"></i><b>(6)</b>
     },
     {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
       <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
     }
-  ],
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">projectData</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="6"></i><b>(6)</b>
-  {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">unique-id</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">It was verified that there is no SQL-injection vulnerability at this location</span><span class="delimiter">&quot;</span></span>,
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="8"></i><b>(8)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>: <span class="integer">89</span>, <i class="conum" data-value="9"></i><b>(9)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">hostPatterns</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.*.1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">api.example.com</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dev.*.example.com</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="10"></i><b>(10)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">urlPathPatterns</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/products/search*</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/users/profile</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="11"></i><b>(11)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">protocols</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">HTTPS</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">WSS</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="12"></i><b>(12)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">methods</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">DELETE</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="13"></i><b>(13)</b>
-          <span class="key"><span class="delimiter">&quot;</span><span class="content">ports</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">8080</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">443</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="14"></i><b>(14)</b>
-      }
-  }
   ]
 }</code></pre>
 </div>
@@ -1405,25 +1439,101 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>api version</td>
+<td><code>apiVersion</code> <em>(mandatory)</em> - API version</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>type - must be <code>falsePositiveJobDataList</code></td>
+<td><code>type</code> <em>(mandatory)</em> - must be <code>falsePositiveDataList</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>job-UUID of the report where the finding was</td>
+<td><code>jobData</code> - List of job data that is used to mark a single finding as a false positive</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>finding ID of finding in the report, which shall be marked as false positive</td>
+<td>jobData.<code>jobUUID</code> <em>(mandatory)</em> SecHub Job-UUID of the report where the finding was</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Comment (optional) describing the reason why this is a false positive</td>
+<td>jobData.<code>findingId</code> <em>(mandatory)</em> Finding ID which shall be marked as false positive</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>jobData.<code>comment</code> <em>(optional)</em> A comment describing the reason why this is a false positive</td>
 </tr>
 </table>
+</div>
+<div id="section-false-positives-defined-via-projectData" class="paragraph">
+<p><strong>Example JSON using project data</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">projectData</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="3"></i><b>(3)</b>
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">unique-id</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">It was verified that there is no SQL-injection</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="5"></i><b>(5)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">cweId</span><span class="delimiter">&quot;</span></span>: <span class="integer">89</span>, <i class="conum" data-value="6"></i><b>(6)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">urlPattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://*.example.com/rest/products/search?*</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">methods</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">DELETE</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="8"></i><b>(8)</b>
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>apiVersion</code> <em>(mandatory)</em> - API version</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>type</code> <em>(mandatory)</em> - must be <code>falsePositiveDataList</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>projectData</code> - List that can be used to mark more than a single finding as a false positive. Currently only available for web scans.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>projectData.<code>id</code> that identifies this entry. If the same <code>id</code> is used again,
+the existing false positive entry will be overwritten. The <code>id</code> is also mandatory to unmark this entry.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>projectData.<code>webScan</code> <em>(optional)</em> section can be used to define false positive patterns for web scans (DAST). It provides more possibilities to the user than above jobData.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>projectData.webScan.<code>cweId</code> is used to mark a certain type of finding as false positive.<br>
+When handling web scan project data this will be treated as a <em>mandatory</em> field.<br>
+Please insert here the cweId from the original report.<br>
+If there was no cweId in the original report, then it must be omitted or set to zero <code>"cweId": 0</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>projectData.webScan.<code>urlPattern</code> (<em>mandatory</em>) specifies an URL pattern to identify a false positive.
+Asterisks can be used as wildcards e.g. if you have different environments like DEV, INT, PROD or you have variable parts like in API calls or query paramaters <code>https://<strong>.example.com/rest/</strong>/search?*</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>projectData.webScan.<code>methods</code> <em>(optional)</em> Can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Important information on the wildcard approach in <code>projectData</code>, regarding web scans:<br>
+- To be marked as a false positive a finding must match the given <code>cweId</code> and the <code>urlPattern</code><br>
+- Wildcards (<code>*</code>) can be used inside <code>urlPattern</code>.<br>
+- Wildcards match anything until the next NON-wildcard character.<br>
+- Multiple wildcards can be used in one <code>urlPattern</code>.<br>
+- An <em>optional</em> list of (HTTP) methods can be specified to limit the false positive entry to certain <code>methods</code>, e.g if you specify <code>"methods": [ "GET", "DELETE" ]</code> like in the example above that means even if the <code>cweId</code> and the <code>urlPattern</code> are matching, if the finding was found with a <code>POST</code> request it would not be a false positive. When leaving <code>methods</code> out, this false positive entry apply to any method.<br>
+- An <code>urlPattern</code> which contains only wildcards (<code>*</code>) is not allowed.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1455,9 +1565,11 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 <div class="sect4">
 <h5 id="section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</h5>
 <div class="paragraph">
-<p>Remove formerly defined false positives.<br>
-It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
-action <code>unmarkFalsePositives</code></p>
+<p>Remove formerly defined false positives.</p>
+</div>
+<div class="paragraph">
+<p>It works similar to <code>markFalsePositives</code>: Just define a JSON file, select the file by the <code>-file</code> argument and start
+action <code>unmarkFalsePositives</code>.</p>
 </div>
 <div class="paragraph">
 <p><strong>Minimum call syntax</strong></p>
@@ -1468,21 +1580,30 @@ action <code>unmarkFalsePositives</code></p>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Example JSON:</strong></p>
+<p>The JSON scheme is identical to <code>markFalsePositives</code></p>
+</div>
+<div class="paragraph">
+<p>Mandatory fields for unmarkFalsePositives:<br>
+- for jobData: <code>jobUUID</code> and <code>findingId</code><br>
+- for projectData: <code>id</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Example JSON with both: jobData and projectData</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveDataList</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
     {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
       <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>
-    },
+    }
+  ],
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">projectData</span><span class="delimiter">&quot;</span></span>: [
     {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">unique-id</span><span class="delimiter">&quot;</span></span>
     }
   ]
 }</code></pre>
@@ -1495,7 +1616,7 @@ action <code>unmarkFalsePositives</code></p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<a href="#interactiveunmarkfalsepositives">interactiveMarkFalsePositives</a> might be much easier to use
+<a href="#interactiveunmarkfalsepositives">interactiveMarkFalsePositives</a> might be easier to use
 </td>
 </tr>
 </table>
@@ -4276,7 +4397,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.6.1 modified (commit 1a88b65)<br>
+ Client 1.7.0<br>
 </div>
 </div>
 </body>
