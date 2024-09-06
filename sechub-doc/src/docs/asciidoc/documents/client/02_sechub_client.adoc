@@ -291,7 +291,7 @@ Mandatory fields for unmarkFalsePositives: +
 
 [source, json]
 ----
-include::sechub_client_falsepositive_list_example_unmark.json[]
+include::sechub_client_falsepositive_list_example_unmark_jobData+projectData.json[]
 ----
 
 TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be easier to use
