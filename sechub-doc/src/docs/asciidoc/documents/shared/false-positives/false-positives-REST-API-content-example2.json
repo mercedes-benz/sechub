@@ -4,7 +4,7 @@
   "projectData": [ //<3>
     {
       "id": "unique-id", //<4>
-      "comment": "It was verified that there is no SQL-injection vulnerability at this location",
+      "comment": "It was verified that there is no SQL-injection",
       "webScan": { //<5>
           "cweId": 89, //<6>
           "urlPattern": "https://*.example.com/rest/products/search?*", //<7>

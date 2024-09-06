@@ -215,6 +215,7 @@ func defineFalsePositives(newFalsePositives FalsePositivesConfig, currentFalsePo
 		}
 	}
 
+	// Loop through ProjectData definition list and figure out, what to add and what to remove
 	for _, newFalsePositive := range newFalsePositives.ProjectData {
 		matched := false
 		for i, falsePositive := range currentFalsePositives {

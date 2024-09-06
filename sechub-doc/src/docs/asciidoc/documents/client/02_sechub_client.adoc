@@ -271,23 +271,30 @@ TIP: See also <<interactiveMarkFalsePositives,interactiveMarkFalsePositives>> fo
 
 [[section-client-false-positives-unmark]]
 ===== unmarkFalsePositives
-Remove formerly defined false positives. +
+Remove formerly defined false positives.
+
 It works similar to `markFalsePositives`: Just define a JSON file, select the file by the `-file` argument and start
-action `unmarkFalsePositives`
+action `unmarkFalsePositives`.
 
 **Minimum call syntax**
 ----
 sechub -file ${json-file} unmarkFalsePositives
 ----
 
-*Example JSON:*
+The JSON scheme is identical to `markFalsePositives`
+
+Mandatory fields for unmarkFalsePositives: +
+- for jobData: `jobUUID` and `findingId` +
+- for projectData: `id`
+
+*Example JSON with both: jobData and projectData*
 
 [source, json]
 ----
 include::sechub_client_falsepositive_list_example_unmark.json[]
 ----
 
-TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be much easier to use
+TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be easier to use
 
 
 ==== Configuration overview
