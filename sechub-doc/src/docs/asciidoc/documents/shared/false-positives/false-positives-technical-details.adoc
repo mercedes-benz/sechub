@@ -27,7 +27,7 @@ This approach requires more effort from a user to provide the data which identif
 But it can be very helpful especially for web scans, where some finding parts dynamically change, like scanner payloads in query parameters or URL paths.
 ====
 
-At this phase duplicate checks are only done for tuples of report UUID and finding id! The second approach with the additional projectData works a differently, since entries with the same `id` will be updated! +
+At this phase duplicate checks are done for tuples of report UUID and finding id for the first approach. For the projectData approach duplicates are detect by the `id` the user provided! +
 *Meta data is only collected in definition phase, but NOT inspected!* !
 
 [NOTE]
@@ -46,7 +46,7 @@ On the second approach with the additional data for the project:
 
 - A user has specific type of finding that are all false positives
 - The user marks all of them by providing information to identify these false positives
-- One false positive entry with this approach can be used to mark a gruop of false positives. 
+- One false positive entry with this approach can be used to mark a group of false positives. 
 
 ====
 
@@ -63,35 +63,31 @@ The entry does contain a `FalsePositiveProjectConfiguration` object as JSON.
 ====== Data structure
 The `FalsePositiveProjectConfiguration` object contains a list of `FalsePositiveEntry` objects.
 
-Every `FalsePositveEntry` object contains either
+Every `FalsePositveEntry` object contains either `FalsePositiveJobData` with `FalsePositiveMetaData` or `FalsePositiveProjectData`,
+but never both in one `FalsePositveEntry`.
 
 - `FalsePositiveJobData` +
    contains job uuid, finding id and comment - this information is provided by user.
-
-and
 
 - `FalsePositiveMetaData`  +
    contains meta information about findings - this information is gathered and calculated by {sechub} internally when
    a user has marked a report finding as a false positive. So the meta information is independent (so when a reoprt has
    been deleted, we still have the false positive meta information).
-
-   - It contains many meta information - e.g. a `cweId` - but also `FalsePositiveCodeMetaData` for code scans details.
+   * It contains many meta information - e.g. a `cweId` - but also `FalsePositiveCodeMetaData` for code scans details.
    
-or
 
 - `FalsePositiveProjectData`  +
    contains information to identify a finding or a group of findings as false positives. Currently it can only be used for web scans.
    In <<section-false-positives-define-by-API,how to define false positives by API>> the example shows all __mandatory__ and __optional__ parameters.
    
-but never both in one `FalsePositveEntry`.
-
+   
 ====== Definition by user
 A user does define a `FalsePositiveDataList` object which contains a list of `FalsePositiveJobData` or `FalsePositiveProjectData`. Such a list will
 be used to add false positives.
 
 To remove a `FalsePositiveJobData` entry from the `FalsePositiveProjectConfiguration`, the user has to provide the job UUID and finding id already used to define this entry.
 
-To remove a `FalsePositiveJobData` entry from the `FalsePositiveProjectConfiguration`, the user has to provide the id defined with the corresponding entry.
+To remove a `FalsePositiveProjectData` entry from the `FalsePositiveProjectConfiguration`, the user has to provide the `id` defined with the corresponding entry.
 
 ====== Merging
 When a user adds or removes false positive definitions, the `FalsePositiveProjectConfiguration` will be updated by 

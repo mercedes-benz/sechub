@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
-import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
 
 @Component
 public class SerecoProjectDataPatternMapFactory {
@@ -23,41 +22,23 @@ public class SerecoProjectDataPatternMapFactory {
      * compile regex patterns.
      *
      * @param falsePositives
-     * @return unmodifiable map with projectData wildcard entries as key and the
-     *         created regex pattern as value or an empty map if no projectData
-     *         where found.
+     * @return unmodifiable map with projectData ids as key and the regex pattern
+     *         for the urlPattern as value or an empty map if no projectData where
+     *         found.
      */
     public Map<String, Pattern> create(List<FalsePositiveEntry> falsePositives) {
         notNull(falsePositives, " falsePositives may not be null");
+
         Map<String, Pattern> patternMap = new HashMap<>();
         for (FalsePositiveEntry falsePositiveEntry : falsePositives) {
             FalsePositiveProjectData projectData = falsePositiveEntry.getProjectData();
             if (projectData != null && projectData.getWebScan() != null) {
-                patternMap.putAll(createMapFromProjectDataWebScan(projectData.getWebScan()));
+                String id = projectData.getId();
+                Pattern pattern = createCompiledPattern(projectData.getWebScan().getUrlPattern());
+                patternMap.put(id, pattern);
             }
         }
         return Collections.unmodifiableMap(patternMap);
-    }
-
-    private Map<String, Pattern> createMapFromProjectDataWebScan(WebscanFalsePositiveProjectData webScan) {
-        List<String> hostPatterns = webScan.getHostPatterns();
-        List<String> urlPathPatterns = webScan.getUrlPathPatterns();
-        notNull(hostPatterns, " hostPatterns may not be null");
-        notNull(urlPathPatterns, " urlPathPatterns may not be null");
-
-        int mapSize = hostPatterns.size() + urlPathPatterns.size();
-        Map<String, Pattern> patternMap = new HashMap<>(mapSize);
-
-        for (String hostPattern : hostPatterns) {
-            Pattern compiledPattern = createCompiledPattern(hostPattern);
-            patternMap.put(hostPattern, compiledPattern);
-        }
-
-        for (String urlPathPattern : urlPathPatterns) {
-            Pattern compiledPattern = createCompiledPattern(urlPathPattern);
-            patternMap.put(urlPathPattern, compiledPattern);
-        }
-        return patternMap;
     }
 
     private Pattern createCompiledPattern(String regexString) {

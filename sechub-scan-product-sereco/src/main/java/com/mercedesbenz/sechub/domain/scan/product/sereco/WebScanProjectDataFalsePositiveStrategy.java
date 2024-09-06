@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.notNull;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -64,34 +62,15 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
             return false;
         }
 
-        String target = vulnerabilityWeb.getRequest().getTarget();
-        if (target == null) {
-            return false;
-        }
-
-        URL targetUrl = null;
-        try {
-            targetUrl = new URL(target.trim());
-        } catch (MalformedURLException e) {
-            LOG.debug("Sereco vulnerability webscan target URL: {} is not a valid URL!", target, e);
+        String targetUrl = vulnerabilityWeb.getRequest().getTarget();
+        if (targetUrl == null) {
             return false;
         }
 
         /* ---------------------------------------------------- */
-        /* -------------------SERVERS-------------------------- */
+        /* ----------------------URL--------------------------- */
         /* ---------------------------------------------------- */
-        String host = targetUrl.getHost();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingHostPattern(host, webScanData.getHostPatterns(), projectDataPatternMap)) {
-            return false;
-        }
-
-        /* ---------------------------------------------------- */
-        /* -------------------URL PATTERNS--------------------- */
-        /* ---------------------------------------------------- */
-        // Using targetUrl.getFile() returns the path+query, maybe getPath() without
-        // query would be better
-        String urlFilePart = targetUrl.getFile();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingUrlPathPattern(urlFilePart, webScanData.getUrlPathPatterns(), projectDataPatternMap)) {
+        if (!webscanFalsePositiveProjectDataSupport.isMatchingUrlPattern(targetUrl, projectDataPatternMap)) {
             return false;
         }
 
@@ -100,23 +79,6 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         /* ---------------------------------------------------- */
         String method = vulnerabilityWeb.getRequest().getMethod();
         if (!webscanFalsePositiveProjectDataSupport.isMatchingMethodOrIgnoreIfNotSet(method, webScanData.getMethods())) {
-            return false;
-        }
-
-        /* ---------------------------------------------------- */
-        /* -------------------PORTS---------------------------- */
-        /* ---------------------------------------------------- */
-        int targetUrlPort = targetUrl.getPort();
-        String port = targetUrlPort != -1 ? "" + targetUrlPort : "" + targetUrl.getDefaultPort();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingPortOrIgnoreIfNotSet(port, webScanData.getPorts())) {
-            return false;
-        }
-
-        /* ---------------------------------------------------- */
-        /* -------------------PROTOCOLS------------------------ */
-        /* ---------------------------------------------------- */
-        String protocol = vulnerabilityWeb.getRequest().getProtocol();
-        if (!webscanFalsePositiveProjectDataSupport.isMatchingProtocolOrIgnoreIfNotSet(protocol, webScanData.getProtocols())) {
             return false;
         }
 

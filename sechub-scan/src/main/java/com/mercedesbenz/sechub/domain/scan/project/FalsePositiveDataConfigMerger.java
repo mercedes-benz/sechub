@@ -67,7 +67,7 @@ public class FalsePositiveDataConfigMerger {
                 continue;
             }
             if (projectDataFromEntry.getId().equals(projectData.getId())) {
-                LOG.warn("False positive project data entry with id: '{}', will be overwritten with new data!", projectData.getId());
+                LOG.info("False positive project data entry with id: '{}', will be updated with new data!", projectData.getId());
                 falsePositives.set(index, projectDataEntry);
                 return;
             }

@@ -184,8 +184,7 @@ public class FalsePositiveDataConfigMergerTest {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
-        webScan.setHostPatterns(List.of("*.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId(id);
@@ -208,12 +207,11 @@ public class FalsePositiveDataConfigMergerTest {
     }
 
     @Test
-    void add_one_project_data_entry_which_already_exists_results_in_one_updated_entry_in_config() {
+    void add_one_project_data_entry_with_id_which_already_exists_results_in_entry_being_updated() {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan1 = new WebscanFalsePositiveProjectData();
-        webScan1.setHostPatterns(List.of("*.host.com"));
-        webScan1.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan1.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData1 = new FalsePositiveProjectData();
         projectData1.setId(id);
@@ -228,8 +226,7 @@ public class FalsePositiveDataConfigMergerTest {
         config.getFalsePositives().add(falsePositiveEntry);
 
         WebscanFalsePositiveProjectData webScan2 = new WebscanFalsePositiveProjectData();
-        webScan2.setHostPatterns(List.of("*.other.host.com"));
-        webScan2.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan2.setUrlPattern("https://another-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData2 = new FalsePositiveProjectData();
         projectData2.setId(id);
@@ -243,12 +240,12 @@ public class FalsePositiveDataConfigMergerTest {
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
         assertEquals(1, falsePositives.size());
 
-        FalsePositiveEntry updatedFalsePositiveEntry = falsePositives.get(0);
-        assertNull(updatedFalsePositiveEntry.getJobData());
-        assertNull(updatedFalsePositiveEntry.getMetaData());
+        FalsePositiveEntry existingEntry = falsePositives.get(0);
+        assertNull(existingEntry.getJobData());
+        assertNull(existingEntry.getMetaData());
 
-        assertEquals(TEST_AUTHOR, updatedFalsePositiveEntry.getAuthor());
-        assertEquals(projectData2, updatedFalsePositiveEntry.getProjectData());
+        assertEquals(TEST_AUTHOR, existingEntry.getAuthor());
+        assertEquals(projectData2, existingEntry.getProjectData());
     }
 
     @Test
@@ -256,8 +253,7 @@ public class FalsePositiveDataConfigMergerTest {
         /* prepare */
         String id1 = "unique-id";
         WebscanFalsePositiveProjectData webScan1 = new WebscanFalsePositiveProjectData();
-        webScan1.setHostPatterns(List.of("*.host.com"));
-        webScan1.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan1.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData1 = new FalsePositiveProjectData();
         projectData1.setId(id1);
@@ -273,8 +269,7 @@ public class FalsePositiveDataConfigMergerTest {
 
         String id2 = "other-unique-id";
         WebscanFalsePositiveProjectData webScan2 = new WebscanFalsePositiveProjectData();
-        webScan2.setHostPatterns(List.of("*.other.host.com"));
-        webScan2.setUrlPathPatterns(List.of("/rest/api/project/*", "/other/rest/api/"));
+        webScan2.setUrlPattern("https://another-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData2 = new FalsePositiveProjectData();
         projectData2.setId(id2);
@@ -308,8 +303,7 @@ public class FalsePositiveDataConfigMergerTest {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
-        webScan.setHostPatterns(List.of("*.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId(id);
@@ -339,8 +333,7 @@ public class FalsePositiveDataConfigMergerTest {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
-        webScan.setHostPatterns(List.of("*.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId(id);
@@ -413,8 +406,7 @@ public class FalsePositiveDataConfigMergerTest {
         /* prepare */
         String id = "unique-id";
         WebscanFalsePositiveProjectData webScan = new WebscanFalsePositiveProjectData();
-        webScan.setHostPatterns(List.of("*.host.com"));
-        webScan.setUrlPathPatterns(List.of("/rest/api/project/*"));
+        webScan.setUrlPattern("https://myapp-*.example.com:80*/rest/*/search?*");
 
         FalsePositiveProjectData projectData = new FalsePositiveProjectData();
         projectData.setId(id);

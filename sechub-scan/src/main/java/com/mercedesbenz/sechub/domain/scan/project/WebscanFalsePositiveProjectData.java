@@ -7,57 +7,27 @@ import java.util.Objects;
 public class WebscanFalsePositiveProjectData implements ProjectData {
 
     public static final String PROPERTY_CWEID = "cweId";
-    public static final String PROPERTY_PORTS = "ports";
-    public static final String PROPERTY_PROTOCOLS = "protocols";
-    public static final String PROPERTY_URLPATHPATTERNS = "urlPathPatterns";
-    public static final String PROPERTY_HOSTPATTERNS = "hostPatterns";
+    public static final String PROPERTY_URLPATTERN = "urlPattern";
     public static final String PROPERTY_METHODS = "methods";
 
-    private Integer cweId;
-    private List<String> ports;
-    private List<String> protocols;
-    private List<String> urlPathPatterns;
-    private List<String> hostPatterns;
+    private int cweId;
+    private String urlPattern;
     private List<String> methods;
 
-    public Integer getCweId() {
+    public int getCweId() {
         return cweId;
     }
 
-    public void setCweId(Integer cweId) {
+    public void setCweId(int cweId) {
         this.cweId = cweId;
     }
 
-    public List<String> getPorts() {
-        return ports;
+    public String getUrlPattern() {
+        return urlPattern;
     }
 
-    public void setPorts(List<String> ports) {
-        this.ports = ports;
-    }
-
-    public List<String> getProtocols() {
-        return protocols;
-    }
-
-    public void setProtocols(List<String> protocols) {
-        this.protocols = protocols;
-    }
-
-    public List<String> getUrlPathPatterns() {
-        return urlPathPatterns;
-    }
-
-    public void setUrlPathPatterns(List<String> urlPathPatterns) {
-        this.urlPathPatterns = urlPathPatterns;
-    }
-
-    public List<String> getHostPatterns() {
-        return hostPatterns;
-    }
-
-    public void setHostPatterns(List<String> hostPatterns) {
-        this.hostPatterns = hostPatterns;
+    public void setUrlPattern(String urlPatterns) {
+        this.urlPattern = urlPatterns;
     }
 
     public List<String> getMethods() {
@@ -70,13 +40,12 @@ public class WebscanFalsePositiveProjectData implements ProjectData {
 
     @Override
     public String toString() {
-        return "WebscanFalsePositiveProjectData [cweId=" + cweId + ", ports=" + ports + ", protocols=" + protocols + ", urlPatterns=" + urlPathPatterns
-                + ", servers=" + hostPatterns + ", methods=" + methods + "]";
+        return "WebscanFalsePositiveProjectData [cweId=" + cweId + ", urlPatterns=" + urlPattern + ", methods=" + methods + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cweId, methods, ports, protocols, hostPatterns, urlPathPatterns);
+        return Objects.hash(cweId, methods, urlPattern);
     }
 
     @Override
@@ -88,9 +57,7 @@ public class WebscanFalsePositiveProjectData implements ProjectData {
         if (getClass() != obj.getClass())
             return false;
         WebscanFalsePositiveProjectData other = (WebscanFalsePositiveProjectData) obj;
-        return Objects.equals(cweId, other.cweId) && Objects.equals(methods, other.methods) && Objects.equals(ports, other.ports)
-                && Objects.equals(protocols, other.protocols) && Objects.equals(hostPatterns, other.hostPatterns)
-                && Objects.equals(urlPathPatterns, other.urlPathPatterns);
+        return Objects.equals(cweId, other.cweId) && Objects.equals(methods, other.methods) && Objects.equals(urlPattern, other.urlPattern);
     }
 
 }

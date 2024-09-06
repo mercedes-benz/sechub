@@ -75,6 +75,11 @@ func buildFalsePositiveAPICall(context *Context) string {
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
+func buildFalsePositiveProjectDataAPICall(context *Context) string {
+	apiPart := fmt.Sprintf("project/%s/false-positive/project-data", context.config.projectID)
+	return buildAPIUrl(&context.config.server, &apiPart)	
+}
+
 func buildAPIUrl(server *string, apiPart *string) string {
 	return fmt.Sprintf("%s/api/%s", *server, *apiPart)
 }
