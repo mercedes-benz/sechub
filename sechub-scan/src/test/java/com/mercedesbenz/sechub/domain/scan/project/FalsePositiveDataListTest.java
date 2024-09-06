@@ -31,7 +31,7 @@ public class FalsePositiveDataListTest {
         FalsePositiveJobData jd2 = it.next();
         assertEquals(1, jd1.getFindingId());
         assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd1.getJobUUID().toString());
-        assertEquals("Absolute Path Traversal, can be ignored because not in deployment", jd1.getComment());
+        assertEquals("Can be ignored because not in deployment", jd1.getComment());
         assertEquals(15, jd2.getFindingId());
         assertEquals("6cfa2ccf-da13-4dee-b529-0225ed9661bd", jd2.getJobUUID().toString());
         assertNull(jd2.getComment());
