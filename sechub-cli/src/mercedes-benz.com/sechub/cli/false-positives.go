@@ -14,7 +14,7 @@ import (
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
-// Keyword for false-posisitives json file
+// Keyword for false-positives json file
 const falsePositivesListType = "falsePositiveJobDataList"
 
 // FalsePositivesList - structure for handling download of false-positive lists
@@ -46,7 +46,7 @@ type FalsePositivesProjectData struct {
 	WebScan   FalsePositivesProjectDataForWebScan `json:"webScan"`
 }
 
-// FalsePositivesProjectDataForWebScan - contains the definition for false-posisitives in web scans
+// FalsePositivesProjectDataForWebScan - contains the definition for false-positives in web scans
 type FalsePositivesProjectDataForWebScan struct {
 	CweID      int      `json:"cweId"`
 	UrlPattern string   `json:"urlPattern"`
