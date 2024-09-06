@@ -348,7 +348,7 @@ func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
 	}
 
 	if len(list.ProjectData) > 0 {
-		// Iterate over JobData list:
+		// Iterate over ProjectData list:
 		// Url scheme: curl 'https://sechub.example.com//api/project/project1/false-positive/project-data/fp-id-1' -i -X DELETE
 		urlPrefix := buildFalsePositiveProjectDataAPICall(context)
 
