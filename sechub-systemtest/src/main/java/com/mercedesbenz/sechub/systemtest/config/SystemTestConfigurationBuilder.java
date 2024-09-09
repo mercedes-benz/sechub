@@ -746,8 +746,8 @@ public class SystemTestConfigurationBuilder {
                     return SecHubRunBuilder.this;
                 }
 
-                public WebScanConfigBuilder url(URI uri) {
-                    webScanConfig.setUrl(uri);
+                public WebScanConfigBuilder url(String uri) {
+                    webScanConfig.setUrl(URI.create(uri));
                     return this;
                 }
             }

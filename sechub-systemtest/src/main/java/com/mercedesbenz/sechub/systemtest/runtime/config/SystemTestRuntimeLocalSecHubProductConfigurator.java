@@ -3,7 +3,6 @@
 package com.mercedesbenz.sechub.systemtest.runtime.config;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
-import static java.util.Objects.nonNull;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -88,11 +87,13 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                 LOG.info("Dry run: delete existing profile '{}' is skipped", profileId);
                 continue;
             }
-            ProductExecutionProfile productExecutionProfile = client.atConfigurationApi().adminFetchExecutionProfile(profileId);
-            if (productExecutionProfile != null) {
+            try {
                 client.atConfigurationApi().adminDeleteExecutionProfile(profileId);
+            } catch (ApiException e) {
+                if (e.getCode() != 404) {
+                    throw e;
+                }
             }
-
         }
     }
 
@@ -120,9 +121,9 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             project.setOwner(client.getUserId());// we use the administrator as owner of the project
 
             ProjectWhitelist whiteList = project.getWhiteList();
-            if (nonNull(whiteList)) {
+            if (whiteList != null) {
                 for (String whiteListEntry : projectDefinition.getWhitelistedURIs()) {
-                    if (nonNull(whiteList.getUris())) {
+                    if (whiteList.getUris() != null) {
                         whiteList.getUris().add(URI.create(whiteListEntry));
                     }
                 }

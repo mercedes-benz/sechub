@@ -8,7 +8,6 @@ import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +62,7 @@ class SystemTestRemoteServerManualTest implements ManualTest {
                     runSecHubJob().
                         project(toEnvVariable(ENV_TEST_PROJECT)).
                         webScan().
-                            url(URI.create(envProvider.getEnv(ENV_TEST_WEBSCAN_URL))).
+                            url(envProvider.getEnv(ENV_TEST_WEBSCAN_URL)).
                         endScan().
                     endRunSecHub().
                     asserts().

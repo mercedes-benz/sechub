@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.test.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -232,7 +231,7 @@ class SystemTestDryRunTest {
                     endStep().
                     runSecHubJob().
                         webScan().
-                            url(URI.create("https://example.com")).
+                            url("https://example.com").
                         endScan().
                         uploads().
 
@@ -297,7 +296,7 @@ class SystemTestDryRunTest {
                 test("correct-testname").
                     runSecHubJob().
                         webScan().
-                            url(URI.create("https://example.com")).
+                            url("https://example.com").
                         endScan().
                         uploads().
 
@@ -338,7 +337,7 @@ class SystemTestDryRunTest {
                 test("correct-testname").
                     runSecHubJob().
                         webScan().
-                            url(URI.create("https://example.com")).
+                            url("https://example.com").
                         endScan().
                         uploads().
 
@@ -380,7 +379,7 @@ class SystemTestDryRunTest {
                 test("correct-testname").
                     runSecHubJob().
                         webScan().
-                        url(URI.create("https://example.com")).
+                        url("https://example.com").
                         endScan().
                         uploads().
 
@@ -436,7 +435,7 @@ class SystemTestDryRunTest {
                 test("correct-testname").
                 runSecHubJob().
                 webScan().
-                url(URI.create("https://example.com")).
+                url("https://example.com").
                 endScan().
                 uploads().
 
