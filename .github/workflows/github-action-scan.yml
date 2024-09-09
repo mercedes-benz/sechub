@@ -20,8 +20,8 @@ on:
 
 jobs:
   build-scan:
-    # This job is only executed if the branch name starts with 'gha_feature'
-    if: "startsWith(github.head_ref, 'gha_feature')"
+    # This job is only executed if the branch name starts with 'gha_feature-'
+    if: "startsWith(github.head_ref, 'gha_feature-')"
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
     
