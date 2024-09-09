@@ -24,15 +24,13 @@ spring:
     oauth2:
       client:
         registration:
-          oidc-client:
-            client-id: 32fb770c-cf4d-4671-812c-1806449af091
-            client-secret: aebeccde-9e56-4f1f-9c64-c7da409c6cc5
-            provider: https://sso-int.mercedes-benz.com
+          mercedes-benz:
+            provider: sso.mercedes-benz.com
             authorization-grant-type: authorization_code
             scope: openid
             redirect-uri: https://sechub.detss.corpintra.net/internal/login
         provider:
-          oidc-provider:
+          mercedes-benz:
             authorization-uri: https://sso-int.mercedes-benz.com/as/authorization.oauth2
             token-uri: https://sso-int.mercedes-benz.com/as/token.oauth2
             user-info-uri: https://sso-int.mercedes-benz.com/idp/userinfo.openid

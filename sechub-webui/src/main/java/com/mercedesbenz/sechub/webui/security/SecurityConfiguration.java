@@ -5,19 +5,21 @@ import com.mercedesbenz.sechub.webui.RequestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 import com.mercedesbenz.sechub.webui.page.user.UserDetailInformationService;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
 	private static final String[] PERMITTED_PATHS = {
+			RequestConstants.LOGIN,
+			RequestConstants.OIDC_LOGIN,
 			"/css/**",
 			"/js/**",
 			"/images/**"
@@ -31,12 +33,13 @@ public class SecurityConfiguration {
 
     	httpSecurity
 				.authorizeExchange(exchanges -> exchanges
+						/* Allow access to public paths */
 						.pathMatchers(PERMITTED_PATHS).permitAll()
-						.pathMatchers(RequestConstants.LOGIN)
-						.permitAll()
-						.anyExchange()
-						.authenticated())
-				// CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3
+						/* Protect all other paths */
+						.anyExchange().authenticated())
+				/* Enable OAuth2 login */
+				.oauth2Login(withDefaults())
+				/* CSRF protection disabled. The CookieServerCsrfTokenRepository does not work, since Spring Boot 3 */
 				.csrf(ServerHttpSecurity.CsrfSpec::disable);
 
         return httpSecurity.build();

@@ -3,6 +3,6 @@ spring:
     oauth2:
       client:
         registration:
-          oidc-client:
-            client-id: your-client-id
-            client-secret: your-client-secret
+          mercedes-benz:
+            client-id: 32fb770c-cf4d-4671-812c-1806449af091
+            client-secret: aebeccde-9e56-4f1f-9c64-c7da409c6cc5

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Please Log In</title>
+    <link rel="stylesheet" href="/css/main.css">
+<body class="container-flex flex-column">
+
+<section th:replace="fragments/banner"></section>
+<main class="flex-grow padding-thin-all background-light">
+    <h1>OIDC Login</h1>
+    <div th:if="${param.error}">Invalid username or password.</div>
+    <div th:if="${param.logout}">You have been logged out.</div>
+    <form th:action="@{/oidc/login}" method="post">
+        <button type="submit">Login with OIDC</button>
+    </form>
+</main>
+</body>
+</html>
