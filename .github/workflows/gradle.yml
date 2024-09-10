@@ -3,17 +3,31 @@ name: Java & Go CI
 
 on:
   push:
-    branches-ignore:
-      # We do NOT build github action development branches here (because no Java or Go code is changed)
-      - 'gha_*'
-      # We ignore everything where tag starts with v* - this is done by release build!
+    branches:
+      - main
+      - master
+      - develop
+      - hotfix
+    # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
+  pull_request:
+    # This workflow will run for all pull requests that target following branches
+    branches:
+      - main
+      - master
+      - develop
+      - hotfix
+    tags-ignore:
+      - v*
+
   # enable manual triggering of workflow
   workflow_dispatch:
 
 jobs:
   build:
+    # This job is only executed if the branch name starts with or 'feature-'
+    if: "startsWith(github.head_ref, 'feature-')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
