@@ -25,14 +25,15 @@ spring:
       client:
         registration:
           mercedes-benz:
-            provider: sso.mercedes-benz.com
+            provider: mercedes-benz
             authorization-grant-type: authorization_code
             scope: openid
-            redirect-uri: https://sechub.detss.corpintra.net/internal/login
+            redirect-uri: google.com
         provider:
           mercedes-benz:
-            authorization-uri: https://sso-int.mercedes-benz.com/as/authorization.oauth2
-            token-uri: https://sso-int.mercedes-benz.com/as/token.oauth2
-            user-info-uri: https://sso-int.mercedes-benz.com/idp/userinfo.openid
-            jwk-set-uri: https://sso-int.mercedes-benz.com/pf/JWKS
+            issuer-uri: https://sso.mercedes-benz.com
+            authorization-uri: https://sso.mercedes-benz.com/as/authorization.oauth2
+            token-uri: https://sso.mercedes-benz.com/as/token.oauth2
+            user-info-uri: https://sso.mercedes-benz.com/idp/userinfo.openid
+            jwk-set-uri: https://sso.mercedes-benz.com/pf/JWKS
             user-name-attribute: sub
