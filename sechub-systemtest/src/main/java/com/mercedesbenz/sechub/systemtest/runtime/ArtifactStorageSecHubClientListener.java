@@ -10,9 +10,9 @@ import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.ScanSecHubReportLoader;
 import com.mercedesbenz.sechub.api.SecHubClientListener;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -60,7 +60,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
     }
 
     @Override
-    public void afterReportDownload(UUID jobUUID, ScanSecHubReportLoader report) {
+    public void afterReportDownload(UUID jobUUID, SecHubReport report) {
         Path targetFolder = ensureArtifactsFolderForTest();
 
         String prettyPrintedJson = JSONConverter.get().toJSON(report, true);
