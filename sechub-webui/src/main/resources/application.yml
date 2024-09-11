@@ -10,30 +10,12 @@ server:
     enabled-protocols: TLSv1.2,TLSv1.3
 
 spring:
-  config:
-    import: optional:classpath:application-local.yaml
   messages:
     basename: "i18n/messages"
   profiles:
     group:
-      webui_prod: "webui_server"
-      webui_dev: "webui_localserver,webui_mocked"
+      webui_prod: "webui_server,webui_oidc"
+      webui_dev: "webui_localserver,webui_mocked,webui_oidc"
+      webui_local: "webui_localserver,webui_mocked"
       webui_test: "webui_test"
       webui_integrationtest: "webui_localserver,webui_integrationtest-data"
-  security:
-    oauth2:
-      client:
-        registration:
-          mercedes-benz:
-            provider: mercedes-benz
-            authorization-grant-type: authorization_code
-            scope: openid
-            redirect-uri: google.com
-        provider:
-          mercedes-benz:
-            issuer-uri: https://sso.mercedes-benz.com
-            authorization-uri: https://sso.mercedes-benz.com/as/authorization.oauth2
-            token-uri: https://sso.mercedes-benz.com/as/token.oauth2
-            user-info-uri: https://sso.mercedes-benz.com/idp/userinfo.openid
-            jwk-set-uri: https://sso.mercedes-benz.com/pf/JWKS
-            user-name-attribute: sub

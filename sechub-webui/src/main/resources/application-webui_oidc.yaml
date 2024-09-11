@@ -1,0 +1,19 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          mercedes-benz:
+            provider: mercedes-benz
+            authorization-grant-type: authorization_code
+            scope: openid
+            redirect-uri: google.com
+        provider:
+          mercedes-benz:
+            issuer-uri: https://sso.mercedes-benz.com
+            authorization-uri: https://sso.mercedes-benz.com/as/authorization.oauth2
+            token-uri: https://sso.mercedes-benz.com/as/token.oauth2
+            user-info-uri: https://sso.mercedes-benz.com/idp/userinfo.openid
+            jwk-set-uri: https://sso.mercedes-benz.com/pf/JWKS
+            user-name-attribute: sub
+

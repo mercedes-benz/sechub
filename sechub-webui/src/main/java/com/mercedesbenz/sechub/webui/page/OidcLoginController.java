@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class OidcLoginController {
 
-    @GetMapping(RequestConstants.OIDC_LOGIN)
+    @GetMapping(RequestConstants.LOGIN_OIDC)
     String login() {
         return "login";
     }

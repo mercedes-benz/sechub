@@ -1,4 +1,11 @@
 # SPDX-License-Identifier: MIT
+
+spring:
+  autoconfigure:
+    exclude:
+      # we do not want to have oauth2 client autoconfiguration in local mode
+      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+
 server:
   ssl:
     key-store-type: 'PKCS12'
