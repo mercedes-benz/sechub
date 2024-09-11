@@ -286,19 +286,17 @@ class SystemTestConfigurationTest {
         runSecHubJob1.getUploads().add(upload);
 
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
-        List<String> codeScanUsageByNames = codeScan.getUse();
-        if (codeScanUsageByNames == null) {
-            codeScanUsageByNames = new ArrayList<>();
+        if (codeScan.getUse() == null) {
+            codeScan.setUse(new ArrayList<>());
         }
-        codeScanUsageByNames.add(DEFINED_REFERENCE_ID);
+        codeScan.getUse().add(DEFINED_REFERENCE_ID);
         runSecHubJob1.setCodeScan(Optional.of(codeScan));
 
         SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
-        List<String> secretScanUsageByNames = secretScan.getUse();
-        if (secretScanUsageByNames == null) {
-            secretScanUsageByNames = new ArrayList<>();
+        if (secretScan.getUse() == null) {
+            secretScan.setUse(new ArrayList<>());
         }
-        secretScanUsageByNames.add(DEFINED_REFERENCE_ID);
+        secretScan.getUse().add(DEFINED_REFERENCE_ID);
         runSecHubJob1.setSecretScan(Optional.of(secretScan));
 
         test1execute1.setRunSecHubJob(Optional.of(runSecHubJob1));

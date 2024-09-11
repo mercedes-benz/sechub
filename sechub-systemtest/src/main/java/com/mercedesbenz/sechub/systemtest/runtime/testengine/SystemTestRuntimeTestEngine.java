@@ -343,7 +343,7 @@ public class SystemTestRuntimeTestEngine {
             jobUUID = UUID.randomUUID();
             LOG.debug("Skip job creation - use fake job uuid");
         } else {
-            jobUUID = client.atSecHubExecutionApi().userCreateNewJob(configuration.getProjectId(), configuration).getJobId();
+            jobUUID = client.withSecHubExecutionApi().userCreateNewJob(configuration.getProjectId(), configuration).getJobId();
         }
         LOG.debug("SecHub job {} created", jobUUID);
         testContext.getSecHubRunData().sechubJobUUID = jobUUID;
@@ -365,7 +365,7 @@ public class SystemTestRuntimeTestEngine {
         if (runtimeContext.isDryRun()) {
             LOG.debug("Skip job approve because dry run");
         } else {
-            client.atSecHubExecutionApi().userApproveJob(projectId, jobUUID);
+            client.withSecHubExecutionApi().userApproveJob(projectId, jobUUID);
         }
 
         /* wait for job failed or done */
@@ -373,24 +373,24 @@ public class SystemTestRuntimeTestEngine {
             LOG.debug("Skip job status fetching because dry run");
         } else {
             long started = System.currentTimeMillis();
-            ScheduleJobStatusResult result = client.atSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
+            ScheduleJobStatusResult result = client.withSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
             while (result.equals(ScheduleJobStatusResult.NONE)) {
                 long diff = System.currentTimeMillis() - started;
                 if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
                     throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
                 }
                 waitMilliseconds(300);
-                result = client.atSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
+                result = client.withSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
             }
         }
 
-        ScanSecHubReport report = null;
+        SecHubReport report = null;
         if (runtimeContext.isDryRun()) {
             LOG.debug("Simulate sechub report because dry run");
-            report = new ScanSecHubReport();
+            report = new SecHubReport();
             report.setJobUUID(jobUUID);
         } else {
-            report = client.atSecHubExecutionApi().userDownloadJobReport(projectId, jobUUID);
+            report = client.withSecHubExecutionApi().userDownloadJobReport(projectId, jobUUID);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Report returned from SecHub server for job: {}:\n", report);
@@ -523,7 +523,7 @@ public class SystemTestRuntimeTestEngine {
 
     static class SecHubRunData {
 
-        ScanSecHubReport report;
+        SecHubReport report;
         SecHubConfiguration secHubConfiguration;
         UUID sechubJobUUID;
 
@@ -535,7 +535,7 @@ public class SystemTestRuntimeTestEngine {
             return secHubConfiguration;
         }
 
-        public ScanSecHubReport getReport() {
+        public SecHubReport getReport() {
             return report;
         }
 
@@ -544,7 +544,7 @@ public class SystemTestRuntimeTestEngine {
         }
     }
 
-    static class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
+    private static class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
 
         @Override
         public CurrentTestVariableCalculator create(TestDefinition test, SystemTestRuntimeContext runtimeContext) {

@@ -16,7 +16,7 @@ public interface SecHubClientListener {
         /* do nothing per default */
     }
 
-    default void afterReportDownload(UUID jobUUID, SecHubReport report) {
+    default void afterReportDownload(UUID jobUUID, ScanSecHubReportLoader report) {
         /* do nothing per default */
     }
 

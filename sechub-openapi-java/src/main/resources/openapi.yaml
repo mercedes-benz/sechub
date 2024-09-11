@@ -433,6 +433,11 @@ components:
           type: array
           items:
             type: string
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
 
     SecHubCodeScanConfiguration:
       title: SecHubCodeScanConfiguration
@@ -651,6 +656,11 @@ components:
           $ref: '#/components/schemas/SecHubWebScanApiConfiguration'
         url:
           $ref: '#/components/schemas/URI'
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
         includes:
           description: "Include URL sub-paths to scan. Example: /hidden"
           type: array
@@ -1097,7 +1107,7 @@ components:
         summary:
           $ref: '#/components/schemas/SecHubReportSummary'
 
-    ScanSecHubReport:
+    SecHubReport:
       title: ScanSecHubReport
       description: Result of the SecHub scan
       type: object
@@ -2651,10 +2661,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
             text/html;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
           description: "200"
       tags:
         - SecHub Execution
@@ -2885,7 +2895,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
           description: "Ok"
         "404":
           description: "Not found"

@@ -58,7 +58,7 @@ class SystemTestRuntimeTestEngineTest {
 
         when(locationSupport.ensureTestWorkingDirectoryRealPath(any())).thenReturn(Paths.get("./build/tmp/workingdirectory"));
         when(secHubExecutionApi.userCreateNewJob(any(), any())).thenReturn(mock(SchedulerResult.class));
-        when(secHubClient.atSecHubExecutionApi()).thenReturn(secHubExecutionApi);
+        when(secHubClient.withSecHubExecutionApi()).thenReturn(secHubExecutionApi);
     }
 
     @Test
@@ -67,7 +67,7 @@ class SystemTestRuntimeTestEngineTest {
         ScheduleJobStatus status = new ScheduleJobStatus();
         status.setResult(ScheduleJobStatusResult.OK);
         when(secHubExecutionApi.userCheckJobStatus(any(), any())).thenReturn(status);
-        ScanSecHubReport report = new ScanSecHubReport();
+        SecHubReport report = new SecHubReport();
         report.setTrafficLight(EXPECTED_TRAFFIC_LIGHT_YELLOW);
 
         when(secHubExecutionApi.userDownloadJobReport(any(), any())).thenReturn(report);
@@ -92,7 +92,7 @@ class SystemTestRuntimeTestEngineTest {
         ScheduleJobStatus status = new ScheduleJobStatus();
         status.setResult(ScheduleJobStatusResult.OK);
         when(secHubExecutionApi.userCheckJobStatus(any(), any())).thenReturn(status);
-        ScanSecHubReport report = new ScanSecHubReport();
+        SecHubReport report = new SecHubReport();
         report.setTrafficLight(TrafficLight.RED);
 
         when(secHubExecutionApi.userDownloadJobReport(any(), any())).thenReturn(report);

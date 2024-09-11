@@ -77,24 +77,24 @@ public interface SecHubClient {
     /* + ................APIs............................ + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    ConfigurationApi atConfigurationApi();
+    ConfigurationApi withConfigurationApi();
 
-    JobAdministrationApi atJobAdministrationApi();
+    JobAdministrationApi withJobAdministrationApi();
 
-    OtherApi atOtherApi();
+    OtherApi withOtherApi();
 
-    ProjectAdministrationApi atProjectAdministrationApi();
+    ProjectAdministrationApi withProjectAdministrationApi();
 
-    SecHubExecutionApi atSecHubExecutionApi();
+    SecHubExecutionApi withSecHubExecutionApi();
 
-    SignUpApi atSignUpApi();
+    SignUpApi withSignUpApi();
 
-    SystemApi atSystemApi();
+    SystemApi withSystemApi();
 
-    TestingApi atTestingApi();
+    TestingApi withTestingApi();
 
-    UserAdministrationApi atUserAdministrationApi();
+    UserAdministrationApi withUserAdministrationApi();
 
-    UserProfileApi atUserProfileApi();
+    UserProfileApi withUserProfileApi();
 
 }

@@ -208,7 +208,7 @@ public class SystemTestRuntimeProductLauncher {
 
         for (int i = 0; !adminAccountAvailable && i < MAX_AMOUNT_OF_ADMIN_AVAILABLE_CHECKS; i++) {
             try {
-                sechubClient.atOtherApi().adminListStatusInformation();
+                sechubClient.withOtherApi().adminListStatusInformation();
                 adminAccountAvailable = true;
             } catch (ApiException e) {
                 try {

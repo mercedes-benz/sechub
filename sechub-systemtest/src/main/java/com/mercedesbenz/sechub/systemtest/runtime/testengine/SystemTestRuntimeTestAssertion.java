@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.ScanSecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.systemtest.config.AssertContainsStringsDefinition;
@@ -43,7 +43,7 @@ public class SystemTestRuntimeTestAssertion {
     }
 
     private void handleSecHubAssert(AssertSechubResultDefinition sechubResultAssert, TestEngineTestContext testContext) {
-        ScanSecHubReport report = testContext.getSecHubRunData().getReport();
+        SecHubReport report = testContext.getSecHubRunData().getReport();
         if (report == null) {
             testContext.markAsFailed("Sechub report not available",
                     "This should not happen. Please look at the unit test console log and inside SecHub server log for details");

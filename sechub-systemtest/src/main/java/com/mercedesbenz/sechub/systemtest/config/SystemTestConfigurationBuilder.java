@@ -742,6 +742,12 @@ public class SystemTestConfigurationBuilder {
                     runSecHubJob.setWebScan(Optional.of(webScanConfig));
                 }
 
+                public WebScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    webScanConfig.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
+                }
+
                 public SecHubRunBuilder endScan() {
                     return SecHubRunBuilder.this;
                 }
@@ -753,9 +759,17 @@ public class SystemTestConfigurationBuilder {
             }
 
             public class InfraScanConfigBuilder {
+                SecHubInfrastructureScanConfiguration configuration;
+
                 private InfraScanConfigBuilder() {
-                    SecHubInfrastructureScanConfiguration configuration = new SecHubInfrastructureScanConfiguration();
+                    configuration = new SecHubInfrastructureScanConfiguration();
                     runSecHubJob.setInfraScan(Optional.of(configuration));
+                }
+
+                public InfraScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    configuration.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
                 }
 
                 public SecHubRunBuilder endScan() {
@@ -775,6 +789,12 @@ public class SystemTestConfigurationBuilder {
                     runSecHubJob.setSecretScan(Optional.of(configuration));
                 }
 
+                public SecretScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    configuration.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
+                }
+
                 public SecHubRunBuilder endScan() {
                     return SecHubRunBuilder.this;
                 }
@@ -783,13 +803,19 @@ public class SystemTestConfigurationBuilder {
             public class CodeScanConfigBuilder {
                 private final SecHubCodeScanConfiguration configuration;
 
-                public CodeScanConfigBuilder(SecHubCodeScanConfiguration secHubCodeScanConfiguration) {
+                private CodeScanConfigBuilder(SecHubCodeScanConfiguration secHubCodeScanConfiguration) {
                     this.configuration = secHubCodeScanConfiguration;
                 }
 
                 private CodeScanConfigBuilder() {
                     this(new SecHubCodeScanConfiguration());
                     runSecHubJob.setCodeScan(Optional.of(configuration));
+                }
+
+                public CodeScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    configuration.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
                 }
 
                 public SecHubRunBuilder endScan() {
@@ -807,6 +833,12 @@ public class SystemTestConfigurationBuilder {
                 private LicenseScanConfigBuilder() {
                     this(new SecHubLicenseScanConfiguration());
                     runSecHubJob.setLicenseScan(Optional.of(configuration));
+                }
+
+                public LicenseScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    configuration.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
                 }
 
                 public SecHubRunBuilder endScan() {

@@ -69,10 +69,10 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                 LOG.info("Dry run: delete existing project '{}' is skipped", projectId);
                 continue;
             }
-            List<String> projectIds = client.atProjectAdministrationApi().adminListAllProjects();
+            List<String> projectIds = client.withProjectAdministrationApi().adminListAllProjects();
             if (projectIds.contains(projectId)) {
                 LOG.warn("Project '{}' did already exist - will delete old project!", projectId);
-                client.atProjectAdministrationApi().adminDeleteProject(projectId);
+                client.withProjectAdministrationApi().adminDeleteProject(projectId);
             }
         }
     }
@@ -88,7 +88,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                 continue;
             }
             try {
-                client.atConfigurationApi().adminDeleteExecutionProfile(profileId);
+                client.withConfigurationApi().adminDeleteExecutionProfile(profileId);
             } catch (ApiException e) {
                 if (e.getCode() != 404) {
                     throw e;
@@ -129,7 +129,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                 }
             }
 
-            client.atProjectAdministrationApi().adminCreateProject(project);
+            client.withProjectAdministrationApi().adminCreateProject(project);
 
         }
     }
@@ -156,7 +156,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
 
         String name = executorConfigDefinition.getName();
 
-        ProductExecutorConfigList productExecutorConfigList = client.atConfigurationApi().adminFetchExecutorConfigurationList();
+        ProductExecutorConfigList productExecutorConfigList = client.withConfigurationApi().adminFetchExecutorConfigurationList();
         Set<UUID> oldEntries = new HashSet<>();
         if (productExecutorConfigList.getExecutorConfigurations() != null) {
             for (ProductExecutorConfigListEntry entry : productExecutorConfigList.getExecutorConfigurations()) {
@@ -167,7 +167,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
         for (UUID uuid : oldEntries) {
             LOG.info("Delete existing executor configuration: {} - {}", name, uuid);
-            client.atConfigurationApi().adminDeleteExecutorConfiguration(uuid);
+            client.withConfigurationApi().adminDeleteExecutorConfiguration(uuid);
         }
 
         String pdsProductId = executorConfigDefinition.getPdsProductId();
@@ -189,7 +189,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         handleParametersForNewExecutorConfiguration(executorConfigDefinition, setup, pdsProductId, scanType);
 
         /* store executor configuration */
-        String uuidString = client.atConfigurationApi().adminCreateExecutorConfiguration(config);
+        String uuidString = client.withConfigurationApi().adminCreateExecutorConfiguration(config);
         UUID uuid = UUID.fromString(uuidString);
 
         /* map profiles with created executor configuration */
@@ -278,7 +278,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
         productExecutionProfile.setProjectIds(projectIdsForThisProfile);
 
-        client.atConfigurationApi().adminCreateExecutionProfile(profileId, productExecutionProfile);
+        client.withConfigurationApi().adminCreateExecutionProfile(profileId, productExecutionProfile);
     }
 
     private void addExecutorConfigurationsToProfiles(SystemTestRuntimeContext context, Map<String, List<UUID>> profileIdsToExecutorUUIDs) throws ApiException {
@@ -302,7 +302,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
 
             productExecutionProfile.setConfigurations(productExecutorConfigs);
 
-            client.atConfigurationApi().adminUpdateExecutionProfile(profileId, productExecutionProfile);
+            client.withConfigurationApi().adminUpdateExecutionProfile(profileId, productExecutionProfile);
         }
     }
 
@@ -320,7 +320,7 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
                 LOG.info("Dry run: assign user '{}' to project '{}' is skipped", userId, projectId);
                 continue;
             }
-            client.atProjectAdministrationApi().adminAssignUserToProject(projectId, userId);
+            client.withProjectAdministrationApi().adminAssignUserToProject(projectId, userId);
         }
     }
 

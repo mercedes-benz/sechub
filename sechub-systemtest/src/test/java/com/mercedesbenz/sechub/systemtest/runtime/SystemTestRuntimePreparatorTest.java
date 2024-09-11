@@ -265,28 +265,32 @@ class SystemTestRuntimePreparatorTest {
     }
 
     private void assertJobScansUseReferenceId(RunSecHubJobDefinition job, String expectedReferenceId) {
-        job.getCodeScan().ifPresent(codeScan -> {
+        if (job.getCodeScan().isPresent()) {
+            SecHubCodeScanConfiguration codeScan = job.getCodeScan().get();
             List<String> codeScanUsageByNames = codeScan.getUse();
             if (codeScanUsageByNames != null) {
                 assertContainsReference(codeScanUsageByNames, expectedReferenceId);
             }
-        });
+        }
 
-        job.getSecretScan().ifPresent(secretScan -> {
+        if (job.getSecretScan().isPresent()) {
+            SecHubSecretScanConfiguration secretScan = job.getSecretScan().get();
             List<String> secretScanUsageByNames = secretScan.getUse();
             if (secretScanUsageByNames != null) {
                 assertContainsReference(secretScanUsageByNames, expectedReferenceId);
             }
-        });
+        }
 
-        job.getLicenseScan().ifPresent(licenseScan -> {
+        if (job.getLicenseScan().isPresent()) {
+            SecHubLicenseScanConfiguration licenseScan = job.getLicenseScan().get();
             List<String> licenseScanUsageByNames = licenseScan.getUse();
             if (licenseScanUsageByNames != null) {
                 assertContainsReference(licenseScanUsageByNames, expectedReferenceId);
             }
-        });
+        }
 
-        job.getWebScan().ifPresent(webScan -> {
+        if (job.getWebScan().isPresent()) {
+            SecHubWebScanConfiguration webScan = job.getWebScan().get();
             SecHubWebScanApiConfiguration api = webScan.getApi();
             if (api != null) {
                 List<String> webScanApiUsageByNames = api.getUse();
@@ -294,7 +298,7 @@ class SystemTestRuntimePreparatorTest {
                     assertContainsReference(webScanApiUsageByNames, expectedReferenceId);
                 }
             }
-        });
+        }
     }
 
     private void assertContainsReference(List<String> list, String exptectedReferenceId) {

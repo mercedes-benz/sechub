@@ -147,52 +147,52 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     @Override
-    public ConfigurationApi atConfigurationApi() {
+    public ConfigurationApi withConfigurationApi() {
         return configurationApi;
     }
 
     @Override
-    public JobAdministrationApi atJobAdministrationApi() {
+    public JobAdministrationApi withJobAdministrationApi() {
         return jobAdministrationApi;
     }
 
     @Override
-    public OtherApi atOtherApi() {
+    public OtherApi withOtherApi() {
         return otherApi;
     }
 
     @Override
-    public ProjectAdministrationApi atProjectAdministrationApi() {
+    public ProjectAdministrationApi withProjectAdministrationApi() {
         return projectAdministrationApi;
     }
 
     @Override
-    public SecHubExecutionApi atSecHubExecutionApi() {
+    public SecHubExecutionApi withSecHubExecutionApi() {
         return secHubExecutionApi;
     }
 
     @Override
-    public SignUpApi atSignUpApi() {
+    public SignUpApi withSignUpApi() {
         return signUpApi;
     }
 
     @Override
-    public SystemApi atSystemApi() {
+    public SystemApi withSystemApi() {
         return systemApi;
     }
 
     @Override
-    public TestingApi atTestingApi() {
+    public TestingApi withTestingApi() {
         return testingApi;
     }
 
     @Override
-    public UserAdministrationApi atUserAdministrationApi() {
+    public UserAdministrationApi withUserAdministrationApi() {
         return userAdministrationApi;
     }
 
     @Override
-    public UserProfileApi atUserProfileApi() {
+    public UserProfileApi withUserProfileApi() {
         return userProfileApi;
     }
 
