@@ -115,9 +115,6 @@ npm run build
 ----
 
 This runs the ncc compiler and transpiles the files from the src folder into the `dist/` folder.
-The dist files will be executed by the GitHub Action.
-
-It's necessary to execute the build after every change of the sources and you have to commit the changes in dist to git.
 
 === Test
 
