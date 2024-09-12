@@ -74,5 +74,5 @@ outputs:
 
 runs:
   using: 'node16'
-  pre: 'setup-script.sh'
+  pre: 'setup-script.js'
   main: './dist/index.js'
