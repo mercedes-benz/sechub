@@ -3,17 +3,17 @@ spring:
     oauth2:
       client:
         registration:
-          mercedes-benz:
-            provider: mercedes-benz
+          sechub:
+            provider: ${SECHUB_OAUTH2_PROVIDER}
             authorization-grant-type: authorization_code
             scope: openid
-            redirect-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_REDIRECT_URI}
+            redirect-uri: ${SECHUB_OAUTH2_LOGIN_REDIRECT_URI}
         provider:
-          mercedes-benz:
-            issuer-uri: ${SPRING_SECURITY_OAUTH2_PROVIDER_ISSUER_URI}
-            authorization-uri: ${SPRING_SECURITY_OAUTH2_PROVIDER_AUTHORIZATION_URI}
-            token-uri: ${SPRING_SECURITY_OAUTH2_PROVIDER_TOKEN_URI}
-            user-info-uri: ${SPRING_SECURITY_OAUTH2_PROVIDER_USER_INFO_URI}
-            jwk-set-uri: ${SPRING_SECURITY_OAUTH2_PROVIDER_JWK_SET_URI}
+          sechub:
+            issuer-uri: ${SECHUB_OAUTH2_ISSUER_URI}
+            authorization-uri: ${SECHUB_OAUTH2_AUTHORIZATION_URI}
+            token-uri: ${SECHUB_OAUTH2_TOKEN_URI}
+            user-info-uri: ${SECHUB_OAUTH2_USER_INFO_URI}
+            jwk-set-uri: ${SECHUB_OAUTH2_JWK_SET_URI}
             user-name-attribute: sub
 
