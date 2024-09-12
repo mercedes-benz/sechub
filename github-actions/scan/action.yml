@@ -74,7 +74,5 @@ outputs:
 
 runs:
   using: 'node16'
-  pre: |
-    npm install
-    npm run build
+  pre: './setup-script.sh'
   main: './dist/index.js'
