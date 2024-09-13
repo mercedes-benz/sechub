@@ -10,7 +10,7 @@
 
 const { exec } = require('child_process');
 
-exec('bash ./setup-script.sh', (error, stdout, stderr) => {
+exec('bash setup-script.sh', (error, stdout, stderr) => {
     if (error) {
         console.error(`Error: ${error.message}`);
         return;
