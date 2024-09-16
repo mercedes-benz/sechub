@@ -64,7 +64,7 @@ export function resolveGitHubInputData(): GitHubInputData {
         apiToken: core.getInput(PARAM_API_TOKEN),
         user: core.getInput(PARAM_SECHUB_USER),
         projectName: core.getInput(PARAM_PROJECT_NAME),
-        sechubCLIVersion: core.getInput(PARAM_CLIENT_VERSION),
+        sechubCLIVersion: process.env.version!,
         addScmHistory: core.getInput(PARAM_ADD_SCM_HISTORY),
         debug: core.getInput(PARAM_DEBUG),
         includeFolders: core.getInput(PARAM_INCLUDED_FOLDERS),
