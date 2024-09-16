@@ -80,17 +80,25 @@ runs:
       with:
         node-version: 16
 
+    - name: Pull SecHub Scan Action
+      uses: actions/checkout@v3
+      with:
+        repository: mercedes-benz/sechub
+        path: sechub/scan
+        sparse-checkout: github-actions/scan
+        sparse-checkout-cone-mode: false
+
     - name: Npm Install
       run: npm install
-      working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}/sechub/scan
       shell: bash
 
     - name: Npm Run Build
       run: npm run build
-      working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}/sechub/scan
       shell: bash
 
     - name: Run SecHub Scan
       run: dist/index.js
-      working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}/sechub/scan
       shell: bash
