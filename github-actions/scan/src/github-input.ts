@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-import * as core from '@actions/core';
-
 export const PARAM_CONFIG_PATH = 'config-path';
 export const PARAM_SECHUB_SERVER_URL = 'url';
 export const PARAM_API_TOKEN = 'api-token';
@@ -59,22 +57,30 @@ export const INPUT_DATA_DEFAULTS: GitHubInputData = {
 
 export function resolveGitHubInputData(): GitHubInputData {
     return {
-        configPath: core.getInput(PARAM_CONFIG_PATH),
-        url: core.getInput(PARAM_SECHUB_SERVER_URL),
-        apiToken: core.getInput(PARAM_API_TOKEN),
-        user: core.getInput(PARAM_SECHUB_USER),
-        projectName: core.getInput(PARAM_PROJECT_NAME),
-        sechubCLIVersion: process.env.version!,
-        addScmHistory: core.getInput(PARAM_ADD_SCM_HISTORY),
-        debug: core.getInput(PARAM_DEBUG),
-        includeFolders: core.getInput(PARAM_INCLUDED_FOLDERS),
-        excludeFolders: core.getInput(PARAM_EXCLUDED_FOLDERS),
-        reportFormats: core.getInput(PARAM_REPORT_FORMATS),
-        failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
-        trustAll: core.getInput(PARAM_TRUST_ALL),
-        scanTypes: core.getInput(PARAM_SCAN_TYPES),
-        contentType: core.getInput(PARAM_CONTENT_TYPE),
+        configPath: getEnvVar(PARAM_CONFIG_PATH),
+        url: getEnvVar(PARAM_SECHUB_SERVER_URL),
+        apiToken: getEnvVar(PARAM_API_TOKEN),
+        user: getEnvVar(PARAM_SECHUB_USER),
+        projectName: getEnvVar(PARAM_PROJECT_NAME),
+        sechubCLIVersion: getEnvVar(PARAM_CLIENT_VERSION),
+        addScmHistory: getEnvVar(PARAM_ADD_SCM_HISTORY),
+        debug: getEnvVar(PARAM_DEBUG),
+        includeFolders: getEnvVar(PARAM_INCLUDED_FOLDERS),
+        excludeFolders: getEnvVar(PARAM_EXCLUDED_FOLDERS),
+        reportFormats: getEnvVar(PARAM_REPORT_FORMATS),
+        failJobOnFindings: getEnvVar(PARAM_FAIL_JOB_ON_FINDING),
+        trustAll: getEnvVar(PARAM_TRUST_ALL),
+        scanTypes: getEnvVar(PARAM_SCAN_TYPES),
+        contentType: getEnvVar(PARAM_CONTENT_TYPE),
     };
 }
 
+/**
+ * Retrieves the value of an environment variable.
+ * @param {string} variableName - The name of the environment variable.
+ * @returns {string} - The value of the environment variable (empty if not present)
+ */
+function getEnvVar(variableName: string): string {
+    return process.env[variableName] || '';
+}
 
