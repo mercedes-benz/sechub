@@ -81,8 +81,9 @@ runs:
         node-version: 16
 
     - name: Pull SecHub Scan Action
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
+        ref: gha_feature-3213-build-index-js-in-workflow
         repository: mercedes-benz/sechub
         path: sechub/scan
         sparse-checkout: github-actions/scan
