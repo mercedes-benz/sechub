@@ -73,8 +73,21 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
-  using: 'node16'
-  pre: |
-    npm install
-    npm run build
-  main: 'dist/index.js'
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Npm Install
+      run: npm install
+      shell: bash
+
+    - name: Npm Run Build
+      run: npm run build
+      shell: bash
+
+    - name: Run SecHub Scan
+      run: dist/index.js
+      shell: bash
