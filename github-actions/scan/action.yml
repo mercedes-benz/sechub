@@ -73,6 +73,8 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
+  ## Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
+  ## By doing this we don't have to manually build & check-in the artifacts anymore
   using: composite
   steps:
     - name: Setup Node.js
@@ -80,16 +82,20 @@ runs:
       with:
         node-version: 16
 
+    ## This will cache the SecHub Scan GitHub Action from the SecHub repository
     - name: Cache SecHub GitHub Actions Scan Folder
+      id: cache-sechub-github-actions-scan-git
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan
-        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.sha }}
+        path: ${{ github.workspace }}/sechub/github-actions/scan/.git
+        key: ${{ runner.os }}-sechub-github-actions-scan-git-${{ github.repository }}-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-sechub-github-actions-scan-
-          ${{ runner.os }}-
+          ${{ runner.os }}-sechub-github-actions-scan-git-${{ github.repository }}-
 
+    ## Checkout the 'github-actions/scan' subfolder from the SecHub repository
+    ## This contains the source code for the SecHub Scan GitHub Action
     - name: Checkout SecHub GitHub Actions Scan with Git
+      if: steps.cache-sechub-github-actions-scan-git.outputs.cache-hit != 'true'
       run: |
         git clone --no-checkout https://github.com/mercedes-benz/sechub.git
         cd sechub
@@ -97,7 +103,7 @@ runs:
              
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
-        git checkout gha_feature-3213-build-index-js-in-workflow
+        git checkout master
       shell: bash
 
     - name: Cache Node Modules
