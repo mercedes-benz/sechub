@@ -80,14 +80,24 @@ runs:
       with:
         node-version: 16
 
-    - name: Checkout SecHub Scan with Git
+    - name: Cache SecHub GitHub Actions Scan Folder
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/sechub/github-actions/scan
+        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-sechub-github-actions-scan-
+          ${{ runner.os }}-
+
+    - name: Checkout SecHub GitHub Actions Scan with Git
       run: |
         git clone --no-checkout https://github.com/mercedes-benz/sechub.git
         cd sechub
         git config core.sparseCheckout true
              
-        echo "github-actions/scan" >> .git/info/sparse-checkout
+        echo "github-actions/scan/" >> .git/info/sparse-checkout
         
+        // TODO: which branch to checkout?
         git checkout gha_feature-3213-build-index-js-in-workflow
       shell: bash
 
@@ -95,6 +105,16 @@ runs:
       run: npm install
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
+
+    - name: Cache Node Modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
+        key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+          ${{ runner.os }}-sechub-github-actions-scan-node-
+          ${{ runner.os }}-
 
     - name: Npm Run Build
       run: npm run build
