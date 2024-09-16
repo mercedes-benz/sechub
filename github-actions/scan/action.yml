@@ -107,6 +107,6 @@ runs:
       shell: bash
 
     - name: Run SecHub Scan
-      run: node dist/index.js
+      run: node dist/index.js --version ${{ inputs.version }}
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
