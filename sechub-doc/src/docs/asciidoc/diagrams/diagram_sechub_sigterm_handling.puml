@@ -4,87 +4,23 @@
 hide empty fields
 hide empty methods
 
-'You can find more examles at https://plantuml.com/class-diagram
-
-package com.mercedesbenz.sechub.adapter {
-
-	interface AdapterMetaDataCallback{
-		AdapterMetaData getMetaDataOrNull()
-		persist(AdapterMetaData data)
-	}
-	
-	class AdapterMetaData {
-		setValue(String key, String value)
-		String getValue(String key)
-	}
-	
-	interface Adapter {
-		AdapterExecutionResult start(C config, AdapterMetaDataCallback callback)
-	}
-	
-	class PDSAdapterV1 implements Adapter{
-		
-	}
-}
-
+'You can find more examples at https://plantuml.com/class-diagram
 
 package com.mercedesbenz.sechub.domain.scan {
-	 
-	 
-	class ScanService {
-		startScan()
-	} 
 	
-	class ScanJobExecutor{
+	class ScanProgressMonitor 
+	 
+	class ScanJobExecutor {
+	
 	}
 	 
-	class ProductResult {
-		UUID getSecHubJobUUID()
-		UUID getProductExecutorConfigUUID()
-		
-	}
+	class ScanJobExecutionRunnable{
 	
-	class AbstractProductExecutionService {
-		runOnExecutorWithOneConfiguration()
 	}
-	
-	interface ProductExecutor {
-		execute(SecHubExecutionContext context, P param)
-	}
-	
-	interface ProductExecutorCallback extends AdapterMetaDataCallback{
-		ProductResult getProductResult()
-	}
-	class ProductExecutorContextFactory
-	class ProductExecutorCallbackImpl implements ProductExecutorCallback
-
-	class ScanJobExecutionRunnable {
-		
-	}
+	class ScanMessageHandler
 }
 
 
-
-note top of PDSAdapterV1
-If meta data is available, the PDS adapter tries to fetch
-former PDS job UUID from meta data of product result.
-
-If the PDS job uuid is null, a new PDS job is created, otherwise the 
-existing PDS job will be reused and the the current state handled.   
-end note
-
-ProductExecutorContextFactory -> ProductExecutorCallbackImpl : creates
-AbstractProductExecutionService -> ProductExecutorContextFactory: calls to create callback instance
-AbstractProductExecutionService "1" *-- "many" ProductExecutor
-ProductExecutorCallback --> AdapterMetaData : provides
-
-ProductResult <-- AbstractProductExecutionService : loads former product result for same executor and sechub job uuid
-PDSAdapterV1 --> AdapterMetaData : stores and reads
-PDSAdapterV1  -> AdapterMetaDataCallback: uses
-
-ProductExecutor  -> Adapter : uses to communicate
-
-ScanJobExecutionRunnable --> AbstractProductExecutionService: calls multiple implementations  
 
 package com.mercedesbenz.sechub.domain.schedule {
 
@@ -92,40 +28,42 @@ package com.mercedesbenz.sechub.domain.schedule {
 		handleJobRestartRequested()
 	}
 	
-	class SchedulerRestartJobService {
-		restartJob(UUID jobUUID, String ownerEmailAddress)
-		- markJobAsNewExecutedNow(ScheduleSecHubJob secHubJob)
+	class SchedulerTerminationService {
+	   void terminate()
+	   boolean isTerminating()
 	}
 	
-	class ScheduleJobLauncherService {
-	 	executeJob(ScheduleSecHubJob secHubJob) 
+	class SchedulerJobBatchTriggerService {
+	   void triggerExecutionOfNextJob()
 	}
-}
-
-
-package com.mercedesbenz.sechub.domain.administration {
-
-
-	class JobRestartRequestService{
-		restartJob(UUID sechubJobUUID) 
+	
+	database DB {
+    	entity ScheduleSecHubJob {
+    	}
 	}
+	
 }
 
-class DomainMessageService {
+SchedulerJobBatchTriggerService ..> SchedulerTerminationService 
+SchedulerTerminationService -> ScheduleSecHubJob : persists with execution state\n`PAUSED`
+
+node EventBus {
 }
 
-JobRestartRequestService -> DomainMessageService: REQEUST RESTART JOB (soft)
-DomainMessageService -> ScheduleMessageHandler  : REQEUST RESTART JOB (soft) 
-ScheduleMessageHandler -> SchedulerRestartJobService
+node springcontainer as "Spring boot container" {
+}
 
-SchedulerRestartJobService -> ScheduleJobLauncherService
+springcontainer ..> SchedulerTerminationService: PreDestroy\ncalls terminate()
 
-ScheduleJobLauncherService -> DomainMessageService : START_SCAN (synchron)
+note top of SchedulerJobBatchTriggerService
+Blocks execution of any new jobs 
+inside the scheduler instance when
+isTerminating() returns true
+end note 
 
-DomainMessageService -> ScanService: START_SCAN (synchron)
+note bottom of SchedulerTerminationService
+Only the schedule domain is allowed to update
+the job state! After the job state TODO
+end note
 
-
-ScanService -> ScanJobExecutor
-
-ScanJobExecutor  -> ScanJobExecutionRunnable 
 @enduml

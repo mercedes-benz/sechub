@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-sechub-job-restart-handling]]
+
+{sechub} jobs can be restarted. To provide this the 
+
+The next diagram shows the involved classes and the program flow when {pds} is used for
+communication - but if no {pds} adapter is used for the product execution the behavior is
+similar: Each adapter is able to store meta data for the current job via callback but
+is also responsible to handle existing meta data on restarts.
+
+plantuml::diagrams/diagram_sechub_job_restart_handling.puml[format=svg, title="Job restart handling"] 
+ 
+[TIP]
+====
+It is always a good idea to use {pds} instead of direct product handling (via dedicated
+adapters) because {pds} (by the adapter) provides relaunch /restart meta data handling 
+out of the box!
+====
+ 

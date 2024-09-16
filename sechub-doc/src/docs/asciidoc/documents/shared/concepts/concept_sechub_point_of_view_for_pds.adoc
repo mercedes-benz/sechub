@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+=== PDS with SecHub
+With {pds} {sechub} can simply integrate different products in a very convenient, scalable and 
+resilient way.
+
+[TIP]
+====
+This documentation only gives an overview how and why {sechub} uses {pds}. Please look into the dedicated
+{pds} documentation for architecture and also technical details!
+====
+
+include::concept_pds_general.adoc[]
+

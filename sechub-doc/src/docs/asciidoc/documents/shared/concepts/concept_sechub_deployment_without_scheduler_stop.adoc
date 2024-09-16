@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-sechub-deployment-without-scheduler-stop]]
+*Why this concept is necessary*
+ 
+Before this concept, for new deployments of {sechub} server instances administrators had to
+stop the scheduler and to wait for running jobs. After no job were running any longer, 
+the deployment was triggered and after this the scheduler was enabled again and job processing 
+started again.
+
+This works always, but has a catch: If there are many running jobs it can take a while until all
+of those running jobs are done. And also in the mean time no new jobs are started. This means that 
+when we have a great count of running jobs, the time gap between deployment and start of new
+jobs increases. 
+
+CI/CD builds or any other use of SecHub takes longer in the meantime, which can be unpleasant /
+a bad user experience.
+
+===== SIGTERM handling
+
+plantuml::diagrams/diagram_sechub_sigterm_handling.puml[format=svg, title="Sigterm handling"] 
+
+In {pds} we already have a SIGTERM handling where the instance which is running a {pds} job will
+mark this job as PAUSED. 
+ 
+We use a similar approach in {sechub}:
+
+. Stop new job processing on {sechub} instance where SIGTERM signal occurred
+. Introduce a new {sechub} job execution state: `PAUSED` 
+. Mark all running {sechub} jobs on terminating instance as `PAUSED` (similar to cancel) which will also update `ENDED` timestamp on job
+. Other servers instances will restart `PAUSED` jobs by existing restart mechanism (but `PAUSED` will be handled before `READY_TO_START`).
+To prevent too fast restarts, the `ENDED` timestamp of {sechub} job will be inspected for paused jobs and only fetched as 
+next job when the time gap is greater than a defined (configurable) time period. 
+
+  

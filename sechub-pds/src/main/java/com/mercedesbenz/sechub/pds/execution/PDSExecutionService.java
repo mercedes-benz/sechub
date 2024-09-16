@@ -39,7 +39,9 @@ import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesAutoCleanup;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemSigTermHandling;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -102,6 +104,7 @@ public class PDSExecutionService {
     }
 
     @PreDestroy
+    @UseCaseSystemSigTermHandling(@PDSStep(number = 1, name = "Mark running jobs needing restart", description = "All running jobs in queue, which are not already done, will get the state READY_TO_RESTART"))
     protected void preDestroy() {
         /*
          * The field "scheduler" is a `java.util.concurrent.ScheduledExecutorService`

@@ -162,6 +162,8 @@ public enum UseCaseIdentifier {
     UC_USER_LISTS_JOBS_FOR_PROJECT(71),
 
     UC_ADMIN_SHOWS_USER_DETAILS_FOR_EMAIL_ADDRESS(72),
+    
+    UC_SYSTEM_SIGTERM_HANDLING(73,false),    
 
     ;
 

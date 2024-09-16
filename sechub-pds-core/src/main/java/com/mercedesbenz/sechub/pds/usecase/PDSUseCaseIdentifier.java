@@ -44,6 +44,8 @@ public enum PDSUseCaseIdentifier {
     UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(14),
 
     UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15, false),
+    
+    UC_SYSTEM_SIGTERM_HANDLING(16, false),
 
     ;
 

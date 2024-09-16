@@ -8,18 +8,24 @@ include::../shared/concepts/concept_modules_and_module_groups.adoc[]
 === Domain Driven Design
 include::../shared/concepts/concept_simple_domain_driven_design.adoc[]
 
-
 === Resilience
 include::../shared/concepts/concept_simple_resilience.adoc[]
+
+=== Job restarts
+include::../shared/concepts/concept_sechub_job_restart_handling.adoc[]
+
+=== Deployment without scheduler stop
+include::../shared/concepts/concept_sechub_deployment_without_scheduler_stop.adoc[]
 
 === Mappings
 include::../shared/concepts/concept_mappings.adoc[]
 
 // Product delegation server (headline in include - level3)
-include::../shared/concepts/concept_pds.adoc[]
-
+include::../shared/concepts/concept_sechub_point_of_view_for_pds.adoc[]
 
 include::../shared/concepts/concept_archive_extraction.adoc[]
+
+
 
 // False-positive handling (headline in include - level3)
 include::../shared/concepts/concept_falsepositive_handling.adoc[]
