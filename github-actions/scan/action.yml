@@ -82,37 +82,26 @@ runs:
 
     - name: Checkout SecHub Scan with Git
       run: |
-        # Set up the environment
-        mkdir -p sechub/scan
-        cd sechub/scan
-
-        # Clone only the desired branch (for better performance) without history
-        git init
-        git remote add origin https://github.com/mercedes-benz/sechub.git
-        git fetch origin gha_feature-3213-build-index-js-in-workflow --depth=1
-        git checkout FETCH_HEAD
-
-        # Enable sparse checkout
+        git clone --no-checkout https://github.com/mercedes-benz/sechub.git
+        cd sechub
         git config core.sparseCheckout true
-
-        # Configure sparse-checkout paths (this will fetch only specific folders)
+             
         echo "github-actions/scan" >> .git/info/sparse-checkout
-
-        # Re-fetch with sparse checkout
-        git read-tree -mu HEAD
+        
+        git checkout gha_feature-3213-build-index-js-in-workflow
       shell: bash
 
     - name: Npm Install
       run: npm install
-      working-directory: ${{ github.workspace }}/sechub/scan
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
     - name: Npm Run Build
       run: npm run build
-      working-directory: ${{ github.workspace }}/sechub/scan
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
     - name: Run SecHub Scan
       run: dist/index.js
-      working-directory: ${{ github.workspace }}/sechub/scan
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
