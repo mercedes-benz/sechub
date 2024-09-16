@@ -97,7 +97,6 @@ runs:
              
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
-        // TODO: which branch to checkout?
         git checkout gha_feature-3213-build-index-js-in-workflow
       shell: bash
 
