@@ -80,14 +80,27 @@ runs:
       with:
         node-version: 16
 
-    - name: Pull SecHub Scan Action
-      uses: actions/checkout@v4
-      with:
-        ref: gha_feature-3213-build-index-js-in-workflow
-        repository: mercedes-benz/sechub
-        path: sechub/scan
-        sparse-checkout: github-actions/scan
-        sparse-checkout-cone-mode: false
+    - name: Checkout SecHub Scan with Git
+      run: |
+        # Set up the environment
+        mkdir -p sechub/scan
+        cd sechub/scan
+
+        # Clone only the desired branch (for better performance) without history
+        git init
+        git remote add origin https://github.com/mercedes-benz/sechub.git
+        git fetch origin gha_feature-3213-build-index-js-in-workflow --depth=1
+        git checkout FETCH_HEAD
+
+        # Enable sparse checkout
+        git config core.sparseCheckout true
+
+        # Configure sparse-checkout paths (this will fetch only specific folders)
+        echo "github-actions/scan" >> .git/info/sparse-checkout
+
+        # Re-fetch with sparse checkout
+        git read-tree -mu HEAD
+      shell: bash
 
     - name: Npm Install
       run: npm install
