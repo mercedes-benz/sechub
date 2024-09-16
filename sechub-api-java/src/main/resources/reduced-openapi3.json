@@ -1,6 +1,75 @@
 {
     "components": {
         "schemas": {
+            "EncryptionStatus": {
+                "title": "EncryptionStatus",
+                "type": "object",
+                "properties": {
+                    "domains": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "createdFrom": {
+                                                "type": "string",
+                                                "description": "User id of admin who created the encryption entry"
+                                            },
+                                            "created": {
+                                                "type": "string",
+                                                "description": "Creation timestamp"
+                                            },
+                                            "usage": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "*": {
+                                                        "type": "number",
+                                                        "description": "Key value data"
+                                                    }
+                                                },
+                                                "description": "Map containing information about usage of this encryption"
+                                            },
+                                            "passwordSource": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "data": {
+                                                        "type": "string",
+                                                        "description": "Data for password source. If type is ENVIRONMENT_VARIABLE then it is the the name of the environment variable."
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "description": "Type of password source. Can be [NONE, ENVIRONMENT_VARIABLE]"
+                                                    }
+                                                }
+                                            },
+                                            "id": {
+                                                "type": "string",
+                                                "description": "Unique identifier"
+                                            },
+                                            "algorithm": {
+                                                "type": "string",
+                                                "description": "Algorithm used for encryption"
+                                            }
+                                        }
+                                    }
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the domain which will provide this encryption data elements"
+                                }
+                            }
+                        }
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "The type description of the json content"
+                    }
+                }
+            },
             "ExecutionProfileCreate": {
                 "title": "ExecutionProfileCreate",
                 "type": "object",
@@ -56,7 +125,7 @@
                                 },
                                 "enabled": {
                                     "type": "boolean",
-                                    "description": "enabled state of this config"
+                                    "description": "enabled state of this configuration"
                                 }
                             }
                         }
@@ -114,7 +183,7 @@
                     },
                     "name": {
                         "type": "string",
-                        "description": "The name of this configuration"
+                        "description": "A name for this configuration"
                     },
                     "setup": {
                         "type": "object",
@@ -513,10 +582,6 @@
                             "type": "string",
                             "description": "The uuid of the running job"
                         },
-                        "configuration": {
-                            "type": "string",
-                            "description": "Configuration used for this job"
-                        },
                         "projectId": {
                             "type": "string",
                             "description": "The name of the project the job is running for"
@@ -645,7 +710,7 @@
                         "properties": {
                             "key1": {
                                 "type": "string",
-                                "description": "An arbitrary metadata key"
+                                "description": "An arbitrary metadata key."
                             }
                         },
                         "description": "An JSON object containing metadata key-value pairs defined for this project."
@@ -667,11 +732,11 @@
                     },
                     "projectId": {
                         "type": "string",
-                        "description": "The name of the project"
+                        "description": "The name of the project."
                     },
                     "users": {
                         "type": "array",
-                        "description": "A list of all users having access to the project",
+                        "description": "A list of all users having access to the project.",
                         "items": {
                             "type": "string"
                         }
@@ -1201,7 +1266,7 @@
                     },
                     "email": {
                         "type": "string",
-                        "description": "The mail address of the user"
+                        "description": "The email address of the user"
                     },
                     "ownedProjects": {
                         "type": "array",
@@ -1230,7 +1295,7 @@
                     }
                 }
             },
-            "api-admin-project-projectId-104816866": {
+            "api-admin-encryption-rotate-638361826": {
                 "type": "object"
             }
         },
@@ -1291,7 +1356,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                    "$ref": "#/components/schemas/api-admin-encryption-rotate-638361826"
                                 }
                             }
                         }
@@ -1316,7 +1381,7 @@
                     "content": {
                         "application/json;charset=UTF-8": {
                             "schema": {
-                                "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                "$ref": "#/components/schemas/api-admin-encryption-rotate-638361826"
                             }
                         }
                     }
@@ -1855,6 +1920,66 @@
                 ]
             }
         },
+        "/api/admin/encryption/rotate": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin starts encryption rotation",
+                "description": "An administrator starts encryption rotation.",
+                "operationId": "adminStartsEncryptionRotation",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-admin-encryption-rotate-638361826"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/admin/encryption/status": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin fetches encryption status",
+                "description": "An administrator fetches encryption status from all domains where encryption is used.",
+                "operationId": "adminFetchesEncryptionStatus",
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EncryptionStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
         "/api/admin/info/server": {
             "get": {
                 "tags": [
@@ -2104,7 +2229,7 @@
                     "content": {
                         "application/json;charset=UTF-8": {
                             "schema": {
-                                "$ref": "#/components/schemas/api-admin-project-projectId-104816866"
+                                "$ref": "#/components/schemas/api-admin-encryption-rotate-638361826"
                             }
                         }
                     }

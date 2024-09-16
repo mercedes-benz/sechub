@@ -29,7 +29,7 @@ import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
  * @author Albert Tregnaghi
  *
  */
-public class Sarif2Sereco2SecHubReportTest {
+public class Sarif2Sereco2ScanSecHubReportLoaderTest {
 
     @Test
     void example1_owasp_zap_report_is_transformed_to_expected_sechub_report() throws Exception {

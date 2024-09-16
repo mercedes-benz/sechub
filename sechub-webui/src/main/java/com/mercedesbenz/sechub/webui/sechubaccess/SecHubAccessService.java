@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.MockedSecHubClient;
+import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
 
@@ -62,7 +62,7 @@ public class SecHubAccessService {
                 this.client = MockedSecHubClient.from(serverUri, userId, apiToken, trustAllCertificates);
             } else {
 
-                this.client = DefaultSecHubClient.builder().
+                this.client = OldDefaultSecHubClient.builder().
                         server(serverUri).
                         user(userId).
                         apiToken(apiToken).

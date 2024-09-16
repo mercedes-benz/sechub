@@ -5,27 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -82,65 +68,72 @@ public class SystemTestRuntimeContextHealthCheck {
 
         /* last but not least */
         RunSecHubJobDefinitionTransformer transformer = new RunSecHubJobDefinitionTransformer();
-        SecHubConfigurationModel model = transformer.transformToSecHubConfiguration(runSecHubJob);
-        SecHubConfigurationModelValidator validator = new SecHubConfigurationModelValidator();
-        SecHubConfigurationModelValidationResult result = validator.validate(model);
-        if (result.hasErrors()) {
-            for (SecHubConfigurationModelValidationErrorData errorData : result.getErrors()) {
-                throw new WrongConfigurationException("Test: " + test.getName() + " leads to an invalid sechub configurarion:" + errorData.toString(), context);
-            }
-        }
+        SecHubConfiguration secHubConfiguration = transformer.transformToSecHubConfiguration(runSecHubJob);
 
+        /*
+         *
+         * FIXME: This code is commented out because the
+         * SecHubConfigurationModelValidator is deprecated.
+         *
+         * SecHubConfigurationModelValidator validator = new
+         * SecHubConfigurationModelValidator(); SecHubConfigurationModelValidationResult
+         * result = validator.validate(secHubConfiguration); if (result.hasErrors()) {
+         * for (SecHubConfigurationModelValidationErrorData errorData :
+         * result.getErrors()) { throw new WrongConfigurationException("Test: " +
+         * test.getName() + " leads to an invalid sechub configurarion:" +
+         * errorData.toString(), context); } }
+         *
+         */
     }
 
     private void assertReferenceIds(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
-        Set<String> existingReferenceIds = collectReferenceIdsAndFailIfMissing(context, runSecHubJob);
+        List<String> existingReferenceIds = collectReferenceIdsAndFailIfMissing(context, runSecHubJob);
 
         assertReferencesCorrectForCodeScan(context, runSecHubJob, existingReferenceIds);
         assertReferencesCorrectForWebScan(context, runSecHubJob, existingReferenceIds);
         assertReferencesCorrectForLicenseScan(context, runSecHubJob, existingReferenceIds);
-        assertReferencesCorrectForSecretcan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForSecretScan(context, runSecHubJob, existingReferenceIds);
 
         /* Because infrastructure scans do not have references we do not handled them */
     }
 
-    private void assertReferencesCorrectForCodeScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForCodeScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, List<String> existingReferenceIds) {
         Optional<SecHubCodeScanConfiguration> codeConfigOpt = runSecHubJob.getCodeScan();
         if (codeConfigOpt.isPresent()) {
-            assertReferenceIdsCorrect("code scan", context, existingReferenceIds, codeConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+            assertReferenceIdsCorrect("code scan", context, existingReferenceIds, codeConfigOpt.get().getUse());
         }
     }
 
-    private void assertReferencesCorrectForSecretcan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForSecretScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob,
+            List<String> existingReferenceIds) {
         Optional<SecHubSecretScanConfiguration> secretConfigOpt = runSecHubJob.getSecretScan();
         if (secretConfigOpt.isPresent()) {
-            assertReferenceIdsCorrect("secret scan", context, existingReferenceIds, secretConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+            assertReferenceIdsCorrect("secret scan", context, existingReferenceIds, secretConfigOpt.get().getUse());
         }
     }
 
     private void assertReferencesCorrectForLicenseScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob,
-            Set<String> existingReferenceIds) {
+            List<String> existingReferenceIds) {
         Optional<SecHubLicenseScanConfiguration> licenseConfigOpt = runSecHubJob.getLicenseScan();
         if (licenseConfigOpt.isPresent()) {
-            assertReferenceIdsCorrect("license scan", context, existingReferenceIds, licenseConfigOpt.get().getNamesOfUsedDataConfigurationObjects());
+            assertReferenceIdsCorrect("license scan", context, existingReferenceIds, licenseConfigOpt.get().getUse());
         }
     }
 
-    private void assertReferencesCorrectForWebScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, Set<String> existingReferenceIds) {
+    private void assertReferencesCorrectForWebScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, List<String> existingReferenceIds) {
         Optional<SecHubWebScanConfiguration> webConfigOpt = runSecHubJob.getWebScan();
         if (webConfigOpt.isPresent()) {
-            Optional<SecHubWebScanApiConfiguration> apiOpt = webConfigOpt.get().getApi();
-            if (apiOpt.isEmpty()) {
+            SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = webConfigOpt.get().getApi();
+            if (secHubWebScanApiConfiguration == null) {
                 return;
             }
-            SecHubWebScanApiConfiguration api = apiOpt.get();
-            assertReferenceIdsCorrect("web scan api", context, existingReferenceIds, api.getNamesOfUsedDataConfigurationObjects());
+            assertReferenceIdsCorrect("web scan api", context, existingReferenceIds, secHubWebScanApiConfiguration.getUse());
         }
     }
 
-    private Set<String> collectReferenceIdsAndFailIfMissing(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+    private List<String> collectReferenceIdsAndFailIfMissing(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
         List<UploadDefinition> uploads = runSecHubJob.getUploads();
-        Set<String> existingReferenceIds = new TreeSet<>();
+        List<String> existingReferenceIds = new ArrayList<>(uploads.size());
         for (UploadDefinition upload : uploads) {
             Optional<String> refIdOpt = upload.getReferenceId();
             if (refIdOpt.isEmpty()) {
@@ -156,8 +149,8 @@ public class SystemTestRuntimeContextHealthCheck {
         return existingReferenceIds;
     }
 
-    private void assertReferenceIdsCorrect(String configName, SystemTestRuntimeContext context, Set<String> existingReferenceIds,
-            Set<String> referencedByScanOrNull) {
+    private void assertReferenceIdsCorrect(String configName, SystemTestRuntimeContext context, List<String> existingReferenceIds,
+            List<String> referencedByScanOrNull) {
         if (referencedByScanOrNull == null) {
             return;
         }

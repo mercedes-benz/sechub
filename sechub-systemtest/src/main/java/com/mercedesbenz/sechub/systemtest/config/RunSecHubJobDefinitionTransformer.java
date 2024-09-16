@@ -6,11 +6,7 @@ import static java.util.Objects.*;
 import java.util.List;
 import java.util.Optional;
 
-import com.mercedesbenz.sechub.commons.model.SecHubBinaryDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 
 public class RunSecHubJobDefinitionTransformer {
 
@@ -18,12 +14,12 @@ public class RunSecHubJobDefinitionTransformer {
      * Transforms a given SecHub job definition to a configuration model
      *
      * @param definition
-     * @return {@link SecHubConfigurationModel} instance
+     * @return {@link SecHubConfiguration} instance
      */
-    public SecHubConfigurationModel transformToSecHubConfiguration(RunSecHubJobDefinition definition) {
+    public SecHubConfiguration transformToSecHubConfiguration(RunSecHubJobDefinition definition) {
         requireNonNull(definition, "The defintion may not be null!");
 
-        SecHubConfigurationModel config = new SecHubConfigurationModel();
+        SecHubConfiguration config = new SecHubConfiguration();
 
         config.setApiVersion("1.0");
         config.setProjectId(definition.getProject());
@@ -71,7 +67,7 @@ public class RunSecHubJobDefinitionTransformer {
             fileSystem.getFiles().add(sourceFileOpt.get());
         }
         sourceConfig.setFileSystem(fileSystem);
-        sourceConfig.setUniqueName(upload.getReferenceId().orElse(null));
+        sourceConfig.setName(upload.getReferenceId().orElse(null));
         data.getSources().add(sourceConfig);
     }
 
@@ -90,7 +86,7 @@ public class RunSecHubJobDefinitionTransformer {
             fileSystem.getFiles().add(binaryFileOpt.get());
         }
         binaryConfig.setFileSystem(fileSystem);
-        binaryConfig.setUniqueName(upload.getReferenceId().orElse(null));
+        binaryConfig.setName(upload.getReferenceId().orElse(null));
         data.getBinaries().add(binaryConfig);
     }
 

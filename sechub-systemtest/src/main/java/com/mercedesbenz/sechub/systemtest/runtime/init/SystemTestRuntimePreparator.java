@@ -15,14 +15,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.systemtest.config.CalculatedVariables;
 import com.mercedesbenz.sechub.systemtest.config.CredentialsDefinition;
@@ -128,10 +123,11 @@ public class SystemTestRuntimePreparator {
         }
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         LOG.warn("Web scan found, but no special preparation done for url: {}", webScan.getUrl());
-        if (webScan.getApi().isEmpty()) {
+        SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = webScan.getApi();
+        if (secHubWebScanApiConfiguration == null) {
             return;
         }
-        handleUsedDataConfigurationObjects(webScan.getApi().get(), test, context);
+        handleUsedDataConfigurationObjects(secHubWebScanApiConfiguration.getUse());
     }
 
     private void handleInfraScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -150,7 +146,7 @@ public class SystemTestRuntimePreparator {
             return;
         }
         SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
-        handleUsedDataConfigurationObjects(codeScan, test, context);
+        handleUsedDataConfigurationObjects(codeScan.getUse());
     }
 
     private void handleLicenseScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -159,7 +155,7 @@ public class SystemTestRuntimePreparator {
             return;
         }
         SecHubLicenseScanConfiguration licenseScan = licenseScanOpt.get();
-        handleUsedDataConfigurationObjects(licenseScan, test, context);
+        handleUsedDataConfigurationObjects(licenseScan.getUse());
     }
 
     private void handleSecretScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -168,12 +164,12 @@ public class SystemTestRuntimePreparator {
             return;
         }
         SecHubSecretScanConfiguration secretScan = secretScanOpt.get();
-        handleUsedDataConfigurationObjects(secretScan, test, context);
+        handleUsedDataConfigurationObjects(secretScan.getUse());
     }
 
-    private void handleUsedDataConfigurationObjects(SecHubDataConfigurationUsageByName usageByName, TestDefinition test, SystemTestRuntimeContext context) {
-        if (usageByName.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
-            usageByName.getNamesOfUsedDataConfigurationObjects().add(FALLBACK_UPLOAD_REF_ID.getValue());
+    private void handleUsedDataConfigurationObjects(List<String> usageByNames) {
+        if (usageByNames != null && usageByNames.isEmpty()) {
+            usageByNames.add(FALLBACK_UPLOAD_REF_ID.getValue());
         }
     }
 
