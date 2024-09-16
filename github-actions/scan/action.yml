@@ -100,11 +100,6 @@ runs:
         git checkout gha_feature-3213-build-index-js-in-workflow
       shell: bash
 
-    - name: Npm Install
-      run: npm install
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
-
     - name: Cache Node Modules
       uses: actions/cache@v3
       with:
@@ -113,7 +108,12 @@ runs:
         restore-keys: |
           ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
           ${{ runner.os }}-sechub-github-actions-scan-node-
-          ${{ runner.os }}-
+          ${{ runner.os }}-   
+
+    - name: Npm Install
+      run: npm install
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
 
     - name: Npm Run Build
       run: npm run build
