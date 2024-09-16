@@ -82,12 +82,15 @@ runs:
 
     - name: Npm Install
       run: npm install
+      working-directory: ${{ github.workspace }}
       shell: bash
 
     - name: Npm Run Build
       run: npm run build
+      working-directory: ${{ github.workspace }}
       shell: bash
 
     - name: Run SecHub Scan
       run: dist/index.js
+      working-directory: ${{ github.workspace }}
       shell: bash
