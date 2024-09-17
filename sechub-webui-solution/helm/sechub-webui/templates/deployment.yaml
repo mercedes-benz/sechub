@@ -111,6 +111,12 @@ spec:
         # Spring profiles definition
         - name: SPRING_PROFILES_ACTIVE
           value: "{{ .Values.webui.spring.profiles }}"
+{{- if .Values.env }}
+        # ------------------------------------------------------------------------#
+        # Scope: Additional environment variables for the SecHub web-ui container
+        # ----------------------------------------------------------------------- #
+        {{ .Values.env | indent 8 | trim }}
+{{- end }}
 {{- if .Values.deploymentComment }}
         # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
         # This way, you can force deployments e.g. when secrets have changed.
