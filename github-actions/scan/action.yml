@@ -132,6 +132,10 @@ runs:
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
+    - name: Print version
+      run: echo "Running SecHub Scan version ${{ inputs.version }}"
+      shell: bash
+
     - name: Run SecHub Scan
       run: node dist/index.js
       env:
