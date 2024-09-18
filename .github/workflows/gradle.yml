@@ -11,7 +11,7 @@ on:
     # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
-  pull_request_target:
+  pull_request:
     # This workflow will run for all pull requests that target following branches
     branches:
       - main
