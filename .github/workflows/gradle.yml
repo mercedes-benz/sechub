@@ -11,7 +11,7 @@ on:
     # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
-  pull_request:
+  pull_request_target:
     # This workflow will run for all pull requests that target following branches
     branches:
       - main
@@ -26,8 +26,8 @@ on:
 
 jobs:
   build:
-    # This job is only executed if the branch name starts with or 'feature-'
-    if: "startsWith(github.head_ref, 'feature-')"
+    # This job is only executed if the branch name starts with 'feature-', or equals 'main', 'master', 'develop' or 'hotfix'
+    if: "startsWith(github.head_ref, 'feature-') || github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
