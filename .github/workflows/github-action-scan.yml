@@ -20,8 +20,8 @@ on:
 
 jobs:
   build-scan:
-    # This job is only executed if the branch name starts with 'feature-', or equals 'main', 'master', 'develop' or 'hotfix'
-    if: "startsWith(github.head_ref, 'feature-') || github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix'"
+    # This job is only executed if the branch name starts with 'gha_feature-', or equals 'main', 'master', 'develop' or 'hotfix'
+    if: "startsWith(github.head_ref, 'gha_feature-') || github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix'"
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
     
