@@ -80,7 +80,7 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 20
 
     # Cache the .git directory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub GitHub Actions .git Directory
@@ -132,6 +132,16 @@ runs:
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
+    - name: Set GitHub Environment Variables
+      uses: actions/github-script@v7
+      env:
+        github-token: ${{ github.token }}
+      with:
+        script: |
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
+          core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
+          core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+
     - name: Run SecHub Scan
       run: node dist/index.js
       env:
@@ -150,6 +160,8 @@ runs:
         trust-all: ${{ inputs.trust-all }}
         debug: ${{ inputs.debug }}
         fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
-        ACTIONS_RUNTIME_TOKEN: ${{ github.token }}
+        ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
+        ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
+        ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
