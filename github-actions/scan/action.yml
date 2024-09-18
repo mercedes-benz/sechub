@@ -104,7 +104,7 @@ runs:
              
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
-        git checkout master
+        git checkout gha_feature-3213-build-index-js-in-workflow
       shell: bash
 
     - name: Cache Node Modules

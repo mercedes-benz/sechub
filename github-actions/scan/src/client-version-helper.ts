@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 
 export async function getClientVersion(clientVersion: string): Promise<string> {
     if (!clientVersion || clientVersion.length === 0) {
-        throw new Error('Hallo Rouven!');
+        throw new Error('No SecHub client version defined!');
     }
 
     if (!isValidVersion(clientVersion)) {

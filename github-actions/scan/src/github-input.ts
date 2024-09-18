@@ -86,9 +86,7 @@ export function resolveGitHubInputData(): GitHubInputData {
  */
 function getParam(param: string): string {
     const envVar =  process.env[param];
-    core.info(`ENV VAR: ${param} - VALUE: ${envVar}`);
     if (!envVar || envVar.length === 0) {
-        core.info(`GITHUB PARAM: ${param} - VALUE: ${core.getInput(param)}`);
         return core.getInput(param);
     }
     return '';
