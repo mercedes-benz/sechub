@@ -73,8 +73,8 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
-  ## Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
-  ## By doing this we don't have to manually build & check-in the artifacts anymore
+  # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
+  # By doing this we don't have to manually build & check-in the artifacts anymore
   using: composite
   steps:
     - name: Setup Node.js
@@ -82,8 +82,8 @@ runs:
       with:
         node-version: 16
 
-    ## This will cache the SecHub Scan GitHub Action from the SecHub repository
-    - name: Cache SecHub GitHub Actions Scan Folder
+    # Cache the .git directory of the SecHub repository to speed up the checkout process
+    - name: Cache SecHub GitHub Actions .git Directory
       id: cache-sechub-github-actions-scan-git
       uses: actions/cache@v3
       with:
@@ -92,9 +92,10 @@ runs:
         restore-keys: |
           ${{ runner.os }}-sechub-github-actions-scan-git-${{ github.repository }}-
 
-    ## Checkout the 'github-actions/scan' subfolder from the SecHub repository
-    ## This contains the source code for the SecHub Scan GitHub Action
+    # Checkout the 'github-actions/scan' subfolder from the SecHub repository
+    # This contains the source code for the SecHub Scan GitHub Action
     - name: Checkout SecHub GitHub Actions Scan with Git
+      # If the cache was a hit (.git is present), we don't need to check out the repository again
       if: steps.cache-sechub-github-actions-scan-git.outputs.cache-hit != 'true'
       run: |
         git clone --no-checkout https://github.com/mercedes-benz/sechub.git
