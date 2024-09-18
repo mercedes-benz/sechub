@@ -26,8 +26,10 @@ on:
 
 jobs:
   build:
-    # This job is only executed if the branch name starts with 'feature-', or equals 'main', 'master', 'develop' or 'hotfix'
-    if: "startsWith(github.head_ref, 'feature-') || github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix'"
+    # This job is only executed if the branch name starts with 'feature-' or 'dependabot/'
+    # or equals 'main', 'master', 'develop' 'hotfix'
+    if: "startsWith(github.head_ref, 'feature-') || startsWith(github.head_ref, 'dependabot/') || 
+         github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
