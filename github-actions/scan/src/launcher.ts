@@ -91,6 +91,9 @@ async function createContext(): Promise<LaunchContext> {
 
     const gitHubInputData = resolveGitHubInputData();
 
+    core.error(`GitHubInputData: ${JSON.stringify(gitHubInputData)}`);
+    core.info(`GitHubInputData: ${JSON.stringify(gitHubInputData)}`);
+    core.debug(`GitHubInputData: ${JSON.stringify(gitHubInputData)}`);
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
