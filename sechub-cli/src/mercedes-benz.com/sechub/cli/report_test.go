@@ -40,7 +40,7 @@ func TestReportSaveWritesAFile(t *testing.T) {
 	report.save(context)
 
 	/* test */
-	expected := filepath.Join(tempDir, "a.out")
+	expected := filepath.Join(tempDir, "a-please-fail-again.out")
 	sechubTestUtil.AssertFileExists(expected, t)
 }
 
