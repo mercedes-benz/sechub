@@ -60,7 +60,7 @@ inputs:
   branch:
     description: 'Branch of the SecHub repository to use for the scan action'
     required: false
-    default: 'gha_feature-3213-build-index-js-in-workflow'
+    default: 'master'
 
 outputs:
   scan-trafficlight:
