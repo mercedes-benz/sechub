@@ -19,14 +19,14 @@ func TestReportFilePathCorrectCreated(t *testing.T) {
 	result := report.createFilePath(false)
 
 	/* test */
-	expected := filepath.Join("path1-please-fail", "fileName1")
+	expected := filepath.Join("path1", "fileName1")
 	if result != expected {
 		t.Fatalf("Strings differ:\nExpected:%s\nGot     :%s", expected, result)
 	}
 }
 
 func TestReportSaveWritesAFile(t *testing.T) {
-	/* prepare */
+	/* prepare - now all shall work again... */
 	tempDir := sechubTestUtil.InitializeTestTempDir(t)
 	defer os.RemoveAll(tempDir)
 
@@ -40,7 +40,7 @@ func TestReportSaveWritesAFile(t *testing.T) {
 	report.save(context)
 
 	/* test */
-	expected := filepath.Join(tempDir, "a-please-fail-again.out")
+	expected := filepath.Join(tempDir, "a.out")
 	sechubTestUtil.AssertFileExists(expected, t)
 }
 
