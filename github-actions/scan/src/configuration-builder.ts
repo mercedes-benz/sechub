@@ -7,9 +7,9 @@ import * as cm from './configuration-model';
 
 /**
  * Creates the sechub.json configuration file with the given user input values.
- * 
- * @param includeFolders Which folders should be included
- * @param excludeFolders Which folders should be excluded
+ *
+ * @param secHubJsonFilePath Path to the sechub.json file
+ * @param data sechub configuration model builder data
  */
 export function createSecHubConfigJsonFile(secHubJsonFilePath: string, data: SecHubConfigurationModelBuilderData) {
     core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
@@ -29,16 +29,15 @@ export class SecHubConfigurationModelBuilderData {
     includeFolders: string[] = [];
     excludeFolders: string[] = [];
 
-    contentType: string = SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE; 
+    contentType: string = SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE;
     scanTypes: string[] = [SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE];
 }
 
 /**
  * Creates a sechub configuration model object for given user input values.
- * 
- * @param includeFolders Which folders should be included
- * @param excludeFolders Which folders should be excluded
- * 
+ *
+ * @param builderData User input values
+ *
  * @returns model
  */
 export function createSecHubConfigurationModel(builderData: SecHubConfigurationModelBuilderData): SecHubConfigurationModel {

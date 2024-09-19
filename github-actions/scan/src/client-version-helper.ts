@@ -8,7 +8,7 @@ export async function getClientVersion(clientVersion: string): Promise<string> {
     }
 
     if (!isValidVersion(clientVersion)) {
-        throw new Error(`Invalid SecHub client version: ${clientVersion}`)
+        throw new Error(`Invalid SecHub client version: ${clientVersion}`);
     }
 
     if (clientVersion === 'latest') {
