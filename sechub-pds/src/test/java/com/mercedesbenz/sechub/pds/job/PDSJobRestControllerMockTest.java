@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -25,15 +25,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.pds.PDSProfiles;
-import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
+import com.mercedesbenz.sechub.pds.security.PDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(PDSJobRestController.class)
 /* @formatter:off */
 @ContextConfiguration(classes = {
@@ -44,9 +47,9 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
         PDSGetJobResultService.class,
         PDSRequestJobCancellationService.class,
         PDSGetJobStatusService.class,
-		PDSJobRestControllerMockTest.SimpleTestConfiguration.class })
+        PDSJobRestControllerMockTest.SimpleTestConfiguration.class})
 /* @formatter:on */
-@WithMockUser(authorities = PDSRoleConstants.ROLE_USER)
+@WithMockUser(roles = PDSRoleConstants.ROLE_USER)
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSJobRestControllerMockTest {
 
@@ -108,11 +111,11 @@ public class PDSJobRestControllerMockTest {
         UUID jobUUID = UUID.randomUUID();
 
         PDSJobStatus status = new PDSJobStatus();
-        status.created = "created1";
-        status.ended = "ended1";
-        status.jobUUID = jobUUID;
-        status.owner = "owner1";
-        status.state = "state1";
+        status.setCreated("created1");
+        status.setEnded("ended1");
+        status.setJobUUID(jobUUID);
+        status.setOwner("owner1");
+        status.setState(PDSJobStatusState.RUNNING);
 
         when(mockedJobStatusService.getJobStatus(jobUUID)).thenReturn(status);
 
@@ -122,7 +125,7 @@ public class PDSJobRestControllerMockTest {
                 get(https(PORT_USED).buildGetJobStatus(jobUUID))
                 ).
                     andExpect(status().isOk()).
-                    andExpect(content().json(status.toJSON(),true)
+                    andExpect(content().json(JSONConverter.get().toJSON(status),true)
                 );
 
         /* @formatter:on */
@@ -216,8 +219,7 @@ public class PDSJobRestControllerMockTest {
     @TestConfiguration
     @Profile(PDSProfiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends PDSAPISecurityConfiguration {
 
     }
-
 }

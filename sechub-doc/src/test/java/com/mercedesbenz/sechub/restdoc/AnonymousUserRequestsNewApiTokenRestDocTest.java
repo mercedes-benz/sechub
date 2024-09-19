@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserRequestNewApiTokenRestController;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserRequestsNewApiTokenService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRequestsNewApiToken;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -64,7 +64,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest implements TestIsNecess
         /* execute */
         /* @formatter:off */
         this.mockMvc.perform(
-        		post(apiEndpoint,"emailAdress@test.com").
+        		post(apiEndpoint,"emailAddress@example.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
         		).
         			andExpect(status().isOk()).
@@ -85,7 +85,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest implements TestIsNecess
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

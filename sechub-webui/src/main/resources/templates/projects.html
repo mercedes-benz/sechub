@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header (title=#{common.projects})">
+<title th:text="#{common.projects}">Projects</title>
+</head>
+<body class="container-flex flex-column">
+	<section th:replace="fragments/banner"></section>
+	
+	<nav th:replace="fragments/navbar"></nav>
+	
+	<main class="flex-grow padding-thin-all background-light">
+		<h1 th:text="#{common.projects}">Projects</h1>
+		<ul class="placeholder" th:each="projectId: ${projectIds}">
+		
+			<li><a th:text="${projectId}" th:href="'/projects/'+${projectId}+'/scans'" href="/projects/1/scans">Project 1</a></li>
+		</ul>
+	</main>
+	
+	<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

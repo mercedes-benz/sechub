@@ -1,32 +1,127 @@
 # SPDX-License-Identifier: MIT
-name: Build SecHub GitHub Action
+name: Build SecHub GHA (scan)
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - hotfix
+  pull_request:
+    # This workflow will run for all pull requests that target following branches
+    branches:
+      - main
+      - master
+      - develop
+      - hotfix
+  # enable manual triggering of workflow
+  workflow_dispatch:
 
 jobs:
   build-scan:
+    # This job is only executed if the branch name starts with 'gha_feature-' or 'dependabot/'
+    # or equals 'main', 'master', 'develop' 'hotfix'
+    if: ${{ startsWith(github.head_ref, 'gha_feature-') || startsWith(github.head_ref, 'dependabot/') ||
+      github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix' }}
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
     
     defaults:
       run:
-        working-directory: ./github-actions/scan
+        working-directory: github-actions/scan
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       
       - name: Use Node.js
         # We do not define a dedicated node version here, we just use the default environment
         # which should be the default environment for the github actions runtime as well
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
-    
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
+
       - name: Clean install
         run: npm ci 
         
       - name: Build
         run: npm run build --if-present
         
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
-    
-      
+        
+      # We store git status - why? Here we see if index.js has been changed - if so, a developer
+      # forgot to commit the changes - means the action cannot be used productive!  
+      - name: Store git status
+        run: |
+          git status
+          mkdir "${{ github.workspace }}/build" -p
+          git status >> "${{ github.workspace }}/build/git-status.txt"
+      - name: Define integration test setup
+        id : version-selector
+        run: |
+          echo "sechub_server_version=1.9.0" >> "$GITHUB_ENV"
+          echo "sechub_server_port=8443" >> "$GITHUB_ENV"
+          echo "pds_version=1.6.0" >> "$GITHUB_ENV"
+          echo "pds_port=8444" >> "$GITHUB_ENV"
+
+      - name: Cache SecHub server download    
+        # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
+        with:
+          path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
+          key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
+       
+      - name: Cache PDS download    
+        # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 
+        with:
+          path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
+          key: ${{ runner.os }}-pds-${{ env.pds_version }}
+
+      - name: Set up JDK 17 (to run servers)
+        uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Start integration test servers
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./01-start.sh $sechub_server_version $sechub_server_port $pds_version $pds_port
+        
+      - name: Init integration test data
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./03-init_sechub_data.sh $sechub_server_port $pds_port
+
+      - name: Run integration tests
+        run: npm run integration-test
+        
+      - name: Cleanup integration tests
+        working-directory: ./github-actions/scan/__test__/integrationtest/
+        run:  ./05-stop.sh $sechub_server_port $pds_port
+
+      # ------------------------------------ Archive git status-------------------
+      - name: Archive git status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: git-status
+          path: "${{ github.workspace }}/build/git-status.txt"
+          retention-days: 14
+
+      # ------------------------------------ Archive runtime logs-------------------
+      - name: Archive runtime logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sechub-runtime-logiles
+          path: ./build/sechub-runtime/**/*.log
+          retention-days: 14
+      # ------------------------------------ Archive reports  -----------------------
+      - name: Archive reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sechub-reports
+          path: |
+             ./github-actions/scan/sechub_report*.*
+             ./sechub_report*.*
+          retention-days: 14

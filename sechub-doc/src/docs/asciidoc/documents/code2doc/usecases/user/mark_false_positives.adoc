@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-marks-false-positives]]
+A user wants to mark false positives either for a finished job or with project data not necessarily connected to a finished job.
+
+To mark false positives using job data the job must have been executed, finished without failure and job NOT been deleted.
+The user will be able to mark former job results by their given id as false positives.
+
+To mark false positives using project data no job must have been run, but it will help identify findings as false positives of course.
+The project data are not related to any job information.
+

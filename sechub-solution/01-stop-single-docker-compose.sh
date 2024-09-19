@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 cd "$(dirname "$0")" || exit

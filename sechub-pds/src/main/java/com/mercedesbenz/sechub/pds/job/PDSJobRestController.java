@@ -3,9 +3,6 @@ package com.mercedesbenz.sechub.pds.job;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
@@ -25,6 +23,9 @@ import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserMarksJobReadyToStart;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancellation;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
+
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The REST API for PDS jobs

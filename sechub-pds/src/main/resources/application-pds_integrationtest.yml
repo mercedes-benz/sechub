@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: MIT
+server:
+  address: 127.0.0.1
+
+pds:
+  config:
+    file: './../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+    job:
+      stream:
+        cachetime: 500 # shorter cache time
+        check:
+          retries: 20
+          timetowait: 300 # faster feedback
+    trigger:
+      jobcancellation:
+        initialdelay: '100'
+        delay: 1000 # every second 
+      autoclean:
+        initialdelay: '100'
+        delay: '2000' # every two seconds - we have only a few tests which check auto cleanup, so
+                      # only those have to wait, other just not bothered by too many checks at same
+                      # time 
+  workspace:
+    rootfolder: './../sechub-integrationtest/build/test-results/pds-runtime'
+    
+  techuser:
+    userid: pds-inttest-techuser
+    apitoken: '{noop}pds-inttest-apitoken'
+
+  admin:
+    userid: pds-inttest-admin
+    apitoken: '{noop}pds-inttest-apitoken'
+  
+  encryption:
+     algorithm: AES_GCM_SIV_256
+     # Test key to have encryption also in integration tests
+     # (this is an exception: normally only environment variables are accepted, but
+     # for integration tests we allow this one)
+     secret-key: nj3AS0UOcA4d/K5cIfOUXipkB/x9oJAVZpVwLqJ5LJE=
+     
+logging:
+  level:
+    com.mercedesbenz.sechub: DEBUG
+    org.apache.http: WARN
+    org.apache.http.headers: WARN
+    org.apache.http.wire: WARN

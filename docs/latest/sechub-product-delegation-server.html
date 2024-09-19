@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 1.4.0 modified (commit aa28120)</span>
+<span id="revnumber"> PDS 2.0.0 modified (commit 3802004)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -545,56 +545,71 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#general">3.1.1. General</a></li>
 <li><a href="#handling-of-resources">3.1.2. Handling of resources</a></li>
 <li><a href="#big-picture">3.1.3. Big picture</a></li>
-<li><a href="#pds-storage-and-sharing">3.1.4. Storage and sharing</a>
+<li><a href="#encryption">3.1.4. Encryption</a>
 <ul class="sectlevel4">
-<li><a href="#shared-s3-storage">3.1.4.1. Shared S3 storage</a></li>
-<li><a href="#pds-storage-different-s3">3.1.4.2. Different S3 storages</a></li>
-<li><a href="#same-shared-volume-nfs">3.1.4.3. Same shared volume (NFS)</a></li>
-<li><a href="#pds-storage-different-sharedvolume">3.1.4.4. Different shared volumes (NFS)</a></li>
-<li><a href="#pds-storage-mixing-sharedvolume-and-s3">3.1.4.5. Mixing S3 and shared volume (NFS)</a></li>
-</ul>
-</li>
-<li><a href="#pds-process-handling">3.1.5. Process execution</a>
-<ul class="sectlevel4">
-<li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.5.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
-<li><a href="#how-pds-handles-meta-data">3.1.5.2. How PDS handles meta data</a>
+<li><a href="#general-2">3.1.4.1. General</a></li>
+<li><a href="#pds-startup">3.1.4.2. PDS startup</a></li>
+<li><a href="#administration">3.1.4.3. Administration</a>
 <ul class="sectlevel5">
-<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.5.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
+<li><a href="#section-shared-concepts-pds-data-encryption-rotation">3.1.4.3.1. Encryption rotation</a></li>
+<li><a href="#encryption-status">3.1.4.3.2. Encryption status</a></li>
+<li><a href="#cleanup-old-encrypted-data">3.1.4.3.3. Cleanup old encrypted data</a></li>
 </ul>
 </li>
-<li><a href="#how-pds-handles-storage-data">3.1.5.3. How PDS handles storage data</a>
-<ul class="sectlevel5">
-<li><a href="#pds-fetches-sourcecode-from-storage">3.1.5.3.1. Source code fetching</a></li>
-<li><a href="#pds-fetches-binaries-from-storage">3.1.5.3.2. Binaries fetching</a></li>
-<li><a href="#pds-explanation-data-structure">3.1.5.3.3. Data structure inside TAR and ZIP files</a></li>
-<li><a href="#automated-extraction-of-relevant-parts">3.1.5.3.4. Automated Extraction of relevant parts</a></li>
+<li><a href="#diagrams">3.1.4.4. Diagrams</a></li>
 </ul>
 </li>
-<li><a href="#how-pds-handles-user-messages">3.1.5.4. How PDS handles user messages</a></li>
-<li><a href="#how-pds-handles-execution-events">3.1.5.5. How PDS handles execution events</a></li>
-</ul>
-</li>
-<li><a href="#section-shared-concepts-pds-events-dataflow">3.1.6. PDS events</a>
+<li><a href="#concept-pds-auto-cleanup">3.1.5. Auto cleanup</a></li>
+<li><a href="#pds-storage-and-sharing">3.1.6. Storage and sharing</a>
 <ul class="sectlevel4">
-<li><a href="#overview">3.1.6.1. Overview</a></li>
-<li><a href="#handling-events-in-launcher-script">3.1.6.2. Handling events in launcher script</a></li>
-<li><a href="#how-pds-product-executors-configure-the-pds-adapter">3.1.6.3. How PDS product executors configure the PDS adapter</a></li>
-<li><a href="#overview-2">3.1.6.4. Overview</a></li>
+<li><a href="#shared-s3-storage">3.1.6.1. Shared S3 storage</a></li>
+<li><a href="#pds-storage-different-s3">3.1.6.2. Different S3 storages</a></li>
+<li><a href="#same-shared-volume-nfs">3.1.6.3. Same shared volume (NFS)</a></li>
+<li><a href="#pds-storage-different-sharedvolume">3.1.6.4. Different shared volumes (NFS)</a></li>
+<li><a href="#pds-storage-mixing-sharedvolume-and-s3">3.1.6.5. Mixing S3 and shared volume (NFS)</a></li>
 </ul>
 </li>
-<li><a href="#sechub-integration">3.1.7. SecHub integration</a>
+<li><a href="#pds-process-handling">3.1.7. Process execution</a>
 <ul class="sectlevel4">
-<li><a href="#executors-and-adapters">3.1.7.1. Executors and Adapters</a>
+<li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.7.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
+<li><a href="#how-pds-handles-meta-data">3.1.7.2. How PDS handles meta data</a>
 <ul class="sectlevel5">
-<li><a href="#executors">3.1.7.1.1. Executors</a></li>
-<li><a href="#adapters">3.1.7.1.2. Adapters</a></li>
+<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.7.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
+</ul>
+</li>
+<li><a href="#how-pds-handles-storage-data">3.1.7.3. How PDS handles storage data</a>
+<ul class="sectlevel5">
+<li><a href="#pds-fetches-sourcecode-from-storage">3.1.7.3.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">3.1.7.3.2. Binaries fetching</a></li>
+<li><a href="#pds-explanation-data-structure">3.1.7.3.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">3.1.7.3.4. Automated Extraction of relevant parts</a></li>
+</ul>
+</li>
+<li><a href="#how-pds-handles-user-messages">3.1.7.4. How PDS handles user messages</a></li>
+<li><a href="#how-pds-handles-execution-events">3.1.7.5. How PDS handles execution events</a></li>
+</ul>
+</li>
+<li><a href="#section-shared-concepts-pds-events-dataflow">3.1.8. PDS events</a>
+<ul class="sectlevel4">
+<li><a href="#overview">3.1.8.1. Overview</a></li>
+<li><a href="#handling-events-in-launcher-script">3.1.8.2. Handling events in launcher script</a></li>
+<li><a href="#how-pds-product-executors-configure-the-pds-adapter">3.1.8.3. How PDS product executors configure the PDS adapter</a></li>
+<li><a href="#overview-2">3.1.8.4. Overview</a></li>
+</ul>
+</li>
+<li><a href="#sechub-integration">3.1.9. SecHub integration</a>
+<ul class="sectlevel4">
+<li><a href="#executors-and-adapters">3.1.9.1. Executors and Adapters</a>
+<ul class="sectlevel5">
+<li><a href="#executors">3.1.9.1.1. Executors</a></li>
+<li><a href="#adapters">3.1.9.1.2. Adapters</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a href="#howto-integrate-a-new-product-via-pds">3.1.10. HowTo integrate a new product via PDS</a></li>
 </ul>
 </li>
-<li><a href="#howto-integrate-a-new-product-via-pds">3.2. HowTo integrate a new product via PDS</a></li>
 </ul>
 </li>
 <li><a href="#runtime-view">4. Runtime view</a>
@@ -792,7 +807,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 1.4.0 modified (commit aa28120) - Build date: 20240129100221</code></p>
+<p>Documentation version: <code>PDS 2.0.0 modified (commit 3802004) - Build date: 20240906151452</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -875,7 +890,7 @@ need to provide a <code>ProductDelegationServer</code> (in short form <code>PDS<
 <p>provides REST access</p>
 </li>
 <li>
-<p>a very simple priviledge model with just two users (<code>tech user</code> + <code>admin user</code>),
+<p>a very simple privilege model with just two users (<code>tech user</code> + <code>admin user</code>),
 basic auth via <code>TLS</code>, credentials are simply defined by environment entries on startup</p>
 </li>
 <li>
@@ -913,7 +928,210 @@ available as environment variables at runtime</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pds-storage-and-sharing">3.1.4. Storage and sharing</h4>
+<h4 id="encryption">3.1.4. Encryption</h4>
+<div id="section-shared-concepts-pds-data-encryption" class="paragraph">
+<p>In PDS we can have also some sensitive data we want to be encrypted. For example: The remote data
+section inside the sechub job configuration contains credentials to fetch data.
+Such sensitive information shall be always encrypted.</p>
+</div>
+<div class="sect4">
+<h5 id="general-2">3.1.4.1. General</h5>
+<div class="paragraph">
+<p>We want</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Simple encryption rotation approach<br>
+In contrast to SecHub, the data in the PDS is only temporary and is not made available for a
+longer period of time. Subsequent access to encrypted data is also no longer necessary,
+but only while a SecHub job is running. +<br>
+<br>
+This means we simply accept the situation that a PDS restart with new encryption setup could
+lead to a situation where a former created job is no longer executable by PDS.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When the encryption changes for a job between its creation and when it begins running, the job will
+be marked automatically as failed and having encryption out of sync.
+The PDS product executor at SecHub side will take care of such a situation and will restart
+a new PDS job (which will then be encrypted correctly again).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Full automated<br>
+There is no need for manual interaction - means it is not necessary to create any cron jobs or
+something else to convert non encrypted data to encrypted data or to rotate a password or to
+use a new encryption method.</p>
+</li>
+<li>
+<p>Data protection /Privacy policy</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Even for administrators it shall not be possible to fetch the information directly<br>
+<em>(of course a person who knows the encryption password and has access to the database will always
+ be able to calculate values - but we separate here between administration and operation inside
+ this concept, so protection is fully possible)</em></p>
+</li>
+<li>
+<p>The data must not be accidentally made available in decrypted form - for example through a REST
+call in which the data object is passed along unencrypted.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Easy encryption administration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>It shall be possible for an administrator to configure a new cipher entry at deployment time</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Secure storage of encryption passwords<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Encryption passwords are always provided via environment entries, we store always
+the environment variable name to use inside the database but never plain values!</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pds-startup">3.1.4.2. PDS startup</h5>
+<div class="paragraph">
+<p>A PDS server only knows the encryption defined inside two variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PDS_ENCRYPTION_SECRET_KEY</code><br>
+contains the base64 encoded secret key used for encryption</p>
+</li>
+<li>
+<p><code>PDS_ENCRYPTION_ALGORITHM</code><br>
+contains the information about the used encryption algorithm. Can be<br>
+<code>NONE</code>, <code>AES_GCM_SIV_128</code> or <code>AES_GCM_SIV_256</code> .</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This setup will be used inside the complete instance as long as it is running.
+There is no pooling of different encryptions (in constrast to SecHub, where pooling feature exists).</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the secret key is not a base 64 value the server startup will fail!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="administration">3.1.4.3. Administration</h5>
+<div class="sect5">
+<h6 id="section-shared-concepts-pds-data-encryption-rotation">3.1.4.3.1. Encryption rotation</h6>
+<div class="paragraph">
+<p>There is no complete rotation of encryption - old data will have no encryption update.</p>
+</div>
+<div class="paragraph">
+<p>But an administrator is able to do re-deployment of the PDS cluster
+and using other secret or algorithm.</p>
+</div>
+<div class="paragraph">
+<p>This will</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>use new encryption setup for all new PDS jobs</p>
+</li>
+<li>
+<p>keep existing encrypted data as is</p>
+</li>
+<li>
+<p>can lead to a rare race condition when SecHub has created the job with old PDS instance and
+new PDS instance tries to run the PDS job (the access to the encrypted data is no longer possible)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Via <a href="#concept-pds-auto-cleanup">auto cleanup</a> the old data will automatically disappear.
+If an encryption cleanup for PDS via auto cleanup is too late (e.g. credentials were leaked and
+an update is really urgent) , it is still possible to just delete
+via SQL all jobs at database which have a timestamp older then the newest deployment time (or
+just all).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="encryption-status">3.1.4.3.2. Encryption status</h6>
+<div class="paragraph">
+<p>There is no direct possibility to check encryption status. But the job contains a creation time stamp
+and can be mapped to the startup of containers if this would become necessary.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="cleanup-old-encrypted-data">3.1.4.3.3. Cleanup old encrypted data</h6>
+<div class="paragraph">
+<p><a href="#concept-pds-auto-cleanup]">Auto Cleanup</a> automatically removes old information.
+This means that old encrypted information (with older encryption settings) automatically
+disappears after a certain period of time.</p>
+</div>
+<div class="paragraph">
+<p>Since no other encryption data is persisted except in the PDS job, nothing else needs to be cleaned up.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="diagrams">3.1.4.4. Diagrams</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_encryption_pds.svg" alt="Diagram" width="1269" height="430">
+</div>
+<div class="title">Figure 1. title</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="concept-pds-auto-cleanup">3.1.5. Auto cleanup</h4>
+<div class="paragraph">
+<p>The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.</p>
+</div>
+<div class="paragraph">
+<p>The default configuration is set to 2 days.
+Administrators can change the default configuration via REST.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pds-storage-and-sharing">3.1.6. Storage and sharing</h4>
 <div class="paragraph">
 <p>PDS needs - like SecHub - the possiblity to store job data in a central storage location when
 operating inside a cluster <em>(it&#8217;s not clear which cluster member uploads job data and which one does execute
@@ -973,7 +1191,7 @@ URLs are NOT supported - only file paths. So you must mount your network file st
 </table>
 </div>
 <div class="sect4">
-<h5 id="shared-s3-storage">3.1.4.1. Shared S3 storage</h5>
+<h5 id="shared-s3-storage">3.1.6.1. Shared S3 storage</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-shared-s3-buckets">next example</a> PDS and SecHub are using the same S3 bucket to store files uploaded by the user.</p>
 </div>
@@ -1020,7 +1238,7 @@ Read there for more details - it&#8217;s the same - except there are not 2 diffe
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-different-s3">3.1.4.2. Different S3 storages</h5>
+<h5 id="pds-storage-different-s3">3.1.6.2. Different S3 storages</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-diff-s3-buckets">next example</a> PDS and SecHub are using different S3 buckets as storage.</p>
 </div>
@@ -1081,7 +1299,7 @@ This will NOT WORK! The job storage will not be found and an error will be throw
 </div>
 </div>
 <div class="sect4">
-<h5 id="same-shared-volume-nfs">3.1.4.3. Same shared volume (NFS)</h5>
+<h5 id="same-shared-volume-nfs">3.1.6.3. Same shared volume (NFS)</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-shared-nfs">next example</a> PDS server and SecHub are using same shared volume as storage.</p>
 </div>
@@ -1128,7 +1346,7 @@ Read there for more details - it&#8217;s the same - except there are not 2 diffe
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-different-sharedvolume">3.1.4.4. Different shared volumes (NFS)</h5>
+<h5 id="pds-storage-different-sharedvolume">3.1.6.4. Different shared volumes (NFS)</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-diff-nfs">next example</a> PDS and SecHub are using different shared volumes as storage.</p>
 </div>
@@ -1189,7 +1407,7 @@ This will NOT WORK! The job storage will not be found and an error will be throw
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-mixing-sharedvolume-and-s3">3.1.4.5. Mixing S3 and shared volume (NFS)</h5>
+<h5 id="pds-storage-mixing-sharedvolume-and-s3">3.1.6.5. Mixing S3 and shared volume (NFS)</h5>
 <div class="paragraph">
 <p>This <a href="#section-pds-s3-storage-example-s3-nfs-mixed">example</a> is only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes:
 <code>pds.config.use.sechub.storage</code> cannot be used in this case.</p>
@@ -1206,7 +1424,7 @@ PDS instances for product <code>XYZ</code> would use a NFS to store job data. Bu
 </div>
 </div>
 <div class="sect3">
-<h4 id="pds-process-handling">3.1.5. Process execution</h4>
+<h4 id="pds-process-handling">3.1.7. Process execution</h4>
 <div class="paragraph">
 <p>PDS instances are executing so called <code>caller scripts</code> by spanning a new process. At this time
 dedicated environment variables are automatically injected and available inside the scripts.</p>
@@ -1231,7 +1449,7 @@ the PDS configuration file and make the script callable.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.5.1. How PDS provides output and error stream content of running jobs in clustered environments</h5>
+<h5 id="how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.7.1. How PDS provides output and error stream content of running jobs in clustered environments</h5>
 <div class="paragraph">
 <p>We use <code>error.txt</code> and <code>output.txt</code> inside the workspace location of
 a running PDS job.</p>
@@ -1272,7 +1490,7 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-meta-data">3.1.5.2. How PDS handles meta data</h5>
+<h5 id="how-pds-handles-meta-data">3.1.7.2. How PDS handles meta data</h5>
 <div id="concept-pds_solution_metadata" class="paragraph">
 <p>When communication of PDS with the used product is stateful and is a long running operation,
 it can be useful to store such state/meta data.</p>
@@ -1314,7 +1532,7 @@ of the job run must be available, see next diagram for details:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.5.2.1. Checkmarx PDS solution adapter meta data handling</h6>
+<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.7.2.1. Checkmarx PDS solution adapter meta data handling</h6>
 <div class="paragraph">
 <p>The PDS solution for <code>Checkmarx</code> does reuse the already existing <code>CheckmarxAdapter</code> class.
 A <code>sechub-wrapper-checkmarx</code> gradle project was introduced which contains a simple spring boot
@@ -1332,14 +1550,14 @@ reading or writing to the database but uses the <code>metadata.txt</code> file f
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-storage-data">3.1.5.3. How PDS handles storage data</h5>
+<h5 id="how-pds-handles-storage-data">3.1.7.3. How PDS handles storage data</h5>
 <div class="paragraph">
 <p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
 temporary into its local filesystem. After the scan has been done, the temporary local files
 will be automatically deleted.</p>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-sourcecode-from-storage">3.1.5.3.1. Source code fetching</h6>
+<h6 id="pds-fetches-sourcecode-from-storage">3.1.7.3.1. Source code fetching</h6>
 <div class="paragraph">
 <p>Source code is always contained in a file called <code>sourcecode.zip</code>.
 When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
@@ -1354,7 +1572,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-binaries-from-storage">3.1.5.3.2. Binaries fetching</h6>
+<h6 id="pds-fetches-binaries-from-storage">3.1.7.3.2. Binaries fetching</h6>
 <div class="paragraph">
 <p>Binaries are always contained in a file called <code>binaries.tar</code>.
 When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
@@ -1369,7 +1587,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-explanation-data-structure">3.1.5.3.3. Data structure inside TAR and ZIP files</h6>
+<h6 id="pds-explanation-data-structure">3.1.7.3.3. Data structure inside TAR and ZIP files</h6>
 <div id="data-structure-tar-and-zip-files" class="paragraph">
 <p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
 data configuration parts inside <code><em>data</em></code> folder.</p>
@@ -1568,7 +1786,7 @@ __data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
 </div>
 </div>
 <div class="sect5">
-<h6 id="automated-extraction-of-relevant-parts">3.1.5.3.4. Automated Extraction of relevant parts</h6>
+<h6 id="automated-extraction-of-relevant-parts">3.1.7.3.4. Automated Extraction of relevant parts</h6>
 <div class="paragraph">
 <p>Only files and folders which are available for the configured scan type will be automatically
 extracted!<br>
@@ -1713,7 +1931,7 @@ The <code>PDS</code> for license scanning will only extract <code>license-binari
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-user-messages">3.1.5.4. How PDS handles user messages</h5>
+<h5 id="how-pds-handles-user-messages">3.1.7.4. How PDS handles user messages</h5>
 <div id="section-shared-concepts-product-message-pds-dataflow" class="paragraph">
 <p>Inside a PDS workspace a special messages folder exists. The launcher script can create there
 dedicated user message files by creating simple text files (see <a href="#table-link-pds-launcher-script-variable-messages">PDS_JOB_USER_MESSAGES_FOLDER</a>
@@ -1725,22 +1943,22 @@ PDS Job. Those SecHub messages can be fetched by technical user via REST API.</p
 <div class="content">
 <img src="images/diagram_product_messages_pds_storage.svg" alt="Diagram" width="1395" height="532">
 </div>
-<div class="title">Figure 1. PDS user message handling</div>
+<div class="title">Figure 2. PDS user message handling</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-execution-events">3.1.5.5. How PDS handles execution events</h5>
+<h5 id="how-pds-handles-execution-events">3.1.7.5. How PDS handles execution events</h5>
 
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-shared-concepts-pds-events-dataflow">3.1.6. PDS events</h4>
+<h4 id="section-shared-concepts-pds-events-dataflow">3.1.8. PDS events</h4>
 <div class="paragraph">
 <p>Sometimes it is necessary that the PDS inform the script about changes.
 This can be done by execution events.</p>
 </div>
 <div class="sect4">
-<h5 id="overview">3.1.6.1. Overview</h5>
+<h5 id="overview">3.1.8.1. Overview</h5>
 <div class="paragraph">
 <p>The product adapter is able to read and write events into a dedicated folder inside the workspace.
 This is utilized by the <code>PDSWorkspaceService</code> class.</p>
@@ -1761,11 +1979,11 @@ As an example for an event the PDS cancel service calls are additionally shown (
 <div class="content">
 <img src="images/diagram_pds_events_storage.svg" alt="Diagram" width="847" height="944">
 </div>
-<div class="title">Figure 2. Storing PDS events</div>
+<div class="title">Figure 3. Storing PDS events</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="handling-events-in-launcher-script">3.1.6.2. Handling events in launcher script</h5>
+<h5 id="handling-events-in-launcher-script">3.1.8.2. Handling events in launcher script</h5>
 <div class="paragraph">
 <p>The launcher scripts (or in started wrapper applications by these scripts) have the
 environment variable <code>PDS_JOB_EVENTS_FOLDER</code> injected.</p>
@@ -1796,7 +2014,7 @@ be stopped automatically (otherwise the ZAP scan will still proceed&#8230;&#8203
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-product-executors-configure-the-pds-adapter">3.1.6.3. How PDS product executors configure the PDS adapter</h5>
+<h5 id="how-pds-product-executors-configure-the-pds-adapter">3.1.8.3. How PDS product executors configure the PDS adapter</h5>
 <div id="concept-pds_adapter_configuration" class="paragraph">
 <p>The different PDS product executors have different config builders which inherit from different abstract base classes
 (e.g. <code>AbstractCodeScanAdapterConfigBuilder</code>). We have no multi inheritance in Java, but we do also not
@@ -1807,7 +2025,7 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect4">
-<h5 id="overview-2">3.1.6.4. Overview</h5>
+<h5 id="overview-2">3.1.8.4. Overview</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_pds_adapter_configuration_overview.png" alt="Diagram" width="1494" height="926">
@@ -1816,11 +2034,11 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-integration">3.1.7. SecHub integration</h4>
+<h4 id="sechub-integration">3.1.9. SecHub integration</h4>
 <div class="sect4">
-<h5 id="executors-and-adapters">3.1.7.1. Executors and Adapters</h5>
+<h5 id="executors-and-adapters">3.1.9.1. Executors and Adapters</h5>
 <div class="sect5">
-<h6 id="executors">3.1.7.1.1. Executors</h6>
+<h6 id="executors">3.1.9.1.1. Executors</h6>
 <div class="paragraph">
 <p>With <code>PDS</code> there is a default <code>REST</code> <code>API</code> available.</p>
 </div>
@@ -1830,7 +2048,7 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect5">
-<h6 id="adapters">3.1.7.1.2. Adapters</h6>
+<h6 id="adapters">3.1.9.1.2. Adapters</h6>
 <div class="paragraph">
 <p>The Adapter will always be the same, but filled with other necessary parameters.</p>
 </div>
@@ -1849,9 +2067,8 @@ So there will be no need to write any adapter or executor when using PDS!
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="howto-integrate-a-new-product-via-pds">3.2. HowTo integrate a new product via PDS</h3>
+<div class="sect3">
+<h4 id="howto-integrate-a-new-product-via-pds">3.1.10. HowTo integrate a new product via PDS</h4>
 <div class="paragraph">
 <p>Having new security product XYZ but being a command line tool, we</p>
 </div>
@@ -1928,6 +2145,25 @@ implementatiion</p>
 <p>test via SecHub client by starting a new SecHub job which shall use the product and verify results</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Output and error stream of a PDS launcher script are stored in PDS database as plain text!
+Means: NEVER log any sensitive data in launcher scripts!</p>
+</div>
+<div class="paragraph">
+<p>If you want to give hints for debugging etc. you have to mask the information in log output.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -2095,56 +2331,38 @@ POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
 <h4 id="section-general-configuration">4.1.4. General configuration</h4>
 <div class="paragraph">
 <p>PDS can be configured by keys on server startup.
-Using the spring <code>@Value</code> annotation we are able to
-use these keys as Java system properties but also as environment entries.</p>
+With spring it is is possible to define the keys as Java system properties but also as
+environment entries.</p>
 </div>
 <div class="paragraph">
-<p>E.g. a key like <code>pds.admin.apitoken</code> can be set with</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>java ... -Dpds.admin.apitoken={noop}12345exampleToken</pre>
-</div>
+<p>E.g. a key like <code>pds.server.debug</code> can be set with <code>-Dpds.server.debug=true</code></p>
 </div>
 <div class="paragraph">
-<p>or with an environment entry <code>PDS_ADMIN_APITOKEN</code> which
+<p>or with an environment entry <code>PDS_SERVER_DEBUG</code> which
 is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </div>
-<div class="admonitionblock tip">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>When you have secret information you can define those information as a template by using environment
-variables from your SecHub installation.</p>
+<p>Even when it is possible to configure <code>PDS</code> with system properties or with environment variables
+there are some configuration options which insists to be defined as environment variable only (E.g. because they
+contain sensitive information which shall not appear inside any process inspection logs).</p>
 </div>
 <div class="paragraph">
-<p>An example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If your SecHub process runs in an environment with variable <code>PDS_GOSEC_SOLUTION_APITOKEN</code> set
-to 'very-secret-apitoken1234' <em>(e.g. by using secrets inside K8s)</em>, the authentication sent to
-PDS by SecHub will use</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>pds.admin.apitoken=very-secret-apitoken1234</code></pre>
-</div>
+<p>If you define those parts not as environment variables, <code>PDS</code> will not start but show an error message instead.
+Please look for more information at the following tables.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<table id="section-gen-config-scope-credentials" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Scope 'credentials'</caption>
+<table id="section-gen-configuration-scope-Encryption" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Scope 'Encryption'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2152,36 +2370,26 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.apitoken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ENCRYPTION_ALGORITHM</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator api token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The encryption type. Allowed values are: NONE, AES_GCM_SIV_128 or AES_GCM_SIV_256 <strong>This must be defined as an environment variable!</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.admin.userid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ENCRYPTION_SECRET_KEY</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.apitoken</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user api token</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.techuser.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The secret key used for encryption. It must be base64 encoded, otherwise it is not accepted. <strong>This must be defined as an environment variable!</strong></p></td>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Scope 'development'</caption>
+<table id="section-gen-configuration-scope-credentials" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Scope 'credentials'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2189,7 +2397,61 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ADMIN_APITOKEN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator api token. <strong>This must be defined as an environment variable!</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_ADMIN_USERID</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user id. <strong>This must be defined as an environment variable!</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_TECHUSER_APITOKEN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user api token. <strong>This must be defined as an environment variable!</strong></p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-credentials." class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Scope 'credentials.'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_TECHUSER_USERID</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Techuser user id. <strong>This must be defined as an environment variable!</strong></p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-development" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Scope 'development'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2207,8 +2469,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-execution" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Scope 'execution'</caption>
+<table id="section-gen-configuration-scope-execution" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Scope 'execution'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2216,12 +2478,32 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-directory-depth</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum directory depth for an entry inside the archive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-entries</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines how many entries the archive may have</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.max-file-size-uncompressed</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the max file size of the uncompressed archive (e.g.: 10KB or 10mb)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.archive.extraction.timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the timeout of the archive extraction process</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.execute.queue.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
@@ -2245,7 +2527,7 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.autoclean.disabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done). This is useful for debugging, but should not be used in production.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.workspace.rootfolder</p></td>
@@ -2254,8 +2536,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'migration'</caption>
+<table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2263,7 +2545,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2276,8 +2558,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-monitoring" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'monitoring'</caption>
+<table id="section-gen-configuration-scope-monitoring" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Scope 'monitoring'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2285,7 +2567,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2313,8 +2595,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'p'</caption>
+<table id="section-gen-configuration-scope-p" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2322,7 +2604,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2355,8 +2637,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'scheduler'</caption>
+<table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2364,7 +2646,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2387,8 +2669,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'security'</caption>
+<table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2396,7 +2678,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2409,8 +2691,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-startup" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'startup'</caption>
+<table id="section-gen-configuration-scope-startup" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Scope 'startup'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2418,7 +2700,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2426,13 +2708,18 @@ PDS by SecHub will use</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.file</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">./pds-config.json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">./pds-configuration.json</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Define path to PDS configuration file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.startup.assert.environment-variables-used.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When true, the startup assertion for forcing usage of some environment variables is disabled</p></td>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'storage'</caption>
+<table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2440,7 +2727,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2449,12 +2736,12 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.accesskey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.bucketname</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.connection.idle.max.milliseconds</p></td>
@@ -2479,12 +2766,12 @@ PDS by SecHub will use</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.signer.override</p></td>
@@ -2518,8 +2805,8 @@ PDS by SecHub will use</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-config-scope-upload" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'upload'</caption>
+<table id="section-gen-configuration-scope-upload" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Scope 'upload'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2527,7 +2814,7 @@ PDS by SecHub will use</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
@@ -2650,6 +2937,36 @@ PDS to Checmarx will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid.mapping</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for bad request handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.badrequest.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a bad request happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for internal server error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.servererror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when an internal server error happend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.max.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amounts of retries for network error handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.resilience.networkerror.retry.wait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait before next retry when a network error happend</p></td>
 </tr>
 </tbody>
 </table>
@@ -2782,7 +3099,8 @@ Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">none</span><span class="delimiter">&quot;</span></span> 
                     }  
                 ]
-            }
+            },
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">envWhitelist</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">SOME_SPECIAL_ENV_VARIABLE</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="13"></i><b>(13)</b>
         }
     ]
 }</code></pre>
@@ -2868,6 +3186,14 @@ Also the environment variables <code>$PDS_JOB_HAS_EXTRACTED_SOURCES</code> and <
 <tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
 <td>Using <code>none</code> will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>An optional list of environment variable names which are additionally white listed from PDS script environment cleanup.
+Those entries can also end with an asterisk, in this case every variable name starting with this entry will
+be whitelisted (e.g. <code>SPECIAL_VAR_*</code> woud white list <code>SPECIAL_VAR_CONNECTION_URL</code> etc.)<br>
+The PDS script cleanup process prevents inheritage of environment variables from PDS parent process.
+There are some also some default variable names which are automatically accepted (e.g. <code>HOME</code>, <code>PATH</code>, ..).</td>
 </tr>
 </table>
 </div>
@@ -3004,7 +3330,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 <p>We have following standard parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. PDS executor configuration parameters</caption>
+<caption class="title">Table 14. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3325,6 +3651,41 @@ When 'true', the PDS instance will show up some debug information on scan time. 
 <li>
 <p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
 </li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.wrapper.remote.debugging.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Additional information will be always sent to launcher scripts. Interesting to debug wrapper applications remote.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.add.scriptlog.to.pdslog.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will add the complete log output from launcher script (and wrapper calls) to PDS log after the PDS launcher script has finished.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
 <li>
 <p>Optional</p>
 </li>
@@ -3713,14 +4074,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User creates job. If configuration is not valid an error will be thrown</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">job will be created, serverId will be used to store new job</p></td>
 </tr>
@@ -3756,14 +4117,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User uploads a file to workspace of given job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">uploaded file is stored by storage service</p></td>
 </tr>
@@ -3799,7 +4160,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User marks job as ready to start.</p></td>
 </tr>
@@ -3835,21 +4196,21 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User cancels a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
 </tr>
@@ -3885,14 +4246,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User fetches status of a job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">returns job status</p></td>
 </tr>
@@ -3928,14 +4289,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get result of a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job result from database. When job is not already done a failure will be shown</p></td>
 </tr>
@@ -3985,7 +4346,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">admin fetches monitoring status by REST API</p></td>
 </tr>
@@ -4069,14 +4430,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches result or failure text for job from db.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Result data will be returned - can be empty or even a failure text from job execution.</p></td>
 </tr>
@@ -4112,7 +4473,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches server configuration of PDS server(s).</p></td>
 </tr>
@@ -4148,14 +4509,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches output stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Output stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4205,14 +4566,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches error stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Error stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4262,13 +4623,13 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches auto cleanup configuration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches auto cleanup config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches auto cleanup configuration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches auto cleanup configuration from database</p></td>
@@ -4305,13 +4666,13 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator changes auto cleanup configuration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Updates auto cleanup config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Updates auto cleanup configuration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3, 4, 5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Updates auto cleanup configuration as JSON in database</p></td>
@@ -4398,14 +4759,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get messages of job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job messages from database. When job is not already done a failure will be shown</p></td>
 </tr>
@@ -4441,14 +4802,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches meta data text or null.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Meta data of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4715,7 +5076,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 1.4.0 modified (commit aa28120)<br>
+ PDS 2.0.0 modified (commit 3802004)<br>
 </div>
 </div>
 </body>

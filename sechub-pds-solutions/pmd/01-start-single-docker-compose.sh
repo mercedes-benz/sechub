@@ -1,19 +1,20 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
-SCRIPT_DIR=`dirname $0`
+cd $(dirname "$0")
+source "../../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 
-ENVIRONMENT_FILE=".env"
+ENVIRONMENT_FILES_FOLDER="../shared/environment"
+ENVIRONMENT_FILE=".env-single"
 
-if [[ ! -f  "$ENVIRONMENT_FILE" ]]
-then
-    echo "Environment file does not exist."
-    echo "Creating default environment file $ENVIRONMENT_FILE for you."
+# Only variables from .env can be used in the Docker-Compose file
+# all other variables are only available in the container
+setup_environment_file ".env" "env" "$ENVIRONMENT_FILES_FOLDER/env-base-image"
+setup_environment_file "$ENVIRONMENT_FILE" "$ENVIRONMENT_FILES_FOLDER/env-base"
 
-    cp "$SCRIPT_DIR/env-initial" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
-else
-    echo "Using existing environment file: $ENVIRONMENT_FILE."
-fi
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 
 echo "Starting single container."
 docker compose --file docker-compose_pds_pmd.yaml up --build --remove-orphans

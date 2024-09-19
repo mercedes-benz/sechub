@@ -13,7 +13,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
 import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
 import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
+import com.mercedesbenz.sechub.integrationtest.scenario20.Scenario20;
 import com.mercedesbenz.sechub.integrationtest.scenario21.Scenario21;
+import com.mercedesbenz.sechub.integrationtest.scenario22.Scenario22;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
 import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
@@ -573,6 +575,67 @@ public class IntegrationTestDefaultProfiles {
             IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED);
 
     /**
+     * The profile enables a PDS prepare. Simulated preparation is successful
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS = defineProfile28();
+
+    /**
+     * The profile enables a PDS prepare. Simulated preparation is failing - exit
+     * code 0, but no result file
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_29_PDS_PREPARE_FAILING = defineProfile29();
+
+    /**
+     * The profile enables a PDS prepare. Simulated preparation is failing with exit
+     * code 5
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_30_PDS_PREPARE_EXIT_5 = defineProfile30();
+
+    /**
+     * The profile enables a PDS prepare. PDS is tested for receiving defined sechub
+     * scan configuration.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile31();
+
+    /**
+     * The profile enables a PDS prepare. PDS is tested for running PDS prepare in
+     * integration test mode. This profile uses
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_PREPARE_VARIANT_E}
+     * executor configuration which has script log combination to PDS log enabled.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario22}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile32();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -752,6 +815,56 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
         profile.id = "inttest-p17-pds-secretscan";
         profile.description = "Profile 17: PDS secret scan, reused storage, SARIF JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile28() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_A);
+        profile.id = "inttest-p28-pds-prepare";
+        profile.description = "Profile 28: PDS prepare, reused storage, dynamic text results, variant a - prepare simulated sucessful";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile29() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_B);
+        profile.id = "inttest-p29-pds-prepare";
+        profile.description = "Profile 29: PDS prepare, reused storage, dynamic text results, variant b - prepare simulated failing with exit code 0, no result file";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile30() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_C);
+        profile.id = "inttest-p30-pds-prepare";
+        profile.description = "Profile 30: PDS prepare, reused storage, dynamic text results, variant c - prepare simulated script failure with exit code 5";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile31() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_D);
+        profile.id = "inttest-p31-pds-prepare";
+        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant d - test prepare for available sechub scan configuration";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile32() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E);
+        profile.id = "inttest-p32-pds-prepare";
+        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
         profile.enabled = true;
         return profile;
     }

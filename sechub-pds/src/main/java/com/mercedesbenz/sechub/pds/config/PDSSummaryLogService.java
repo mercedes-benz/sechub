@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefini
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionConfiguration;
 
 @Service
 public class PDSSummaryLogService {
@@ -26,18 +27,22 @@ public class PDSSummaryLogService {
     @Autowired
     PDSServerConfigurationService configurationService;
 
+    @Autowired
+    PDSEncryptionConfiguration encryptionConfigurationService;
+
     @EventListener(ApplicationReadyEvent.class)
     void applicationReady() {
         PDSServerConfiguration configuration = configurationService.getServerConfiguration();
 
         StringBuilder summary = new StringBuilder();
         summary.append("PDS has been started successfully.\n**************************\n        Summary\n**************************");
-        summary.append("\n- config file used: ").append(configurationService.pathToConfigFile);
+        summary.append("\n- configuration file used: ").append(configurationService.pathToConfigFile);
 
         summary.append("\n- server id: ").append(configuration.getServerId());
         summary.append("\n- system wide minutes to wait for product: ").append(configurationService.getMinutesToWaitForProduct());
         summary.append("\n- minimum configurable minutes to wait for product: ").append(configurationService.getMinimumConfigurableMinutesToWaitForProduct());
         summary.append("\n- maximum configurable minutes to wait for product: ").append(configurationService.getMaximumConfigurableMinutesToWaitForProduct());
+        summary.append("\n- encryption algorithm used: ").append(encryptionConfigurationService.getAlgorithm());
 
         List<PDSProductSetup> products = configuration.getProducts();
         summary.append("\n- Available products: ").append(products.size());
@@ -53,6 +58,8 @@ public class PDSSummaryLogService {
             PDSProductParameterSetup parameterSetup = setup.getParameters();
             appendParameterInfo(summary, "mandatory", parameterSetup.getMandatory());
             appendParameterInfo(summary, "optional", parameterSetup.getOptional());
+            appendParameterInfo(summary, "optional", parameterSetup.getOptional());
+            summary.append("\n    - envWhitelist: ").append(setup.getEnvWhitelist());
         }
 
         LOG.info(summary.toString());

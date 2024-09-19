@@ -40,6 +40,10 @@ if $FAILED ; then
   exit 1
 fi
 
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
+
 echo ">> Base image: $BASE_IMAGE"
 docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/Multi-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"

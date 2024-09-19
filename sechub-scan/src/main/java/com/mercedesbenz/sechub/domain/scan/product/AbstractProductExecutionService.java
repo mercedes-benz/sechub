@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,8 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Abstract base implementation for all product execution services. Service will
@@ -99,8 +99,10 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
 
     private static ProductExecutorConfig createFallbackExecutorConfigForSereco() {
         ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
+
         ProductExecutorConfig executorConfiguration = new ProductExecutorConfig(ProductIdentifier.SERECO, 1, setup);
         executorConfiguration.getSetup().setBaseURL("embedded");
+
         return executorConfiguration;
     }
 

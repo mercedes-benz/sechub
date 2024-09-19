@@ -15,6 +15,10 @@ spec:
     metadata:
       labels:
         name: {{ .Chart.Name }}
+{{- if .Values.templateMetadataAnnotations }}
+      annotations:
+        {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
+{{- end }}
     spec:
       securityContext:
         runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
@@ -45,8 +49,26 @@ spec:
               value: "{{ .Values.pds.config.execute.queueMax }}"
             - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
               value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+            - name: PDS_ARCHIVE_EXTRACTION_MAX_DIRECTORY_DEPTH
+              value: "{{ .Values.pds.archive.extraction.maxDirectoryDepth }}"
+            - name: PDS_ARCHIVE_EXTRACTION_MAX_ENTRIES
+              value: "{{ .Values.pds.archive.extraction.maxEntries }}"
+            - name: PDS_ARCHIVE_EXTRACTION_MAX_FILE_SIZE_UNCOMPRESSED
+              value: "{{ .Values.pds.archive.extraction.maxFileFizeUncompressed }}"
+            - name: PDS_ARCHIVE_EXTRACTION_TIMEOUT
+              value: "{{ .Values.pds.archive.extraction.timeout }}"
+            - name: PDS_ENCRYPTION_ALGORITHM
+              value: "{{ .Values.pds.encryption.algorithm }}"
+            - name: PDS_ENCRYPTION_SECRET_KEY
+              value: "{{ .Values.pds.encryption.secretKey }}"
             - name: PDS_HEARTBEAT_LOGGING
               value: "{{ .Values.pds.heartbeatLogging }}"
+{{- if .Values.deploymentComment }}
+            # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
+            # This way, you can force deployments e.g. when secrets have changed.
+            - name: DEPLOYMENT_COMMENT
+              value: "{{ .Values.deploymentComment }}"
+{{- end }}
 {{- if .Values.pds.logging.type.enabled }}
             - name: LOGGING_TYPE
               value: {{ .Values.pds.logging.type.appenderName }}

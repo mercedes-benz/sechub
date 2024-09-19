@@ -15,7 +15,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -219,6 +219,8 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.error("#");
                 LOG.error("#########################################################################");
                 LOG.error("#    Wasnt able to prepare scenario:{}", scenario.getName());
+                LOG.error("#    Reason: {}", e.getMessage());
+                LOG.error("#    (for more details look in unit test stack trace output)");
                 LOG.error("#########################################################################");
                 LOG.error("Last url :" + TestRestHelper.getLastUrl());
                 LOG.error("Last data:" + TestRestHelper.getLastData());
@@ -230,11 +232,10 @@ public class IntegrationTestSetup implements TestRule {
             try {
                 next.evaluate();
             } catch (HttpStatusCodeException e) {
-                HttpStatus code = e.getStatusCode();
+                HttpStatusCode code = e.getStatusCode();
 
                 String lastURL = TestRestHelper.getLastUrl();
-                throw new IntegrationTestException(
-                        "HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + lastURL, e);
+                throw new IntegrationTestException("HTTP ERROR " + code + " '" + (code != null ? e.getStatusText() : "?") + "', " + lastURL, e);
             } finally {
                 logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SecHub scan result</title>
+
+    <style type="text/css"
+           th:replace="~{report/html/styles :: renderStyles}">
+    </style>
+</head>
+<body>
+    <!--                   
+    ---------------------------------
+    -      Traffic light            -
+    ---------------------------------
+   -->
+    <div class="sidenav">
+       <a href="#top">
+		   <div class="trafficlight" >
+		        <div class="protector"></div>
+		        <div class="protector"></div>
+		        <div class="protector"></div>
+		        <a href="#reportRedFindings">
+			        <div class="red" th:style="${styleRed}" style="opacity: 1.0"></div>
+		        </a>
+		        <a href="#reportYellowFindings">
+		           <div class="yellow" th:style="${styleYellow}" style="opacity: 0.25"></div>
+		        </a>
+		        <a href="#reportGreenFindings">
+	    	        <div class="green" th:style="${styleGreen}" style="opacity: 0.25"></div>
+		        </a>
+		    </div>
+	    </a>
+    </div>
+<div class="main">
+    <div class="header">
+        <table>
+            <tr>
+                <td>
+                   <!--                   
+	                ---------------------------------
+	                -      Shield icon              -
+	                ---------------------------------
+                   -->
+                    <div class="logo">
+                        <!--
+                             Link: <https://www.iconfinder.com/icons/1034363/advantage_protect_protection_security_shield_icon#size=128>
+                             License: "Free for commercial use
+                          -->
+                        <svg enable-background="new 0 0 64 64" version="1.1"
+                             viewBox="0 0 64 64" xml:space="preserve"
+                             xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink">
+			                <g id="row_4"/>
+                            <g id="row_3"/>
+                            <g id="row_2"/>
+                            <g id="row_1">
+			                <g id="protection">
+			                <path
+                                    d="M55.7,9.3C50.4,4.2,43.1,2,32,2S13.6,4.2,8.3,9.3L8,9.6v20.6V32c0,13.7,9.5,25.9,23.7,30.3l0.3,0.1    l0.3-0.1C46.5,57.9,56,45.7,56,32V9.6L55.7,9.3z"
+                                    fill="#FFCA28"/>
+                                <path
+                                        d="M49.8,12.5C45.9,9.5,40.2,8.2,32,8.2v47.8l0.2-0.1C43,51.9,50,42.5,50,32V12.6L49.8,12.5z"
+                                        fill="#FFECB3"/>
+                                <path
+                                        d="M14.2,12.5L14,12.6V32c0,10.5,7,19.9,17.8,23.9l0.2,0.1V8.2C23.8,8.2,18.1,9.5,14.2,12.5z"
+                                        fill="#FFF8E1"/>
+                                <polygon fill="#4CAF50"
+                                         points="30.4,43.2 20.4,29.2 23.6,26.8 31.5,37.9 40.2,17.2 43.8,18.8 33.8,42.8   "/></g></g></svg>
+                    </div>
+                </td>
+                <td class="logotitle">SecHub</td>
+            </tr>
+            <tr class="reportsubtitle">
+                <td></td>
+                <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
+                </td>
+            </tr>
+              <!--                 
+                ---------------------------------
+                -            Version control    -
+                ---------------------------------
+            -->
+            <tr class="reportVersionControl" th:if="${reportHelper.hasVersionControl(metaData)}">
+               <td></td>
+               <td>
+                    <table class='reportMetaDataTable' th:with="versionControl=${reportHelper.getVersionControl(metaData)}">
+                        <tr>
+                            <td>Version control:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="metaDataLabelKey">Location:</td>
+                            <td class="metaDataLabelValue" th:text="${versionControl.location}">value</td>
+                        </tr>
+                        <tr>
+                            <td class="metaDataLabelKey">Revision Id:</td>
+                            <td class="metaDataLabelValue" th:text="${versionControl.revision.isEmpty()} ? 'undefined': ${versionControl.revision.get().id}">value</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!--                 
+                ---------------------------------
+                -            Labels             -
+                ---------------------------------
+            -->
+            <tr class="reportlabels" th:if="${metaData!=null && !metaData.get().getLabels().isEmpty()}">
+                <td></td>
+                <td>
+                    <table class='reportMetaDataTable'>
+                        <tr th:each="entry : ${metaData.get().getLabels()}">
+                            <td class="metaDataLabelKey" th:text="${entry.key}">key</td>
+                            <td class="metaDataLabelValue" th:text="${entry.value}">value</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="content">
+
+           <!--                   
+               ---------------------------------
+               -            Summary            -
+               ---------------------------------
+           -->
+        <div th:if="!${scanTypeSummaries.isEmpty()}">
+            <!--  scan type summaries -->
+            <h2 class='summaryHeadline'>Summary</h2>
+            <table class='summaryTable'>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Total</th>
+                    <th>Critical</th>
+                    <th>High</th>
+                    <th>Medium</th>
+                    <th>Low</th>
+                    <th>Unclassified</th>
+                    <th>Info</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="scanTypeSummary : ${scanTypeSummaries}">
+                <div th:remove="all">
+                <!--/* 
+                   Next fragment line renders summary row for each contained scan type.
+                   An example:
+                   
+                            Total  Critical High  Medium   Low   Unclassified Info
+                   Web scan   1     0        1       0       0       0          0
+                   
+                   */-->
+                   </div>
+                    <div th:replace="~{report/html/summary :: renderScanTypeOverviewLine(scanTypeSummary=${scanTypeSummary})}"></div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:remove="all">
+        <!--/*                   
+             ---------------------------------
+             - Summary scan type detail data -
+             - as overview for scan types    -
+             - e.g. Web Scan overview > ...  -
+             ---------------------------------
+         */-->
+         </div>
+         <!--  scan type overviews -->
+         <div th:each="scanTypeSummary : ${scanTypeSummaries}">
+               <div th:replace="~{report/html/summary :: renderScanTypeOverviewDetails(scanTypeSummary=${scanTypeSummary})}"></div>
+         </div>
+         <!--                   
+             ---------------------------------
+             - Findings grouped by traffic   -
+             - light, severity and id        -
+             ---------------------------------
+           -->
+         <div th:each="trafficLightGroup : ${trafficLightGroups}">
+              <div th:replace="~{report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})}"></div>
+         </div>
+         <!--                   
+             ---------------------------------
+             - Messages                      -
+             ---------------------------------
+         -->
+         <div th:replace="~{report/html/messages :: renderMessages(messages=${messages})}"></div>
+   </div>
+</div>
+</body>
+</html>

@@ -45,7 +45,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
         when(message.getProjectId()).thenReturn("projectId1");
         Set<String> emptyUserList = new LinkedHashSet<>();
 
-        when(message.getUserEmailAdresses()).thenReturn(emptyUserList);
+        when(message.getUserEmailAddresses()).thenReturn(emptyUserList);
 
         /* execute */
         serviceToTest.notify(message, "base1");
@@ -69,7 +69,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
         userList.add("test1@example.org");
         userList.add("test2@example.org");
 
-        when(message.getUserEmailAdresses()).thenReturn(userList);
+        when(message.getUserEmailAddresses()).thenReturn(userList);
 
         /* execute */
         serviceToTest.notify(message, "base1");

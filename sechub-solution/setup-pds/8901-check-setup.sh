@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 source "8900-helper.sh"
@@ -17,10 +17,12 @@ function parameter_missing() {
     exit 1
 }
 
+# check if variables are set and sechub server is alive
 function check_sechub_server_setup() {
     script_name="$1"
     parameters="$2"
 
+    # check if required environment variables are set
     sechub_api="../../sechub-developertools/scripts/sechub-api.sh"
 
     if [[ -z "$SECHUB_SERVER" ]]
@@ -38,6 +40,7 @@ function check_sechub_server_setup() {
         parameter_missing "Environment variable SECHUB_APITOKEN missing."
     fi
 
+  # check if sechub server is running
     alive_check=$($sechub_api alive_check)
 
     if [[ -z "$alive_check" ]]

@@ -47,7 +47,7 @@ import com.mercedesbenz.sechub.domain.administration.user.UserListService;
 import com.mercedesbenz.sechub.domain.administration.user.UserRevokeSuperAdminRightsService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
@@ -66,7 +66,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
 @ContextConfiguration(classes = { UserAdministrationRestController.class, UserAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class UserAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -127,7 +127,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
 	                		),
                             pathParameters(
-                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email address will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
 
                         )
@@ -336,7 +336,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
-        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        when(user.getEmailAddress()).thenReturn("user1@example.org");
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -368,7 +368,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         	                            ),
         	                            responseFields(
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The email address of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
@@ -392,7 +392,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
         User user = mock(User.class);
         when(user.getName()).thenReturn(userId);
-        when(user.getEmailAdress()).thenReturn(emailAddress);
+        when(user.getEmailAddress()).thenReturn(emailAddress);
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -424,7 +424,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
                                 ),
                         responseFields(
                                 fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-                                fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+                                fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail address of the user"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
                                 fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
@@ -438,7 +438,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

@@ -6,9 +6,6 @@ import static com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -20,6 +17,9 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 @Service
 @Profile(Profiles.INTEGRATIONTEST)
@@ -40,7 +40,7 @@ public class IntegrationTestSchedulerService {
      */
     public void deleteWaitingJobs() {
         /*
-         * we do not add the query to the repository, because it is not used in
+         * we do not add the query to the poolDataRepository, because it is not used in
          * production but only for testing
          */
         Query query = entityManager.createQuery(DELETE_WAITING_JOBS_QUERY);

@@ -6,6 +6,7 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - KICS_VERSION=${KICS_VERSION}
             context: docker/
             dockerfile: IaC-Debian.dockerfile
         env_file:

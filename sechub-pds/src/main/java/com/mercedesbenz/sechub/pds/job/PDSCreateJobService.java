@@ -3,21 +3,23 @@ package com.mercedesbenz.sechub.pds.job;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.encryption.EncryptionResult;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionService;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.security.PDSUserContextService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCreatesJob;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
@@ -37,6 +39,9 @@ public class PDSCreateJobService {
     @Autowired
     PDSServerConfigurationService serverConfigurationService;
 
+    @Autowired
+    PDSEncryptionService encryptionService;
+
     @UseCaseUserCreatesJob(@PDSStep(name = "service call", description = "job will be created, serverId will be used to store new job", number = 2))
     public PDSJobCreateResult createJob(PDSJobConfiguration configuration) {
 
@@ -50,7 +55,10 @@ public class PDSCreateJobService {
         job.setServerId(serverConfigurationService.getServerId());
 
         try {
-            job.jsonConfiguration = configuration.toJSON();
+            EncryptionResult encryptionResult = encryptionService.encryptString(configuration.toJSON());
+            job.encryptionInitialVectorData = encryptionResult.getInitialVector().getInitializationBytes();
+            job.encryptedConfiguration = encryptionResult.getEncryptedData();
+
         } catch (PDSJSONConverterException e) {
             throw new PDSNotAcceptableException("Configuration conversion failure:" + e.getMessage());
         }

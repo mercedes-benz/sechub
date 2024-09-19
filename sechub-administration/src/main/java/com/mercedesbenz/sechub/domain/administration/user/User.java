@@ -4,19 +4,19 @@ package com.mercedesbenz.sechub.domain.administration.user;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
 import com.mercedesbenz.sechub.domain.administration.project.Project;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = User.TABLE_NAME)
@@ -37,7 +37,7 @@ public class User {
     public static final String COLUMN_USER_ONE_TIME_TOKEN_CREATED = "USER_OTT_CREATED";
     public static final String COLUMN_USER_ENABLED = "USER_ENABLED";
 
-    public static final String COLUMN_EMAIL_ADRESS = "USER_EMAIL_ADRESS";
+    public static final String COLUMN_EMAIL_ADDRESS = "USER_EMAIL_ADDRESS";
     public static final String COLUMN_USER_ROLES = "USER_ROLES";
     public static final String COLUMN_USER_SUPERADMIN = "USER_SUPERADMIN";
     public static final String COLUMN_USER_DEACTIVATED = "USER_DEACTIVATED";
@@ -54,8 +54,8 @@ public class User {
     @Column(name = COLUMN_USER_ID, unique = true, nullable = false)
     String name;
 
-    @Column(name = COLUMN_EMAIL_ADRESS, unique = true, nullable = false)
-    String emailAdress;
+    @Column(name = COLUMN_EMAIL_ADDRESS, unique = true, nullable = false)
+    String emailAddress;
 
     @Column(name = COLUMN_USER_HASHED_API_TOKEN, nullable = false)
     String hashedApiToken;
@@ -100,8 +100,8 @@ public class User {
         return deactivated;
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public String getName() {

@@ -86,6 +86,7 @@ void handleOneOfForScanJobSchema(jsonObject){
     scanJobSchema.properties.webScan.properties.includes.items = stringType
     scanJobSchema.properties.webScan.properties.excludes.items = stringType
     scanJobSchema.properties.webScan.properties.headers.items.properties.onlyForUrls.items = stringType
+    scanJobSchema.properties.webScan.properties.headers.items.properties.use.items = stringType
     scanJobSchema.properties.webScan.properties.api.properties.use.items = stringType
     scanJobSchema.properties.webScan.properties.clientCertificate.properties.use.items = stringType
     scanJobSchema.properties.codeScan.properties.use.items = stringType

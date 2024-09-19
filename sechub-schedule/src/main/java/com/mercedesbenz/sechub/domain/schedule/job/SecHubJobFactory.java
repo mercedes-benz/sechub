@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.domain.schedule.ScheduleErrorIDConstants.*
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,12 @@ import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+
+import jakarta.validation.Valid;
 
 @Component
 public class SecHubJobFactory {
@@ -29,6 +31,9 @@ public class SecHubJobFactory {
 
     @Autowired
     SecHubConfigurationModelSupport modelSupport;
+
+    @Autowired
+    ScheduleEncryptionService encryptionService;
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobFactory.class);
 
@@ -45,10 +50,16 @@ public class SecHubJobFactory {
             throw new IllegalStateException("No user logged in - illegal access!");
         }
 
+        ScheduleEncryptionResult scheduleEncryptionResult = encryptionService.encryptWithLatestCipher(configuration.toJSON());
+
         ScheduleSecHubJob job = new ScheduleSecHubJob();
         try {
             job.projectId = configuration.getProjectId();
-            job.jsonConfiguration = configuration.toJSON();
+
+            job.encryptedConfiguration = scheduleEncryptionResult.getEncryptedData();
+            job.encryptionInitialVectorData = scheduleEncryptionResult.getInitialVector().getInitializationBytes();
+            job.encryptionCipherPoolId = scheduleEncryptionResult.getCipherPoolId();
+
             job.owner = userId;
             job.created = LocalDateTime.now();
 

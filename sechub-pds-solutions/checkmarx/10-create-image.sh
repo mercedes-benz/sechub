@@ -45,23 +45,25 @@ fi
 echo ">> Building \"$REGISTRY:$VERSION\""
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
-echo ">> - Base image: $BASE_IMAGE"
+echo ">> Base image: $BASE_IMAGE"
 
 if [[ -z "$BUILD_TYPE" ]] ; then
-    BUILD_TYPE="$DEFAULT_BUILD_TYPE"
+  BUILD_TYPE="$DEFAULT_BUILD_TYPE"
 fi
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
-echo ">> - Build type: $BUILD_TYPE"
+echo ">> Build type: $BUILD_TYPE"
 
 if [[ ! -z "$BUILDER_BASE_IMAGE" ]] ; then
-    BUILD_ARGS+=" --build-arg BUILDER_BASE_IMAGE=$BUILDER_BASE_IMAGE"
-    echo ">> - Builder base image: $BUILDER_BASE_IMAGE"
+  BUILD_ARGS+=" --build-arg BUILDER_BASE_IMAGE=$BUILDER_BASE_IMAGE"
+  echo ">> Builder base image: $BUILDER_BASE_IMAGE"
 fi
 
-if [[ ! -z "$CHECKMARX_WRAPPER_VERSION" ]] ; then
-    BUILD_ARGS+=" --build-arg CHECKMARX_WRAPPER_VERSION=$CHECKMARX_WRAPPER_VERSION"
-    echo ">> - Checkmarx Wrapper version: $CHECKMARX_WRAPPER_VERSION"
+if [[ -z "$CHECKMARX_WRAPPER_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+BUILD_ARGS+=" --build-arg CHECKMARX_WRAPPER_VERSION=$CHECKMARX_WRAPPER_VERSION"
+echo ">> Checkmarx Wrapper version: $CHECKMARX_WRAPPER_VERSION"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

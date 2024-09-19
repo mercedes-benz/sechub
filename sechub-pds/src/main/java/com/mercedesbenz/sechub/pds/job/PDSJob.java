@@ -1,28 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static javax.persistence.EnumType.*;
+import static jakarta.persistence.EnumType.*;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Represents a PDS Job which contains information about ownership, related
@@ -51,8 +52,6 @@ public class PDSJob {
     public static final String COLUMN_STARTED = "STARTED";
     public static final String COLUMN_ENDED = "ENDED";
 
-    public static final String COLUMN_CONFIGURATION = "CONFIGURATION";
-
     public static final String COLUMN_RESULT = "RESULT";
 
     public static final String COLUMN_ERROR_STREAM_TEXT = "ERROR_STREAM_TEXT";
@@ -65,6 +64,12 @@ public class PDSJob {
 
     public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
     public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
+
+    public static final String COLUMN_ENCRYPTED_CONFIGURATION = "ENCRYPTED_CONFIGURATION";
+
+    public static final String COLUMN_ENCRYPT_INITIAL_VECTOR = "ENCRYPT_INITIAL_VECTOR";
+
+    public static final String COLUMN_ENCRYPTION_OUT_OF_SYNC = "ENCRYPTION_OUT_OF_SYNC";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -133,20 +138,17 @@ public class PDSJob {
     @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     LocalDateTime lastStreamTextUpdate;
 
-    @Column(name = COLUMN_CONFIGURATION)
-    String jsonConfiguration;
-
     @Column(name = COLUMN_RESULT)
-    @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
+    @JdbcTypeCode(Types.LONGNVARCHAR) // why not using @Lob, because hibernate/postgres issues. see
     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
     String result;
 
     @Column(name = COLUMN_ERROR_STREAM_TEXT)
-    @Type(type = "text") // see remarks on COLUMN_RESULT
+    @JdbcTypeCode(Types.LONGNVARCHAR) // see remarks on COLUMN_RESULT
     String errorStreamText;
 
     @Column(name = COLUMN_OUTPUT_STREAM_TEXT)
-    @Type(type = "text") // see remarks on COLUMN_RESULT
+    @JdbcTypeCode(Types.LONGNVARCHAR) // see remarks on COLUMN_RESULT
     String outputStreamText;
 
     @Enumerated(STRING)
@@ -158,12 +160,21 @@ public class PDSJob {
     Integer version;
 
     @Column(name = COLUMN_MESSAGES)
-    @Type(type = "text") // see remarks on COLUMN_RESULT
+    @JdbcTypeCode(Types.LONGNVARCHAR) // see remarks on COLUMN_RESULT
     String messages;
 
     @Column(name = COLUMN_META_DATA)
-    @Type(type = "text") // see remarks on COLUMN_RESULT
+    @JdbcTypeCode(Types.LONGNVARCHAR) // see remarks on COLUMN_RESULT
     String metaDataText;
+
+    @Column(name = COLUMN_ENCRYPTED_CONFIGURATION)
+    byte[] encryptedConfiguration;
+
+    @Column(name = COLUMN_ENCRYPT_INITIAL_VECTOR)
+    byte[] encryptionInitialVectorData;
+
+    @Column(name = COLUMN_ENCRYPTION_OUT_OF_SYNC)
+    boolean encryptionOutOfSync;
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
@@ -213,10 +224,6 @@ public class PDSJob {
         return created;
     }
 
-    public String getJsonConfiguration() {
-        return jsonConfiguration;
-    }
-
     public PDSJobStatusState getState() {
         return state;
     }
@@ -247,6 +254,30 @@ public class PDSJob {
 
     public String getMetaDataText() {
         return metaDataText;
+    }
+
+    public byte[] getEncryptedConfiguration() {
+        return encryptedConfiguration;
+    }
+
+    public void setEncryptedConfiguration(byte[] encryptedConfiguration) {
+        this.encryptedConfiguration = encryptedConfiguration;
+    }
+
+    public byte[] getEncryptionInitialVectorData() {
+        return encryptionInitialVectorData;
+    }
+
+    public void setEncryptionInitialVectorData(byte[] encryptionInitialVectorData) {
+        this.encryptionInitialVectorData = encryptionInitialVectorData;
+    }
+
+    public void setEncryptionOutOfSync(boolean encryptionOutOfSync) {
+        this.encryptionOutOfSync = encryptionOutOfSync;
+    }
+
+    public boolean isEncryptionOutOfSync() {
+        return encryptionOutOfSync;
     }
 
     @Override

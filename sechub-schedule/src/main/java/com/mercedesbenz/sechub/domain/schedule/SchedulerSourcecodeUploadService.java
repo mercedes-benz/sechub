@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,8 @@ import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_USER)
@@ -85,6 +85,7 @@ public class SchedulerSourcecodeUploadService {
         /* assert */
         assertion.assertIsValidProjectId(projectId);
         assertion.assertIsValidJobUUID(jobUUID);
+
         assertion.assertIsValidSha256Checksum(checkSum);
 
         notNull(file, "file may not be null!");
@@ -108,8 +109,15 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        try {
+            store(projectId, jobUUID, file, checkSum, traceLogID, jobStorage);
+        } finally {
+            jobStorage.close();
+        }
+    }
 
+    private void store(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID, JobStorage jobStorage) {
         try (InputStream inputStream = file.getInputStream()) {
             long fileSize = file.getSize();
 
@@ -188,7 +196,6 @@ public class SchedulerSourcecodeUploadService {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void assertValidZipFile(InputStream inputStream) {
         if (!archiveSupportProvider.getArchiveSupport().isZipFileStream(inputStream)) {
             LOG.error("Uploaded file is NOT a valid ZIP file!");

@@ -44,7 +44,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
             return;
         }
 
-        Set<String> ccMailsSet = projectMessage.getUserEmailAdresses();
+        Set<String> ccMailsSet = projectMessage.getUserEmailAddresses();
         ccMailsSet.add(previousOwnerEmailAddress);
 
         String[] ccAddresses = ccMailsSet.stream().toArray(String[]::new);

@@ -159,7 +159,7 @@ class SystemTestLauncherTest {
 
     private String loadJsonAsPrettyPrinted(String path) throws IOException {
         TextFileReader reader = new TextFileReader();
-        String json = reader.loadTextFile(new File(path));
+        String json = reader.readTextFromFile(new File(path));
         SystemTestConfiguration expectedConfiguration = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
         String expectedPrettyJson = JSONConverter.get().toJSON(expectedConfiguration, true);
         return expectedPrettyJson;

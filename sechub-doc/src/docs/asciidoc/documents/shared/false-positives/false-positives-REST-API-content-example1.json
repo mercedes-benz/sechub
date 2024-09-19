@@ -1,11 +1,11 @@
 {
   "apiVersion": "1.0", //<1>
-  "type": "falsePositiveJobDataList", //<2>
-  "jobData": [
+  "type": "falsePositiveDataList", //<2>
+  "jobData": [ //<3>
     {
-      "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd", //<3>
-      "findingId": 1, //<4>
-      "comment": "Absolute Path Traversal, can be ignored because not in deployment" //<5>
+      "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd", //<4>
+      "findingId": 1, //<5>
+      "comment": "Can be ignored because not in deployment" //<6>
     },
     {
       "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",

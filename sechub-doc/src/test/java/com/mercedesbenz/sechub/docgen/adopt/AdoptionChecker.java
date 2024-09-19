@@ -28,13 +28,13 @@ public class AdoptionChecker {
          */
 
         File adoptedFile = new File("./src/main/java/" + javaClassNameToPath(adoptedClass));
-        String adopted = reader.loadTextFile(adoptedFile);
+        String adopted = reader.readTextFromFile(adoptedFile);
         String adoptedChanged = adopted.replaceAll(Pattern.quote(adoptedClass.getSimpleName()), Matcher.quoteReplacement(className));
         adoptedChanged = adoptedChanged.replaceAll(Pattern.quote(adoptedClass.getPackageName()), Matcher.quoteReplacement(packageName));
 
         String pathname = "./../sechub-systemtest/src/main/java/" + javaClassToPath(packageName, className);
         File originFile = new File(pathname);
-        String origin = reader.loadTextFile(originFile);
+        String origin = reader.readTextFromFile(originFile);
 
         String originReduced = withoutCommentsOrEmptyLines(origin);
         String adoptedReduced = withoutCommentsOrEmptyLines(adoptedChanged);

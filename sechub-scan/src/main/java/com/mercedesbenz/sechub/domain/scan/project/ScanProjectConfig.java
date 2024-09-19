@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
-import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
+import static com.mercedesbenz.sechub.sharedkernel.util.Assert.notNull;
 
 import java.io.Serializable;
+import java.sql.Types;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import org.hibernate.annotations.Type;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Configuration entry for project configuration inside database (domain scan).
@@ -46,7 +47,7 @@ public class ScanProjectConfig {
     @Column(name = "VERSION")
     Integer version;
 
-    @Type(type = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     @Column(name = COLUMN_DATA)
     String data;
 

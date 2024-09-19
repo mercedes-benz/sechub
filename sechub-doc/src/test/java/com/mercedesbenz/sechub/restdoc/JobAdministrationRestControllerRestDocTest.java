@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.domain.administration.job.JobRestartRequestServic
 import com.mercedesbenz.sechub.domain.administration.job.JobStatus;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
@@ -54,7 +54,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(JobAdministrationRestController.class)
 @ContextConfiguration(classes = { JobAdministrationRestController.class, JobAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class JobAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -81,7 +81,6 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 
         info.setStatus(JobStatus.RUNNING);
         info.setProjectId("project-name");
-        info.setConfiguration("{ config data }");
         info.setOwner("owner-userid");
         info.setSince(LocalDateTime.now());
 
@@ -119,8 +118,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
 	                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
-	                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started")
 	                         )
 				));
 
@@ -227,13 +225,13 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     }
 
     // see
-    // https://docs.spring.io/spring-restdocs/docs/current/reference/html5/#documenting-your-api-request-response-payloads-fields-json
+    // https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#documenting-your-api-request-response-payloads-fields-json
     private static String inArray(String field) {
         return "[]." + field;
     }
 
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

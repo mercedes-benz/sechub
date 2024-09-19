@@ -18,7 +18,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_example1_JSON_can_be_deserialized_and_contains_expected_login_url() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_config_example1.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_config_example1.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -31,7 +31,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_and_contains_expected_source_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_config_source_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_config_source_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -46,10 +46,12 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_even_with_unknown_key() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
 
-        /* execute + test */
+        /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
         assertNotNull(config);
 
         // A configuration is returned - now test some content, so it is clear it is not
@@ -74,7 +76,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_fantasy_scan_type_only_no_official_scan_types_inside_but_can_be_read() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -90,7 +92,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_contains_data_section_when_only_fantasy_scan_type_defined() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -108,7 +110,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_license_scan_JSON_can_be_deserialized_and_contains_expected_binary_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_config_binary_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_license_scan_config_binary_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -123,7 +125,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_source_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_source_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_secret_scan_config_source_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -138,7 +140,7 @@ class SecHubScanConfigurationTest {
     void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_binary_data_reference() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_binary_example.json"));
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_secret_scan_config_binary_example.json"));
 
         /* execute */
         SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
@@ -147,5 +149,93 @@ class SecHubScanConfigurationTest {
         Set<String> usedDataConfigurations = scanConfig.getSecretScan().get().getNamesOfUsedDataConfigurationObjects();
         assertEquals(1, usedDataConfigurations.size());
         assertEquals("build-artifacts", usedDataConfigurations.iterator().next());
+    }
+
+    @Test
+    void sechub_remote_source_code_scan_configuration_contains_location_and_type() {
+
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_source_code_scan_example.json"));
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        assertNotNull(config);
+
+        // testing the remote configuration for defined codeScan
+        Set<String> usedDataConfigurations = config.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
+
+        // testing the remote configuration for defined values
+        Optional<SecHubDataConfiguration> data = config.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubSourceDataConfiguration> sources = data.get().getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration dataConfiguration = sources.iterator().next();
+        Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
+        assertTrue(remote.isPresent());
+
+        String location = remote.get().getLocation();
+        assertEquals("remote_example_location", location);
+        String type = remote.get().getType();
+        assertEquals("git", type);
+
+        // test defined credentials
+        assertTrue(remote.get().getCredentials().isPresent());
+        SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
+    }
+
+    @Test
+    void sechub_remote_binary_code_scan_configuration_contains_location_and_type() {
+
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(new File("./src/test/resources/sechub_remote_data_config_binary_code_scan_example.json"));
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        assertNotNull(config);
+
+        // testing the remote configuration for defined codeScan
+        Set<String> usedDataConfigurations = config.getCodeScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("remote_example_name", usedDataConfigurations.iterator().next());
+
+        // testing the remote configuration for defined values
+        Optional<SecHubDataConfiguration> data = config.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubBinaryDataConfiguration> binaries = data.get().getBinaries();
+        assertEquals(1, binaries.size());
+
+        SecHubBinaryDataConfiguration dataConfiguration = binaries.iterator().next();
+        Optional<SecHubRemoteDataConfiguration> remote = dataConfiguration.getRemote();
+        assertTrue(remote.isPresent());
+
+        String location = remote.get().getLocation();
+        assertEquals("remote_example_location", location);
+        String type = remote.get().getType();
+        assertEquals("docker", type);
+
+        // test defined credentials
+        assertTrue(remote.get().getCredentials().isPresent());
+        SecHubRemoteCredentialConfiguration credentials = remote.get().getCredentials().get();
+
+        Optional<SecHubRemoteCredentialUserData> optUser = credentials.getUser();
+        assertTrue(optUser.isPresent());
+        SecHubRemoteCredentialUserData user = optUser.get();
+        assertEquals("my-example-user", user.getName());
+        assertEquals("my-example-password", user.getPassword());
     }
 }

@@ -1,0 +1,192 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 49%
+  selector:
+    matchLabels:
+      name: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.name }}
+{{- if .Values.templateMetadataAnnotations }}
+      annotations:
+        {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
+{{- end }}
+    spec:
+      securityContext:
+        runAsUser: 4242  # uid of the application user. (should be same as in the Dockerfile)
+        runAsGroup: 4242 # gid of the application group. (should be same as in the Dockerfile)
+        fsGroup: 4242    # This gid has write access to the mounted volumes.
+      volumes:
+{{- if ne .Values.webui.ssl.keystoreAlias "undefined" }}
+        - name: secret-webui-ssl-volume
+          secret:
+            secretName: secret-webui-ssl
+{{- end }}
+{{- if .Values.go_mmproxy.enabled }}
+      initContainers:
+      - name: setup
+        image: "{{ .Values.go_mmproxy.image }}"
+        command:
+        - "/bin/sh"
+        - "-cx"
+        args:
+        - |
+          /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
+          /sbin/ip route add local 0.0.0.0/0 dev lo table 123
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+{{- end }}
+      containers:
+{{- if .Values.go_mmproxy.enabled }}
+      # go-mmproxy sidecar container
+      - name: go-mmproxy
+        image: "{{ .Values.go_mmproxy.image }}"
+        ports:
+        - containerPort: 8080
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        args:
+        - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
+        - "-l"             # listen
+        - "0.0.0.0:8080"   # on port 8080
+        - "-4"             # tcp v4
+        - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
+{{- end }}
+      # SecHub webui container
+      - name: sechub-webui
+        image: {{ .Values.image }}
+        resources:
+          # min container memory
+          requests:
+            memory: "{{ .Values.resources.requests.memory }}"
+          # max container memory
+          limits:
+            memory: "{{ .Values.resources.limits.memory }}"
+        ports:
+        - name: sechub-webui
+          containerPort: 4443
+        # startupProbe:
+        #   httpGet:
+        #     scheme: HTTPS
+        #     path: /api/anonymous/check/alive
+        #     port: sechub-webui
+        #   failureThreshold: 24
+        #   periodSeconds: 5
+        #   successThreshold: 1
+        #   timeoutSeconds: 1
+        #   initialDelaySeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     scheme: HTTPS
+        #     path: /api/anonymous/check/alive
+        #     port: sechub-webui
+        #   failureThreshold: 3
+        #   periodSeconds: 10
+        #   successThreshold: 1
+        #   timeoutSeconds: 3
+        volumeMounts:
+{{- if ne .Values.webui.ssl.keystoreAlias "undefined" }}
+          - mountPath: /sechub-webui/secrets/secret-ssl
+            name: secret-webui-ssl-volume
+{{- end }}
+        env:
+        # Server start mode
+        - name: WEBUI_START_MODE
+          value: "{{ .Values.webui.startMode }}"
+        # Spring profiles definition
+        - name: SPRING_PROFILES_ACTIVE
+          value: "{{ .Values.webui.spring.profiles }}"
+{{- if .Values.deploymentComment }}
+        # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
+        # This way, you can force deployments e.g. when secrets have changed.
+        - name: DEPLOYMENT_COMMENT
+          value: "{{ .Values.deploymentComment }}"
+{{- end }}
+{{- if .Values.webui.loggingType }}
+        - name: LOGGING_TYPE
+          value: "{{ .Values.webui.loggingType }}"
+{{- end }}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# + Connection to SecHub server
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        - name: SECHUB_SERVER_URL
+          value: "{{ .Values.webui.sechubConnection.url }}"
+        - name: WEBUI_SECHUB_TRUST_ALL_CERTIFICATES
+{{- if .Values.webui.sechubConnection.trustAllCertificates }}
+          value: "true"
+{{- else }}
+          value: "false"
+{{- end }}
+        - name: SECHUB_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-webui-connect
+               key: sechub_userid
+        - name: SECHUB_APITOKEN
+          valueFrom:
+            secretKeyRef:
+               name: secret-webui-connect
+               key: sechub_apitoken
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# + SSL certificate
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        - name: SECHUB_WEBUI_SSL_KEYSTORE_TYPE
+          value: "PKCS12"
+        - name: SECHUB_WEBUI_SSL_KEYSTORE_LOCATION
+          value: "/sechub-webui/{{ .Values.webui.ssl.keystoreAlias }}.p12"
+        - name: SECHUB_WEBUI_SSL_KEYSTORE_ALIAS
+          value: "{{ .Values.webui.ssl.keystoreAlias }}"
+        - name: SECHUB_WEBUI_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-webui-ssl
+               key: keystore_password
+{{- if .Values.webui.spring.embeddedTomcat.logging.enabled }}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# + Scope: embedded Tomcat
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        # Logging to stdout:
+        - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
+          value: "{{ .Values.webui.spring.embeddedTomcat.logging.enabled }}"
+        - name: SERVER_TOMCAT_ACCESSLOG_DIRECTORY
+          value: "/dev"
+        - name: SERVER_TOMCAT_ACCESSLOG_PREFIX
+          value: "stdout"
+        - name: SERVER_TOMCAT_ACCESSLOG_BUFFERED
+          value: "false"
+        - name: SERVER_TOMCAT_ACCESSLOG_SUFFIX
+          value: ""
+        - name: SERVER_TOMCAT_ACCESSLOG_FILE_DATE_FORMAT
+          value: ""
+        - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
+          value: "{{ .Values.webui.spring.embeddedTomcat.logging.accessLogFormat }}"
+{{- end }}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# + Scope: development
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        - name: JAVA_ENABLE_DEBUG
+          value: "{{ .Values.webui.development.javaDebug | toString }}"
+        - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
+          value: "{{ .Values.webui.development.keepContainerAliveAfterApplicationCrash | toString }}"
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# + end of environment variables section
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ .Values.imagePullSecrets | indent 8 | trim }}
+{{- end }}

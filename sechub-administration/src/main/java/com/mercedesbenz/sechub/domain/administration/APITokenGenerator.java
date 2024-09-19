@@ -4,9 +4,9 @@ package com.mercedesbenz.sechub.domain.administration;
 import java.util.Base64;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class APITokenGenerator {
 
     public String generateNewAPIToken() {

@@ -7,6 +7,7 @@
       "path": "/pds/scripts/checkmarx.sh",
       "scanType": "codeScan",
       "description": "Runs Checkmarx",
+      "envWhitelist" : [ "TOOL_FOLDER" ],
       "parameters": {
         "mandatory": [
           {
@@ -54,6 +55,36 @@
           {
             "key": "pds.checkmarx.always.fullscan.enabled",
             "description": "When true, full scan is always active."
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server.",
+            "default" : 3
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 400 bad request happened on Checkmarx server.",
+            "default" : 2000
+          },
+           {
+            "key": "pds.checkmarx.resilience.servererror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server.",
+            "default" : 1
+          },
+          {
+            "key": "pds.checkmarx.resilience.servererror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server.",
+            "default" : 5000
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server (means not vailable/ no connection possible). This is interesting for updating Checkmarx servers without stopping PDS jobs, so setup this amount together with the wait for retries in a way, that the update time is inside the given time period!",
+            "default" : 100
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a network server happened on communication to Checkmarx server. Please look at description of pds.checkmarx.resilience.networkerror.max.retries for more details.",
+            "default" : 5000
           }
         ]
       }
@@ -61,6 +92,7 @@
     {
       "id": "PDS_CHECKMARX_MOCK",
       "path": "/pds/scripts/checkmarx_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "codeScan",
       "description": "Runs Checkmarx Mock",
       "parameters": {
@@ -110,6 +142,36 @@
           {
             "key": "pds.checkmarx.always.fullscan.enabled",
             "description": "When true, full scan is always active."
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 400 bad request happened on Checkmarx server.",
+            "default" : 3
+          },
+          {
+            "key": "pds.checkmarx.resilience.badrequest.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 400 bad request happened on Checkmarx server.",
+            "default" : 2000
+          },
+           {
+            "key": "pds.checkmarx.resilience.servererror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a 500 server internal error happened on Checkmarx server.",
+            "default" : 1
+          },
+          {
+            "key": "pds.checkmarx.resilience.servererror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server.",
+            "default" : 5000
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.max.retries",
+            "description": "Maximum amount of possible retries for situations when a network error happened on communication to Checkmarx server (means not vailable/ no connection possible). This is interesting for updating Checkmarx servers without stopping PDS jobs, so setup this amount together with the wait for retries in a way, that the update time is inside the given time period!",
+            "default" : 100
+          },
+          {
+            "key": "pds.checkmarx.resilience.networkerror.retry.wait.milliseconds",
+            "description": "Time to wait until retry is done when a network server happened on communication to Checkmarx server. Please look at description of pds.checkmarx.resilience.networkerror.max.retries for more details.",
+            "default" : 5000
           }
         ]
       }

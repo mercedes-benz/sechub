@@ -46,12 +46,15 @@ def buildVersionFiles(){
     // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
     def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
     def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
-    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
-    def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
-    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
+    def webuiVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-webui") }
+    def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
+    def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
+    def prepareWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-prepare-wrapper") }
+    def secretvalidationWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-secretvalidation-wrapper") }
+    def xrayWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-xray-wrapper") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged
@@ -80,9 +83,9 @@ def buildVersionFiles(){
     def clientVersionInfo = versionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber),latestClientVersion)
 
     // write version code for go client
-    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
+    String clientGoVersionTemplate = new File(project.rootDir, '/sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
-    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
+    def clientVersionFile = new File(project.rootDir, './sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     // Latest tagged client version as asciidoc file (#2285)
@@ -91,7 +94,7 @@ def buildVersionFiles(){
     if (latestClientVersion != clientVersionInfo.getShortVersion()) {
       latestClientVersionText = latestClientVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
+    def clientVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
     clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+latestClientVersionText+"\n:longrevnumber: Client "+latestClientVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
@@ -116,7 +119,7 @@ def buildVersionFiles(){
     if (latestServerVersion != serverVersionInfo.getShortVersion()) {
       latestServerVersionText = latestServerVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
+    def serverVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
     serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+latestServerVersionText+"\n:longrevnumber: Server "+latestServerVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
@@ -141,44 +144,150 @@ def buildVersionFiles(){
     if (latestPDSVersion != pdsVersionInfo.getShortVersion()) {
       latestPDSVersionText = latestPDSVersion + " modified (commit " + currentGitCommit + ")"
     }
-    def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
+    def pdsVersionAsciiDocFile = new File(project.rootDir, './sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
     pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+latestPDSVersionText+"\n:longrevnumber: PDS "+latestPDSVersionText+" - Build date: "+docsTimeStamp+"\n")
 
     // ------------------------
     // - PDS tools
     // ------------------------
-    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),pdsToolsVersionCommitTag)
+
+    // Get latest tagged pds-tools version
+    def latestPDSToolsTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-pds-tools$\' | head -1'
+    ]
+    def latestPDSToolsTag = latestPDSToolsTagCmd.execute().text.trim()
+    def latestPDSToolsVersion = latestPDSToolsTag - 'v'
+    latestPDSToolsVersion = latestPDSToolsVersion - "-pds-tools"
+
+    def pdsToolsVersionInfo = versionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber),latestPDSToolsVersion)
 
     // ------------------------
     // - Libraries
     // ------------------------
-    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),librariesVersionCommitTag)
+
+    // Get latest tagged libraries version
+    def latestLibrariesTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-libraries$\' | head -1'
+    ]
+    def latestLibrariesTag = latestLibrariesTagCmd.execute().text.trim()
+    def latestLibrariesVersion = latestLibrariesTag - 'v'
+    latestLibrariesVersion = latestLibrariesVersion - "-libraries"
+
+    def librariesVersionInfo =  versionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber),latestLibrariesVersion)
 
     // ------------------------
     // - Checkmarx wrapper
     // ------------------------
-    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),checkmarxWrapperVersionCommitTag)
+
+    // Get latest tagged checkmarx-wrapper version
+    def latestCxWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-checkmarx-wrapper$\' | head -1'
+    ]
+    def latestCxWrapperTag = latestCxWrapperTagCmd.execute().text.trim()
+    def latestCxWrapperVersion = latestCxWrapperTag - 'v'
+    latestCxWrapperVersion = latestCxWrapperVersion - "-checkmarx-wrapper"
+
+    def checkmarxWrapperVersionInfo = versionData.defineVersion("Checkmarx Wrapper",buildVersionString(checkmarxWrapperVersionCommitTag, hasChanged, buildNumber),latestCxWrapperVersion)
 
     // ------------------------
     // - OWASP-ZAP wrapper
     // ------------------------
-    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),owaspzapWrapperVersionCommitTag)
+
+    // Get latest tagged owaspzap-wrapper version
+    def latestZapWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-owaspzap-wrapper$\' | head -1'
+    ]
+    def latestZapWrapperTag = latestZapWrapperTagCmd.execute().text.trim()
+    def latestZapWrapperVersion = latestZapWrapperTag - 'v'
+    latestZapWrapperVersion = latestZapWrapperVersion - "-owaspzap-wrapper"
+
+    def owaspzapWrapperVersionInfo = versionData.defineVersion("OWASP-ZAP Wrapper",buildVersionString(owaspzapWrapperVersionCommitTag, hasChanged, buildNumber),latestZapWrapperVersion)
 
     // ------------------------
     // - XRAY wrapper
     // ------------------------
-    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),xrayWrapperVersionCommitTag)
 
+    // Get latest tagged xray-wrapper version
+    def latestXrayWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-xray-wrapper$\' | head -1'
+    ]
+    def latestXrayWrapperTag = latestXrayWrapperTagCmd.execute().text.trim()
+    def latestXrayWrapperVersion = latestXrayWrapperTag - 'v'
+    latestXrayWrapperVersion = latestXrayWrapperVersion - "-xray-wrapper"
+
+    def xrayWrapperVersionInfo = versionData.defineVersion("XRAY Wrapper",buildVersionString(xrayWrapperVersionCommitTag, hasChanged, buildNumber),latestXrayWrapperVersion)
+
+    // ------------------------
+    // - Prepare wrapper
+    // ------------------------
+
+    // Get latest tagged prepare-wrapper version
+    def latestPrepareWrapperTagCmd = [
+            'sh',
+            '-c',
+            'git tag -l --sort=-creatordate | grep -e \'^v.*-prepare-wrapper$\' | head -1'
+    ]
+    def latestPrepareWrapperTag = latestPrepareWrapperTagCmd.execute().text.trim()
+    def latestPrepareWrapperVersion = latestPrepareWrapperTag - 'v'
+    latestPrepareWrapperVersion = latestPrepareWrapperVersion - "-prepare-wrapper"
+
+    def prepareWrapperVersionInfo = versionData.defineVersion("Prepare Wrapper",buildVersionString(prepareWrapperVersionCommitTag, hasChanged, buildNumber),latestPrepareWrapperVersion)
+
+    // ----------------------------
+    // - Secret Validation wrapper
+    // ----------------------------
+
+    // Get latest tagged secretvalidation-wrapper version
+    def latestSecretValidationWrapperTagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-secretvalidation-wrapper$\' | head -1'
+    ]
+    def latestSecretValidationWrapperTag = latestSecretValidationWrapperTagCmd.execute().text.trim()
+    def latestSecretValidationWrapperVersion = latestSecretValidationWrapperTag - 'v'
+    latestSecretValidationWrapperVersion = latestSecretValidationWrapperVersion - "-secretvalidation-wrapper"
+
+    def secretvalidationWrapperVersionInfo = versionData.defineVersion("SecretValidation Wrapper",buildVersionString(secretvalidationWrapperVersionCommitTag, hasChanged, buildNumber),latestSecretValidationWrapperVersion)
+
+
+    // ------------------------
+    // - WebUI
+    // ------------------------
+
+    // Get latest tagged webui version
+    def latestWebUITagCmd = [
+      'sh',
+      '-c',
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-webui$\' | head -1'
+    ]
+    def latestWebUITag = latestWebUITagCmd.execute().text.trim()
+    def latestWebUIVersion = latestWebUITag - 'v'
+    latestWebUIVersion = latestWebUIVersion - "-webui"
+
+    def webuiVersionInfo = versionData.defineVersion("WebUI",buildVersionString(webuiVersionCommitTag, hasChanged, buildNumber),latestWebUIVersion)
 
     def stop = new Date()
 
-    println(clientVersionInfo.describe());
-    println(serverVersionInfo.describe());
+    println(clientVersionInfo.describe())
+    println(serverVersionInfo.describe())
+    println(webuiVersionInfo.describe())
     println(pdsVersionInfo.describe())
     println(pdsToolsVersionInfo.describe())
     println(librariesVersionInfo.describe())
     println(checkmarxWrapperVersionInfo.describe())
     println(owaspzapWrapperVersionInfo.describe())
+    println(prepareWrapperVersionInfo.describe())
+    println(secretvalidationWrapperVersionInfo.describe())
     println(xrayWrapperVersionInfo.describe())
 
     TimeDuration td = TimeCategory.minus( stop, start )
@@ -219,24 +328,28 @@ def buildVersionFiles(){
 def buildVersionString(commitTag, boolean hasChanged, buildNumber){
     def calcversion = ""
     if (commitTag == null) {
-        calcversion="0.0.0-${git.head().abbreviatedId}"
+        calcversion = "0.0.0-${git.head().abbreviatedId}"
     } else {
-        calcversion = commitTag.name - 'v'
+        calcversion = commitTag.name
         // remove identifiers for server, client, ..
-        calcversion=calcversion-"-client"
-        calcversion=calcversion-"-libraries"
-        calcversion=calcversion-"-pds-tools"
-        calcversion=calcversion-"-pds"
-        calcversion=calcversion-"-server"
-        calcversion=calcversion-"-checkmarx-wrapper"
-        calcversion=calcversion-"-owaspzap-wrapper"
-        calcversion=calcversion-"-xray-wrapper"
-
+        calcversion = calcversion - "-client"
+        calcversion = calcversion - "-libraries"
+        calcversion = calcversion - "-pds-tools"
+        calcversion = calcversion - "-pds"
+        calcversion = calcversion - "-server"
+        calcversion = calcversion - "-webui"
+        calcversion = calcversion - "-checkmarx-wrapper"
+        calcversion = calcversion - "-owaspzap-wrapper"
+        calcversion = calcversion - "-prepare-wrapper"
+        calcversion = calcversion - "-secretvalidation-wrapper"
+        calcversion = calcversion - "-xray-wrapper"
+        // remove leading 'v'
+        calcversion = calcversion - 'v'
     }
     if (hasChanged){
-        calcversion="${calcversion}-dirty";
+        calcversion = "${calcversion}-dirty"
     }
-    calcversion="${calcversion}-${buildNumber}";
+    calcversion = "${calcversion}-${buildNumber}"
     return calcversion
 }
 

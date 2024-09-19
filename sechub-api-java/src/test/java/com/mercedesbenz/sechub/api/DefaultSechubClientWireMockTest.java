@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-import wiremock.org.apache.http.HttpStatus;
+import wiremock.org.apache.hc.core5.http.HttpStatus;
 
 /**
  * Junit 4 test because of missing official WireMock Junit5 extension - so we
@@ -41,18 +41,45 @@ public class DefaultSechubClientWireMockTest {
 
         /* prepare */
         String statusBody = """
-                [ {
-                  "key" : "status.scheduler.enabled",
-                  "value" : "true"
-                }, {
-                  "key" : "status.scheduler.jobs.all",
-                  "value" : "2"
-                } ]
-                """;
+                [
+                    {
+                        "key": "status.scheduler.enabled",
+                        "value": "true"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.all",
+                        "value": "2"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.initializing",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ready_to_start",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.started",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.cancel_requested",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.canceled",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ended",
+                        "value": "0"
+                    }
+                ]
+                            """;
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth(EXAMPLE_USER, EXAMPLE_TOKEN)
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
-        DefaultSecHubClient client = createTestClientWithExampleCredentials();
+        SecHubClient client = createTestClientWithExampleCredentials();
 
         /* execute */
         SecHubStatus status = client.fetchSecHubStatus();
@@ -60,8 +87,8 @@ public class DefaultSechubClientWireMockTest {
         /* test */
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
         assertNotNull(status);
-        assertEquals("true", status.getStatusInformationMap().get("status.scheduler.enabled"));
-        assertEquals("2", status.getStatusInformationMap().get("status.scheduler.jobs.all"));
+        assertTrue(status.getScheduler().isEnabled());
+        assertEquals(2, status.getScheduler().getJobs().getAll());
 
     }
 
@@ -70,33 +97,66 @@ public class DefaultSechubClientWireMockTest {
 
         /* prepare */
         String statusBody = """
-                [ {
-                  "key" : "status.scheduler.enabled",
-                  "value" : "false"
-                }, {
-                  "key" : "status.scheduler.jobs.all",
-                  "value" : "0"
-                } ]
-                """;
+                [
+                    {
+                        "key": "status.scheduler.enabled",
+                        "value": "false"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.all",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.initializing",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ready_to_start",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.started",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.cancel_requested",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.canceled",
+                        "value": "0"
+                    },
+                    {
+                        "key": "status.scheduler.jobs.ended",
+                        "value": "0"
+                    }
+                ]
+                             """;
         stubFor(get(urlEqualTo("/api/admin/status")).withBasicAuth("other-user", "other-token")
                 .willReturn(aResponse().withStatus(HttpStatus.SC_OK).withHeader("Content-Type", APPLICATION_JSON).withBody(statusBody)));
 
-        DefaultSecHubClient client = createTestClientWithExampleCredentials();
+        SecHubClient client = createTestClientWithExampleCredentials();
 
         /* execute */
         client.setApiToken("other-token");
-        client.setUsername("other-user");
+        client.setUserId("other-user");
 
         /* test */
         SecHubStatus status = client.fetchSecHubStatus();
         verify(getRequestedFor(urlEqualTo("/api/admin/status")));
 
-        assertEquals("false", status.getStatusInformationMap().get("status.scheduler.enabled"));
-        assertEquals("0", status.getStatusInformationMap().get("status.scheduler.jobs.all"));
+        assertFalse(status.getScheduler().isEnabled());
+        assertEquals(0, status.getScheduler().getJobs().getAll());
     }
 
-    private DefaultSecHubClient createTestClientWithExampleCredentials() {
-        DefaultSecHubClient client = new DefaultSecHubClient(URI.create(wireMockRule.baseUrl()), EXAMPLE_USER, EXAMPLE_TOKEN, true);
-        return client;
+    private SecHubClient createTestClientWithExampleCredentials() {
+        /* @formatter:off */
+        return OldDefaultSecHubClient.builder().
+                server(URI.create(wireMockRule.baseUrl())).
+                user(EXAMPLE_USER).
+                apiToken(EXAMPLE_TOKEN).
+                trustAll(true).
+               build();
+        /* @formatter:on */
     }
 }

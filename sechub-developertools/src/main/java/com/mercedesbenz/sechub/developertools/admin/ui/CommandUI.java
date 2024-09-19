@@ -32,6 +32,10 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.config.EditExecuti
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutionProfilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.developerbatchops.DeveloperBatchCreateCheckmarxTestSetupAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.FetchSecHubEncryptionStatusAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.RotateSecHubEncryptionAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.SecretKeyGeneratorAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.encryption.TestDecryptToStringAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
@@ -43,8 +47,8 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobActi
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckAliveAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchGlobalMappingAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.other.FetchServerRuntimeData;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.other.UpdateGlobalMappingAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
@@ -142,6 +146,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_PREPARE_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_ANALYTICS_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
@@ -205,6 +210,7 @@ public class CommandUI {
         createConfigMenu();
         createPDSMenu();
         createSecHubClientMenu();
+        createEncryptionMenu();
     }
 
     public void createEditMenu() {
@@ -244,6 +250,17 @@ public class CommandUI {
         add(mappingsMenu, new UpdateGlobalMappingAction(context));
 
         menu.add(new ConfigureAutoCleanupAction(context));
+    }
+
+    public void createEncryptionMenu() {
+        JMenu menu = new JMenu("Encryption");
+        menuBar.add(menu);
+        menu.add(new FetchSecHubEncryptionStatusAction(context));
+        menu.addSeparator();
+        menu.add(new SecretKeyGeneratorAction(context));
+        menu.add(new TestDecryptToStringAction(context));
+        menu.addSeparator();
+        menu.add(new RotateSecHubEncryptionAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
@@ -383,7 +400,7 @@ public class CommandUI {
         add(menu, new ShowRunningBatchJobsListAction(context));
         menu.addSeparator();
         add(menu, new CheckAliveAction(context));
-        add(menu, new CheckVersionAction(context));
+        add(menu, new FetchServerRuntimeData(context));
         add(menu, new ListStatusEntriesAction(context));
         menu.addSeparator();
         add(menu, new ShowAdminListAction(context));

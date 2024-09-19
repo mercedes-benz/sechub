@@ -6,15 +6,15 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
 
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class SecHubServerMDCAsyncHandlerInterceptorTest {
 
@@ -128,6 +128,20 @@ public class SecHubServerMDCAsyncHandlerInterceptorTest {
 
         /* test */
         assertEquals(uuid.toString(), MDC.get(LogConstants.MDC_SECHUB_JOB_UUID));
+        assertEquals("myprojectId", MDC.get(LogConstants.MDC_SECHUB_PROJECT_ID));
+    }
+
+    @Test
+    public void when_url_is_user_removes_project_data_false_positives_from_project_no_job_uuid_is_expected() throws Exception {
+        /* prepare */
+        when(request.getRequestURI())
+                .thenReturn("https://localhost/api/project/myprojectId/false-positive/project-data/unique-id");
+
+        /* execute */
+        interceptorToTest.preHandle(request, response, handler);
+
+        /* test */
+        assertNull(MDC.get(LogConstants.MDC_SECHUB_JOB_UUID));
         assertEquals("myprojectId", MDC.get(LogConstants.MDC_SECHUB_PROJECT_ID));
     }
 

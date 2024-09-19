@@ -18,6 +18,7 @@ dependencies {
     implementation project(':sechub-storage-sharedvolume-spring')
     api project(':sechub-storage-s3-aws')
     implementation project(':sechub-adapter')
+    implementation project(':sechub-commons-encryption')
 
     implementation library.apache_commons_validator
     implementation library.logstashLogbackEncoder

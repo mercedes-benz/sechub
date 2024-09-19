@@ -4,42 +4,59 @@ name: sechub scan
 description: 'a GitHub actions wrapper for SecHub security scan.'
 inputs:
   config-path:
-    description: 'Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
+    description: 'Path to a custom SecHub configuration file. If not set, a temporary file will be generated using the input parameters.'
     required: false
   url:
-    description: 'SecHub server URL'
+    description: 'SecHub server URL (can alternatively provided via env variable or config file)'
     required: false
   api-token:
-    description: 'SecHub API Token'
+    description: 'SecHub API Token (can alternatively provided via env variable)'
     required: false
   user:
-    description: 'SecHub userid'
+    description: 'SecHub user ID (can alternatively provided via env variable or config file)'
     required: false
   project-name:
-    description: 'SecHub project name'
+    description: 'SecHub project name (can alternatively provided via env variable or config file)'
     required: false
   version:
-    description: 'Which version of the SecHub'
+    description: 'Which version of the SecHub client to use'
     required: false
-    default: '1.2.0'
+    default: 'latest'
+  add-scm-history:
+    description: 'Whether scm history should be uploaded or not'
+    required: false
+    default: false
+  scan-types:
+    description: 'Scan types to use for generated SecHub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
+    required: false
+    default: 'codeScan'
+  content-type:
+    description: 'Content type to use for generated SecHub configuration file (ignored in the case of a custom configuration file). Supported types: source, binaries. Cannot be combined.'
+    required: false
+    default: 'source'
   include-folders:
-    description: 'a list of folders to include'
+    description: 'A list of folders to include (ignored in the case of a custom configuration file)'
     required: false
     default: '.'
   exclude-folders:
-    description: 'a list of folders to exclude'
+    description: 'A list of folders to exclude (ignored in the case of a custom configuration file)'
     required: false
   report-formats:
-    description: 'a list of report formats to fetch'
-    required: true
+    description: 'A list of report formats to fetch'
+    required: false
     default: 'html,json'
+  trust-all:
+    description: 'Trust unknown HTTPS certificates'
+    required: false
+    default: false
   debug:
     description: 'SecHub debug output on/off'
     required: false
-    default: false
+    default: ${{ runner.debug == 1 }}
   fail-job-with-findings:
-    description: 'job will be marked as failed if sechub finds something'
-    required: true
+    description: 'Job will be marked as failed if SecHub finds something'
+    required: false
+    default: true
 
 outputs:
   scan-trafficlight:

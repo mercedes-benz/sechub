@@ -96,7 +96,7 @@ public class PDSJobConfigurationValidatorTest {
         /* execute + test */
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
         String message = exception.getMessage();
-        assertTrue(message.contains("does not support product identifier"));
+        assertTrue(message.contains("does not encryptionSupport product identifier"));
     }
 
     @Test

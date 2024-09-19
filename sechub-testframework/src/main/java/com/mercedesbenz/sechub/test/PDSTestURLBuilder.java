@@ -117,6 +117,10 @@ public class PDSTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/reset");
     }
 
+    public String buildIntegrationTestFetchEnvironmentVariableValue(String environmentVariableName) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/env", environmentVariableName);
+    }
+
     public String buildCheckIsAliveUrl() {
         return buildUrl(API_ANONYMOUS, "check/alive");
     }

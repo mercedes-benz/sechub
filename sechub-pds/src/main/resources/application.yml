@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+ 
 sechub:
   targettype:
     detection:
@@ -8,10 +9,22 @@ sechub:
 pds:          
   security:
     diffiehellman:
-      length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure          
+      length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
+  archive:
+    extraction:
+      max-file-size-uncompressed: 1GB
+      max-entries: 100000
+      max-directory-depth: 100
+      timeout: 1m
 spring:
-  config:
-    use-legacy-processing: true # see https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4 and  https://stackoverflow.com/questions/64907675/including-profiles-in-spring-boot-2-4-0-version
+  profiles:
+    group:
+      pds_integrationtest: "pds_localserver,pds_integrationtest"
+      pds_debug: "pds_debug"
+      pds_dev: "pds_dev,pds_localserver"
+      pds_prod: "pds_postgres,pds_server"
+      #pds_test: "pds_test,pds_h2"
+
   jackson:
     # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper
     mapper: 
@@ -50,11 +63,11 @@ spring:
   servlet: 
     # MultiPart file-size limits,
     # https://spring.io/guides/gs/uploading-files/
-    multipart.max-file-size: 5MB
-    multipart.max-request-size: 5MB
-    multipart.resolve-lazily: true
-  http: 
-    multipart.enabled: false
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+      resolve-lazily: true
+      enabled: true
 # --------------------------------------
 # - Security
 # --------------------------------------

@@ -1,30 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static javax.persistence.EnumType.*;
+import static jakarta.persistence.EnumType.*;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * Represents a product executor configuration
@@ -66,8 +65,7 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
-    @JsonProperty("uuid")
-    UUID uUID;
+    UUID uuid;
 
     @Column(name = COLUMN_NAME)
     String name;
@@ -113,7 +111,7 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo {
     }
 
     public UUID getUUID() {
-        return uUID;
+        return uuid;
     }
 
     public ProductIdentifier getProductIdentifier() {
@@ -140,7 +138,7 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((uUID == null) ? 0 : uUID.hashCode());
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
 
@@ -153,17 +151,17 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo {
         if (getClass() != obj.getClass())
             return false;
         ProductExecutorConfig other = (ProductExecutorConfig) obj;
-        if (uUID == null) {
-            if (other.uUID != null)
+        if (uuid == null) {
+            if (other.uuid != null)
                 return false;
-        } else if (!uUID.equals(other.uUID))
+        } else if (!uuid.equals(other.uuid))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "ProductExecutorConfig [" + (uUID != null ? "uUID=" + uUID + ", " : "") + (name != null ? "name=" + name + ", " : "")
+        return "ProductExecutorConfig [" + (uuid != null ? "uUID=" + uuid + ", " : "") + (name != null ? "name=" + name + ", " : "")
                 + (productIdentifier != null ? "productIdentifier=" + productIdentifier + ", " : "")
                 + (executorVersion != null ? "executorVersion=" + executorVersion + ", " : "") + (enabled != null ? "enabled=" + enabled : "") + "]";
     }

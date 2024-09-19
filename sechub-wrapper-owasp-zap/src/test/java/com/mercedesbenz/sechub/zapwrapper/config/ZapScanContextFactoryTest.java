@@ -548,6 +548,46 @@ class ZapScanContextFactoryTest {
 
     }
 
+    @Test
+    void header_config_file_from_sechub_scan_config_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/header-config.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertEquals(2, result.getHeaderValueFiles().size());
+        assertEquals(extractedSourcesPath+"/header-token.txt", result.getHeaderValueFiles().get("Key").toString());
+        assertEquals(extractedSourcesPath+"/token.txt", result.getHeaderValueFiles().get("Other").toString());
+    }
+
+    @Test
+    void header_config_without_data_section_no_file_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/header-config-without-data-section.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertEquals(0, result.getHeaderValueFiles().size());
+    }
+
     private CommandLineSettings createSettingsMockWithNecessaryParts() {
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");

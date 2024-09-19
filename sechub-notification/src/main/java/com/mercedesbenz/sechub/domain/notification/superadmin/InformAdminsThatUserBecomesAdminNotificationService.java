@@ -40,7 +40,7 @@ public class InformAdminsThatUserBecomesAdminNotificationService {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("Please welcome \n  " + userMessage.getUserId() + "\n");
         emailContent.append("as a new administrator of SecHub for environment (base url): " + baseUrl + "\n\n");
-        emailContent.append("Email address of new colleague is: " + userMessage.getEmailAdress() + "\n");
+        emailContent.append("Email address of new colleague is: " + userMessage.getEmailAddress() + "\n");
         emailContent.append("Don't forget to add that email address to NPM (SecHub administrators) as well.\n");
 
         String text = emailContent.toString();

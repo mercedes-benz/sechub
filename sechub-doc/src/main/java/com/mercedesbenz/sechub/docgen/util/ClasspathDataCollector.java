@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModel;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModelDataCollector;
 
 /**
- * Collector for information àbout used annoations ins projects.<br>
+ * Collector for information about used annotations inside projects.<br>
  * Inspired by
  * https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/ClasspathDataCollector.java
  *

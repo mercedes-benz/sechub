@@ -6,6 +6,8 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - TERN_VERSION=${TERN_VERSION}
+                - SCANCODE_VERSION=${SCANCODE_VERSION}
             context: docker/
             dockerfile: Tern-Debian.dockerfile
         container_name: pds-tern

@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.signup;
 
 import static com.mercedesbenz.sechub.domain.administration.signup.SignupJsonInput.*;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFacto
 import com.mercedesbenz.sechub.sharedkernel.validation.EmailValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class SignupJsonInputValidator implements Validator {
@@ -62,9 +62,9 @@ public class SignupJsonInputValidator implements Validator {
             return;
         }
 
-        ValidationResult emailValidationResult = emailValidation.validate(selfRegistration.getEmailAdress());
+        ValidationResult emailValidationResult = emailValidation.validate(selfRegistration.getEmailAddress());
         if (!emailValidationResult.isValid()) {
-            errors.rejectValue(PROPERTY_EMAIL_ADRESS, "api.error.email.invalid", "Invalid email adress");
+            errors.rejectValue(PROPERTY_EMAIL_ADDRESS, "api.error.email.invalid", "Invalid email address");
             return;
         }
         LOG.debug("Selfregistration of {} was accepted", selfRegistration.getUserId());

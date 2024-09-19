@@ -87,12 +87,16 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "binaries");
     }
 
-    public String buildUserAddsFalsePositiveJobDataListForProject(String projectId) {
+    public String buildUserAddsFalsePositiveDataListForProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
     public String buildUserRemovesFalsePositiveEntryFromProject(String projectId, String jobUUID, String findingId) {
         return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
+    }
+
+    public String buildUserRemovesFalsePositiveProjectDataEntryFromProject(String projectId, String projectDataId) {
+        return buildUrl(API_PROJECT, projectId, "false-positive", "project-data", projectDataId);
     }
 
     public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
@@ -445,6 +449,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG, "autoclean");
     }
 
+    public String buildAdminStartsEncryptionRotation() {
+        return buildUrl(API_ADMIN, "encryption/rotate");
+    }
+
+    public String buildAdminFetchesEncryptionStatus() {
+        return buildUrl(API_ADMIN, "encryption/status");
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */
@@ -472,8 +484,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
     }
 
-    public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);
+    public String buildFetchEmailsFromMockMailServiceUrl(String emailAddress) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAddress);
     }
 
     public String buildResetAllMockMailsUrl() {
@@ -501,8 +513,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
     }
 
-    public String buildGetServerVersionUrl() {
-        return buildUrl(API_ADMIN, "info/version");
+    public String buildGetServerRuntimeDataUrl() {
+        return buildUrl(API_ADMIN, "info/server");
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -642,7 +654,6 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     // statistic parts
-
     public String buildintegrationTestFetchJobStatistic(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job/" + sechubJobUUID);
     }
@@ -657,6 +668,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildintegrationTestFetchJobRunStatisticData(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run-data/" + sechubJobUUID);
+    }
+
+    public String buildIntegrationTestFetchScheduleEncryptionPoolIdForSecHubJob(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/encryption-pool-id/job/" + sechubJobUUID.toString());
+    }
+
+    public String buildIntegrationTestStartScheduleCipherPoolDataCleanup() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/cipher-pool-data/cleanup");
     }
 
 }

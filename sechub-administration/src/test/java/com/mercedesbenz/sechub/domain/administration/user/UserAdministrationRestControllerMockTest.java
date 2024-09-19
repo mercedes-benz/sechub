@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,13 +39,13 @@ import com.mercedesbenz.sechub.domain.administration.signup.Signup;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
 @ContextConfiguration(classes = { UserAdministrationRestController.class, UserAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class UserAdministrationRestControllerMockTest {
 
@@ -94,7 +99,7 @@ public class UserAdministrationRestControllerMockTest {
         /* prepare */
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
-        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        when(user.getEmailAddress()).thenReturn("user1@example.org");
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -126,7 +131,7 @@ public class UserAdministrationRestControllerMockTest {
 
         User user = mock(User.class);
         when(user.getName()).thenReturn(userId);
-        when(user.getEmailAdress()).thenReturn(emailAddress);
+        when(user.getEmailAddress()).thenReturn(emailAddress);
         Set<Project> projects = new LinkedHashSet<>();
 
         Project project1 = mock(Project.class);
@@ -192,7 +197,7 @@ public class UserAdministrationRestControllerMockTest {
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

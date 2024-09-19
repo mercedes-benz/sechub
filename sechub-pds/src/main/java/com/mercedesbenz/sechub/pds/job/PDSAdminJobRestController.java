@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.pds.job;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -21,6 +19,8 @@ import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailureText;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The REST API for PDS jobs

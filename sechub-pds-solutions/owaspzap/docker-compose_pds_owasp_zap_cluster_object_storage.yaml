@@ -6,6 +6,9 @@ services:
     build:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
+        - OWASPZAP_WRAPPER_VERSION=${OWASPZAP_WRAPPER_VERSION}
+        - OWASPZAP_VERSION=${OWASPZAP_VERSION}
+        - OWASPZAP_SHA256SUM=${OWASPZAP_SHA256SUM}
       context: docker/
       dockerfile: Owasp-Zap-Debian.dockerfile
     env_file:

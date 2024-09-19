@@ -23,6 +23,8 @@ public enum UseCaseGroup {
 
     CONFIGURATION("Configuration", "Usecases for configuration parts"),
 
+    ENCRYPTION("Encryption", "Usecases for encryption parts"),
+
     OTHER("Other", "All other use cases"),
 
     ;

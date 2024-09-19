@@ -4,6 +4,8 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+ARG GOSEC_VERSION
+
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
@@ -13,8 +15,7 @@ LABEL org.opencontainers.image.description="A container which combines GoSec wit
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.20.4.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.16.0"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 
 # Environment variables in container
 ENV GOSEC_VERSION="${GOSEC_VERSION}"

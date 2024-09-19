@@ -48,9 +48,7 @@ enum OpenApiSchema {
 
     RUNNING_JOB_LIST("ListOfRunningJobs"),
 
-    FALSE_POSITVES_FOR_JOB("FalsePositivesForJob"),
-
-    FALSE_POSITVES("FalsePositives"),
+    FALSE_POSITIVES("FalsePositives"),
 
     FULL_SCAN_DATA_ZIP("FullScanDataZIP"),
 
@@ -60,9 +58,11 @@ enum OpenApiSchema {
 
     PROJECT_META_DATA("ProjectMetaData"),
 
-    SERVER_VERSION("ServerVersion"),
+    SERVER_RUNTIME_DATA("ServerRuntimeData"),
 
     PROJECT_JOB_LIST("ProjectJobList"),
+
+    ENCRYPTION_STATUS("EncryptionStatus"),
 
     ;
 

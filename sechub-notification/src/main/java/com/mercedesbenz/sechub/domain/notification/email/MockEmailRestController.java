@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.notification.email;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * This is only availabe in mocked_notification profile. Interesting for
@@ -39,13 +39,13 @@ public class MockEmailRestController {
 
     /* @formatter:off */
 	@RequestMapping(
-			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}",
+			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAddress}",
 			method = RequestMethod.GET,
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {
+	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAddress") String emailAddress) {
 		/* @formatter:on */
-        return mockMailService.getMailsFor(emailAdress);
+        return mockMailService.getMailsFor(emailAddress);
     }
 
     /* @formatter:off */

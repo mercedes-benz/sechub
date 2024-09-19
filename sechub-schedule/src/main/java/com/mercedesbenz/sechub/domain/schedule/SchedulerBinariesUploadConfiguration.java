@@ -4,11 +4,11 @@ package com.mercedesbenz.sechub.domain.schedule;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
-@Service
+@Component
 public class SchedulerBinariesUploadConfiguration {
 
     private static final long DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES = 50 * 1024 * 1024; // 50 MiB

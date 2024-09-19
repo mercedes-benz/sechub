@@ -32,26 +32,26 @@ public class ReportTestHelper {
 
     private static final String REPORT_PATH = "./src/test/resources/report/";
 
-    private static final SarifV1JSONImporter sarifImporter = new SarifV1JSONImporter();
+    private static final SarifV1JSONImporter sarifImporter = new TestSarifV1JSONImporter();
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer serecoProductResultTransformer = new TestSerecoProductResultTransformer();
 
     private static final Logger LOG = LoggerFactory.getLogger(ReportTestHelper.class);
 
     public static String load3rdPartyReportAsString(String fullName) {
-        return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + fullName));
+        return TestFileReader.readTextFromFile(new File(REPORT_PATH + "input/" + fullName));
     }
 
     public static String loadSarifReport(String name) {
-        return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + name + ".sarif.json"));
+        return TestFileReader.readTextFromFile(new File(REPORT_PATH + "input/" + name + ".sarif.json"));
     }
 
     public static String loadSecHubReportFileTemplate(String name) {
-        return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + name + ".sechub-template.json"));
+        return TestFileReader.readTextFromFile(new File(REPORT_PATH + "input/" + name + ".sechub-template.json"));
     }
 
     public static String loadExpectedSecHubReportOutputFile(String name) {
-        return TestFileReader.loadTextFile(new File(REPORT_PATH + "output/" + name + ".sechub.json"));
+        return TestFileReader.readTextFromFile(new File(REPORT_PATH + "output/" + name + ".sechub.json"));
     }
 
     public static String transformSarifToSecHubReportJSON(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
@@ -83,11 +83,7 @@ public class ReportTestHelper {
     public static ScanReport transformToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
 
-        ScanType scanType = ScanType.WEB_SCAN;
-
-        if (productIdentifier.equals(ProductIdentifier.PDS_CODESCAN)) {
-            scanType = ScanType.CODE_SCAN;
-        }
+        ScanType scanType = productIdentifier == null ? ScanType.WEB_SCAN : productIdentifier.getType();
 
         return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, scanType, true);
     }

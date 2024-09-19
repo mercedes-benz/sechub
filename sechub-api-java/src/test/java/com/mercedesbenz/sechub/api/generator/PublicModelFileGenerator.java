@@ -9,7 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.DefaultSecHubClient;
+import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 
 public class PublicModelFileGenerator {
 
@@ -55,7 +55,7 @@ public class PublicModelFileGenerator {
 
         template.addLine("");
         template.addLine("/**");
-        template.addLine(" * " + info.targetClassName + " is a model class for " + DefaultSecHubClient.class.getSimpleName()
+        template.addLine(" * " + info.targetClassName + " is a model class for " + OldDefaultSecHubClient.class.getSimpleName()
                 + ". It uses internally the generated class");
         template.addLine(" * " + fromGenclazz.getName() + ".<br>");
         template.addLine(" * <br>");
@@ -63,7 +63,7 @@ public class PublicModelFileGenerator {
         template.addLine(" * " + getClass().getName() + ".");
         template.addLine(" */");
         template.addLine("public class " + info.targetClassName + " {");
-        template.addLine("    // only for usage by " + DefaultSecHubClient.class.getSimpleName());
+        template.addLine("    // only for usage by " + OldDefaultSecHubClient.class.getSimpleName());
         template.addLine("    static List<" + info.targetClassName + "> fromDelegates(List<" + info.fromGenclazz.getName() + "> delegates) {");
         template.addLine("            List<" + info.targetClassName + "> resultList = new ArrayList<>();");
         template.addLine("            if (delegates != null) {");
@@ -75,7 +75,7 @@ public class PublicModelFileGenerator {
         template.addLine("    }");
         template.addLine("");
         template.addLine("");
-        template.addLine("    // only for usage by " + DefaultSecHubClient.class.getSimpleName());
+        template.addLine("    // only for usage by " + OldDefaultSecHubClient.class.getSimpleName());
         template.addLine("    static List<" + info.fromGenclazz.getName() + "> toDelegates(List<" + info.targetClassName + "> wrappers) {");
         template.addLine("            List<" + info.fromGenclazz.getName() + "> resultList = new ArrayList<>();");
         template.addLine("            if (wrappers != null) {");
@@ -98,7 +98,7 @@ public class PublicModelFileGenerator {
         template.addLine("         this.internalAccess= new " + internalAccessClass + "(delegate);");
         template.addLine("    }");
         template.addLine("");
-        template.addLine("    // only for usage by " + DefaultSecHubClient.class.getSimpleName());
+        template.addLine("    // only for usage by " + OldDefaultSecHubClient.class.getSimpleName());
         template.addLine("    " + info.fromGenclazz.getName() + " getDelegate() {");
         template.addLine("         return internalAccess.getDelegate();");
         template.addLine("    }");
@@ -110,7 +110,7 @@ public class PublicModelFileGenerator {
         template.addLine("");
         template.addLine("}");
 
-        context.getTextFileWriter().save(genFile, template.getCode(), overwritePublicModelFiles);
+        context.getTextFileWriter().writeTextToFile(genFile, template.getCode(), overwritePublicModelFiles);
 
     }
 

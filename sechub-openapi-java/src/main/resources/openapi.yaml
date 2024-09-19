@@ -1,0 +1,3703 @@
+# SPDX-License-Identifier: MIT
+openapi: 3.1.0
+
+info:
+  title: SecHub API
+  description: |-
+    The SecHub API is a collection of RESTful endpoints.
+    It is designed to be used by users and administrators of the SecHub application.
+    
+    Most of the endpoints are protected by basic authentication.
+
+  version: 1.0.0
+
+tags:
+  - name: System
+    description: Operations relevant to the SecHub system
+  - name: User Administration
+    description: Operations relevant to user administration
+  - name: Project Administration
+    description: Operations relevant to project administration
+  - name: User Profile
+    description: Operations relevant to user profiles
+  - name: SecHub Execution
+    description: Operations relevant to execution of SecHub
+  - name: Sign Up
+    description: Operations relevant to user registration
+  - name: Job Administration
+    description: Operations relevant to job administration
+  - name: Testing
+    description: Operations relevant to testing
+  - name: Configuration
+    description: Operations relevant to configuration parts
+  - name: Encryption
+    description: Operations relevant to encryption
+  - name: Other
+    description: All other use cases
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    #############
+    ## General ##
+    #############
+
+    URI:
+      title: URI
+      type: string
+      format: uri
+      example: "https://example.com"
+
+    #########################
+    ## User Administration ##
+    #########################
+
+    UserIdList:
+      title: UserIdList
+      type: array
+      items:
+        type: string
+      example:
+        - userId1
+        - userId2
+
+    UserDetailInformation:
+      title: UserDetails
+      type: object
+      properties:
+        projects:
+          description: The projects the user has access to
+          items:
+            type: string
+          type: array
+        superAdmin:
+          description: "True, when this user is a super administrator"
+          type: boolean
+        userId:
+          description: The name of the user
+          type: string
+        email:
+          description: The mail address of the user
+          type: string
+        ownedProjects:
+          description: The projects the user is owner of
+          items:
+            type: string
+          type: array
+      example:
+        projects:
+          - project1
+          - project2
+        superAdmin: true
+        userId: userId
+        email: email
+        ownedProjects:
+          - ownedProject1
+          - ownedProject2
+
+    ############################
+    ## Project Administration ##
+    ############################
+
+    ProjectIdList:
+      title: ProjectIdList
+      type: array
+      items:
+        type: string
+      example:
+        - projectId1
+        - projectId2
+
+    ProjectDetailInformation:
+      title: ProjectDetails
+      type: object
+      properties:
+        owner:
+          description: Username of the owner of this project. An owner is the person
+            in charge.
+          type: string
+        metaData:
+          description: An JSON object containing metadata key-value pairs defined for
+            this project.
+          type: object
+          example:
+            key1: key1
+          properties:
+            key1:
+              description: An arbitrary metadata key
+              type: string
+        accessLevel:
+          description: The project access level
+          type: string
+        description:
+          description: The project description.
+          type: string
+        whiteList:
+          description: A list of all whitelisted URIs. Only these ones can be scanned
+            for the project!
+          items:
+            type: string
+          type: array
+        projectId:
+          description: The name of the project
+          type: string
+        users:
+          description: A list of all users having access to the project
+          items:
+            type: string
+          type: array
+      example:
+        owner: owner
+        metaData:
+          key1: key1
+        accessLevel: accessLevel
+        description: description
+        whiteList:
+          - entry1
+          - entry2
+        projectId: projectId
+        users:
+          - user1
+          - user2
+
+    ProjectWhitelist:
+      title: ProjectWhitelist
+      type: object
+      properties:
+        uris:
+          description: A list of all whitelisted URIs
+          items:
+            $ref: '#/components/schemas/URI'
+          type: array
+      example:
+        whitelist:
+          - entry1
+          - entry2
+
+    ProjectMetaData:
+      title: ProjectMetaData
+      type: object
+      additionalProperties:
+        type: string
+      example: |
+        {
+          "key1": "value1",
+          "key2": "value2"
+        }
+
+    ProjectInput:
+      title: ProjectInput
+      type: object
+      properties:
+        apiVersion:
+          description: The API version
+          type: string
+        name:
+          description: The name of the project
+          type: string
+        description:
+          description: The project description
+          type: string
+        owner:
+          description: The owner of the project
+          type: string
+        whiteList:
+          $ref: '#/components/schemas/ProjectWhitelist'
+        metaData:
+          $ref: '#/components/schemas/ProjectMetaData'
+      required:
+        - description
+      example: |
+        {
+          "apiVersion": "apiVersion",
+          "name": "name",
+          "description": "description",
+          "owner": "owner",
+          "whiteList": {
+            "uris": [
+              "https://example.com"
+            ]
+          },
+          "metaData": {
+            "key1": "value1"
+          }
+        }
+
+    ProjectScanLogSummaryList:
+      title: ProjectScanLogs
+      description: An array of project scan log summaries
+      type: array
+      items:
+        $ref: '#/components/schemas/ProjectScanLogSummary'
+
+    ProjectScanLogSummary:
+      title: ProjectScanLogSummary
+      description: Summary of project scan log entries
+      type: object
+      properties:
+        executedBy:
+          description: The user id of the user which executed the scan
+          type: string
+        sechubJobUUID:
+          description: The uuid of corresponding sechub Job.
+          type: string
+        ended:
+          description: The timestamp when the scan was ended
+          type: string
+        started:
+          description: The timestamp when the scan was started
+          type: string
+        status:
+          description: A status field about scan situation
+          type: string
+      example: |
+        [
+          {
+            "executedBy": "executedBy",
+            "sechubJobUUID": "sechubJobUUID",
+            "ended": "ended",
+            "started": "started",
+            "status": "status"
+          }
+        ]
+
+    ProjectAccessLevel:
+      title: ProjectAccessLevel
+      description: "The project access level. Accepted values: FULL (Full access\
+      \ to project, no restrictions), READ_ONLY (Users have only read access to\
+      \ existing data, No new jobs possible), NONE (Users have no access at all.)"
+      type: string
+      enum:
+        - FULL
+        - READ_ONLY
+        - NONE
+
+
+    ######################
+    ## SecHub Execution ##
+    ######################
+
+    SecHubConfigurationMetaData:
+      title: SecHubConfigurationMetaData
+      type: object
+      properties:
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+
+    SecHubFileSystemConfiguration:
+      title: SecHubFileSystemConfiguration
+      type: object
+      properties:
+        files:
+          description: Sources from given file system files
+          type: array
+          items:
+            type: string
+        folders:
+          description: Sources from given file system folders
+          type: array
+          items:
+            type: string
+
+    SecHubRemoteCredentialUserData:
+      title: SecHubRemoteCredentialUserData
+      type: object
+      properties:
+        user:
+          description: User name
+          type: string
+        password:
+          description: Password
+          type: string
+      required:
+        - user
+        - password
+
+    SecHubRemoteCredentialConfiguration:
+      title: SecHubRemoteCredentialConfiguration
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/SecHubRemoteCredentialUserData'
+
+    SecHubRemoteDataConfiguration:
+      title: SecHubRemoteDataConfiguration
+      type: object
+      properties:
+        credentials:
+          $ref: '#/components/schemas/SecHubRemoteCredentialConfiguration'
+        type:
+          description: Type of the remote credential
+          type: string
+        location:
+          description: Location of the remote credential
+          type: string
+
+    SecHubSourceDataConfiguration:
+      title: SecHubSourceDataConfiguration
+      type: object
+      properties:
+        fileSystem:
+          $ref: '#/components/schemas/SecHubFileSystemConfiguration'
+        excludes:
+          description: "Exclude URL sub-paths to scan. Example: /admin"
+          type: array
+          items:
+            type: string
+        includes:
+          description: "Include URL sub-paths to scan. Example: /hidden"
+          type: array
+          items:
+            type: string
+        remote:
+          $ref: '#/components/schemas/SecHubRemoteDataConfiguration'
+        name:
+          description: Unique reference name
+          type: string
+
+    SecHubBinaryDataConfiguration:
+      title: SecHubBinaryDataConfiguration
+      type: object
+      properties:
+        fileSystem:
+          $ref: '#/components/schemas/SecHubFileSystemConfiguration'
+        excludes:
+          description: "Exclude URL sub-paths to scan. Example: /admin"
+          type: array
+          items:
+            type: string
+        includes:
+          description: "Include URL sub-paths to scan. Example: /hidden"
+          type: array
+          items:
+            type: string
+        remote:
+          $ref: '#/components/schemas/SecHubRemoteDataConfiguration'
+        name:
+          description: Unique reference name
+          type: string
+
+    SecHubDataConfiguration:
+      title: SecHubDataConfiguration
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubSourceDataConfiguration'
+        binaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubBinaryDataConfiguration'
+
+    SecHubSecretScanConfiguration:
+      title: SecHubSecretScanConfiguration
+      description: Secret scan configuration block
+      type: object
+      properties:
+        use:
+          description: Referenced data configuration objects by their unique names
+          items:
+            type: string
+          type: array
+
+    SecHubLicenseScanConfiguration:
+      title: SecHubLicenseScanConfiguration
+      description: License scan configuration block
+      type: object
+      properties:
+        use:
+          description: Referenced data configuration objects by their unique names
+          items:
+            type: string
+          type: array
+
+    SecHubInfrastructureScanConfiguration:
+      title: SecHubInfrastructureScanConfiguration
+      description: Infrastructure configuration block
+      type: object
+      properties:
+        uris:
+          description: Infrastructure URIs to scan for
+          type: array
+          items:
+            $ref: '#/components/schemas/URI'
+        ips:
+          description: Infrastructure IPs to scan for
+          type: array
+          items:
+            type: string
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
+
+    SecHubCodeScanConfiguration:
+      title: SecHubCodeScanConfiguration
+      description: Code scan configuration block
+      type: object
+      properties:
+        fileSystem:
+          $ref: '#/components/schemas/SecHubFileSystemConfiguration'
+        excludes:
+          description: "Exclude URL sub-paths to scan. Example: /admin"
+          type: array
+          items:
+            type: string
+        includes:
+          description: "Include URL sub-paths to scan. Example: /hidden"
+          type: array
+          items:
+            type: string
+        use:
+          description: Referenced data configuration objects by their unique names
+          type: array
+          items:
+            type: string
+
+    HTTPHeaderConfiguration:
+      title: HTTPHeaderConfiguration
+      type: object
+      properties:
+        name:
+          description: Name of the defined HTTP header.
+          type: string
+        value:
+          description: "Value of the defined HTTP header. Either specify the header\
+            \ value directly here or reference a data section with 'use' e.g. if the\
+            \ value is to big, but never specify both."
+          type: string
+        onlyForUrls:
+          description: "Optional list of URLs this header shall be used for like:\
+            \ https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard"
+          type: array
+          items:
+            type: string
+        sensitive:
+          description: "Defines header masking. If 'true' the header value will be\
+            \ replaced with '********' inside the report, 'false' will show the value\
+            \ as is. Default is set to 'true'."
+          type: boolean
+        use:
+          description: "Reference to the data section containing a file with the value\
+            \ for this header, e.g if the value is to big for the sechub configuration.\
+            \ Always use 'sources' with a single 'file' instead 'folders'."
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - value
+        - sensitive
+
+    WebScanDurationConfiguration:
+      title: WebScanDurationConfiguration
+      type: object
+      properties:
+        duration:
+          description: Duration of the scan as integer
+          type: integer
+          format: int32
+        unit:
+          $ref: '#/components/schemas/SecHubTimeUnit'
+      required:
+        - duration
+        - unit
+
+    ClientCertificateConfiguration:
+      title: ClientCertificateConfiguration
+      type: object
+      properties:
+        password:
+          description: Password the client certificate file is protected with
+          type: string
+        use:
+          description: Reference to the data section containing the client certificate
+            definition file. Always use 'sources' with a single 'file' instead 'folders'.
+          type: array
+          items:
+            type: string
+      required:
+        - password
+
+    SecHubWebScanApiType:
+      title: SecHubWebScanApiType
+      type: string
+      enum:
+        - OPEN_API
+
+    SecHubWebScanApiConfiguration:
+      title: SecHubWebScanApiConfiguration
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SecHubWebScanApiType'
+        use:
+          description: Reference to the data section containing the API definition
+            files. Always use 'sources' with 'files' instead 'folders'.
+          type: array
+          items:
+            type: string
+        apiDefinitionUrl:
+          $ref: '#/components/schemas/URI'
+
+    ActionType:
+      title: ActionType
+      type: string
+      enum:
+        - INPUT
+        - CLICK
+        - PASSWORD
+        - USERNAME
+        - WAIT
+
+    SecHubTimeUnit:
+      title: SecHubTimeUnit
+      type: string
+      enum:
+        - MILLISECOND
+        - SECOND
+        - MINUTE
+        - HOUR
+        - DAY
+
+    Action:
+      title: Action
+      description: Action definition of form login
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ActionType'
+        selector:
+          description: css selector
+          type: string
+        value:
+          description: value
+          type: string
+        description:
+          description: description
+          type: string
+        unit:
+          $ref: '#/components/schemas/SecHubTimeUnit'
+      required:
+        - type
+
+    Page:
+      title: Page
+      description: Page definition of form login
+      type: object
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+
+    Script:
+      title: Script
+      description: Script definition of form login
+      type: object
+      properties:
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Page'
+
+    FormLoginConfiguration:
+      title: FormLoginConfiguration
+      description: Form login definition
+      type: object
+      properties:
+        script:
+          $ref: '#/components/schemas/Script'
+
+    BasicLoginConfiguration:
+      title: BasicLoginConfiguration
+      description: Basic login definition
+      type: object
+      properties:
+        user:
+          description: username
+          type: string
+        password:
+          description: password
+          type: string
+
+    WebLoginConfiguration:
+      title: WebLoginConfiguration
+      description: Web scan login definition
+      type: object
+      properties:
+        basic:
+          $ref: '#/components/schemas/BasicLoginConfiguration'
+        form:
+          $ref: '#/components/schemas/FormLoginConfiguration'
+        url:
+          $ref: '#/components/schemas/URI'
+      required:
+        - url
+
+    SecHubWebScanConfiguration:
+      title: SecHubWebScanConfiguration
+      description: Web scan configuration block
+      type: object
+      properties:
+        login:
+          $ref: '#/components/schemas/WebLoginConfiguration'
+        maxScanDuration:
+          $ref: '#/components/schemas/WebScanDurationConfiguration'
+        api:
+          $ref: '#/components/schemas/SecHubWebScanApiConfiguration'
+        url:
+          $ref: '#/components/schemas/URI'
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
+        includes:
+          description: "Include URL sub-paths to scan. Example: /hidden"
+          type: array
+          items:
+            type: string
+        excludes:
+          description: "Exclude URL sub-paths to scan. Example: /admin"
+          type: array
+          items:
+            type: string
+        headers:
+          description: List of HTTP headers. Can be used for authentication or anything
+            else.
+          type: array
+          items:
+            $ref: '#/components/schemas/HTTPHeaderConfiguration'
+        clientCertificate:
+          $ref: '#/components/schemas/ClientCertificateConfiguration'
+
+    SecHubConfiguration:
+      title: SecHubConfiguration
+      type: object
+      properties:
+        webScan:
+          $ref: '#/components/schemas/SecHubWebScanConfiguration'
+        infraScan:
+          $ref: '#/components/schemas/SecHubInfrastructureScanConfiguration'
+        codeScan:
+          $ref: '#/components/schemas/SecHubCodeScanConfiguration'
+        data:
+          $ref: '#/components/schemas/SecHubDataConfiguration'
+        licenseScan:
+          $ref: '#/components/schemas/SecHubLicenseScanConfiguration'
+        secretScan:
+          $ref: '#/components/schemas/SecHubSecretScanConfiguration'
+        metaData:
+          $ref: '#/components/schemas/SecHubConfigurationMetaData'
+        apiVersion:
+          description: "The api version, currently only 1.0 is supported"
+          type: string
+        projectId:
+          description: Id of the SecHub project
+          type: string
+      required:
+        - projectId
+
+    SchedulerResult:
+      title: SchedulerResult
+      type: object
+      properties:
+        jobId:
+          description: The unique job identifier
+          type: string
+          format: uuid
+
+    ScheduleJobStatusResult:
+      title: ScheduleJobStatusResult
+      type: string
+      enum:
+        - NONE
+        - OK
+        - FAILED
+
+    ScheduleJobStatus:
+      title: JobStatus
+      type: object
+      properties:
+        jobUUID:
+          description: The job uuid
+          type: string
+          format: uuid
+        owner:
+          description: Owner / initiator of job
+          type: string
+        created:
+          description: Creation timestamp of job
+          type: string
+        started:
+          description: Start timestamp of job execution
+          type: string
+        ended:
+          description: End timestamp of job execution
+          type: string
+        state:
+          description: State of job
+          type: string
+        result:
+          $ref: '#/components/schemas/ScheduleJobStatusResult'
+
+        trafficLight:
+          description: Traffic light of job after completion. Possible states are GREEN, YELLOW, RED, OFF.
+          type: string
+        messages:
+          description: List of messages
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubMessage'
+
+    SecHubMessageType:
+      title: SecHubMessageType
+      type: string
+      enum:
+        - ERROR
+        - WARNING
+        - INFO
+
+    SecHubMessage:
+      title: SecHubMessage
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SecHubMessageType'
+        text:
+          type: string
+
+    SecHubStatus:
+      title: SecHubStatus
+      type: string
+      enum:
+        - SUCCESS
+        - FAILED
+
+    TrafficLight:
+      title: TrafficLight
+      type: string
+      enum:
+        - GREEN
+        - YELLOW
+        - RED
+        - OFF
+
+    Severity:
+      title: Severity
+      type: string
+      enum:
+        - INFO
+        - LOW
+        - MEDIUM
+        - HIGH
+        - CRITICAL
+
+    SecHubCodeCallStack:
+      title: SecHubCodeCallStack
+      type: object
+      properties:
+        location:
+          type: string
+        line:
+          type: integer
+          format: int32
+        column:
+          type: integer
+          format: int32
+        source:
+          type: string
+        relevantPart:
+          type: string
+        calls:
+          $ref: '#/components/schemas/SecHubCodeCallStack'
+
+    ScanType:
+      title: ScanType
+      type: string
+      enum:
+        - codeScan
+        - webScan
+        - infraScan
+        - licenseScan
+        - secretScan
+        - report
+        - analytics
+        - prepare
+        - unknown
+
+    SecHubReportWebBody:
+      title: SecHubReportWebBody
+      type: object
+      properties:
+        text:
+          type: string
+        binary:
+          type: string
+
+    SecHubReportWebRequest:
+      title: SecHubReportWebRequest
+      type: object
+      properties:
+        protocol:
+          type: string
+        version:
+          type: string
+        target:
+          type: string
+        method:
+          type: string
+        headers:
+          type: object
+          additionalProperties: true
+        body:
+          $ref: '#/components/schemas/SecHubReportWebBody'
+
+    SecHubReportWebResponse:
+      title: SecHubReportWebResponse
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+        reasonPhrase:
+          type: string
+        protocol:
+          type: string
+        version:
+          type: string
+
+    SecHubReportWebBodyLocation:
+      title: SecHubReportWebBodyLocation
+      type: object
+      properties:
+        startLine:
+          type: integer
+          format: int32
+
+    SecHubReportWebEvidence:
+      title: SecHubReportWebEvidence
+      type: object
+      properties:
+        snippet:
+          type: string
+        bodyLocation:
+          $ref: '#/components/schemas/SecHubReportWebBodyLocation'
+
+    SecHubReportWebAttack:
+      title: SecHubReportWebAttack
+      type: object
+      properties:
+        vector:
+          type: string
+        evidence:
+          $ref: '#/components/schemas/SecHubReportWebEvidence'
+
+    SecHubReportWeb:
+      title: SecHubReportWeb
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/SecHubReportWebRequest'
+        response:
+          $ref: '#/components/schemas/SecHubReportWebResponse'
+        attack:
+          $ref: '#/components/schemas/SecHubReportWebAttack'
+
+    SecHubRevisionData:
+      title: SecHubRevisionData
+      type: object
+      properties:
+        id:
+          type: string
+
+    SecHubFinding:
+      title: SecHubFinding
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        description:
+          type: string
+        hostNames:
+          type: array
+          items:
+            type: string
+        created:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        name:
+          type: string
+        parameters:
+          type: string
+        path:
+          type: string
+        parameterName:
+          type: string
+        references:
+          type: array
+          items:
+            type: string
+        request:
+          type: string
+        solution:
+          type: string
+        response:
+          type: string
+        service:
+          type: string
+        severity:
+          $ref: '#/components/schemas/Severity'
+        target:
+          type: string
+        website:
+          type: string
+        code:
+          $ref: '#/components/schemas/SecHubCodeCallStack'
+        productResultLink:
+          type: string
+        type:
+          $ref: '#/components/schemas/ScanType'
+        cweId:
+          type: integer
+          format: int32
+        cveId:
+          description: common vulnerability enumeration id - see https://cwe.mitre.org/ or null when not defined
+          type: string
+        owasp:
+          type: string
+        web:
+          $ref: '#/components/schemas/SecHubReportWeb'
+        revision:
+          $ref: '#/components/schemas/SecHubRevisionData'
+
+    SecHubResult:
+      title: SecHubResult
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        findings:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubFinding'
+        falsePositives:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubFinding'
+
+    SecHubVersionControlData:
+      title: SecHubVersionControlData
+      type: object
+      properties:
+        type:
+          type: string
+        location:
+          type: string
+        revision:
+          $ref: '#/components/schemas/SecHubRevisionData'
+
+    ScanTypeSummaryFindingOverviewData:
+      title: ScanTypeSummaryFindingOverviewData
+      type: object
+      properties:
+        cweId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        count:
+          type: integer
+          format: int32
+
+    ScanTypeSummaryDetailData:
+      title: ScanTypeSummaryDetailData
+      type: object
+      properties:
+        critical:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+        high:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+        medium:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+        low:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+        unclassified:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+        info:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+
+    SecHubReportScanTypeSummary:
+      title: SecHubReportScanTypeSummary
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        critical:
+          type: integer
+          format: int32
+        high:
+          type: integer
+          format: int32
+        medium:
+          type: integer
+          format: int32
+        low:
+          type: integer
+          format: int32
+        unclassified:
+          type: integer
+          format: int32
+        info:
+          type: integer
+          format: int32
+        details:
+          $ref: '#/components/schemas/ScanTypeSummaryDetailData'
+
+    SecHubReportSummary:
+      title: SecHubReportSummary
+      type: object
+      properties:
+        codeScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+        infraScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+        licenseScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+        secretScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+        webScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+
+    SecHubReportMetaData:
+      title: SecHubReportMetaData
+      type: object
+      properties:
+        labels:
+          type: object
+          additionalProperties: true
+        versionControl:
+          $ref: '#/components/schemas/SecHubVersionControlData'
+        summary:
+          $ref: '#/components/schemas/SecHubReportSummary'
+
+    SecHubReport:
+      title: ScanSecHubReport
+      description: Result of the SecHub scan
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubMessage'
+        status:
+          $ref: '#/components/schemas/SecHubStatus'
+        trafficLight:
+          $ref: '#/components/schemas/TrafficLight'
+        result:
+          $ref: '#/components/schemas/SecHubResult'
+        jobUUID:
+          type: string
+          format: uuid
+        reportVersion:
+          type: string
+        metaData:
+          $ref: '#/components/schemas/SecHubReportMetaData'
+
+    FalsePositives_falsePositives_inner_metaData_code_start:
+      description: entry point
+      example:
+        sourceCode: sourceCode
+        relevantPart: relevantPart
+        location: location
+      properties:
+        sourceCode:
+          description: source code
+          type: string
+        relevantPart:
+          description: relevant part of source vulnerability
+          type: string
+        location:
+          description: location of code
+          type: string
+      type: object
+
+    FalsePositives_falsePositives_inner_metaData_code_end:
+      description: end point (sink)
+      example:
+        sourceCode: sourceCode
+        relevantPart: relevantPart
+        location: location
+      properties:
+        sourceCode:
+          description: source code
+          type: string
+        relevantPart:
+          description: relevant part of source vulnerability
+          type: string
+        location:
+          description: location of code
+          type: string
+      type: object
+
+    FalsePositives_falsePositives_inner_metaData_code:
+      description: Code part. Only available for scan type 'codeScan'
+      example:
+        start:
+          sourceCode: sourceCode
+          relevantPart: relevantPart
+          location: location
+        end:
+          sourceCode: sourceCode
+          relevantPart: relevantPart
+          location: location
+      properties:
+        start:
+          $ref: '#/components/schemas/FalsePositives_falsePositives_inner_metaData_code_start'
+        end:
+          $ref: '#/components/schemas/FalsePositives_falsePositives_inner_metaData_code_end'
+      type: object
+
+    FalsePositiveWebRequestMetaData:
+      title: FalsePositiveWebMetaData
+      description: Meta data for this false positive
+      type: object
+      properties:
+        method:
+          type: string
+        target:
+          type: string
+        protocol:
+          type: string
+        version:
+          type: string
+        attackVector:
+          type: string
+
+    FalsePositiveWebResponseMetaData:
+      title: FalsePositiveWebResponseMetaData
+      description: Meta data for this false positive
+      type: object
+      properties:
+        evidence:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+
+    FalsePositiveWebMetaData:
+      title: FalsePositiveWebMetaData
+      description: Meta data for this false positive
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/FalsePositiveWebRequestMetaData'
+        response:
+          $ref: '#/components/schemas/FalsePositiveWebResponseMetaData'
+
+    FalsePositiveMetaData:
+      title: FalsePositiveMetaData
+      description: Meta data for this false positive
+      type: object
+      properties:
+        scanType:
+          description: Scan type - e.g. codeScan
+          type: string
+        name:
+          description: Name of origin finding marked as false positive
+          type: string
+        severity:
+          description: Severity of origin report entry marked as false positive
+          type: string
+        code:
+          $ref: '#/components/schemas/FalsePositives_falsePositives_inner_metaData_code'
+        web:
+          $ref: '#/components/schemas/FalsePositiveWebMetaData'
+        cweId:
+          description: CWE (common weakness enumeration). For code scans this is always
+            set.
+          type: integer
+          format: int32
+        cveId:
+          description: CVE (common vulnerability and exposures). For infra scans this
+            is always set.
+          type: string
+        owasp:
+          description: OWASP At least this field must be set for web scans when no
+            cwe identifier is defined.
+          type: string
+      example:
+        scanType: scanType
+        name: name
+        severity: severity
+        code:
+          start:
+            sourceCode: sourceCode
+            relevantPart: relevantPart
+            location: location
+          end:
+            sourceCode: sourceCode
+            relevantPart: relevantPart
+            location: location
+        web:
+        cweId: 1
+        cveId: cveId
+        owasp: owasp
+
+    FalsePositiveJobData:
+      title: FalsePositiveJobData
+      description: Job data parts, can be used as key to identify false positives
+      type: object
+      properties:
+        jobUUID:
+          description: SecHub job uuid where finding was
+          type: string
+          format: uuid
+        findingId:
+          description: "SecHub finding identifier - identifies problem inside the\
+            \ job which shall be markeda as a false positive. *ATTENTION*: at the\
+            \ moment only code scan false positive handling is supported. Infra and\
+            \ web scan findings will lead to a non accepted error!"
+          type: integer
+          format: int32
+        comment:
+          description: A comment from author describing why this was marked as a false positive
+          type: string
+      example:
+        jobUUID: jobUUID
+        findingId: 1
+        comment: comment
+
+    WebscanFalsePositiveProjectData:
+      title: WebscanFalsePositiveProjectData
+      description: Project data parts, that identify false positives of webscans
+      type: object
+      properties:
+        cweId:
+          description: CWE ID for a category of findings to identify the type of false positive finding
+          type: integer
+          format: int32
+        urlPattern:
+          description: list of host name or ip address patterns this false positive entry shall match (can contain wildcards)
+          type: string
+        methods:
+          description: list of (HTTP) methods this false positive entry shall match (does not use wildcards)
+          type: array
+          items:
+            type: string
+      required:
+        - cweId
+        - urlPattern
+      example:
+        cweId: 79
+        urlPattern: https://*.example.com/api/*/search
+        methods: [GET, DELETE]
+
+
+    FalsePositiveProjectData:
+      title: FalsePositiveProjectData
+      description: Project data parts, can be used to specify patterns that indentify false positives
+      type: object
+      properties:
+        id:
+          description: ID to identify this entry, can be used to overwrite or delete the entry for this project
+          type: string
+        comment:
+          description: A comment from author describing why this was marked as a false positive
+          type: string
+        webScan:
+          $ref: '#/components/schemas/WebscanFalsePositiveProjectData'
+      required:
+        - id
+      example:
+        id: unique-id
+        comment: comment
+        webScan:
+          cweId: 79
+          urlPattern: https://*.example.com/api/*/search
+          methods: [GET, DELETE]
+
+    FalsePositiveEntry:
+      title: FalsePositiveEntry
+      type: object
+      properties:
+        jobData:
+          $ref: '#/components/schemas/FalsePositiveJobData'
+        author:
+          description: User id of author who created false positive
+          type: string
+        metaData:
+          $ref: '#/components/schemas/FalsePositiveMetaData'
+        projectData:
+          $ref: '#/components/schemas/FalsePositiveProjectData'
+        created:
+          description: Creation timestamp
+          type: string
+      example:
+        jobData:
+          jobUUID: jobUUID
+          findingId: 6.027456183070403
+          comment: comment
+        author: author
+        metaData:
+          severity: severity
+          code:
+            start:
+              sourceCode: sourceCode
+              relevantPart: relevantPart
+              location: location
+            end:
+              sourceCode: sourceCode
+              relevantPart: relevantPart
+              location: location
+          owasp: owasp
+          cweId: 0.8008281904610115
+          cveId: cveId
+          name: name
+          scanType: scanType
+        projectData:
+          id: unique-id
+          comment: comment
+          webScan:
+            cweId: 79
+            urlPattern: https://*.example.com/api/*/search
+            methods: [GET, DELETE]
+        created: created
+
+    FalsePositiveProjectConfiguration:
+      title: FalsePositiveProjectConfiguration
+      type: object
+      properties:
+        falsePositives:
+          description: Job data list containing false positive setup based on former jobs
+          type: array
+          items:
+            $ref: '#/components/schemas/FalsePositiveEntry'
+      example:
+        falsePositives:
+          - metaData:
+              severity: severity
+              code:
+                start:
+                  sourceCode: sourceCode
+                  relevantPart: relevantPart
+                  location: location
+                end:
+                  sourceCode: sourceCode
+                  relevantPart: relevantPart
+                  location: location
+              owasp: owasp
+              cweId: 0.8008281904610115
+              cveId: cveId
+              name: name
+              scanType: scanType
+            jobData:
+              jobUUID: jobUUID
+              findingId: 6.027456183070403
+              comment: comment
+            created: created
+            author: author
+          - metaData:
+              severity: severity
+              code:
+                start:
+                  sourceCode: sourceCode
+                  relevantPart: relevantPart
+                  location: location
+                end:
+                  sourceCode: sourceCode
+                  relevantPart: relevantPart
+                  location: location
+              owasp: owasp
+              cweId: 0.8008281904610115
+              cveId: cveId
+              name: name
+              scanType: scanType
+            jobData:
+              jobUUID: jobUUID
+              findingId: 6.027456183070403
+              comment: comment
+            created: created
+            author: author
+          - projectData:
+              id: unique-id
+              comment: comment
+              webScan:
+                cweId: 79
+                urlPattern: https://*.example.com/api/*/search
+                methods: [GET, DELETE]
+            created: created
+            author: author
+
+    FalsePositives:
+      title: FalsePositives
+      type: object
+      properties:
+        apiVersion:
+          description: The api version
+          type: string
+        type:
+          description: The type of the json content. Currently only accepted value
+            is 'falsePositiveDataList' and the deprecated 'falsePositiveJobDataList'.
+          type: string
+        jobData:
+          description: Job data list containing false positive setup based on former jobs
+          type: array
+          items:
+            $ref: '#/components/schemas/FalsePositiveJobData'
+        projectData:
+          description: Project data list containing false positive setup
+          type: array
+          items:
+            $ref: '#/components/schemas/FalsePositiveProjectData'
+
+
+    #############
+    ## Sign Up ##
+    #############
+
+    SignUpInput:
+      title: SignUpInput
+      properties:
+        apiVersion:
+          description: "The api version, currently only 1.0 is supported"
+          type: string
+        userId:
+          description: "Wanted userid, the userid must be lowercase only!"
+          type: string
+        emailAddress:
+          description: Email address
+          type: string
+      type: object
+
+    SignUp:
+      title: SignUp
+      type: object
+      properties:
+        userId:
+          description: "Wanted userid, the userid must be lowercase only!"
+          type: string
+        emailAddress:
+          description: Email address
+          type: string
+        version:
+          type: integer
+          format: int32
+
+    SignUpList:
+      title: SignUpList
+      type: array
+      items:
+        $ref: '#/components/schemas/SignUp'
+
+
+    ########################
+    ## Job Administration ##
+    ########################
+
+    JobStatus:
+      title: JobStatus
+      type: string
+      enum:
+        - CREATED
+        - RUNNING
+        - DONE
+
+    JobInformation:
+      title: JobInformation
+      type: object
+      properties:
+        jobUUID:
+          description: The job uuid
+          type: string
+          format: uuid
+        projectId:
+          description: The project id
+          type: string
+        owner:
+          description: The owner of the job
+          type: string
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        since:
+          description: The creation timestamp
+          type: string
+          format: date-time
+        configuration:
+          description: The configuration
+          type: object
+        info:
+          description: Additional information
+          type: object
+        version:
+          description: The version
+          type: integer
+          format: int32
+
+    #############
+    ## Testing ##
+    #############
+
+    ScanMockData:
+      title: ScanMockData
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/TrafficLight'
+
+    ScanProjectMockDataConfiguration:
+      title: ScanProjectMockDataConfiguration
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        codeScan:
+          $ref: '#/components/schemas/ScanMockData'
+        webScan:
+          $ref: '#/components/schemas/ScanMockData'
+        infraScan:
+          $ref: '#/components/schemas/ScanMockData'
+
+    ###################
+    ## Configuration ##
+    ###################
+
+    MappingEntry:
+      title: MappingEntry
+      type: object
+      properties:
+        pattern:
+          type: string
+        replacement:
+          type: string
+        comment:
+          type: string
+
+    MappingData:
+      title: MappingData
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappingEntry'
+
+    ProductIdentifier:
+      title: ProductIdentifier
+      type: string
+      enum:
+        - NETSPARKER
+        - NESSUS
+        - SERECO
+        - CHECKMARX
+        - PDS_CODESCAN
+        - PDS_WEBSCAN
+        - PDS_INFRASCAN
+        - PDS_LICENSESCAN
+        - PDS_SECRETSCAN
+        - PDS_ANALYTICS
+        - PDS_PREPARE
+        - UNKNOWN
+
+    ProductExecutorConfigSetupCredentials:
+      title: ProductExecutorConfigSetupCredentials
+      type: object
+      properties:
+        user:
+          type: string
+        password:
+          type: string
+
+    ProductExecutorConfigSetupJobParameter:
+      title: ProductExecutorConfigSetupJobParameter
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+    ProductExecutorConfigSetup:
+      title: ProductExecutorConfigSetup
+      type: object
+      properties:
+        baseURL:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/ProductExecutorConfigSetupCredentials'
+        jobParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductExecutorConfigSetupJobParameter'
+
+    ProductExecutionProfile:
+      title: ProductExecutionProfile
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+        version:
+          type: integer
+          format: int32
+        configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductExecutorConfig'
+        projectIds:
+          type: array
+          items:
+            type: string
+
+    ProductExecutorConfig:
+      title: ProductExecutorConfig
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        productIdentifier:
+          $ref: '#/components/schemas/ProductIdentifier'
+        setup:
+          $ref: '#/components/schemas/ProductExecutorConfigSetup'
+        version:
+          type: integer
+          format: int32
+        executorVersion:
+          type: integer
+          format: int32
+        enabled:
+          type: boolean
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductExecutionProfile'
+
+    ProductExecutorConfigListEntry:
+      title: ProductExecutorConfigListEntry
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+
+    ProductExecutorConfigList:
+      title: ProductExecutorConfigList
+      type: object
+      properties:
+        executorConfigurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductExecutorConfigListEntry'
+
+    ProductExecutionProfileListEntry:
+      title: ProductExecutionProfileListEntry
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+
+    ProductExecutionProfilesList:
+      title: ProductExecutionProfilesList
+      type: object
+      properties:
+        executionProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductExecutionProfileListEntry'
+        type:
+          type: string
+
+    CountableInDaysTimeUnit:
+      title: CountableInDaysTimeUnit
+      type: string
+      enum:
+        - DAY
+        - WEEK
+        - MONTH
+        - YEAR
+
+    CleanupTime:
+      title: CleanupTime
+      type: object
+      properties:
+        unit:
+          $ref: '#/components/schemas/CountableInDaysTimeUnit'
+        amount:
+          type: integer
+          format: int32
+
+    AdministrationAutoCleanupConfig:
+      title: AdministrationAutoCleanupConfig
+      type: object
+      properties:
+        cleanupTime:
+          $ref: '#/components/schemas/CleanupTime'
+
+    ################
+    ## Encryption ##
+    ################
+    SecHubCipherPasswordSourceType:
+      title: SecHubCipherPasswordSourceType
+      type: string
+      enum:
+        - NONE
+        - ENVIRONMENT_VARIABLE
+
+    SecHubPasswordSource:
+      title: SecHubPasswordSource
+      type: object
+      properties:
+        type:
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
+        data:
+          type: string
+
+    SecHubCipherAlgorithm:
+      title: SecHubCipherAlgorithm
+      type: string
+      enum:
+        - NONE
+        - AES_GCM_SIV_128
+        - AES_GCM_SIV_256
+
+    SecHubDomainEncryptionData:
+      title: SecHubDomainEncryptionData
+      type: object
+      properties:
+        id:
+          description: Identifer for encryption configuration inside the domain
+          type: string
+        algorithm:
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
+        passwordSource:
+          type: object
+          $ref: '#/components/schemas/SecHubPasswordSource'
+        created:
+          description: Creation timestamp
+          type: string
+          format: date-time
+        createdFrom:
+          description: User id of admin who has created the configuration
+          type: string
+        usage:
+          description: Generic information about encryption usages inside domain
+          type: object
+          additionalProperties: true
+
+    SecHubDomainEncryptionStatus:
+      title: SecHubDomainEncryptionStatus
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubDomainEncryptionData'
+
+    SecHubEncryptionStatus:
+      title: SecHubEncryptionStatus
+      type: object
+      properties:
+        type:
+          type: string
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubDomainEncryptionStatus'
+
+    SecHubEncryptionData:
+      title: SecHubEncryptionData
+      type: object
+      properties:
+        algorithm:
+          description: Algorithm to use for encryption rotation
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
+        passwordSourceType:
+          description: Password source type to use for algorithm
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
+        passwordSourceData:
+          description: Password source data for used type. E.g. for ENVIRONMENT_VARIABLE the name of the variable
+          type: string
+    ###########
+    ## Other ##
+    ###########
+
+    StatusEntry:
+      title: StatusEntry
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        version:
+          type: integer
+          format: int32
+
+    ServerRuntimeData:
+      title: ServerRuntimeData
+      type: object
+      properties:
+        serverVersion:
+          type: string
+
+    ExecutionState:
+      title: ExecutionState
+      type: string
+      enum:
+        - INITIALIZING
+        - READY_TO_START
+        - STARTED
+        - CANCEL_REQUESTED
+        - CANCELED
+        - ENDED
+
+    ExecutionResult:
+      title: ExecutionResult
+      type: string
+      enum:
+        - NONE
+        - OK
+        - FAILED
+
+    SecHubJobInfoForUser:
+      title: SecHubJobInfoForUser
+      type: object
+      properties:
+        jobUUID:
+          description: The job uuid
+          type: string
+          format: uuid
+        executedBy:
+          description: The user who executed the job
+          type: string
+        created:
+          description: The creation timestamp
+          type: string
+          format: date-time
+        started:
+          description: The start timestamp
+          type: string
+          format: date-time
+        ended:
+          description: The end timestamp
+          type: string
+          format: date-time
+        executionState:
+          $ref: '#/components/schemas/ExecutionState'
+        trafficLight:
+          $ref: '#/components/schemas/TrafficLight'
+        executionResult:
+          $ref: '#/components/schemas/ExecutionResult'
+        metaData:
+          $ref: '#/components/schemas/SecHubConfigurationMetaData'
+
+    SecHubJobInfoForUserListPage:
+      title: SecHubJobInfoForUserListPage
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubJobInfoForUser'
+        projectId:
+          type: string
+
+
+security:
+  - basicAuth: [ ]
+
+paths:
+
+  #############
+  ## System ##
+  #############
+
+  /api/anonymous/check/alive:
+    get:
+      summary: Check if the server is alive and running.
+      description: An anonymous user or system wants to know if the server is alive
+        and running.
+      operationId: anonymousCheckAlive_get
+      responses:
+        "200":
+          description: "Ok"
+      security: [ ]
+      tags:
+        - System
+    head:
+      summary: Check if the server is alive and running.
+      description: An anonymous user or system wants to know if the server is alive
+        and running.
+      operationId: anonymousCheckAlive_head
+      responses:
+        "200":
+          description: "Ok"
+      security: [ ]
+      tags:
+        - System
+
+  #########################
+  ## User Administration ##
+  #########################
+
+  /api/admin/users:
+    get:
+      summary: Admin lists all users
+      description: An administrator downloads a json file containing all user ids
+      operationId: adminListAllUsers
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdList'
+      tags:
+        - User Administration
+      x-content-type: application/json
+
+  /api/admin/user/{userId}:
+    get:
+      summary: Admin shows user details
+      description: An administrator downloads a json file containing json containing
+        user details
+      operationId: adminShowUserDetails
+      parameters:
+        - name: userId
+          description: The user id of user to show details for
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailInformation'
+          description: "Ok"
+      tags:
+        - User Administration
+    delete:
+      summary: Admin deletes a user
+      description: Admin deletes a user
+      operationId: adminDeleteUser
+      parameters:
+        - name: userId
+          description: The userId of the user who shall be deleted
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+      tags:
+        - User Administration
+
+  /api/admin/user/{userId}/grant/superadmin:
+    post:
+      summary: Admin grants admin rights to user
+      description: An administrator grants admin rights to another user. So this user
+        will become also an administrator.
+      operationId: adminGrantAdminRightsToUser
+      parameters:
+        - name: userId
+          description: The userId of the user who becomes admin
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - User Administration
+
+  /api/admin/user/{userId}/revoke/superadmin:
+    post:
+      summary: Admin revokes admin rights from an admin
+      description: An administrator revokes existing admin rights from another administrator.
+      operationId: adminRevokeAdminRightsFromAdmin
+      parameters:
+        - description: The userId of the user whose admin rights shall be revoked
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - User Administration
+
+  /api/admin/admins:
+    get:
+      summary: Admin lists all admins
+      description: An administrator downloads a json file containing all names of
+        SecHub admins
+      operationId: adminListAllAdmins
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdList'
+      tags:
+        - User Administration
+
+  /api/admin/user-by-email/{emailAddress}:
+    get:
+      summary: Admin shows user details for email address
+      description: An administrator fetches user details for an email address.
+      operationId: adminShowUserDetailsForEmailAddress
+      parameters:
+        - name: emailAddress
+          description: The email address of user to show details for
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailInformation'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - User Administration
+
+  /api/admin/user/{userId}/email/{emailAddress}:
+    put:
+      summary: Admin updates user email address
+      description: Admin updates user email address
+      operationId: adminUpdateUserEmailAddress
+      parameters:
+        - description: The userId of the user whose email address will be changed
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+        - description: The new email address
+          in: path
+          name: emailAddress
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - User Administration
+
+  ############################
+  ## Project Administration ##
+  ############################
+
+  /api/admin/project:
+    post:
+      summary: Admin creates a project
+      description: Admin creates a project
+      operationId: adminCreateProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        "201":
+          description: "Created"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+      x-content-type: application/json
+      x-accepts: application/json
+
+  /api/admin/projects:
+    get:
+      summary: Admin lists all projects
+      description: An administrator downloads a json file containing all project ids
+      operationId: adminListAllProjects
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectIdList'
+      tags:
+        - Project Administration
+      x-content-type: application/json
+
+  /api/admin/project/{projectId}/membership/{userId}:
+    post:
+      summary: Admin assigns user to project
+      description: An administrator assigns an user to an existing SecHub project
+      operationId: adminAssignUserToProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to assign to project
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+    delete:
+      summary: Admin unassigns user from project
+      description: An administrator unassigns an user from a sechub project.
+      operationId: adminUnassignUserFromProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to unassign from project
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+
+  /api/admin/project/{projectId}:
+    get:
+      summary: Admin shows project details
+      description: An administrator downloads a json file containing json with project
+        details
+      operationId: adminShowProjectDetails
+      parameters:
+        - name: projectId
+          description: The id for project to show details for
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailInformation'
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - Project Administration
+    post:
+      summary: Admin changes project description
+      description: An administrator changes the project description
+      operationId: adminChangeProjectDescription
+      parameters:
+        - name: projectId
+          description: The id for project to change details for
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailInformation'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+      x-content-type: application/json
+      x-accepts: application/json
+    delete:
+      summary: Admin deletes a project
+      description: Admin deletes a project
+      operationId: adminDeleteProject
+      parameters:
+        - name: projectId
+          description: The id for project to delete
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+
+  /api/admin/project/{projectId}/owner/{userId}:
+    post:
+      summary: Admin changes owner of a project
+      description: An administrator changes the owner of an existing sechub project.
+      operationId: adminChangeProjectOwner
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to assign to project as the owner
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+
+  /api/admin/project/{projectId}/whitelist:
+    post:
+      summary: Update project whitelist
+      description: Update project whitelist
+      operationId: updateProjectWhitelist
+      parameters:
+        - name: projectId
+          description: The id of the project for which whitelist shall be updated
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+      x-content-type: application/json
+      x-accepts: application/json
+
+  /api/admin/project/{projectId}/scan/logs:
+    get:
+      summary: Admin shows scan logs for project
+      description: An admin downloads a json file containing log for scans of project
+      operationId: adminShowScanLogsForProject
+      parameters:
+        - name: projectId
+          description: The project Id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectScanLogSummaryList'
+          description: "Ok"
+      tags:
+        - Project Administration
+      x-content-type: application/json
+
+  /api/admin/project/{projectId}/metadata:
+    post:
+      summary: Update project metadata
+      description: Update project metadata
+      operationId: updateProjectMetaData
+      parameters:
+        - name: projectId
+          description: The id of the project for which metadata shall be updated
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectMetaData'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+      x-accepts: application/json
+
+  /api/admin/project/{projectId}/accesslevel/{projectAccessLevel}:
+    post:
+      summary: Admin changes project access level
+      description: Admin changes project access level
+      operationId: adminChangeProjectAccessLevel
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectAccessLevel
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ProjectAccessLevel'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+
+  ###################
+  ## User Profile ##
+  ###################
+
+  /api/anonymous/apitoken/{oneTimeToken}:
+    get:
+      summary: User clicks link to get new api token
+      description: User clicks link to get new api token
+      operationId: anonymousGetNewApiTokenByOneTimeToken
+      parameters:
+        - name: oneTimeToken
+          description: A one time token the user has got by a previous mail from SecHub server
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Answer containing the new api token or error message if request could not be fulfilled"
+      security: [ ]
+      tags:
+        - User Profile
+
+  ######################
+  ## SecHub Execution ##
+  ######################
+
+  /api/project/{projectId}/job:
+    post:
+      summary: User creates a new sechub job
+      description: User creates a new sechub job
+      operationId: userCreateNewJob
+      parameters:
+        - name: projectId
+          description: The unique id of the project id where a new sechub job shall
+            be created
+          explode: false
+          in: path
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecHubConfiguration'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerResult'
+          description: "200"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+      x-content-type: application/json
+      x-accepts: application/json
+
+  /api/project/{projectId}/job/{jobUUID}/sourcecode:
+    post:
+      summary: User uploads source code
+      description: User uploads source code
+      operationId: userUploadSourceCode
+      parameters:
+        - name: projectId
+          description: The id of the project where sourcecode shall be uploaded for
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The SecHub jobUUID. During the job creation this unique job identifier
+            is automatically generated by SecHub.
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: checkSum
+          description: A sha256 checksum for file upload validation
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The zip file to upload
+              required:
+                - file
+            encoding:
+              file:
+                contentType: application/zip
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      x-content-type: multipart/form-data
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/job/{jobUUID}/approve:
+    put:
+      summary: User approves SecHub job
+      description: User approves SecHub job
+      operationId: userApproveJob
+      parameters:
+        - name: projectId
+          description: The id of the project where SecHub job shall be approved
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The SecHub jobUUID. During the job creation this unique job identifier
+            is automatically generated by SecHub.
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/job/{jobUUID}:
+    get:
+      summary: User checks sechub job state
+      description: User checks sechub job state
+      operationId: userCheckJobStatus
+      parameters:
+        - name: projectId
+          description: The id of the project where sechub job was started for
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The SecHub jobUUID. During the job creation this unique job identifier
+            is automatically generated by SecHub.
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleJobStatus'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/report/{jobUUID}:
+    get:
+      summary: User downloads sechub job report
+      description: User downloads sechub job report
+      operationId: userDownloadJobReport
+      parameters:
+        - name: projectId
+          description: The project Id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubReport'
+            text/html;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SecHubReport'
+          description: "200"
+      tags:
+        - SecHub Execution
+
+  #TODO: where to put this?
+  /api/admin/scan/download/{jobUUID}:
+    get:
+      summary: Admin downloads all details about a scan job
+      description: An administrator downloads a ZIP file containing full details of
+        a scan. Main reason for this use case is for debugging when there are problems
+        with security products. Another reason is for developers to adopt new security
+        products easier.
+      operationId: adminDownloadFullScanDataForJob
+      parameters:
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+          description: "200"
+      tags:
+        - SecHub Execution
+      x-content-type: application/zip
+
+  /api/project/{projectId}/false-positives:
+    get:
+      summary: User fetches false positive configuration of project
+      description: User fetches false positive configuration of project
+      operationId: userFetchFalsePositiveConfigurationOfProject
+      parameters:
+        - name: projectId
+          description: The project id
+          explode: false
+          in: path
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FalsePositiveProjectConfiguration'
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - SecHub Execution
+      x-content-type: application/json
+    put:
+      description: User marks false positives
+      operationId: userMarkFalsePositives
+      parameters:
+        - description: The projectId of the project where users adds false positives
+            for
+          explode: false
+          in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/FalsePositives'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+
+      summary: User marks false positives for finished sechub job
+      x-content-type: application/json
+      x-accepts: application/json
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/false-positive/{jobUUID}/{findingId}:
+    delete:
+      summary: User unmarks existing false positive definitons
+      description: User unmarks existing false positive definitons
+      operationId: userUnmarksJobFalsePositives
+      parameters:
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: Job uuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: findingId
+          description: Finding id - in combination with job UUID this defines the false
+            positive to remove
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/false-positive/{id}:
+    delete:
+      summary: User unmarks existing false positive definitons
+      description: User unmarks existing false positive definitons
+      operationId: userUnmarksFalsePositives
+      parameters:
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          description: The id of the projectData entry the shall be deleted from FalsePositiveProjectConfiguration
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/job/{jobUUID}/binaries:
+    post:
+      summary: User uploads binaries
+      description: User uploads binaries
+      operationId: userUploadsBinaries
+      parameters:
+        - name: projectId
+          description: The id of the project for which the binaries are uploaded for
+          explode: false
+          in: path
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: jobUUID
+          description: The SecHub jobUUID. During the job creation this unique job identifier
+            is automatically generated by SecHub.
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: file
+          description: The file to upload
+          in: query
+          required: true
+          schema:
+            type: string
+            format: binary
+        - name: x-file-size
+          description: The file size of the tar-archive to upload in bytes. Needs to
+            be a positive integer value.
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: checkSum
+          description: A sha256 checksum for file upload validation
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "400":
+          description: "Bad request"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/report/spdx/{jobUUID}:
+    get:
+      summary: User downloads job report in SPDX format
+      description: User downloads job report in SPDX format
+      operationId: userDownloadSpdxJobReport
+      parameters:
+        - name: projectId
+          description: The project Id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubReport'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+      x-accepts: application/json
+
+  #############
+  ## Sign Up ##
+  #############
+
+  /api/anonymous/signup:
+    post:
+      summary: User self registration
+      description: User self registration
+      operationId: anonymousSignUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpInput'
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not accepted"
+      security: [ ]
+      x-content-type: application/json
+      x-accepts: application/json
+      tags:
+        - Sign Up
+
+  /api/admin/signups:
+    get:
+      summary: Admin lists open user signups
+      description: In this use case the administrator will list the currently unapplied
+        user self registrations/signups.
+      operationId: adminListOpenUserSignUps
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpList'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Sign Up
+
+  /api/admin/signup/accept/{userId}:
+    post:
+      summary: Admin applies self registration
+      description: In this use case the administrator will accept the self registration
+        done by an user
+      operationId: adminAcceptSignup
+      parameters:
+        - name: userId
+          description: The userId of the signup which shall be accepted
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: "Created"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Sign Up
+
+  /api/admin/signup/{userId}:
+    delete:
+      summary: Admin deletes user signup
+      description: In this use case the administrator will not accept the self registration
+        done by an user but delete the entry.
+      operationId: adminDeleteSignup
+      parameters:
+        - name: userId
+          description: The userId of the signup which shall be deleted
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Sign Up
+
+  /api/anonymous/refresh/apitoken/{emailAddress}:
+    post:
+      summary: User requests new API token
+      description: User requests new API token
+      operationId: anonymousRefreshApiTokenByEmailAddress
+      parameters:
+        - name: emailAddress
+          description: Email address for user where api token shall be refreshed
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+      security: [ ]
+      tags:
+        - Sign Up
+
+  ########################
+  ## Job Administration ##
+  ########################
+
+  /api/admin/jobs/running:
+    get:
+      summary: Admin lists all running jobs
+      description: Admin lists all running jobs
+      operationId: adminListAllRunningJobs
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobInformation'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Job Administration
+
+  /api/admin/jobs/cancel/{jobUUID}:
+    post:
+      summary: Admin cancels a job
+      description: Administrator does cancel a job by its Job UUID
+      operationId: adminCancelJob
+      parameters:
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Job Administration
+
+  /api/admin/jobs/restart/{jobUUID}:
+    post:
+      summary: Admin restarts a job
+      description: Admin restarts a job
+      operationId: adminRestartJob
+      parameters:
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Job Administration
+
+  /api/admin/jobs/restart-hard/{jobUUID}:
+    post:
+      summary: Admin restarts a job (hard)
+      description: Admin restarts a job (hard)
+      operationId: adminRestartJobHard
+      parameters:
+        - name: jobUUID
+          description: The job UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Job Administration
+
+  #############
+  ## Testing ##
+  #############
+
+  /api/project/{projectId}/mockdata:
+    get:
+      summary: User retrieves mock data configuration for project
+      description: User retrieves mock data configuration for project
+      operationId: userRetrieveProjectMockData
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanProjectMockDataConfiguration'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-content-type: application/json
+      tags:
+        - Testing
+    put:
+      summary: User defines mock data configuration for project
+      description: User defines mock data configuration for project
+      operationId: userDefineProjectMockData
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanProjectMockDataConfiguration'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-content-type: application/json
+      x-accepts: application/json
+      tags:
+        - Testing
+
+  ###################
+  ## Configuration ##
+  ###################
+
+  /api/admin/config/mapping/{mappingId}:
+    get:
+      summary: Admin fetches mapping configuration
+      description: An administrator fetches mapping configuration by its ID.
+      operationId: adminFetchMappingConfiguration
+      parameters:
+        - name: mappingId
+          description: The mapping Id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappingData'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+      x-accepts: application/json
+    put:
+      summary: Admin updates mapping configuration
+      description: "An administrator changes mapping configuration. Mappings represents\
+        \ a generic mechanism to replace a given string, matched by configured regular\
+        \ expression pattern with a replacement string. Some of the mappings are used\
+        \ for adapter behaviour."
+      operationId: adminUpdateMappingConfiguration
+      parameters:
+        - name: mappingId
+          description: "The mappingID, identifiying which mapping shall be updated"
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MappingData'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-accepts: application/json
+      tags:
+        - Configuration
+
+  /api/admin/config/executor:
+    post:
+      summary: Admin creates an executor configuration
+      description: An administrator creates an executor a new configuration entry.
+      operationId: adminCreateExecutorConfiguration
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ProductExecutorConfig'
+      responses:
+        "201":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: "Created"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+
+  /api/admin/config/executors:
+    get:
+      summary: Admin fetches executor configuration list
+      description: An administrator fetches executor configuration list which contains
+        all executor configurations
+      operationId: adminFetchExecutorConfigurationList
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductExecutorConfigList'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Configuration
+
+  /api/admin/config/executor/{uuid}:
+    get:
+      summary: Admin fetches executor configuration
+      description: An administrator fetches one explicit executor configuration by
+        its uuid.
+      operationId: adminFetchExecutorConfiguration
+      parameters:
+        - name: uuid
+          description: The configuration uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductExecutorConfig'
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+    delete:
+      summary: Admin deletes executor configuration
+      description: An administrator deletes an executor by removing the configuration
+        entry identified by its uuid
+      operationId: adminDeleteExecutorConfiguration
+      parameters:
+        - name: uuid
+          description: The configuration uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "Ok"
+      tags:
+        - Configuration
+    put:
+      summary: Admin updates executor configuration setup
+      description: "An administrator updates dedicated executor configuration. The\
+        \ update does change description, enabled state and also used executors, but\
+        \ Will NOT change any associations between profile and projects."
+      operationId: adminUpdateExecutorConfig
+      parameters:
+        - name: uuid
+          description: The configuration uuid
+          explode: false
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductExecutorConfig'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-accepts: application/json
+      tags:
+        - Configuration
+
+  /api/admin/config/execution/profile/{profileId}:
+    get:
+      summary: Admin fetches execution profile
+      description: An administrator fetches details about an execution profile
+      operationId: adminFetchExecutionProfile
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductExecutionProfile'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-content-type: application/json
+      tags:
+        - Configuration
+    post:
+      summary: Admin creates an execution profile
+      description: An administrator creates an execution profile
+      operationId: adminCreateExecutionProfile
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductExecutionProfile'
+      responses:
+        "201":
+          description: "Created"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+      x-accepts: application/json
+    put:
+      summary: Admin updates execution profile
+      description: An administrator updates dedicated execution profile
+      operationId: adminUpdateExecutionProfile
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductExecutionProfile'
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-accepts: application/json
+      tags:
+        - Configuration
+    delete:
+      summary: Admin deletes execution profile
+      description: An administrator deletes execution profile
+      operationId: adminDeleteExecutionProfile
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-accepts: application/json
+      tags:
+        - Configuration
+
+  /api/admin/config/execution/profiles:
+    get:
+      summary: Admin fetches execution profile list
+      description: An administrator fetches execution profile list
+      operationId: adminFetchExecutionProfileList
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductExecutionProfilesList'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Configuration
+
+  /api/admin/config/execution/profile/{profileId}/project/{projectId}:
+    post:
+      summary: Admin assigns execution profile to project
+      description: An administrator assigns an execution profile to an existing project
+      operationId: adminAssignExecutionProfileToProject
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: "Created"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+    delete:
+      summary: Admin unassigns execution profile from project
+      description: An administrator unassigns an execution profile from a projects.
+      operationId: adminUnassignExecutionProfileFromProject
+      parameters:
+        - name: profileId
+          description: The profile id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+
+  /api/admin/config/autoclean:
+    get:
+      summary: Admin fetches auto cleanup configuration
+      description: An administrator fetches current auto-cleanup configuration
+      operationId: adminFetchAutoCleanupConfiguration
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdministrationAutoCleanupConfig'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Configuration
+    put:
+      summary: Admin updates auto cleanup configuration
+      description: An administrator changes auto-cleanup configuration
+      operationId: adminUpdateAutoCleanupConfiguration
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/AdministrationAutoCleanupConfig'
+      responses:
+        "202":
+          description: "Accepted"
+        "406":
+          description: "Not acceptable"
+      x-accepts: application/json
+      tags:
+        - Configuration
+
+  ################
+  ## Encryption ##
+  ################
+
+  /api/admin/encryption/status:
+    get:
+      summary: Admin fetches encryption status
+      description: "An administrator fetches encryption status from all domains where encryption is used."
+      operationId: adminFetchesEncryptionStatus
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubEncryptionStatus'
+      tags:
+        - Encryption
+
+  /api/admin/encryption/rotate:
+    post:
+      summary: Admin starts encryption rotation
+      description: "An administrator starts encryption rotation."
+      operationId: adminStartsEncryptionRotation
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SecHubEncryptionData'
+      responses:
+        "200":
+          description: "Ok"
+      x-accepts: application/json
+      tags:
+        - Encryption
+
+  ###########
+  ## Other ##
+  ###########
+
+  /api/admin/scheduler/disable/job-processing:
+    post:
+      summary: Admin disables job processing in scheduler
+      operationId: adminDisableSchedulerJobProcessing
+      description: "An administrator disables scheduler job processing. This can be\
+        \ a preparation for system wide update - when scheduling is stoped, user can\
+        \ ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing\
+        \ is executed - so JVMs/PODs can be updated in cluster"
+      responses:
+        "202":
+          description: "Accepted"
+      tags:
+        - Other
+
+  /api/admin/scheduler/enable/job-processing:
+    post:
+      summary: Admin enables scheduler job processing
+      operationId: adminEnableSchedulerJobProcessing
+      description: An administrator starts scheduler job processing. This can be a
+        necessary step after a system wide update where processing of jobs was stoped
+        before.
+      responses:
+        "202":
+          description: "Accpeted"
+      tags:
+        - Other
+
+  /api/admin/scheduler/status/refresh:
+    post:
+      summary: Admin trigger scheduler status refresh
+      description: An administrator wants to update information about scheduler status
+      operationId: adminTriggerRefreshOfSchedulerStatus
+      responses:
+        "202":
+          description: "Accepted"
+      tags:
+        - Other
+
+  /api/admin/status:
+    get:
+      summary: Admin lists status information
+      description: An administrator fetches current known status information about
+        sechub
+      operationId: adminListStatusInformation
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatusEntry'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Other
+
+  /api/admin/info/server:
+    get:
+      summary: Admin fetches server runtime data
+      description: An administrator fetches the current SecHub server runtime data.
+        Only administrators are allowed to do this because it contains the server
+        version and knowing the exact server version makes it easier for penetration
+        tester or attacker to attack the system.
+      operationId: adminFetchServerRuntimeData
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerRuntimeData'
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Other
+
+  /api/project/{projectId}/jobs:
+    get:
+      summary: User lists jobs for project
+      description: User lists jobs for project
+      operationId: userListJobsForProject
+      parameters:
+        - name: projectId
+          description: The id of the project where job information shall be fetched
+            for
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: size
+          description: "The wanted (maximum) size for the result set. When not defined,\
+          \ the default will be 1."
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          description: "The wanted page number. When not defined, the default will be\
+          \ 0."
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: withMetaData
+          description: "An optional parameter to define if meta data shall be fetched\
+          \ as well. When not defined, the default will be false."
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: allParams
+          description: |-
+            An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.
+
+            It is possible to query for multiple labels (up to 10 ).
+            The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned.
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubJobInfoForUserListPage'
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      x-content-type: application/json
+      tags:
+        - Other

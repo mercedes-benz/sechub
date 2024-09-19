@@ -6,8 +6,6 @@ import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +13,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobMessages;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 public class PDSGetJobMessagesService {

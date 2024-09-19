@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
+	"slices"
 	"strings"
 	"text/template"
 
@@ -19,12 +19,14 @@ import (
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
-	APIVersion string                `json:"apiVersion"`
-	User       string                `json:"user"`
-	ProjectID  string                `json:"project"`
-	Server     string                `json:"server"`
-	CodeScan   CodeScanConfig        `json:"codeScan"`
-	Data       DataSectionScanConfig `json:"data"`
+	APIVersion  string                `json:"apiVersion"`
+	User        string                `json:"user"`
+	ProjectID   string                `json:"project"`
+	Server      string                `json:"server"`
+	CodeScan    CodeScanConfig        `json:"codeScan"`
+	LicenseScan LicenseScanConfig     `json:"licenseScan"`
+	SecretScan  SecretScanConfig      `json:"secretScan"`
+	Data        DataSectionScanConfig `json:"data"`
 }
 
 type DataSectionScanConfig struct {
@@ -50,10 +52,23 @@ type NamedBinariesScanConfig struct {
 // CodeScanConfig - definition of a code scan
 type CodeScanConfig struct {
 	Use []string `json:"use"`
-	// From here: kept for backward compatibility. Take "use" in conjunction with data section.
+	////////////////////////////////
+	// From here: Deprecated/legacy
+	// Kept for backward compatibility. Take "use" in conjunction with data section.
 	FileSystem         FileSystemConfig `json:"fileSystem"`
 	Excludes           []string         `json:"excludes"`
 	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
+	////////////////////////////////
+}
+
+// SecretScanConfig - definition of a secrets scan
+type LicenseScanConfig struct {
+	Use []string `json:"use"`
+}
+
+// SecretScanConfig - definition of a secrets scan
+type SecretScanConfig struct {
+	Use []string `json:"use"`
 }
 
 // FileSystemConfig contains data for defined files+folders
@@ -110,7 +125,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubCo
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked. We limit read to maximum allowed bytes */
-	context.inputForContentProcessing, err = ioutil.ReadAll(io.LimitReader(jsonFile, MaximumBytesOfSecHubConfig))
+	context.inputForContentProcessing, err = io.ReadAll(io.LimitReader(jsonFile, MaximumBytesOfSecHubConfig))
 
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
@@ -149,33 +164,61 @@ func envToMap() (map[string]string, error) {
 	return envMap, err
 }
 
-func adjustSourceCodePatterns(context *Context) {
+func adjustSourceFilterPatterns(context *Context) {
 	for i, item := range context.sechubConfig.Data.Sources {
-		context.sechubConfig.Data.Sources[i].SourceCodePatterns =
-			adjustSourceCodePatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)
+
+		if slices.Contains(context.sechubConfig.SecretScan.Use, item.Name) {
+			// Clear upload filter for secrets scans
+			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
+				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, true)
+		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) ||
+			slices.Contains(context.sechubConfig.LicenseScan.Use, item.Name) {
+			// Append default source code patterns for code scans
+			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
+				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)
+		}
 
 		if !context.config.ignoreDefaultExcludes {
-			// add default exclude patterns to exclude list
-			context.sechubConfig.Data.Sources[i].Excludes = append(item.Excludes, DefaultSourceCodeExcludeDirPatterns...)
+			excludePatterns := computeSourceExcludePatterns(context, item)
+			// add exclude patterns to exclude list
+			context.sechubConfig.Data.Sources[i].Excludes = append(item.Excludes, excludePatterns...)
 		}
 	}
 
+	////////////////////////////////////////////////
+	// Old/legacy support
 	// We still support the old/legacy format directly in context.sechubConfig.CodeScan:
 	if len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
 		context.sechubConfig.CodeScan.SourceCodePatterns =
-			adjustSourceCodePatternsWhitelistAll(context.sechubConfig.CodeScan.SourceCodePatterns, context.config.whitelistAll)
+			adjustSourceFilterPatternsWhitelistAll(context.sechubConfig.CodeScan.SourceCodePatterns, context.config.whitelistAll)
 
 		if !context.config.ignoreDefaultExcludes {
 			context.sechubConfig.CodeScan.Excludes = append(context.sechubConfig.CodeScan.Excludes, DefaultSourceCodeExcludeDirPatterns...)
 		}
 	}
+	////////////////////////////////////////////////
 }
 
-func adjustSourceCodePatternsWhitelistAll(sourceCodePatterns []string, whitelistAll bool) []string {
+func adjustSourceFilterPatternsWhitelistAll(sourceCodePatterns []string, whitelistAll bool) []string {
 	if whitelistAll {
 		return []string{""}
 	}
 
 	// build list of source code file patterns
 	return append(sourceCodePatterns, DefaultSourceCodeAllowedFilePatterns...)
+}
+
+func computeSourceExcludePatterns(context *Context, config NamedCodeScanConfig) []string {
+	var result []string
+	if slices.Contains(context.sechubConfig.SecretScan.Use, config.Name) {
+		// On secrets scan we add a bunch of exclude patterns (binaries, image files etc.)
+		result = DefaultSourceCodeUnwantedDirPatterns
+		if !context.config.addSCMHistory {
+			result = append(result, DefaultSCMDirPatterns...)
+		}
+		result = append(result, DefaultSecretScanUnwantedFilePatterns...)
+	} else if slices.Contains(context.sechubConfig.CodeScan.Use, config.Name) {
+		result = DefaultSourceCodeExcludeDirPatterns
+	}
+	return result
 }

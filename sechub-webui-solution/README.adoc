@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+
+== WebUI Image
+
+The files to create the WebUI container image.

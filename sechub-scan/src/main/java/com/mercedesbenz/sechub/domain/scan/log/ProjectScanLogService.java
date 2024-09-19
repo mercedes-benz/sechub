@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 public class ProjectScanLogService {
@@ -32,10 +32,9 @@ public class ProjectScanLogService {
     public UUID logScanStarted(SecHubExecutionContext context) {
         String projectId = context.getConfiguration().getProjectId();
         UUID secHubJobUUID = context.getSechubJobUUID();
-        String config = context.getConfiguration().toJSON();
         String executedBy = context.getExecutedBy();
 
-        ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy, config);
+        ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy);
         log.setStatus(ProjectScanLog.STATUS_STARTED);
         ProjectScanLog persistedLog = repository.save(log);
         return persistedLog.getUUID();

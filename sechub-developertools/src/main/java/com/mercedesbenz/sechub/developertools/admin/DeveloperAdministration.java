@@ -44,6 +44,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
@@ -340,7 +342,7 @@ public class DeveloperAdministration {
 
     public String createNewUserSignup(String name, String email) {
 
-        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAddress\":\"" + email + "\"}";
         return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
@@ -621,7 +623,7 @@ public class DeveloperAdministration {
     }
 
     public String checkVersion() {
-        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerRuntimeDataUrl());
     }
 
     public String triggerDownloadFullScan(UUID sechubJobUUID) {
@@ -685,7 +687,7 @@ public class DeveloperAdministration {
     }
 
     public String markFalsePositivesForProjectByJobData(String projectId, String json) {
-        return getRestHelper().putJSON(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId), json);
+        return getRestHelper().putJSON(getUrlBuilder().buildUserAddsFalsePositiveDataListForProject(projectId), json);
     }
 
     public void deleteFalsePositivesForProject(String projectId, UUID jobUUID, int findingId) {
@@ -799,6 +801,14 @@ public class DeveloperAdministration {
     public String fetchProjectJobInfoForUser(String projectId, int pageSize, int page) {
         TestSecHubJobInfoForUserListPage listPage = asTestUser().fetchUserJobInfoList(new FixedTestProject(projectId), pageSize, page);
         return TestJSONHelper.get().createJSON(listPage, true);
+    }
+
+    public String rotateEncryption(SecHubEncryptionData data) {
+        return asTestUser().rotateEncryption(data);
+    }
+
+    public SecHubEncryptionStatus fetchEncryptionStatus() {
+        return asTestUser().fetchEncryptionStatus();
     }
 
 }

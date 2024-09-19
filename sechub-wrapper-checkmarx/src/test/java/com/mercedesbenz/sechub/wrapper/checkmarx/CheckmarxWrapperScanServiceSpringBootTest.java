@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.checkmarx;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,12 +11,10 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
@@ -25,7 +25,6 @@ import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanServic
 
 @SpringBootTest(classes = { CheckmarxWrapperScanContextFactory.class, CheckmarxWrapperScanService.class, CheckmarxWrapperPojoFactory.class,
         CheckmarxWrapperEnvironment.class, CheckmarxWrapperPDSUserMessageSupportFactory.class })
-@ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class CheckmarxWrapperScanServiceSpringBootTest {
 

@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.scan.report;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -16,13 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest API for job scheduling. It shall be same obvious like
@@ -55,7 +54,7 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-        return fetchScanSecHubReport(projectId, jobUUID);
+        return fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
     }
 
@@ -68,10 +67,10 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-        ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
+        ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
-        return new ModelAndView("report/html/scanresult", model);
+        return new ModelAndView("report/html/report", model);
     }
 
     /* @formatter:off */
@@ -88,8 +87,8 @@ public class ScanReportRestController {
         return spdxDocument;
     }
 
-    private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
-        return downloadReportService.getScanSecHubReport(projectId, jobUUID);
+    private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
+        return downloadReportService.getObfuscatedScanSecHubReport(projectId, jobUUID);
     }
 
 }

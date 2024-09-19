@@ -4,21 +4,17 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# The remaining arguments need to be placed after the `FROM`
-# See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
+ARG PMD_VERSION
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub PMD+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines PMD with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-# Build args
-ARG PMD_VERSION="6.47.0"
-
 # Environment variables in container
 ENV PMD_VERSION="${PMD_VERSION}"
 
-user root
+USER root
 
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"

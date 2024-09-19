@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
+
+import jakarta.annotation.PostConstruct;
 
 public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor implements CanceableProductExecutor {
 
@@ -86,7 +86,11 @@ public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor
                     configSupport.getDataTypesSupportedByPDSAsString());
             return null;
         }
-        return executeByAdapter(data, configSupport, contentProvider);
+
+        List<ProductResult> result = executeByAdapter(data, configSupport, contentProvider);
+        contentProvider.close();
+
+        return result;
     }
 
     protected abstract List<ProductResult> executeByAdapter(ProductExecutorData data, PDSExecutorConfigSupport configSupport,

@@ -15,11 +15,11 @@ ARG TARGETARCH
 # Build args
 ARG BUILD_TYPE="download"
 
-ARG SECHUB_VERSION="0.35.2"
+ARG SECHUB_VERSION
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.20.4.linux-${TARGETARCH}.tar.gz"
+ARG GO="go1.21.6.linux-${TARGETARCH}.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="temurin"
@@ -141,7 +141,7 @@ COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 
 #-------------------
 # SecHub Server Image
@@ -182,6 +182,7 @@ RUN chmod +x /run.sh
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
+    apt-get install --assume-yes curl netcat-openbsd && \
     apt-get clean
 
 COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"

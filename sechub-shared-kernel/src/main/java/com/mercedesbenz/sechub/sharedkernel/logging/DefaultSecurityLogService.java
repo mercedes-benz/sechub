@@ -6,9 +6,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +21,9 @@ import com.mercedesbenz.sechub.adapter.SpringUtilFactory;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 /**
  * Default security log service.
  *
@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.sharedkernel.UserContextService;
  *
  */
 @Service
-@Profile("!" + Profiles.INTEGRATIONTEST)
+@Profile("!" + Profiles.INTEGRATIONTEST) // For integration testing we extend this service! See hierarchy
 public class DefaultSecurityLogService implements SecurityLogService {
 
     private static final int MINIMUM_LENGTH_TO_SHOW_PWD_INT = 52;
@@ -47,6 +47,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     AuthorizeValueObfuscator authorizedValueObfuscator;
+
+    @Autowired
+    BasicAuthUserExtraction basicAuthUserExtraction;
 
     private int MAXIMUM_HEADER_AMOUNT_TO_SHOW = 300;
 
@@ -114,7 +117,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         paramList.add(logData.getType().getTypeId());
 
         try {
-            paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
+            String logDataAsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData);
+            paramList.add(logDataAsJson);
         } catch (JsonProcessingException e) {
             getLogger().error("Was not able to write security log data as json - will fallback to empty JSON", e);
 
@@ -149,6 +153,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
         collectRequestInfo(request, logData);
 
         logData.userId = userContextService.getUserId();
+
+        String userFromAuthHeader = basicAuthUserExtraction.extractUserFromAuthHeader(request.getHeader("authorization"));
+        logData.basicAuthUser = logSanititzer.sanitize(userFromAuthHeader, 100, false); // without log forgery handling, we want the origin output
 
         return logData;
     }

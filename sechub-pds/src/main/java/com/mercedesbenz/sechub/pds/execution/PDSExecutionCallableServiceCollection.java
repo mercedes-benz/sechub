@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.pds.execution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;

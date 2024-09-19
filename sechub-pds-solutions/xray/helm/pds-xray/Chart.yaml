@@ -3,14 +3,10 @@
 apiVersion: v2
 name: pds-xray
 description: SecHub PDS + Xray wrapper as Helm chart for Kubernetes
-
+home: https://github.com/mercedes-benz/sechub
 type: application
 
-maintainers:
-  - name: Laura Bottner
-  - name: Sven Dolderer
-
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
+# This is the chart version.
+# This version number should be incremented each time you make changes to the chart and its templates.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.0.0
+version: 1.2.0

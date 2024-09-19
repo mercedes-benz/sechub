@@ -38,7 +38,7 @@ import com.mercedesbenz.sechub.domain.scan.admin.ScanData;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLog;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
@@ -51,7 +51,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
 @ContextConfiguration(classes = { FullScanDataRestController.class, DownloadsFullScanDataForJobRestDocTest.SimpleTestConfiguration.class, LogSanitizer.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryForDocumentation {
@@ -79,8 +79,7 @@ public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryFo
         d.metaData = "{}";
         data.allScanData.add(d);
 
-        String config = "{}";
-        ProjectScanLog log = new ProjectScanLog("theProject", jobUUID, "spartakus", config);
+        ProjectScanLog log = new ProjectScanLog("theProject", jobUUID, "spartakus");
         data.allScanLogs.add(log);
 
         when(fullScanDataService.getFullScanData(jobUUID)).thenReturn(data);
@@ -126,7 +125,7 @@ public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryFo
 
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 

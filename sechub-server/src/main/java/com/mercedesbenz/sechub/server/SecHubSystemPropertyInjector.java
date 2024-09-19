@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This component injects some special SecHub Spring Boot values into

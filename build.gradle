@@ -19,7 +19,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
-        classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx_gradle_plugin}"
 	}
 }
 
@@ -30,19 +30,19 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.5.0'
+    id 'org.openapi.generator' version '7.8.0'
     
     // spring
-    id 'org.springframework.boot' version '2.7.11' apply false
+    id 'org.springframework.boot' version '3.2.2' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.18.0'
+    id 'com.diffplug.spotless' version '6.23.3'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
-    id 'com.github.ben-manes.versions' version '0.46.0'
-    
+    id 'com.github.ben-manes.versions' version '0.50.0'
+       
     // Details about every gradle plugin can be found at 
     // https://plugins.gradle.org/plugin/${pluginId}
 }
@@ -83,7 +83,7 @@ task internalCleanRootBuildFolder(type: Delete){
     doFirst {
         def rootBuildFolder = file("${project.projectDir}/build")
         if (! rootBuildFolder.exists()){
-            rootBuildFolder.mkdirs();
+            rootBuildFolder.mkdirs()
         } 
         delete rootBuildFolder.listFiles() // so we do NOT clear buildSrc/build here!
     }

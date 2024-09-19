@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -24,12 +25,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
@@ -38,11 +38,21 @@ import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerIdentifierValidator;
 
 @ActiveProfiles(PDSProfiles.TEST)
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @DataJpaTest
-@ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
-        PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class, PDSServerConfigurationService.class,
-        PDSJobRepositoryDBTest.SimpleTestConfiguration.class, PDSConfigurationAutoFix.class, SecHubDataConfigurationTypeListParser.class })
+/* @formatter:off */
+@ContextConfiguration(classes = {
+		PDSPathExecutableValidator.class,
+		PDSServerIdentifierValidator.class,
+		PDSServerConfigurationValidator.class,
+        PDSProductIdentifierValidator.class,
+        PDSJobRepository.class,
+        PDSShutdownService.class,
+        PDSConfigurationAutoFix.class,
+        PDSServerConfigurationService.class,
+        PDSJobRepositoryDBTest.SimpleTestConfiguration.class,
+        SecHubDataConfigurationTypeListParser.class })
+/* @formatter:on */
 public class PDSJobRepositoryDBTest {
 
     @Autowired
@@ -485,7 +495,8 @@ public class PDSJobRepositoryDBTest {
         // necessary because must be not null
         job.created = LocalDateTime.of(2020, 06, 24, 13, 55, 01).minusMinutes(minutes);
         job.owner = "owner";
-        job.jsonConfiguration = "{}";
+        job.encryptedConfiguration = "{}".getBytes(); // simulate encryption
+        job.encryptionInitialVectorData = "initial-vector".getBytes(); // simulate initial vector
         job.state = state;
 
         /* persist */

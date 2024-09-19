@@ -31,7 +31,6 @@ public class CheckmarxWrapperCLI implements CommandLineRunner {
             storageService.store(result);
 
         } catch (Exception e) {
-            System.out.println("Execution failed - " + e.getMessage());
             LOG.error("Execution failed", e);
 
             System.exit(2);

@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.domain.schedule.strategy;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 
 @Component
@@ -15,6 +17,9 @@ public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrateg
     @Autowired
     SecHubJobRepository jobRepository;
 
+    @Autowired
+    ScheduleEncryptionService encryptionService;
+
     @Override
     public SchedulerStrategyId getSchedulerId() {
         return SchedulerStrategyId.ONE_SCAN_PER_PROJECT;
@@ -22,7 +27,9 @@ public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrateg
 
     @Override
     public UUID nextJobId() {
-        Optional<UUID> nextJob = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+        Set<Long> supportedPoolIds = encryptionService.getCurrentEncryptionPoolIds();
+
+        Optional<UUID> nextJob = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted(supportedPoolIds);
         if (!nextJob.isPresent()) {
             return null;
         }

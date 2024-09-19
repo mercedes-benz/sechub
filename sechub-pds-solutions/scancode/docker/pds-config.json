@@ -11,9 +11,9 @@
       "parameters": {
         "optional": [
           {
-            "key": "scancode.output.format",
-            "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
-            "default": "spdx-json"
+            "key": "extractcode.enabled",
+            "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
+            "default": false
           },
           {
             "key": "scancode.license.score",
@@ -21,24 +21,34 @@
             "default": 0
           },
           {
+            "key": "scancode.output.format",
+            "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed.",
+            "default": "spdx-json"
+          },
+          {
             "key": "scancode.processes",
             "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845).",
             "default": 1
           },
           {
-            "key": "extractcode.enabled",
-            "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it.",
-            "default": false
-          },
-          {
-            "key": "scancode.timeout",
-            "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
-            "default": "120"
-          },
-          {
             "key": "scancode.scan.copyright",
             "description": "Scan for copyrights.",
             "default": false
+          },
+          {
+            "key": "scancode.scan.diagnostics",
+            "description": "Diagnostic information",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.email",
+            "description": "Scan for emails.",
+            "default": false
+          },
+          {
+            "key": "scancode.scan.info",
+            "description": "Include information regarding the scan.",
+            "default": true
           },
           {
             "key": "scancode.scan.license",
@@ -51,31 +61,28 @@
             "default": false
           },
           {
-            "key": "scancode.scan.email",
-            "description": "Scan for emails.",
-            "default": false
-          },
-          {
             "key": "scancode.scan.url",
             "description": "Scan for urls.",
             "default": false
           },
           {
-            "key": "scancode.scan.info",
-            "description": "Include information regarding the scan.",
-            "default": true
-          },
-          {
-            "key": "scancode.scan.diagnostics",
-            "description": "Diagnostic information",
-            "default": false
+            "key": "scancode.timeout",
+            "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
+            "default": "120"
           }
         ]
-      }
+      },
+      "envWhitelist": [
+        "HELPER_FOLDER",
+        "PDS_VERSION",
+        "SPDX_TOOL_VERSION",
+        "TOOL_FOLDER"
+      ]
     },
     {
       "id": "PDS_SCANCODE_MOCK",
       "path": "/pds/scripts/scancode_mock.sh",
+      "envWhitelist" : [ "HELPER_FOLDER", "MOCK_FOLDER" ],
       "scanType": "licenseScan",
       "description": "Runs ScanCode mock.",
       "parameters": {

@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.*;
+import static com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation.assertValid;
 
 import java.util.Optional;
-
-import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +16,8 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -45,7 +45,7 @@ public class FetchProductExecutionProfileService {
         auditLogService.log("Reads setup for executor configuration:{}", profileId);
 
         Optional<ProductExecutionProfile> config = repository.findById(profileId);
-        if (!config.isPresent()) {
+        if (config.isEmpty()) {
             throw new NotFoundException("Product execution profile not found for profileId:" + profileId);
         }
 

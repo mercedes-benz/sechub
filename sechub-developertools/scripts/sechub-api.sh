@@ -71,6 +71,8 @@ project_unassign_user <project-id> <user-id> - Unassign user from project (revok
 scheduler_disable - Stop SecHub job scheduler
 scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
+server_encryption_status - Get current status of encryption (json format)
+server_info - Print infos about SecHub server (json format)
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
 server_version - Print version of SecHub server
 superadmin_grant <user-id> - Grant superadmin role to user <user-id>
@@ -718,6 +720,16 @@ function sechub_scheduler_status {
 }
 
 
+function sechub_server_encryption_status {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/encryption/status" | $RESULT_FILTER | jq '.domains'
+}
+
+
+function sechub_server_info {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/server" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
 function sechub_server_status {
   # 1. Update status in admin domain
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
@@ -738,7 +750,15 @@ function sechub_server_status {
 
 
 function sechub_server_version {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: text/plain' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER
+  local result_json
+  result_json=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/info/server" | $RESULT_FILTER)
+
+  if [ "$JSON_FORMATTER" != "$NOFORMAT_PIPE" -a "$JQ_INSTALLED" == "true" ] ; then
+    echo $result_json | jq --raw-output '.serverVersion'
+  else
+    # Fallback: Print raw JSON
+    echo -n $result_json | $JSON_FORMATTER
+  fi
 }
 
 
@@ -790,7 +810,7 @@ function sechub_user_list_open_signups {
 
 
 function sechub_user_reset_apitoken {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
 }
 
 
@@ -799,13 +819,13 @@ function generate_sechub_user_signup_data {
 {
   "apiVersion":"$SECHUB_API_VERSION",
   "userId":"$1",
-  "emailAdress":"$2"
+  "emailAddress":"$2"
 }
 EOF
 }
 
 function sechub_user_signup {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' \
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
     -d "$(generate_sechub_user_signup_data $1 $2)" \
     "$SECHUB_SERVER/api/anonymous/signup" | $CURL_FILTER
 }
@@ -1107,6 +1127,12 @@ case "$action" in
     ;;
   scheduler_status)
     $failed || sechub_scheduler_status
+    ;;
+  server_encryption_status)
+    $failed || sechub_server_encryption_status
+    ;;
+  server_info)
+    $failed || sechub_server_info
     ;;
   server_status)
     $failed || sechub_server_status

@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.sereco.importer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
@@ -18,7 +20,9 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoRevisionData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebAttack;
@@ -48,6 +52,7 @@ import de.jcup.sarif_2_1_0.model.Run;
 import de.jcup.sarif_2_1_0.model.SarifSchema210;
 import de.jcup.sarif_2_1_0.model.ThreadFlow;
 import de.jcup.sarif_2_1_0.model.ToolComponentReference;
+import de.jcup.sarif_2_1_0.model.VersionControlDetails;
 import de.jcup.sarif_2_1_0.model.WebRequest;
 import de.jcup.sarif_2_1_0.model.WebResponse;
 
@@ -67,6 +72,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     SarifSchema210ImportExportSupport sarifSchema210ImportExportSupport;
     SarifSchema210LogicSupport sarifSchema210LogicSupport;
 
+    @Autowired
+    protected SarifImportProductWorkaroundSupport workaroundSupport;
+
     public SarifV1JSONImporter() {
         sarifSchema210ImportExportSupport = new SarifSchema210ImportExportSupport();
         sarifSchema210LogicSupport = new SarifSchema210LogicSupport();
@@ -78,10 +86,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             data = "";
         }
 
-        SarifSchema210 report = null;
+        SarifSchema210 sarifReport = null;
 
         try {
-            report = sarifSchema210ImportExportSupport.fromJSON(data);
+            sarifReport = sarifSchema210ImportExportSupport.fromJSON(data);
         } catch (Exception e) {
             /*
              * here we can throw the exception - should never happen, because with
@@ -92,13 +100,15 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
         SerecoMetaData metaData = new SerecoMetaData();
 
-        for (Run run : report.getRuns()) {
+        for (Run run : sarifReport.getRuns()) {
             handleEachRun(run, metaData, scanType);
         }
         return metaData;
     }
 
     private void handleEachRun(Run run, SerecoMetaData metaData, ScanType scanType) {
+        extractFirstVersionControlEntry(run, metaData);
+
         List<Result> results = run.getResults();
 
         for (Result result : results) {
@@ -108,6 +118,28 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
                 metaData.getVulnerabilities().add(vulnerability);
             }
         }
+    }
+
+    private void extractFirstVersionControlEntry(Run run, SerecoMetaData metaData) {
+        SerecoVersionControl existingVersionControl = metaData.getVersionControl();
+        if (existingVersionControl != null) {
+            return;
+        }
+
+        Set<VersionControlDetails> vcp = run.getVersionControlProvenance();
+        if (vcp.isEmpty()) {
+            return;
+        }
+
+        VersionControlDetails firstSarifRunVersionControl = vcp.iterator().next();
+        SerecoVersionControl serecoVersionControl = new SerecoVersionControl();
+
+        serecoVersionControl.setRevisionId(firstSarifRunVersionControl.getRevisionId());
+        URI repositoryUri = firstSarifRunVersionControl.getRepositoryUri();
+        if (repositoryUri != null) {
+            serecoVersionControl.setLocation(repositoryUri.toString());
+        }
+        metaData.setVersionControl(serecoVersionControl);
     }
 
     private SerecoVulnerability createSerecoVulnerability(Run run, Result result, ScanType scanType) {
@@ -126,6 +158,13 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         vulnerability.setSeverity(resolveSeverity(result, run));
         vulnerability.getClassification().setCwe(resolveCweId(scanType, resultData));
         vulnerability.setScanType(scanType);
+
+        String revisionId = workaroundSupport.resolveFindingRevisionId(result, run);
+        if (revisionId != null) {
+            SerecoRevisionData revision = new SerecoRevisionData();
+            revision.setId(revisionId);
+            vulnerability.setRevision(revision);
+        }
 
         setWebInformationOrCodeFlow(result, vulnerability);
 
@@ -246,8 +285,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private SerecoSeverity resolveSeverity(Result result, Run run) {
-        Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
-        return mapToSeverity(level);
+        SerecoSeverity serecoSeverity = workaroundSupport.resolveCustomSechubSeverity(result, run);
+        if (serecoSeverity == null) {
+            Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
+            return mapToSeverity(level);
+        }
+        return serecoSeverity;
     }
 
     private class ResultData {
@@ -343,10 +386,14 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         if (rule == null) {
             return "error:rule==null!";
         }
-        String type = null;
-        MultiformatMessageString shortDescription = rule.getShortDescription();
-        if (shortDescription != null) {
-            type = shortDescription.getText();
+
+        String type = workaroundSupport.resolveType(rule, run);
+
+        if (type == null) {
+            MultiformatMessageString shortDescription = rule.getShortDescription();
+            if (shortDescription != null) {
+                type = shortDescription.getText();
+            }
         }
 
         if (type == null) {
@@ -481,18 +528,16 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     @Override
-    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+    public boolean isAbleToImportForProduct(ImportParameter param) {
         /* first we do the simple check... */
-        ProductImportAbility ability = super.isAbleToImportForProduct(param);
-        if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
-            return ability;
+        if (!super.isAbleToImportForProduct(param)) {
+            return false;
         }
-        /* okay, now test if its valid SARIF */
-        if (isValidSarif(param.getImportData())) {
-            return ProductImportAbility.ABLE_TO_IMPORT;
+        boolean validSarif = isValidSarif(param.getImportData());
+        if (!validSarif) {
+            LOG.warn("Simple check accepted data, but was not valid SARIF");
         }
-        LOG.debug("Simple check accepted data, but was not valid SARIF");
-        return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+        return true;
     }
 
     @Override

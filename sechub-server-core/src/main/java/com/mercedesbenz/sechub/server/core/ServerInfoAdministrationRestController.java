@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server.core;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -16,7 +14,9 @@ import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminFetchesServerRuntimeData;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RestController
 @EnableAutoConfiguration
@@ -28,16 +28,16 @@ public class ServerInfoAdministrationRestController {
     private InfoService serverInfoService;
 
     /* @formatter:off */
-	@UseCaseAdminChecksServerVersion(
+	@UseCaseAdminFetchesServerRuntimeData(
 			@Step(
 					number=1,
 					name="REST API Call",
-					description="Administrator wants to get the server version of SecHub",
+					description="Administrator wants to fetch server runtime data. This data contains for example the server version",
 					needsRestDoc=true))
-	@RequestMapping(path = APIConstants.API_ADMINISTRATION+ "info/version", method = RequestMethod.GET, produces = { MediaType.TEXT_PLAIN_VALUE })
+	@RequestMapping(path = APIConstants.API_ADMINISTRATION+ "info/server", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public String getServerVersion() {
+	public ServerRuntimeData getServerRuntimeData() {
 		/* @formatter:on */
-        return serverInfoService.getVersionAsString();
+        return serverInfoService.getServerRuntimeData();
     }
 }

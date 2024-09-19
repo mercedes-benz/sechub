@@ -10,7 +10,7 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.20.4.linux-amd64.tar.gz"
+ARG GO="go1.21.6.linux-amd64.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="temurin"
@@ -178,7 +178,7 @@ COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$PDS_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet tree && \
+    apt-get install --assume-yes --quiet bind9-host curl netcat-openbsd tree vim-tiny && \
     apt-get clean
 
 COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"

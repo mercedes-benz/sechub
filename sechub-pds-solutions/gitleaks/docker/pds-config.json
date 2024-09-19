@@ -13,8 +13,24 @@
             "key": "pds.config.supported.datatypes",
             "default": "source"
           }
+        ],
+        "optional": [
+          {
+            "key": "gitleaks.history.scan.enabled",
+            "description": "Enable or disable Gitleaks history scan. Enabling a history scan only works if a .git folder is available.",
+            "default": true
+          }
         ]
-      }
+      },
+      "envWhitelist": [
+        "SCRIPT_FOLDER",
+        "SECRET_VALIDATOR_ENABLED",
+        "SECRET_VALIDATOR_MAXIMUMRETRIES",
+        "SECRET_VALIDATOR_PROXY_HOST",
+        "SECRET_VALIDATOR_PROXY_PORT",
+        "SECRET_VALIDATOR_TIMEOUTSECONDS",
+        "TOOL_FOLDER"
+      ]
     },
     {
       "id": "PDS_GITLEAKS_MOCK",
@@ -27,8 +43,16 @@
             "key": "pds.config.supported.datatypes",
             "default": "source"
           }
+        ],
+        "optional": [
+          {
+            "key": "gitleaks.history.scan.enabled",
+            "description": "Enable or disable Gitleaks history scan. Enabling a history scan only works if a .git folder is available.",
+            "default": true
+          }
         ]
-      }
+      },
+      "envWhitelist" : [ "MOCK_FOLDER", "SCRIPT_FOLDER" ]
     }
   ]
 }

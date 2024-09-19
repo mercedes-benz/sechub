@@ -41,6 +41,7 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 
 /**
  * Contains additional rest call functionality for integration tests on scan
@@ -218,7 +219,8 @@ public class IntegrationTestScanRestController {
     @SuppressWarnings("deprecation")
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/namepattern/{namePatternProviderId}/{name}", method = RequestMethod.GET)
     public String getIdForNameByProvider(@PathVariable("namePatternProviderId") String namePatternProviderId, @PathVariable("name") String name) {
-        NamePatternIdProvider provider = scanMappingConfigurationService.getNamePatternIdProvider(namePatternProviderId);
+        MappingIdentifier mappingIdentifier = MappingIdentifier.valueOf(namePatternProviderId);
+        NamePatternIdProvider provider = scanMappingConfigurationService.getNamePatternIdProvider(mappingIdentifier);
         if (provider == null) {
             return null;
         }

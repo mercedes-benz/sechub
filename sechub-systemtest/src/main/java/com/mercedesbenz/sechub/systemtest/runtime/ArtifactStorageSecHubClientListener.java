@@ -11,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClientListener;
-import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchivesCreationResult;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
 /**
  * This class stores files inside the runtime artifacts folder of the current
@@ -37,7 +37,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
     }
 
     @Override
-    public void beforeUpload(UUID secHubJobUUID, SecHubConfigurationModel model, ArchivesCreationResult archiveCreationResult) {
+    public void beforeUpload(UUID secHubJobUUID, SecHubConfiguration secHubConfiguration, ArchivesCreationResult archiveCreationResult) {
         Path targetFolder = ensureArtifactsFolderForTest();
 
         storeSecHubJobUUIDFile(secHubJobUUID, targetFolder);
@@ -67,7 +67,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
 
         File targetFile = new File(targetFolder.toFile(), "sechub-report.json");
         try {
-            textFileWriter.save(targetFile, prettyPrintedJson, true);
+            textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
         } catch (IOException e) {
             LOG.error("Was not able to store sechub config file: {}", targetFile, e);
         }
@@ -98,7 +98,7 @@ class ArtifactStorageSecHubClientListener implements SecHubClientListener {
     private void storeSecHubJobUUIDFile(UUID secHubJobUUID, Path targetFolder) {
         File targetFile = new File(targetFolder.toFile(), "sechub-job-uuid.txt");
         try {
-            textFileWriter.save(targetFile, secHubJobUUID.toString(), true);
+            textFileWriter.writeTextToFile(targetFile, secHubJobUUID.toString(), true);
         } catch (IOException e) {
             LOG.error("Was not able to store sechub job uuid file: {}", targetFile, e);
         }

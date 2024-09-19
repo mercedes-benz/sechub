@@ -16,4 +16,5 @@ public interface JobStorageFactory {
      * @return job storage, never <code>null</code>
      */
     public JobStorage createJobStorage(String storagePath, UUID jobUUID);
+
 }

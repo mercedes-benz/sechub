@@ -12,12 +12,15 @@ public class FalsePositiveEntry {
     public static final String PROPERTY_AUTHOR = "author";
     public static final String PROPERTY_CREATED = "created";
     public static final String PROPERTY_METADATA = "metaData";
+    public static final String PROPERTY_PROJECTDATA = "projectData";
 
     private FalsePositiveJobData jobData;
 
     private String author;
 
     private FalsePositiveMetaData metaData;
+
+    private FalsePositiveProjectData projectData;
 
     private Date created = new Date(); // we use initial now
 
@@ -36,6 +39,14 @@ public class FalsePositiveEntry {
 
     public FalsePositiveJobData getJobData() {
         return jobData;
+    }
+
+    public void setProjectData(FalsePositiveProjectData projectData) {
+        this.projectData = projectData;
+    }
+
+    public FalsePositiveProjectData getProjectData() {
+        return projectData;
     }
 
     public void setAuthor(String author) {

@@ -170,7 +170,7 @@ public class ScanService implements SynchronMessageHandler {
         }
         String projectId = configuration.getProjectId();
         UUID jobUUID = context.getSechubJobUUID();
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
 
         try {
             storage.deleteAll();
@@ -186,7 +186,7 @@ public class ScanService implements SynchronMessageHandler {
         UUID sechubJobUUID = message.get(SECHUB_JOB_UUID);
         String executedBy = message.get(EXECUTED_BY);
 
-        SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
+        SecHubConfiguration configuration = message.get(SECHUB_UNENCRYPTED_CONFIG);
         if (configuration == null) {
             throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
         }

@@ -63,7 +63,7 @@ public class JobCancelService {
         message.setJobUUID(jobUUID);
 
         Optional<JobInformation> optJobInfo = repository.findById(jobUUID);
-        if (!optJobInfo.isPresent()) {
+        if (optJobInfo.isEmpty()) {
             LOG.warn("Did not found job information, so not able to resolve owner email address");
             return message;
         }
@@ -74,12 +74,12 @@ public class JobCancelService {
             return message;
         }
         Optional<User> optUser = userRepository.findById(jobInfo.owner);
-        if (!optUser.isPresent()) {
+        if (optUser.isEmpty()) {
             LOG.warn("Did not found owner {} inside user repo, so not able to resolve owner email address", jobInfo.owner);
             return message;
         }
         message.setOwner(jobInfo.owner);
-        message.setOwnerEmailAddress(optUser.get().getEmailAdress());
+        message.setOwnerEmailAddress(optUser.get().getEmailAddress());
         return message;
     }
 

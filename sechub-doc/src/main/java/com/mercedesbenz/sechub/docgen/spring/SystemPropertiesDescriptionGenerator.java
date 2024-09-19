@@ -3,10 +3,13 @@ package com.mercedesbenz.sechub.docgen.spring;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
+import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry.EnvironmentVariableKeyValueEntry;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.docgen.Generator;
@@ -21,29 +24,38 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
         this.springValueExtractor = new SpringValueExtractor();
     }
 
-    public String generate(List<DocAnnotationData> list) {
-        return generate(list, AcceptAllSpringValueFilter.INSTANCE);
+    public String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry) {
+        return generate(list, registry, AcceptAllSpringValueFilter.INSTANCE);
     }
 
-    public String generate(List<DocAnnotationData> list, SpringValueFilter filter) {
+    protected String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry, SpringValueFilter filter) {
         if (list == null || list.isEmpty()) {
             return "";
         }
+
         StringBuilder sb = new StringBuilder();
         Map<String, SortedSet<TableRow>> rowMap = new TreeMap<>();
         for (DocAnnotationData data : list) {
             if (SimpleStringUtils.isEmpty(data.springValue)) {
                 continue;
             }
+
             SpringValue extracted = springValueExtractor.extract(data.springValue);
             if (filter.isFiltered(extracted)) {
                 continue;
             }
+            String mustBeEnvironmentVariableName = null;
+            for (EnvironmentVariableKeyValueEntry entry : registry.getEntries()) {
+                if (Objects.equals(extracted.getKey(), entry.getKey())) {
+                    mustBeEnvironmentVariableName = entry.getVariableName();
+                    break;
+                }
+            }
             TableRow row = new TableRow();
             row.defaultValue = extracted.getDefaultValue();
             row.hasDefaultValue = extracted.hasDefaultValue();
-            row.propertyKey = extracted.getKey();
-            row.description = data.description;
+            row.propertyKey = mustBeEnvironmentVariableName == null ? extracted.getKey() : mustBeEnvironmentVariableName;
+            row.description = data.description + (mustBeEnvironmentVariableName == null ? "" : " *This must be defined as an environment variable!*");
 
             SortedSet<TableRow> rows = rowMap.get(data.scope);
             if (rows == null) {
@@ -62,11 +74,11 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
     protected void appendStringContent(StringBuilder sb, Map<String, SortedSet<TableRow>> rowMap) {
         for (Map.Entry<String, SortedSet<TableRow>> entries : rowMap.entrySet()) {
             SortedSet<TableRow> table = entries.getValue();
-            sb.append("[[section-gen-config-scope-").append(entries.getKey()).append("]]\n");
+            sb.append("[[section-gen-configuration-scope-").append(entries.getKey()).append("]]\n");
             sb.append("[options=\"header\",cols=\"1,1,1\"]\n");
             sb.append(".").append(buildTitle(entries.getKey()));
             sb.append("\n|===\n");
-            sb.append("|Key   |Default   |Description \n");
+            sb.append("|Key or variable name   |Default   |Description \n");
             sb.append("//----------------------\n");
             for (TableRow row : table) {
                 sb.append("|").append(row.propertyKey);

@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.mercedesbenz.analyzer.model.Marker;
-import com.mercedesbenz.analyzer.model.MarkerPair;
-import com.mercedesbenz.analyzer.model.MarkerType;
+import com.mercedesbenz.sechub.analyzer.model.Marker;
+import com.mercedesbenz.sechub.analyzer.model.MarkerPair;
+import com.mercedesbenz.sechub.analyzer.model.MarkerType;
 
 /**
  * Searches through a file looking for SecHub markers

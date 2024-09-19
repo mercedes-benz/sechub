@@ -6,11 +6,19 @@
       "id": "PDS_XRAY",
       "path": "/pds/scripts/xray.sh",
       "scanType": "licenseScan",
-      "description": "Runs the JFrog Xray Wrapper to execute a scan on the artifactory."
+      "description": "Runs the JFrog Xray Wrapper to execute a scan on the artifactory.",
+      "envWhitelist": [
+        "XRAY_ARTIFACTORY",
+        "XRAY_DOCKER_REGISTRY",
+        "XRAY_PASSWORD",
+        "XRAY_USERNAME",
+        "TOOL_FOLDER"
+      ]
     },
     {
       "id": "PDS_XRAY_MOCK",
       "path": "/pds/scripts/xray_mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "licenseScan",
       "description": "Runs Xray mock report. It returns a fixed result file.",
       "parameters" : {

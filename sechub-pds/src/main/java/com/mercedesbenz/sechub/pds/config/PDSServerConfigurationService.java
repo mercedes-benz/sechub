@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +25,14 @@ import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSServerConfiguration;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class PDSServerConfigurationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSServerConfigurationService.class);
 
-    private static final String DEFAULT_PATH = "./pds-config.json";
+    private static final String DEFAULT_PATH = "./pds-configuration.json";
 
     private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCT;
     private static final int defaultMaxConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
@@ -86,10 +86,10 @@ public class PDSServerConfigurationService {
                 }
 
             } catch (PDSJSONConverterException | IOException e) {
-                LOG.error("no configuration available, because cannot read config file", e);
+                LOG.error("no configuration available, because cannot read configuration file", e);
             }
         } else {
-            LOG.error("No config file found at {} !", file.getAbsolutePath());
+            LOG.error("No configuration file found at {} !", file.getAbsolutePath());
         }
         if (configuration == null) {
             LOG.error(

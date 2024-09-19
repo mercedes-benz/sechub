@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +19,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -56,20 +56,20 @@ public class UserEmailAddressUpdateService {
         assertion.assertIsValidEmailAddress(newEmailAddress);
 
         User user = userRepository.findOrFailUser(userId);
-        String formerEmailAddress = user.getEmailAdress();
+        String formerEmailAddress = user.getEmailAddress();
 
         if (newEmailAddress.equalsIgnoreCase(formerEmailAddress)) {
             throw new NotAcceptableException("User has already this email address");
         }
         /* parameters valid, we audit log the change */
-        auditLogService.log("Changed email adress of user {}", logSanitizer.sanitize(userId, 30));
+        auditLogService.log("Changed email address of user {}", logSanitizer.sanitize(userId, 30));
 
-        user.emailAdress = newEmailAddress;
+        user.emailAddress = newEmailAddress;
 
         /* create message containing data before user email has changed */
         UserMessage message = new UserMessage();
         message.setUserId(user.getName());
-        message.setEmailAdress(user.getEmailAdress());
+        message.setEmailAddress(user.getEmailAddress());
         message.setFormerEmailAddress(formerEmailAddress);
         message.setSubject("A SecHub administrator has changed your email address");
 

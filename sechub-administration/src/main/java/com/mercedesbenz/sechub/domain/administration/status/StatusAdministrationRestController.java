@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.status;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Profile;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
+
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * The rest API for status administration done by a super admin.

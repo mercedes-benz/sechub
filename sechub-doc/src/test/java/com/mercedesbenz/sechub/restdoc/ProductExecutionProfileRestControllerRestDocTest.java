@@ -50,7 +50,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecution
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsExecutionProfileToProject;
@@ -72,7 +72,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductExecutionProfileRestController.class)
 @ContextConfiguration(classes = { ProductExecutionProfileRestController.class, ProductExecutionProfileRestControllerRestDocTest.SimpleTestConfiguration.class })
-@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProductExecutionProfileRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -336,7 +336,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("uuid of configuration"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_NAME).description("name of configuration"),
-                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this config"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this configuration"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER).description("executed product"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).description("executor version"),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).ignored(),
@@ -440,7 +440,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 }

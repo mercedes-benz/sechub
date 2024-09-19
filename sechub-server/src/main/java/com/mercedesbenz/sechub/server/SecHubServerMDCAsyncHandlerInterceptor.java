@@ -3,9 +3,6 @@ package com.mercedesbenz.sechub.server;
 
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -13,6 +10,9 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInterceptor {
 
@@ -74,7 +74,10 @@ public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInter
                 break;
             }
             if ("job".equals(split) || "false-positive".equals(split)) {
-                useNext = true;
+                // the new alternative way to handle false positives does not contain a job uuid
+                if (!part.contains("false-positive/project-data")) {
+                    useNext = true;
+                }
             }
         }
         if (uuid == null) {

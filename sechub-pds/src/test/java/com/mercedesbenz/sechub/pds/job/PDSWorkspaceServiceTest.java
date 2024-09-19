@@ -64,7 +64,7 @@ class PDSWorkspaceServiceTest {
         PDSProductSetup setup = new PDSProductSetup();
         when(serverConfigService.getProductSetupOrNull(any())).thenReturn(setup);
 
-        when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+        when(storageService.createJobStorage(any(), any())).thenReturn(storage);
 
         serviceToTest = new PDSWorkspaceService();
         serviceToTest.storageService = storageService;
@@ -169,7 +169,7 @@ class PDSWorkspaceServiceTest {
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
         assertTrue(metaDataFile.exists());
-        assertEquals("this is my metadata", TestFileReader.loadTextFile(metaDataFile));
+        assertEquals("this is my metadata", TestFileReader.readTextFromFile(metaDataFile));
     }
 
     @Test
@@ -206,7 +206,7 @@ class PDSWorkspaceServiceTest {
         serviceToTest.prepare(jobUUID, config, null);
 
         /* test */
-        verify(storageService).getJobStorage("xyz/abc/project1", config.getSechubJobUUID());
+        verify(storageService).createJobStorage("xyz/abc/project1", config.getSechubJobUUID());
     }
 
     private PDSExecutionParameterEntry createEntry(String key, String value) {

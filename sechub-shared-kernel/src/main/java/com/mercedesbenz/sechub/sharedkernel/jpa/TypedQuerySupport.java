@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.jpa;
 
+import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 
 public class TypedQuerySupport<T> {
     private Class<T> clazz;
@@ -47,5 +48,10 @@ public class TypedQuerySupport<T> {
             return (T) result;
         }
         throw new IllegalStateException("The given query returns not expected type:" + clazz + " but " + result.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<T> getList(Query query) {
+        return query.getResultList();
     }
 }

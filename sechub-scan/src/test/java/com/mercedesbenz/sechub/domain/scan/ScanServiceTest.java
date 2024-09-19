@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionServ
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -65,6 +66,7 @@ public class ScanServiceTest {
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private ProductExecutionServiceContainer productExecutionServiceContainer;
     private AnalyticsProductExecutionService analyticsProductExecutionService;
+    private PrepareProductExecutionService prepareProductExecutionService;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -77,7 +79,7 @@ public class ScanServiceTest {
         ProgressMonitor monitor = mock(ProgressMonitor.class);
         when(monitor.getId()).thenReturn("monitor-test-id");
 
-        when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
+        when(storageService.createJobStorage(any(), any())).thenReturn(jobStorage);
         when(monitorFactory.createProgressMonitor(any())).thenReturn(monitor);
 
         webScanProductExecutionService = mock(WebScanProductExecutionService.class);
@@ -85,6 +87,7 @@ public class ScanServiceTest {
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
         analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
+        prepareProductExecutionService = mock(PrepareProductExecutionService.class);
 
         scanLogService = mock(ProjectScanLogService.class);
 
@@ -102,6 +105,7 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getCodeScanProductExecutionService()).thenReturn(codeScanProductExecutionService);
         when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
         when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
+        when(productExecutionServiceContainer.getPrepareProductExecutionService()).thenReturn(prepareProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
@@ -149,6 +153,16 @@ public class ScanServiceTest {
 
         /* test */
         verify(codeScanProductExecutionService).executeProductsAndStoreResults(any());
+    }
+
+    @Test
+    public void scanservice_does_execute_prepare_execution_service() throws Exception {
+
+        /* execute */
+        serviceToTest.receiveSynchronMessage(prepareValidRequest());
+
+        /* test */
+        verify(prepareProductExecutionService).executeProductsAndStoreResults(any());
     }
 
     @Test
@@ -243,7 +257,7 @@ public class ScanServiceTest {
     public void event_handling_FAILED_when_configuration_is_not_set() {
         /* prepare */
         DomainMessage request = prepareValidRequest();
-        request.set(MessageDataKeys.SECHUB_CONFIG, null);
+        request.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, null);
 
         /* execute */
         DomainMessageSynchronousResult result = simulateEventSend(request, serviceToTest);
@@ -315,7 +329,7 @@ public class ScanServiceTest {
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
         request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
         request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
-        request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
+        request.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, configMin);
 
         return request;
     }

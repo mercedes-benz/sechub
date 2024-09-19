@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
 import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
@@ -17,18 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -38,10 +34,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
@@ -85,7 +81,7 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
@@ -99,10 +95,10 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)
 @ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
+@ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -569,6 +565,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         SecHubWebScanApiConfiguration apiConfig = new SecHubWebScanApiConfiguration();
         apiConfig.setType(SecHubWebScanApiType.OPEN_API);
         apiConfig.getNamesOfUsedDataConfigurationObjects().add("openApi-file-reference");
+        URL apiDefinitionUrl = new URL("https://www.example.org/api/v1/swagger/");
+        apiConfig.setApiDefinitionUrl(apiDefinitionUrl);
 
         when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
@@ -579,7 +577,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                     content(configureSecHub().
                             api("1.0").
                             webConfig().
-                                addURI("https://localhost/mywebapp/login").
+                                addURI("https://www.example.org/").
                                 addApiConfig(apiConfig).
                             build().
                             toJSON())
@@ -605,7 +603,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_TYPE).description("Type of the API definition files that will be provided").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional()
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing the API definition files. Always use 'sources' with 'files' instead 'folders'.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_API+"."+SecHubWebScanApiConfiguration.PROPERTY_API_DEFINITION_URL).description("Specifies an URL to read the API definition from.").optional()
                                         ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
@@ -839,6 +838,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         List<String> onlyForUrls = Arrays.asList("https://localhost/mywebapp/admin", "https://localhost/mywebapp/<*>/profile",
                 "https://localhost/mywebapp/blog/<*>");
         header.setOnlyForUrls(Optional.ofNullable(onlyForUrls));
+        header.getNamesOfUsedDataConfigurationObjects().add("header-value-file-ref-for-big-tokens");
 
         List<HTTPHeaderConfiguration> httpHeaders = new ArrayList<>();
         httpHeaders.add(header);
@@ -879,7 +879,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS).description("List of HTTP headers. Can be used for authentication or anything else.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_NAME).description("Name of the defined HTTP header.").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_VALUE).description("Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both.").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+SecHubDataConfigurationUsageByName.PROPERTY_USE).description("Reference to the data section containing a file with the value for this header, e.g if the value is to big for the sechub configuration. Always use 'sources' with a single 'file' instead 'folders'.").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_ONLY_FOR_URLS+"[]").description("Optional list of URLs this header shall be used for like: https://mywebapp.com/path/. Can contain wildcards like: https://mywebapp.com/path/<*>/with/wildcard").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_HEADERS+"[]."+HTTPHeaderConfiguration.PROPERTY_SENSITIVE).description("Defines header masking. If 'true' the header value will be replaced with '********' inside the report, 'false' will show the value as is. Default is set to 'true'.").optional()
                                         ),
@@ -918,31 +919,33 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-        			file(file1).param("checkSum", "mychecksum")
-        		).
-        			andExpect(status().isOk()).
-        					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
-        			andDo(defineRestService().
+                multipart(apiEndpoint, PROJECT1_ID, randomUUID).
+                    file(file1).
+                    queryParam(MULTIPART_CHECKSUM, "checkSumValue")
+                ).
+                    andExpect(status().isOk()).
+                            // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+                    andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                            		requestHeaders(
-
-                            		),
+                                    requestHeaders(
+                                    ),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
-                                    requestParameters(
-                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                    queryParameters(
+                                            parameterWithName(MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
                                     ),
-                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
+                                    // TODO Jeremias Eppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-                					requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
-        			));
+                                    requestParts(
+                                            partWithName(MULTIPART_FILE).description("The sourcecode as zipfile to upload")
+                                    )
+                    ));
 
         /* @formatter:on */
     }
@@ -971,39 +974,39 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
         InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/tarfile_contains_only_test1.txt.tar");
-        MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-        /* execute + test @formatter:off */
+        MockMultipartFile file = new MockMultipartFile("file", inputStreamTo);
+        MockMultipartFile checkSum = new MockMultipartFile("checkSum", "", "", "checkSumValue".getBytes());
+
+        /* execute + test */
+        /* @formatter:off */
         this.mockMvc.perform(
 
                 multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-                    file(file1).
-                    param("checkSum", "mychecksum").
-                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length)
+                    file(file).
+                    file(checkSum).
+                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file.getBytes().length)
                 ).
                     andExpect(status().isOk()).
-                            // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+                    // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                            		requestHeaders(
-
-                            		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project for which the binaries are uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
-                                    ),
-                                    requestParameters(
-                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
                                     ),
                                     requestHeaders(
                                     		headerWithName(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME).description("The file size of the tar-archive to upload in bytes. Needs to be a positive integer value.")
                                     ),
                                     // TODO de-jcup, 2022-04-14: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-                                    requestParts(partWithName("file").description("The binaries as tarfile to upload"))
+                                    requestParts(
+                                    		partWithName("file").description("The binaries as tarfile to upload"),
+                                    		partWithName(CommonConstants.MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")
+                                    )
                     ));
 
         /* @formatter:on */
@@ -1172,7 +1175,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
                                           ),
-                                          requestParameters(
+                                          queryParameters(
                                               parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE+"."),
                                               parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE+"."),
                                               parameterWithName("metadata.labels.*").optional().
@@ -1202,7 +1205,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* @formatter:on */
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         randomUUID = UUID.randomUUID();
         project1 = mock(ScheduleAccess.class);
@@ -1218,7 +1221,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 }
