@@ -3,27 +3,16 @@ name: Build SecHub GHA (scan)
 
 on:
   push:
-    branches:
-      - main
-      - master
-      - develop
-      - hotfix
+    paths:
+      - 'github-actions/**'
   pull_request:
-    # This workflow will run for all pull requests that target following branches
-    branches:
-      - main
-      - master
-      - develop
-      - hotfix
+    paths:
+      - 'github-actions/**'
   # enable manual triggering of workflow
   workflow_dispatch:
 
 jobs:
   build-scan:
-    # This job is only executed if the branch name starts with 'gha_feature-' or 'dependabot/'
-    # or equals 'main', 'master', 'develop' 'hotfix'
-    if: ${{ startsWith(github.head_ref, 'gha_feature-') || startsWith(github.head_ref, 'dependabot/') ||
-      github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix' }}
     runs-on: ubuntu-latest
     # Let's set the scan action folder as the working directory for all "run" steps:
     
