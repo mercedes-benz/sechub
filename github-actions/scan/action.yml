@@ -108,7 +108,7 @@ runs:
              
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
-        git checkout ${{ input.branch }}
+        git checkout ${{ inputs.branch }}
       shell: bash
 
     - name: Cache Node Modules
