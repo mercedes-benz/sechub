@@ -4,11 +4,12 @@ name: Build SecHub GHA (scan)
 on:
   push:
     paths:
-      - 'github-actions/**'
-      - '.github/workflows/github-action*'
+      - '.github/workflows/github-action-scan.yml'
+      - 'github-actions/scan/**'
   pull_request:
     paths:
-      - 'github-actions/**'
+      - '.github/workflows/github-action-scan.yml'
+      - 'github-actions/scan/**'
   # enable manual triggering of workflow
   workflow_dispatch:
 
