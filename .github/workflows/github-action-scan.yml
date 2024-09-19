@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'github-actions/**'
+      - '.github/workflows/github-action*'
   pull_request:
     paths:
       - 'github-actions/**'
