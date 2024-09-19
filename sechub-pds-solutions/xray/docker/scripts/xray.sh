@@ -1,5 +1,24 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
+
+function check_env_var_is_set {
+  local param="$1"
+  if [ -z "${!param}" ] ; then
+    echo "Mandatory environment variable $param is not set!"
+    failed=true
+  fi
+}
+
+# Check if mandatory environment variables are set
+MANDATORY_ENV_VARS="TOOL_FOLDER XRAY_ARTIFACTORY XRAY_DOCKER_REGISTRY XRAY_PASSWORD XRAY_USERNAME"
+failed=false
+for i in $MANDATORY_ENV_VARS ; do
+  check_env_var_is_set $i
+done
+if $failed ; then
+  echo "Please make sure that mandatory environment variables are passed to this script. Exiting."
+  exit 1
+fi
 
 echo ""
 echo "---------"
@@ -18,8 +37,7 @@ options=""
 
 check_valid_upload () {
   # count number of files/ folders uploaded and checks number of uploads greater equals 2
-  if [ $(ls $UPLOAD_DIR | wc --lines) -ge 2 ]
-  then
+  if [ $(ls $UPLOAD_DIR | wc --lines) -ge 2 ] ; then
     echo "Error: more than one file was uploaded: $(ls $UPLOAD_DIR)"
     exit 1
   fi
@@ -28,9 +46,8 @@ check_valid_upload () {
 login_into_artifactory () {
   # login to JFROG artifactory
   LOGIN=$(skopeo login "$XRAY_ARTIFACTORY" --username "$XRAY_USERNAME" --password "$XRAY_PASSWORD" --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH")
-  if [ "$LOGIN" != "Login Succeeded!" ]
-  then
-    echo "Error: Skopeo could not login to $XRAY_ARTIFACTORY with user $XRAY_USERNAME"
+  if [ "$LOGIN" != "Login Succeeded!" ] ; then
+    echo "Error: Skopeo could not login to \"$XRAY_ARTIFACTORY\" with user \"$XRAY_USERNAME\""
     exit 1
   fi
 }
@@ -40,8 +57,8 @@ check_valid_upload
 login_into_artifactory
 cd "$PDS_JOB_WORKSPACE_LOCATION"
 
-if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
-    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
+if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]] ; then
+  options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 fi
 
 # Get docker archives from binary upload folder

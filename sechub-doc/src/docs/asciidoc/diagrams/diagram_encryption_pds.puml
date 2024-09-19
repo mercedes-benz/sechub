@@ -1,0 +1,44 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examles at https://plantuml.com/class-diagram
+
+skinparam linetype ortho
+'skinparam linetype polyline
+package com.mercedesbenz.sechub.commons.encryption as common_encrypt {
+    
+    class PersistentCipherFactory
+    class PersistentCipher
+    class EncryptionSupport
+}
+
+package com.mercedesbenz.sechub.pds as pds_root{
+    
+    class PDSStartupAssertEnvironmentVariablesUsed {
+    }
+    
+    package encryption as pds_encryption{
+        class PDSEncryptionConfiguration #aliceblue ##darkblue
+        class PDSEncryptionService #aliceblue ##darkblue {
+            
+        }
+    }
+    package job as pds_job{
+        class PDSCreateJobService
+        class PDSJobConfigurationAccess
+    }
+}
+PDSEncryptionService ..> PDSEncryptionConfiguration
+PersistentCipherFactory --> PersistentCipher
+
+PDSEncryptionService ..> PersistentCipherFactory
+PDSEncryptionService ..> EncryptionSupport
+PDSEncryptionService --> PersistentCipher
+
+
+PDSJobConfigurationAccess --> PDSEncryptionService
+PDSCreateJobService -->  PDSEncryptionService

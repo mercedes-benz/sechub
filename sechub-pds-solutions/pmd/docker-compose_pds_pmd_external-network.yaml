@@ -6,6 +6,7 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - PMD_VERSION=${PMD_VERSION}
             context: docker/
             dockerfile: PMD-Debian.dockerfile
         container_name: pds-pmd

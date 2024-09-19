@@ -6,6 +6,7 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - PREPARE_WRAPPER_VERSION=${PREPARE_WRAPPER_VERSION}
             context: docker/
             dockerfile: Prepare-Debian.dockerfile
         container_name: pds-prepare

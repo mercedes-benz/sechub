@@ -77,7 +77,7 @@ class CheckmarxWrapperScanContextTest {
         Path testFolder = TestUtil.createTempDirectoryInBuildFolder("chmx-wrapper-input-stream");
         File extractedFolder = new File(testFolder.toFile(), "extracted");
         extractedFolder.mkdirs();
-        writer.save(new File(extractedFolder, "at-least-one-file.txt"), "content", false);
+        writer.writeTextToFile(new File(extractedFolder, "at-least-one-file.txt"), "content", false);
 
         File expectedCompressFolder = new File(extractedFolder.getParentFile(), "recompressed");
         File expectedTargetFile = new File(expectedCompressFolder, CommonConstants.FILENAME_SOURCECODE_ZIP);
@@ -93,7 +93,7 @@ class CheckmarxWrapperScanContextTest {
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 // we simulate that archive support writes a "ZIP" file - instead of doing
                 // a real compression the mock writes a single line into the output file.
-                writer.save(expectedTargetFile, singleLineInWrittenFile, false);
+                writer.writeTextToFile(expectedTargetFile, singleLineInWrittenFile, false);
                 return null;
             }
         }).when(archiveSupport).compressFolder(eq(ArchiveType.ZIP), eq(extractedFolder), eq(expectedTargetFile));

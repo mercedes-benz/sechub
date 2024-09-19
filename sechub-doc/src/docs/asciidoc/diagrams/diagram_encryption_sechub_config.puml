@@ -1,0 +1,96 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examles at https://plantuml.com/class-diagram
+
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+database START_ENCRYPTION_ROTATION as rotateEvent #darkorange {
+}
+note right of rotateEvent
+asynchronous
+end note
+database SCHEDULE_ENCRYPTION_POOL_INITIALIZED as poolInitEvent #limegreen {
+}
+note right of poolInitEvent
+asynchronous
+end note
+
+package com.mercedesbenz.sechub.domain.administration {
+    package encryption as adm_encryption{
+        class EncryptionAdministrationRestController
+        class AdministrationEncryptionRotationService
+    }
+}
+
+package com.mercedesbenz.sechub.domain.schedule{
+
+    package job as schedule_job {
+        class ScheduleSecHubJob {
+            byte[] getEncryptedConfiguration()
+        }
+        
+        class SecHubJobFactory {
+        
+        }
+         
+        class SecHubConfigurationModelAccess {
+            resolveUnencryptedConfiguration(ScheduleSecHubJob job)
+        }
+        
+        class ScheduleSecHubJobEncryptionUpdateService #limegreen ##green {
+            updateEncryptedDataIfNecessary() 
+        }
+        
+    }
+    
+    package encryption as schedule_encryption {
+    
+        class ScheduleRefreshEncryptionServiceSetupTriggerService #aliceblue ##darkblue {
+            triggerEncryptionSetupRefresh()
+        }
+         
+        class ScheduleEncryptionService #aliceblue ##darkblue {
+            applicationStarted()
+            refreshEncryptionPoolAndLatestIdIfNecessary()
+           
+            encryptWithLatestCipher(String plainText)
+            String decryptToString(byte[] encrypted, Long encryptionPoolId, InitializationVector initialVector)
+            ScheduleEncryptionResult rotateEncryption(byte[] data, Long oldCipherPoolId, InitializationVector oldInitialVector)
+        }
+        
+        class ScheduleCipherPoolData #darkorange {
+        }
+        
+        class ScheduleEncryptionPool #aliceblue ##darkblue {
+           PersistentCipher getCipherForPoolId(Long poolId)
+        }
+        
+        class ScheduleEncryptionRotationService #darkorange {
+            startEncryptionRotation()
+        }
+    }
+    
+EncryptionAdministrationRestController ->  AdministrationEncryptionRotationService
+AdministrationEncryptionRotationService --> rotateEvent    
+rotateEvent -[#darkorange]-> ScheduleEncryptionRotationService    
+
+ScheduleEncryptionRotationService -[#darkorange]-> ScheduleCipherPoolData : (A1) create new
+    
+ScheduleRefreshEncryptionServiceSetupTriggerService -[#darkblue]-> ScheduleEncryptionService: (B1) trigger refresh
+ScheduleEncryptionRotationService -[#darkorange]-> ScheduleEncryptionService: (A2) trigger refresh
+ScheduleEncryptionPool <-[#darkblue]- ScheduleEncryptionService: (A3,B2): refesh pool
+ 
+ScheduleEncryptionService -[#darkblue]-> poolInitEvent: (A4,B3): trigger update
+poolInitEvent -[#limegreen]-> ScheduleSecHubJobEncryptionUpdateService: (A5,B4): trigger update
+ 
+SecHubConfigurationModelAccess --> ScheduleSecHubJob
+SecHubJobFactory  ..> ScheduleSecHubJob: create
+ScheduleSecHubJobEncryptionUpdateService -[#limegreen]-> ScheduleSecHubJob: updates
+ 
+@enduml

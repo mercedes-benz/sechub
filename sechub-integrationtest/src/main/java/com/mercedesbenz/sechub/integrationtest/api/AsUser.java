@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
-import static org.junit.Assert.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.assertProject;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.ensureExecutorConfigUUID;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.waitForJobDoneAndEvenWaitWhileJobIsFailing;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +38,7 @@ import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -44,6 +49,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -635,7 +642,7 @@ public class AsUser {
         String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
         if (enableHTMLautoDumps) {
             try {
-                getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
+                getWriter().writeTextToFile(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
             } catch (IOException e) {
                 throw new IllegalStateException("Was not able to dump HTML data", e);
             }
@@ -1062,6 +1069,8 @@ public class AsUser {
         }
 
         private List<JobData> jobData = new ArrayList<>();
+        private List<FalsePositiveProjectData> projectDataList = new ArrayList<>();
+        private List<String> projectDataIds = new ArrayList<>();
         private WithSecHubClient withSechubClient;
         private IntegrationTestJSONLocation location;
 
@@ -1118,7 +1127,7 @@ public class AsUser {
         private void markAsFalsePositiveByREST() {
             String json = buildJSON();
 
-            String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
+            String url = getUrlBuilder().buildUserAddsFalsePositiveDataListForProject(project.getProjectId());
             getRestHelper().putJSON(url, json);
         }
 
@@ -1128,6 +1137,18 @@ public class AsUser {
             } else {
                 unmarkFalsePositiveBySecHubClient();
             }
+        }
+
+        public void unmarkFalsePositiveProjectData() {
+            unmarkFalsePositiveProjectDataByREST();
+        }
+
+        private void unmarkFalsePositiveProjectDataByREST() {
+            for (String projectDataId : projectDataIds) {
+                String url = getUrlBuilder().buildUserRemovesFalsePositiveProjectDataEntryFromProject(project.getProjectId(), projectDataId);
+                getRestHelper().delete(url);
+            }
+
         }
 
         private void unmarkFalsePositiveBySecHubClient() {
@@ -1150,7 +1171,10 @@ public class AsUser {
         }
 
         private String buildJSON() {
-            String content = "{\"apiVersion\":\"1.0\",\"type\":\"falsePositiveJobDataList\",\"jobData\":[";
+            String content = "{\"apiVersion\":\"1.0\",\"type\":\"falsePositiveDataList\",";
+            if (!jobData.isEmpty()) {
+                content += "\"jobData\":[";
+            }
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
@@ -1176,7 +1200,24 @@ public class AsUser {
                     content += ",";
                 }
             }
-            content += "]}";
+            if (projectDataList.isEmpty()) {
+                content += "]}";
+            } else if (!jobData.isEmpty()) {
+                content += "],";
+            }
+            if (!projectDataList.isEmpty()) {
+                content += "\"projectData\":[";
+            }
+            for (FalsePositiveProjectData projectData : projectDataList) {
+                content += JSONConverter.get().toJSON(projectData);
+
+                if (it.hasNext()) {
+                    content += ",";
+                }
+            }
+            if (!content.endsWith("]}")) {
+                content += "]}";
+            }
             return content;
         }
 
@@ -1193,6 +1234,17 @@ public class AsUser {
             jobData.add(data);
             return this;
         }
+
+        public ProjectFalsePositivesDefinition add(FalsePositiveProjectData projectData) {
+            projectDataList.add(projectData);
+            return this;
+        }
+
+        public ProjectFalsePositivesDefinition add(String projectDataId) {
+            projectDataIds.add(projectDataId);
+            return this;
+        }
+
     }
 
     public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
@@ -1305,6 +1357,18 @@ public class AsUser {
         String url = getUrlBuilder().buildAddJobUrl(project.getProjectId());
         return getRestHelper().postJson(url, sechubConfigAsString);
 
+    }
+
+    public String rotateEncryption(SecHubEncryptionData data) {
+
+        String url = getUrlBuilder().buildAdminStartsEncryptionRotation();
+        return getRestHelper().postJson(url, data.toFormattedJSON());
+    }
+
+    public SecHubEncryptionStatus fetchEncryptionStatus() {
+        String url = getUrlBuilder().buildAdminFetchesEncryptionStatus();
+        String json = getRestHelper().getJSON(url);
+        return SecHubEncryptionStatus.fromString(json);
     }
 
 }

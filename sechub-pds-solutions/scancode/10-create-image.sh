@@ -32,7 +32,7 @@ if [[ -z "$VERSION" ]] ; then
   FAILED=true
 fi
 
-if [[ -z "$BASE_IMAGE" ]]; then
+if [[ -z "$BASE_IMAGE" ]] ; then
   echo "Please provide a base image as 3rd parameter."
   FAILED=true
 fi
@@ -45,15 +45,23 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ -n "$SCANCODE_VERSION" ]] ; then
-  BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
-  echo ">> Scancode version: $SCANCODE_VERSION"
+if [[ -z "$SCANCODE_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+BUILD_ARGS+=" --build-arg SCANCODE_VERSION=$SCANCODE_VERSION"
+echo ">> Scancode version: $SCANCODE_VERSION"
 
-if [[ -n "$SPDX_TOOL_VERSION" ]] ; then
-  BUILD_ARGS+=" --build-arg SPDX_TOOL_VERSION=$SPDX_TOOL_VERSION"
-  echo ">> SPDX Tool version: $SPDX_TOOL_VERSION"
+if [[ -z "$SPDX_TOOL_VERSION" ]] ; then
+  # source defaults
+  source ./env
 fi
+BUILD_ARGS+=" --build-arg SPDX_TOOL_VERSION=$SPDX_TOOL_VERSION"
+echo ">> SPDX Tool version: $SPDX_TOOL_VERSION"
+
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \

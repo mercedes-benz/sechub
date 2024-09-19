@@ -121,7 +121,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
         configFromUser.enabled = false;
-        configFromUser.name = "PDS gosec config 1";
+        configFromUser.name = "PDS gosec configuration 1";
         configFromUser.productIdentifier = ProductIdentifier.PDS_CODESCAN.name();
         configFromUser.executorVersion = 1;
         configFromUser.setup.baseURL = "https://productXYZ.example.com";

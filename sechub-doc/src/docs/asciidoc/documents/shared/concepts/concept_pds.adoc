@@ -18,7 +18,7 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
 - a spring boot application which uses a network DB for providing cluster possibility
 - a complete standalone application without runtime dependencies to {sechub} server (or its shared kernel)
 - provides REST access
-- a very simple priviledge model with just two users (`tech user` + `admin user`),
+- a very simple privilege model with just two users (`tech user` + `admin user`),
   basic auth via `TLS`, credentials are simply defined by environment entries on startup
 - provides jobs, queing, monitoring etc.
 - can execute single files (e.g. a bash script), where job parameters are
@@ -31,6 +31,16 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
 
 ==== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+
+==== Encryption
+include::concept_pds_data_encryption.adoc[]
+
+[[concept-pds-auto-cleanup]]
+==== Auto cleanup
+The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.
+
+The default configuration is set to 2 days.
+Administrators can change the default configuration via REST.
 
 
 [[pds-storage-and-sharing]]
@@ -211,7 +221,7 @@ The Adapter will always be the same, but filled with other necessary parameters.
 NOTE: So there will be no need to write any adapter or executor when using PDS!
 
 
-=== HowTo integrate a new product via PDS
+==== HowTo integrate a new product via PDS
 
 Having new security product XYZ but being a command line tool, we
 
@@ -247,6 +257,13 @@ Having new security product XYZ but being a command line tool, we
 
 - test via {sechub} client by starting a new {sechub} job which shall use the product and verify results
 
+[CAUTION]
+====
+Output and error stream of a PDS launcher script are stored in {pds} database as plain text!
+Means: NEVER log any sensitive data in launcher scripts! 
+
+If you want to give hints for debugging etc. you have to mask the information in log output. 
+====
 
 
 

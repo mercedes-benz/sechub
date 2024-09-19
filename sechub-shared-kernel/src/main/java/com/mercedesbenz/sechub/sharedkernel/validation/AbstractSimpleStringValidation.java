@@ -45,7 +45,7 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
         StringBuilder sb = new StringBuilder();
         sb.append("The string '");
         sb.append(string);
-        sb.append("' contains at least one character being neither a digit, alphebtical");
+        sb.append("' contains at least one character being neither a digit, alphabetical");
         if (alsoAllowed.length > 0) {
             sb.append("or ");
             for (int i = 0; i < alsoAllowed.length; i++) {

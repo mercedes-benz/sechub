@@ -17,10 +17,10 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.analyzer.model.AnalyzerResult;
-import com.mercedesbenz.analyzer.model.Marker;
-import com.mercedesbenz.analyzer.model.MarkerPair;
-import com.mercedesbenz.analyzer.model.MarkerType;
+import com.mercedesbenz.sechub.analyzer.model.AnalyzerResult;
+import com.mercedesbenz.sechub.analyzer.model.Marker;
+import com.mercedesbenz.sechub.analyzer.model.MarkerPair;
+import com.mercedesbenz.sechub.analyzer.model.MarkerType;
 
 /**
  * Integration Tests

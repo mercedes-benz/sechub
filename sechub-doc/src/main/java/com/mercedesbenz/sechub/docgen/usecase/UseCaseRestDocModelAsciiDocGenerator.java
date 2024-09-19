@@ -16,8 +16,8 @@ import org.springframework.http.HttpStatus;
 import com.mercedesbenz.sechub.docgen.AsciidocUtil;
 import com.mercedesbenz.sechub.docgen.RestDocResourceModel;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
-import com.mercedesbenz.sechub.docgen.util.TextFileReader;
-import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileReader;
+import com.mercedesbenz.sechub.docgen.util.DocGenTextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
@@ -25,7 +25,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDo
 
 public class UseCaseRestDocModelAsciiDocGenerator {
 
-    private TextFileReader reader = new TextFileReader();
+    private DocGenTextFileReader reader = new DocGenTextFileReader();
 
     // [options="header",cols="1,1,1"]
     // |===
@@ -35,7 +35,7 @@ public class UseCaseRestDocModelAsciiDocGenerator {
     // |Row2A |Row2B |Row2Cs
     // |Row3A |Row3B |Row3C
     // |===
-    public String generateAsciidoc(TextFileWriter writer, UseCaseRestDocModel model, boolean technical, UseCaseIdentifier... usecases) {
+    public String generateAsciidoc(DocGenTextFileWriter writer, UseCaseRestDocModel model, boolean technical, UseCaseIdentifier... usecases) {
         Objects.requireNonNull(writer);
         Objects.requireNonNull(model);
 
@@ -170,7 +170,7 @@ public class UseCaseRestDocModelAsciiDocGenerator {
     private void appendGeneralRequestInformation(Context context, Map<SpringRestDocOutput, File> map) {
         File resourceFile = map.get(SpringRestDocOutput.RESOURCE);
         if (resourceFile != null) {
-            String json = reader.loadTextFile(resourceFile);
+            String json = reader.readTextFromFile(resourceFile);
 
             RestDocResourceModel model = RestDocResourceModel.fromString(json);
             context.addLine("[options=\"header\",cols=\"1,6\",title=\"General request information\"]");
@@ -236,7 +236,7 @@ public class UseCaseRestDocModelAsciiDocGenerator {
     private boolean isGeneratedFileEmpty(File file) {
         boolean justEmpty = false;
         if (SpringRestDocOutput.RESPONSE_BODY.isRepresentedBy(file)) {
-            String content = reader.loadTextFile(file, "\n");
+            String content = reader.readTextFromFile(file);
             justEmpty = AsciidocUtil.isEmptyAsciidocContent(content);
         }
         return justEmpty;

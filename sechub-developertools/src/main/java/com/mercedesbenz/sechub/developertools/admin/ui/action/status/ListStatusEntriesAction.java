@@ -42,7 +42,7 @@ public class ListStatusEntriesAction extends AbstractUIAction {
         try {
             root = h.getMapper().readTree(json);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("json not readable", e);
+            throw new IllegalStateException("json not readable", e);
         }
         ArrayNode array = (ArrayNode) root;
         for (JsonNode node : array) {

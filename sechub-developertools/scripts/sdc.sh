@@ -263,7 +263,9 @@ if [[ "$HELP" = "YES" ]]; then
 fi
 
 function cleanOldReportData() {
+  if [ -f ./sechub_report_*.json ]; then
     rm ./sechub_report_*.json -f
+  fi
 }
 
 

@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.systemtest.config;
 
 import java.util.Optional;
 
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 
 public class AssertSechubResultDefinition extends AbstractDefinition {
 

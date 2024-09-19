@@ -19,6 +19,7 @@ projectType = [
                project(':sechub-commons-model-testframework'),
                project(':sechub-commons-pds'),
                project(':sechub-commons-archive'),
+               project(':sechub-commons-encryption'),
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                project(':sechub-pds-commons-core'),
@@ -51,7 +52,12 @@ projectType = [
                     /* special wrapper applications which are also spring boot applications
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
-                    project(':sechub-wrapper-prepare')
+                    project(':sechub-wrapper-prepare'),
+
+                    project(':sechub-wrapper-secretvalidation'),
+
+                    /* archUnit */
+                    project(':sechub-archunit-test')
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */
@@ -96,7 +102,8 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-webui')
+                   project(':sechub-webui'),
+                   project(':sechub-wrapper-secretvalidation'),
             ],
 
             springBootWebUIProjects:[
@@ -125,6 +132,10 @@ projectType = [
                     project(':sechub-doc'),
             ],
 
+            archUnitProjects: [
+                    // will be filled automatically in code below
+            ],
+
             noSpotless : [
                     project('sechub-examples:example-sechub-api-java'),
                     project('sechub-openapi-java-client')
@@ -149,3 +160,7 @@ projectType.javaProjects.addAll(projectType.springBootProjects)
 /* dynamically add all java projects as eclipse projects:*/
 projectType.eclipseProjects.addAll(projectType.javaProjects)
 projectType.eclipseProjects.addAll(projectType.goProjects)
+
+/* archUnit */
+projectType.archUnitProjects.addAll(projectType.javaProjects)
+projectType.archUnitProjects.remove(project(':sechub-archunit-test'))

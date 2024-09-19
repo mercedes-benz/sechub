@@ -74,7 +74,10 @@ public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInter
                 break;
             }
             if ("job".equals(split) || "false-positive".equals(split)) {
-                useNext = true;
+                // the new alternative way to handle false positives does not contain a job uuid
+                if (!part.contains("false-positive/project-data")) {
+                    useNext = true;
+                }
             }
         }
         if (uuid == null) {

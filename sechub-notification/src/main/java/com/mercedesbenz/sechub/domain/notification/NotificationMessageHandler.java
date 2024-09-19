@@ -10,15 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
 import com.mercedesbenz.sechub.domain.notification.owner.InformThatProjectHasNewOwnerNotificationService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStarted;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatUserNoLongerAdminNotificationService;
+import com.mercedesbenz.sechub.domain.notification.superadmin.*;
+import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.*;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ClusterMemberMessage;
@@ -102,7 +95,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
     InformUsersThatProjectHasBeenDeletedNotificationService informUsersThatProjectHasBeenDeletedService;
 
     @Autowired
-    InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
+    InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService informAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService;
 
     @Autowired
     SignUpRequestedUserNotificationService signupRequestedUserNotificationService;
@@ -175,7 +168,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     @IsReceivingAsyncMessage(MessageID.SCHEDULER_STARTED)
     private void handleSchedulerStarted(ClusterMemberMessage clusterMemberMessage, String baseUrl) {
-        informAdminsThatNewSchedulerInstanceHasBeenStarted.notify(baseUrl, clusterMemberMessage);
+        informAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService.notify(baseUrl, clusterMemberMessage);
     }
 
     @IsReceivingAsyncMessage(MessageID.JOB_RESULTS_PURGED)

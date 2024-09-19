@@ -100,7 +100,7 @@ class GitPrepareWrapperModuleTest {
 
         Path repository = tempDir.toPath().resolve(gitDownloadFolder).resolve(testRepo);
         Path gitFile = repository.resolve(".git");
-        writer.save(gitFile.toFile(), "some text", true);
+        writer.writeTextToFile(gitFile.toFile(), "some text", true);
 
         List<Path> subfolder = new ArrayList<>();
         subfolder.add(repository);
@@ -150,7 +150,7 @@ class GitPrepareWrapperModuleTest {
 
         Path repository = tempDir.toPath().resolve(gitDownloadFolder).resolve(testRepo);
         Path gitFile = repository.resolve(".git");
-        writer.save(gitFile.toFile(), "some text", true);
+        writer.writeTextToFile(gitFile.toFile(), "some text", true);
 
         List<Path> subfolder = new ArrayList<>();
         subfolder.add(repository);
@@ -206,7 +206,7 @@ class GitPrepareWrapperModuleTest {
 
         Path repository = tempDir.toPath().resolve(testRepo);
         Path gitFile = repository.resolve(".git");
-        writer.save(gitFile.toFile(), "some text", true);
+        writer.writeTextToFile(gitFile.toFile(), "some text", true);
 
         GitContext context = mock(GitContext.class);
         when(context.getToolDownloadDirectory()).thenReturn(tempDir.toPath());
@@ -228,7 +228,7 @@ class GitPrepareWrapperModuleTest {
         Path repository = tempDir.toPath().resolve(testRepo);
         Path javaFile = repository.resolve("class.java");
 
-        writer.save(javaFile.toFile(), "some text", true);
+        writer.writeTextToFile(javaFile.toFile(), "some text", true);
         GitContext context = mock(GitContext.class);
         when(context.getToolDownloadDirectory()).thenReturn(tempDir.toPath());
 

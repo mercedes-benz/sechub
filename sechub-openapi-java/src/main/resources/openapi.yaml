@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: SecHub API
@@ -30,6 +30,8 @@ tags:
     description: Operations relevant to testing
   - name: Configuration
     description: Operations relevant to configuration parts
+  - name: Encryption
+    description: Operations relevant to encryption
   - name: Other
     description: All other use cases
 
@@ -47,6 +49,7 @@ components:
     URI:
       title: URI
       type: string
+      format: uri
       example: "https://example.com"
 
     #########################
@@ -284,7 +287,8 @@ components:
       properties:
         labels:
           type: object
-          additionalProperties: true
+          additionalProperties:
+            type: string
 
     SecHubFileSystemConfiguration:
       title: SecHubFileSystemConfiguration
@@ -429,6 +433,11 @@ components:
           type: array
           items:
             type: string
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
 
     SecHubCodeScanConfiguration:
       title: SecHubCodeScanConfiguration
@@ -494,7 +503,8 @@ components:
       properties:
         duration:
           description: Duration of the scan as integer
-          type: number
+          type: integer
+          format: int32
         unit:
           $ref: '#/components/schemas/SecHubTimeUnit'
       required:
@@ -646,6 +656,11 @@ components:
           $ref: '#/components/schemas/SecHubWebScanApiConfiguration'
         url:
           $ref: '#/components/schemas/URI'
+        use:
+          description: A set containing names of data configurations which shall be used
+          type: array
+          items:
+            type: string
         includes:
           description: "Include URL sub-paths to scan. Example: /hidden"
           type: array
@@ -701,6 +716,14 @@ components:
           type: string
           format: uuid
 
+    ScheduleJobStatusResult:
+      title: ScheduleJobStatusResult
+      type: string
+      enum:
+        - NONE
+        - OK
+        - FAILED
+
     ScheduleJobStatus:
       title: JobStatus
       type: object
@@ -715,21 +738,18 @@ components:
         created:
           description: Creation timestamp of job
           type: string
-          format: date-time
         started:
           description: Start timestamp of job execution
           type: string
-          format: date-time
         ended:
           description: End timestamp of job execution
           type: string
-          format: date-time
         state:
           description: State of job
           type: string
         result:
-          description: Result of job
-          type: string
+          $ref: '#/components/schemas/ScheduleJobStatusResult'
+
         trafficLight:
           description: Traffic light of job after completion. Possible states are GREEN, YELLOW, RED, OFF.
           type: string
@@ -737,7 +757,7 @@ components:
           description: List of messages
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SecHubMessage'
 
     SecHubMessageType:
       title: SecHubMessageType
@@ -789,9 +809,11 @@ components:
         location:
           type: string
         line:
-          type: number
+          type: integer
+          format: int32
         column:
-          type: number
+          type: integer
+          format: int32
         source:
           type: string
         relevantPart:
@@ -803,15 +825,15 @@ components:
       title: ScanType
       type: string
       enum:
-        - CODE_SCAN
-        - WEB_SCAN
-        - INFRA_SCAN
-        - LICENSE_SCAN
-        - SECRET_SCAN
-        - REPORT
-        - ANALYTICS
-        - PREPARE
-        - UNKNOWN
+        - codeScan
+        - webScan
+        - infraScan
+        - licenseScan
+        - secretScan
+        - report
+        - analytics
+        - prepare
+        - unknown
 
     SecHubReportWebBody:
       title: SecHubReportWebBody
@@ -845,7 +867,8 @@ components:
       type: object
       properties:
         statusCode:
-          type: number
+          type: integer
+          format: int32
         reasonPhrase:
           type: string
         protocol:
@@ -858,7 +881,8 @@ components:
       type: object
       properties:
         startLine:
-          type: number
+          type: integer
+          format: int32
 
     SecHubReportWebEvidence:
       title: SecHubReportWebEvidence
@@ -901,7 +925,8 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
+          format: int32
         description:
           type: string
         hostNames:
@@ -946,7 +971,8 @@ components:
         type:
           $ref: '#/components/schemas/ScanType'
         cweId:
-          type: number
+          type: integer
+          format: int32
         cveId:
           description: common vulnerability enumeration id - see https://cwe.mitre.org/ or null when not defined
           type: string
@@ -962,7 +988,8 @@ components:
       type: object
       properties:
         count:
-          type: number
+          type: integer
+          format: int32
         findings:
           type: array
           items:
@@ -988,47 +1015,68 @@ components:
       type: object
       properties:
         cweId:
-          type: number
+          type: integer
+          format: int32
         name:
           type: string
         count:
-          type: number
+          type: integer
+          format: int32
 
     ScanTypeSummaryDetailData:
       title: ScanTypeSummaryDetailData
       type: object
       properties:
         critical:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         high:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         medium:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         low:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         unclassified:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
         info:
-          $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanTypeSummaryFindingOverviewData'
 
     SecHubReportScanTypeSummary:
       title: SecHubReportScanTypeSummary
       type: object
       properties:
         total:
-          type: number
+          type: integer
+          format: int32
         critical:
-          type: number
+          type: integer
+          format: int32
         high:
-          type: number
+          type: integer
+          format: int32
         medium:
-          type: number
+          type: integer
+          format: int32
         low:
-          type: number
+          type: integer
+          format: int32
         unclassified:
-          type: number
+          type: integer
+          format: int32
         info:
-          type: number
+          type: integer
+          format: int32
         details:
           $ref: '#/components/schemas/ScanTypeSummaryDetailData'
 
@@ -1059,7 +1107,7 @@ components:
         summary:
           $ref: '#/components/schemas/SecHubReportSummary'
 
-    ScanSecHubReport:
+    SecHubReport:
       title: ScanSecHubReport
       description: Result of the SecHub scan
       type: object
@@ -1160,7 +1208,8 @@ components:
         evidence:
           type: string
         statusCode:
-          type: number
+          type: integer
+          format: int32
 
     FalsePositiveWebMetaData:
       title: FalsePositiveWebMetaData
@@ -1193,7 +1242,8 @@ components:
         cweId:
           description: CWE (common weakness enumeration). For code scans this is always
             set.
-          type: number
+          type: integer
+          format: int32
         cveId:
           description: CVE (common vulnerability and exposures). For infra scans this
             is always set.
@@ -1234,7 +1284,8 @@ components:
             \ job which shall be markeda as a false positive. *ATTENTION*: at the\
             \ moment only code scan false positive handling is supported. Infra and\
             \ web scan findings will lead to a non accepted error!"
-          type: number
+          type: integer
+          format: int32
         comment:
           description: A comment from author describing why this was marked as a false positive
           type: string
@@ -1242,6 +1293,55 @@ components:
         jobUUID: jobUUID
         findingId: 1
         comment: comment
+
+    WebscanFalsePositiveProjectData:
+      title: WebscanFalsePositiveProjectData
+      description: Project data parts, that identify false positives of webscans
+      type: object
+      properties:
+        cweId:
+          description: CWE ID for a category of findings to identify the type of false positive finding
+          type: integer
+          format: int32
+        urlPattern:
+          description: list of host name or ip address patterns this false positive entry shall match (can contain wildcards)
+          type: string
+        methods:
+          description: list of (HTTP) methods this false positive entry shall match (does not use wildcards)
+          type: array
+          items:
+            type: string
+      required:
+        - cweId
+        - urlPattern
+      example:
+        cweId: 79
+        urlPattern: https://*.example.com/api/*/search
+        methods: [GET, DELETE]
+
+
+    FalsePositiveProjectData:
+      title: FalsePositiveProjectData
+      description: Project data parts, can be used to specify patterns that indentify false positives
+      type: object
+      properties:
+        id:
+          description: ID to identify this entry, can be used to overwrite or delete the entry for this project
+          type: string
+        comment:
+          description: A comment from author describing why this was marked as a false positive
+          type: string
+        webScan:
+          $ref: '#/components/schemas/WebscanFalsePositiveProjectData'
+      required:
+        - id
+      example:
+        id: unique-id
+        comment: comment
+        webScan:
+          cweId: 79
+          urlPattern: https://*.example.com/api/*/search
+          methods: [GET, DELETE]
 
     FalsePositiveEntry:
       title: FalsePositiveEntry
@@ -1254,6 +1354,8 @@ components:
           type: string
         metaData:
           $ref: '#/components/schemas/FalsePositiveMetaData'
+        projectData:
+          $ref: '#/components/schemas/FalsePositiveProjectData'
         created:
           description: Creation timestamp
           type: string
@@ -1279,10 +1381,17 @@ components:
           cveId: cveId
           name: name
           scanType: scanType
+        projectData:
+          id: unique-id
+          comment: comment
+          webScan:
+            cweId: 79
+            urlPattern: https://*.example.com/api/*/search
+            methods: [GET, DELETE]
         created: created
 
     FalsePositiveProjectConfiguration:
-      title: FalsePositives
+      title: FalsePositiveProjectConfiguration
       type: object
       properties:
         falsePositives:
@@ -1336,9 +1445,18 @@ components:
               comment: comment
             created: created
             author: author
+          - projectData:
+              id: unique-id
+              comment: comment
+              webScan:
+                cweId: 79
+                urlPattern: https://*.example.com/api/*/search
+                methods: [GET, DELETE]
+            created: created
+            author: author
 
-    FalsePositivesForJob:
-      title: FalsePositivesForJob
+    FalsePositives:
+      title: FalsePositives
       type: object
       properties:
         apiVersion:
@@ -1346,13 +1464,18 @@ components:
           type: string
         type:
           description: The type of the json content. Currently only accepted value
-            is 'falsePositiveJobDataList'.
+            is 'falsePositiveDataList' and the deprecated 'falsePositiveJobDataList'.
           type: string
         jobData:
           description: Job data list containing false positive setup based on former jobs
           type: array
           items:
             $ref: '#/components/schemas/FalsePositiveJobData'
+        projectData:
+          description: Project data list containing false positive setup
+          type: array
+          items:
+            $ref: '#/components/schemas/FalsePositiveProjectData'
 
 
     #############
@@ -1384,7 +1507,8 @@ components:
           description: Email address
           type: string
         version:
-          type: number
+          type: integer
+          format: int32
 
     SignUpList:
       title: SignUpList
@@ -1433,7 +1557,8 @@ components:
           type: object
         version:
           description: The version
-          type: number
+          type: integer
+          format: int32
 
     #############
     ## Testing ##
@@ -1522,7 +1647,7 @@ components:
       title: ProductExecutorConfigSetup
       type: object
       properties:
-        baseUrl:
+        baseURL:
           type: string
         credentials:
           $ref: '#/components/schemas/ProductExecutorConfigSetupCredentials'
@@ -1539,8 +1664,11 @@ components:
           type: string
         description:
           type: string
+        enabled:
+          type: boolean
         version:
-          type: number
+          type: integer
+          format: int32
         configurations:
           type: array
           items:
@@ -1554,7 +1682,7 @@ components:
       title: ProductExecutorConfig
       type: object
       properties:
-        uUID:
+        uuid:
           type: string
           format: uuid
         name:
@@ -1564,9 +1692,11 @@ components:
         setup:
           $ref: '#/components/schemas/ProductExecutorConfigSetup'
         version:
-          type: number
+          type: integer
+          format: int32
         executorVersion:
-          type: number
+          type: integer
+          format: int32
         enabled:
           type: boolean
         profiles:
@@ -1633,7 +1763,8 @@ components:
         unit:
           $ref: '#/components/schemas/CountableInDaysTimeUnit'
         amount:
-          type: number
+          type: integer
+          format: int32
 
     AdministrationAutoCleanupConfig:
       title: AdministrationAutoCleanupConfig
@@ -1642,6 +1773,96 @@ components:
         cleanupTime:
           $ref: '#/components/schemas/CleanupTime'
 
+    ################
+    ## Encryption ##
+    ################
+    SecHubCipherPasswordSourceType:
+      title: SecHubCipherPasswordSourceType
+      type: string
+      enum:
+        - NONE
+        - ENVIRONMENT_VARIABLE
+
+    SecHubPasswordSource:
+      title: SecHubPasswordSource
+      type: object
+      properties:
+        type:
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
+        data:
+          type: string
+
+    SecHubCipherAlgorithm:
+      title: SecHubCipherAlgorithm
+      type: string
+      enum:
+        - NONE
+        - AES_GCM_SIV_128
+        - AES_GCM_SIV_256
+
+    SecHubDomainEncryptionData:
+      title: SecHubDomainEncryptionData
+      type: object
+      properties:
+        id:
+          description: Identifer for encryption configuration inside the domain
+          type: string
+        algorithm:
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
+        passwordSource:
+          type: object
+          $ref: '#/components/schemas/SecHubPasswordSource'
+        created:
+          description: Creation timestamp
+          type: string
+          format: date-time
+        createdFrom:
+          description: User id of admin who has created the configuration
+          type: string
+        usage:
+          description: Generic information about encryption usages inside domain
+          type: object
+          additionalProperties: true
+
+    SecHubDomainEncryptionStatus:
+      title: SecHubDomainEncryptionStatus
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubDomainEncryptionData'
+
+    SecHubEncryptionStatus:
+      title: SecHubEncryptionStatus
+      type: object
+      properties:
+        type:
+          type: string
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecHubDomainEncryptionStatus'
+
+    SecHubEncryptionData:
+      title: SecHubEncryptionData
+      type: object
+      properties:
+        algorithm:
+          description: Algorithm to use for encryption rotation
+          type: object
+          $ref: '#/components/schemas/SecHubCipherAlgorithm'
+        passwordSourceType:
+          description: Password source type to use for algorithm
+          type: object
+          $ref: '#/components/schemas/SecHubCipherPasswordSourceType'
+        passwordSourceData:
+          description: Password source data for used type. E.g. for ENVIRONMENT_VARIABLE the name of the variable
+          type: string
     ###########
     ## Other ##
     ###########
@@ -1655,7 +1876,8 @@ components:
         value:
           type: string
         version:
-          type: number
+          type: integer
+          format: int32
 
     ServerRuntimeData:
       title: ServerRuntimeData
@@ -2319,24 +2541,35 @@ paths:
           required: true
           schema:
             type: string
-        - name: file
-          description: The file to upload
-          in: query
-          required: true
-          schema:
-            type: string
-            format: binary
+            format: uuid
         - name: checkSum
           description: A sha256 checksum for file upload validation
           in: query
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The zip file to upload
+              required:
+                - file
+            encoding:
+              file:
+                contentType: application/zip
       responses:
         "200":
           description: "Ok"
         "406":
           description: "Not acceptable"
+      x-content-type: multipart/form-data
       tags:
         - SecHub Execution
 
@@ -2428,10 +2661,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
             text/html;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
           description: "200"
       tags:
         - SecHub Execution
@@ -2452,12 +2685,14 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "200":
           content:
             application/zip:
               schema:
-                type: object
+                type: string
+                format: binary
           description: "200"
       tags:
         - SecHub Execution
@@ -2490,8 +2725,8 @@ paths:
         - SecHub Execution
       x-content-type: application/json
     put:
-      description: User marks false positives for finished sechub job
-      operationId: userMarkFalsePositivesForJob
+      description: User marks false positives
+      operationId: userMarkFalsePositives
       parameters:
         - description: The projectId of the project where users adds false positives
             for
@@ -2506,7 +2741,7 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/FalsePositivesForJob'
+              $ref: '#/components/schemas/FalsePositives'
       responses:
         "200":
           description: "Ok"
@@ -2525,7 +2760,7 @@ paths:
     delete:
       summary: User unmarks existing false positive definitons
       description: User unmarks existing false positive definitons
-      operationId: userUnmarkFalsePositives
+      operationId: userUnmarksJobFalsePositives
       parameters:
         - name: projectId
           description: The project id
@@ -2542,6 +2777,34 @@ paths:
         - name: findingId
           description: Finding id - in combination with job UUID this defines the false
             positive to remove
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - SecHub Execution
+
+  /api/project/{projectId}/false-positive/{id}:
+    delete:
+      summary: User unmarks existing false positive definitons
+      description: User unmarks existing false positive definitons
+      operationId: userUnmarksFalsePositives
+      parameters:
+        - name: projectId
+          description: The project id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          description: The id of the projectData entry the shall be deleted from FalsePositiveProjectConfiguration
           in: path
           required: true
           schema:
@@ -2578,10 +2841,23 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: file
+          description: The file to upload
+          in: query
+          required: true
+          schema:
+            type: string
+            format: binary
         - name: x-file-size
           description: The file size of the tar-archive to upload in bytes. Needs to
             be a positive integer value.
           in: header
+          required: true
+          schema:
+            type: string
+        - name: checkSum
+          description: A sha256 checksum for file upload validation
+          in: query
           required: true
           schema:
             type: string
@@ -2619,7 +2895,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScanSecHubReport'
+                $ref: '#/components/schemas/SecHubReport'
           description: "Ok"
         "404":
           description: "Not found"
@@ -2940,7 +3216,7 @@ paths:
     post:
       summary: Admin creates an executor configuration
       description: An administrator creates an executor a new configuration entry.
-      operationId: adminCreatExecutorConfiguration
+      operationId: adminCreateExecutorConfiguration
       requestBody:
         content:
           application/json;charset=UTF-8:
@@ -2949,17 +3225,14 @@ paths:
       responses:
         "201":
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
-                format: uuid
           description: "Created"
         "406":
           description: "Not acceptable"
       tags:
         - Configuration
-      x-content-type: application/json;charset=UTF-8
-      x-accepts: application/json
 
   /api/admin/config/executors:
     get:
@@ -3249,6 +3522,42 @@ paths:
       x-accepts: application/json
       tags:
         - Configuration
+
+  ################
+  ## Encryption ##
+  ################
+
+  /api/admin/encryption/status:
+    get:
+      summary: Admin fetches encryption status
+      description: "An administrator fetches encryption status from all domains where encryption is used."
+      operationId: adminFetchesEncryptionStatus
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubEncryptionStatus'
+      tags:
+        - Encryption
+
+  /api/admin/encryption/rotate:
+    post:
+      summary: Admin starts encryption rotation
+      description: "An administrator starts encryption rotation."
+      operationId: adminStartsEncryptionRotation
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SecHubEncryptionData'
+      responses:
+        "200":
+          description: "Ok"
+      x-accepts: application/json
+      tags:
+        - Encryption
 
   ###########
   ## Other ##

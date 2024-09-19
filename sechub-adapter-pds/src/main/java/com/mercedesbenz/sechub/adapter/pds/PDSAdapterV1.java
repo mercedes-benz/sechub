@@ -169,12 +169,15 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             /* see PDSJobStatusState.java */
             jobstatus = context.getResilientJobStatusResultExecutor().executeResilient(() -> getJobStatus(context));
 
-            PDSJobStatusState state = jobstatus.state;
+            PDSJobStatusState state = jobstatus.getState();
             switch (state) {
             case DONE:
                 jobEnded = true;
                 break;
             case FAILED:
+                if (jobstatus.isEncryptionOutOfSync()) {
+                    throw new PDSEncryptionOutOfSyncException();
+                }
                 throw asAdapterException("PDS job execution failed: TimeOut=" + timeOutCheck.wasTimeOut() + ",JobEnded=" + jobEnded, config);
             case CANCELED:
             case CANCEL_REQUESTED:
@@ -454,7 +457,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             /* check job status */
             try {
                 PDSJobStatus currentPdsJobStatus = getJobStatus(context, UUID.fromString(pdsJobUUID));
-                currentPdsJobState = currentPdsJobStatus.state;
+                currentPdsJobState = currentPdsJobStatus.getState();
 
                 if (currentPdsJobState == null) {
                     throw new IllegalStateException("PDS job state null is not supported!");

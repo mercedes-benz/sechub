@@ -815,7 +815,7 @@ public class ZapScanner implements ZapScan {
         headerFile = scanContext.getHeaderValueFiles().getOrDefault(httpHeader.getName(), null);
         try {
             if (headerFile != null) {
-                return fileReader.loadTextFile(headerFile.getAbsoluteFile());
+                return fileReader.readTextFromFile(headerFile.getAbsoluteFile());
             }
         } catch (IOException e) {
             SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR, "Could not read header value from file: " + headerFile);

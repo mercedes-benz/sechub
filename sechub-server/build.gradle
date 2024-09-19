@@ -20,6 +20,7 @@ dependencies {
     implementation(library.apache_commons_fileupload2_jakarta)
     
     testImplementation project(':sechub-testframework')
+    testImplementation project(':sechub-commons-encryption') // necessary because auf Scheduler smoke test...
 }
 
 task assembleArtifact(type: Zip, group: 'sechub') {

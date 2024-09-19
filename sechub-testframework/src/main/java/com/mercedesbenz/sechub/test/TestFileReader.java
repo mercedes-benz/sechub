@@ -10,23 +10,30 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A class to read test files. Will always use UTF-8 for text files. This class
+ * may only be used by tests!
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class TestFileReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestFileReader.class);
 
-    public static String loadTextFile(Path pathToFile) {
-        return loadTextFile(pathToFile.toFile());
+    public static String readTextFromFile(Path pathToFile) {
+        return readTextFromFile(pathToFile.toFile());
     }
 
-    public static String loadTextFile(String pathToFile) {
-        return loadTextFile(new File(pathToFile));
+    public static String readTextFromFile(String pathToFile) {
+        return readTextFromFile(new File(pathToFile));
     }
 
-    public static String loadTextFile(File file) {
-        return loadTextFile(file, "\n");
+    public static String readTextFromFile(File file) {
+        return readTextFromFile(file, "\n");
     }
 
-    public static String loadTextFile(File file, String lineBreak) {
+    public static String readTextFromFile(File file, String lineBreak) {
         if (TestUtil.isTraceEnabled()) {
             LOG.info("Loading file:{}", file);
         }

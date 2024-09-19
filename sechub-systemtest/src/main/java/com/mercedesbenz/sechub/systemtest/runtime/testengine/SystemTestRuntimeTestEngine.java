@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClientException;
-import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionConstraints;
@@ -28,10 +28,7 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.FileSize;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.MetaDataModel;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.commons.pds.PDSMetaDataKeys;
 import com.mercedesbenz.sechub.systemtest.config.CopyDefinition;
 import com.mercedesbenz.sechub.systemtest.config.ExecutionStepDefinition;
@@ -144,7 +141,7 @@ public class SystemTestRuntimeTestEngine {
             return;
         }
 
-        SecHubClient adminClient = runtimeContext.getLocalAdminSecHubClient();
+        SecHubClient client = runtimeContext.getLocalAdminSecHubClient();
         Path testWorkingDirectory = runtimeContext.getLocationSupport().ensureTestWorkingDirectoryRealPath(testContext.getTest());
         Path sechubJobFolder = testWorkingDirectory.resolve("sechub-job-" + secHubJobUUID);
         try {
@@ -155,11 +152,10 @@ public class SystemTestRuntimeTestEngine {
             Files.createDirectories(extractedScanLogFolder);
             Path jobFullScanLogFile;
             try {
-                jobFullScanLogFile = adminClient.downloadFullScanLog(secHubJobUUID, scanLogFolder);
-            } catch (SecHubClientException e) {
+                jobFullScanLogFile = client.downloadFullScanLog(secHubJobUUID, scanLogFolder);
+            } catch (ApiException e) {
                 throw new CannotProvideDebugInformationException(
-                        "Was not able to download full scan log file for sechub job:" + secHubJobUUID + ". Used SecHub admin user: " + adminClient.getUserId(),
-                        e);
+                        "Was not able to download full scan log file for sechub job:" + secHubJobUUID + ". Used SecHub admin user: " + client.getUserId(), e);
             }
             LOG.debug("Full scan downloaded to {}", jobFullScanLogFile);
 
@@ -209,7 +205,7 @@ public class SystemTestRuntimeTestEngine {
 
     private void handlePDSMetaDataFile(Path metaDataFile, TestEngineTestContext testContext, Path sechubJobFolder) throws IOException {
         LOG.debug("Handle PDS meta data file: {}", metaDataFile);
-        String metaDataJson = textFileReader.loadTextFile(metaDataFile.toFile());
+        String metaDataJson = textFileReader.readTextFromFile(metaDataFile.toFile());
         MetaDataModel metaData = JSONConverter.get().fromJSON(MetaDataModel.class, metaDataJson);
 
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDSMetaDataKeys.PDS_JOB_UUID);
@@ -244,24 +240,24 @@ public class SystemTestRuntimeTestEngine {
         Path systemtestInfoFile = pdsJobFolder.resolve("systemtest-info.txt");
 
         String output = client.fetchJobOutputStreamContentAsText(pdsJobUUID);
-        textFileWriter.save(outputStreamFile.toFile(), output, true);
+        textFileWriter.writeTextToFile(outputStreamFile.toFile(), output, true);
 
         String error = client.fetchJobErrorStreamContentAsText(pdsJobUUID);
-        textFileWriter.save(errorStreamFile.toFile(), error, true);
+        textFileWriter.writeTextToFile(errorStreamFile.toFile(), error, true);
 
         String result = client.fetchJobResultAsText(pdsJobUUID);
-        textFileWriter.save(resultFile.toFile(), result, true);
+        textFileWriter.writeTextToFile(resultFile.toFile(), result, true);
 
         String jobMetaData = client.fetchJobMetaDataAsText(pdsJobUUID);
-        textFileWriter.save(jobMetaDataFile.toFile(), jobMetaData, true);
+        textFileWriter.writeTextToFile(jobMetaDataFile.toFile(), jobMetaData, true);
 
         SecHubMessagesList messages = client.fetchJobMessages(pdsJobUUID);
         String messagesAsString = JSONConverter.get().toJSON(messages, true);
-        textFileWriter.save(sechubMessagesFile.toFile(), messagesAsString, true);
+        textFileWriter.writeTextToFile(sechubMessagesFile.toFile(), messagesAsString, true);
 
         StringBuilder sb = new StringBuilder();
         sb.append("Solution name: ").append(solution.getName());
-        textFileWriter.save(systemtestInfoFile.toFile(), sb.toString(), true);
+        textFileWriter.writeTextToFile(systemtestInfoFile.toFile(), sb.toString(), true);
     }
 
     private TestEngineTestContext createTestContext(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
@@ -327,15 +323,16 @@ public class SystemTestRuntimeTestEngine {
     }
 
     private void launchSecHubJob(TestEngineTestContext testContext) throws Exception {
-        SecHubClient clientForScheduling = null;
+        SecHubClient client = null;
 
         SystemTestRuntimeContext runtimeContext = testContext.getRuntimeContext();
         if (runtimeContext.isLocalRun()) {
-            clientForScheduling = runtimeContext.getLocalAdminSecHubClient();
+            client = runtimeContext.getLocalAdminSecHubClient();
         } else {
-            clientForScheduling = runtimeContext.getRemoteUserSecHubClient();
+            client = runtimeContext.getRemoteUserSecHubClient();
         }
-        SecHubConfigurationModel configuration = testContext.getSecHubRunData().getSecHubConfiguration();
+        SecHubConfiguration configuration = testContext.getSecHubRunData().getSecHubConfiguration();
+        String projectId = testContext.getSecHubRunData().getSecHubConfiguration().getProjectId();
 
         UUID jobUUID = null;
         if (LOG.isTraceEnabled()) {
@@ -346,7 +343,7 @@ public class SystemTestRuntimeTestEngine {
             jobUUID = UUID.randomUUID();
             LOG.debug("Skip job creation - use fake job uuid");
         } else {
-            jobUUID = clientForScheduling.createJob(configuration);
+            jobUUID = client.withSecHubExecutionApi().userCreateNewJob(configuration.getProjectId(), configuration).getJobId();
         }
         LOG.debug("SecHub job {} created", jobUUID);
         testContext.getSecHubRunData().sechubJobUUID = jobUUID;
@@ -355,13 +352,12 @@ public class SystemTestRuntimeTestEngine {
         Path workingDirectory = resolveWorkingDirectoryRealPathForCurrentTest(testContext);
 
         LOG.debug("Start upload job data. Use working directory of current test: {}", workingDirectory);
-        String projectId = configuration.getProjectId();
 
         if (runtimeContext.isDryRun()) {
             LOG.debug("Skip job upload because dry run");
         } else {
             waitMilliseconds(300); // give server chance to create project parts
-            clientForScheduling.upload(projectId, jobUUID, configuration, workingDirectory);
+            client.userUpload(projectId, jobUUID, configuration, workingDirectory);
             waitMilliseconds(300); // give server chance to store result
         }
 
@@ -369,7 +365,7 @@ public class SystemTestRuntimeTestEngine {
         if (runtimeContext.isDryRun()) {
             LOG.debug("Skip job approve because dry run");
         } else {
-            clientForScheduling.approveJob(projectId, jobUUID);
+            client.withSecHubExecutionApi().userApproveJob(projectId, jobUUID);
         }
 
         /* wait for job failed or done */
@@ -377,12 +373,14 @@ public class SystemTestRuntimeTestEngine {
             LOG.debug("Skip job status fetching because dry run");
         } else {
             long started = System.currentTimeMillis();
-            while (!clientForScheduling.fetchJobStatus(projectId, jobUUID).getResult().hasFinished()) {
+            ScheduleJobStatusResult result = client.withSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
+            while (result.equals(ScheduleJobStatusResult.NONE)) {
                 long diff = System.currentTimeMillis() - started;
                 if (diff > MILLISECONDS_TO_WAIT_FOR_JOB_FINISHED) {
                     throw new SystemTestRuntimeException("Job status for " + jobUUID + " took " + diff + " milliseconds (time out)");
                 }
                 waitMilliseconds(300);
+                result = client.withSecHubExecutionApi().userCheckJobStatus(projectId, jobUUID).getResult();
             }
         }
 
@@ -392,14 +390,14 @@ public class SystemTestRuntimeTestEngine {
             report = new SecHubReport();
             report.setJobUUID(jobUUID);
         } else {
-            report = clientForScheduling.downloadSecHubReportAsJson(projectId, jobUUID);
+            report = client.withSecHubExecutionApi().userDownloadJobReport(projectId, jobUUID);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Report returned from SecHub server for job: {}:\n", report.toFormattedJSON());
+            LOG.debug("Report returned from SecHub server for job: {}:\n", report);
         }
         testContext.getSecHubRunData().report = report;
         testContext.markCurrentSecHubJob(jobUUID);
-
+        testContext.storeSecHubResultFile();
     }
 
     private void waitMilliseconds(int milliSeconds) {
@@ -513,7 +511,7 @@ public class SystemTestRuntimeTestEngine {
      * @author Albert Tregnaghi
      *
      */
-    class CannotProvideDebugInformationException extends Exception {
+    private static class CannotProvideDebugInformationException extends Exception {
 
         private static final long serialVersionUID = 1L;
 
@@ -523,17 +521,17 @@ public class SystemTestRuntimeTestEngine {
 
     }
 
-    class SecHubRunData {
+    static class SecHubRunData {
 
         SecHubReport report;
-        SecHubConfigurationModel secHubConfiguration;
+        SecHubConfiguration secHubConfiguration;
         UUID sechubJobUUID;
 
         private SecHubRunData() {
 
         }
 
-        public SecHubConfigurationModel getSecHubConfiguration() {
+        public SecHubConfiguration getSecHubConfiguration() {
             return secHubConfiguration;
         }
 
@@ -544,10 +542,9 @@ public class SystemTestRuntimeTestEngine {
         public UUID getSecHubJobUUID() {
             return sechubJobUUID;
         }
-
     }
 
-    class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
+    private static class DefaultCurrentTestVariableCalculatorFactory implements CurrentTestVariableCalculatorFactory {
 
         @Override
         public CurrentTestVariableCalculator create(TestDefinition test, SystemTestRuntimeContext runtimeContext) {
@@ -608,18 +605,18 @@ public class SystemTestRuntimeTestEngine {
             }
             JSONConverter converter = JSONConverter.get();
 
-            secHubRunData = systemTestRuntimeTestEngine.new SecHubRunData();
+            secHubRunData = new SecHubRunData();
 
             RunSecHubJobDefinition runSecHubJobDefinition = runSecHOptional.get();
 
-            SecHubConfigurationModel secHubConfiguration = systemTestRuntimeTestEngine.runSecHubJobTransformer
+            SecHubConfiguration secHubConfiguration = systemTestRuntimeTestEngine.runSecHubJobTransformer
                     .transformToSecHubConfiguration(runSecHubJobDefinition);
 
             String configurationAsJson = converter.toJSON(secHubConfiguration);
 
             String changedConfigurationAsJson = currentTestVariableCalculator.replace(configurationAsJson);
 
-            secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfigurationModel.class, changedConfigurationAsJson);
+            secHubRunData.secHubConfiguration = converter.fromJSON(SecHubConfiguration.class, changedConfigurationAsJson);
 
             storeSecHubConfigFile(secHubRunData.secHubConfiguration);
         }
@@ -663,7 +660,7 @@ public class SystemTestRuntimeTestEngine {
             runtimeContext.getCurrentResult().setSecHubJobUUID(sechubJobUUID);
         }
 
-        private void storeSecHubConfigFile(SecHubConfigurationModel configuration) {
+        private void storeSecHubConfigFile(SecHubConfiguration configuration) {
             Path targetFolder = resolveWorkingDirectoryRealPathForCurrentTest(this);
 
             String prettyPrintedJson = JSONConverter.get().toJSON(configuration, true);
@@ -671,9 +668,24 @@ public class SystemTestRuntimeTestEngine {
             File targetFile = new File(targetFolder.toFile(), "sechub-config.json");
 
             try {
-                textFileWriter.save(targetFile, prettyPrintedJson, true);
+                textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
             } catch (IOException e) {
-                LOG.error("Was not able to store sechub config file: {}", targetFile, e);
+                LOG.error("Was not able to store SecHub config file: {}", targetFile, e);
+            }
+        }
+
+        private void storeSecHubResultFile() {
+            Path targetFolder = resolveWorkingDirectoryRealPathForCurrentTest(this);
+
+            String prettyPrintedJson = JSONConverter.get().toJSON(getSecHubRunData().getReport(), true);
+
+            String fileName = "sechub-report-%s.json".formatted(getSecHubRunData().getSecHubJobUUID());
+            File targetFile = new File(targetFolder.toFile(), fileName);
+
+            try {
+                textFileWriter.writeTextToFile(targetFile, prettyPrintedJson, true);
+            } catch (IOException e) {
+                LOG.error("Was not able to store SecHub report file: {}", targetFile, e);
             }
         }
 

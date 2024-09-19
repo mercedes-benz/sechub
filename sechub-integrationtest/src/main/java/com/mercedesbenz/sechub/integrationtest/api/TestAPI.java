@@ -51,6 +51,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.Test
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -116,6 +117,14 @@ public class TestAPI {
 
     public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
         return AssertUserJobInfo.assertInfo(page);
+    }
+
+    public static AssertEncryptionStatus assertEncryptionStatus() {
+        return assertEncryptionStatus(as(SUPER_ADMIN).fetchEncryptionStatus());
+    }
+
+    public static AssertEncryptionStatus assertEncryptionStatus(SecHubEncryptionStatus status) {
+        return AssertEncryptionStatus.assertEncryptionStatus(status);
     }
 
     /**
@@ -1256,6 +1265,18 @@ public class TestAPI {
     }
 
     /**
+     * Starts cipher pool cleanup for scheduler domain directly for test scenario.
+     * Normally this is done by auto cleanup mechanism only, but with this method it
+     * is also possible to trigger the cleanup inside integration tests.
+     */
+    public static void startScheduleCipherPoolDataCleanup() {
+        resetAutoCleanupDays(0);
+
+        String url = getURLBuilder().buildIntegrationTestStartScheduleCipherPoolDataCleanup();
+        getSuperAdminRestHelper().put(url);
+    }
+
+    /**
      * Will ensure complete auto cleanup inspector is reset and that auto cleanup is
      * set to "wantedFormerDays days" in configuration and also in every domain auto
      * clean day value.
@@ -1337,6 +1358,12 @@ public class TestAPI {
         String json = getSuperAdminRestHelper().getJSON(url);
         return convertAutoCleanJson(json);
 
+    }
+
+    public static Long fetchScheduleEncryptionPoolIdForJob(UUID jobUUID) {
+        String url = getURLBuilder().buildIntegrationTestFetchScheduleEncryptionPoolIdForSecHubJob(jobUUID);
+        String result = getSuperAdminRestHelper().getStringFromURL(url);
+        return Long.valueOf(result);
     }
 
     public static FullScanData fetchFullScanData(UUID sechubJobUIUD) {
@@ -1573,7 +1600,7 @@ public class TestAPI {
      */
     public static void storeTestReport(String fileName, String reportData) {
         try {
-            writer.save(new File(testReportStorageFolder, fileName), reportData, true);
+            writer.writeTextToFile(new File(testReportStorageFolder, fileName), reportData, true);
         } catch (Exception e) {
             LOG.error("Was not able to store sechub test report: {}", fileName, e);
         }
@@ -1631,4 +1658,5 @@ public class TestAPI {
         }
         return executorConfig.uuid;
     }
+
 }
