@@ -19,7 +19,7 @@ func TestReportFilePathCorrectCreated(t *testing.T) {
 	result := report.createFilePath(false)
 
 	/* test */
-	expected := filepath.Join("path1", "fileName1")
+	expected := filepath.Join("path1-please-fail", "fileName1")
 	if result != expected {
 		t.Fatalf("Strings differ:\nExpected:%s\nGot     :%s", expected, result)
 	}
