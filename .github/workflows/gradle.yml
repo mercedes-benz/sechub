@@ -4,22 +4,12 @@ name: Java & Go CI
 on:
   push:
     paths:
-      - '**'
-      - '!docs/**'
-      - '!github-actions/**'
-      - '!sechub-doc/**'
-      - '!sechub-website/**'
       - '.github/workflows/gradle.yml'
     # We ignore everything where tag starts with v* - this is done by release build!
     tags-ignore:
       - v*
   pull_request:
     paths:
-      - '**'
-      - '!docs/**'
-      - '!github-actions/**'
-      - '!sechub-doc/**'
-      - '!sechub-website/**'
       - '.github/workflows/gradle.yml'
     tags-ignore:
       - v*
