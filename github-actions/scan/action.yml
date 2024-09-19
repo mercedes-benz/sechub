@@ -60,7 +60,7 @@ inputs:
   branch:
     description: 'Branch of the SecHub repository to use for the scan action'
     required: false
-    default: 'master'
+    default: 'gha_feature-3213-build-index-js-in-workflow'
 
 outputs:
   scan-trafficlight:
@@ -102,13 +102,13 @@ runs:
       # If the cache was a hit, we don't need to check out the repository again
       if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
       run: |
-        git clone --no-checkout --depth=1 https://github.com/mercedes-benz/sechub.git
+        git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
         git config core.sparseCheckout true
              
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
-        git checkout ${{ inputs.branch }}
+        git checkout
       shell: bash
 
     - name: Cache Node Modules
