@@ -22,6 +22,7 @@ describe('setupSecHubCli', () => {
         const result = await setupSecHubCli(version);
 
         expect(result).toContain('sechub');
+
         expect(core.addPath).toHaveBeenCalledWith(expectedPath);
         expect(toolCache.downloadTool).not.toHaveBeenCalled();
     });
@@ -35,6 +36,7 @@ describe('setupSecHubCli', () => {
         const result = await setupSecHubCli(version);
 
         expect(result).toContain('sechub');
+
         expect(core.addPath).toHaveBeenCalledWith(expectedPath);
         expect(toolCache.downloadTool).toHaveBeenCalled();
         expect(toolCache.extractZip).toHaveBeenCalled();
