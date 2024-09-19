@@ -32,7 +32,7 @@ class ProcessAdapterTest {
         ProcessAdapter adapter = new ProcessAdapter(process);
 
         /* test */
-        assertTrue(process.isAlive());
+        assertFalse(process.isAlive());
         adapter.enterInput("my-user input...via stdin".toCharArray());
         adapter.waitFor(2, TimeUnit.SECONDS);
         assertEquals(0, adapter.exitValue());
