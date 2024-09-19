@@ -4,9 +4,19 @@ name: Java & Go CI
 on:
   push:
     paths:
+      - '**'
+      - '!docs/**'
+      - '!github-actions/**'
+      - '!sechub-doc/**'
+      - '!sechub-website/**'
       - '.github/workflows/gradle.yml'
   pull_request:
     paths:
+      - '**'
+      - '!docs/**'
+      - '!github-actions/**'
+      - '!sechub-doc/**'
+      - '!sechub-website/**'
       - '.github/workflows/gradle.yml'
 
   # enable manual triggering of workflow
