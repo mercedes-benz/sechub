@@ -64,7 +64,7 @@ public class ProductExecutorConfigRestController {
 				name="Rest call",
 				needsRestDoc=true,
 				description="Administrator adds a new product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor", method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "executor", method = RequestMethod.POST, produces= {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public String addProductExecutorConfig(@RequestBody ProductExecutorConfig configFromUser) {
 	    return createService.createProductExecutorConfig(configFromUser);

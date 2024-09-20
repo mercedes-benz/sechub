@@ -156,7 +156,7 @@ public class FalsePositiveDataService {
 
         List<FalsePositiveProjectData> projectDataList = dataList.getProjectData();
         for (FalsePositiveProjectData projectData : projectDataList) {
-            merger.addFalsePositiveProjectDataEntry(config, projectData, userContextService.getUserId());
+            merger.addFalsePositiveProjectDataEntryOrUpdateExisting(config, projectData, userContextService.getUserId());
         }
 
     }

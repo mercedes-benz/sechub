@@ -50,9 +50,9 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 
-public class DefaultSecHubClient extends AbstractSecHubClient {
+public class OldDefaultSecHubClient extends AbstractSecHubClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultSecHubClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OldDefaultSecHubClient.class);
 
     private static JsonMapper mapper = JsonMapperFactory.createMapper();
 
@@ -76,7 +76,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         return new DefaultSecHubClientBuilder();
     }
 
-    private DefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
+    private OldDefaultSecHubClient(URI serverUri, String userId, String apiToken, boolean trustAll) {
         super(serverUri, userId, apiToken, trustAll);
 
         apiClient = new ApiClientBuilder().createApiClient(this, mapper);
@@ -518,7 +518,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
             if (sealedApiToken == null) {
                 throw new IllegalStateException("token is not defined!");
             }
-            return new DefaultSecHubClient(serverUri, userName, apiTokenAccess.unseal(sealedApiToken), trustAll);
+            return new OldDefaultSecHubClient(serverUri, userName, apiTokenAccess.unseal(sealedApiToken), trustAll);
         }
     }
 

@@ -68,7 +68,7 @@ public class WebScanProjectDataFalsePositiveStrategy implements SerecoProjectDat
         }
 
         /* ---------------------------------------------------- */
-        /* -------------------SERVERS-------------------------- */
+        /* ----------------------URL--------------------------- */
         /* ---------------------------------------------------- */
         if (!webscanFalsePositiveProjectDataSupport.isMatchingUrlPattern(targetUrl, projectDataPatternMap)) {
             return false;

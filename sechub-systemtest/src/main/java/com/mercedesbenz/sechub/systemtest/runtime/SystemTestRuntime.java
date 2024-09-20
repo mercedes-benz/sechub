@@ -91,6 +91,7 @@ public class SystemTestRuntime {
         }
     }
 
+    @SuppressWarnings("all")
     private SystemTestResult runAfterInitialization(SystemTestRuntimeContext context) {
         switchToStage("Setup", context);
 

@@ -1,64 +1,66 @@
 // SPDX-License-Identifier: MIT
 [[section-false-positives-define-by-API]]
-Defining false positives is done by sending false positive information via `JSON` either
+Defining false positives is done by declaring false positive information in a `JSON` file
 
-- by referencing *job results* from former {sechub} job UUID and the corresponding finding entry (by id) or
-- by specifying a *project data* section where specific patterns that match false positive findings are declared
+- by referencing *<<section-false-positives-defined-via-jobData,job results>>* from former {sechub} job UUID and the corresponding finding entry (by id) and/or
+- by specifying a *<<section-false-positives-defined-via-projectData,project data>>* section where specific patterns that match false positive findings are declared
 
 and post it to the SecHub server REST API. 
 
 [NOTE]
 ====
-The `jobData` approach is very easy, generic - and also future-proof: The only dependency is to the job, 
-`UUID`, for which the report must still exist while the definition is done. Every false-positive in 
-any kind of scan can be handled like that.
-
-The `REST` controller logic reads the job result data and creates internally false positive 
-meta data.
+The `jobData` approach is very generic and easy to use: It references a SecHub report. Every false-positive in any kind of scan can be handled like that.
 ====
 
 [NOTE]
 ====
-The `projectData` approach is more powerful for the user.
-Since it is more powerful with the wildcard approach it requires more intial setup from the user.
+The `projectData` approach is more powerful for the user because wildcards can be used.
 
-There are no dependencies because all information necessary to identify certain findings are specified via `REST`.
-Each entry can be removed by the given `id`.
+Each entry can be updated or removed by the given `id`. +
+Declaring a projectData entry with an already existing `id`, will update its content with the new data.
 ====
 
-*Example JSON*
+[[section-false-positives-defined-via-jobData]]
+*Example JSON using job results*
 
 [source,json]
 ----
 include::false-positives-REST-API-content-example1.json[]
 ----
-<1> API version
-<2> type - must be `falsePositiveDataList` or the deprecated type `falsePositiveJobDataList`.
-<3> List of jobData _(optional)_ that is used to mark a single finding as false positive
-<4> SecHub Job-UUID of the report where the finding was
-<5> finding-ID which shall be marked as false positive
-<6> A comment (optional) describing the reason why this is a false positive
-<7> List of projectData _(optional)_ that can be used to mark more than a single finding as false positive.
-Currently only available for web scans. This is not necessarily bound to a SecHub report,
-but it might be easier to create this type of false positive configuration with a SecHub report after a scan.
-<8> `id` that identifies this entry. If the same `id` is used again,
+<1> `apiVersion` _(mandatory)_ - API version
+<2> `type` _(mandatory)_ - must be `falsePositiveDataList`
+<3> `jobData` - List of job data that is used to mark a single finding as a false positive
+<4> jobData.`jobUUID` _(mandatory)_ SecHub Job-UUID of the report where the finding was
+<5> jobData.`findingId` _(mandatory)_ Finding ID which shall be marked as false positive
+<6> jobData.`comment` _(optional)_ A comment describing the reason why this is a false positive
+
+
+[[section-false-positives-defined-via-projectData]]
+*Example JSON using project data*
+
+[source,json]
+----
+include::false-positives-REST-API-content-example2.json[]
+----
+<1> `apiVersion` _(mandatory)_ - API version
+<2> `type` _(mandatory)_ - must be `falsePositiveDataList`
+<3> `projectData` - List that can be used to mark more than a single finding as a false positive. Currently only available for web scans.
+<4> projectData.`id` that identifies this entry. If the same `id` is used again,
 the existing false positive entry will be overwritten. The `id` is also mandatory to unmark this entry. 
-<9> `webScan` _(optional)_ section can be used to define false positive patterns for web scans to provide more possibilities to the user.
-<10> `cweId` is used to mark a certain type of finding as false positive.
-When handling web scan project data this will be treated as a _mandatory_ field,
-but it can be omitted inside this configuration an will then match findings that do not have any `cweId`.
-<11> `urlPattern` specifies a URL pattern to identify a false positive. This is a `mandatory` field. 
-Asterisks can be used as wildcards e.g. if you have different environments like DEV, INT, PROD or you have variable parts like in API calls or query paramaters `https://*.example.com/rest/*/search`.
-<12> `methods` _(optional)_ can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
-Like any other _optional_ field, if this is missing it is simply ignored.
+<5> projectData.`webScan` _(optional)_ section can be used to define false positive patterns for web scans (DAST). It provides more possibilities to the user than above jobData.
+<6> projectData.webScan.`cweId` is used to mark a certain type of finding as false positive. +
+When handling web scan project data this will be treated as a _mandatory_ field. +
+Please insert here the cweId from the original report. +
+If there was no cweId in the original report, then it must be omitted or set to zero `"cweId": 0`.
+<7> projectData.webScan.`urlPattern` (_mandatory_) specifies an URL pattern to identify a false positive.
+Asterisks can be used as wildcards e.g. if you have different environments like DEV, INT, PROD or you have variable parts like in API calls or query paramaters `https://*.example.com/rest/*/search?*`.
+<8> projectData.webScan.`methods` _(optional)_ Can be used to further restrict the false positive matching, to specific request methods protocols, like GET, POST, etc.
 
 
 Important information on the wildcard approach in `projectData`, regarding web scans: +
-- To be a false positive a finding must match the `cweId` and the `urlPattern` of at least one of the false positive entries.
-  An _optional_ list of (HTTP) `methods` can be specified to limit the false positive entry to certain `methods`,
-  e.g if you specify `"methods": [ "GET", "DELETE" ]` like in the example above that means even if the `cweId` and the `urlPattern` are matching, if the finding was found with a `POST` request it would not be a false positive.
-  If no `methods` are specified, this false positive entry will not be restricted to any method. +
+- To be marked as a false positive a finding must match the given `cweId` and the `urlPattern` +
 - Wildcards (`pass:[*]`) can be used inside `urlPattern`. +
 - Wildcards match anything until the next NON-wildcard character. +
 - Multiple wildcards can be used in one `urlPattern`. +
+- An _optional_ list of (HTTP) methods can be specified to limit the false positive entry to certain `methods`, e.g if you specify `"methods": [ "GET", "DELETE" ]` like in the example above that means even if the `cweId` and the `urlPattern` are matching, if the finding was found with a `POST` request it would not be a false positive. When leaving `methods` out, this false positive entry apply to any method. +
 - An `urlPattern` which contains only wildcards (`pass:[*]`) is not allowed.

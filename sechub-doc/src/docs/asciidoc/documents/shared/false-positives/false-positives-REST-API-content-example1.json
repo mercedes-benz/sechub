@@ -5,22 +5,11 @@
     {
       "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd", //<4>
       "findingId": 1, //<5>
-      "comment": "Absolute Path Traversal, can be ignored because not in deployment" //<6>
+      "comment": "Can be ignored because not in deployment" //<6>
     },
     {
       "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
       "findingId": 15
-    }
-  ],
-  "projectData": [ //<7>
-    {
-      "id": "unique-id", //<8>
-      "comment": "It was verified that there is no SQL-injection vulnerability at this location",
-      "webScan": { //<9>
-          "cweId": 89, //<10>
-          "urlPattern": "https://*.example.com/rest/products/search*", //<11>
-          "methods": [ "GET", "DELETE" ] //<12>
-      }
     }
   ]
 }

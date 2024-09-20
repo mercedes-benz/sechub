@@ -79,7 +79,6 @@ public class FalsePositiveDataListValidationImpl extends AbstractValidation<Fals
         validateJobData(context, target.getJobData());
 
         validateProjectData(context, target.getProjectData());
-
     }
 
     private void validateProjectData(ValidationContext<FalsePositiveDataList> context, List<FalsePositiveProjectData> projectDataList) {
@@ -104,14 +103,14 @@ public class FalsePositiveDataListValidationImpl extends AbstractValidation<Fals
         List<FalsePositiveJobData> jobDataList = target.getJobData();
         List<FalsePositiveProjectData> projectDataList = target.getProjectData();
 
-        validateNotNull(context, jobDataList, "projectDataList");
+        validateNotNull(context, jobDataList, "jobDataList");
         validateNotNull(context, projectDataList, "projectDataList");
         if (context.isInValid()) {
             return;
         }
 
         validateMinSize(context, jobDataList, getConfig().minLength, "jobDataList");
-        validateMinSize(context, jobDataList, getConfig().minLength, "projectDataList");
+        validateMinSize(context, projectDataList, getConfig().minLength, "projectDataList");
 
         int combinedSize = jobDataList.size() + projectDataList.size();
 

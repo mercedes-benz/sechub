@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.api.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.systemtest.config.AssertContainsStringsDefinition;
 import com.mercedesbenz.sechub.systemtest.config.AssertEqualsFileDefinition;
 import com.mercedesbenz.sechub.systemtest.config.AssertSechubResultDefinition;
@@ -53,7 +53,8 @@ public class SystemTestRuntimeTestAssertion {
 
         if (sechubResultAssert.getHasTrafficLight().isPresent()) {
             TrafficLight expected = sechubResultAssert.getHasTrafficLight().get();
-            if (!expected.equals(report.getTrafficLight())) {
+            TrafficLight actual = report.getTrafficLight();
+            if (!expected.equals(actual)) {
                 testContext.markAsFailed(
                         "SecHub report not as wanted. Expected was traffic light: " + expected + ", but result was: " + report.getTrafficLight(),
                         "SecHub report was:\n" + reportAsJson);
