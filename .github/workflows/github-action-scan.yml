@@ -3,6 +3,11 @@ name: Build SecHub GHA (scan)
 
 on:
   push:
+    branches:
+      - 'develop'
+      - 'hotfix'
+      - 'main'
+      - 'master'
     paths:
       - '.github/workflows/github-action-scan.yml'
       - 'github-actions/scan/**'

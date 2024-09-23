@@ -3,6 +3,11 @@ name: Java & Go CI
 
 on:
   push:
+    branches:
+      - 'develop'
+      - 'hotfix'
+      - 'main'
+      - 'master'
     paths:
       - '**'
       - '!docs/**'
