@@ -81,6 +81,16 @@ To be able to use this action you need a SecHub project. Check the https://merce
     fail-job-with-findings: true
 ----
 
+*Note:* The following variables take priority over the configuration file:
+
+- `USERID`
+- `SERVER`
+- `PROJECT`
+- `DEBUG`
+- `TRUSTALL`
+
+If no custom `sechub.json` is provided, it will be generated from the remaining specified variables and used. However, if a custom `sechub.json` is provided, no separate configuration will be created, meaning the remaining set variables will essentially be ignored.
+
 === Outputs
 
 The following table lists the output variables available after this SecHub GitHub Action has completed:
