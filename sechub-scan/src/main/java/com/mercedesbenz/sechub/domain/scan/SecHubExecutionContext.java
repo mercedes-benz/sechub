@@ -48,6 +48,8 @@ public class SecHubExecutionContext {
 
     private boolean prepareFailed;
 
+    private boolean suspended;
+
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
         this(sechubJobUUID, configuration, executedBy, executionUUID, null);
     }
@@ -181,9 +183,12 @@ public class SecHubExecutionContext {
         return prepareFailed;
     }
 
-    public void markPauseRequested() {
-        // FIXME implement
-        
+    public void markSuspended() {
+        this.suspended = true;
+    }
+
+    public boolean isSuspended() {
+        return suspended;
     }
 
 }

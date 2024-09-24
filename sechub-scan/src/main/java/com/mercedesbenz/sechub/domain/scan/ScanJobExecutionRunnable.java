@@ -13,6 +13,8 @@ import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionServic
 import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
 
 /**
  * This class is the primary part for triggering product execution. It is run
@@ -83,7 +85,8 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
 
     public void cancelScanJob() {
         SecHubExecutionContext executionContext = runnableData.getExecutionContext();
-        Thread executorThread = runnableData.getRunnableThread();
+        /* FIXME Albert Tregnaghi, 2024-09-24: check this behavior */
+        Thread executorThread = runnableData.getScanJobExecutionThread();
 
         executionContext.markCancelRequested(); // Using this method, the cancel request can be checked in multiple threads
 
@@ -92,15 +95,21 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
         executorThread.interrupt();
 
     }
-    
-    public void pauseScanJob() {
-        SecHubExecutionContext executionContext = runnableData.getExecutionContext();
-        Thread executorThread = runnableData.getRunnableThread();
 
-        executionContext.markPauseRequested(); // Using this method, the pause request can be checked in multiple threads
+    @UseCaseSystemHandlesSIGTERM(@Step(number = 5, name = "Scan job executable handles SUSPEND state", description = "Scan job executable stops execution because suspended"))
+    public void suspend() {
+        Thread executorThread = runnableData.getScanJobExecutionThread();
 
-        LOG.info("Will interrupt scan job thread because of cancel operation: {}", executorThread.getName());
-
+        Thread scanJobCancelThread = runnableData.getScanJobCancelThread();
+        if (scanJobCancelThread != null) {
+            try {
+                LOG.info("Will interrupt scan job cancel thread because of suspend operation: {}", executorThread.getName());
+                scanJobCancelThread.interrupt();
+            } catch (Exception e) {
+                LOG.error("Was not able to interrupt cancel thread: {}", scanJobCancelThread.getName(), e);
+            }
+        }
+        LOG.info("Will interrupt scan job execution thread because of suspend operation. Name of thread = {}", executorThread.getName());
         executorThread.interrupt();
 
     }

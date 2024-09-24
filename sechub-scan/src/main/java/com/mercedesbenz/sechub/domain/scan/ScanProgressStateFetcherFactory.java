@@ -9,20 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
+import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 
 @Component
-public class ScanProgressMonitorFactory {
+public class ScanProgressStateFetcherFactory {
 
     @Autowired
     @Lazy
     DomainMessageService eventBus;
 
-    public ProgressMonitor createProgressMonitor(UUID sechubJobUUID) {
+    public ProgressStateFetcher createProgressStateFetcher(UUID sechubJobUUID) {
         notNull(sechubJobUUID, "sechubJobUUID must be not null!");
 
-        return new ScanProgressMonitor(eventBus, sechubJobUUID);
+        return new ScanProgressStateFetcher(eventBus, sechubJobUUID);
     }
 
 }

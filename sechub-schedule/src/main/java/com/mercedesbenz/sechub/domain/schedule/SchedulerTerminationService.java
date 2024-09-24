@@ -1,38 +1,58 @@
 package com.mercedesbenz.sechub.domain.schedule;
 
-import java.util.List;
-import java.util.UUID;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSigterm;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
 
 import jakarta.annotation.PreDestroy;
 
 @Service
 public class SchedulerTerminationService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerTerminationService.class);
+
     @Autowired
     ScheduleJobMarkerService markerService;
-    
-    private boolean terminating;
-    
-    @PreDestroy
-    @UseCaseSystemHandlesSigterm(@Step(number = 1, name = "Scheduler terminates", description = "Scheduler instance is termining. Will stop processing new jobs and mark current running jobs as PAUSED"))
-    public void terminate() {
-        terminating = true;
-        /* FIXME Albert Tregnaghi, 2024-09-11: implement further! */
-        // collect all current running sechub jobs inside this JVM
-        List<UUID> sechubJobsOnThisMachine;
 
-        // change all of these uuids to to state PAUSED
-        // FIXME implement
-//        markerService.markJobExecutionsPaused(sechubJobsOnThisMachine);
-        
+    @Autowired
+    SynchronSecHubJobExecutor executor;
+
+    private boolean terminating;
+
+    @PreDestroy
+    @UseCaseSystemHandlesSIGTERM(@Step(number = 1, name = "Scheduler terminates", description = "Scheduler instance is terminating. Will stop processing new jobs and inform job executor to suspend"))
+    public void terminate() {
+
+        LOG.info("Start termination process");
+        if (terminating) {
+            LOG.info("Alrady in termination process! Will skip request");
+            return;
+        }
+
+        /* set flag for this service */
+        terminating = true;
+
+        /* stop execution of all jobs and suspend all running ones */
+        executor.suspend();
+
     }
-    
+
+    /**
+     * Only for integration testing!
+     */
+    @Deprecated
+    void internalResetTermination() {
+        LOG.warn("Reset termination process - may only happen inside tests!");
+        executor.resetSuspensionState();
+
+        this.terminating = false;
+    }
+
     public boolean isTerminating() {
         return terminating;
     }

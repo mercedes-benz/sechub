@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-class UUIDContainerTest {
+class SchedulerSecHubJobRuntimeDataTest {
 
     @Test
     void set_get_work_as_expected() {
@@ -15,42 +15,33 @@ class UUIDContainerTest {
         UUID executionUUID1 = UUID.randomUUID();
         UUID executionUUID2 = UUID.randomUUID();
         UUID sechubJobUUID1 = UUID.randomUUID();
-        UUID sechubJobUUID2 = UUID.randomUUID();
 
         /* execute */
-        UUIDContainer uuids = new UUIDContainer();
+        SchedulerSecHubJobRuntimeData info = new SchedulerSecHubJobRuntimeData(sechubJobUUID1);
 
         /* test */
-        expect(uuids, null, null);
+        expect(info, null, sechubJobUUID1);
 
         /* execute */
-        uuids.setExecutionUUID(executionUUID1);
+        info.setExecutionUUID(executionUUID1);
 
         /* test */
-        expect(uuids, executionUUID1, null);
+        expect(info, executionUUID1, sechubJobUUID1);
 
         /* execute */
-        uuids.setExecutionUUID(executionUUID2);
+        info.setExecutionUUID(executionUUID2);
 
         /* test */
-        expect(uuids, executionUUID2, null);
+        expect(info, executionUUID2, sechubJobUUID1);
 
-        /* execute */
-        uuids.setSecHubJobUUID(sechubJobUUID1);
-
-        /* test */
-        expect(uuids, executionUUID2, sechubJobUUID1);
-
-        /* execute */
-        uuids.setSecHubJobUUID(sechubJobUUID2);
-        uuids.setExecutionUUID(null);
+        info.setExecutionUUID(null);
 
         /* test */
-        expect(uuids, null, sechubJobUUID2);
+        expect(info, null, sechubJobUUID1);
 
     }
 
-    private void expect(UUIDContainer uuids, UUID executionUUID, UUID sechubJobUUID) {
+    private void expect(SchedulerSecHubJobRuntimeData uuids, UUID executionUUID, UUID sechubJobUUID) {
         assertEquals(executionUUID, uuids.getExecutionUUID());
         assertEquals(executionUUID == null ? null : executionUUID.toString(), uuids.getExecutionUUIDAsString());
 

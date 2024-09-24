@@ -5,10 +5,10 @@ import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 
 /**
  * Represents the execution state of a scheduled SecHub job.
- * 
+ *
  * Attention: never change the enum values because they are used for persistence
  * as identifiers!
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -25,11 +25,7 @@ public enum ExecutionState {
 
     CANCELED("The job has been canceled"),
 
-    /*
-     * TODO 2024-06-05 de-jcup, winzj: write an integration test with sechub client
-     * to check if go client can run with the new enum part
-     */
-    PAUSED("The job has been paused and can be resumed by another SecHub instance where scheduler is running"),
+    SUSPENDED("The job has been suspended and can be resumed by another SecHub instance"),
 
     ENDED("Has ended - with failure or success");
 

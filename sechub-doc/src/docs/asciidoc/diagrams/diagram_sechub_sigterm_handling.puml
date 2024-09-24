@@ -28,6 +28,9 @@ package com.mercedesbenz.sechub.domain.schedule {
 		handleJobRestartRequested()
 	}
 	
+	class SynchronSecHubJobExecutor {
+	}
+	
 	class SchedulerTerminationService {
 	   void terminate()
 	   boolean isTerminating()
@@ -45,7 +48,7 @@ package com.mercedesbenz.sechub.domain.schedule {
 }
 
 SchedulerJobBatchTriggerService ..> SchedulerTerminationService 
-SchedulerTerminationService -> ScheduleSecHubJob : persists with execution state\n`PAUSED`
+SchedulerTerminationService -> ScheduleSecHubJob : persists with execution state\n`SUSPENDED`
 
 node EventBus {
 }

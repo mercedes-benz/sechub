@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionServi
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -30,7 +31,8 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
+import com.mercedesbenz.sechub.sharedkernel.ProgressState;
+import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -61,12 +63,15 @@ public class ScanServiceTest {
     private JobStorage jobStorage;
     private ProjectScanLogService scanLogService;
     private ScanProjectConfigService scanProjectConfigService;
-    private ScanJobListener scanJobRegistry;
-    private ScanProgressMonitorFactory monitorFactory;
+    private ScanJobListener scanJobListener;
+    private ScanProgressStateFetcherFactory stateFetcherFactory;
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private ProductExecutionServiceContainer productExecutionServiceContainer;
     private AnalyticsProductExecutionService analyticsProductExecutionService;
     private PrepareProductExecutionService prepareProductExecutionService;
+    private SecretScanProductExecutionService secretScanProductExecutionService;
+    private ProgressState progressState;
+
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -74,13 +79,14 @@ public class ScanServiceTest {
         storageService = mock(StorageService.class);
         jobStorage = mock(JobStorage.class);
         scanProjectConfigService = mock(ScanProjectConfigService.class);
-        scanJobRegistry = mock(ScanJobListener.class);
-        monitorFactory = mock(ScanProgressMonitorFactory.class);
-        ProgressMonitor monitor = mock(ProgressMonitor.class);
-        when(monitor.getId()).thenReturn("monitor-test-id");
+        scanJobListener = mock(ScanJobListener.class);
+        stateFetcherFactory = mock(ScanProgressStateFetcherFactory.class);
+        ProgressStateFetcher progressStateFetcher = mock(ProgressStateFetcher.class);
+        progressState = mock(ProgressState.class);
 
         when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
-        when(monitorFactory.createProgressMonitor(any())).thenReturn(monitor);
+        when(stateFetcherFactory.createProgressStateFetcher(any())).thenReturn(progressStateFetcher);
+        when(progressStateFetcher.fetchProgressState()).thenReturn(progressState);
 
         webScanProductExecutionService = mock(WebScanProductExecutionService.class);
         codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
@@ -88,6 +94,7 @@ public class ScanServiceTest {
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
         analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
         prepareProductExecutionService = mock(PrepareProductExecutionService.class);
+        secretScanProductExecutionService = mock(SecretScanProductExecutionService.class);
 
         scanLogService = mock(ProjectScanLogService.class);
 
@@ -106,13 +113,14 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
         when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
         when(productExecutionServiceContainer.getPrepareProductExecutionService()).thenReturn(prepareProductExecutionService);
+        when(productExecutionServiceContainer.getSecretScanProductExecutionService()).thenReturn(secretScanProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
         serviceToTest.scanLogService = scanLogService;
         serviceToTest.scanProjectConfigService = scanProjectConfigService;
-        serviceToTest.scanJobListener = scanJobRegistry;
-        serviceToTest.monitorFactory = monitorFactory;
+        serviceToTest.scanJobListener = scanJobListener;
+        serviceToTest.monitorFactory = stateFetcherFactory;
     }
 
     @Test

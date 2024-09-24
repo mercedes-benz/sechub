@@ -11,6 +11,38 @@ import org.junit.jupiter.api.Test;
 
 class SecHubMessageTest {
 
+    @Test
+    void compare_with_null_works() {
+        /* prepare */
+        SecHubMessage info1 = new SecHubMessage(SecHubMessageType.INFO, "info1");
+
+        /* execute */
+        int compareResult = info1.compareTo(null);
+
+        /* test */
+        assertEquals(1, compareResult);
+
+    }
+
+    @Test
+    void compare_with_message_without_text_works() {
+        /* prepare */
+        SecHubMessage info1 = new SecHubMessage(SecHubMessageType.INFO, "info1");
+        SecHubMessage info2 = new SecHubMessage(SecHubMessageType.INFO, null);
+
+        /* execute 1 */
+        int compareResult = info1.compareTo(info2);
+
+        /* test 1 */
+        assertEquals(1, compareResult);
+
+        /* execute 2 */
+        compareResult = info2.compareTo(info1);
+
+        /* test 1 */
+        assertEquals(-1, compareResult);
+    }
+
     /* Why we need ordering? so results are always same listed when recreated */
     @Test
     void types_ordering_is_error_warn_than_info_in_a_treeset() {

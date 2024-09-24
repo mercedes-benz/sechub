@@ -47,7 +47,7 @@ public class TestSecHubRestAPIClientHttpRequestInterceptor implements ClientHttp
             headers.add("Authorization", "Basic " + base64Token);
 
         }
-        LOG.info("...............REST call for user:" + user.getUserId() + "............................");
+        LOG.trace("...............REST call for user:" + user.getUserId() + "............................");
 
         return execution.execute(request, body);
     }

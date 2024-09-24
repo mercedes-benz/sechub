@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.batch;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.logging.MDC;
@@ -18,9 +19,12 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
-import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
+import com.mercedesbenz.sechub.domain.schedule.ScheduleJobMarkerService;
+import com.mercedesbenz.sechub.domain.schedule.SchedulerSecHubJobRuntimeData;
+import com.mercedesbenz.sechub.domain.schedule.SchedulerSecHubJobRuntimeRegistry;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
+import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -30,6 +34,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKey;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
 
 /**
  * This component executes SecHub jobs in own worker threads (means
@@ -52,61 +57,121 @@ public class SynchronSecHubJobExecutor {
     DomainMessageService messageService;
 
     @Autowired
+    SchedulerSecHubJobRuntimeRegistry runtimeRegistry;
+
+    @Autowired
     SecHubJobSafeUpdater secHubJobSafeUpdater;
+
+    @Autowired
+    ScheduleJobMarkerService markerService;
+
+    private boolean suspended;
 
     @IsSendingSyncMessage(MessageID.START_SCAN)
     public void execute(final ScheduleSecHubJob secHubJob) {
-        Thread scheduleWorkerThread = new Thread(() -> executeInsideThread(secHubJob), SECHUB_SCHEDULE_THREAD_PREFIX + secHubJob.getUUID());
+        SchedulerSecHubJobRuntimeData runtimeInfo = new SchedulerSecHubJobRuntimeData(secHubJob.getUUID());
+        runtimeInfo.setExecutionUUID(UUID.randomUUID());
+        if (suspended) {
+            return;
+        }
+        // if not suspended, register
+        runtimeRegistry.register(runtimeInfo);
+
+        Thread scheduleWorkerThread = new Thread(() -> executeInsideThread(secHubJob), SECHUB_SCHEDULE_THREAD_PREFIX + secHubJob.getUUID() + "-schedule"); // we
+                                                                                                                                                           // add
+                                                                                                                                                           // -schedule
+                                                                                                                                                           // to
+                                                                                                                                                           // end,
+                                                                                                                                                           // to
+                                                                                                                                                           // have
+                                                                                                                                                           // info
+                                                                                                                                                           // in
+                                                                                                                                                           // logging
+                                                                                                                                                           // when
+                                                                                                                                                           // thread
+                                                                                                                                                           // name
+                                                                                                                                                           // is
+                                                                                                                                                           // reduced
         scheduleWorkerThread.start();
     }
 
     private void executeInsideThread(final ScheduleSecHubJob secHubJob) {
-        UUIDContainer uuids = new UUIDContainer();
-        uuids.setExecutionUUID(UUID.randomUUID());
-        uuids.setSecHubJobUUID(secHubJob.getUUID());
+        SchedulerSecHubJobRuntimeData runtimeInfo = runtimeRegistry.fetchDataForSecHubJobUUID(secHubJob.getUUID());
 
         try {
             String secHubConfiguration = secHubJob.getJsonConfiguration();
 
             /* own thread so MDC.put necessary for logging */
             MDC.clear();
-            MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, uuids.getSecHubJobUUIDasString());
-            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, uuids.getExecutionUUIDAsString());
+            MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, runtimeInfo.getSecHubJobUUIDasString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, runtimeInfo.getExecutionUUIDAsString());
             MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
-            LOG.info("Executing sechub job: {}, execution uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
+            LOG.info("Executing sechub job: {}, execution uuid: {}", runtimeInfo.getSecHubJobUUIDasString(), runtimeInfo.getExecutionUUIDAsString());
 
-            sendJobExecutionStartingEvent(secHubJob, uuids, secHubConfiguration);
+            sendJobExecutionStartingEvent(secHubJob, runtimeInfo, secHubConfiguration);
 
             /* we send now a synchronous SCAN event */
             DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-            request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
+            request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, runtimeInfo.getExecutionUUID());
             request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
 
-            request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
+            request.set(MessageDataKeys.SECHUB_JOB_UUID, runtimeInfo.getSecHubJobUUID());
             request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
 
             /* wait for scan event result - synchron */
             DomainMessageSynchronousResult response = messageService.sendSynchron(request);
 
-            updateSecHubJob(uuids, response);
+            if (response.getMessageId() == MessageID.SCAN_SUSPENDED) {
+                sendJobSuspended(runtimeInfo, TrafficLight.OFF);
+                return;
+            }
+            updateSecHubJob(runtimeInfo, response);
 
-            sendJobDoneMessage(uuids, response);
+            sendJobDoneMessage(runtimeInfo, response);
 
         } catch (Exception e) {
-            LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
+            LOG.error("Error happend at job execution:" + e.getMessage(), e);
 
-            markSechHubJobFailed(uuids);
-            sendJobFailed(uuids, TrafficLight.OFF);
+            markSechHubJobFailed(runtimeInfo);
+            sendJobFailed(runtimeInfo, TrafficLight.OFF);
 
         } finally {
+            runtimeRegistry.unregisterBySecHubJobUUID(secHubJob.getUUID());
             /* cleanup MDC */
             MDC.clear();
         }
     }
 
+    /**
+     * Suspends execution: will stop executing any new triggered job and also mark
+     * the current running to be suspended.
+     */
+    @UseCaseSystemHandlesSIGTERM(@Step(number = 2, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
+    public void suspend() {
+        // mark this executor to no longer accept new entries
+        suspended = true;
+
+        // mark all current running jobs as suspended
+        Set<UUID> secHubJobUUIDsToSuspend = runtimeRegistry.fetchAllSecHubJobUUIDs();
+        markerService.markJobsAsSuspended(secHubJobUUIDsToSuspend);
+
+        // info: after this, the execution state of these jobs will be SUSPENDED
+        // The scan domain will inspect the suspension state of jobs and stop processing
+
+    }
+
+    @Deprecated
+    /**
+     * Only for integration tests! Will reset internal state to allow execution
+     * again
+     */
+    public void resetSuspensionState() {
+        suspended = false;
+    }
+
     @IsSendingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
-    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, UUIDContainer uuids, String secHubConfiguration) {
+    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, SchedulerSecHubJobRuntimeData uuids, String secHubConfiguration) {
         /* we send asynchronous an information event */
         DomainMessage jobExecRequest = new DomainMessage(MessageID.JOB_EXECUTION_STARTING);
 
@@ -117,7 +182,7 @@ public class SynchronSecHubJobExecutor {
         messageService.sendAsynchron(jobExecRequest);
     }
 
-    private void sendJobDoneMessage(UUIDContainer uuids, DomainMessageSynchronousResult response) {
+    private void sendJobDoneMessage(SchedulerSecHubJobRuntimeData uuids, DomainMessageSynchronousResult response) {
         LOG.debug("Will send job done message for: {}", uuids.getSecHubJobUUIDasString());
 
         String trafficLightAsString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
@@ -125,14 +190,14 @@ public class SynchronSecHubJobExecutor {
         sendJobDone(uuids, TrafficLight.fromString(trafficLightAsString));
     }
 
-    private void markSechHubJobFailed(UUIDContainer uuids) {
+    private void markSechHubJobFailed(SchedulerSecHubJobRuntimeData uuids) {
         SecHubMessage jobFailedMessage = new SecHubMessage(SecHubMessageType.ERROR, "The job execution failed.");
         updateSecHubJob(uuids, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
 
         LOG.info("marked job as failed - sechub job: {}, execution-uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
     }
 
-    private void updateSecHubJob(UUIDContainer uuids, DomainMessageSynchronousResult response) {
+    private void updateSecHubJob(SchedulerSecHubJobRuntimeData uuids, DomainMessageSynchronousResult response) {
         ExecutionResult result;
 
         if (response.hasFailed()) {
@@ -151,31 +216,37 @@ public class SynchronSecHubJobExecutor {
         updateSecHubJob(uuids, result, trafficLightString, messages);
     }
 
-    private void updateSecHubJob(UUIDContainer uuids, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
-        secHubJobSafeUpdater.safeUpdateOfSecHubJob(uuids.getSecHubJobUUID(), result, trafficLightString, messages);
+    private void updateSecHubJob(SchedulerSecHubJobRuntimeData data, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
+        secHubJobSafeUpdater.safeUpdateOfSecHubJob(data.getSecHubJobUUID(), result, trafficLightString, messages);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_DONE)
-    private void sendJobDone(UUIDContainer uuids, TrafficLight trafficLight) {
-        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_DONE_DATA, uuids, MessageID.JOB_DONE, trafficLight);
+    private void sendJobDone(SchedulerSecHubJobRuntimeData data, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_DONE_DATA, data, MessageID.JOB_DONE, trafficLight);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_FAILED)
-    private void sendJobFailed(UUIDContainer uuids, TrafficLight trafficLight) {
-        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_FAILED_DATA, uuids, MessageID.JOB_FAILED, trafficLight);
+    private void sendJobFailed(SchedulerSecHubJobRuntimeData data, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_FAILED_DATA, data, MessageID.JOB_FAILED, trafficLight);
     }
 
-    private void sendJobInfoWithTrafficLight(MessageDataKey<JobMessage> key, UUIDContainer uuids, MessageID id, TrafficLight trafficLight) {
+    @IsSendingAsyncMessage(MessageID.JOB_SUSPENDED)
+    @UseCaseSystemHandlesSIGTERM(@Step(number = 6, name = "Inform listeners", description = "Inform listeners about job suspension"))
+    private void sendJobSuspended(SchedulerSecHubJobRuntimeData data, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_SUSPENDED_DATA, data, MessageID.JOB_SUSPENDED, trafficLight);
+    }
+
+    private void sendJobInfoWithTrafficLight(MessageDataKey<JobMessage> key, SchedulerSecHubJobRuntimeData data, MessageID id, TrafficLight trafficLight) {
         DomainMessage request = new DomainMessage(id);
-        JobMessage message = createMessage(uuids);
+        JobMessage message = createMessage(data);
         message.setTrafficLight(trafficLight);
         request.set(key, message);
-        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, data.getExecutionUUID());
 
         messageService.sendAsynchron(request);
     }
 
-    private JobMessage createMessage(UUIDContainer uuids) {
+    private JobMessage createMessage(SchedulerSecHubJobRuntimeData uuids) {
         JobMessage message = new JobMessage();
         message.setJobUUID(uuids.getSecHubJobUUID());
         message.setSince(LocalDateTime.now());

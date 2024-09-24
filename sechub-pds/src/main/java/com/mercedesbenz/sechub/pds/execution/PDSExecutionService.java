@@ -39,7 +39,6 @@ import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesAutoCleanup;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemSigTermHandling;
 

@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		apiName="systemSigtermHandling",
 		title="OS SIGTERM signal is handled by system",
 		description="The sechub components handle the SIGTERM event in a dedicated way.")
-public @interface UseCaseSystemHandlesSigterm {
+public @interface UseCaseSystemHandlesSIGTERM {
 
 	Step value();
 }

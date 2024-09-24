@@ -61,6 +61,10 @@ public class IntegrationTestSetup implements TestRule {
 
     private static final Map<Class<? extends TestScenario>, TestScenario> scenarioClassToInstanceMap = new LinkedHashMap<>();
 
+    private static boolean criticalIntegrationSetupProblemDetected;
+    private static String criticalProblem;
+    private static String criticalTestClass;
+
     /**
      * The next lines are absolute necessary stuff - why? Unfortunately apache http
      * client used for webmvc testing does enable debug logging always which does
@@ -169,6 +173,13 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             }
+
+            if (criticalIntegrationSetupProblemDetected) {
+                // in this case we cannot test anything else any longer
+                throw new IllegalStateException("CRITICAL integration setup problem detected:\nProblem:" + criticalProblem
+                        + "\nTestClass where critical error happend:" + criticalTestClass + "\nLook into console output for more details");
+            }
+
             handleDocumentationTestsSpecialIfWanted();
             assertNecessaryTestServersRunning();
             assertTestAPIInternalSuperAdminAvailable(scenario);
@@ -178,10 +189,6 @@ public class IntegrationTestSetup implements TestRule {
             String testClass = description.getClassName();
             String testMethod = description.getMethodName();
             try {
-                boolean sechubServerScenario = scenario instanceof SecHubServerTestScenario;
-                if (sechubServerScenario) {
-                    TestAPI.ensureNoLongerJobExecution();
-                }
                 String scenarioName = scenario.getName();
                 LOG.info("############################################################################################################");
                 LOG.info("###");
@@ -191,6 +198,13 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.info("###   Class =" + testClass);
                 LOG.info("###   Method=" + testMethod);
                 LOG.info("############################################################################################################");
+
+                boolean sechubServerScenario = scenario instanceof SecHubServerTestScenario;
+                if (sechubServerScenario) {
+                    LOG.debug("xxxx");
+                    TestAPI.ensureNoLongerJobExecution();
+                }
+                LOG.info("yyy");
 
                 scenario.prepare(testClass, testMethod);
 
@@ -225,6 +239,12 @@ public class IntegrationTestSetup implements TestRule {
 
                 logEnd(TestTag.SCENARIO_FAILURE, testClass, testMethod, startTime);
 
+                if (e instanceof CriticalTestProblemException) {
+                    criticalProblem = e.getMessage();
+                    criticalTestClass = "Integration test scenario setup critical failure in " + scenario.getName();
+                    criticalIntegrationSetupProblemDetected = true;
+                }
+
                 throw e;
             }
             try {
@@ -234,6 +254,22 @@ public class IntegrationTestSetup implements TestRule {
 
                 String lastURL = TestRestHelper.getLastUrl();
                 throw new IntegrationTestException("HTTP ERROR " + code + " '" + (code != null ? e.getStatusText() : "?") + "', " + lastURL, e);
+            } catch (CriticalTestProblemException e) {
+                criticalProblem = e.getMessage();
+                criticalIntegrationSetupProblemDetected = true;
+                criticalTestClass = testClass;
+
+                LOG.error("############################################################################################################");
+                LOG.error("###");
+                LOG.error("### [CRITICAL] - Critical test problem detected. Will now fail all other tests without execution");
+                LOG.error("###              because test results will be no longer valid or cannot be executed any longer!");
+                LOG.error("###");
+                LOG.error("############################################################################################################");
+                LOG.error("###   Class  =" + testClass);
+                LOG.error("###   Method =" + testMethod);
+                LOG.error("###   Problem=" + criticalProblem);
+                LOG.error("############################################################################################################");
+
             } finally {
                 logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }

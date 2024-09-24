@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,70 @@ public class SecHubJobRepositoryDBTest {
     @BeforeEach
     void before() {
         jobCreator = jobCreator("p0", entityManager);
+    }
+
+    @Test
+    void markJobsAsSuspended() {
+        /* prepare */
+        String projectId = "p1";
+
+        // persist data
+        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job1);
+
+        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        LocalDateTime ended = LocalDateTime.of(2024, 9, 23, 17, 42, 00);// we want to avoid storage round problems in test
+
+        /* execute */
+        jobRepository.markJobsAsSuspended(Set.of(job1.getUUID()), ended);
+
+        /* test */
+        Optional<ScheduleSecHubJob> job1Loaded = jobRepository.findById(job1.getUUID());
+        Optional<ScheduleSecHubJob> job2Loaded = jobRepository.findById(job2.getUUID());
+
+        assertEquals(ExecutionState.SUSPENDED, job1Loaded.get().getExecutionState());
+        assertEquals(ExecutionState.READY_TO_START, job2Loaded.get().getExecutionState());
+
+        assertEquals(ended, job1Loaded.get().getEnded());
+        assertNull(job2Loaded.get().getEnded());
+
+    }
+
+    @Test
+    void markJobsAsSuspended_multi() {
+        /* prepare */
+        String projectId = "p1";
+
+        // persist data
+        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job1);
+
+        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        LocalDateTime ended = LocalDateTime.of(2024, 9, 23, 17, 42, 10); // we want to avoid storage round problems in test
+
+        /* execute */
+        jobRepository.markJobsAsSuspended(Set.of(job1.getUUID(), job2.getUUID()), ended);
+
+        /* test */
+        Optional<ScheduleSecHubJob> job1Loaded = jobRepository.findById(job1.getUUID());
+        Optional<ScheduleSecHubJob> job2Loaded = jobRepository.findById(job2.getUUID());
+
+        assertEquals(ExecutionState.SUSPENDED, job1Loaded.get().getExecutionState());
+        assertEquals(ExecutionState.SUSPENDED, job2Loaded.get().getExecutionState());
+
+        assertEquals(ended, job1Loaded.get().getEnded());
+        assertEquals(ended, job2Loaded.get().getEnded());
+
     }
 
     @Test

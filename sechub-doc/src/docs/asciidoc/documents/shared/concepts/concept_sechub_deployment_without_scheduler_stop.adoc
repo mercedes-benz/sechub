@@ -2,8 +2,8 @@
 [[section-shared-concepts-sechub-deployment-without-scheduler-stop]]
 *Why this concept is necessary*
  
-Before this concept, for new deployments of {sechub} server instances administrators had to
-stop the scheduler and to wait for running jobs. After no job were running any longer, 
+Before this concept, for new deployments of {sechub} server instances, administrators had to
+stop the scheduler and  wait for running jobs to finish. After no jobs were running any longer, 
 the deployment was triggered and after this the scheduler was enabled again and job processing 
 started again.
 
@@ -17,18 +17,22 @@ a bad user experience.
 
 ===== SIGTERM handling
 
-plantuml::diagrams/diagram_sechub_sigterm_handling.puml[format=svg, title="Sigterm handling"] 
+plantuml::diagrams/diagram_sechub_sigterm_handling.puml[format=svg, title="SIGTERM handling"] 
 
-In {pds} we already have a SIGTERM handling where the instance which is running a {pds} job will
-mark this job as PAUSED. 
- 
-We use a similar approach in {sechub}:
+K8s and other systems will send a `SIGTERM` signal to give application the possibility to shutdown
+gracefully. 
 
-. Stop new job processing on {sechub} instance where SIGTERM signal occurred
-. Introduce a new {sechub} job execution state: `PAUSED` 
-. Mark all running {sechub} jobs on terminating instance as `PAUSED` (similar to cancel) which will also update `ENDED` timestamp on job
-. Other servers instances will restart `PAUSED` jobs by existing restart mechanism (but `PAUSED` will be handled before `READY_TO_START`).
-To prevent too fast restarts, the `ENDED` timestamp of {sechub} job will be inspected for paused jobs and only fetched as 
-next job when the time gap is greater than a defined (configurable) time period. 
+On a `SIGTERM` signal {sechub} temporarily suspends a job, allowing its {pds} instances to continue 
+processing it in the background. The next new SecHub server then reactivates the job and proceeds 
+with the results from the {pds} instances (or wait for them if still not already available).
 
-  
+All running {sechub} jobs on terminating instance are marked with execution state `SUSPENDED` +
+(similar to cancel) which will also update `ENDED` timestamp on job.
+
+Other servers instances will restart `SUSPENDED` jobs by existing 
+<<section-shared-concepts-sechub-job-restart-handling,restart mechanism>>  (but `SUSPENDED` will 
+be handled before `READY_TO_START`).
+
+To prevent too fast restarts, the `ENDED` timestamp of {sechub} job will be inspected on suspended jobs
+and only fetched as next job when the time gap is greater than a defined (configurable) time period. 
+

@@ -83,6 +83,9 @@ public class SecHubMessage implements Comparable<SecHubMessage> {
         if (text == null) {
             return -1;
         }
+        if (otherNotNull.text == null) {
+            return 1;
+        }
         return text.compareTo(otherNotNull.text);
     }
 

@@ -8,7 +8,7 @@ import java.util.Set;
 public enum MessageID {
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_JOB_UUID,
@@ -17,14 +17,17 @@ public enum MessageID {
 	/* @formatter:on */
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     SCAN_DONE,
 
     /**
-     * Is send/received synchron
+     * Is send/received synchronous
      */
     SCAN_FAILED,
+
+    /* Is send/received synchronous */
+    SCAN_SUSPENDED,
 
     /**
      * This message will contain full data of an created user. Secure data will be
@@ -88,6 +91,11 @@ public enum MessageID {
      * internal error occurred.
      */
     JOB_FAILED(MessageDataKeys.JOB_FAILED_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
+
+    /**
+     * Used when a SecHub job is suspended
+     */
+    JOB_SUSPENDED(MessageDataKeys.JOB_SUSPENDED_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
 
     /**
      * Used when an action can change user role situation. The administration layer

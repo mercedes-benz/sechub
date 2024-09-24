@@ -77,6 +77,7 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
         saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_STARTED, status.getAmountOfJobsStarted());
         saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCEL_REQUESTED, status.getAmountOfJobsCancelRequested());
         saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_CANCELED, status.getAmountOfJobsCanceled());
+        saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_SUSPENDED, status.getAmountOfJobsSuspended());
         saveStatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ENDED, status.getAmountOfJobsEnded());
 
     }

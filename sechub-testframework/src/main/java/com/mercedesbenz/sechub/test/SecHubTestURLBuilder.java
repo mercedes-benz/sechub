@@ -643,20 +643,28 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     // statistic parts
 
-    public String buildintegrationTestFetchJobStatistic(UUID sechubJobUUID) {
+    public String buildIntegrationTestFetchJobStatistic(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job/" + sechubJobUUID);
     }
 
-    public String buildintegrationTestFetchJobStatisticData(UUID sechubJobUUID) {
+    public String buildIntegrationTestFetchJobStatisticData(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-data/" + sechubJobUUID);
     }
 
-    public String buildintegrationTestFetchJobRunStatistic(UUID sechubJobUUID) {
+    public String buildIntegrationTestFetchJobRunStatistic(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run/" + sechubJobUUID);
     }
 
-    public String buildintegrationTestFetchJobRunStatisticData(UUID sechubJobUUID) {
+    public String buildIntegrationTestFetchJobRunStatisticData(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run-data/" + sechubJobUUID);
+    }
+
+    public String buildIntegrationTestSimulateSIGTERM(boolean simulationEnabled) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/sigterm/" + simulationEnabled);
+    }
+
+    public String buildIntegrationTestFetchTerminationState() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/termination-state");
     }
 
 }

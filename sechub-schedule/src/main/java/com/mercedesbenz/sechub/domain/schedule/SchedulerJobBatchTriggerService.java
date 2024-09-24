@@ -85,7 +85,7 @@ public class SchedulerJobBatchTriggerService {
 
     @Autowired
     SchedulerTerminationService schedulerTerminationService;
-    
+
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
@@ -107,13 +107,13 @@ public class SchedulerJobBatchTriggerService {
             LOG.trace("Terminating, stop scheduling on this instance");
             return;
         }
-        
+
         /* check scheduling enabled cluster wide */
         if (!configService.isJobProcessingEnabled()) {
             LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}", environmentService.getEnvironment());
             return;
         }
-        
+
         /* check scheduling possible in health situation */
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached()) {
@@ -127,7 +127,7 @@ public class SchedulerJobBatchTriggerService {
                 return;
             }
         }
-        
+
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
             try {

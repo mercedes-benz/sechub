@@ -4,12 +4,14 @@ package com.mercedesbenz.sechub.domain.schedule;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -55,7 +57,7 @@ public class ScheduleJobMarkerService {
         schedulerStrategy = schedulerStrategyFactory.build();
 
         if (LOG.isTraceEnabled()) {
-            /* NOSONAR */LOG.trace("Trigger execution of next job started");
+            LOG.trace("Trigger execution of next job started");
         }
 
         UUID nextJobId = schedulerStrategy.nextJobId();
@@ -66,7 +68,7 @@ public class ScheduleJobMarkerService {
         Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJob(nextJobId);
         if (!secHubJobOptional.isPresent()) {
             if (LOG.isTraceEnabled()) {
-                /* NOSONAR */LOG.trace("No job found.");
+                LOG.trace("No job found.");
             }
             return null;
         }
@@ -82,7 +84,7 @@ public class ScheduleJobMarkerService {
             return;
         }
         if (LOG.isTraceEnabled()) {
-            /* NOSONAR */LOG.trace("Mark execution failed for job:{}", secHubJob.getUUID());
+            LOG.trace("Mark execution failed for job:{}", secHubJob.getUUID());
         }
         secHubJob.setExecutionResult(ExecutionResult.FAILED);
         secHubJob.setExecutionState(ExecutionState.ENDED);
@@ -90,4 +92,17 @@ public class ScheduleJobMarkerService {
         jobMessageSupport.addMessages(secHubJob, Arrays.asList(new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed")));
         jobRepository.save(secHubJob);
     }
+
+    /**
+     * Marks SecHub jobs for given UUIDS as SUSPENDED and also set ended date time.
+     * This is done in a new transaction
+     *
+     * @param sechubJobUUIDs
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markJobsAsSuspended(Set<UUID> sechubJobUUIDs) {
+        LOG.info("Mark jobs with next uuids as suspended: {}", sechubJobUUIDs);
+        jobRepository.markJobsAsSuspended(sechubJobUUIDs, LocalDateTime.now());
+    }
+
 }

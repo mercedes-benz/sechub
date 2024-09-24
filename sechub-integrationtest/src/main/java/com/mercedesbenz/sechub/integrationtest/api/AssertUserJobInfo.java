@@ -130,6 +130,11 @@ public class AssertUserJobInfo {
             return this;
         }
 
+        public AssertUserJobInfoForJob withEndedTimeStampNotNull() {
+            assertNotNull("Execution result has no ended timestamp!", info.ended);
+            return this;
+        }
+
         public AssertUserJobInfo and() {
             return AssertUserJobInfo.this;
         }

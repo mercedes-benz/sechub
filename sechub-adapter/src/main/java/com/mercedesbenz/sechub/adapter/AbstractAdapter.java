@@ -61,7 +61,10 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     @Override
     public final AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
-        /* callback is from product executor and resolves adapter meta data for the product result (which is reused on soft restart of job*/ 
+        /*
+         * callback is from product executor and resolves adapter meta data for the
+         * product result (which is reused on soft restart of job
+         */
         runtimeContext.callback = callback;
         runtimeContext.metaData = callback.getMetaDataOrNull();
 

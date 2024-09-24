@@ -324,7 +324,7 @@ public class TestAPI {
      *                         status (which is printed out in test log).
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID, int timeOutInSeconds, boolean jobMayNeverFail) {
-        LOG.debug("wait for job done project:{}, job:{}", project.getProjectId(), jobUUID);
+        LOG.info("wait for job done project:{}, job:{}", project.getProjectId(), jobUUID);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, HttpClientErrorException.class) {
 
@@ -345,7 +345,7 @@ public class TestAPI {
 
     public static TestSecHubJobStatus getSecHubJobStatus(TestProject project, UUID jobUUID, TestUser asUser) {
         String status = as(asUser).getJobStatus(project.getProjectId(), jobUUID);
-        LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+        LOG.info(">>>>>>>>>JOB:STATUS:" + status);
         TestSecHubJobStatus jobStatus = TestSecHubJobStatus.fromJSON(status);
         return jobStatus;
     }
@@ -428,34 +428,33 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobRunning(TestProject project, int timeOutInSeconds, int timeToWaitInMillis, UUID jobUUID) {
-        LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
+        LOG.info("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
                 timeOutInSeconds);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("STARTED");
             }
         });
     }
 
     /**
-     * Waits for sechub job being cancele requested - after 5 seconds time out is
-     * reached
+     * Waits for sechub job cancel requested - after 5 seconds time out is reached
      *
      * @param project
      * @param jobUUID
      */
     public static void waitForJobStatusCancelRequestedOrCanceled(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job stats is 'cancel requested' or 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
+        LOG.info("wait for job status is 'cancel requested' or 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("CANCEL_REQUESTED") || status.contains("CANCELED");
             }
         });
@@ -469,7 +468,7 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobStatusCanceled(TestProject project, UUID jobUUID, boolean dumpPDSOutputOnTimeOut) {
-        LOG.debug("wait for job stats is 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
+        LOG.info("wait for job status is 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
         Runnable runnable = null;
         if (dumpPDSOutputOnTimeOut) {
             runnable = new AutoDumpPDSOutputForSecHubJobUUIDRunnable(jobUUID);
@@ -479,8 +478,28 @@ public class TestAPI {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("CANCELED");
+            }
+        });
+    }
+
+    /**
+     * Waits for sechub job being in state SUSPENDED - after 5 seconds time out is
+     * reached
+     *
+     * @param project
+     * @param jobUUID
+     */
+    public static void waitForJobStatusSuspended(TestProject project, UUID jobUUID) {
+        LOG.info("wait for job status is 'suspended'. project:{}, job:{}", project.getProjectId(), jobUUID);
+
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
+                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
+                return status.contains("SUSPENDED");
             }
         });
     }
@@ -492,13 +511,13 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobStatusFailed(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
+        LOG.info("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("FAILED");
             }
         });
@@ -948,7 +967,7 @@ public class TestAPI {
             try {
                 long timeElapsed = System.currentTimeMillis() - startTime;
                 if (timeElapsed > timeOutInMilliseconds) {
-                    throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
+                    throw new CriticalTestProblemException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
                 }
                 String json = getSuperAdminRestHelper().getJSON(url);
                 JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
@@ -1534,28 +1553,28 @@ public class TestAPI {
     }
 
     public static TestJobStatistic fetchJobStatistic(UUID sechubJobUUID) {
-        String url = getURLBuilder().buildintegrationTestFetchJobStatistic(sechubJobUUID);
+        String url = getURLBuilder().buildIntegrationTestFetchJobStatistic(sechubJobUUID);
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSON(TestJobStatistic.class, json);
     }
 
     public static List<TestJobStatisticData> fetchJobStatisticData(UUID sechubJobUUID) {
-        String url = getURLBuilder().buildintegrationTestFetchJobStatisticData(sechubJobUUID);
+        String url = getURLBuilder().buildIntegrationTestFetchJobStatisticData(sechubJobUUID);
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSONtoListOf(TestJobStatisticData.class, json);
     }
 
     public static List<TestJobRunStatistic> fetchJobRunStatisticListForSecHubJob(UUID sechubJobUUID) {
-        String url = getURLBuilder().buildintegrationTestFetchJobRunStatistic(sechubJobUUID);
+        String url = getURLBuilder().buildIntegrationTestFetchJobRunStatistic(sechubJobUUID);
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSONtoListOf(TestJobRunStatistic.class, json);
     }
 
     public static List<TestJobRunStatisticData> fetchJobRunStatisticData(UUID executionUUID) {
-        String url = getURLBuilder().buildintegrationTestFetchJobRunStatisticData(executionUUID);
+        String url = getURLBuilder().buildIntegrationTestFetchJobRunStatisticData(executionUUID);
         String json = getSuperAdminRestHelper().getJSON(url);
 
         return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
@@ -1573,5 +1592,20 @@ public class TestAPI {
         } catch (Exception e) {
             LOG.error("Was not able to store sechub test report: {}", fileName, e);
         }
+    }
+
+    public static void triggerSecHubTerminationService() {
+        String url = getURLBuilder().buildIntegrationTestSimulateSIGTERM(true);
+        getSuperAdminRestHelper().put(url);
+    }
+
+    public static void resetSecHubTerminationService() {
+        String url = getURLBuilder().buildIntegrationTestSimulateSIGTERM(false);
+        getSuperAdminRestHelper().put(url);
+    }
+
+    public static boolean isSecHubTerminating() {
+        String url = getURLBuilder().buildIntegrationTestFetchTerminationState();
+        return getSuperAdminRestHelper().getBooleanFromURL(url);
     }
 }

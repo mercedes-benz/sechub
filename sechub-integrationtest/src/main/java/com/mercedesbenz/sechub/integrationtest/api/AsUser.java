@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
+import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -56,6 +58,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigListEntry;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class AsUser {
+    private static boolean warnedOnceAboutMissingConfigurationUUIDs;
 
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
@@ -962,6 +965,19 @@ public class AsUser {
         return new ProjectFalsePositivesDefinition(project);
     }
 
+    public UUID triggerAsyncPDSCodeScanWithDifferentDataSections(TestProject project) {
+        /* @formatter:off */
+        UUID jobUUID = createCodeScanWithTemplate(
+                IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
+                project, NOT_MOCKED,
+                TemplateData.builder().addReferenceId("files-a").build());
+
+        uploadSourcecode(project, jobUUID, PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS).
+        approveJob(project, jobUUID);
+        /* @formatter:on */
+        return jobUUID;
+    }
+
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
         return triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__10_MS_WATING,
                 TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
@@ -1034,8 +1050,13 @@ public class AsUser {
         if (executorConfig.uuid != null) {
             return;
         }
-        LOG.warn("The executor config:" + executorConfig.name
-                + " had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted");
+        if (!warnedOnceAboutMissingConfigurationUUIDs) {
+            LOG.warn(
+                    "The executor config: {} had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted."
+                            + "This warning will appear only one time",
+                    executorConfig.name);
+            warnedOnceAboutMissingConfigurationUUIDs = true;
+        }
         TestExecutorConfigList list = fetchProductExecutorConfigList();
         for (TestExecutorConfigListEntry entry : list.executorConfigurations) {
             if (executorConfig.name.equals(entry.name)) {

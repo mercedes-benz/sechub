@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel;
 
-public interface ProgressMonitor {
+public interface ProgressState {
+
+    /**
+     * @return <code>true</code> when progress has been suspended
+     */
+    public boolean isSuspended();
 
     /**
      * @return <code>true</code> when progress has been canceled
      */
     public boolean isCanceled();
-
-    public default String getId() {
-        return "" + hashCode();
-    }
 
 }

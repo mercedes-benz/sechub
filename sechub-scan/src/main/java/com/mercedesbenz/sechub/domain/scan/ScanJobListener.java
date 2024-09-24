@@ -9,4 +9,6 @@ public interface ScanJobListener {
 
     void ended(UUID jobUUID);
 
+    void suspended(UUID jobUUID);
+
 }

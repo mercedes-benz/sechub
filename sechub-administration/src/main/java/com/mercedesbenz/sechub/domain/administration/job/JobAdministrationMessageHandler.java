@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService;
+import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -14,6 +15,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
 
 @Component
 public class JobAdministrationMessageHandler implements AsynchronMessageHandler {
@@ -43,6 +45,9 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
             break;
         case JOB_FAILED:
             handleJobFailed(request);
+            break;
+        case JOB_SUSPENDED:
+            handleJobSuspended(request);
             break;
         case JOB_CANCELLATION_RUNNING:
             handleJobCancellationRunning(request);
@@ -83,6 +88,15 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
     @IsReceivingAsyncMessage(MessageID.JOB_FAILED)
     private void handleJobFailed(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_FAILED_DATA);
+        deleteService.delete(message.getJobUUID());
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_SUSPENDED)
+    @UseCaseSystemHandlesSIGTERM(@Step(number = 7, name = "Administration handles suspension", description = "Administration removes suspended  listeners about job suspension"))
+    private void handleJobSuspended(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_SUSPENDED_DATA);
+        // we do drop job info - we only hold running and waiting jobs. The suspended
+        // job will be restarted and appear later again.
         deleteService.delete(message.getJobUUID());
     }
 

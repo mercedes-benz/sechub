@@ -48,6 +48,11 @@ public class LocalDeveloperFileSetupSupport {
             properties.load(fis);
             alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSetup.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
             logInfo("Local developer support has been initialized");
+            Object logbackConfigurationFile = properties.get("logback.configurationFile");
+            if (logbackConfigurationFile instanceof String) {
+                System.getProperty("logback.configurationFile", logbackConfigurationFile.toString());
+            }
+
         } catch (Exception e) {
             logError("Was not able to load developer config file", e);
         }

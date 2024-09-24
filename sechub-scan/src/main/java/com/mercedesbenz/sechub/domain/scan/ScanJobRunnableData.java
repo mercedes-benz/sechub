@@ -10,7 +10,8 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 class ScanJobRunnableData {
     private SecHubExecutionContext executionContext;
     private SecHubExecutionException exception;
-    private Thread runnableThread;
+    private Thread scanJobExecutionThread;
+    private Thread scanJobCancelThread;
     private UUID sechubJobUUID;
     private ProductExecutionServiceContainer executionServiceContainer;
     private List<ProductExecutor> runningProductExecutors = new ArrayList<>();
@@ -36,12 +37,20 @@ class ScanJobRunnableData {
         this.exception = exception;
     }
 
-    public void setRunnableThread(Thread runnableThread) {
-        this.runnableThread = runnableThread;
+    public void setScanJobExecutionThread(Thread runnableThread) {
+        this.scanJobExecutionThread = runnableThread;
     }
 
-    public Thread getRunnableThread() {
-        return runnableThread;
+    public Thread getScanJobExecutionThread() {
+        return scanJobExecutionThread;
+    }
+
+    public void setScanJobCancelThread(Thread cancelThread) {
+        this.scanJobCancelThread = cancelThread;
+    }
+
+    public Thread getScanJobCancelThread() {
+        return scanJobCancelThread;
     }
 
     public SecHubExecutionException getException() {

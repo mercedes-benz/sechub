@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.domain.schedule;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
@@ -28,6 +30,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestSchedulerRestController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestSchedulerRestController.class);
+
     @Autowired
     private ScheduleAccessCountService scheduleAccessCountService;
 
@@ -39,6 +43,9 @@ public class IntegrationTestSchedulerRestController {
 
     @Autowired
     private SchedulerConfigService scheduleConfigService;
+
+    @Autowired
+    private SchedulerTerminationService schedulerTerminationService;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/schedule/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -77,6 +84,22 @@ public class IntegrationTestSchedulerRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public void setSchedulerStrategy(@PathVariable("strategyId") String strategyId) {
         schedulerStrategyFactory.setStrategyIdentifier(strategyId);
+    }
+
+    @SuppressWarnings("deprecation")
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/sigterm/{simulationEnabled}", method = RequestMethod.PUT)
+    public void changeSigtermSimulation(@PathVariable("simulationEnabled") boolean simulationEnabled) {
+        if (simulationEnabled) {
+            schedulerTerminationService.terminate();
+        } else {
+            schedulerTerminationService.internalResetTermination();
+        }
+
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/termination-state", method = RequestMethod.GET)
+    public boolean fetchTerminationState() {
+        return schedulerTerminationService.isTerminating();
     }
 
 }
