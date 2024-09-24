@@ -3,11 +3,15 @@
 package util
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
 )
+
+// OS's path separator as string (Unix-like: "/", Windows: "\")
+const PathSeparator = string(os.PathSeparator)
 
 // FilePathMatch - This method provides ANT like selectors.
 // See https://ant.apache.org/manual/dirtasks.html
@@ -16,9 +20,9 @@ import (
 //               - "a1b.txt"
 //
 func FilePathMatch(path string, pattern string) (result bool) {
-	// Make simple patterns like `*.java` also work
-	if !strings.Contains(pattern, "/") {
-		pattern = "**/" + pattern
+	// Make simple patterns like `*.java` also work with doublestar.PathMatch()
+	if !strings.Contains(pattern, PathSeparator) {
+		pattern = "**" + PathSeparator + pattern
 	}
 
 	match, _ := doublestar.PathMatch(pattern, path)

@@ -447,7 +447,7 @@ func validateTempDir(config *Config) bool {
 func validateOutputLocation(config *Config) bool {
 	if config.outputLocation == "" || config.outputLocation == "." {
 		config.outputFolder = "."
-	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, string(os.PathSeparator)) {
+	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, PathSeparator) {
 		// Only a name is provided - can be an output file name or a directory
 		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
 			config.outputFolder, _ = filepath.Abs(config.outputLocation)
