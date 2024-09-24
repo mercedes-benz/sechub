@@ -17,7 +17,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 ----
 - uses: mercedes-benz/sechub/github-actions/scan@master
   with:
-    # OPTIONAL: Path to sechub.json for manual configuration. If no value is set the input parameters will be used to create it for the scan.'
+    # OPTIONAL: Path to sechub.json for manual configuration. (See IMPORTANT section below for more information)
     config-path: 'sechub.json'
 
     # REQUIRED: SecHub server url (can alternatively provided via env variable or config file)
@@ -80,6 +80,19 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # DEFAULT: true
     fail-job-with-findings: true
 ----
+
+[IMPORTANT]
+====
+The following variables take priority over the configuration file:
+
+- `debug`
+- `project-name`
+- `trust-all`
+- `url`
+- `user`
+
+If no custom `sechub.json` is provided, it will be generated from the remaining specified variables and used. However, if a custom `sechub.json` is provided, no separate configuration will be created, meaning the remaining set variables will essentially be ignored.
+====
 
 === Outputs
 
