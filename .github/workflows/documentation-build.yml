@@ -105,7 +105,7 @@ jobs:
       - name: Update documentation - Create pull request
         if: (inputs.publish-documentation != '') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@6cd32fd93684475c31847837f87bb135d40a2b79
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
