@@ -128,6 +128,12 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 }
 
 func tarOneFile(file string, tarPath string, config *TarConfig) error {
+
+	if IsSymlink(file) {
+		LogNotice("Skipping "+file+" because it is a symlink.")
+		return nil
+	}
+
 	LogDebug(config.Debug, "Adding "+tarPath)
 
 	fileToAdd, err := os.Open(file)

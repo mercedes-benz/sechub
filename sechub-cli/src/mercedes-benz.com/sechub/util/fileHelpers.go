@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -17,7 +18,7 @@ func WriteContentToFile(filePath string, content []byte, format string) error {
 		content = JSONPrettyPrint(content)
 	}
 
-	err := ioutil.WriteFile(filePath, content, 0644)
+	err := os.WriteFile(filePath, content, 0644)
 
 	// Exit if file cannot be written
 	if HandleIOError(err) {
@@ -92,4 +93,14 @@ func GetFileSize(filepath string) int64 {
 	HandleIOError(err)
 
 	return fileinfo.Size()
+}
+
+// IsSymlink - return true if the file exists and is a symlink
+func IsSymlink(filepath string) bool {
+	fileinfo, err := os.Lstat(filepath)
+	if err != nil {
+		return false
+	}
+
+	return fileinfo.Mode()&fs.ModeSymlink != 0
 }

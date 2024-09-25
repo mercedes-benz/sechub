@@ -362,6 +362,51 @@ func Example_zipDetectsNonExistingFiles() {
 	// open sechub-cli-tmptest/non-existing-file.txt: no such file or directory
 }
 
+func TestZipIsSkippingSymlinks(t *testing.T) {
+	/* prepare */
+	RelativeTmpTestDir := "sechub-cli-tmptest"
+	sechubUtil.CreateTestDirectory(RelativeTmpTestDir, 0755, t)
+	defer os.RemoveAll(RelativeTmpTestDir)
+
+	filepath1 := RelativeTmpTestDir + "/realfile.txt"
+	filepath2 := RelativeTmpTestDir + "/good_symlink.txt"
+	filepath3 := RelativeTmpTestDir + "/dangling_symlink.txt"
+
+	// create files
+	content := []byte("Hello world!\n")
+	sechubUtil.CreateTestFile(filepath1, 0644, content, t)
+	sechubUtil.CreateTestSymlink(filepath2, 0644, "realfile.txt", t)
+	sechubUtil.CreateTestSymlink(filepath3, 0644, "doesnotexist.txt", t)
+
+	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+	newZipFile, _ := os.Create(zipfilepath)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName:        zipfilepath,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{RelativeTmpTestDir},
+		SourceCodePatterns: []string{".txt"},
+	}
+
+	/* execute */
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
+
+	/* test */
+	sechubUtil.Check(err, t)
+
+	list := readContentOfZipFileTest(zipfilepath, t)
+
+	sechubUtil.AssertContains(list, filepath1, t)
+	// None of the symlinks must be in the zip file
+	sechubUtil.AssertContainsNot(list, filepath2, t)
+	sechubUtil.AssertContainsNot(list, filepath3, t)
+}
+
+
 /* -------------------------------------*/
 /* --------- Helpers -------------------*/
 /* -------------------------------------*/
