@@ -357,7 +357,7 @@ public class TestAPI {
 
     public static TestSecHubJobStatus getSecHubJobStatus(TestProject project, UUID jobUUID, TestUser asUser) {
         String status = as(asUser).getJobStatus(project.getProjectId(), jobUUID);
-        LOG.info(">>>>>>>>>JOB:STATUS:" + status);
+        LOG.info(" => Job status: {}", status);
         TestSecHubJobStatus jobStatus = TestSecHubJobStatus.fromJSON(status);
         return jobStatus;
     }
@@ -443,12 +443,10 @@ public class TestAPI {
         LOG.info("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
                 timeOutInSeconds);
 
-        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("STARTED");
+                return containsStatus(getUser(), project, jobUUID, "STARTED");
             }
         });
     }
@@ -465,11 +463,22 @@ public class TestAPI {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("CANCEL_REQUESTED") || status.contains("CANCELED");
+                return containsStatus(getUser(), project, jobUUID, "CANCEL_REQUESTED", "CANCELED");
             }
         });
+    }
+
+    private static boolean containsStatus(TestUser user, TestProject project, UUID jobUUID, String... acceptedContainedStatus) {
+        String status = as(user).getJobStatus(project.getProjectId(), jobUUID);
+        LOG.info(">>>>>>>>>JOB:STATUS:" + status);
+
+        for (String accepted : acceptedContainedStatus) {
+            if (status.contains(accepted)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -489,9 +498,7 @@ public class TestAPI {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, runnable, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("CANCELED");
+                return containsStatus(getUser(), project, jobUUID, "CANCELED");
             }
         });
     }
@@ -505,13 +512,10 @@ public class TestAPI {
      */
     public static void waitForJobStatusSuspended(TestProject project, UUID jobUUID) {
         LOG.info("wait for job status is 'suspended'. project:{}, job:{}", project.getProjectId(), jobUUID);
-
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("SUSPENDED");
+                return containsStatus(getUser(), project, jobUUID, "SUSPENDED");
             }
         });
     }
@@ -528,9 +532,7 @@ public class TestAPI {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("FAILED");
+                return containsStatus(getUser(), project, jobUUID, "FAILED");
             }
         });
     }

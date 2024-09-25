@@ -7,13 +7,13 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SchedulerStrategyFactoryTest {
+class SchedulerStrategyProviderTest {
 
     private static final String FIRST_COME_FIRST_SERVE = "first-come-first-serve";
     private static final String ONLY_ONE_SCAN_PER_PROJECT = "only-one-scan-per-project-at-a-time";
     private static final String ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP = "only-one-scan-per-project-and-module-group";
 
-    private SchedulerStrategyFactory factoryToTest;
+    private SchedulerStrategyProvider factoryToTest;
     private FirstComeFirstServeSchedulerStrategy firstComeFirstServeStrategy;
     private OnlyOneScanPerProjectAtSameTimeStrategy onlyOneScanPerProjectStrategy;
     private OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy onlyOneScanPerProjectAndModuleGroupStrategy;
@@ -25,7 +25,7 @@ class SchedulerStrategyFactoryTest {
         onlyOneScanPerProjectStrategy = mock(OnlyOneScanPerProjectAtSameTimeStrategy.class);
         onlyOneScanPerProjectAndModuleGroupStrategy = mock(OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy.class);
 
-        factoryToTest = new SchedulerStrategyFactory();
+        factoryToTest = new SchedulerStrategyProvider();
 
         factoryToTest.firstComeFirstServeStrategy = firstComeFirstServeStrategy;
         factoryToTest.onlyOneScanPerProjectStrategy = onlyOneScanPerProjectStrategy;

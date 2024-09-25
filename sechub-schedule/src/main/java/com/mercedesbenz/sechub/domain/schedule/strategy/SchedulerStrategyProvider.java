@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
-public class SchedulerStrategyFactory {
+public class SchedulerStrategyProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SchedulerStrategyFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerStrategyProvider.class);
 
     @Autowired
     FirstComeFirstServeSchedulerStrategy firstComeFirstServeStrategy;

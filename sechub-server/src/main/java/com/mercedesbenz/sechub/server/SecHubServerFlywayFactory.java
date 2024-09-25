@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
@@ -24,7 +25,7 @@ public class SecHubServerFlywayFactory {
     private static final Logger LOG = LoggerFactory.getLogger(SecHubServerFlywayFactory.class);
 
     @Value("${sechub.migration.flyway.autorepair:true}")
-    @MustBeDocumented(value = "When enabled, flyway migration problems will be automatically repaired", scope = "migration")
+    @MustBeDocumented(value = "When enabled, flyway migration problems will be automatically repaired", scope = DocumentationScopeConstants.SCOPE_MIGRATION)
     boolean repairAutomatically;
 
     @Bean

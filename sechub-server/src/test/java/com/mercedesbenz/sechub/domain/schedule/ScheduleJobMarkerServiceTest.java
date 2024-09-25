@@ -14,14 +14,11 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
-import com.mercedesbenz.sechub.domain.schedule.strategy.FirstComeFirstServeSchedulerStrategy;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
+import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerNextJobResolver;
 
 public class ScheduleJobMarkerServiceTest {
 
     private SecHubJobRepository jobRepository;
-    private SchedulerStrategyFactory factory;
-    private FirstComeFirstServeSchedulerStrategy strategy;
 
     private ScheduleSecHubJob secHubJob;
 
@@ -29,49 +26,63 @@ public class ScheduleJobMarkerServiceTest {
 
     private ScheduleJobMarkerService serviceToTest;
 
+    private SchedulerNextJobResolver nextJobResolver;
+
     @Before
     public void before() throws Exception {
         serviceToTest = new ScheduleJobMarkerService();
-        factory = mock(SchedulerStrategyFactory.class);
-        strategy = mock(FirstComeFirstServeSchedulerStrategy.class);
         jobRepository = mock(SecHubJobRepository.class);
-
+        nextJobResolver = mock(SchedulerNextJobResolver.class);
         uuid = UUID.randomUUID();
 
         serviceToTest.jobRepository = jobRepository;
-        serviceToTest.schedulerStrategyFactory = factory;
-        strategy.jobRepository = jobRepository;
+        serviceToTest.nextJobResolver = nextJobResolver;
 
         secHubJob = mock(ScheduleSecHubJob.class);
 
-        when(factory.build()).thenReturn(strategy);
-        when(strategy.nextJobId()).thenReturn(uuid);
-        when(jobRepository.getJob(uuid)).thenReturn(Optional.of(secHubJob));
+        when(jobRepository.getJobWhenExecutable(uuid)).thenReturn(Optional.of(secHubJob));
     }
 
     @Test
-    public void markNextJobExecutedByThisPOD__calls_jobrepository_getjob_executed() throws Exception {
+    public void markNextJobExecutedByThisPOD__calls_nextJobResolver() throws Exception {
         /* execute */
         serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        verify(jobRepository).getJob(uuid);
+        verify(nextJobResolver).resolveNextJob();
     }
 
     @Test
-    public void markNextJobExecutedByThisPOD__updates_execution_state_to_started() throws Exception {
+    public void markNextJobExecutedByThisPOD__next_job_found_updates_execution_state_to_started() throws Exception {
         /* prepare */
+        when(nextJobResolver.resolveNextJob()).thenReturn(uuid);
         when(jobRepository.save(secHubJob)).thenReturn(secHubJob);
 
         /* execute */
         ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
+        verify(nextJobResolver).resolveNextJob();
+        verify(jobRepository).save(secHubJob);
 
         verify(secHubJob).setStarted(any());
         verify(secHubJob).setExecutionState(eq(ExecutionState.STARTED));
 
         assertEquals(secHubJob, result);
+    }
+
+    @Test
+    public void markNextJobExecutedByThisPOD__next_job_not_found() throws Exception {
+        /* prepare */
+        when(nextJobResolver.resolveNextJob()).thenReturn(null);
+
+        /* execute */
+        ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
+
+        /* test */
+        verify(nextJobResolver).resolveNextJob();
+        verifyNoInteractions(jobRepository);
+        assertEquals(null,result);
     }
 
 }

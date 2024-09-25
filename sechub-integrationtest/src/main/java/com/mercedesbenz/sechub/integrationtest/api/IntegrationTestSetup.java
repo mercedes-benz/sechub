@@ -30,7 +30,8 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import ch.qos.logback.classic.Level;
 
 public class IntegrationTestSetup implements TestRule {
-    // please keep this private static field at top - reason: initialize setup support as soon as possible...
+    // please keep this private static field at top - reason: initialize setup
+    // support as soon as possible...
     private static final LocalDeveloperFileSetupSupport support = LocalDeveloperFileSetupSupport.INSTANCE;
     public static final String SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.only.necessary4documentation";
     public static final String SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.never.necessary4documentation";
@@ -166,8 +167,7 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             } else {
-                integrationTestEnabled = support.isAlwaysSecHubIntegrationTestRunning()
-                        || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
+                integrationTestEnabled = support.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
                 if (!integrationTestEnabled) {
                     String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                             + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";

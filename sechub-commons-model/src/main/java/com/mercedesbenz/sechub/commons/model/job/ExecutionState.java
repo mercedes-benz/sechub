@@ -27,7 +27,11 @@ public enum ExecutionState {
 
     SUSPENDED("The job has been suspended and can be resumed by another SecHub instance"),
 
-    ENDED("Has ended - with failure or success");
+    RESUMING("A former suspended job is resuming"),
+
+    ENDED("Has ended - with failure or success"),
+
+    ;
 
     private String description;
 

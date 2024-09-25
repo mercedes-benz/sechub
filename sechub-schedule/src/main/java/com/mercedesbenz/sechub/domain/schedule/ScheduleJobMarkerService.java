@@ -21,8 +21,7 @@ import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategy;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
+import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerNextJobResolver;
 
 /**
  * This service is only responsible to mark next {@link ScheduleSecHubJob} to
@@ -41,9 +40,7 @@ public class ScheduleJobMarkerService {
     SecHubJobRepository jobRepository;
 
     @Autowired
-    SchedulerStrategyFactory schedulerStrategyFactory;
-
-    private SchedulerStrategy schedulerStrategy;
+    SchedulerNextJobResolver nextJobResolver;
 
     private ScheduleSecHubJobMessagesSupport jobMessageSupport = new ScheduleSecHubJobMessagesSupport();
 
@@ -54,27 +51,29 @@ public class ScheduleJobMarkerService {
     @Transactional
     public ScheduleSecHubJob markNextJobToExecuteByThisInstance() {
 
-        schedulerStrategy = schedulerStrategyFactory.build();
-
         if (LOG.isTraceEnabled()) {
             LOG.trace("Trigger execution of next job started");
         }
 
-        UUID nextJobId = schedulerStrategy.nextJobId();
+        UUID nextJobId = nextJobResolver.resolveNextJob();
         if (nextJobId == null) {
             return null;
         }
 
-        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJob(nextJobId);
+        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJobWhenExecutable(nextJobId);
         if (!secHubJobOptional.isPresent()) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("No job found.");
-            }
+            LOG.warn("Did not found job for next job UUID:{}", nextJobId);
             return null;
         }
         ScheduleSecHubJob secHubJob = secHubJobOptional.get();
-        secHubJob.setExecutionState(ExecutionState.STARTED);
-        secHubJob.setStarted(LocalDateTime.now());
+        ExecutionState state = secHubJob.getExecutionState();
+
+        if (ExecutionState.SUSPENDED.equals(state)) {
+            secHubJob.setExecutionState(ExecutionState.RESUMING);
+        } else {
+            secHubJob.setExecutionState(ExecutionState.STARTED);
+            secHubJob.setStarted(LocalDateTime.now());
+        }
         return jobRepository.save(secHubJob);
     }
 

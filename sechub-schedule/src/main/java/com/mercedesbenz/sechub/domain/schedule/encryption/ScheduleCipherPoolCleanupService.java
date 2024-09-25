@@ -40,7 +40,7 @@ public class ScheduleCipherPoolCleanupService {
     @UseCaseEncryptionCleanup(@Step(number = 1, name = "Schedule cipher pool data cleanup", description = DESCRIPTION))
     @UseCaseScheduleAutoCleanExecution(@Step(number = 3, name = "Schedule cipher pool data cleanup", description = DESCRIPTION))
     public void cleanupCipherPoolDataIfNecessaryAndPossible() {
-        LOG.debug("Encryption pool cleanup check");
+        LOG.trace("Encryption pool cleanup check");
 
         /* check clean up possible */
         if (outdatedEncryptionPoolSupport.isOutdatedEncryptionPoolPossibleInCluster()) {
@@ -74,11 +74,11 @@ public class ScheduleCipherPoolCleanupService {
     }
 
     private void startEncryptionCleanup(List<ScheduleCipherPoolData> allPoolData, ScheduleCipherPoolData latestPoolDataFromDatabase) {
-        LOG.debug("Encryption pool cleanup start");
+        LOG.trace("Encryption pool cleanup start");
 
         List<ScheduleCipherPoolData> poolDataToRemove = calculatePoolDataToRemove(allPoolData, latestPoolDataFromDatabase);
         if (poolDataToRemove.isEmpty()) {
-            LOG.debug("Found no pool data to remove");
+            LOG.trace("Found no pool data to remove");
             return;
         }
 
