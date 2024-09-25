@@ -237,7 +237,7 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 Instead of creating a json file to unmark false positives, you can also do this interactively:
 Go to the project directory containing `sechub.json` and run `sechub interactiveUnmarkFalsePositives`
 
-{sechub} client will download the current false posisitves list and interactively ask each entry: `"Do you want to remove this false positive?"`
+{sechub} client will download the current false positives list and interactively ask each entry: `"Do you want to remove this false positive?"`
 Your choices are:
 
 - `y` Yes - Unmark this false positive.
@@ -250,27 +250,16 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
-Read your report carefully and figure out which of the findings are "false positives" (FP).
-After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
-You should add an optional comment, describing your decision to mark this as FP.
-Select this file by the `-file` argument and start action `markFalsePositives`.
+Read your report carefully and decide which of the findings you consider as "false positives" (FP).
+
+Create a json file as described below and start action `markFalsePositives`.
 
 **Minimum call syntax**
 ----
 sechub -file ${json-file} markFalsePositives
 ----
 
-*Example JSON:*
-
-[source, json]
-----
-include::../shared/false-positives/false-positives-REST-API-content-example1.json[]
-----
-<1> api version
-<2> type - must be `falsePositiveJobDataList`
-<3> job-UUID of the report where the finding was
-<4> finding ID of finding in the report, which shall be marked as false positive
-<5> Comment (optional) describing the reason why this is a false positive
+include::../shared/false-positives/false-positives-howto-define-by-api.adoc[]
 
 IMPORTANT: `markFalsePositives` only adds new false positives. +
   Providing an empty list here does *NOT delete* the already declared false positives! +
@@ -281,23 +270,30 @@ TIP: See also <<interactiveMarkFalsePositives,interactiveMarkFalsePositives>> fo
 
 [[section-client-false-positives-unmark]]
 ===== unmarkFalsePositives
-Remove formerly defined false positives. +
+Remove formerly defined false positives.
+
 It works similar to `markFalsePositives`: Just define a JSON file, select the file by the `-file` argument and start
-action `unmarkFalsePositives`
+action `unmarkFalsePositives`.
 
 **Minimum call syntax**
 ----
 sechub -file ${json-file} unmarkFalsePositives
 ----
 
-*Example JSON:*
+The JSON scheme is identical to `markFalsePositives`
+
+Mandatory fields for unmarkFalsePositives: +
+- for jobData: `jobUUID` and `findingId` +
+- for projectData: `id`
+
+*Example JSON with both: jobData and projectData*
 
 [source, json]
 ----
-include::sechub_client_falsepositive_list_example_unmark.json[]
+include::sechub_client_falsepositive_list_example_unmark_jobData+projectData.json[]
 ----
 
-TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be much easier to use
+TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be easier to use
 
 
 ==== Configuration overview
@@ -327,8 +323,14 @@ In below table, there is an overview of what can be defined where.
 | server url | `-server` | `SECHUB_SERVER` | server
 | stop on yellow | `-stop-on-yellow`||
 | temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
+| trust all certificates || `SECHUB_TRUSTALL` |
 | user id | `-user` | `SECHUB_USERID` | user
 | web scan config ||| <<web-scan,webScan>>
+| DEV: debug http traffic || `SECHUB_DEBUG_HTTP` |
+| DEV: enable debugging || `SECHUB_DEBUG` |
+| DEV: ignore default excludes || `SECHUB_IGNORE_DEFAULT_EXCLUDES` |
+| DEV: initial wait interval || `SECHUB_INITIAL_WAIT_INTERVAL` |
+| DEV: keep temporary files || `SECHUB_KEEP_TEMPFILES` |
 |===
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 # creates project with user variable as owner and assign user to project using the sechub-api.sh

@@ -54,4 +54,11 @@ public interface JobStorage {
      */
     public Set<String> listNames() throws IOException;
 
+    /**
+     * Closes this storage - will cleanup resources etc. After this method is called
+     * no interaction with storage is allowed any longer. The close method itself
+     * can be called multiple times.
+     */
+    public void close();
+
 }

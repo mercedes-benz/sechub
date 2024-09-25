@@ -39,7 +39,7 @@ public class PDSUserMessageSupport {
 
         File file = new File(messageFolder, fileName);
 
-        writer.save(file, message.getText(), false);
+        writer.writeTextToFile(file, message.getText(), false);
     }
 
     private String createUniqueFileName(SecHubMessage message) {

@@ -57,15 +57,7 @@ public class ScanMappingConfigurationService {
         return getNamePatternIdProvider(identifier.getId());
     }
 
-    /**
-     * Get provider to resolve IDs by a given name. Deprecation: This method should
-     * NOT be used outside this package to avoid usage without mapping identifiers!
-     *
-     * @param namePatternMappingId
-     * @return provider, never <code>null</code>
-     */
-    @Deprecated
-    public NamePatternIdProvider getNamePatternIdProvider(String namePatternMappingId) {
+    NamePatternIdProvider getNamePatternIdProvider(String namePatternMappingId) {
         synchronized (providers) {
             NamePatternIdProvider provider = providers.get(namePatternMappingId);
             if (provider != null) {

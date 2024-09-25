@@ -66,7 +66,7 @@ class SystemTestLocalGoSecManualTest implements ManualTest {
         LOG.info("CONFIG : {}", configFile);
 
         TextFileReader reader = new TextFileReader();
-        String json = reader.loadTextFile(new File("./src/test/resources/"+configFile));
+        String json = reader.readTextFromFile(new File("./src/test/resources/"+configFile));
         SystemTestConfiguration config = JSONConverter.get().fromJSON(SystemTestConfiguration.class, json);
 
         TestEnvironmentProvider environmentProvider= TestConfigUtil.createEnvironmentProviderForSecrets() ;

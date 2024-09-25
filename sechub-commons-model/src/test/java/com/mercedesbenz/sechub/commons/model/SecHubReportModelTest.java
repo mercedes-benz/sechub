@@ -33,7 +33,7 @@ class SecHubReportModelTest {
     @Test
     void sechub_example_result_7_can_be_loaded_and_transformed_from_json() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport7-secret-scan-with-revision-data-and-metadata.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/report/sechub-testreport7-secret-scan-with-revision-data-and-metadata.json");
 
         /* execute 1 - read */
         SecHubReportModel model = SecHubReportModel.fromJSONString(json);
@@ -60,7 +60,7 @@ class SecHubReportModelTest {
     @Test
     void sechub_example_result_6_can_be_loaded_and_transformed_from_json() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport6-secret-scan-with-revision-data.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/report/sechub-testreport6-secret-scan-with-revision-data.json");
 
         /* execute */
         SecHubReportModel model = SecHubReportModel.fromJSONString(json);
@@ -80,7 +80,7 @@ class SecHubReportModelTest {
     @Test
     void sechub_example_result_5_can_be_loaded_and_transformed_from_json() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport5-version-control-data.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/report/sechub-testreport5-version-control-data.json");
 
         /* execute */
         SecHubReportModel result = SecHubReportModel.fromJSONString(json);
@@ -96,7 +96,7 @@ class SecHubReportModelTest {
     @Test
     void sechub_example_result_4_can_be_loaded_and_transformed_from_json() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/report/sechub-testreport4-multiple-web-findings.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/report/sechub-testreport4-multiple-web-findings.json");
 
         /* execute */
         SecHubReportModel result = SecHubReportModel.fromJSONString(json);
@@ -108,7 +108,7 @@ class SecHubReportModelTest {
     @Test
     void a_report_without_status_and_messages_can_be_read_and_when_traffic_light_is_red_status_is_failed() {
         /* prepare */
-        String jsonNoStatusOrMessages = TestFileReader.loadTextFile(new File("./src/test/resources/report/sechub-testreport3.json"), "\n");
+        String jsonNoStatusOrMessages = TestFileReader.readTextFromFile(new File("./src/test/resources/report/sechub-testreport3.json"), "\n");
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonNoStatusOrMessages);
@@ -126,7 +126,7 @@ class SecHubReportModelTest {
     @Test
     void a_report_without_status_and_messages_can_be_read_and_when_traffic_light_is_green_status_is_ok() {
         /* prepare */
-        String jsonNoStatusOrMessages = TestFileReader.loadTextFile(new File("./src/test/resources/report/sechub-testreport1.json"), "\n");
+        String jsonNoStatusOrMessages = TestFileReader.readTextFromFile(new File("./src/test/resources/report/sechub-testreport1.json"), "\n");
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonNoStatusOrMessages);
@@ -144,7 +144,7 @@ class SecHubReportModelTest {
     @Test
     void a_report_with_status_failed_and_messages_can_be_read() {
         /* prepare */
-        String jsonWithStatusAndMessages = TestFileReader.loadTextFile(new File("./src/test/resources/report/sechub-testreport2.json"), "\n");
+        String jsonWithStatusAndMessages = TestFileReader.readTextFromFile(new File("./src/test/resources/report/sechub-testreport2.json"), "\n");
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonWithStatusAndMessages);

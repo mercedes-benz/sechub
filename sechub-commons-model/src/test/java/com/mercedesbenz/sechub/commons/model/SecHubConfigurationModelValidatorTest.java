@@ -1370,7 +1370,7 @@ class SecHubConfigurationModelValidatorTest {
     @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_no_intersection_of_urls_of_same_header.json" })
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_has_no_errors(String testFilePath) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(testFilePath);
+        String json = TestFileReader.readTextFromFile(testFilePath);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1388,7 +1388,7 @@ class SecHubConfigurationModelValidatorTest {
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_have_no_intersections_with_lower_and_upper_cases_has_no_errors(
             String testFilePath) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(testFilePath);
+        String json = TestFileReader.readTextFromFile(testFilePath);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1404,7 +1404,7 @@ class SecHubConfigurationModelValidatorTest {
     @ValueSource(strings = { "src/test/resources/sechub_config_web_scan_default_and_explicit_definitions_for_urls_for_header.json" })
     void default_for_a_header_with_explicit_definitions_for_the_same_header_for_certain_urls_has_no_errors(String testFilePath) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(testFilePath);
+        String json = TestFileReader.readTextFromFile(testFilePath);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1421,7 +1421,7 @@ class SecHubConfigurationModelValidatorTest {
             "src/test/resources/sechub_config_web_scan_duplicated_default_with_upper_case.json" })
     void duplicated_default_for_the_same_header_has_error(String testFilePath) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(testFilePath);
+        String json = TestFileReader.readTextFromFile(testFilePath);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1438,7 +1438,7 @@ class SecHubConfigurationModelValidatorTest {
             "src/test/resources/sechub_config_web_scan_intersection_of_urls_of_same_header_missing_slash.json" })
     void explicit_definitions_for_the_same_header_for_certain_urls_but_list_of_urls_do_have_intersections_has_error(String testFilePath) {
         /* prepare */
-        String json = TestFileReader.loadTextFile(testFilePath);
+        String json = TestFileReader.readTextFromFile(testFilePath);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1577,7 +1577,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void can_read_sechub_web_scan_config_with_wildcards() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_config_web_scan_includes_excludes_with_wildcards.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_config_web_scan_includes_excludes_with_wildcards.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
@@ -1619,7 +1619,7 @@ class SecHubConfigurationModelValidatorTest {
     @ValueSource(strings = { "src/test/resources/sechub_remote_data_config_binary_code_scan_example.json",
             "src/test/resources/sechub_remote_data_config_source_code_scan_example.json" })
     void when_remote_sechub_configuration_is_valid_no_errors_are_reported(String file) {
-        String json = TestFileReader.loadTextFile(file);
+        String json = TestFileReader.readTextFromFile(file);
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1633,7 +1633,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_multiple_remote_configurations_are_configured_error_REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_multi_config.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_multi_config.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1648,7 +1648,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_configuration_location_is_not_defined_error_REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_missing_location.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_missing_location.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1663,7 +1663,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_configuration_has_empty_credentials_error_REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_credentials_empty.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_credentials_empty.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1678,7 +1678,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_configuration_credential_user_has_no_username_error_REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_username.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_username.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1693,7 +1693,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_configuration_credential_user_has_no_password_error_REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_password.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_user_credential_missing_password.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1708,7 +1708,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_configuration_is_mixed_with_filesystem_REMOTE_REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_config_with_filesystem.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_config_with_filesystem.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 
@@ -1723,7 +1723,7 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void when_remote_data_is_configured_for_binaries_and_sources_error() {
         /* prepare */
-        String json = TestFileReader.loadTextFile("src/test/resources/sechub_remote_data_config_invalid_source_and_binaries.json");
+        String json = TestFileReader.readTextFromFile("src/test/resources/sechub_remote_data_config_invalid_source_and_binaries.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
 

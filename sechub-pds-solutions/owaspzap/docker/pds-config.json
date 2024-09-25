@@ -69,11 +69,18 @@
             "default": 1000
           }
         ]
-      }
+      },
+      "envWhitelist": [
+        "TOOL_FOLDER",
+        "ZAP_API_KEY",
+        "ZAP_HOST",
+        "ZAP_PORT"
+      ]
     },
     {
       "id": "PDS_OWASP_ZAP_MOCK",
       "path": "/pds/scripts/owasp-zap-mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
       "scanType": "webScan",
       "description": "Runs OWASP ZAP mock",
       "parameters": {

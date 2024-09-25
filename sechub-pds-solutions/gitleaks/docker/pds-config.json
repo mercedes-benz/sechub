@@ -21,7 +21,16 @@
             "default": true
           }
         ]
-      }
+      },
+      "envWhitelist": [
+        "SCRIPT_FOLDER",
+        "SECRET_VALIDATOR_ENABLED",
+        "SECRET_VALIDATOR_MAXIMUMRETRIES",
+        "SECRET_VALIDATOR_PROXY_HOST",
+        "SECRET_VALIDATOR_PROXY_PORT",
+        "SECRET_VALIDATOR_TIMEOUTSECONDS",
+        "TOOL_FOLDER"
+      ]
     },
     {
       "id": "PDS_GITLEAKS_MOCK",
@@ -42,7 +51,8 @@
             "default": true
           }
         ]
-      }
+      },
+      "envWhitelist" : [ "MOCK_FOLDER", "SCRIPT_FOLDER" ]
     }
   ]
 }

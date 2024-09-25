@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.developertools.admin.ui.action;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
@@ -212,6 +213,17 @@ public abstract class AbstractUIAction extends AbstractAction {
             inputCache.set(identifier, x.get());
         }
         return x;
+    }
+
+    /**
+     * Shows an input dialog for selecting one of given types
+     *
+     * @param title
+     * @param text
+     * @return
+     */
+    protected <T> Optional<T> getUserInputFromCombobox(String title, T initialValue, String message, @SuppressWarnings({ "unchecked" }) T... identifier) {
+        return getContext().getDialogUI().getUserInputFromCombobox(message, title, Arrays.asList(identifier), initialValue);
     }
 
     /**

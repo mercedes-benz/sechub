@@ -51,6 +51,7 @@ function showHelp () {
     echo "Usage: Usage sdc"
     echo " Option s: "                                  
     echo "  -f,   --format-all                          : format all source code files"
+    echo "  -sd,  --show-directory-to-project-root      : shows directory to sechub project root directory"
     echo ""                           
     echo "  -b,   --build-full                          : full build"
     echo "  -bpt, --build-pds-tools                     : build pds tools"
@@ -149,6 +150,10 @@ do
     case $key in
         -f|--format-all)
         FORMAT_CODE_ALL="YES"
+        shift # past argument
+        ;;
+        -sd|--show-directory-to-project-root)
+        SHOW_DIRECTORY_TO_PROJECT_ROOT="YES"
         shift # past argument
         ;;
         -r|--report-combined)
@@ -258,7 +263,9 @@ if [[ "$HELP" = "YES" ]]; then
 fi
 
 function cleanOldReportData() {
+  if [ -f ./sechub_report_*.json ]; then
     rm ./sechub_report_*.json -f
+  fi
 }
 
 
@@ -298,6 +305,11 @@ fi
 if [[ "$CLEAN_REPORTS" = "YES" ]]; then
     startJob "Clean all reports"
     cleanOldReportData
+fi
+if [[ "$SHOW_DIRECTORY_TO_PROJECT_ROOT" = "YES" ]]; then
+    startJob "Show directory of SecHub project root"
+    echo "$SECHUB_ROOT_DIR"
+    exit 0
 fi
 
 if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then

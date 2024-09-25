@@ -141,7 +141,7 @@ COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 
 #-------------------
 # SecHub Server Image
@@ -182,6 +182,7 @@ RUN chmod +x /run.sh
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
+    apt-get install --assume-yes curl netcat-openbsd && \
     apt-get clean
 
 COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"

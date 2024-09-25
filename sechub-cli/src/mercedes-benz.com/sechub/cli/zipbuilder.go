@@ -66,6 +66,7 @@ func createSouceCodeZipFile(context *Context) error {
 			}
 		}
 	} else {
+		os.Remove(context.sourceZipFileName)
 		context.sourceZipUploadNeeded = false
 		sechubUtil.LogNotice(sechubUtil.ZipFileNotCreated)
 	}

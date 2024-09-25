@@ -13,7 +13,7 @@ public enum MessageID {
     START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_JOB_UUID,
 	            MessageDataKeys.EXECUTED_BY,
-	            MessageDataKeys.SECHUB_CONFIG),
+	            MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG),
 	/* @formatter:on */
 
     /**
@@ -199,6 +199,28 @@ public enum MessageID {
     SOURCE_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
 
     BINARY_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
+
+    /**
+     * This message will be send when an administrator defines new encryption data
+     */
+    START_ENCRYPTION_ROTATION(MessageDataKeys.SECHUB_ENCRYPT_ROTATION_DATA, MessageDataKeys.EXECUTED_BY),
+
+    /**
+     * Event is sent when a scheduler instance creates or recreates its encryption
+     * pool
+     */
+    SCHEDULE_ENCRYPTION_POOL_INITIALIZED,
+
+    /**
+     * Is send/received synchronous
+     */
+    GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN,
+
+    /**
+     * Contains result for encryption status request by
+     * {@link #GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN}
+     */
+    RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN(MessageDataKeys.SECHUB_DOMAIN_ENCRYPTION_STATUS),
 
     ;
 

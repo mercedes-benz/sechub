@@ -64,7 +64,7 @@ public class ProductExecutorConfigRestController {
 				name="Rest call",
 				needsRestDoc=true,
 				description="Administrator adds a new product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor", method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "executor", method = RequestMethod.POST, produces= {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public String addProductExecutorConfig(@RequestBody ProductExecutorConfig configFromUser) {
 	    return createService.createProductExecutorConfig(configFromUser);
@@ -105,10 +105,10 @@ public class ProductExecutorConfigRestController {
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information"))
+	                description="Administrator fetches list of existing product executor configurations by calling REST API, will not contain setup information"))
 	@RequestMapping(path = "executors", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfigList fechProductExecutorConfiguraitonsAsList() {
+	public ProductExecutorConfigList fetchProductExecutorConfigurationsAsList() {
 	    return fetchListService.fetchProductExecutorConfigList();
 	    /* @formatter:on */
     }
@@ -122,7 +122,7 @@ public class ProductExecutorConfigRestController {
 	                description="Administrator fetches setup of an existing product executor configuration by calling REST API"))
 	@RequestMapping(path = "executor/{uuid}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfig fechProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid) {
+	public ProductExecutorConfig fetchProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid) {
 	    return fetchService.fetchProductExecutorConfig(uuid);
 	    /* @formatter:on */
     }

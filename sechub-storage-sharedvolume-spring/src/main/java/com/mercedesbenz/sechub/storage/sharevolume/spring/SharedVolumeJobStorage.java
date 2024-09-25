@@ -23,9 +23,12 @@ import com.mercedesbenz.sechub.storage.core.StorageException;
 public class SharedVolumeJobStorage implements JobStorage {
 
     private static final Logger LOG = LoggerFactory.getLogger(SharedVolumeJobStorage.class);
+
     private String storagePath;
     private UUID jobUUID;
     private Path volumePath;
+
+    private boolean closed;
 
     public SharedVolumeJobStorage(Path rootLocation, String storagePath, UUID jobUUID) {
         requireNonNull(rootLocation, "rootLocation may not be null");
@@ -40,6 +43,10 @@ public class SharedVolumeJobStorage implements JobStorage {
 
     @Override
     public InputStream fetch(String name) throws IOException {
+        LOG.debug("Fetch '{}' from volumePath: {}", name, volumePath);
+
+        assertNotClosed();
+
         try {
             Path path = getPathToFile(name);
             if (path == null) {
@@ -61,6 +68,8 @@ public class SharedVolumeJobStorage implements JobStorage {
         requireNonNull(name, "name may not be null!");
         requireNonNull(stream, "stream may not be null!");
 
+        assertNotClosed();
+
         if (name.contains("..")) {
             // This is a security check
             throw new StorageException("Cannot store file with relative path outside current directory: " + name);
@@ -79,13 +88,16 @@ public class SharedVolumeJobStorage implements JobStorage {
         try (InputStream inputStream = stream) {
             Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
 
-            LOG.debug("Stored:{} at {}", name, pathToFile);
+            LOG.debug("Stored: {} at {}", name, pathToFile);
         } catch (Exception e) {
             throw new IOException("Was not able to store input stream into file: " + pathToFile, e);
         }
     }
 
     public void deleteAll() throws IOException {
+
+        assertNotClosed();
+
         try {
             if (Files.notExists(volumePath)) {
                 return;
@@ -100,22 +112,40 @@ public class SharedVolumeJobStorage implements JobStorage {
     }
 
     public boolean isExisting(String fileName) {
+        assertNotClosed();
+
         return getPathToFile(fileName).toFile().exists();
     }
 
     @Override
     public Set<String> listNames() throws IOException {
+
+        assertNotClosed();
+
+        LOG.debug("start listNames for volumePath: {}", volumePath);
+
         try {
             Set<String> names = new LinkedHashSet<>();
             if (Files.notExists(volumePath)) {
                 Files.createDirectories(volumePath);
             }
+
             Files.list(volumePath).forEach(child -> names.add(child.getFileName().toString()));
+
+            LOG.debug("listNames for volumePath: {} found: {}", volumePath, names);
 
             return names;
         } catch (Exception e) {
             throw new IOException("Was not able to list names for: " + volumePath, e);
         }
+    }
+
+    @Override
+    public void close() {
+        if (closed) {
+            return;
+        }
+        this.closed = true;
     }
 
     @Override
@@ -127,4 +157,12 @@ public class SharedVolumeJobStorage implements JobStorage {
         requireNonNull(fileName, "fileName may not be null!");
         return this.volumePath.resolve(fileName);
     }
+
+    private void assertNotClosed() {
+        if (closed) {
+            throw new IllegalStateException("job storage already closed!");
+        }
+
+    }
+
 }

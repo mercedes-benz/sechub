@@ -40,7 +40,7 @@ public class AnonymousSignupRestController {
 	@UseCaseUserSignup(@Step(number=1, name="Rest API call",description="Rest api called to register user. Normally done by user itself",needsRestDoc=true))
 	@Validated
 	@RequestMapping(path = AdministrationAPIConstants.API_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public void registerUser(@RequestBody @Valid SignupJsonInput signupInput) {
+	public void signUp(@RequestBody @Valid SignupJsonInput signupInput) {
 		/* @formatter:on */
         signupService.register(signupInput);
     }

@@ -11,7 +11,7 @@ dependencies{
     api spring_boot_dependency.jackson_datatype_jsr310
     
     api project(':sechub-commons-core')
-    
+
     testImplementation project(':sechub-testframework')
     testImplementation spring_boot_dependency.junit_jupiter
     

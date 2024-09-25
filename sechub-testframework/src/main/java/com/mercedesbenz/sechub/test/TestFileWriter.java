@@ -11,19 +11,31 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A class to write test files. Will always use UTF-8 for text files. This class
+ * may only be used by tests!
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class TestFileWriter {
 
+    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
     private static final Logger LOG = LoggerFactory.getLogger(TestFileWriter.class);
 
-    public void save(String text, File targetFile, Charset charset) throws IOException {
-        internalSave(targetFile, text, true, charset);
+    public void write(File targetFile, String text) throws IOException {
+        writeTextToFile(targetFile, text, false);
     }
 
-    public void save(File targetFile, String text, boolean overwrite) throws IOException {
-        internalSave(targetFile, text, overwrite, Charset.forName("UTF-8"));
+    public void writeTextToFile(String text, File targetFile, Charset charset) throws IOException {
+        internalWriteTextToFile(targetFile, text, true, charset);
     }
 
-    private void internalSave(File targetFile, String text, boolean overwrite, Charset charset) throws IOException {
+    public void writeTextToFile(File targetFile, String text, boolean overwrite) throws IOException {
+        internalWriteTextToFile(targetFile, text, overwrite, CHARSET_UTF_8);
+    }
+
+    private void internalWriteTextToFile(File targetFile, String text, boolean overwrite, Charset charset) throws IOException {
         if (targetFile == null) {
             throw new IllegalArgumentException("null not allowed as file!");
         }

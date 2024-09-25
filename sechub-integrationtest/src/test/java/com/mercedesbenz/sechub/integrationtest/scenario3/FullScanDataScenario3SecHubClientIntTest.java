@@ -44,6 +44,8 @@ public class FullScanDataScenario3SecHubClientIntTest {
     @Test
     public void product_failure_results_in_downloadable_scan_log() throws IOException {
         /* check preconditions */
+        UUID netsparkerConfigUUID = ensureExecutorConfigUUID(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
+
         assertUser(USER_1).isAssignedToProject(PROJECT_1).hasOwnerRole().hasUserRole();
 
         as(SUPER_ADMIN).updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://netsparker.productfailure.demo.example.org"));
@@ -60,11 +62,11 @@ public class FullScanDataScenario3SecHubClientIntTest {
         /* test @formatter:off*/
         AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
 
-        String netsparkerFileName = "NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".txt"; //.txt because just empty text for failed parts
+        String netsparkerFileName = "NETSPARKER_"+netsparkerConfigUUID+".txt"; //.txt because just empty text for failed parts
         assertFullScanData.
 		    dumpDownloadFilePath().
 		    containsFile(netsparkerFileName).
-		    containsFile("metadata_NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".json").
+		    containsFile("metadata_NETSPARKER_"+netsparkerConfigUUID+".json").
 		    containsFile("SERECO.json").
 			containsFile("metadata_SERECO.json").
 		    containsFiles(5);
@@ -79,6 +81,8 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
     @Test
     public void user_1_starts_job_but_only_admin_can_download_scanlog_or_fullscan_data() throws IOException {
+        UUID checkmarxConfigUUID = ensureExecutorConfigUUID(IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1);
+
         /* prepare - just execute a job */
         TestUser user = USER_1;
         TestProject project = PROJECT_1;
@@ -87,7 +91,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
-        /* exeucte (1) - admin can download scan logs */
+        /* execute (1) - admin can download scan logs */
         String json = as(SUPER_ADMIN).getScanLogsForProject(project);
 
         /* test */
@@ -104,22 +108,21 @@ public class FullScanDataScenario3SecHubClientIntTest {
         /* test @formatter:off*/
         assertFullScanData.
             dumpDownloadFilePath().
-            containsFile("CHECKMARX_"+IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid+".xml").
-            containsFile("metadata_CHECKMARX_" +IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid+".json").
+            containsFile("CHECKMARX_"+checkmarxConfigUUID+".xml").
+            containsFile("metadata_CHECKMARX_" +checkmarxConfigUUID+".json").
             containsFile("metadata_SERECO.json").
             containsFile("SERECO.json").
             containsFiles(5);
+        /* @formatter:on*/
 
         FullScanDataElement log = assertFullScanData.resolveFileStartingWith("log_");
         assertTrue(log.content.contains("executedBy=" + user.getUserId()));
         assertTrue(log.content.contains("projectId=" + project.getProjectId()));
 
-
-        /* execute (3) + test - user cannot donload logs or full scan data*/
+        /* execute (3) + test - user cannot donload logs or full scan data */
         expectHttpFailure(() -> as(user).getScanLogsForProject(project), HttpStatus.FORBIDDEN);
         expectHttpFailure(() -> as(user).downloadFullScanDataFor(sechubJobUUID), HttpStatus.FORBIDDEN);
 
-        /* execute */
     }
 
 }

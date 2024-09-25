@@ -37,10 +37,10 @@ jobs:
           echo "pds-version '${{ inputs.pds-version }}'"
 
       - name: Checkout git repository
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -68,8 +68,10 @@ jobs:
           export OWASPZAP_VERSION
           export OWASPZAP_SHA256SUM
           export OWASPZAP_WRAPPER_VERSION
+          export PREPARE_WRAPPER_VERSION
           export PMD_VERSION
           export SCANCODE_VERSION
+          export SECRETVALIDATION_WRAPPER_VERSION
           export SPDX_TOOL_VERSION
           export TERN_VERSION
           export XRAY_WRAPPER_VERSION

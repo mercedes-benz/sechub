@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import static com.mercedesbenz.sechub.commons.model.job.ExecutionState.*;
 import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -13,12 +14,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +47,8 @@ import com.mercedesbenz.sechub.test.TestUtil;
 @ContextConfiguration(classes = { SecHubJobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
 public class SecHubJobRepositoryDBTest {
 
+    private static final Set<Long> FIRST_ENCRYPTION_POOL_ENTRY_ONLY = Set.of(0L);
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -50,6 +60,208 @@ public class SecHubJobRepositoryDBTest {
     @BeforeEach
     void before() {
         jobCreator = jobCreator("p0", entityManager);
+    }
+
+    @Test
+    void collectAllUsedEncryptionPoolIdsInsideJobs_no_jobs_found() {
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @ParameterizedTest
+    @EnumSource(ExecutionState.class)
+    void collectAllUsedEncryptionPoolIdsInsideJobs_only_two_jobs_found_same_poolid(ExecutionState stateOfJob) {
+        /* prepare */
+        int poolId = 1234;
+        createJobUsingEncryptionPoolId(poolId, stateOfJob);
+        createJobUsingEncryptionPoolId(poolId, stateOfJob);
+
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().hasSize(1);
+        Long value = result.iterator().next();
+
+        assertThat(value).isEqualTo(poolId);
+    }
+
+    @Test
+    void collectAllUsedEncryptionPoolIdsInsideJobs_multiple_jobs_mixed_poolids() {
+        /* prepare */
+        createJobUsingEncryptionPoolId(0, ExecutionState.INITIALIZING);
+        createJobUsingEncryptionPoolId(1, ExecutionState.READY_TO_START);
+        createJobUsingEncryptionPoolId(1, ExecutionState.CANCEL_REQUESTED);
+        createJobUsingEncryptionPoolId(3, ExecutionState.ENDED);
+        createJobUsingEncryptionPoolId(176, ExecutionState.STARTED);
+        createJobUsingEncryptionPoolId(176, ExecutionState.CANCELED);
+
+        /* execute */
+        List<Long> result = jobRepository.collectAllUsedEncryptionPoolIdsInsideJobs();
+
+        /* test */
+        assertThat(result).isNotNull().hasSize(4).contains(0L, 1L, 3L, 176L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 10 })
+    void countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_works_as_expected(int expectedResultCount) {
+        /* prepare */
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+
+        // generate data
+        if (expectedResultCount > 0) {
+            jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        }
+        if (expectedResultCount > 1) {
+            for (int i = 1; i < expectedResultCount; i++) {
+                jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+            }
+        }
+
+        /* execute */
+        long result = jobRepository.countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L);
+
+        /* test */
+        assertEquals(result, expectedResultCount);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 4 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_only_single_entry_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4)); // only this, because others are in wrong state
+        assertEquals(1, list.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 4 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_is_lower_ended_only_single_entry_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(0L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(2L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(3L).being(ExecutionState.ENDED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(1, newJob2.getEncryptionCipherPoolId());
+        assertEquals(1, newJob3.getEncryptionCipherPoolId());
+        assertEquals(2, newJob4.getEncryptionCipherPoolId());
+        assertEquals(3, newJob5.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob1)); // only this, because others are already with higher pool id
+        assertEquals(1, list.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 2, 10, 100 })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_one_canceled_entries_always_returned(int amount) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+        assertEquals(0, newJob6.getEncryptionCipherPoolId());
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, amount);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4));
+        assertTrue(list.contains(newJob6));
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_randomization_works() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+
+        // check preconditions
+        assertEquals(0, newJob1.getEncryptionCipherPoolId());
+        assertEquals(0, newJob2.getEncryptionCipherPoolId());
+        assertEquals(0, newJob3.getEncryptionCipherPoolId());
+        assertEquals(0, newJob4.getEncryptionCipherPoolId());
+        assertEquals(0, newJob5.getEncryptionCipherPoolId());
+        assertEquals(0, newJob6.getEncryptionCipherPoolId());
+
+        Map<UUID, AtomicInteger> map = new LinkedHashMap<>();
+
+        /* execute */
+        for (int i = 0; i < 30; i++) {
+            List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 1);
+            for (ScheduleSecHubJob job : list) {
+                AtomicInteger atomic = map.computeIfAbsent(job.getUUID(), (uuid) -> new AtomicInteger(0));
+                atomic.incrementAndGet();
+            }
+        }
+
+        /* test */
+        assertEquals(6, map.size()); // when calling n times, we expect every entry is contained
+        System.out.println("map:" + map);
+
+    }
+
+    @Test
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_2_entries_always_returned() {
+        /* prepare */
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 10);
+
+        /* test */
+        assertFalse(list.isEmpty());
+        assertTrue(list.contains(newJob4));
     }
 
     @Test
@@ -113,7 +325,6 @@ public class SecHubJobRepositoryDBTest {
 
         assertEquals(ended, job1Loaded.get().getEnded());
         assertEquals(ended, job2Loaded.get().getEnded());
-
     }
 
     @Test
@@ -417,17 +628,13 @@ public class SecHubJobRepositoryDBTest {
         assertNull(result);
     }
 
-    private ScheduleSecHubJobData findDataOrNullByJobUUID(String key, UUID jobUUID) {
-        return entityManager.find(ScheduleSecHubJobData.class, new ScheduleSecHubJobDataId(jobUUID, key));
-    }
-
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {
         /* prepare */
         ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -440,7 +647,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted(Set.of(0L));
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -459,7 +666,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob3.created.isAfter(newJob2.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted(Set.of(0L));
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -478,7 +685,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob3.created.isAfter(newJob2.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -497,7 +704,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob3.created.isAfter(newJob2.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -518,7 +725,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob4.created.isAfter(newJob3.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -539,7 +746,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob4.created.isAfter(newJob3.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -560,7 +767,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob4.created.isAfter(newJob3.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -585,7 +792,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(newJob6.created.isAfter(newJob5.created));
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -598,7 +805,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
-        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteFirstInFirstOut();
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
 
         /* test */
         assertTrue(uuid.isPresent());
@@ -782,7 +989,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void findNextJobToExecute__and_no_jobs_available_at_all_null_is_returned_when_existing() {
 
-        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut().isPresent());
+        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY).isPresent());
     }
 
     @Test
@@ -791,7 +998,7 @@ public class SecHubJobRepositoryDBTest {
         jobCreator.newJob().being(STARTED).create();
 
         /* execute + test */
-        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut().isPresent());
+        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY).isPresent());
 
     }
 
@@ -814,14 +1021,208 @@ public class SecHubJobRepositoryDBTest {
                    newJob().being(READY_TO_START).create();
 
         /* execute */
-        Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut();
+        Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
         assertTrue(optional.isPresent());
 
         UUID jobUUID = optional.get();
 
         /* test @formatter:on*/
-        assertNotNull(jobUUID);
+        assertThat(jobUUID).isNotNull();
         assertEquals(expectedNextJob.getUUID(), jobUUID);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(NextJobIdToExecuteWithEncryptionPoolTestDataArgumentProvider.class)
+    void nextJobIdToExecuteForProjectNotYetExecuted_2_projects_1_project_running(Set<Long> currentEncryptionPoolIds, TestResultVariant expectedVariant) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3p0 = jobCreator.project("p2").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3p1 = jobCreator.project("p2").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3p2 = jobCreator.project("p2").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3p3 = jobCreator.project("p2").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3p0.created.isAfter(newJob2.created));
+
+        /* execute */
+        Optional<UUID> optional = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted(currentEncryptionPoolIds);
+        if (expectedVariant == null || TestResultVariant.NONE.equals(expectedVariant)) {
+            assertFalse(optional.isPresent());
+            return;
+        }
+        assertTrue(optional.isPresent());
+
+        UUID jobUUID = optional.get();
+
+        /* test @formatter:on*/
+        assertThat(jobUUID).isNotNull();
+        switch (expectedVariant) {
+        case POOL_ID_0:
+            assertThat(jobUUID).isEqualTo(newJob3p0.getUUID());
+            break;
+        case POOL_ID_1:
+            assertThat(jobUUID).isEqualTo(newJob3p1.getUUID());
+            break;
+        case POOL_ID_2:
+            assertThat(jobUUID).isEqualTo(newJob3p2.getUUID());
+            break;
+        case POOL_ID_3:
+            assertThat(jobUUID).isEqualTo(newJob3p3.getUUID());
+            break;
+        default:
+            throw new IllegalStateException("not implemented for variant: " + expectedVariant);
+
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(NextJobIdToExecuteWithEncryptionPoolTestDataArgumentProvider.class)
+    void nextJobIdToExecuteFirstInFirstOut__the_job_with_has_supported_encryption_in_state_READY_TO_START_multi_poolids(Set<Long> currentEncryptionPoolIds,
+            TestResultVariant expectedVariant) {
+        /* prepare @formatter:off*/
+
+        jobCreator.newJob().being(STARTED).createAnd().
+        newJob().being(CANCEL_REQUESTED).createAnd().
+        newJob().being(CANCELED).createAnd().
+        newJob().being(ENDED).create();
+        ScheduleSecHubJob expectedNextJobWhenPoolId0Supported =
+                jobCreator.newJob().encryptionPoolId(0L).being(READY_TO_START).create();
+        ScheduleSecHubJob expectedNextJobWhenPoolId1Supported =
+                jobCreator.newJob().encryptionPoolId(1L).being(READY_TO_START).create();
+        ScheduleSecHubJob expectedNextJobWhenPoolId2Supported =
+                jobCreator.newJob().being(READY_TO_START).encryptionPoolId(2L).create();
+        ScheduleSecHubJob expectedNextJobWhenPoolId3Supported =
+                jobCreator.newJob().being(READY_TO_START).encryptionPoolId(3L).create();
+
+        TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
+
+
+        jobCreator.newJob().being(STARTED).createAnd().
+        newJob().being(READY_TO_START).create();
+
+        /* execute */
+        Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut(currentEncryptionPoolIds);
+        if (expectedVariant==null || TestResultVariant.NONE.equals(expectedVariant)) {
+            assertFalse(optional.isPresent());
+            return;
+        }
+        assertTrue(optional.isPresent());
+
+        UUID jobUUID = optional.get();
+
+        /* test @formatter:on*/
+        assertThat(jobUUID).isNotNull();
+        switch (expectedVariant) {
+        case POOL_ID_0:
+            assertEquals(expectedNextJobWhenPoolId0Supported.getUUID(), jobUUID);
+            break;
+        case POOL_ID_1:
+            assertEquals(expectedNextJobWhenPoolId1Supported.getUUID(), jobUUID);
+            break;
+        case POOL_ID_2:
+            assertEquals(expectedNextJobWhenPoolId2Supported.getUUID(), jobUUID);
+            break;
+        case POOL_ID_3:
+            assertEquals(expectedNextJobWhenPoolId3Supported.getUUID(), jobUUID);
+            break;
+        default:
+            throw new IllegalStateException("not implemented for variant: " + expectedVariant);
+
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(NextJobIdToExecuteWithEncryptionPoolTestDataArgumentProvider.class)
+    void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_in_state_READY_TO_START_multi_poolids(
+            Set<Long> currentEncryptionPoolIds, TestResultVariant expectedVariant) {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+
+        ScheduleSecHubJob newJob6v0 = jobCreator.project("p3").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob6v1 = jobCreator.project("p3").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob6v2 = jobCreator.project("p3").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob6v3 = jobCreator.project("p3").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+        assertTrue(newJob4.created.isAfter(newJob3.created));
+        assertTrue(newJob5.created.isAfter(newJob4.created));
+        assertTrue(newJob6v0.created.isAfter(newJob5.created));
+
+        /* execute */
+        Optional<UUID> optional = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(currentEncryptionPoolIds);
+
+        /* test */
+        if (expectedVariant == null || TestResultVariant.NONE.equals(expectedVariant)) {
+            assertThat(optional).isNotPresent();
+            return;
+        }
+        assertTrue(optional.isPresent());
+
+        UUID jobUUID = optional.get();
+
+        /* test @formatter:on*/
+        assertThat(jobUUID).isNotNull();
+        switch (expectedVariant) {
+        case POOL_ID_0:
+            assertEquals(newJob6v0.getUUID(), jobUUID);
+            break;
+        case POOL_ID_1:
+            assertEquals(newJob6v1.getUUID(), jobUUID);
+            break;
+        case POOL_ID_2:
+            assertEquals(newJob6v2.getUUID(), jobUUID);
+            break;
+        case POOL_ID_3:
+            assertEquals(newJob6v3.getUUID(), jobUUID);
+            break;
+        default:
+            throw new IllegalStateException("not implemented for variant: " + expectedVariant);
+
+        }
+    }
+
+    private enum TestResultVariant {
+        NONE, POOL_ID_0, POOL_ID_1, POOL_ID_2, POOL_ID_3;
+    }
+
+    static class NextJobIdToExecuteWithEncryptionPoolTestDataArgumentProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+            return Stream.of(
+            /* @formatter:off */
+                        Arguments.of(Set.of(), TestResultVariant.NONE),
+                        Arguments.of(Set.of(0), TestResultVariant.POOL_ID_0),
+                        Arguments.of(Set.of(1), TestResultVariant.POOL_ID_1),
+                        Arguments.of(Set.of(2), TestResultVariant.POOL_ID_2),
+                        Arguments.of(Set.of(3), TestResultVariant.POOL_ID_3),
+                        Arguments.of(Set.of(1,2), TestResultVariant.POOL_ID_1),
+                        Arguments.of(Set.of(0,1,2,3), TestResultVariant.POOL_ID_0),
+                        Arguments.of(Set.of(1,2,3), TestResultVariant.POOL_ID_1),
+                        Arguments.of(Set.of(3,2,0), TestResultVariant.POOL_ID_0),
+                        Arguments.of(Set.of(0,3),TestResultVariant.POOL_ID_0)
+                    );
+                   /* @formatter:on */
+
+        }
+
+    }
+
+    private ScheduleSecHubJobData findDataOrNullByJobUUID(String key, UUID jobUUID) {
+        return entityManager.find(ScheduleSecHubJobData.class, new ScheduleSecHubJobDataId(jobUUID, key));
+    }
+
+    private void createJobUsingEncryptionPoolId(long poolId, ExecutionState state) {
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(state).encryptionPoolId(poolId).create();
+
     }
 
     private void assertDeleted(int expected, int deleted, DeleteJobTestData testData, LocalDateTime olderThan) {
@@ -843,7 +1244,7 @@ public class SecHubJobRepositoryDBTest {
         sb.append(describe(testData.job3_1_day_before_created, testData));
         sb.append(describe(testData.job4_now_created, testData));
 
-        fail(sb.toString());
+        throw new AssertionError(sb.toString());
     }
 
     private String describe(ScheduleSecHubJob info, DeleteJobTestData data) {

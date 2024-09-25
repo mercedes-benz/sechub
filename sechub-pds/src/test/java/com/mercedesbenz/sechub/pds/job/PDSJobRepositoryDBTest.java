@@ -28,8 +28,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
@@ -495,7 +495,8 @@ public class PDSJobRepositoryDBTest {
         // necessary because must be not null
         job.created = LocalDateTime.of(2020, 06, 24, 13, 55, 01).minusMinutes(minutes);
         job.owner = "owner";
-        job.jsonConfiguration = "{}";
+        job.encryptedConfiguration = "{}".getBytes(); // simulate encryption
+        job.encryptionInitialVectorData = "initial-vector".getBytes(); // simulate initial vector
         job.state = state;
 
         /* persist */

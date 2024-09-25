@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.domain.schedule.ScheduleJobMarkerService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerSecHubJobRuntimeData;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerSecHubJobRuntimeRegistry;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubConfigurationModelAccessService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -52,6 +53,8 @@ public class SynchronSecHubJobExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SynchronSecHubJobExecutor.class);
 
+    private boolean suspended;
+
     @Autowired
     @Lazy
     DomainMessageService messageService;
@@ -63,14 +66,16 @@ public class SynchronSecHubJobExecutor {
     SecHubJobSafeUpdater secHubJobSafeUpdater;
 
     @Autowired
-    ScheduleJobMarkerService markerService;
+    SecHubConfigurationModelAccessService configurationModelAccess;
 
-    private boolean suspended;
+    @Autowired
+    ScheduleJobMarkerService markerService;
 
     @IsSendingSyncMessage(MessageID.START_SCAN)
     public void execute(final ScheduleSecHubJob secHubJob) {
         SchedulerSecHubJobRuntimeData runtimeInfo = new SchedulerSecHubJobRuntimeData(secHubJob.getUUID());
         runtimeInfo.setExecutionUUID(UUID.randomUUID());
+        // check state at last position before added to runtime registry.
         if (suspended) {
             return;
         }
@@ -78,63 +83,49 @@ public class SynchronSecHubJobExecutor {
         runtimeRegistry.register(runtimeInfo);
 
         Thread scheduleWorkerThread = new Thread(() -> executeInsideThread(secHubJob), SECHUB_SCHEDULE_THREAD_PREFIX + secHubJob.getUUID() + "-schedule"); // we
-                                                                                                                                                           // add
-                                                                                                                                                           // -schedule
-                                                                                                                                                           // to
-                                                                                                                                                           // end,
-                                                                                                                                                           // to
-                                                                                                                                                           // have
-                                                                                                                                                           // info
-                                                                                                                                                           // in
-                                                                                                                                                           // logging
-                                                                                                                                                           // when
-                                                                                                                                                           // thread
-                                                                                                                                                           // name
-                                                                                                                                                           // is
-                                                                                                                                                           // reduced
         scheduleWorkerThread.start();
     }
 
     private void executeInsideThread(final ScheduleSecHubJob secHubJob) {
-        SchedulerSecHubJobRuntimeData runtimeInfo = runtimeRegistry.fetchDataForSecHubJobUUID(secHubJob.getUUID());
+        SchedulerSecHubJobRuntimeData data = runtimeRegistry.fetchDataForSecHubJobUUID(secHubJob.getUUID());
 
         try {
-            String secHubConfiguration = secHubJob.getJsonConfiguration();
+            String secHubConfiguration = configurationModelAccess.resolveUnencryptedConfigurationasJson(secHubJob);
 
             /* own thread so MDC.put necessary for logging */
             MDC.clear();
-            MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, runtimeInfo.getSecHubJobUUIDasString());
-            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, runtimeInfo.getExecutionUUIDAsString());
+            MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, data.getSecHubJobUUIDasString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, data.getExecutionUUIDAsString());
             MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
-            LOG.info("Executing sechub job: {}, execution uuid: {}", runtimeInfo.getSecHubJobUUIDasString(), runtimeInfo.getExecutionUUIDAsString());
+            LOG.info("Executing sechub job: {}, execution uuid: {}", data.getSecHubJobUUIDasString(), data.getExecutionUUIDAsString());
 
-            sendJobExecutionStartingEvent(secHubJob, runtimeInfo, secHubConfiguration);
+            sendJobExecutionStartingEvent(secHubJob, data, secHubConfiguration);
 
             /* we send now a synchronous SCAN event */
-            DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-            request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, runtimeInfo.getExecutionUUID());
-            request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
+            DomainMessage startScanRequest = new DomainMessage(MessageID.START_SCAN);
+            startScanRequest.set(MessageDataKeys.SECHUB_EXECUTION_UUID, data.getExecutionUUID());
+            startScanRequest.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
 
-            request.set(MessageDataKeys.SECHUB_JOB_UUID, runtimeInfo.getSecHubJobUUID());
-            request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
+            startScanRequest.set(MessageDataKeys.SECHUB_JOB_UUID, data.getSecHubJobUUID());
+            startScanRequest.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG.getProvider().get(secHubConfiguration));
 
             /* wait for scan event result - synchron */
-            DomainMessageSynchronousResult response = messageService.sendSynchron(request);
+            DomainMessageSynchronousResult response = messageService.sendSynchron(startScanRequest);
 
             if (response.getMessageId() == MessageID.SCAN_SUSPENDED) {
-                sendJobSuspended(runtimeInfo, TrafficLight.OFF);
+                sendJobSuspended(data, TrafficLight.OFF);
                 return;
             }
-            updateSecHubJob(runtimeInfo, response);
+            updateSecHubJob(data, response);
 
-            sendJobDoneMessage(runtimeInfo, response);
+            sendJobDoneMessage(data, response);
 
         } catch (Exception e) {
             LOG.error("Error happend at job execution:" + e.getMessage(), e);
 
-            markSechHubJobFailed(runtimeInfo);
-            sendJobFailed(runtimeInfo, TrafficLight.OFF);
+            markSechHubJobFailed(data);
+            sendJobFailed(data, TrafficLight.OFF);
 
         } finally {
             runtimeRegistry.unregisterBySecHubJobUUID(secHubJob.getUUID());
@@ -161,43 +152,43 @@ public class SynchronSecHubJobExecutor {
 
     }
 
-    @Deprecated
     /**
      * Only for integration tests! Will reset internal state to allow execution
-     * again
+     * again. Should not be used for normal situations.
      */
-    public void resetSuspensionState() {
+    public void internalResetSuspensionState() {
         suspended = false;
+        LOG.warn("Suspension state reset done - This may only happen in integration tests - and never in production!");
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
-    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, SchedulerSecHubJobRuntimeData uuids, String secHubConfiguration) {
+    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, SchedulerSecHubJobRuntimeData data, String secHubConfiguration) {
         /* we send asynchronous an information event */
         DomainMessage jobExecRequest = new DomainMessage(MessageID.JOB_EXECUTION_STARTING);
 
-        jobExecRequest.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
-        jobExecRequest.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
+        jobExecRequest.set(MessageDataKeys.SECHUB_EXECUTION_UUID, data.getExecutionUUID());
+        jobExecRequest.set(MessageDataKeys.SECHUB_JOB_UUID, data.getSecHubJobUUID());
         jobExecRequest.set(MessageDataKeys.LOCAL_DATE_TIME_SINCE, secHubJob.getStarted());
 
         messageService.sendAsynchron(jobExecRequest);
     }
 
-    private void sendJobDoneMessage(SchedulerSecHubJobRuntimeData uuids, DomainMessageSynchronousResult response) {
-        LOG.debug("Will send job done message for: {}", uuids.getSecHubJobUUIDasString());
+    private void sendJobDoneMessage(SchedulerSecHubJobRuntimeData data, DomainMessageSynchronousResult response) {
+        LOG.debug("Will send job done message for: {}", data.getSecHubJobUUIDasString());
 
         String trafficLightAsString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
 
-        sendJobDone(uuids, TrafficLight.fromString(trafficLightAsString));
+        sendJobDone(data, TrafficLight.fromString(trafficLightAsString));
     }
 
-    private void markSechHubJobFailed(SchedulerSecHubJobRuntimeData uuids) {
+    private void markSechHubJobFailed(SchedulerSecHubJobRuntimeData data) {
         SecHubMessage jobFailedMessage = new SecHubMessage(SecHubMessageType.ERROR, "The job execution failed.");
-        updateSecHubJob(uuids, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
+        updateSecHubJob(data, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
 
-        LOG.info("marked job as failed - sechub job: {}, execution-uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
+        LOG.info("marked job as failed - sechub job: {}, execution-uuid: {}", data.getSecHubJobUUIDasString(), data.getExecutionUUIDAsString());
     }
 
-    private void updateSecHubJob(SchedulerSecHubJobRuntimeData uuids, DomainMessageSynchronousResult response) {
+    private void updateSecHubJob(SchedulerSecHubJobRuntimeData data, DomainMessageSynchronousResult response) {
         ExecutionResult result;
 
         if (response.hasFailed()) {
@@ -213,7 +204,7 @@ public class SynchronSecHubJobExecutor {
             messages = messagesList.getSecHubMessages();
         }
 
-        updateSecHubJob(uuids, result, trafficLightString, messages);
+        updateSecHubJob(data, result, trafficLightString, messages);
     }
 
     private void updateSecHubJob(SchedulerSecHubJobRuntimeData data, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
@@ -246,9 +237,9 @@ public class SynchronSecHubJobExecutor {
         messageService.sendAsynchron(request);
     }
 
-    private JobMessage createMessage(SchedulerSecHubJobRuntimeData uuids) {
+    private JobMessage createMessage(SchedulerSecHubJobRuntimeData data) {
         JobMessage message = new JobMessage();
-        message.setJobUUID(uuids.getSecHubJobUUID());
+        message.setJobUUID(data.getSecHubJobUUID());
         message.setSince(LocalDateTime.now());
         return message;
     }

@@ -1,6 +1,19 @@
 // SPDX-License-Identifier: MIT
 
+// pds general describes the basics
 include::concept_pds_general.adoc[]
+
+==== Encryption
+include::concept_pds_data_encryption.adoc[]
+
+[[concept-pds-auto-cleanup]]
+==== Auto cleanup
+The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.
+
+The default configuration is set to 2 days.
+Administrators can change the default configuration via REST.
+
+
 
 [[pds-storage-and-sharing]]
 ==== Storage and sharing
@@ -183,7 +196,7 @@ The Adapter will always be the same, but filled with other necessary parameters.
 NOTE: So there will be no need to write any adapter or executor when using PDS!
 
 
-=== HowTo integrate a new product via PDS
+==== HowTo integrate a new product via PDS
 
 Having new security product XYZ but being a command line tool, we
 
@@ -219,6 +232,13 @@ Having new security product XYZ but being a command line tool, we
 
 - test via {sechub} client by starting a new {sechub} job which shall use the product and verify results
 
+[CAUTION]
+====
+Output and error stream of a PDS launcher script are stored in {pds} database as plain text!
+Means: NEVER log any sensitive data in launcher scripts! 
+
+If you want to give hints for debugging etc. you have to mask the information in log output. 
+====
 
 
 

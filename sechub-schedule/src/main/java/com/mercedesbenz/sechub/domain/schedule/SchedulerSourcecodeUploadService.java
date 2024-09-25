@@ -109,8 +109,15 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        try {
+            store(projectId, jobUUID, file, checkSum, traceLogID, jobStorage);
+        } finally {
+            jobStorage.close();
+        }
+    }
 
+    private void store(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID, JobStorage jobStorage) {
         try (InputStream inputStream = file.getInputStream()) {
             long fileSize = file.getSize();
 
@@ -189,7 +196,6 @@ public class SchedulerSourcecodeUploadService {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void assertValidZipFile(InputStream inputStream) {
         if (!archiveSupportProvider.getArchiveSupport().isZipFileStream(inputStream)) {
             LOG.error("Uploaded file is NOT a valid ZIP file!");

@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -21,9 +20,11 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.PDSProcessAdapterFactory;
 import com.mercedesbenz.sechub.commons.pds.ProcessAdapter;
+import com.mercedesbenz.sechub.pds.encryption.PDSEncryptionException;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
+import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -53,7 +54,7 @@ class PDSExecutionCallableTest {
     private ProductLaunchProcessHandlingData launchProcessHandlingData;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() throws Exception {
         jobUUID = UUID.randomUUID();
         workspaceTestDataJob1Folder = new File("./src/test/resources/testdata/workspace1/job1");
         resultFile = new File(workspaceTestDataJob1Folder, "result.txt");
@@ -98,10 +99,11 @@ class PDSExecutionCallableTest {
         PDSWorkspacePreparationResult launchScriptExecutableResult = new PDSWorkspacePreparationResult(true);
         when(workspaceService.prepare(eq(jobUUID), any(), any())).thenReturn(launchScriptExecutableResult);
 
-        when(data.getJobConfigurationJson()).thenReturn("{}");
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
+        when(data.getJobConfiguration()).thenReturn(configuration);
 
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
-        when(jobTransactionService.getJobConfigurationData(jobUUID)).thenReturn(data);
+        when(jobTransactionService.getJobConfigurationDataOrFail(jobUUID)).thenReturn(data);
         when(workspaceService.getProductPathFor(any())).thenReturn("the/path/to/product.sh");
         when(workspaceService.createLocationData(jobUUID)).thenReturn(locationData);
         when(workspaceService.getMessagesFolder(jobUUID)).thenReturn(messageFolder);
@@ -134,12 +136,13 @@ class PDSExecutionCallableTest {
 
         /* test */
         assertJobHasMarkedAsRunningInOwnTransaction();
-        assertTrue(result.failed);
+        assertTrue(result.isFailed());
         // internally an illegal state is thrown before any execution,
         verify(processAdapterFactory, never()).startProcess(any());
         verify(jobTransactionService, never()).updateJobExecutionDataInOwnTransaction(any(), any());
         // check there is no wait for a process at all
         verify(processAdapter, never()).waitFor(anyLong(), any());
+        assertFalse(result.isEncryptionFailure());
     }
 
     @Test
@@ -152,8 +155,8 @@ class PDSExecutionCallableTest {
 
         /* test */
         assertJobHasMarkedAsRunningInOwnTransaction();
-        assertTrue(result.failed);
-        assertEquals("Product time out.", result.result);
+        assertTrue(result.isFailed());
+        assertEquals("Product time out.", result.getResult());
 
         ArgumentCaptor<PDSExecutionData> executionDataCaptor = ArgumentCaptor.forClass(PDSExecutionData.class);
         verify(jobTransactionService).updateJobExecutionDataInOwnTransaction(eq(jobUUID), executionDataCaptor.capture());
@@ -162,6 +165,7 @@ class PDSExecutionCallableTest {
         assertEquals("the output", executionData.getOutputStreamData());
         assertEquals("an error", executionData.getErrorStreamData());
         assertEquals("meta data", executionData.getMetaData());
+        assertFalse(result.isEncryptionFailure());
 
     }
 
@@ -175,8 +179,8 @@ class PDSExecutionCallableTest {
 
         /* test */
         assertJobHasMarkedAsRunningInOwnTransaction();
-        assertFalse(result.failed);
-        assertEquals("the result", result.result);
+        assertFalse(result.isFailed());
+        assertEquals("the result", result.getResult());
 
         ArgumentCaptor<PDSExecutionData> executionDataCaptor = ArgumentCaptor.forClass(PDSExecutionData.class);
         verify(jobTransactionService).updateJobExecutionDataInOwnTransaction(eq(jobUUID), executionDataCaptor.capture());
@@ -185,6 +189,7 @@ class PDSExecutionCallableTest {
         assertEquals("the output", executionData.getOutputStreamData());
         assertEquals("an error", executionData.getErrorStreamData());
         assertEquals("meta data", executionData.getMetaData());
+        assertFalse(result.isEncryptionFailure());
     }
 
     @Test
@@ -197,9 +202,9 @@ class PDSExecutionCallableTest {
 
         /* test */
         assertJobHasMarkedAsRunningInOwnTransaction();
-        assertFalse(result.failed);
+        assertFalse(result.isFailed());
         assertJob1MessageHasBeenPersistedToDB();
-
+        assertFalse(result.isEncryptionFailure());
     }
 
     @Test
@@ -212,8 +217,9 @@ class PDSExecutionCallableTest {
 
         /* test */
         assertJobHasMarkedAsRunningInOwnTransaction();
-        assertTrue(result.failed);
+        assertTrue(result.isFailed());
         assertJob1MessageHasBeenPersistedToDB();
+        assertFalse(result.isEncryptionFailure());
 
     }
 
@@ -228,6 +234,19 @@ class PDSExecutionCallableTest {
 
         /* test */
         verify(processAdapter).waitFor(value, TimeUnit.MINUTES);
+    }
+
+    @Test
+    void when_getJobConfigurationDataOrFail_fails_the_exception_leads_to_a_job_marked_as_encryption_out_of_synch() throws Exception {
+        /* prepare */
+        when(jobTransactionService.getJobConfigurationDataOrFail(any())).thenThrow(new PDSEncryptionException("some text"));
+        simulateProcessDone();
+
+        /* execute */
+        PDSExecutionResult result = callableToTest.call();
+
+        /* test */
+        assertTrue(result.isEncryptionFailure());
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

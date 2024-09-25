@@ -70,9 +70,11 @@ class ScanJobExecutor {
         ScanJobRunnableData runnableData = new ScanJobRunnableData(sechubJobUUID, executionServiceContainer, context);
 
         ScanJobExecutionRunnable scanJobExecutionRunnable = new ScanJobExecutionRunnable(runnableData);
-        Thread executorThread = new Thread(scanJobExecutionRunnable, SECHUB_SCAN_THREAD_PREFIX + sechubJobUUID + "-scan");// we add -scan to end, to have info
-                                                                                                                          // in logging when thread name is
-                                                                                                                          // reduced
+        // In next line we add "-scan" to end of thread name, to have info in logging
+        // when
+        // thread name is reduced
+        String threadName = SECHUB_SCAN_THREAD_PREFIX + sechubJobUUID + "-scan";
+        Thread executorThread = new Thread(scanJobExecutionRunnable, threadName);
         runnableData.setScanJobExecutionThread(executorThread);
 
         try {
@@ -182,9 +184,10 @@ class ScanJobExecutor {
          * its job while being interrupted. So cancel thread necessary.
          */
         ScanJobCancellationRunnable cancelRunnable = new ScanJobCancellationRunnable(data);
-        Thread cancelThread = new Thread(cancelRunnable, SECHUB_SCAN_CANCEL_THREAD_PREFIX + data.getSechubJobUUID() + "-cancel");// we add -cancel to end, to
-                                                                                                                                 // have info in logging when
-                                                                                                                                 // thread name is reduced
+        // In next line we add "-cancel" to end of thread name, to have info in logging
+        // when thread name is reduced
+        String threadName = SECHUB_SCAN_CANCEL_THREAD_PREFIX + data.getSechubJobUUID() + "-cancel";
+        Thread cancelThread = new Thread(cancelRunnable, threadName);
         data.setScanJobCancelThread(cancelThread);
         cancelThread.start();
     }

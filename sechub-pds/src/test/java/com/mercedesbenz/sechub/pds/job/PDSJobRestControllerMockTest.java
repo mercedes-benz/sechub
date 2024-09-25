@@ -1,19 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.https;
-import static com.mercedesbenz.sechub.test.TestConstants.SOURCECODE_ZIP;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
 
@@ -34,7 +28,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.pds.PDSProfiles;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.security.PDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -114,11 +111,11 @@ public class PDSJobRestControllerMockTest {
         UUID jobUUID = UUID.randomUUID();
 
         PDSJobStatus status = new PDSJobStatus();
-        status.created = "created1";
-        status.ended = "ended1";
-        status.jobUUID = jobUUID;
-        status.owner = "owner1";
-        status.state = "state1";
+        status.setCreated("created1");
+        status.setEnded("ended1");
+        status.setJobUUID(jobUUID);
+        status.setOwner("owner1");
+        status.setState(PDSJobStatusState.RUNNING);
 
         when(mockedJobStatusService.getJobStatus(jobUUID)).thenReturn(status);
 
@@ -128,7 +125,7 @@ public class PDSJobRestControllerMockTest {
                 get(https(PORT_USED).buildGetJobStatus(jobUUID))
                 ).
                     andExpect(status().isOk()).
-                    andExpect(content().json(status.toJSON(),true)
+                    andExpect(content().json(JSONConverter.get().toJSON(status),true)
                 );
 
         /* @formatter:on */

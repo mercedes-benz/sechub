@@ -30,7 +30,7 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.5.0'
+    id 'org.openapi.generator' version '7.8.0'
     
     // spring
     id 'org.springframework.boot' version '3.2.2' apply false
@@ -83,7 +83,7 @@ task internalCleanRootBuildFolder(type: Delete){
     doFirst {
         def rootBuildFolder = file("${project.projectDir}/build")
         if (! rootBuildFolder.exists()){
-            rootBuildFolder.mkdirs();
+            rootBuildFolder.mkdirs()
         } 
         delete rootBuildFolder.listFiles() // so we do NOT clear buildSrc/build here!
     }

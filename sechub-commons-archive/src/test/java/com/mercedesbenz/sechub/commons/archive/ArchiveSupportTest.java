@@ -1,13 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
-import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.TAR;
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.ZIP;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +50,12 @@ class ArchiveSupportTest {
     private static File expectedCreateArchivesTest1DecompressWithoutFileStructureTar;
     private static File expectedCreateArchivesTest1DecompressWithFileStructureZip;
     private static File expectedCreateArchivesTest1DecompressWithFileStructureTar;
+    private static final FileSize maxFileSizeUncompressed = new FileSize("100MB");
+    private static final long maxEntries = 100L;
+    private static final long maxDirectoryDepth = 10L;
+    private static final Duration timeout = Duration.ofSeconds(10);
+    private static final ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(maxFileSizeUncompressed, maxEntries,
+            maxDirectoryDepth, timeout);
 
     private ArchiveSupport supportToTest;
 
@@ -89,7 +103,6 @@ class ArchiveSupportTest {
         File configFile = new File("./src/test/resources/create-archives/test1/" + configFileName);
         String json = TestFileSupport.loadTextFile(configFile);
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-
         Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
 
         /* execute */
@@ -106,7 +119,7 @@ class ArchiveSupportTest {
         Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("decompressed-reverse");
         Path reverseFolderZip = reverseFolder.resolve("zip");
         supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderZip.toFile(), null);
+                reverseFolderZip.toFile(), null, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithoutFileStructureZip),
@@ -115,7 +128,7 @@ class ArchiveSupportTest {
         // check TAR content
         Path reverseFolderTar = reverseFolder.resolve("tar");
         supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderTar.toFile(), null);
+                reverseFolderTar.toFile(), null, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithoutFileStructureTar),
@@ -130,7 +143,6 @@ class ArchiveSupportTest {
         File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
         String json = TestFileSupport.loadTextFile(configFile);
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-
         Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
 
         /* execute */
@@ -149,7 +161,7 @@ class ArchiveSupportTest {
         SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderZip.toFile(), codeScanProvider);
+                reverseFolderZip.toFile(), codeScanProvider, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureZip),
@@ -161,7 +173,7 @@ class ArchiveSupportTest {
 
         Path reverseFolderTar = reverseFolder.resolve("tar");
         supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderTar.toFile(), licenseScanProvider);
+                reverseFolderTar.toFile(), licenseScanProvider, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureTar),
@@ -176,7 +188,6 @@ class ArchiveSupportTest {
         File configFile = new File("./src/test/resources/create-archives/test1/sechub-configuration.json");
         String json = TestFileSupport.loadTextFile(configFile);
         SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
-
         Path tempDir = TestUtil.createTempDirectoryInBuildFolder("create-archives");
 
         /* execute */
@@ -195,7 +206,7 @@ class ArchiveSupportTest {
         SecHubFileStructureDataProvider codeScanProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         supportToTest.extract(ZIP, new FileInputStream(result.getSourceArchiveFile().toFile()), result.getSourceArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderZip.toFile(), codeScanProvider);
+                reverseFolderZip.toFile(), codeScanProvider, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureZip),
@@ -207,7 +218,7 @@ class ArchiveSupportTest {
 
         Path reverseFolderTar = reverseFolder.resolve("tar");
         supportToTest.extract(TAR, new FileInputStream(result.getBinaryArchiveFile().toFile()), result.getBinaryArchiveFile().toFile().getAbsolutePath(),
-                reverseFolderTar.toFile(), licenseScanProvider);
+                reverseFolderTar.toFile(), licenseScanProvider, archiveExtractionConstraints);
 
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderTar.toFile(),
                 TestFileSupport.loadFilesAsFileList(expectedCreateArchivesTest1DecompressWithFileStructureTar),
@@ -230,7 +241,7 @@ class ArchiveSupportTest {
 
         // extract the created ZIP file again to reverse folder
         Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
-        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), reverseFolder.toFile(), null);
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), reverseFolder.toFile(), null, archiveExtractionConstraints);
 
         // check extracted same as before
         expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolder.toFile(), TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
@@ -273,7 +284,7 @@ class ArchiveSupportTest {
         File targetFile = new File(parentFolder, "sourcecode.zip");
 
         TextFileWriter writer = new TextFileWriter();
-        writer.save(textFile, "This is just a test content", true);
+        writer.writeTextToFile(textFile, "This is just a test content", true);
 
         /* execute */
         supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);
@@ -284,7 +295,7 @@ class ArchiveSupportTest {
         // extract the created ZIP file again to reverse folder
         Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
         File outputFolder = reverseFolder.toFile();
-        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null);
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null, archiveExtractionConstraints);
 
         // check extracted same as before
         assertFileContains(new File(outputFolder, "data.txt"), "This is just a test content");
@@ -296,7 +307,7 @@ class ArchiveSupportTest {
             fail("File:" + file + " does not exist!");
         }
         TextFileReader reader = new TextFileReader();
-        String content = reader.loadTextFile(file);
+        String content = reader.readTextFromFile(file);
         assertEquals(expectedContent, content);
     }
 
@@ -313,8 +324,8 @@ class ArchiveSupportTest {
         File targetFile = new File(parentFolder, "sourcecode.zip");
 
         TextFileWriter writer = new TextFileWriter();
-        writer.save(textFile1, "text1", true);
-        writer.save(textFile2, "text2", true);
+        writer.writeTextToFile(textFile1, "text1", true);
+        writer.writeTextToFile(textFile2, "text2", true);
 
         /* execute */
         supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);
@@ -325,7 +336,7 @@ class ArchiveSupportTest {
         // extract the created ZIP file again to reverse folder
         Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
         File outputFolder = reverseFolder.toFile();
-        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null);
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null, archiveExtractionConstraints);
 
         // check extracted same as before
         assertFileContains(new File(outputFolder, "test1.txt"), "text1");
@@ -345,7 +356,7 @@ class ArchiveSupportTest {
 
         /* execute */
         ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(singleZipfile), singleZipfile.getAbsolutePath(), targetFolder,
-                configuration);
+                configuration, archiveExtractionConstraints);
 
         /* test */
         File docs = assertFolderExists(targetFolder, "docs");
@@ -355,6 +366,48 @@ class ArchiveSupportTest {
 
         assertEquals(1, result.getExtractedFilesCount());
         assertEquals(2, result.getCreatedFoldersCount());
+    }
+
+    /**
+     * This test is to ensure that the {@link SafeArchiveInputStream} is used when
+     * calling the extract method. This is done by setting the timeout to 1ms to
+     * enforce a timeout exception. The exception is of type
+     * {@link ArchiveExtractionException} which is used by the
+     * {@link SafeArchiveInputStream} class.
+     */
+    @Test
+    void extract_uses_safe_archive_input_stream_when_extracting_archive() throws Exception {
+        /* prepare */
+        File twoFilesZipfile = resolveTestFile("zipfiles/two_files.zip");
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_twofileszip_test").toFile();
+        targetFolder.mkdirs();
+
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
+        configuration.setRootFolderAccepted(true);
+
+        // set timeout to 1ns to enforce a timeout exception
+        Duration timeout = Duration.ofNanos(1);
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(maxFileSizeUncompressed, maxEntries, maxDirectoryDepth,
+                timeout);
+
+        /* execute & test */
+
+        /* @formatter:off */
+        ArchiveExtractionException exception = assertThrows(
+                ArchiveExtractionException.class,
+                () -> supportToTest.extract(
+                        ZIP,
+                        new FileInputStream(twoFilesZipfile),
+                        twoFilesZipfile.getAbsolutePath(),
+                        targetFolder,
+                        configuration,
+                        archiveExtractionConstraints
+                )
+        );
+        /* @formatter:on */
+
+        assertThat(exception.getMessage(), is("Timeout exceeded"));
+
     }
 
     @Test
@@ -369,7 +422,7 @@ class ArchiveSupportTest {
 
         /* execute */
         ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(singleZipfile), singleZipfile.getAbsolutePath(), targetFolder,
-                configuration);
+                configuration, archiveExtractionConstraints);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go");
@@ -389,7 +442,7 @@ class ArchiveSupportTest {
 
         /* execute */
         ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(twoFilesZipfile), twoFilesZipfile.getAbsolutePath(), targetFolder,
-                configuration);
+                configuration, archiveExtractionConstraints);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go", "README.md");
@@ -409,7 +462,8 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(abcZipfile), abcZipfile.getAbsolutePath(), targetFolder, configuration);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(abcZipfile), abcZipfile.getAbsolutePath(), targetFolder, configuration,
+                archiveExtractionConstraints);
 
         /* test */
         assertContainsFiles(targetFolder, "abc");
@@ -438,7 +492,7 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration, archiveExtractionConstraints);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(targetFolder, TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
@@ -456,7 +510,7 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(false);
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration, archiveExtractionConstraints);
 
         /* test */
         assertEquals(0, targetFolder.listFiles().length);
@@ -476,7 +530,7 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration, archiveExtractionConstraints);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
@@ -494,7 +548,7 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(false);
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration, archiveExtractionConstraints);
 
         /* test */
         assertEquals(0, outputDirectory.listFiles().length);
@@ -512,10 +566,10 @@ class ArchiveSupportTest {
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
-        configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1"));
+        configuration.addAcceptedReferenceNames(List.of("reference-name-1"));
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration, archiveExtractionConstraints);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
@@ -536,7 +590,7 @@ class ArchiveSupportTest {
         configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1", "reference-name-2"));
 
         /* execute */
-        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration, archiveExtractionConstraints);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);

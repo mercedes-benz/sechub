@@ -25,7 +25,7 @@ jobs:
           echo "OWASP-ZAP Wrapper '${{ inputs.owaspzap-wrapper-version }}' - Milestone '${{ inputs.owaspzap-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: master
 
@@ -38,13 +38,13 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
+        uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@500e0ee5b346833ab02b5209b7c997380cb5d684
+        uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808
         with:
           cache-read-only: false
 
@@ -64,7 +64,7 @@ jobs:
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash

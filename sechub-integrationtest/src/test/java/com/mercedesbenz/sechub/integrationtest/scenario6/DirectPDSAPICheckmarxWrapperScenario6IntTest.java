@@ -37,7 +37,7 @@ public class DirectPDSAPICheckmarxWrapperScenario6IntTest {
         /* prepare */
         TestUser user = PDS_TECH_USER;
 
-        String json =TestFileReader.loadTextFile("src/test/resources/pds/checkmarx-wrapper/checkmarx-pds-job1.json");
+        String json =TestFileReader.readTextFromFile("src/test/resources/pds/checkmarx-wrapper/checkmarx-pds-job1.json");
 
         String createResult = asPDSUser(PDS_ADMIN).
                 createJobByJsonConfiguration(json);

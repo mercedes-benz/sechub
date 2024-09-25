@@ -88,9 +88,8 @@ function initInputMap() {
     mockedInputMap.set(input.PARAM_SECHUB_SERVER_URL, `https://localhost:${integrationTestContext.serverPort}`);
     mockedInputMap.set(input.PARAM_SECHUB_USER, `${integrationTestContext.serverUserId}`);
     mockedInputMap.set(input.PARAM_API_TOKEN, `${integrationTestContext.serverApiToken}`);
-
     mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'latest');
-
+    mockedInputMap.set(input.PARAM_ADD_SCM_HISTORY, 'false');
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
     mockedInputMap.set(input.PARAM_TRUST_ALL, 'true'); // self signed certificate in test...
     mockedInputMap.set(input.PARAM_FAIL_JOB_ON_FINDING, 'true');

@@ -48,7 +48,11 @@ public class ScheduleSecHubJob {
     public static final String COLUMN_STARTED = "STARTED";
     public static final String COLUMN_ENDED = "ENDED";
     public static final String COLUMN_STATE = "STATE";
-    public static final String COLUMN_CONFIGURATION = "CONFIGURATION";
+
+    public static final String COLUMN_ENCRYPTED_CONFIGURATION = "ENCRYPTED_CONFIGURATION";
+    public static final String COLUMN_ENCRYPT_INITIAL_VECTOR = "ENCRYPT_INITIAL_VECTOR";
+    public static final String COLUMN_ENCRYPT_POOL_DATA_ID = "ENCRYPT_POOL_DATA_ID";
+
     public static final String COLUMN_TRAFFIC_LIGHT = "TRAFFIC_LIGHT";
     public static final String COLUMN_MODULE_GROUP = "MODULE_GROUP";
 
@@ -74,6 +78,7 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_MESSAGES = "jsonMessages";
     public static final String PROPERTY_MODULE_GROUP = "moduleGroup";
     public static final String PROPERTY_DATA = "data";
+    public static final String PROPERTY_ENCRYPTION_POOL_ID = "encryptionCipherPoolId";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
     public static final String QUERY_MARK_JOBS_AS_SUSPENDED = "UPDATE ScheduleSecHubJob j SET j." + PROPERTY_EXECUTION_STATE + " = 'SUSPENDED', j."
@@ -100,8 +105,14 @@ public class ScheduleSecHubJob {
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime ended;
 
-    @Column(name = COLUMN_CONFIGURATION)
-    String jsonConfiguration;
+    @Column(name = COLUMN_ENCRYPTED_CONFIGURATION)
+    byte[] encryptedConfiguration;
+
+    @Column(name = COLUMN_ENCRYPT_INITIAL_VECTOR)
+    byte[] encryptionInitialVectorData;
+
+    @Column(name = COLUMN_ENCRYPT_POOL_DATA_ID)
+    Long encryptionCipherPoolId;
 
     @Enumerated(STRING)
     @Column(name = COLUMN_STATE, nullable = false)
@@ -181,10 +192,6 @@ public class ScheduleSecHubJob {
         return created;
     }
 
-    public String getJsonConfiguration() {
-        return jsonConfiguration;
-    }
-
     public ExecutionState getExecutionState() {
         return executionState;
     }
@@ -211,6 +218,30 @@ public class ScheduleSecHubJob {
 
     public ModuleGroup getModuleGroup() {
         return moduleGroup;
+    }
+
+    public byte[] getEncryptedConfiguration() {
+        return encryptedConfiguration;
+    }
+
+    public void setEncryptedConfiguration(byte[] encryptedConfiguration) {
+        this.encryptedConfiguration = encryptedConfiguration;
+    }
+
+    public byte[] getEncryptionInitialVectorData() {
+        return encryptionInitialVectorData;
+    }
+
+    public void setEncryptionInitialVectorData(byte[] encryptionInitialVectorData) {
+        this.encryptionInitialVectorData = encryptionInitialVectorData;
+    }
+
+    public void setEncryptionCipherPoolId(Long encryptionPoolDataId) {
+        this.encryptionCipherPoolId = encryptionPoolDataId;
+    }
+
+    public Long getEncryptionCipherPoolId() {
+        return encryptionCipherPoolId;
     }
 
     @Override

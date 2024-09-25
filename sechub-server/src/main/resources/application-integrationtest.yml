@@ -21,6 +21,14 @@ sechub:
                       # one check (which is always done) except multiple. This is to avoid flaky tests,
                       # but gives us possiblity to check multiple ones when necessary (default are 60 seconds
                       # and this too long for test...)
+  schedule:
+    encryption:
+       refresh:
+         initialdelay: 100
+         # every 2000 milliseconds in integration tests         
+         delay: 2000 
+         accept-outdated:
+           milliseconds: 100
   scan:
     scanconfig:
       refresh:

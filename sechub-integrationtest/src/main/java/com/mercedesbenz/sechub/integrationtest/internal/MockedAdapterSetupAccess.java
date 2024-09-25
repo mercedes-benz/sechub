@@ -18,7 +18,7 @@ public class MockedAdapterSetupAccess {
     private Map<String, MockedAdapterSetupCombination> mapIdToMockCombination = new HashMap<String, MockedAdapterSetupCombination>();
 
     private MockedAdapterSetupAccess() {
-        String json = TestFileReader.loadTextFile(new File("../sechub-other/mockdata/mockdata_setup.json"));
+        String json = TestFileReader.readTextFromFile(new File("../sechub-other/mockdata/mockdata_setup.json"));
         setup = TestJSONHelper.get().createFromJSON(json, MockedAdapterSetup.class);
 
         List<MockedAdapterSetupEntry> entries = setup.getEntries();

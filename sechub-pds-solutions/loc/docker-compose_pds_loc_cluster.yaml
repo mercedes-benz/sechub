@@ -6,6 +6,8 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - CLOC_VERSION=${CLOC_VERSION}
+                - SCC_VERSION=${SCC_VERSION}
             context: docker/
             dockerfile: loc-Debian.dockerfile
         env_file:

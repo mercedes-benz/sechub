@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.pds.config.PDSConfigService;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.time.TimeCalculationService;
+import com.mercedesbenz.sechub.pds.time.PDSTimeCalculationService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesAutoCleanup;
 
@@ -23,7 +23,7 @@ public class PDSAutoCleanupService {
     PDSAutoCleanupResultInspector inspector;
 
     @Autowired
-    TimeCalculationService timeCalculationService;
+    PDSTimeCalculationService PDSTimeCalculationService;
 
     @Autowired
     PDSConfigService configService;
@@ -44,7 +44,7 @@ public class PDSAutoCleanupService {
             LOG.trace("Cancel administration auto cleanup because disabled.");
             return;
         }
-        LocalDateTime cleanTimeStamp = timeCalculationService.calculateNowMinusDays(days);
+        LocalDateTime cleanTimeStamp = PDSTimeCalculationService.calculateNowMinusDays(days);
 
         /* delete */
         int amount = jobRepository.deleteJobOlderThan(cleanTimeStamp);

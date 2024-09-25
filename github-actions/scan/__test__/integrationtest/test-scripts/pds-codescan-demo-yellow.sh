@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 echo "#PDS_INTTEST_PRODUCT_CODESCAN

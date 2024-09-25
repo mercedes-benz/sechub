@@ -54,7 +54,7 @@ public class PDSJobConfigurationValidator {
         /* check setup */
         PDSProductSetup productSetup = serverConfigurationService.getProductSetupOrNull(productId);
         if (productSetup == null) {
-            return "configured PDS instance does not support product identifier:" + productId;
+            return "configured PDS instance does not encryptionSupport product identifier:" + productId;
         }
         List<PDSProductParameterDefinition> mandatories = productSetup.getParameters().getMandatory();
         for (PDSProductParameterDefinition mandatory : mandatories) {

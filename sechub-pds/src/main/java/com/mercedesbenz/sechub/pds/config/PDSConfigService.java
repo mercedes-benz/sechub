@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupConfig.CleanupTime;
 import com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupDaysCalculator;
+import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminUpdatesAutoCleanupConfiguration;
@@ -26,7 +26,7 @@ public class PDSConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSConfigService.class);
 
     @Autowired
-    LogSanitizer logSanitizer;
+    PDSLogSanitizer pdsLogSanitizer;
 
     @Autowired
     PDSConfigRepository repository;
@@ -38,7 +38,7 @@ public class PDSConfigService {
     PDSAutoCleanupDaysCalculator calculator;
 
     @UseCaseAdminUpdatesAutoCleanupConfiguration(@PDSStep(number = 2, next = { 3, 4,
-            5 }, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database"))
+            5 }, name = "Updates auto cleanup configuration", description = "Updates auto cleanup configuration as JSON in database"))
     public void updateAutoCleanupConfiguration(PDSAutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
@@ -49,7 +49,7 @@ public class PDSConfigService {
 
         String configurationAsJson = configuration.toJSON();
 
-        LOG.info("Admin updates auto cleanup configuration to: {}", logSanitizer.sanitize(configurationAsJson, 8192));
+        LOG.info("Admin updates auto cleanup configuration to: {}", pdsLogSanitizer.sanitize(configurationAsJson, 8192));
 
         PDSConfig config = getOrCreateConfig();
         config.autoCleanupConfiguration = configurationAsJson;
@@ -72,7 +72,7 @@ public class PDSConfigService {
         transactionService.saveConfigInOwnTransaction(config);
     }
 
-    @UseCaseAdminFetchesAutoCleanupConfiguration(@PDSStep(number = 2, name = "Fetches auto cleanup config", description = "Fetches auto cleanup configuration from database"))
+    @UseCaseAdminFetchesAutoCleanupConfiguration(@PDSStep(number = 2, name = "Fetches auto cleanup configuration", description = "Fetches auto cleanup configuration from database"))
     public PDSAutoCleanupConfig fetchAutoCleanupConfiguration() {
         String cleanupConfigJson = getOrCreateConfig().autoCleanupConfiguration;
         PDSAutoCleanupConfig cleanupConfig = null;

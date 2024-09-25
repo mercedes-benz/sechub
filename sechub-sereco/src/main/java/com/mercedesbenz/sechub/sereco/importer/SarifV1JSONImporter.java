@@ -285,8 +285,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private SerecoSeverity resolveSeverity(Result result, Run run) {
-        Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
-        return mapToSeverity(level);
+        SerecoSeverity serecoSeverity = workaroundSupport.resolveCustomSechubSeverity(result, run);
+        if (serecoSeverity == null) {
+            Level level = sarifSchema210LogicSupport.resolveLevel(result, run);
+            return mapToSeverity(level);
+        }
+        return serecoSeverity;
     }
 
     private class ResultData {

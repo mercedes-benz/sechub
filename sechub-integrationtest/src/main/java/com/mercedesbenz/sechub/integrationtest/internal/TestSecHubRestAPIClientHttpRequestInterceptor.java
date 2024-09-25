@@ -34,9 +34,8 @@ public class TestSecHubRestAPIClientHttpRequestInterceptor implements ClientHttp
          */
 
         HttpHeaders headers = request.getHeaders();
-        List<String> x = headers.get("Content-Type");
-        if (x == null || x.isEmpty()) {
-//			headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
+        List<String> contentType = headers.get("Content-Type");
+        if (contentType == null || contentType.isEmpty()) {
             headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         }
         headers.remove("Authorization");
@@ -47,7 +46,7 @@ public class TestSecHubRestAPIClientHttpRequestInterceptor implements ClientHttp
             headers.add("Authorization", "Basic " + base64Token);
 
         }
-        LOG.trace("...............REST call for user:" + user.getUserId() + "............................");
+        LOG.trace("...............REST call for user: {}", user.getUserId());
 
         return execution.execute(request, body);
     }

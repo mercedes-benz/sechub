@@ -31,9 +31,13 @@ pds:
     userid: pds-inttest-admin
     apitoken: '{noop}pds-inttest-apitoken'
   
-  script:
-    env:
-       whitelist: 'PDS_STORAGE_*,INTEGRATIONTEST_SCRIPT_ENV_ACCEPTED'
+  encryption:
+     algorithm: AES_GCM_SIV_256
+     # Test key to have encryption also in integration tests
+     # (this is an exception: normally only environment variables are accepted, but
+     # for integration tests we allow this one)
+     secret-key: nj3AS0UOcA4d/K5cIfOUXipkB/x9oJAVZpVwLqJ5LJE=
+     
 logging:
   level:
     com.mercedesbenz.sechub: DEBUG

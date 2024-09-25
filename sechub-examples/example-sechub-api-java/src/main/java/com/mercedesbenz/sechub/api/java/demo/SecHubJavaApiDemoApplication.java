@@ -8,7 +8,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.DefaultSecHubClient;
+import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.java.demo.config.DemoConfigurationProvider;
 import com.mercedesbenz.sechub.api.java.demo.playground.DemoAdminApiPlayground;
@@ -37,7 +37,7 @@ public class SecHubJavaApiDemoApplication {
             LOG.trace("*** trustAll: {}", trustAll);
 
             /* create the client */
-            SecHubClient client = DefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
+            SecHubClient client = OldDefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
 
             // test anonymous parts
             testAnonymousApi(client);

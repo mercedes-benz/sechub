@@ -57,6 +57,10 @@ of your choice.
 ====== Create localhost server certificate
 This is automatically done by former gradle call, so not necessary here.
 
+====== Add Sechub Java Code Formatter
+
+include::../shared/configuration/eclipse-java-sechub-formatter-setup.adoc[]
+
 ===== Others
 ====== Import projects
 Import as you would normally do in your IDE.
@@ -67,6 +71,9 @@ just call  `./gradlew ensureLocalhostCertificate`
 
 This will generate a self signed server certificate for localhost.
 
+====== Add Sechub Java Code Formatter (IntelliJ)
+
+include::../shared/configuration/intelliJ-java-sechub-formatter-setup.adoc[]
 
 ==== Special developer files
 
@@ -185,7 +192,6 @@ Overview of branch types:
 |`develop`            |master        | Development branch. This branch will be part of the next release.
                                        Do not commit into this branch. Instead create a dedicated feature-branch.
 |`feature-${issue}`   |develop       | For each feature we create a `feature-1234-xyz` branch. It will be merged into the `develop` branch when finished. A git push to remote will trigger a full CI/CD build for SecHub client, server and PDS but not for SecHub github actions.
-|`gha_feature-${issue}`   |develop       | For each github action feature we create a `gha_feature-1234-xyz` branch. It will be merged into the `develop` branch when finished. A git push to remote will trigger CI/CD build for SecHub github actions, but NOT a full CI/CD build for SecHub client, server and PDS.
 
 |===
 

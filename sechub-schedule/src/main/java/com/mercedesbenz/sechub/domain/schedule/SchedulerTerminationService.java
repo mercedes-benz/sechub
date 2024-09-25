@@ -45,10 +45,9 @@ public class SchedulerTerminationService {
     /**
      * Only for integration testing!
      */
-    @Deprecated
     void internalResetTermination() {
         LOG.warn("Reset termination process - may only happen inside tests!");
-        executor.resetSuspensionState();
+        executor.internalResetSuspensionState();
 
         this.terminating = false;
     }
@@ -56,6 +55,4 @@ public class SchedulerTerminationService {
     public boolean isTerminating() {
         return terminating;
     }
-    // FIXME : be aware of race conditions with trigger service! */
-    /* FIXME : shutdown hook integrate... and update field) */
 }

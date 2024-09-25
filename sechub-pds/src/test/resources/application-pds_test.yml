@@ -13,6 +13,11 @@ pds:
       sharedvolume:
          upload:
             dir: temp
+   startup:
+      assert:
+          environment-variables-used:
+             disabled: true #we must disable this in our unit tests to use test setup config files etc.
+             
 # security credentials for tests
    techuser:
       userid: test-techuser
@@ -20,6 +25,11 @@ pds:
    admin:
       userid: test-admin
       apitoken: apitoken-just-for-testing-only
+
+   encryption:
+      algorithm: NONE
+      secret-key: #no key, just empty
+ 
 spring:
    jpa:
       hibernate:
@@ -28,3 +38,5 @@ spring:
       initialization-mode: never
    flyway:
       enabled: false # Flyway turned off for testing!
+
+      

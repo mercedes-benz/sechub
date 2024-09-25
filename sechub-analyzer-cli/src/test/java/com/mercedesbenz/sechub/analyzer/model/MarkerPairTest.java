@@ -6,10 +6,6 @@ import static org.hamcrest.Matchers.*;
 
 import org.junit.Test;
 
-import com.mercedesbenz.analyzer.model.Marker;
-import com.mercedesbenz.analyzer.model.MarkerPair;
-import com.mercedesbenz.analyzer.model.MarkerType;
-
 public class MarkerPairTest {
     @Test
     public void test_deepClone() {

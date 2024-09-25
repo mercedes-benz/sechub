@@ -24,6 +24,12 @@ public enum PDSDefaulScriptEnvironmentVariableWhitelist {
 
     USER,
 
+    /*
+     * With this variable we can provide special log appenders for java wrapper
+     * applications - e.g logstash appenders
+     */
+    LOGGING_TYPE,
+
     ;
 
 }

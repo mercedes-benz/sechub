@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 declare -r checkmarx_wrapper="$TOOL_FOLDER/sechub-wrapper-checkmarx.jar"
@@ -14,6 +14,10 @@ echo "- SECHUB_JOB_UUID : $SECHUB_JOB_UUID"
 if [[ ! -f "$checkmarx_wrapper" ]]; then
     echo "ERROR: The Checkmarx wrapper file $checkmarx_wrapper does not exist." 1>&2
     exit 1
+fi
+
+if [[ "$PDS_WRAPPER_REMOTE_DEBUGGING_ENABLED" = "true" ]]; then
+    options="$options -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 fi
 
 if [[ "$PDS_DEBUG_ENABLED" = "true" ]]; then

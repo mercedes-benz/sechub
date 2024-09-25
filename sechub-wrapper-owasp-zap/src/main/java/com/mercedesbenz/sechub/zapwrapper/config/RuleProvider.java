@@ -54,7 +54,7 @@ public class RuleProvider {
 
     private String readFileContent(File file) {
         try {
-            return reader.loadTextFile(file);
+            return reader.readTextFromFile(file);
         } catch (IOException e) {
             throw new ZapWrapperRuntimeException("Error reading file: " + file, e, ZapWrapperExitCode.IO_ERROR);
         }

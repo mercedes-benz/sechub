@@ -6,6 +6,7 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - GOSEC_VERSION=${GOSEC_VERSION}
             context: docker/
             dockerfile: GoSec-Debian.dockerfile
         env_file:

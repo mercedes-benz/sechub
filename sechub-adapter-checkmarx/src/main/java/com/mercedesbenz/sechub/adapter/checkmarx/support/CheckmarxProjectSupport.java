@@ -52,7 +52,7 @@ public class CheckmarxProjectSupport {
             context.setNewProject(false);
             return;
         } catch (HttpStatusCodeException e) {
-            if (e.getRawStatusCode() != 404) {
+            if (e.getStatusCode().value() != 404) {
                 /* only 404 - not found is accepted */
                 throw context.asAdapterException(
                         CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "HTTP status=" + e.getStatusCode() + " (expected was only 404 for non existing project)",

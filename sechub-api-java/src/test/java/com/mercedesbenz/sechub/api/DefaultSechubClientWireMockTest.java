@@ -151,7 +151,7 @@ public class DefaultSechubClientWireMockTest {
 
     private SecHubClient createTestClientWithExampleCredentials() {
         /* @formatter:off */
-        return DefaultSecHubClient.builder().
+        return OldDefaultSecHubClient.builder().
                 server(URI.create(wireMockRule.baseUrl())).
                 user(EXAMPLE_USER).
                 apiToken(EXAMPLE_TOKEN).

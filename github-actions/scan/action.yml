@@ -4,50 +4,63 @@ name: sechub scan
 description: 'a GitHub actions wrapper for SecHub security scan.'
 inputs:
   config-path:
-    description: 'Path to a custom sechub configuration file. If not set, a temporary file will be generated using the input parameters.'
+    description: 'Path to a custom SecHub configuration file. If not set, a temporary file will be generated using the input parameters.'
     required: false
   url:
-    description: 'SecHub server URL'
+    description: 'SecHub server URL (can alternatively provided via env variable or config file)'
     required: false
   api-token:
-    description: 'SecHub API Token'
+    description: 'SecHub API Token (can alternatively provided via env variable)'
     required: false
   user:
-    description: 'SecHub userid'
+    description: 'SecHub user ID (can alternatively provided via env variable or config file)'
     required: false
   project-name:
-    description: 'SecHub project name'
+    description: 'SecHub project name (can alternatively provided via env variable or config file)'
     required: false
   version:
     description: 'Which version of the SecHub client to use'
     required: false
-    default: '1.5.0'
-  scan-types: 
-    description: 'Scan types to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
+    default: 'latest'
+  add-scm-history:
+    description: 'Whether scm history should be uploaded or not'
+    required: false
+    default: false
+  scan-types:
+    description: 'Scan types to use for generated SecHub configuration file (ignored in the case of a custom configuration file). Supported types are: codeScan, licenseScan and secretScan. Can be combined by ,'
     required: false
     default: 'codeScan'
   content-type:
-    description: 'Content type to use for generated sechub configuration file (ignored in the case of a custom configuration file). Supported types: source, binaries. Cannot be combined.'
+    description: 'Content type to use for generated SecHub configuration file (ignored in the case of a custom configuration file). Supported types: source, binaries. Cannot be combined.'
     required: false
-    default: 'source'  
+    default: 'source'
   include-folders:
-    description: 'a list of folders to include (ignored in the case of a custom configuration file)'
+    description: 'A list of folders to include (ignored in the case of a custom configuration file)'
     required: false
     default: '.'
   exclude-folders:
-    description: 'a list of folders to exclude (ignored in the case of a custom configuration file)'
+    description: 'A list of folders to exclude (ignored in the case of a custom configuration file)'
     required: false
   report-formats:
-    description: 'a list of report formats to fetch'
-    required: true
+    description: 'A list of report formats to fetch'
+    required: false
     default: 'html,json'
+  trust-all:
+    description: 'Trust unknown HTTPS certificates'
+    required: false
+    default: false
   debug:
     description: 'SecHub debug output on/off'
     required: false
-    default: false
+    default: ${{ runner.debug == 1 }}
   fail-job-with-findings:
-    description: 'job will be marked as failed if sechub finds something'
-    required: true
+    description: 'Job will be marked as failed if SecHub finds something'
+    required: false
+    default: true
+  branch:
+    description: 'Branch of the SecHub repository to use for the scan action'
+    required: false
+    default: 'master'
 
 outputs:
   scan-trafficlight:
@@ -64,5 +77,95 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
-  using: 'node16'
-  main: './dist/index.js'
+  # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
+  # By doing this we don't have to manually build & check-in the artifacts anymore
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
+    - name: Cache SecHub GitHub Actions Scan Subdirectory
+      id: cache-sechub-github-actions-scan
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/sechub/github-actions/scan
+        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.repository }}
+        # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
+        # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
+
+    # Checkout the 'github-actions/scan' subfolder from the SecHub repository
+    # This contains the source code for the SecHub Scan GitHub Action
+    - name: Checkout SecHub GitHub Actions Scan with Git
+      # If the cache was a hit, we don't need to check out the repository again
+      if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
+      run: |
+        git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
+        cd sechub
+        git config core.sparseCheckout true
+             
+        echo "github-actions/scan/" >> .git/info/sparse-checkout
+        
+        git checkout
+      shell: bash
+
+    - name: Cache Node Modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
+        key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+          ${{ runner.os }}-sechub-github-actions-scan-node-
+          ${{ runner.os }}-   
+
+    - name: Npm Install
+      run: npm install
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
+    - name: Npm Run Build
+      run: npm run build
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
+    - name: Make index.js Executable
+      run: chmod +x dist/index.js
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
+    - name: Set GitHub Environment Variables
+      uses: actions/github-script@v7
+      env:
+        github-token: ${{ github.token }}
+      with:
+        script: |
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
+          core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
+          core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+
+    - name: Run SecHub Scan
+      run: node dist/index.js
+      env:
+        config-path: ${{ inputs.config-path }}
+        url: ${{ inputs.url }}
+        api-token: ${{ inputs.api-token }}
+        user: ${{ inputs.user }}
+        project-name: ${{ inputs.project-name }}
+        version: ${{ inputs.version }}
+        add-scm-history: ${{ inputs.add-scm-history }}
+        scan-types: ${{ inputs.scan-types }}
+        content-type: ${{ inputs.content-type }}
+        include-folders: ${{ inputs.include-folders }}
+        exclude-folders: ${{ inputs.exclude-folders }}
+        report-formats: ${{ inputs.report-formats }}
+        trust-all: ${{ inputs.trust-all }}
+        debug: ${{ inputs.debug }}
+        fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
+        ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
+        ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
+        ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash

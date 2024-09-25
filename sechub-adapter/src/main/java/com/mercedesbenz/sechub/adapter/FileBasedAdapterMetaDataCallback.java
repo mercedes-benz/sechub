@@ -31,7 +31,7 @@ public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback
     public void persist(AdapterMetaData metaData) {
         String metaDataJson = JSONConverter.get().toJSON(metaData);
         try {
-            writer.save(file, metaDataJson, true);
+            writer.writeTextToFile(file, metaDataJson, true);
         } catch (IOException e) {
             throw new IllegalStateException("Was not able to store meta data!", e);
         }
@@ -45,7 +45,7 @@ public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback
         }
         try {
 
-            String data = reader.loadTextFile(file);
+            String data = reader.readTextFromFile(file);
             if (data == null || data.isEmpty()) {
                 return null;
             }
