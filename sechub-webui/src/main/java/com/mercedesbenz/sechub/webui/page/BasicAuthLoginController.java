@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
 @Controller
-public class LoginController {
+public class BasicAuthLoginController {
 
-    @GetMapping(RequestConstants.LOGIN)
+    @GetMapping(RequestConstants.BASIC_AUTH_LOGIN)
     String login() {
-        return "login";
+        return "basic-auth-login";
     }
 }

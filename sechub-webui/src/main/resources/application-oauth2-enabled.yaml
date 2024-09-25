@@ -3,13 +3,15 @@ spring:
     oauth2:
       client:
         registration:
-          sechub:
+          mercedes-benz:
+            client-id: ${SECHUB_OAUTH2_CLIENT_ID}
+            client-secret: ${SECHUB_OAUTH2_CLIENT_SECRET}
             provider: ${SECHUB_OAUTH2_PROVIDER}
             authorization-grant-type: authorization_code
             scope: openid
             redirect-uri: ${SECHUB_OAUTH2_LOGIN_REDIRECT_URI}
         provider:
-          sechub:
+          mercedes-benz:
             issuer-uri: ${SECHUB_OAUTH2_ISSUER_URI}
             authorization-uri: ${SECHUB_OAUTH2_AUTHORIZATION_URI}
             token-uri: ${SECHUB_OAUTH2_TOKEN_URI}

@@ -1,38 +1,21 @@
-// SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.security;
+package com.mercedesbenz.sechub.webui;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 
-import com.mercedesbenz.sechub.webui.RequestConstants;
-
-@Configuration
+@TestConfiguration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfiguration {
-    private static final String[] PERMITTED_PATHS = { RequestConstants.BASIC_AUTH_LOGIN, RequestConstants.OAUTH_LOGIN, "/css/**", "/js/**", "/images/**" };
+public class SecurityTestConfiguration {
+    private static final String[] PERMITTED_PATHS = { "/auth/bauth/login", "/auth/oauth/login", "/css/**", "/js/**", "/images/**" };
 
     @Bean
-    @Profile("oauth2-enabled")
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        AuthenticationSuccessHandler authSuccessHandler = new ForwardAuthenticationSuccessHandler(RequestConstants.HOME);
-
-        return defaultHttpSecurity(httpSecurity)
-                /* Enable OAuth2 login */
-                .oauth2Login(oauth2 -> oauth2.successHandler(authSuccessHandler)).build();
-    }
-
-    @Bean
-    @Profile("local")
-    SecurityFilterChain securityFilterChainLocal(HttpSecurity httpSecurity) throws Exception {
         return defaultHttpSecurity(httpSecurity).build();
     }
 

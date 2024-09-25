@@ -1,10 +1,5 @@
 # SPDX-License-Identifier: MIT
-
-spring:
-  autoconfigure:
-    exclude:
-      # we do not want to have oauth2 client autoconfiguration in local mode
-      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+# This configuration is used for development and local testing. It uses a self-signed certificate provided by the build.
 
 server:
   ssl:

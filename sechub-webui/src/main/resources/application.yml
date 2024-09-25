@@ -14,8 +14,9 @@ spring:
     basename: "i18n/messages"
   profiles:
     group:
-      webui_prod: "webui_server,webui_oidc"
-      webui_dev: "webui_localserver,webui_mocked,webui_oidc"
-      webui_local: "webui_localserver,webui_mocked"
-      webui_test: "webui_test"
-      webui_integrationtest: "webui_localserver,webui_integrationtest-data"
+      webui_prod: "ssl-cert-required,oauth2-enabled"
+      webui_int: "ssl-cert-required,oauth2-enabled"
+      webui_dev: "ssl-cert-provided,basic-auth-mocked,oauth2-enabled"
+      webui_local: "ssl-cert-provided,basic-auth-mocked,local"
+      webui_test: "test"
+      webui_integrationtest: "ssl-cert-provided,integrationtest-data"

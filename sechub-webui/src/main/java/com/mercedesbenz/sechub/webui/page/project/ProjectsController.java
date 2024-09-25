@@ -12,11 +12,14 @@ import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 @Controller
 public class ProjectsController {
 
-    @Autowired
-    SecHubAccessService accessService;
+    private final SecHubAccessService accessService;
+    private final ProjectInfoService projectInfoService;
 
     @Autowired
-    ProjectInfoService projectInfoService;
+    public ProjectsController(SecHubAccessService accessService, ProjectInfoService projectInfoService) {
+        this.accessService = accessService;
+        this.projectInfoService = projectInfoService;
+    }
 
     @GetMapping(value = { RequestConstants.ROOT, RequestConstants.PROJECTS })
     String index(Model model) {

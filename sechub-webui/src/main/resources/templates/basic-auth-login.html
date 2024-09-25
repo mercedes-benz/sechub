@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="https://www.thymeleaf.org">
 <head>
-<title>Please Log In</title>
+<title>Log In with Basic Auth</title>
 <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="container-flex flex-column">
@@ -11,7 +11,7 @@
 		<h1>Please Log In</h1>
 		<div th:if="${param.error}">Invalid username or password.</div>
 		<div th:if="${param.logout}">You have been logged out.</div>
-		<form th:action="@{/login}" method="post">
+		<form th:action="@{/auth/bauth/login}" method="post">
 			<div>
 				<label for="username">Username: </label> <input id="username"
 					type="text" name="username" placeholder="Username" />

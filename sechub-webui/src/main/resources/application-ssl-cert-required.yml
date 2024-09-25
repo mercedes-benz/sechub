@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: MIT
+# This configuration is used for prod and int. It requires a valid certificate to be provided through the environment variables.
+
 server:
   ssl:
     keyStoreType:

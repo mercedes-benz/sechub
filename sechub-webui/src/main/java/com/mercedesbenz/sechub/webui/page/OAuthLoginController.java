@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.page;
 
-import com.mercedesbenz.sechub.webui.RequestConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
-public class OidcLoginController {
+import com.mercedesbenz.sechub.webui.RequestConstants;
 
-    @GetMapping(RequestConstants.LOGIN_OIDC)
+@Controller
+public class OAuthLoginController {
+
+    @GetMapping(RequestConstants.OAUTH_LOGIN)
     String login() {
-        return "login";
+        return "oauth-login";
     }
 }
