@@ -516,6 +516,6 @@ func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
 
 func validateAddScmHistory(context *Context)  {
 	if context.config.addSCMHistory && len(context.sechubConfig.SecretScan.Use) == 0 {
-		sechubUtil.LogWarning("You chose to append the SCM history but do no secretScan. SCM history will not be uploaded to SecHub.")
+		sechubUtil.LogWarning("You chose to append the SCM history but have configured no secretScan. The SCM history is not uploaded to SecHub.")
 	}
 }
