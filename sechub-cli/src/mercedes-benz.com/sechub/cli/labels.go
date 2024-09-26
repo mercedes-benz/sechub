@@ -38,10 +38,6 @@ func addLabelToList(list map[string]string, labelDefinition string, overrideIfEx
 // in the sechub config JSON (context.contentToSend) by context.config.labels
 func applyLabelsToConfigJson(context *Context) error {
 	var err error
-	if len(context.config.labels) == 0 {
-		// Nothing to do when context.config.labels is empty
-		return err
-	}
 
 	// Unmarshal the JSON into a map structure
 	// because when using SecHubConfig struct then all new serverside json options have to be added to the client struct

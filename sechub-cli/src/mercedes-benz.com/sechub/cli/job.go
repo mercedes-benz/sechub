@@ -164,7 +164,12 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 }
 
 func getSecHubJobList(context *Context, size int) {
-	// request SecHub job state from server
+	// Print filtering labels if defined
+	for key, value := range context.config.labels {
+		sechubUtil.LogNotice("Label match "+key+"="+value)
+	}	
+
+	// Request SecHub job list from server
 	response := sendWithDefaultHeader("GET", buildGetSecHubJobListAPICall(context, size), context)
 
 	data, err := io.ReadAll(response.Body)
@@ -213,6 +218,7 @@ func printLatestJobsOfProject(context *Context) {
 	// get latest jobs into context.jobList
 	getSecHubJobList(context, SizeOfJobList)
 
+	// Print result table
 	printFormat := "%-36s | %-6s | %-8s | %-6s | %-19s | %-19s\n"
 	fmt.Printf(printFormat, "SecHub JobUUID", "Status", "Stage", "Result", "Created", "Ended")
 	fmt.Println("-------------------------------------+--------+----------+--------+---------------------+--------------------")

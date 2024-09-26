@@ -85,7 +85,7 @@ func prepareOptionsFromCommandline(config *Config) {
 		fileOption, "", "Defines file to read from for actions '"+defineFalsePositivesAction+"', '"+markFalsePositivesAction+"', '"+interactiveMarkFalsePositivesAction+"', '"+unmarkFalsePositivesAction+"'")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
-	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
+	flag.Func(labelOption, "Define a `SecHub label` for scan or for list filtering. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
 		var err error
 		config.labels, err = addLabelToList(config.labels, s, true)
 		if err != nil {

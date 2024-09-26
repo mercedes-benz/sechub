@@ -20,13 +20,17 @@ func InitializeContext() *Context {
 	printLogoWithVersion(context)
 
 	/* load configuration file - maybe there are some settings normally done by cli arguments too */
-	if context.config.action != showHelpAction {
+	if context.config.action != showHelpAction && context.config.action != showVersionAction {
 		loadConfigFile(context)
 	}
 
-	// Add labels defined via cmdline args or env var to config JSON (only for scan jobs)
-	if len(context.config.labels) > 0 && (context.config.action == scanAction || context.config.action == scanAsynchronAction) {
-		err := applyLabelsToConfigJson(context)
+	// Add labels defined via cmdline args or env var to config JSON (only for job related client actions)
+	if context.config.action == scanAction ||
+	   context.config.action == scanAsynchronAction ||
+		 context.config.action == listJobsAction ||
+		 context.config.action == getReportAction ||
+		 context.config.action == getStatusAction {
+			err := applyLabelsToConfigJson(context)
 		if err != nil {
 			sechubUtil.LogError("Error while processing labels: " + err.Error())
 		}

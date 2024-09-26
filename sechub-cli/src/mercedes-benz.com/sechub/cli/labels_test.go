@@ -145,6 +145,40 @@ func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
 	// context.contentToSend: {"apiVersion":"1.0","metaData":{"labels":{"key1":"value1x","key2":"value2"}},"project":"myproject"}
 }
 
+func Example_applyLabelsToConfigJson_with_labels_section_only_in_json() {
+	// PREPARE
+	var context Context
+	var config Config
+	context.config = &config
+
+	sechubJSON := `
+  {
+    "apiVersion": "1.0",
+    "project": "myproject",
+    "metaData": {
+      "labels": {
+        "key1": "value1",
+        "key2": "value2"
+      }
+    }
+  }
+  `
+	context.contentToSend = []byte(sechubJSON)
+
+	// Lables are empty
+	labels := map[string]string{}
+	context.config.labels = labels
+
+	// EXECUTE
+	applyLabelsToConfigJson(&context)
+
+	// TEST
+	fmt.Printf("labels: %+v\n", context.config.labels)
+
+	// Output:
+	// labels: map[key1:value1 key2:value2]
+}
+
 func Example_applyLabelsToConfigJson_without_labels_section_in_json() {
 	// PREPARE
 	var context Context
