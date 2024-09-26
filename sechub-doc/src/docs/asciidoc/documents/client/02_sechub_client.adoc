@@ -155,7 +155,8 @@ sechub getStatus
 ----
 
 TIP: Defaults to latest job. +
-     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}` +
+     This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
 ===== getReport
 Will fetch the report as json. (result will only exist when job is done)
@@ -166,7 +167,8 @@ sechub getReport
 ----
 
 TIP: Defaults to latest finished job. +
-     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}` +
+     This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
 TIP: With `-output ${file-or-directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
@@ -182,7 +184,8 @@ sechub listJobs
 
 TIP: This might be useful for an overview or +
      when you want to see your project's scan job queue or +
-     to find out the job UUID of a certain job.
+     to find out the job UUID of a certain job. +
+     This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
 
 ===== defineFalsePositives
@@ -296,6 +299,7 @@ include::sechub_client_falsepositive_list_example_unmark_jobData+projectData.jso
 TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be easier to use
 
 
+[[client-configuration-overview]]
 ==== Configuration overview
 Basically parameters can be passed to the `{sechub}` client in three ways:
 
@@ -349,7 +353,7 @@ In below table, there is an overview of what can be defined where.
 - `-jobUUID <string>` +
   `{sechub}` job uuid. Optional for actions <<getStatus>> or <<getReport>>
 - `-label <label definition>` +
-  Define a SecHub label for the scan job. (Example: "key1=value1") Repeat to define multiple labels.
+  Define a SecHub label for scan or filtering. (Example: "key1=value1") Repeat to define multiple labels.
 - `-output <path to folder or file>` +
   Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)
 - `-project <string>` +
@@ -381,7 +385,7 @@ Additionally to above cmdline options, you can set some values also via environm
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_LABELS` +
-  Define one or more labels for the scan job. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also `-label` option) +
+  Define one or more labels for scan or filtering. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also `-label` option) +
   Example: `export SECHUB_LABELS="key1=test 1,key2=test 2"`
 - `SECHUB_PROJECT` +
   The SecHub project id. (same as `-project` option)
