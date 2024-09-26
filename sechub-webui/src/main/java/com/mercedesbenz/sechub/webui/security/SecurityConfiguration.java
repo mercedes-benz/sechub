@@ -8,9 +8,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
@@ -18,16 +18,19 @@ import com.mercedesbenz.sechub.webui.RequestConstants;
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfiguration {
-    private static final String[] PERMITTED_PATHS = { RequestConstants.BASIC_AUTH_LOGIN, RequestConstants.OAUTH_LOGIN, "/css/**", "/js/**", "/images/**" };
+    private static final String[] PUBLIC_PATHS = { RequestConstants.BASIC_AUTH_LOGIN, RequestConstants.OAUTH_LOGIN, "/css/**", "/js/**", "/images/**" };
 
     @Bean
     @Profile("oauth2-enabled")
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        AuthenticationSuccessHandler authSuccessHandler = new ForwardAuthenticationSuccessHandler(RequestConstants.HOME);
+        AuthenticationSuccessHandler oAuth2SuccessHandler = new OAuth2SuccessHandler();
+        MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient();
 
         return defaultHttpSecurity(httpSecurity)
-                /* Enable OAuth2 login */
-                .oauth2Login(oauth2 -> oauth2.successHandler(authSuccessHandler)).build();
+                /* Enable OAuth2 */
+                .oauth2Login(oauth2 -> oauth2.tokenEndpoint(token -> token.accessTokenResponseClient(mercedesBenzOAuth2AccessTokenClient))
+                        .successHandler(oAuth2SuccessHandler))
+                .build();
     }
 
     @Bean
@@ -39,8 +42,11 @@ class SecurityConfiguration {
     private static HttpSecurity defaultHttpSecurity(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(exchanges -> exchanges
                 /* Allow access to public paths */
-                .requestMatchers(PERMITTED_PATHS).permitAll()
+                .requestMatchers(PUBLIC_PATHS).permitAll()
                 /* Protect all other paths */
-                .anyRequest().authenticated());
+                .anyRequest().authenticated())
+                /* Enable stateful sessions */
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
     }
 }

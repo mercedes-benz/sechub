@@ -9,7 +9,7 @@ spring:
             provider: ${SECHUB_OAUTH2_PROVIDER}
             authorization-grant-type: authorization_code
             scope: openid
-            redirect-uri: ${SECHUB_OAUTH2_LOGIN_REDIRECT_URI}
+            redirect-uri: ${SECHUB_WEBUI_OAUTH2_LOGIN_REDIRECT_URI}
         provider:
           mercedes-benz:
             issuer-uri: ${SECHUB_OAUTH2_ISSUER_URI}

@@ -5,7 +5,5 @@
 
 spring:
   config:
-    activate:
-      on-profile: local
     import:
       - optional:classpath:application-local.${USER}.yml

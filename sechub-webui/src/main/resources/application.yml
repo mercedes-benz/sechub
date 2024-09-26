@@ -20,3 +20,9 @@ spring:
       webui_local: "ssl-cert-provided,basic-auth-mocked,local"
       webui_test: "test"
       webui_integrationtest: "ssl-cert-provided,integrationtest-data"
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
