@@ -110,8 +110,7 @@ public class SigTermSimulationJobScenario11IntTest {
                 // IMPORTANT:
                 // -----------
                 // we MUST ensure termination service reset is done to avoid cross site effects
-                // on other
-                // tests when reset was not called in former try block!
+                // on other tests when reset was not called in former try block!
                 resetSecHubTerminationService();
             }
         }

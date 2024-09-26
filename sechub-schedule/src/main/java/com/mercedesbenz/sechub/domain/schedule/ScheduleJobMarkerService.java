@@ -22,6 +22,8 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerNextJobResolver;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
 /**
  * This service is only responsible to mark next {@link ScheduleSecHubJob} to
@@ -49,20 +51,21 @@ public class ScheduleJobMarkerService {
      *         be executed
      */
     @Transactional
+    @UseCaseSystemResumesSuspendedJobs(@Step(number = 3, name = "Mark next job to execute", description = "When a suspended job is the next one, the job execution state will be changed to RESUMING"))
     public ScheduleSecHubJob markNextJobToExecuteByThisInstance() {
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("Trigger execution of next job started");
         }
 
-        UUID nextJobId = nextJobResolver.resolveNextJob();
+        UUID nextJobId = nextJobResolver.resolveNextJobUUID();
         if (nextJobId == null) {
             return null;
         }
 
         Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJobWhenExecutable(nextJobId);
         if (!secHubJobOptional.isPresent()) {
-            LOG.warn("Did not found job for next job UUID:{}", nextJobId);
+            LOG.error("Did not found executablejob for next job UUID:{}. This is very problematic and should never happen!", nextJobId);
             return null;
         }
         ScheduleSecHubJob secHubJob = secHubJobOptional.get();
@@ -70,6 +73,7 @@ public class ScheduleJobMarkerService {
 
         if (ExecutionState.SUSPENDED.equals(state)) {
             secHubJob.setExecutionState(ExecutionState.RESUMING);
+            secHubJob.setEnded(null); // reset end timestamp, because no longer "ended"
         } else {
             secHubJob.setExecutionState(ExecutionState.STARTED);
             secHubJob.setStarted(LocalDateTime.now());

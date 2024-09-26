@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionSer
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 /**
  * This class is the primary part for triggering product execution. It is run
@@ -85,7 +85,6 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
 
     public void cancelScanJob() {
         SecHubExecutionContext executionContext = runnableData.getExecutionContext();
-        /* FIXME Albert Tregnaghi, 2024-09-24: check this behavior */
         Thread executorThread = runnableData.getScanJobExecutionThread();
 
         executionContext.markCancelRequested(); // Using this method, the cancel request can be checked in multiple threads
@@ -96,7 +95,7 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
 
     }
 
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 5, name = "Scan job executable handles SUSPEND state", description = "Scan job executable stops execution because suspended"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 5, name = "Scan job executable handles SUSPEND state", description = "Scan job executable stops execution because suspended"))
     public void suspend() {
         Thread executorThread = runnableData.getScanJobExecutionThread();
 

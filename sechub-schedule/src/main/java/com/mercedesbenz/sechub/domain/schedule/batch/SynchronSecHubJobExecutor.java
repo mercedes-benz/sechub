@@ -35,7 +35,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKey;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 /**
  * This component executes SecHub jobs in own worker threads (means
@@ -138,7 +138,7 @@ public class SynchronSecHubJobExecutor {
      * Suspends execution: will stop executing any new triggered job and also mark
      * the current running to be suspended.
      */
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 2, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 2, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
     public void suspend() {
         // mark this executor to no longer accept new entries
         suspended = true;
@@ -222,7 +222,7 @@ public class SynchronSecHubJobExecutor {
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_SUSPENDED)
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 6, name = "Inform listeners", description = "Inform listeners about job suspension"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 6, name = "Inform listeners", description = "Inform listeners about job suspension"))
     private void sendJobSuspended(SchedulerSecHubJobRuntimeData data, TrafficLight trafficLight) {
         sendJobInfoWithTrafficLight(MessageDataKeys.JOB_SUSPENDED_DATA, data, MessageID.JOB_SUSPENDED, trafficLight);
     }

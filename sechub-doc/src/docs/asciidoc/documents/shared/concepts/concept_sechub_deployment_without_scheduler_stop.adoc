@@ -8,31 +8,45 @@ the deployment was triggered and after this the scheduler was enabled again and 
 started again.
 
 This works always, but has a catch: If there are many running jobs it can take a while until all
-of those running jobs are done. And also in the mean time no new jobs are started. This means that 
-when we have a great count of running jobs, the time gap between deployment and start of new
+of those running jobs are done. And also in the mean time no new jobs are started. This means that, 
+if we have a great count of running jobs, the time gap between deployment and start of new
 jobs increases. 
 
 CI/CD builds or any other use of SecHub takes longer in the meantime, which can be unpleasant /
 a bad user experience.
 
-===== SIGTERM handling
-
-plantuml::diagrams/diagram_sechub_sigterm_handling.puml[format=svg, title="SIGTERM handling"] 
+[[section-shared-concepts-stop-job-processing-on-sigterm]]
+===== Stop job processing when SIGTERM received
 
 K8s and other systems will send a `SIGTERM` signal to give application the possibility to shutdown
 gracefully. 
 
-On a `SIGTERM` signal {sechub} temporarily suspends a job, allowing its {pds} instances to continue 
-processing it in the background. The next new SecHub server then reactivates the job and proceeds 
-with the results from the {pds} instances (or wait for them if still not already available).
+On a `SIGTERM` signal a {sechub} server instance temporarily suspends a job, allowing its {pds} 
+instances to continue processing it in the background. 
 
-All running {sechub} jobs on terminating instance are marked with execution state `SUSPENDED` +
-(similar to cancel) which will also update `ENDED` timestamp on job.
+All running {sechub} jobs on terminating instance will be interrupted, marked with execution state
+`SUSPENDED` and set `ENDED` time stamp as shown in next figure:
 
-Other servers instances will restart `SUSPENDED` jobs by existing 
-<<section-shared-concepts-sechub-job-restart-handling,restart mechanism>>  (but `SUSPENDED` will 
-be handled before `READY_TO_START`).
+plantuml::diagrams/diagram_sechub_sigterm_handling.puml[format=svg, title="SIGTERM handling"] 
+
+See also <<section-usecase-UC_079,UC-079>> 
+
+[NOTE]
+====
+The next new SecHub server will <<section-shared-concepts-resume-suspended-jobs,resume the suspended job>>
+and proceeds with the results from the {pds} instances (or wait for them if still not already available).
+====
+
+[[section-shared-concepts-resume-suspended-jobs]]
+===== Resume suspended jobs
+The batch trigger service does trigger the resume operation which leads to `REQUEST_RESTART_JOB` event
+which <<section-shared-concepts-sechub-job-restart-handling, restarts the job>>.
 
 To prevent too fast restarts, the `ENDED` timestamp of {sechub} job will be inspected on suspended jobs
 and only fetched as next job when the time gap is greater than a defined (configurable) time period. 
 
+ 
+plantuml::diagrams/diagram_sechub_resume_suspended_jobs.puml[format=svg, title="Resuming suspended jobs]
+
+
+See also <<section-usecase-UC_080,UC-080>> 

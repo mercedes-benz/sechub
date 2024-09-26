@@ -31,7 +31,13 @@ public class SchedulerStrategyProvider {
 
     private SchedulerStrategyId currentStrategyId;
 
-    public SchedulerStrategy build() {
+    /**
+     * Provides the strategy for the scheduler. The strategy type is be defined by
+     * {@link #currentStrategyId} on server start.
+     *
+     * @return strategy for scheduler
+     */
+    public SchedulerStrategy getStrategy() {
 
         SchedulerStrategyId strategy = SchedulerStrategyId.getByIdentifier(strategyIdentifier);
 

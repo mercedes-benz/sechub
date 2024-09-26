@@ -38,7 +38,7 @@ class SchedulerNextJobResolverTest {
         resolverToTest.encryptionService = encryptionService;
         resolverToTest.schedulerStrategyProvider = schedulerStrategyProvider;
 
-        when(schedulerStrategyProvider.build()).thenReturn(strategy);
+        when(schedulerStrategyProvider.getStrategy()).thenReturn(strategy);
     }
 
     @Test
@@ -50,7 +50,7 @@ class SchedulerNextJobResolverTest {
                 .thenReturn(Optional.of(jobUUID));
 
         /* execute */
-        UUID result = resolverToTest.resolveNextJob();
+        UUID result = resolverToTest.resolveNextJobUUID();
 
         /* test */
         verify(jobRepository, never()).nextJobIdToExecuteSuspended(anySet(), anyLong());
@@ -67,7 +67,7 @@ class SchedulerNextJobResolverTest {
                 .thenReturn(Optional.of(jobUUID));
 
         /* execute */
-        UUID result = resolverToTest.resolveNextJob();
+        UUID result = resolverToTest.resolveNextJobUUID();
 
         /* test */
         verify(jobRepository).nextJobIdToExecuteSuspended(currentEncryptionPoolIds, resolverToTest.minimumSuspendDurationInMilliseconds);
@@ -85,7 +85,7 @@ class SchedulerNextJobResolverTest {
         when(strategy.nextJobId(currentEncryptionPoolIds)).thenReturn(Optional.of(jobUUID));
 
         /* execute */
-        UUID result = resolverToTest.resolveNextJob();
+        UUID result = resolverToTest.resolveNextJobUUID();
 
         /* test */
         verify(jobRepository).nextJobIdToExecuteSuspended(currentEncryptionPoolIds, resolverToTest.minimumSuspendDurationInMilliseconds);
@@ -103,7 +103,7 @@ class SchedulerNextJobResolverTest {
         when(strategy.nextJobId(currentEncryptionPoolIds)).thenReturn(Optional.empty());
 
         /* execute */
-        UUID result = resolverToTest.resolveNextJob();
+        UUID result = resolverToTest.resolveNextJobUUID();
 
         /* test */
         verify(jobRepository).nextJobIdToExecuteSuspended(currentEncryptionPoolIds, resolverToTest.minimumSuspendDurationInMilliseconds);

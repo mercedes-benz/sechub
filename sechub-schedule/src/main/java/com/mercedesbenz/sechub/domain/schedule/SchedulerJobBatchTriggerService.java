@@ -24,7 +24,7 @@ import com.mercedesbenz.sechub.sharedkernel.cluster.ClusterEnvironmentService;
 import com.mercedesbenz.sechub.sharedkernel.logging.AlertLogService;
 import com.mercedesbenz.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
 import jakarta.annotation.PostConstruct;
 
@@ -105,7 +105,7 @@ public class SchedulerJobBatchTriggerService {
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @UseCaseSchedulerStartsJob(@Step(number = 1, name = "Scheduling", description = "Fetches next schedule job from queue and trigger execution."))
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 7, name = "Scheduling", description = "When a suspended job exists which shall be executed again, it will be marked as SUSPENDED and a restart will be triggered"))
+    @UseCaseSystemResumesSuspendedJobs(@Step(number = 1, name = "Schedule suspended jobs", description = "Scheduler checks not only for new jobs but also for resumed ones."))
     public void triggerExecutionOfNextJob() {
         if (LOG.isTraceEnabled()) {
             /* NOSONAR */LOG.trace("Trigger execution of next job started. Environment: {}", environmentService.getEnvironment());

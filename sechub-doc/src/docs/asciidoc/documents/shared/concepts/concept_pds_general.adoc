@@ -28,6 +28,20 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
 - PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
 - When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
 
-===== Big picture
+===== Communication between SecHub and PDS
+The communication between SecHub server and PDS is very similar to the communication between SecHub client and SecHub server.
+The `PDS adapter` will do following steps from {sechub} side - as a client of {pds}:
+
+. creates a {pds} job
+. _(Optional: Only necessary when {pds} does not resuse {sechub} storage)_ uploads sources and/or binaries to {pds}
+. approves {pds} job
+. waits until {pds} job has finished
+. downloads {pds} report data
+
+As shown in next figure: 
+
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 
+==== Details about PDS
+For more details please refer to the <<https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html,PDS documentation>>  available at
+ 

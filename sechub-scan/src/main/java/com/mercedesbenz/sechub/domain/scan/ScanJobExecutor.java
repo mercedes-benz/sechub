@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.sharedkernel.NullProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.ProgressState;
 import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 /**
  * Finally executes the scan job
@@ -57,7 +57,7 @@ class ScanJobExecutor {
      *
      * @throws SecHubExecutionException
      */
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 4, name = "Scan job executor stops suspended jobs", description = "Scheduler instance has marked jobs as suspended. Will stop execution of scans of these jobs"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 4, name = "Scan job executor stops suspended jobs", description = "Scheduler instance has marked jobs as suspended. Will stop execution of scans of these jobs"))
     void startScanAndInspectCancelRequests() throws SecHubExecutionException {
         SecHubExecutionOperationType operationType = context.getOperationType();
         if (!SecHubExecutionOperationType.SCAN.equals(operationType)) {
@@ -71,8 +71,7 @@ class ScanJobExecutor {
 
         ScanJobExecutionRunnable scanJobExecutionRunnable = new ScanJobExecutionRunnable(runnableData);
         // In next line we add "-scan" to end of thread name, to have info in logging
-        // when
-        // thread name is reduced
+        // when thread name is reduced
         String threadName = SECHUB_SCAN_THREAD_PREFIX + sechubJobUUID + "-scan";
         Thread executorThread = new Thread(scanJobExecutionRunnable, threadName);
         runnableData.setScanJobExecutionThread(executorThread);

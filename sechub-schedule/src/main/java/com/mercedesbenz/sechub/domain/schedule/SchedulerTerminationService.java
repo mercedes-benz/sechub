@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 import jakarta.annotation.PreDestroy;
 
@@ -25,7 +25,7 @@ public class SchedulerTerminationService {
     private boolean terminating;
 
     @PreDestroy
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 1, name = "Scheduler terminates", description = "Scheduler instance is terminating. Will stop processing new jobs and inform job executor to suspend"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 1, name = "Scheduler terminates", description = "Scheduler instance is terminating. Will stop processing new jobs and inform job executor to suspend"))
     public void terminate() {
 
         LOG.info("Start termination process");

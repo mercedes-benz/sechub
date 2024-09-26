@@ -12,11 +12,13 @@ import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionServ
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
 @Component
 public class SchedulerNextJobResolver {
 
-    private static final long DEFAULT_MIN_SUSPED_DURATION = 1000;
+    private static final long DEFAULT_MIN_SUSPEND_DURATION_MILLISECONDS = 60 * 1000; // 60 seconds
 
     @Autowired
     ScheduleEncryptionService encryptionService;
@@ -27,7 +29,7 @@ public class SchedulerNextJobResolver {
     @Autowired
     SchedulerStrategyProvider schedulerStrategyProvider;
 
-    @Value("${sechub.scheduler.nextjob.suspend.miniumumduration.milliseconds:" + DEFAULT_MIN_SUSPED_DURATION + "}")
+    @Value("${sechub.schedule.nextjob.suspend.miniumum-duration.milliseconds:" + DEFAULT_MIN_SUSPEND_DURATION_MILLISECONDS + "}")
     @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_SCHEDULE, value = """
             The scheduler automatically restarts the next suspended jobs, regardless of the defined schedule strategy.
             This is done to get suspended jobs of another shut down instance back up and running as quickly as possible.
@@ -49,9 +51,16 @@ public class SchedulerNextJobResolver {
      * @param strategy strategy to use when there are no suspended jobs
      * @return uuid of job or <code>null</code> if there is no job to execute
      */
-    public UUID resolveNextJob() {
+    @UseCaseSystemResumesSuspendedJobs(@Step(number = 2, name = "Resolve next job", description = """
+            Resolves UUID of job which shall be executed at next time. If there is a suspended job and shall be resumed
+            this job will be returned. Otherwise the selected schedule strategy will be used to determine next job uuid.
 
-        SchedulerStrategy schedulerStrategy = schedulerStrategyProvider.build();
+            Remark: A suspended job shall only be executed when the minium duration time has been
+            reached. The time period can be configured and prevents cross site effects at deployments.
+            """))
+    public UUID resolveNextJobUUID() {
+
+        SchedulerStrategy schedulerStrategy = schedulerStrategyProvider.getStrategy();
 
         Set<Long> supportedPoolIds = encryptionService.getCurrentEncryptionPoolIds();
 

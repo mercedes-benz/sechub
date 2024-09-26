@@ -36,7 +36,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
@@ -87,7 +87,7 @@ public class ScanService implements SynchronMessageHandler {
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_SUSPENDED, answeringTo = MessageID.START_SCAN, branchName = "suspended")
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 3, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 3, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;

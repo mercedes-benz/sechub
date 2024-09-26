@@ -49,20 +49,20 @@ public class ScheduleJobMarkerServiceTest {
         serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        verify(nextJobResolver).resolveNextJob();
+        verify(nextJobResolver).resolveNextJobUUID();
     }
 
     @Test
     public void markNextJobExecutedByThisPOD__next_job_found_updates_execution_state_to_started() throws Exception {
         /* prepare */
-        when(nextJobResolver.resolveNextJob()).thenReturn(uuid);
+        when(nextJobResolver.resolveNextJobUUID()).thenReturn(uuid);
         when(jobRepository.save(secHubJob)).thenReturn(secHubJob);
 
         /* execute */
         ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        verify(nextJobResolver).resolveNextJob();
+        verify(nextJobResolver).resolveNextJobUUID();
         verify(jobRepository).save(secHubJob);
 
         verify(secHubJob).setStarted(any());
@@ -74,13 +74,13 @@ public class ScheduleJobMarkerServiceTest {
     @Test
     public void markNextJobExecutedByThisPOD__next_job_not_found() throws Exception {
         /* prepare */
-        when(nextJobResolver.resolveNextJob()).thenReturn(null);
+        when(nextJobResolver.resolveNextJobUUID()).thenReturn(null);
 
         /* execute */
         ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        verify(nextJobResolver).resolveNextJob();
+        verify(nextJobResolver).resolveNextJobUUID();
         verifyNoInteractions(jobRepository);
         assertEquals(null,result);
     }

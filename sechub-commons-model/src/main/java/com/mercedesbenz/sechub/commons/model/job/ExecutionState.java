@@ -6,8 +6,8 @@ import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 /**
  * Represents the execution state of a scheduled SecHub job.
  *
- * Attention: never change the enum values because they are used for persistence
- * as identifiers!
+ * Attention: never change existing enum values because they are used for
+ * persistence as identifiers! Only add new ones!
  *
  * @author Albert Tregnaghi
  *

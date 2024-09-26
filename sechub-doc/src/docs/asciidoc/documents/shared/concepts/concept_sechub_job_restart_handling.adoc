@@ -9,7 +9,10 @@ similar: Each adapter is able to store meta data for the current job via callbac
 is also responsible to handle existing meta data on restarts.
 
 plantuml::diagrams/diagram_sechub_job_restart_handling.puml[format=svg, title="Job restart handling"] 
- 
+
+The event `REQUEST_RESTART_JOB` is also triggered when the batch trigger services
+ <<section-shared-concepts-resume-suspended-jobs,resumes suspended jobs>>. 
+
 [TIP]
 ====
 It is always a good idea to use {pds} instead of direct product handling (via dedicated

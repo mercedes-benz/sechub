@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
-import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemHandlesSIGTERM;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 @Component
 public class JobAdministrationMessageHandler implements AsynchronMessageHandler {
@@ -92,7 +92,7 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
     }
 
     @IsReceivingAsyncMessage(MessageID.JOB_SUSPENDED)
-    @UseCaseSystemHandlesSIGTERM(@Step(number = 7, name = "Administration handles suspension", description = "Administration removes suspended  listeners about job suspension"))
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 7, name = "Administration handles suspended job", description = "Administration domain removes suspended job from its running job list"))
     private void handleJobSuspended(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_SUSPENDED_DATA);
         // we do drop job info - we only hold running and waiting jobs. The suspended

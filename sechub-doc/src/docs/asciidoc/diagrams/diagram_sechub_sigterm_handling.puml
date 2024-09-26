@@ -8,27 +8,23 @@ hide empty methods
 
 package com.mercedesbenz.sechub.domain.scan {
 	
-	class ScanProgressMonitor 
+	class ScanProgressStateFetcher 
 	 
 	class ScanJobExecutor {
 	
 	}
 	 
-	class ScanJobExecutionRunnable{
+	class ScanJobExecutionRunnable {
 	
 	}
-	class ScanMessageHandler
 }
 
 
 
 package com.mercedesbenz.sechub.domain.schedule {
 
-	class ScheduleMessageHandler {
-		handleJobRestartRequested()
-	}
-	
 	class SynchronSecHubJobExecutor {
+	   void suspend()
 	}
 	
 	class SchedulerTerminationService {
@@ -40,6 +36,10 @@ package com.mercedesbenz.sechub.domain.schedule {
 	   void triggerExecutionOfNextJob()
 	}
 	
+	class SchedulerJobStatusRequestHandler {
+	   DomainMessageSynchronousResult returnStatus();
+	}
+	
 	database DB {
     	entity ScheduleSecHubJob {
     	}
@@ -48,7 +48,8 @@ package com.mercedesbenz.sechub.domain.schedule {
 }
 
 SchedulerJobBatchTriggerService ..> SchedulerTerminationService 
-SchedulerTerminationService -> ScheduleSecHubJob : persists with execution state\n`SUSPENDED`
+SynchronSecHubJobExecutor -> ScheduleSecHubJob : persists with execution state\n`SUSPENDED`
+
 
 node EventBus {
 }
@@ -56,17 +57,24 @@ node EventBus {
 node springcontainer as "Spring boot container" {
 }
 
-springcontainer ..> SchedulerTerminationService: PreDestroy\ncalls terminate()
+cloud OS {
+
+}
+OS -[#red,bold]> springcontainer: SIGTERM
+springcontainer -[#red,bold]> SchedulerTerminationService: PreDestroy\ncalls terminate()
+
+ScanProgressStateFetcher ...> EventBus : REQUEST_SCHEDULER_JOB_STATUS
+EventBus ...> SchedulerJobStatusRequestHandler: REQUEST_SCHEDULER_JOB_STATUS
+ScanJobExecutor -> ScanProgressStateFetcher 
+ScanJobExecutor --> ScanJobExecutionRunnable: suspends
+
+SchedulerTerminationService --> SynchronSecHubJobExecutor
+SchedulerJobStatusRequestHandler ... ScheduleSecHubJob : reads
 
 note top of SchedulerJobBatchTriggerService
 Blocks execution of any new jobs 
 inside the scheduler instance when
 isTerminating() returns true
 end note 
-
-note bottom of SchedulerTerminationService
-Only the schedule domain is allowed to update
-the job state! After the job state TODO
-end note
 
 @enduml
