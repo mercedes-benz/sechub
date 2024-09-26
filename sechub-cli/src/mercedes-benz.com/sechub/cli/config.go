@@ -298,6 +298,9 @@ func assertValidConfig(context *Context) {
 	if !validateOutputLocation(context.config) {
 		errorsFound = true
 	}
+	if context.config.addSCMHistory {
+		validateAddScmHistory(context)
+	}
 
 	if context.config.action == interactiveMarkFalsePositivesAction && context.config.file == "" {
 		// Let's try to find the latest report (default naming scheme) and take this as file
@@ -508,5 +511,11 @@ func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
 	if len(os.Args) > MaximumNumberOfCMDLineArguments {
 		os.Args = os.Args[0:MaximumNumberOfCMDLineArguments]
 		sechubUtil.LogWarning(fmt.Sprintf("Too many commandline arguments. Capping to %d.", MaximumNumberOfCMDLineArguments))
+	}
+}
+
+func validateAddScmHistory(context *Context)  {
+	if context.config.addSCMHistory && len(context.sechubConfig.SecretScan.Use) == 0 {
+		sechubUtil.LogWarning("You chose to append the SCM history but have configured no secretScan. The SCM history is not uploaded to SecHub.")
 	}
 }
