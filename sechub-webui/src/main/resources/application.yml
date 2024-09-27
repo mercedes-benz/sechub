@@ -16,7 +16,7 @@ spring:
     group:
       webui_prod: "ssl-cert-required,oauth2-enabled"
       webui_int: "ssl-cert-required,oauth2-enabled"
-      webui_dev: "ssl-cert-provided,basic-auth-mocked,oauth2-enabled"
+      webui_dev: "ssl-cert-provided,basic-auth-mocked"
       webui_local: "ssl-cert-provided,basic-auth-mocked,local"
       webui_test: "test"
       webui_integrationtest: "ssl-cert-provided,integrationtest-data"

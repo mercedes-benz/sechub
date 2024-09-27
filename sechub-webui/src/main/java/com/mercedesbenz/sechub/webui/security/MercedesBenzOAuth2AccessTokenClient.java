@@ -24,17 +24,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * <p>
- * Custom {@code OAuth2AccessTokenResponseClient} implementation for retrieving a JWT token response
- * from the Mercedes-Benz IDP (or Global Authentication Service, GAS) after a successful authentication request.
+ * Custom {@code OAuth2AccessTokenResponseClient} implementation for retrieving
+ * a JWT token response from the Mercedes-Benz IDP (or Global Authentication
+ * Service, GAS) after a successful authentication request.
  * </p>
  * <p>
- * This customization is necessary because the Mercedes-Benz IDP requires a Basic Authorization header
- * containing the base64-encoded client ID and client secret. The default {@code OAuth2AccessTokenResponseClient}
- * implementation does not supply this header, necessitating this custom implementation.
+ * This customization is necessary because the Mercedes-Benz IDP requires a
+ * Basic Authorization header containing the base64-encoded client ID and client
+ * secret. The default {@code OAuth2AccessTokenResponseClient} implementation
+ * does not supply this header, necessitating this custom implementation.
  * </p>
  * <p>
- * For further details on the integration and authentication process, please refer to the
- * <a href="https://pages.git.i.mercedes-benz.com/IAM/GAS-OIDC-Integration_Guide/docs/guide/authentication/">
+ * For further details on the integration and authentication process, please
+ * refer to the <a href=
+ * "https://pages.git.i.mercedes-benz.com/IAM/GAS-OIDC-Integration_Guide/docs/guide/authentication/">
  * GAS OIDC Integration Guide</a>.
  * </p>
  *

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>SecHub WebUI Login</title>
+</head>
+<body>
+<section class="hero is-primary">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title">Classic Login</h1>
+		</div>
+	</div>
+</section>
+
+<div class="container">
+	<form th:action="@{/login/classic}" method="post">
+		<div class="field">
+			<label class="label">Username</label>
+			<div class="control">
+				<input class="input" type="text" name="username" required>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Password</label>
+			<div class="control">
+				<input class="input" type="password" name="password" required>
+			</div>
+		</div>
+
+		<div class="field">
+			<div class="control">
+				<button class="button is-link" type="submit">Login</button>
+			</div>
+		</div>
+	</form>
+
+	<div th:if="${param.error}">
+		<p class="notification is-danger">Invalid username or password.</p>
+	</div>
+</div>
+</body>
+</html>

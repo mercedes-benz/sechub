@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.page.credentials;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 
 @Service
-public class NewApiTokenService {
+class NewApiTokenService {
 
-    @Autowired
-    SecHubAccessService accessService;
+    private final SecHubAccessService accessService;
+
+    NewApiTokenService(SecHubAccessService accessService) {
+        this.accessService = accessService;
+    }
 
     /**
-     * Request new API token as described in
-     *
-     * <a href=
+     * Request new API token as described in <a href=
      * "https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user-
      * requests-new-api-token">documentation</a>
      *
@@ -25,9 +25,10 @@ public class NewApiTokenService {
      * com' -i -X POST -H 'Content-Type: application/json;charset=UTF-8'
      * </pre>
      */
-    public boolean requestNewApiToken(String emailAddress) {
+    boolean requestNewApiToken(String emailAddress) {
         /* @formatter:off */
-        Boolean succesfulSendNewApiToken = accessService.createExecutorForResult(Boolean.class).
+
+        return accessService.createExecutorForResult(Boolean.class).
             whenDoing("request a new api token").
             callAndReturn(client -> {
                 client.requestNewApiToken(emailAddress);
@@ -35,8 +36,6 @@ public class NewApiTokenService {
             }).
             onErrorReturn(exception -> Boolean.FALSE).
             execute();
-
-        return succesfulSendNewApiToken;
 
         /* @formatter:on */
     }

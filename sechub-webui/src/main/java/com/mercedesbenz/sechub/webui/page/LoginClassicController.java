@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
 @Controller
-public class OAuthLoginController {
+public class LoginClassicController {
 
-    @GetMapping(RequestConstants.OAUTH_LOGIN)
+    @GetMapping(RequestConstants.LOGIN_CLASSIC)
     String login() {
-        return "oauth-login";
+        return "login-classic";
     }
 }

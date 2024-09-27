@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SecHub WebUI Login</title>
+</head>
+
+<body>
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">OAuth2 Login</h1>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <a th:href="@{/oauth2/authorization/__${registrationId}__}">Login</a>
+</div>
+<body>
+</html>

@@ -6,3 +6,9 @@ webui:
     ## Mocked sechub user (necessary for credentialinjection, we have no defaults...)
     userid: "mocked-user"
     apitoken: "mocked-apitoken"
+
+spring:
+  security:
+    user:
+      name: sechub
+      password: password

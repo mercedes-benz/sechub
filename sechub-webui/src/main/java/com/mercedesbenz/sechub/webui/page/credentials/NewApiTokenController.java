@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.page.credentials;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,16 +10,17 @@ import com.mercedesbenz.sechub.webui.page.user.UserInfoService;
 import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 
 @Controller
-public class NewApiTokenController {
+class NewApiTokenController {
 
-    @Autowired
-    NewApiTokenService newApiTokenService;
+    private final NewApiTokenService newApiTokenService;
+    private final SecHubAccessService accessService;
+    private final UserInfoService userInfoService;
 
-    @Autowired
-    SecHubAccessService accessService;
-
-    @Autowired
-    UserInfoService userInfoService;
+    NewApiTokenController(NewApiTokenService newApiTokenService, SecHubAccessService accessService, UserInfoService userInfoService) {
+        this.newApiTokenService = newApiTokenService;
+        this.accessService = accessService;
+        this.userInfoService = userInfoService;
+    }
 
     @GetMapping(RequestConstants.REQUEST_NEW_APITOKEN)
     String requestNewApiToken(Model model) {

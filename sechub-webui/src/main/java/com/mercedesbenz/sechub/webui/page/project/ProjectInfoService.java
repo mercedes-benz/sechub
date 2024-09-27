@@ -4,18 +4,20 @@ package com.mercedesbenz.sechub.webui.page.project;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.webui.page.user.UserInfoService;
 
 @Service
-public class ProjectInfoService {
+class ProjectInfoService {
 
-    @Autowired
-    UserInfoService userInfoService;
+    private final UserInfoService userInfoService;
 
-    public List<String> fetchProjectIdsForUser(String userId) {
+    ProjectInfoService(UserInfoService userInfoService) {
+        this.userInfoService = userInfoService;
+    }
+
+    List<String> fetchProjectIdsForUser(String userId) {
         /* @formatter:off */
 
         List<String> fakeList = new ArrayList<>();
@@ -28,7 +30,7 @@ public class ProjectInfoService {
         /* @formatter:on */
     }
 
-    public List<String> fetchProjectIdsForCurrentUser() {
+    List<String> fetchProjectIdsForCurrentUser() {
         return fetchProjectIdsForUser(userInfoService.getUserId());
     }
 }

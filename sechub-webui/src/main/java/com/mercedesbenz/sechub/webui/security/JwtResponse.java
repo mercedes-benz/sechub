@@ -6,23 +6,29 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents the response containing JWT-related tokens returned by an OAuth2 or OpenID Connect (OIDC)
- * authentication flow. This class encapsulates the access token, token type, ID token, expiration time,
- * and refresh token. It is primarily used for handling token-based authentication in secure API communication.
+ * Represents the response containing JWT-related tokens returned by an OAuth2
+ * or OpenID Connect (OIDC) authentication flow. This class encapsulates the
+ * access token, token type, ID token, expiration time, and refresh token. It is
+ * primarily used for handling token-based authentication in secure API
+ * communication.
  *
  * <p>
- * The {@code JwtResponse} object is constructed from JSON using Jackson, mapping the expected token
- * fields from the authentication response.
+ * The {@code JwtResponse} object is constructed from JSON using Jackson,
+ * mapping the expected token fields from the authentication response.
  * </p>
  *
  * <p>
  * Fields:
  * <ul>
- *   <li>{@code accessToken}: The access token used to authenticate subsequent requests to the API.</li>
- *   <li>{@code tokenType}: The type of the token (typically "Bearer").</li>
- *   <li>{@code idToken}: The ID token, which contains identity claims about the authenticated user.</li>
- *   <li>{@code expiresIn}: The duration in seconds until the access token expires.</li>
- *   <li>{@code refreshToken}: The token used to obtain a new access token without re-authenticating.</li>
+ * <li>{@code accessToken}: The access token used to authenticate subsequent
+ * requests to the API.</li>
+ * <li>{@code tokenType}: The type of the token (typically "Bearer").</li>
+ * <li>{@code idToken}: The ID token, which contains identity claims about the
+ * authenticated user.</li>
+ * <li>{@code expiresIn}: The duration in seconds until the access token
+ * expires.</li>
+ * <li>{@code refreshToken}: The token used to obtain a new access token without
+ * re-authenticating.</li>
  * </ul>
  * </p>
  *
@@ -30,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * For more information on JSON Web Tokens (JWT), please refer to the
  * <a href="https://jwt.io/introduction/">official JWT documentation</a>.
  * </p>
- * 
+ *
  * @author hamidonos
  */
 class JwtResponse {

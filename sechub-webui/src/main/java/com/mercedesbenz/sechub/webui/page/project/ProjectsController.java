@@ -10,13 +10,13 @@ import com.mercedesbenz.sechub.webui.RequestConstants;
 import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
 
 @Controller
-public class ProjectsController {
+class ProjectsController {
 
     private final SecHubAccessService accessService;
     private final ProjectInfoService projectInfoService;
 
     @Autowired
-    public ProjectsController(SecHubAccessService accessService, ProjectInfoService projectInfoService) {
+    ProjectsController(SecHubAccessService accessService, ProjectInfoService projectInfoService) {
         this.accessService = accessService;
         this.projectInfoService = projectInfoService;
     }
