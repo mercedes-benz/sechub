@@ -164,7 +164,12 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 }
 
 func getSecHubJobList(context *Context, size int) {
-	// request SecHub job state from server
+	// Print filtering labels if defined
+	for key, value := range context.config.labels {
+		sechubUtil.LogNotice("Filtered by label "+key+"="+value)
+	}	
+
+	// Request SecHub job list from server
 	response := sendWithDefaultHeader("GET", buildGetSecHubJobListAPICall(context, size), context)
 
 	data, err := io.ReadAll(response.Body)
@@ -197,7 +202,9 @@ func getLatestSecHubJobUUID(context *Context, expectedState ...string) string {
 	getSecHubJobList(context, 5)
 
 	if len(context.jobList.List) == 0 {
-		sechubUtil.LogError("No SecHub jobs found. Have you started a scan?")
+		sechubUtil.LogWarning("No SecHub jobs found for "+context.config.projectID+". Have you started a scan?")
+		// Return 0 because we do not regard this as an error
+		os.Exit(ExitCodeOK)
 	}
 
 	// If not provided: accept any job state
@@ -213,6 +220,7 @@ func printLatestJobsOfProject(context *Context) {
 	// get latest jobs into context.jobList
 	getSecHubJobList(context, SizeOfJobList)
 
+	// Print result table
 	printFormat := "%-36s | %-6s | %-8s | %-6s | %-19s | %-19s\n"
 	fmt.Printf(printFormat, "SecHub JobUUID", "Status", "Stage", "Result", "Created", "Ended")
 	fmt.Println("-------------------------------------+--------+----------+--------+---------------------+--------------------")

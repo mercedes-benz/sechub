@@ -4,6 +4,7 @@ package cli
 
 import (
 	"fmt"
+	"net/url"
 )
 
 // https://localhost:8443/api/project/testproject/job/
@@ -60,6 +61,17 @@ func buildGetSecHubJobListAPICall(context *Context, size int) string {
 	context.contentToSend = nil // Do not send content
 	context.inputForContentProcessing = nil
 	apiPart := fmt.Sprintf("project/%s/jobs?size=%d&page=0", context.config.projectID, size)
+
+	// Add filtering by labels if defined
+	metadata_set:=false
+	for key, value := range context.config.labels {
+		if ! metadata_set {
+			apiPart += "&withMetaData=true"
+			metadata_set = true
+		}
+		apiPart += "&metadata.labels."+key+"="+url.QueryEscape(value)
+	}
+
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
