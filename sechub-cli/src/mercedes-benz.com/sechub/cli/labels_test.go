@@ -113,6 +113,7 @@ func Example_applyLabelsToConfigJson_with_labels_section_in_json() {
 	var config Config
 	context.config = &config
 
+	context.config.configFileRead = true
 	sechubJSON := `
   {
     "apiVersion": "1.0",
@@ -151,6 +152,7 @@ func Example_applyLabelsToConfigJson_with_labels_section_only_in_json() {
 	var config Config
 	context.config = &config
 
+	context.config.configFileRead = true
 	sechubJSON := `
   {
     "apiVersion": "1.0",
@@ -185,6 +187,7 @@ func Example_applyLabelsToConfigJson_without_labels_section_in_json() {
 	var config Config
 	context.config = &config
 
+	context.config.configFileRead = true
 	sechubJSON := `
   {
     "apiVersion": "1.0",
@@ -220,6 +223,7 @@ func Example_applyLabelsToConfigJson_without_metadata_section_in_json() {
 	var config Config
 	context.config = &config
 
+	context.config.configFileRead = true
 	sechubJSON := `
   {
     "apiVersion": "1.0",
@@ -244,4 +248,30 @@ func Example_applyLabelsToConfigJson_without_metadata_section_in_json() {
 	// Output:
 	// labels: map[key1:value1x]
 	// context.contentToSend: {"apiVersion":"1.0","metaData":{"labels":{"key1":"value1x"}},"project":"myproject"}
+}
+
+func Example_applyLabelsToConfigJson_with_no_config_file() {
+	// PREPARE
+	var context Context
+	var config Config
+	context.config = &config
+
+	context.config.configFileRead = false
+
+	// These lables must override the above defined ones
+	labels := map[string]string{
+		"key1": "value1",
+	}
+	context.config.labels = labels
+
+	// EXECUTE
+	applyLabelsToConfigJson(&context)
+
+	// TEST
+	fmt.Printf("labels: %+v\n", context.config.labels)
+	fmt.Println("context.contentToSend:", string(context.contentToSend))
+
+	// Output:
+	// labels: map[key1:value1]
+	// context.contentToSend:
 }
