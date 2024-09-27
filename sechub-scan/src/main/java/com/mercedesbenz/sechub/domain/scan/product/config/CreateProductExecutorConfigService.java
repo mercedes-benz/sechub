@@ -60,7 +60,7 @@ public class CreateProductExecutorConfigService {
     }
 
     private void resetFieldsNeverFromUser(ProductExecutorConfig configFromUser) {
-        configFromUser.uUID = null;
+        configFromUser.uuid = null;
         configFromUser.version = null;
     }
 

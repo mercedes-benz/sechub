@@ -3,8 +3,8 @@
 package util
 
 import (
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -12,7 +12,7 @@ import (
 
 // InitializeTestTempDir - creates a new directory in tmp with a unique name
 func InitializeTestTempDir(t *testing.T) (name string) {
-	name, err := ioutil.TempDir("", "sechub-cli-temp")
+	name, err := os.MkdirTemp("", "sechub-cli-temp")
 	Check(err, t)
 
 	CreateTestDirectory(name, 0755, t)
@@ -43,7 +43,7 @@ func CreateTestFile(file string, mode os.FileMode, content []byte, t *testing.T)
 		return
 	}
 
-	err = ioutil.WriteFile(file, content, mode)
+	err = os.WriteFile(file, content, mode)
 	Check(err, t)
 
 	_, err = os.Stat(file)
@@ -51,5 +51,26 @@ func CreateTestFile(file string, mode os.FileMode, content []byte, t *testing.T)
 		t.Fatalf("Creating file %q failed. Error: %q\n", file, err)
 	} else {
 		fmt.Printf("File created: %q\n", file)
+	}
+}
+
+func CreateTestSymlink(file string, mode os.FileMode, symlinkTarget string, t *testing.T)  {
+	_, err := os.Stat(file)
+	if !os.IsNotExist(err) {
+		fmt.Printf("File already exists: %q\n", file)
+		return
+	}
+
+	// Create symlink
+	err = os.Symlink(symlinkTarget, file)
+
+	if errors.Is(err, errors.ErrUnsupported) {
+		// Do we run on platforms that do not support symbolic links?
+		fmt.Println("Your OS platform does not support symbolic links. No file created.")
+		return
+	} else if err != nil {
+		t.Fatalf("Creating symlink file %q failed. Error: %q\n", file, err)
+	} else {
+		fmt.Printf("Symlink created: %q -> %q\n", file, symlinkTarget)
 	}
 }

@@ -30,7 +30,7 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '7.7.0'
+    id 'org.openapi.generator' version '7.8.0'
     
     // spring
     id 'org.springframework.boot' version '3.2.2' apply false

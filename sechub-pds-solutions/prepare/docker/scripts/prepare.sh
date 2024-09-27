@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 prepare_wrapper="$TOOL_FOLDER/sechub-wrapper-prepare.jar"

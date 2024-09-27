@@ -2,7 +2,10 @@
 
 package cli
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 // CurrentAPIVersion - SecHub current api version
 const CurrentAPIVersion = "1.0"
@@ -316,3 +319,10 @@ const MaximumNumberOfCMDLineArguments = 50
 
 // HTTPRetries - maximum number of retries for HTTP calls
 const HTTPMaxRetries = 60
+
+/* ---------------------------------- */
+/* -------- OS specific ------------- */
+/* ---------------------------------- */
+
+// OS's path separator as string (Unix-like: "/", Windows: "\")
+const PathSeparator = string(os.PathSeparator)

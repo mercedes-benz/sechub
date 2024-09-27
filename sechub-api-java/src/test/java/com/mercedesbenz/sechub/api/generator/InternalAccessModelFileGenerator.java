@@ -9,7 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.DefaultSecHubClient;
+import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 
 public class InternalAccessModelFileGenerator {
 
@@ -49,7 +49,7 @@ public class InternalAccessModelFileGenerator {
         template.addLine("import java.util.List;");
         template.addLine("");
         template.addLine("/**");
-        template.addLine(" * " + info.targetInternalAccessClassName + " is a model class for " + DefaultSecHubClient.class.getSimpleName()
+        template.addLine(" * " + info.targetInternalAccessClassName + " is a model class for " + OldDefaultSecHubClient.class.getSimpleName()
                 + ". It uses internally the generated class");
         template.addLine(" * " + fromGenclazz.getName() + ".<br>");
         template.addLine(" * <br>");

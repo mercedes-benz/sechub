@@ -85,7 +85,7 @@ func prepareOptionsFromCommandline(config *Config) {
 		fileOption, "", "Defines file to read from for actions '"+defineFalsePositivesAction+"', '"+markFalsePositivesAction+"', '"+interactiveMarkFalsePositivesAction+"', '"+unmarkFalsePositivesAction+"'")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
-	flag.Func(labelOption, "Define a `SecHub label` for the scan job. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
+	flag.Func(labelOption, "Define a `SecHub label` for scan or filtering. (Example: \"key1=value1\") Repeat to define multiple labels.", func(s string) error {
 		var err error
 		config.labels, err = addLabelToList(config.labels, s, true)
 		if err != nil {
@@ -298,6 +298,9 @@ func assertValidConfig(context *Context) {
 	if !validateOutputLocation(context.config) {
 		errorsFound = true
 	}
+	if context.config.addSCMHistory {
+		validateAddScmHistory(context)
+	}
 
 	if context.config.action == interactiveMarkFalsePositivesAction && context.config.file == "" {
 		// Let's try to find the latest report (default naming scheme) and take this as file
@@ -447,7 +450,7 @@ func validateTempDir(config *Config) bool {
 func validateOutputLocation(config *Config) bool {
 	if config.outputLocation == "" || config.outputLocation == "." {
 		config.outputFolder = "."
-	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, string(os.PathSeparator)) {
+	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, PathSeparator) {
 		// Only a name is provided - can be an output file name or a directory
 		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
 			config.outputFolder, _ = filepath.Abs(config.outputLocation)
@@ -508,5 +511,11 @@ func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
 	if len(os.Args) > MaximumNumberOfCMDLineArguments {
 		os.Args = os.Args[0:MaximumNumberOfCMDLineArguments]
 		sechubUtil.LogWarning(fmt.Sprintf("Too many commandline arguments. Capping to %d.", MaximumNumberOfCMDLineArguments))
+	}
+}
+
+func validateAddScmHistory(context *Context)  {
+	if context.config.addSCMHistory && len(context.sechubConfig.SecretScan.Use) == 0 {
+		sechubUtil.LogWarning("You chose to append the SCM history but have configured no secretScan. The SCM history is not uploaded to SecHub.")
 	}
 }

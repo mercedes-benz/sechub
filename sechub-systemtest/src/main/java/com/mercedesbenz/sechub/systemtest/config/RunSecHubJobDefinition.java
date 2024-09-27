@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubWebScanConfiguration;
 
 public class RunSecHubJobDefinition extends AbstractDefinition {
 

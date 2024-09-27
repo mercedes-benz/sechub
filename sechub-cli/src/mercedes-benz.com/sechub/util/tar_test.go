@@ -289,6 +289,49 @@ func Example_tarDetectsNonExistingFiles() {
 	// open sechub-cli-tmptest/non-existing-file.bin: no such file or directory
 }
 
+func TestTarIsSkippingSymlinks(t *testing.T) {
+	/* prepare */
+	RelativeTmpTestDir := "sechub-cli-tmptest"
+	sechubUtil.CreateTestDirectory(RelativeTmpTestDir, 0755, t)
+	defer os.RemoveAll(RelativeTmpTestDir)
+
+	filepath1 := RelativeTmpTestDir + "/realfile.txt"
+	filepath2 := RelativeTmpTestDir + "/good_symlink.txt"
+	filepath3 := RelativeTmpTestDir + "/dangling_symlink.txt"
+
+	// create files
+	content := []byte("Hello world!\n")
+	sechubUtil.CreateTestFile(filepath1, 0644, content, t)
+	sechubUtil.CreateTestSymlink(filepath2, 0644, "realfile.txt", t)
+	sechubUtil.CreateTestSymlink(filepath3, 0644, "doesnotexist.txt", t)
+
+	path := RelativeTmpTestDir + "/testoutput.tar"
+	newTarFile, _ := os.Create(path)
+	tarWriter := tar.NewWriter(newTarFile)
+
+	config := TarConfig{
+		TarFileName: path,
+		TarWriter:   tarWriter,
+		PrefixInTar: "",
+		Folders:     []string{RelativeTmpTestDir},
+		Excludes:    []string{"**/*.tar"}, // exclude our own tar
+	}
+
+	/* execute */
+	err := Tar(&config)
+	tarWriter.Close()
+	newTarFile.Close()
+
+	/* test */
+	sechubUtil.Check(err, t)
+
+	list, _ := ListContentOfTarFile(path)
+	sechubUtil.AssertContains(list, filepath1, t)
+	// None of the symlinks must be in the tar file
+	sechubUtil.AssertContainsNot(list, filepath2, t)
+	sechubUtil.AssertContainsNot(list, filepath3, t)
+}
+
 func TestTarFileCanBeCreated_with_absolute_path_and_exclude_patterns_applied(t *testing.T) {
 	/* prepare */
 	dir := sechubUtil.InitializeTestTempDir(t)

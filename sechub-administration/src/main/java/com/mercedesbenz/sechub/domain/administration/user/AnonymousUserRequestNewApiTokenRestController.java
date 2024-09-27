@@ -27,11 +27,11 @@ public class AnonymousUserRequestNewApiTokenRestController {
     private AnonymousUserRequestsNewApiTokenService newApiTokenService;
 
     /* @formatter:off */
-	@CrossOrigin /* to allow call from getsechub.detss and maybe other sites using javascript */
-	@UseCaseUserRequestsNewApiToken(@Step(number=1, name="Rest API call",description="Rest api called to request new user api token. Normally done by user itself",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_REQUEST_NEW_APITOKEN, method = RequestMethod.POST)
-	public void anonymousRequestToGetNewApiTokenForUserEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
-		/* @formatter:on */
+    @CrossOrigin /* to allow call from getsechub.detss and maybe other sites using javascript */
+    @UseCaseUserRequestsNewApiToken(@Step(number=1, name="Rest API call",description="Rest api called to request new user api token. Normally done by user itself",needsRestDoc=true))
+    @RequestMapping(path = AdministrationAPIConstants.API_REQUEST_NEW_APITOKEN, method = RequestMethod.POST)
+    public void anonymousRequestToGetNewApiTokenForUserEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
+        /* @formatter:on */
         newApiTokenService.anonymousRequestToGetNewApiTokenForUserEmailAddress(emailAddress);
     }
 

@@ -38,10 +38,11 @@ If you are new to contributing in Github, [First Contributions](https://github.c
 ## Create a fork
 If you would like to contribute code you can do so through Mercedes-Benz GitHub by forking the repository and sending a pull request.
 
+0. Make sure that an [issue on Github](https://github.com/mercedes-benz/sechub/issues) exists for your contribution
 1. Fork the repository at `https://github.com/mercedes-benz/sechub.git` via web UI
 2. Create a branch (e.g. "feature-868-rename-to-sechub-api-java") in your forked repository
 3. Make your changes in this branch
-4. Create a pull request from your fork via github.com web ui into our `community` branch (not `develop`!)
+4. Create a pull request from your fork via github.com web ui into our `develop` branch
 
 Inside the description it's a good way to mention the related issues with "closes #${issue number}" - this will automatically link the issue and the pull request inside the WebUI.<br>
 It also will close the linked issue automatically when the pull request is merged!

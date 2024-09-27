@@ -30,7 +30,7 @@ This tutorial is tested on Debian/Ubuntu! +
 It should also work on different Linux distributions.
 --
 
-=== Prerequisites
+== Prerequisites
 
 You are going to need: 
 
@@ -45,9 +45,9 @@ Optional:
 * https://vscodium.com/[VSCodium]
 * https://open-vsx.org/extension/mercedes-benz/sechub[SecHub Extension] for VSCodium
 
-=== Instructions
+== Setup server environment
 
-==== Clone the repository
+=== Clone the repository
 
 In your terminal type:
 
@@ -58,7 +58,7 @@ include::sechub-getting-started/clone-repo.sh[lines=2;3]
 This makes a local copy of the SecHub project on your computer and goes to the project's folder
 
 
-==== Start SecHub Server
+=== Start SecHub Server
 
 The SecHub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub +
 
@@ -69,7 +69,7 @@ include::sechub-getting-started/start-sechub.sh[lines=2]
 
 This starts the server.
 
-==== Start GoSec+PDS Server
+=== Start GoSec+PDS Server
 The PDS server, which contains the security tool https://securego.io/[GoSec], will check the actual code for vulnerabilities and output a result of them.
 
 Start another terminal in the root directory of SecHub and type: 
@@ -82,7 +82,7 @@ include::sechub-getting-started/start-pds-gosec.sh[lines=2]
 This will prepare some environment files and will start a container based on SecHub's custom PDS+GoSec image. In the container, GoLang and GoSec will be installed and the server will be started.
 
 
-==== Setup Project
+=== Setup Project
 
 After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
 In another, we set local credentials because everything is hosted locally:
@@ -186,7 +186,8 @@ Setup of GoSec complete:
 
 Now you are ready to do scans!
 
-==== Install SecHub client 
+== Scan using SecHub client
+=== Install SecHub client
 The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your `/usr/local/bin` folder.
 
 [source, bash]
@@ -211,12 +212,11 @@ sudo cp platform/linux-amd64/sechub /usr/local/bin
 # For linux arm-64
 sudo cp platform/linux-arm64/sechub /usr/local/bin
 
-
 # Cleanup
 rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/
 --
 
-==== Scanning
+=== Scan
 
 Now you can go to another project's directory and do a scan for vulnerabilities.
 In this example, we will use https://github.com/Jeeppler/vulnerable-go[vulnerable-go], but you are free to use any other project!
@@ -231,98 +231,28 @@ Here's a bare-bones example:
 echo '
 {
   "apiVersion": "1.0",
-  "codeScan": {
-    "fileSystem": {
-      "folders": [
-        "."
-      ]
-    },
-    "excludes": []
+  "project": "test-gosec",
+  "codeScan": { "use": [ "sourcecode" ] },
+  "data": {
+    "sources": [
+      {
+        "name": "sourcecode",
+        "fileSystem": { "folders": [ "." ] }
+      }
+    ]
   }
 }
 ' > sechub.json
 --
 
-And to do a scan, type `sechub -project test-gosec scan`, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output, add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
+Now you can do a scan, type `sechub scan`, this will create a file which contains a report of the findings from the scan (JSON format).
+If you want the report in HTML format instead, add `-reportformat html` as an option: `sechub -reportformat html scan`
 
-The output you get, should be simillar to this(if you choose JSON output):
-
-[source]
---
-{
-   "result": {
-      "count": 4,
-      "findings": [
-         {
-            "id": 3,
-            "description": "The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.",
-            "name": "The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.",
-            "severity": "HIGH",
-            "code": {
-               "location": "source/app/app.go",
-               "line": 17,
-               "column": 13,
-               "source": "return template.HTML(s)"
-            },
-            "type": "codeScan",
-            "cweId": 79
-         },
-         {
-            "id": 2,
-            "description": "Use of weak cryptographic primitive",
-            "name": "Use of weak cryptographic primitive",
-            "severity": "HIGH",
-            "code": {
-               "location": "source/app/app.go",
-               "line": 90,
-               "column": 13,
-               "source": "hash := md5.Sum([]byte(password)) // CWE-327"
-            },
-            "type": "codeScan",
-            "cweId": 326
-         },
-         {
-            "id": 4,
-            "description": "Blocklisted import crypto/md5: weak cryptographic primitive",
-            "name": "Blocklisted import crypto/md5: weak cryptographic primitive",
-            "severity": "HIGH",
-            "code": {
-               "location": "source/app/app.go",
-               "line": 7,
-               "column": 5,
-               "source": "\"crypto/md5\""
-            },
-            "type": "codeScan",
-            "cweId": 327
-         },
-         {
-            "id": 1,
-            "description": "Potential hardcoded credentials",
-            "name": "Potential hardcoded credentials",
-            "severity": "HIGH",
-            "code": {
-               "location": "source/app/app.go",
-               "line": 76,
-               "column": 5,
-               "source": "loginPassword := \"21232f297a57a5a743894a0e4a801fc3\" // CWE-257"
-            },
-            "type": "codeScan",
-            "cweId": 798
-         }
-      ]
-   },
-   "jobUUID": "3368defe-7a45-448f-bee1-b069e754ca52",
-   "reportVersion": "1.0",
-   "messages": [],
-   "trafficLight": "RED",
-   "status": "SUCCESS"
-}
---
-
-==== Install SecHub's VSCodium Plugin (OPTIONAL)
+== Optional
+=== Install SecHub's VSCodium Plugin (OPTIONAL)
 SecHub's VSCodium Plugin helps you to work faster with the SecHub report.
 You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
 
-And to install it, open VSCodium and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
+And to install it, open VSCodium and in the `Command Palette` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.

@@ -59,22 +59,38 @@ export const INPUT_DATA_DEFAULTS: GitHubInputData = {
 
 export function resolveGitHubInputData(): GitHubInputData {
     return {
-        configPath: core.getInput(PARAM_CONFIG_PATH),
-        url: core.getInput(PARAM_SECHUB_SERVER_URL),
-        apiToken: core.getInput(PARAM_API_TOKEN),
-        user: core.getInput(PARAM_SECHUB_USER),
-        projectName: core.getInput(PARAM_PROJECT_NAME),
-        sechubCLIVersion: core.getInput(PARAM_CLIENT_VERSION),
-        addScmHistory: core.getInput(PARAM_ADD_SCM_HISTORY),
-        debug: core.getInput(PARAM_DEBUG),
-        includeFolders: core.getInput(PARAM_INCLUDED_FOLDERS),
-        excludeFolders: core.getInput(PARAM_EXCLUDED_FOLDERS),
-        reportFormats: core.getInput(PARAM_REPORT_FORMATS),
-        failJobOnFindings: core.getInput(PARAM_FAIL_JOB_ON_FINDING),
-        trustAll: core.getInput(PARAM_TRUST_ALL),
-        scanTypes: core.getInput(PARAM_SCAN_TYPES),
-        contentType: core.getInput(PARAM_CONTENT_TYPE),
+        configPath: getParam(PARAM_CONFIG_PATH),
+        url: getParam(PARAM_SECHUB_SERVER_URL),
+        apiToken: getParam(PARAM_API_TOKEN),
+        user: getParam(PARAM_SECHUB_USER),
+        projectName: getParam(PARAM_PROJECT_NAME),
+        sechubCLIVersion: getParam(PARAM_CLIENT_VERSION),
+        addScmHistory: getParam(PARAM_ADD_SCM_HISTORY),
+        debug: getParam(PARAM_DEBUG),
+        includeFolders: getParam(PARAM_INCLUDED_FOLDERS),
+        excludeFolders: getParam(PARAM_EXCLUDED_FOLDERS),
+        reportFormats: getParam(PARAM_REPORT_FORMATS),
+        failJobOnFindings: getParam(PARAM_FAIL_JOB_ON_FINDING),
+        trustAll: getParam(PARAM_TRUST_ALL),
+        scanTypes: getParam(PARAM_SCAN_TYPES),
+        contentType: getParam(PARAM_CONTENT_TYPE),
     };
 }
 
+/**
+ * Get the value for the given parameter from the environment variables or the GitHub Action input.
+ * Returns an empty string if no value is found.
+ *
+ * @param {string} param - The name of the parameter to search for
+ * @returns {string} - The value of the parameter (empty if not present)
+ */
+function getParam(param: string): string {
+    const envVar =  process.env[param];
+
+    if (envVar && envVar.length > 0) {
+        return envVar;
+    }
+
+    return core.getInput(param);
+}
 
