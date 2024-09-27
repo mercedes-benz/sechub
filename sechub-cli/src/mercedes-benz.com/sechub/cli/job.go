@@ -166,7 +166,7 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 func getSecHubJobList(context *Context, size int) {
 	// Print filtering labels if defined
 	for key, value := range context.config.labels {
-		sechubUtil.LogNotice("Label match "+key+"="+value)
+		sechubUtil.LogNotice("Filtered by label "+key+"="+value)
 	}	
 
 	// Request SecHub job list from server
@@ -202,7 +202,9 @@ func getLatestSecHubJobUUID(context *Context, expectedState ...string) string {
 	getSecHubJobList(context, 5)
 
 	if len(context.jobList.List) == 0 {
-		sechubUtil.LogError("No SecHub jobs found. Have you started a scan?")
+		sechubUtil.LogWarning("No SecHub jobs found for "+context.config.projectID+". Have you started a scan?")
+		// Return 0 because we do not regard this as an error
+		os.Exit(ExitCodeOK)
 	}
 
 	// If not provided: accept any job state
