@@ -26,11 +26,12 @@ func InitializeContext() *Context {
 
 	// Add labels defined via cmdline args or env var to config JSON (only for job related client actions)
 	if context.config.action == scanAction ||
-	   context.config.action == scanAsynchronAction ||
+		 context.config.action == scanAsynchronAction ||
 		 context.config.action == listJobsAction ||
 		 context.config.action == getReportAction ||
 		 context.config.action == getStatusAction {
-			err := applyLabelsToConfigJson(context)
+
+		err := applyLabelsToConfigJson(context)
 		if err != nil {
 			sechubUtil.LogError("Error while processing labels: " + err.Error())
 		}
