@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.7.0</span>
+<span id="revnumber"> Client 1.8.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -561,7 +561,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</a></li>
 </ul>
 </li>
-<li><a href="#configuration-overview">2.4.4. Configuration overview</a></li>
+<li><a href="#client-configuration-overview">2.4.4. Configuration overview</a></li>
 <li><a href="#commandline-options">2.4.5. Commandline Options</a></li>
 <li><a href="#environment-variables">2.4.6. Environment variables</a></li>
 <li><a href="#proxy-support">2.4.7. Proxy support</a></li>
@@ -772,7 +772,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.7.0 - Build date: 20240906151452</code></p>
+<p>Documentation version: <code>Client 1.8.0 - Build date: 20240927150757</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1126,7 +1126,8 @@ This can be interesting if you have long running scans and you want have a fast
 </td>
 <td class="content">
 Defaults to latest job.<br>
-     You can select the job by providing the wanted job UUID by adding <code>-jobUUID ${jobUUID}</code>
+     You can select the job by providing the wanted job UUID by adding <code>-jobUUID ${jobUUID}</code><br>
+     This action respects defined <a href="#client-configuration-overview">label definitions</a> as filter criteria.
 </td>
 </tr>
 </table>
@@ -1153,7 +1154,8 @@ Defaults to latest job.<br>
 </td>
 <td class="content">
 Defaults to latest finished job.<br>
-     You can select the job by providing the wanted job UUID by adding <code>-jobUUID ${jobUUID}</code>
+     You can select the job by providing the wanted job UUID by adding <code>-jobUUID ${jobUUID}</code><br>
+     This action respects defined <a href="#client-configuration-overview">label definitions</a> as filter criteria.
 </td>
 </tr>
 </table>
@@ -1195,7 +1197,8 @@ With <code>-output ${file-or-directory}</code> you can define where to place the
 <td class="content">
 This might be useful for an overview or<br>
      when you want to see your project&#8217;s scan job queue or<br>
-     to find out the job UUID of a certain job.
+     to find out the job UUID of a certain job.<br>
+     This action respects defined <a href="#client-configuration-overview">label definitions</a> as filter criteria.
 </td>
 </tr>
 </table>
@@ -1624,7 +1627,7 @@ action <code>unmarkFalsePositives</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-overview">2.4.4. Configuration overview</h4>
+<h4 id="client-configuration-overview">2.4.4. Configuration overview</h4>
 <div class="paragraph">
 <p>Basically parameters can be passed to the <code>SecHub</code> client in three ways:</p>
 </div>
@@ -1839,7 +1842,7 @@ Defines file to read from for actions <a href="#definefalsepositives">defineFals
 </li>
 <li>
 <p><code>-label &lt;label definition&gt;</code><br>
-Define a SecHub label for the scan job. (Example: "key1=value1") Repeat to define multiple labels.</p>
+Define a SecHub label for scan or filtering. (Example: "key1=value1") Repeat to define multiple labels.</p>
 </li>
 <li>
 <p><code>-output &lt;path to folder or file&gt;</code><br>
@@ -1903,7 +1906,7 @@ The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</c
 </li>
 <li>
 <p><code>SECHUB_LABELS</code><br>
-Define one or more labels for the scan job. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also <code>-label</code> option)<br>
+Define one or more labels for scan or filtering. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also <code>-label</code> option)<br>
 Example: <code>export SECHUB_LABELS="key1=test 1,key2=test 2"</code></p>
 </li>
 <li>
@@ -3740,6 +3743,7 @@ You can also define additional source file endings - see <a href="#sechub-config
 .hh<br>
 .hpp<br>
 .hxx<br>
+.pc<br>
 .pro</p></td>
 </tr>
 <tr>
@@ -4397,7 +4401,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.7.0<br>
+ Client 1.8.0<br>
 </div>
 </div>
 </body>
