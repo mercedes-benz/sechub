@@ -531,25 +531,30 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Getting Started Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 2.2.0</span>
+<span id="revnumber"> Server 2.2.0 modified (commit 41b3d33)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
-<li><a href="#introduction">1. Introduction</a>
+<li><a href="#introduction">1. Introduction</a></li>
+<li><a href="#prerequisites">2. Prerequisites</a></li>
+<li><a href="#setup-server-environment">3. Setup server environment</a>
 <ul class="sectlevel2">
-<li><a href="#prerequisites">1.1. Prerequisites</a></li>
-<li><a href="#instructions">1.2. Instructions</a>
-<ul class="sectlevel3">
-<li><a href="#clone-the-repository">1.2.1. Clone the repository</a></li>
-<li><a href="#start-sechub-server">1.2.2. Start SecHub Server</a></li>
-<li><a href="#start-gosecpds-server">1.2.3. Start GoSec+PDS Server</a></li>
-<li><a href="#setup-project">1.2.4. Setup Project</a></li>
-<li><a href="#install-sechub-client">1.2.5. Install SecHub client</a></li>
-<li><a href="#scanning">1.2.6. Scanning</a></li>
-<li><a href="#install-sechubs-vscodium-plugin-optional">1.2.7. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</a></li>
+<li><a href="#clone-the-repository">3.1. Clone the repository</a></li>
+<li><a href="#start-sechub-server">3.2. Start SecHub Server</a></li>
+<li><a href="#start-gosecpds-server">3.3. Start GoSec+PDS Server</a></li>
+<li><a href="#setup-project">3.4. Setup Project</a></li>
 </ul>
 </li>
+<li><a href="#scan-using-sechub-client">4. Scan using SecHub client</a>
+<ul class="sectlevel2">
+<li><a href="#install-sechub-client">4.1. Install SecHub client</a></li>
+<li><a href="#scan">4.2. Scan</a></li>
+</ul>
+</li>
+<li><a href="#optional">5. Optional</a>
+<ul class="sectlevel2">
+<li><a href="#install-sechubs-vscodium-plugin-optional">5.1. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</a></li>
 </ul>
 </li>
 </ul>
@@ -635,7 +640,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.2.0 - Build date: 20240906151452</code></p>
+<p>Documentation version: <code>Server 2.2.0 modified (commit 41b3d33) - Build date: 20240927150757</code></p>
 </div>
 </div>
 </div>
@@ -685,8 +690,11 @@ It should also work on different Linux distributions.</p>
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="prerequisites">1.1. Prerequisites</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">2. Prerequisites</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You are going to need:</p>
 </div>
@@ -723,10 +731,12 @@ It should also work on different Linux distributions.</p>
 </ul>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="setup-server-environment">3. Setup server environment</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="instructions">1.2. Instructions</h3>
-<div class="sect3">
-<h4 id="clone-the-repository">1.2.1. Clone the repository</h4>
+<h3 id="clone-the-repository">3.1. Clone the repository</h3>
 <div class="paragraph">
 <p>In your terminal type:</p>
 </div>
@@ -740,8 +750,8 @@ cd sechub</code></pre>
 <p>This makes a local copy of the SecHub project on your computer and goes to the project&#8217;s folder</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="start-sechub-server">1.2.2. Start SecHub Server</h4>
+<div class="sect2">
+<h3 id="start-sechub-server">3.2. Start SecHub Server</h3>
 <div class="paragraph">
 <p>The SecHub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub<br></p>
 </div>
@@ -754,8 +764,8 @@ cd sechub</code></pre>
 <p>This starts the server.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="start-gosecpds-server">1.2.3. Start GoSec+PDS Server</h4>
+<div class="sect2">
+<h3 id="start-gosecpds-server">3.3. Start GoSec+PDS Server</h3>
 <div class="paragraph">
 <p>The PDS server, which contains the security tool <a href="https://securego.io/">GoSec</a>, will check the actual code for vulnerabilities and output a result of them.</p>
 </div>
@@ -771,8 +781,8 @@ cd sechub</code></pre>
 <p>This will prepare some environment files and will start a container based on SecHub&#8217;s custom PDS+GoSec image. In the container, GoLang and GoSec will be installed and the server will be started.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="setup-project">1.2.4. Setup Project</h4>
+<div class="sect2">
+<h3 id="setup-project">3.4. Setup Project</h3>
 <div class="paragraph">
 <p>After starting all servers, some environment variables have to be set. Specifically <code>SECHUB_SERVER</code>, <code>SECHUB_USERID</code>, <code>SECHUB_APITOKEN</code>, <code>SECHUB_TRUSTALL</code> and SecHub&#8217;s CLI tools have to be added to the <code>PATH</code> variable to be able to do scans.
 In another, we set local credentials because everything is hosted locally:</p>
@@ -885,8 +895,13 @@ Setup of GoSec complete:
 <p>Now you are ready to do scans!</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="install-sechub-client">1.2.5. Install SecHub client</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scan-using-sechub-client">4. Scan using SecHub client</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="install-sechub-client">4.1. Install SecHub client</h3>
 <div class="paragraph">
 <p>The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your <code>/usr/local/bin</code> folder.</p>
 </div>
@@ -912,14 +927,13 @@ sudo cp platform/linux-amd64/sechub /usr/local/bin
 # For linux arm-64
 sudo cp platform/linux-arm64/sechub /usr/local/bin
 
-
 # Cleanup
 rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="scanning">1.2.6. Scanning</h4>
+<div class="sect2">
+<h3 id="scan">4.2. Scan</h3>
 <div class="paragraph">
 <p>Now you can go to another project&#8217;s directory and do a scan for vulnerabilities.
 In this example, we will use <a href="https://github.com/Jeeppler/vulnerable-go">vulnerable-go</a>, but you are free to use any other project!</p>
@@ -935,99 +949,32 @@ In this example, we will use <a href="https://github.com/Jeeppler/vulnerable-go"
 <pre class="CodeRay highlight"><code data-lang="shell">echo '
 {
   &quot;apiVersion&quot;: &quot;1.0&quot;,
-  &quot;codeScan&quot;: {
-    &quot;fileSystem&quot;: {
-      &quot;folders&quot;: [
-        &quot;.&quot;
-      ]
-    },
-    &quot;excludes&quot;: []
+  &quot;project&quot;: &quot;test-gosec&quot;,
+  &quot;codeScan&quot;: { &quot;use&quot;: [ &quot;sourcecode&quot; ] },
+  &quot;data&quot;: {
+    &quot;sources&quot;: [
+      {
+        &quot;name&quot;: &quot;sourcecode&quot;,
+        &quot;fileSystem&quot;: { &quot;folders&quot;: [ &quot;.&quot; ] }
+      }
+    ]
   }
 }
 ' &gt; sechub.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And to do a scan, type <code>sechub -project test-gosec scan</code>, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output, add <code>-reportformat html</code> as an option: <code>sechub -project test-gosec -reportformat html scan</code></p>
-</div>
-<div class="paragraph">
-<p>The output you get, should be simillar to this(if you choose JSON output):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>{
-   &quot;result&quot;: {
-      &quot;count&quot;: 4,
-      &quot;findings&quot;: [
-         {
-            &quot;id&quot;: 3,
-            &quot;description&quot;: &quot;The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.&quot;,
-            &quot;name&quot;: &quot;The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.&quot;,
-            &quot;severity&quot;: &quot;HIGH&quot;,
-            &quot;code&quot;: {
-               &quot;location&quot;: &quot;source/app/app.go&quot;,
-               &quot;line&quot;: 17,
-               &quot;column&quot;: 13,
-               &quot;source&quot;: &quot;return template.HTML(s)&quot;
-            },
-            &quot;type&quot;: &quot;codeScan&quot;,
-            &quot;cweId&quot;: 79
-         },
-         {
-            &quot;id&quot;: 2,
-            &quot;description&quot;: &quot;Use of weak cryptographic primitive&quot;,
-            &quot;name&quot;: &quot;Use of weak cryptographic primitive&quot;,
-            &quot;severity&quot;: &quot;HIGH&quot;,
-            &quot;code&quot;: {
-               &quot;location&quot;: &quot;source/app/app.go&quot;,
-               &quot;line&quot;: 90,
-               &quot;column&quot;: 13,
-               &quot;source&quot;: &quot;hash := md5.Sum([]byte(password)) // CWE-327&quot;
-            },
-            &quot;type&quot;: &quot;codeScan&quot;,
-            &quot;cweId&quot;: 326
-         },
-         {
-            &quot;id&quot;: 4,
-            &quot;description&quot;: &quot;Blocklisted import crypto/md5: weak cryptographic primitive&quot;,
-            &quot;name&quot;: &quot;Blocklisted import crypto/md5: weak cryptographic primitive&quot;,
-            &quot;severity&quot;: &quot;HIGH&quot;,
-            &quot;code&quot;: {
-               &quot;location&quot;: &quot;source/app/app.go&quot;,
-               &quot;line&quot;: 7,
-               &quot;column&quot;: 5,
-               &quot;source&quot;: &quot;\&quot;crypto/md5\&quot;&quot;
-            },
-            &quot;type&quot;: &quot;codeScan&quot;,
-            &quot;cweId&quot;: 327
-         },
-         {
-            &quot;id&quot;: 1,
-            &quot;description&quot;: &quot;Potential hardcoded credentials&quot;,
-            &quot;name&quot;: &quot;Potential hardcoded credentials&quot;,
-            &quot;severity&quot;: &quot;HIGH&quot;,
-            &quot;code&quot;: {
-               &quot;location&quot;: &quot;source/app/app.go&quot;,
-               &quot;line&quot;: 76,
-               &quot;column&quot;: 5,
-               &quot;source&quot;: &quot;loginPassword := \&quot;21232f297a57a5a743894a0e4a801fc3\&quot; // CWE-257&quot;
-            },
-            &quot;type&quot;: &quot;codeScan&quot;,
-            &quot;cweId&quot;: 798
-         }
-      ]
-   },
-   &quot;jobUUID&quot;: &quot;3368defe-7a45-448f-bee1-b069e754ca52&quot;,
-   &quot;reportVersion&quot;: &quot;1.0&quot;,
-   &quot;messages&quot;: [],
-   &quot;trafficLight&quot;: &quot;RED&quot;,
-   &quot;status&quot;: &quot;SUCCESS&quot;
-}</code></pre>
+<p>Now you can do a scan, type <code>sechub scan</code>, this will create a file which contains a report of the findings from the scan (JSON format).
+If you want the report in HTML format instead, add <code>-reportformat html</code> as an option: <code>sechub -reportformat html scan</code></p>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="install-sechubs-vscodium-plugin-optional">1.2.7. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</h4>
+</div>
+<div class="sect1">
+<h2 id="optional">5. Optional</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="install-sechubs-vscodium-plugin-optional">5.1. Install SecHub&#8217;s VSCodium Plugin (OPTIONAL)</h3>
 <div class="paragraph">
 <p>SecHub&#8217;s VSCodium Plugin helps you to work faster with the SecHub report.
 You can go to the exact code line and fix the problem.</p>
@@ -1036,8 +983,7 @@ You can go to the exact code line and fix the problem.</p>
 <p>You can get the plugin from <a href="https://open-vsx.org/extension/mercedes-benz/sechub">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>And to install it, open VSCodium and in the <code>Command Pallete</code> (Usually can be opened with <code>Ctrl+Shift+P</code>) type <code>install vsix</code>, and in the pop-up menu, choose the plugin.</p>
-</div>
+<p>And to install it, open VSCodium and in the <code>Command Palette</code> (Usually can be opened with <code>Ctrl+Shift+P</code>) type <code>install vsix</code>, and in the pop-up menu, choose the plugin.</p>
 </div>
 </div>
 </div>
@@ -1045,7 +991,7 @@ You can go to the exact code line and fix the problem.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.2.0<br>
+ Server 2.2.0 modified (commit 41b3d33)<br>
 </div>
 </div>
 </body>
