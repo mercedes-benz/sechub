@@ -66,6 +66,9 @@ public class SchedulerJobStatusRequestHandler implements SynchronMessageHandler 
                 case CANCEL_REQUESTED:
                     status.setCancelRequested(true);
                     break;
+                case SUSPENDED:
+                    status.setSuspended(true);
+                    break;
                 case CANCELED:
                     status.setCanceled(true);
                     break;

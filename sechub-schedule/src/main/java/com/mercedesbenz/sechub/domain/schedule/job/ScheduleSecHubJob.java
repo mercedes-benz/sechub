@@ -81,6 +81,8 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_ENCRYPTION_POOL_ID = "encryptionCipherPoolId";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
+    public static final String QUERY_MARK_JOBS_AS_SUSPENDED = "UPDATE ScheduleSecHubJob j SET j." + PROPERTY_EXECUTION_STATE + " = 'SUSPENDED', j."
+            + PROPERTY_ENDED + " =:endTime where j." + PROPERTY_UUID + " in :sechubJobUUIDs";
 
     @Id
     @GeneratedValue(generator = "UUID")

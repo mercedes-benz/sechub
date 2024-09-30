@@ -144,6 +144,12 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 }
 
 func zipOneFile(file string, zipPath string, config *ZipConfig) error {
+
+	if IsSymlink(file) {
+		LogNotice("Skipping "+file+" because it is a symlink.")
+		return nil
+	}
+
 	LogDebug(config.Debug, "Adding "+zipPath)
 
 	fileToAdd, err := os.Open(file)

@@ -1,0 +1,64 @@
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examples at https://plantuml.com/class-diagram
+
+package com.mercedesbenz.sechub.domain.schedule {
+
+	class SchedulerJobBatchTriggerService {
+	   void triggerExecutionOfNextJob()
+	}
+	
+	class SchedulerNextJobResolver {
+	   UUID resolveNextJobUUID();
+	}
+	
+	class ScheduleJobMarkerService {
+	}
+	
+	class ScheduleResumeJobService {
+	   void resume(ScheduleSecHubJob sechubJob)
+	}
+	
+	database DB {
+    	entity ScheduleSecHubJob {
+    	}
+	}
+	
+}
+
+
+node EventBus {
+}
+
+node springcontainer as "Spring boot container" {
+}
+
+cloud restartProcess as "Restart job handling" {
+}
+
+SchedulerJobBatchTriggerService --> ScheduleJobMarkerService 
+ScheduleResumeJobService ...> EventBus: REQUEST_JOB_RESTART
+restartProcess  <. EventBus: REQUEST_JOB_RESTART
+SchedulerNextJobResolver <-- ScheduleJobMarkerService  
+SchedulerNextJobResolver --> ScheduleSecHubJob  
+SchedulerJobBatchTriggerService --> ScheduleResumeJobService : when RESUMING
+ScheduleJobMarkerService ..> ScheduleSecHubJob :updates execution state to RESUMING\nwhen jobs was in state SUSPENDED\n
+
+
+springcontainer --[#darkgreen,bold]> SchedulerJobBatchTriggerService: scheduled
+
+
+note top of SchedulerNextJobResolver
+At first job uuids of 
+suspended jobs are resolved.
+
+If no suspended job shall be executed, 
+the selected schedule strategy is used 
+to resolve the next job.
+end note 
+
+@enduml

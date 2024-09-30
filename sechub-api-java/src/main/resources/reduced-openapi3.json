@@ -305,119 +305,57 @@
                 "title": "FalsePositives",
                 "type": "object",
                 "properties": {
-                    "falsePositives": {
+                    "projectData": {
                         "type": "array",
-                        "description": "Job data list containing false positive setup based on former jobs",
+                        "description": "Porject data list containing false positive setup for the project",
                         "items": {
                             "type": "object",
                             "properties": {
-                                "metaData": {
+                                "webScan": {
                                     "type": "object",
                                     "properties": {
-                                        "severity": {
-                                            "type": "string",
-                                            "description": "Severity of origin report entry marked as false positive"
-                                        },
-                                        "code": {
-                                            "type": "object",
-                                            "properties": {
-                                                "start": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "sourceCode": {
-                                                            "type": "string",
-                                                            "description": "source code"
-                                                        },
-                                                        "relevantPart": {
-                                                            "type": "string",
-                                                            "description": "relevant part of source vulnerability"
-                                                        },
-                                                        "location": {
-                                                            "type": "string",
-                                                            "description": "location of code"
-                                                        }
-                                                    },
-                                                    "description": "entry point"
-                                                },
-                                                "end": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "sourceCode": {
-                                                            "type": "string",
-                                                            "description": "source code"
-                                                        },
-                                                        "relevantPart": {
-                                                            "type": "string",
-                                                            "description": "relevant part of source vulnerability"
-                                                        },
-                                                        "location": {
-                                                            "type": "string",
-                                                            "description": "location of code"
-                                                        }
-                                                    },
-                                                    "description": "end point (sink)"
-                                                }
-                                            },
-                                            "description": "Code part. Only available for scan type 'codeScan'"
-                                        },
-                                        "owasp": {
-                                            "type": "string",
-                                            "description": "OWASP At least this field must be set for web scans when no cwe identifier is defined."
-                                        },
                                         "cweId": {
                                             "type": "number",
-                                            "description": "CWE (common weakness enumeration). For code scans this is always set."
+                                            "description": "Defines a CWE ID for false positives which occur during webscans. This is mandatory, but can be empty. If it is not specified it matches the findings with no CWE IDs."
                                         },
-                                        "cveId": {
-                                            "type": "string",
-                                            "description": "CVE (common vulnerability and exposures). For infra scans this is always set."
+                                        "methods": {
+                                            "type": "array",
+                                            "description": "Defines a list of (HTTP) methods for false positives which occur during webscans. This is optional and if nothing is specified, the entry applies to all methods.",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "object"
+                                                    },
+                                                    {
+                                                        "type": "boolean"
+                                                    },
+                                                    {
+                                                        "type": "string"
+                                                    },
+                                                    {
+                                                        "type": "number"
+                                                    }
+                                                ]
+                                            }
                                         },
-                                        "name": {
+                                        "urlPattern": {
                                             "type": "string",
-                                            "description": "Name of origin finding marked as false positive"
-                                        },
-                                        "scanType": {
-                                            "type": "string",
-                                            "description": "Scan type - e.g. codeScan"
+                                            "description": "Defines a url pattern for false positives which occur during webscans. Can be used with wildcards like '*.host.com'. Each entry must contain more than just wildcards, '*.*.*' or '*' are not allowed."
                                         }
                                     },
-                                    "description": "Meta data for this false positive"
+                                    "description": "Defines a section for false positives which occur during webscans."
                                 },
-                                "jobData": {
-                                    "type": "object",
-                                    "properties": {
-                                        "jobUUID": {
-                                            "type": "string",
-                                            "description": "SecHub job uuid where finding was"
-                                        },
-                                        "findingId": {
-                                            "type": "number",
-                                            "description": "SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"
-                                        },
-                                        "comment": {
-                                            "type": "string",
-                                            "description": "A comment from author describing why this was marked as a false positive"
-                                        }
-                                    },
-                                    "description": "Job data parts, can be used as key to identify false positives"
-                                },
-                                "created": {
+                                "comment": {
                                     "type": "string",
-                                    "description": "Creation timestamp"
+                                    "description": "A comment describing why this is a false positive."
                                 },
-                                "author": {
+                                "id": {
                                     "type": "string",
-                                    "description": "User id of author who created false positive"
+                                    "description": "Identifier which is used to update or remove the respective false positive entry."
                                 }
                             }
                         }
-                    }
-                }
-            },
-            "FalsePositivesForJob": {
-                "title": "FalsePositivesForJob",
-                "type": "object",
-                "properties": {
+                    },
                     "apiVersion": {
                         "type": "string",
                         "description": "The api version, currently only 1.0 is supported"
@@ -434,7 +372,7 @@
                                 },
                                 "findingId": {
                                     "type": "number",
-                                    "description": "SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"
+                                    "description": "SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive."
                                 },
                                 "comment": {
                                     "type": "string",
@@ -445,7 +383,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'."
+                        "description": "The type of the json content. Currently only accepted value is 'falsePositiveDataList' but we also still accept the deprecated type 'falsePositiveJobDataList'."
                     }
                 }
             },
@@ -1035,6 +973,19 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
+                                    }
+                                }
+                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -1067,19 +1018,6 @@
                                             "type": "string",
                                             "description": "Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both."
                                         }
-                                    }
-                                }
-                            },
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
@@ -1683,7 +1621,7 @@
                     "201": {
                         "description": "201",
                         "content": {
-                            "application/json": {
+                            "text/plain;charset=UTF-8": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ExecutorConfigurationId"
                                 }
@@ -3196,6 +3134,48 @@
                 }
             }
         },
+        "/api/project/{projectId}/false-positive/project-data/{id}": {
+            "delete": {
+                "tags": [
+                    "project"
+                ],
+                "summary": "User unmarks existing false positive project data definitons",
+                "description": "User unmarks existing false positive project data definitons",
+                "operationId": "userUnmarksFalsePositivesProjectData",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "description": "The project id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier which is used to remove the respective false positive entry.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "204"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
         "/api/project/{projectId}/false-positive/{jobUUID}/{findingId}": {
             "delete": {
                 "tags": [
@@ -3290,9 +3270,9 @@
                 "tags": [
                     "project"
                 ],
-                "summary": "User marks false positives for finished sechub job",
-                "description": "User marks false positives for finished sechub job",
-                "operationId": "userMarksFalsePositivesForJob",
+                "summary": "User marks false positives",
+                "description": "User marks false positives",
+                "operationId": "userMarksFalsePositives",
                 "parameters": [
                     {
                         "name": "projectId",
@@ -3308,7 +3288,7 @@
                     "content": {
                         "application/json;charset=UTF-8": {
                             "schema": {
-                                "$ref": "#/components/schemas/FalsePositivesForJob"
+                                "$ref": "#/components/schemas/FalsePositives"
                             }
                         }
                     }

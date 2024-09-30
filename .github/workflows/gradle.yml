@@ -4,32 +4,33 @@ name: Java & Go CI
 on:
   push:
     branches:
-      - main
-      - master
-      - develop
-      - hotfix
-    # We ignore everything where tag starts with v* - this is done by release build!
-    tags-ignore:
-      - v*
+      - 'develop'
+      - 'hotfix'
+      - 'main'
+      - 'master'
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!github-actions/**'
+      - '!sechub-doc/**'
+      - '!sechub-website/**'
+      - '.github/workflows/gradle.yml'
   pull_request:
-    # This workflow will run for all pull requests that target following branches
-    branches:
-      - main
-      - master
-      - develop
-      - hotfix
-    tags-ignore:
-      - v*
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!github-actions/**'
+      - '!sechub-doc/**'
+      - '!sechub-website/**'
+      - '.github/workflows/gradle.yml'
 
   # enable manual triggering of workflow
   workflow_dispatch:
 
 jobs:
   build:
-    # This job is only executed if the branch name starts with 'feature-' or 'dependabot/'
-    # or equals 'main', 'master', 'develop' 'hotfix'
-    if: ${{ startsWith(github.head_ref, 'feature-') || startsWith(github.head_ref, 'dependabot/') || 
-         github.head_ref == 'main' || github.head_ref == 'master' || github.head_ref == 'develop' || github.head_ref == 'hotfix' }}
+    # Skip run when triggered by a tag
+    if: ${{ github.ref_type != 'tag' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332

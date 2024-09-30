@@ -1,36 +1,7 @@
 // SPDX-License-Identifier: MIT
-=== Product delegation server
 
-==== General
-There are many open source clients available having no server component inside so lacking:
-
-- REST access
-- queuing
-- status requests
-- scalable
-- … more
-
-So when we want to adapt them in {sechub} style _(the product does the work and we ask for result)_ we
-need to provide a `ProductDelegationServer` (in short form `PDS`).
-
-`PDS` is
-
-- a spring boot application which uses a network DB for providing cluster possibility
-- a complete standalone application without runtime dependencies to {sechub} server (or its shared kernel)
-- provides REST access
-- a very simple privilege model with just two users (`tech user` + `admin user`),
-  basic auth via `TLS`, credentials are simply defined by environment entries on startup
-- provides jobs, queing, monitoring etc.
-- can execute single files (e.g. a bash script), where job parameters are
-  available as environment variables at runtime
-- a standard way to integrate any product into {sechub} in a scalable and easy way
-
-==== Handling of resources
-- PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
-- When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
-
-==== Big picture
-plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+// pds general describes the basics
+include::concept_pds_general.adoc[]
 
 ==== Encryption
 include::concept_pds_data_encryption.adoc[]
@@ -41,6 +12,7 @@ The PDS provides an auto cleanup mechanism which will remove old PDS jobs automa
 
 The default configuration is set to 2 days.
 Administrators can change the default configuration via REST.
+
 
 
 [[pds-storage-and-sharing]]
@@ -206,6 +178,9 @@ include::concept_pds_events_dataflow.adoc[]
 
 ===== How PDS product executors configure the PDS adapter
 include::concept_pds_adapter_configuration.adoc[]
+
+===== How PDS handles deployment with running jobs
+include::concept_pds_deployment_with_running_jobs.adoc[]
 
 ==== SecHub integration
 ===== Executors and Adapters

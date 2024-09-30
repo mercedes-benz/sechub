@@ -71,11 +71,11 @@ public class RestDocFactory {
         if (usecaseAnnotation == null) {
             throw new IllegalArgumentException("given use case must have annotation of use case definition inside but has not: " + useCase);
         }
-        String usecaseIdentifier = usecaseAnnotation.apiName();
-        if (usecaseIdentifier == null) {
+        String apiNameIdentifier = usecaseAnnotation.apiName();
+        if (apiNameIdentifier == null || apiNameIdentifier.isBlank()) {
             throw new IllegalArgumentException("use case annotation of class does not contain id:" + useCase);
         }
-        return usecaseIdentifier;
+        return apiNameIdentifier;
     }
 
     public static String createSummary(Class<? extends Annotation> useCase) {

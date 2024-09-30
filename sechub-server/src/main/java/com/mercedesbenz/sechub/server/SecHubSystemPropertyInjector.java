@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 import jakarta.annotation.PostConstruct;
@@ -19,7 +20,7 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class SecHubSystemPropertyInjector {
 
-    @MustBeDocumented(value = "Define diffie hellman key length, see https://github.com/mercedes-benz/sechub/issues/689 for details", scope = "security")
+    @MustBeDocumented(value = "Define diffie hellman key length, see https://github.com/mercedes-benz/sechub/issues/689 for details", scope = DocumentationScopeConstants.SCOPE_SECURITY)
     @Value("${sechub.security.diffiehellman.length}")
     private String diffieHellmanLength;
 

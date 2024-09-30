@@ -48,6 +48,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebBodyLocation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
@@ -58,7 +59,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
     SerecoFalsePositiveMarker falsePositiveMarker;
 
     @Value("${sechub.feature.showProductResultLink:false}")
-    @MustBeDocumented(scope = "administration", value = "Administrators can turn on this mode to allow product links in json and HTML output")
+    @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_ADMINISTRATION, value = "Administrators can turn on this mode to allow product links in json and HTML output")
     boolean showProductLineResultLink;
 
     private static final Logger LOG = LoggerFactory.getLogger(SerecoProductResultTransformer.class);

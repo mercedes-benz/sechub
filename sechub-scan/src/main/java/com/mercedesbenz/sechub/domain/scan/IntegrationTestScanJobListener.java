@@ -25,7 +25,14 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
     public void started(UUID jobUUID, CanceableScanJob scan) {
         synchronized (MONITOR) {
             map.put(jobUUID, scan);
-            LOG.debug("registered job:{}", jobUUID);
+            LOG.debug("registered job: {}", jobUUID);
+        }
+    }
+
+    @Override
+    public void suspended(UUID jobUUID) {
+        synchronized (MONITOR) {
+            LOG.debug("informed about suspended job: {}", jobUUID);
         }
     }
 
@@ -33,7 +40,7 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
     public void ended(UUID jobUUID) {
         synchronized (MONITOR) {
             map.remove(jobUUID);
-            LOG.debug("unregistered job:{}", jobUUID);
+            LOG.debug("unregistered job: {}", jobUUID);
         }
     }
 
@@ -44,11 +51,11 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
          * domain is necessary (so reduce events). So we still keep this method / class
          * for integration tests.
          */
-        LOG.debug("try to cancel job:{}", jobUUID);
+        LOG.debug("try to cancel job: {}", jobUUID);
         synchronized (MONITOR) {
             CanceableScanJob canceableScan = map.get(jobUUID);
             if (canceableScan == null) {
-                LOG.warn("Was not able to cancel job:{}", jobUUID);
+                LOG.warn("Was not able to cancel job: {}", jobUUID);
                 return;
             }
             canceableScan.cancelScanJob();
@@ -77,4 +84,5 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
         }
         return count;
     }
+
 }

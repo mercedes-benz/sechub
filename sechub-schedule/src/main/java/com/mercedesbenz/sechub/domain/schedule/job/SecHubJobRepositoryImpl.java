@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 
 import static com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob.*;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,9 +22,11 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 
     private static final String PARAM_UUID = "p_uuid";
     private static final String PARAM_EXECUTION_STATE = "p_exec_state";
+    private static final String PARAM_EXECUTION_STATES = "p_exec_states";
     private static final String PARAM_EXECUTION_STATE_SUB = "p_sub_exec_state";
     private static final String PARAM_ENCRYPTION_POOL_ID = "p_encrypt_pool_id";
     private static final String PARAM_ENCRYPTION_POOL_IDS = "p_encrypt_pool_ids";
+    private static final String PARAM_MINIMUM_JOB_ENDED = "p_min_job_ended";
 
     /* @formatter:off */
 	static final String JPQL_STRING_SELECT_BY_EXECUTION_STATE =
@@ -33,7 +37,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
 
 	static final String JPQL_STRING_SELECT_BY_JOB_ID =
             "select j from " + CLASS_NAME + " j" +
-            " where j." + PROPERTY_EXECUTION_STATE + " = :" + PARAM_EXECUTION_STATE +
+            " where j." + PROPERTY_EXECUTION_STATE + " in :" + PARAM_EXECUTION_STATES +
             " and j." + PROPERTY_UUID + " = :" + PARAM_UUID;
 
 	static final String SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS =
@@ -76,6 +80,12 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     static final String JPQL_STRING_FETCH_ALL_USED_ENCRYPTION_POOL_IDS_IN_JOBS =
             "select DISTINCT j."+PROPERTY_ENCRYPTION_POOL_ID+" from " + CLASS_NAME + " j";
 
+    static final String JPQL_STRING_SELECT_LATEST_SUSPENDED_JOB_OLDER_THAN_GIVEN_TIME =
+            "select j from " + CLASS_NAME + " j" +
+                    " where j." + PROPERTY_EXECUTION_STATE + " = " + ExecutionState.SUSPENDED +
+                    " and j."+ PROPERTY_ENCRYPTION_POOL_ID +" in (:"+PARAM_ENCRYPTION_POOL_IDS+")"+
+                    " and j." + PROPERTY_ENDED + " <:"+PARAM_MINIMUM_JOB_ENDED +
+                    " order by " + PROPERTY_CREATED;
 
     /* @formatter:on */
 
@@ -85,9 +95,9 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public Optional<ScheduleSecHubJob> getJob(UUID id) {
+    public Optional<ScheduleSecHubJob> getJobWhenExecutable(UUID id) {
         Query query = em.createQuery(JPQL_STRING_SELECT_BY_JOB_ID);
-        query.setParameter(PARAM_EXECUTION_STATE, ExecutionState.READY_TO_START);
+        query.setParameter(PARAM_EXECUTION_STATES, Set.of(ExecutionState.READY_TO_START, ExecutionState.SUSPENDED));
         query.setParameter(PARAM_UUID, id);
         query.setMaxResults(1);
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
@@ -163,6 +173,19 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     public List<Long> collectAllUsedEncryptionPoolIdsInsideJobs() {
         Query query = em.createQuery(JPQL_STRING_FETCH_ALL_USED_ENCRYPTION_POOL_IDS_IN_JOBS);
         return query.getResultList();
+    }
+
+    @Override
+    public Optional<UUID> nextJobIdToExecuteSuspended(Set<Long> supportedPoolIds, long minumSuspendDurationInMilliseconds) {
+        LocalDateTime minimumJobEndedDateTime = LocalDateTime.now().minus(minumSuspendDurationInMilliseconds, ChronoUnit.MILLIS);
+
+        Query query = em.createQuery(JPQL_STRING_SELECT_LATEST_SUSPENDED_JOB_OLDER_THAN_GIVEN_TIME);
+        query.setParameter(PARAM_ENCRYPTION_POOL_IDS, supportedPoolIds);
+        query.setParameter(PARAM_MINIMUM_JOB_ENDED, minimumJobEndedDateTime);
+        query.setMaxResults(1);
+        query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+        return getUUIDFromJob(typedQuerySupport.getSingleResultAsOptional(query));
     }
 
 }

@@ -184,3 +184,28 @@ func Example_buildGetSecHubJobListAPICall() {
 	// Output:
 	// https://localhost:8443/api/project/testproject/jobs?size=10&page=0
 }
+
+func TestBuildGetSecHubJobListAPICallWithLabels(t *testing.T) {
+	/* prepare */
+	context := new(Context)
+	config := new(Config)
+
+	context.config = config
+	config.projectID = "testproject"
+	config.server = "https://localhost:8443"
+
+	labels := map[string]string{
+		"key1": "value1",
+		"key2": "Non alphnumeric character$ !",
+	}
+	context.config.labels = labels
+	
+
+	/* execute */
+	result := buildGetSecHubJobListAPICall(context, 10)
+
+	/* test*/
+	sechubTestUtil.AssertStringContains(result, "&withMetaData=true", t)
+	sechubTestUtil.AssertStringContains(result, "&metadata.labels.key1=value1", t)
+	sechubTestUtil.AssertStringContains(result, "&metadata.labels.key2=Non+alphnumeric+character%24+%21", t)
+}

@@ -27,7 +27,8 @@ import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportException;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
+import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
+import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -35,6 +36,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
@@ -76,7 +78,7 @@ public class ScanService implements SynchronMessageHandler {
     ProductResultService productResultService;
 
     @Autowired
-    ScanProgressMonitorFactory monitorFactory;
+    ScanProgressStateFetcherFactory monitorFactory;
 
     @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
@@ -84,6 +86,8 @@ public class ScanService implements SynchronMessageHandler {
 
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
+    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_SUSPENDED, answeringTo = MessageID.START_SCAN, branchName = "suspended")
+    @UseCaseSystemSuspendsJobsWhenSigTermReceived(@Step(number = 3, name = "Scheduler job executor suspends current jobs", description = "Scheduler instance is terminating. Will mark current running jobs of this instance as SUSPENDED"))
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;
@@ -92,6 +96,11 @@ public class ScanService implements SynchronMessageHandler {
 
             executeScan(context, request);
 
+            if (context.isSuspended()) {
+                DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_SUSPENDED);
+                return response;
+
+            }
             ScanReport report = reportService.createReport(context);
 
             DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
@@ -119,7 +128,13 @@ public class ScanService implements SynchronMessageHandler {
             if (context == null) {
                 LOG.warn("No sechub execution context available, so cannot check state or cleanup storage");
             } else {
-                cleanupStorage(context);
+
+                if (context.isSuspended()) {
+                    LOG.info("Skip storage cleanup because only suspended: {}", context.getSechubJobUUID());
+                } else {
+                    cleanupStorage(context);
+                }
+
             }
         }
     }
@@ -132,10 +147,10 @@ public class ScanService implements SynchronMessageHandler {
         UUID logUUID = scanLogService.logScanStarted(context);
 
         try {
-            ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(sechubJobUUID);
+            ProgressStateFetcher progressStateFetcher = monitorFactory.createProgressStateFetcher(sechubJobUUID);
 
             /* delegate execution : */
-            ScanJobExecutor executor = new ScanJobExecutor(productExecutionServiceContainer, scanJobListener, context, progressMonitor,
+            ScanJobExecutor executor = new ScanJobExecutor(productExecutionServiceContainer, scanJobListener, context, progressStateFetcher,
                     millisecondsToWaitBeforeCancelCheck);
             executor.startScanAndInspectCancelRequests();
 
@@ -226,10 +241,6 @@ public class ScanService implements SynchronMessageHandler {
     private DomainMessageSynchronousResult failBecauseUnsupportedMessage() {
         return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
                 new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
-    }
-
-    public void cancelScan(UUID jobUUID) {
-
     }
 
 }

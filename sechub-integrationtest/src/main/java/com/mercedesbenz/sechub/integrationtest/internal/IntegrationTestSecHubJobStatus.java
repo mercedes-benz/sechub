@@ -49,10 +49,13 @@ public class IntegrationTestSecHubJobStatus {
                 while (elementIterator.hasNext()) {
                     JsonNode element = elementIterator.next();
                     String type = element.get("type").asText();
-                    String text = element.get("text").asText();
+                    JsonNode textNode = element.get("text");
+                    String text = null;
+                    if (textNode != null) {
+                        text = textNode.asText();
+                    }
                     SecHubMessage message = new SecHubMessage();
                     message.setType(SecHubMessageType.valueOf(type.toUpperCase()));
-                    ;
                     message.setText(text);
 
                     messages.add(message);

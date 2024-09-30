@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: MIT
+==== General
+===== PDS In an nutshell
+There are many open source clients available having no server component inside so lacking:
+
+- REST access
+- queuing
+- status requests
+- scalable
+- … more
+
+So when we want to adapt them in {sechub} style _(the product does the work and we ask for result)_ we
+need to provide a `ProductDelegationServer` (in short form `PDS`).
+
+`PDS` is
+
+- a spring boot application which uses a network DB for providing cluster possibility
+- a complete standalone application without runtime dependencies to {sechub} server (or its shared kernel)
+- provides REST access
+- a very simple priviledge model with just two users (`tech user` + `admin user`),
+  basic auth via `TLS`, credentials are simply defined by environment entries on startup
+- provides jobs, queing, monitoring etc.
+- can execute single files (e.g. a bash script), where job parameters are
+  available as environment variables at runtime
+- a standard way to integrate any product into {sechub} in a scalable and easy way
+
+===== Handling of resources
+- PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
+- When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
+
+===== Communication between SecHub and PDS
+The communication between SecHub server and PDS is very similar to the communication between SecHub client and SecHub server.
+The `PDS adapter` will do following steps from {sechub} side - as a client of {pds}:
+
+. creates a {pds} job
+. _(Optional: Only necessary when {pds} does not resuse {sechub} storage)_ uploads sources and/or binaries to {pds}
+. approves {pds} job
+. waits until {pds} job has finished
+. downloads {pds} report data
+
+As shown in next figure: 
+
+plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+
+==== Details about PDS
+For more details please refer to the <<https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html,PDS documentation>>  available at
+ 

@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 public class DocGeneratorUtil {
@@ -27,7 +28,7 @@ public class DocGeneratorUtil {
         buildSpringScheduledParts(data, element);
 
         /* when class name shall be used... */
-        if (MustBeDocumented.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED.equals(data.scope)) {
+        if (DocumentationScopeConstants.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED.equals(data.scope)) {
             data.scope = toCamelOne(fetchClass(element)).toLowerCase();
         }
         return data;
@@ -42,7 +43,7 @@ public class DocGeneratorUtil {
         buildSpringScheduledParts(data, element);
 
         /* when class name shall be used... */
-        if (MustBeDocumented.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED.equals(data.scope)) {
+        if (DocumentationScopeConstants.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED.equals(data.scope)) {
             data.scope = toCamelOne(fetchClass(element)).toLowerCase();
         }
         return data;

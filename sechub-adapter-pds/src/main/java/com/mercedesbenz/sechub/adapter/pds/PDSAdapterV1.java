@@ -65,6 +65,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         assertThreadNotInterrupted();
 
+        /* create and configure current PDS context object */
         PDSContext pdsContext = contextFactory.create(config, this, runtimeContext);
         handleResilienceConfiguration(pdsContext);
 
