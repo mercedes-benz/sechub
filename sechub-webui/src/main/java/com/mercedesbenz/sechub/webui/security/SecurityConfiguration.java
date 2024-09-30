@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.webui.ApplicationProfiles;
 import com.mercedesbenz.sechub.webui.RequestConstants;
@@ -58,7 +59,7 @@ public class SecurityConfiguration {
                         .successHandler(authenticationSuccessHandler));
 
         if (environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED)) {
-            MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient();
+            MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient(new RestTemplate());
             /* Enable OAuth2 */
             httpSecurity.oauth2Login(oauth2 -> oauth2
                 .loginPage(RequestConstants.LOGIN_OAUTH2)

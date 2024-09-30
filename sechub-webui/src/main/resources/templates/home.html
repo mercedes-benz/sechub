@@ -2,10 +2,46 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Welcome Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecHub WebUI</title>
     <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .container > * {
+            margin: 0.5rem 0;
+        }
+        .container > img {
+            max-width: 200px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+    </style>
 </head>
-<body class="container-flex flex-column">
-<p>Welcome to the SecHub Web-UI <span th:text="${principal}">UNDEFINED</span>!</p>
+<body>
+<div class="container">
+    <h1>Welcome to the SecHub Web-UI</h1>
+    <img src="/sechub-logo.svg" alt="SecHub Logo">
+    <p>This site is under construction. Please check back later.</p>
+</div>
 </body>
 </html>

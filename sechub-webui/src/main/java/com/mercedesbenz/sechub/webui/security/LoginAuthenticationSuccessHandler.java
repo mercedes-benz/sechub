@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author hamidonos
  */
-final class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoginAuthenticationSuccessHandler.class);
 

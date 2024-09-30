@@ -9,17 +9,21 @@ server:
     protocol: TLS
     enabled-protocols: TLSv1.2,TLSv1.3
 
+
 spring:
   messages:
     basename: "i18n/messages"
   profiles:
     group:
       webui_prod: "ssl-cert-required,oauth2-enabled"
-      webui_int: "ssl-cert-required,oauth2-enabled"
+      webui_int: "ssl-cert-required,oauth2-enabled,basic-auth-mocked"
       webui_dev: "ssl-cert-provided,basic-auth-mocked"
       webui_local: "ssl-cert-provided,basic-auth-mocked,local"
       webui_test: "test"
       webui_integrationtest: "ssl-cert-provided,integrationtest-data"
+  web:
+    resources:
+      static-locations: classpath:/static
 
 logging:
   level:

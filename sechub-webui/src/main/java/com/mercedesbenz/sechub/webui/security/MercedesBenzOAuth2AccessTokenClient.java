@@ -55,7 +55,11 @@ class MercedesBenzOAuth2AccessTokenClient implements OAuth2AccessTokenResponseCl
     private static final String CLIENT_ID_CLIENT_SECRET_FORMAT = "%s:%s";
     private static final String ID_TOKEN = "id_token";
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    MercedesBenzOAuth2AccessTokenClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public OAuth2AccessTokenResponse getTokenResponse(OAuth2AuthorizationCodeGrantRequest authorizationGrantRequest) {
