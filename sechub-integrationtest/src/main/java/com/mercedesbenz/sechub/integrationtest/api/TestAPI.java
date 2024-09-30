@@ -470,8 +470,7 @@ public class TestAPI {
 
     private static boolean containsStatus(TestUser user, TestProject project, UUID jobUUID, String... acceptedContainedStatus) {
         String status = as(user).getJobStatus(project.getProjectId(), jobUUID);
-        LOG.info(">>>>>>>>>JOB:STATUS:" + status);
-
+        LOG.info(" => Job status: {}", status);
         for (String accepted : acceptedContainedStatus) {
             if (status.contains(accepted)) {
                 return true;

@@ -24,7 +24,7 @@ public class SchedulerNextJobResolver {
     ScheduleEncryptionService encryptionService;
 
     @Autowired
-    public SecHubJobRepository jobRepository;
+    SecHubJobRepository jobRepository;
 
     @Autowired
     SchedulerStrategyProvider schedulerStrategyProvider;
@@ -56,7 +56,7 @@ public class SchedulerNextJobResolver {
             this job will be returned. Otherwise the selected schedule strategy will be used to determine next job uuid.
 
             Remark: A suspended job shall only be executed when the minium duration time has been
-            reached. The time period can be configured and prevents cross site effects at deployments.
+            reached. The time period can be configured and prevents side effects at deployments.
             """))
     public UUID resolveNextJobUUID() {
 

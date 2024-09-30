@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 [[section-shared-concepts-sechub-job-restart-handling]]
 
-{sechub} jobs can be restarted. To provide this the 
+{sechub} jobs can be restarted - either by administrators or by system itself to resume formerly 
+suspended jobs.
 
 The next diagram shows the involved classes and the program flow when {pds} is used for
 communication - but if no {pds} adapter is used for the product execution the behavior is
@@ -16,7 +17,7 @@ The event `REQUEST_RESTART_JOB` is also triggered when the batch trigger service
 [TIP]
 ====
 It is always a good idea to use {pds} instead of direct product handling (via dedicated
-adapters) because {pds} (by the adapter) provides relaunch /restart meta data handling 
+adapters) because {pds} (via the {pds} adapter) provides relaunch /restart meta data handling 
 out of the box!
 ====
  

@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		description="""
 		        When a SecHub instance is receiving a SIGTERM signal from OS,
 		        the server instance must block further job processing (on this instance) and
-		        suspend all of it running jobs. Because after some time the job will be resumed
+		        suspend all of its running jobs. Because after some time the job will be resumed
 		        by another instance, this process will not stop any running PDS jobs.
 		        """)
 public @interface UseCaseSystemSuspendsJobsWhenSigTermReceived {

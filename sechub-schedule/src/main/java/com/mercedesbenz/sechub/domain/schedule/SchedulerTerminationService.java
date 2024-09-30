@@ -30,7 +30,7 @@ public class SchedulerTerminationService {
 
         LOG.info("Start termination process");
         if (terminating) {
-            LOG.info("Alrady in termination process! Will skip request");
+            LOG.info("Already in termination process! Will skip request");
             return;
         }
 
