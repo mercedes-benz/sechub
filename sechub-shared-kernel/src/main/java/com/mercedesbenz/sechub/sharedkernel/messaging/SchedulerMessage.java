@@ -27,6 +27,8 @@ public class SchedulerMessage implements JSONable<SchedulerMessage> {
     private long amountOfJobsCancelRequested;
     private long amountOfJobsEnded;
 
+    private long amountOfJobsSuspended;
+
     public boolean isJobProcessingEnabled() {
         return jobProcessingEnabled;
     }
@@ -94,6 +96,14 @@ public class SchedulerMessage implements JSONable<SchedulerMessage> {
 
     public void setAmountOfJobsEnded(long amountOfJobsEnded) {
         this.amountOfJobsEnded = amountOfJobsEnded;
+    }
+
+    public void setAmountOfJobsSuspended(long amountOfJobsSuspended) {
+        this.amountOfJobsSuspended = amountOfJobsSuspended;
+    }
+
+    public long getAmountOfJobsSuspended() {
+        return amountOfJobsSuspended;
     }
 
 }

@@ -25,6 +25,7 @@ public class SchedulerJobMessage implements JSONable<SchedulerJobMessage> {
     private boolean started;
 
     private boolean canceled;
+    private boolean suspended;
 
     @Override
     public Class<SchedulerJobMessage> getJSONTargetClass() {
@@ -93,6 +94,14 @@ public class SchedulerJobMessage implements JSONable<SchedulerJobMessage> {
 
     public boolean isStarted() {
         return started;
+    }
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
+    }
+
+    public boolean isSuspended() {
+        return suspended;
     }
 
 }

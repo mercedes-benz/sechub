@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
+import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyProvider;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
@@ -40,7 +40,7 @@ public class IntegrationTestSchedulerRestController {
     private IntegrationTestSchedulerService integrationTestSchedulerService;
 
     @Autowired
-    private SchedulerStrategyFactory schedulerStrategyFactory;
+    private SchedulerStrategyProvider schedulerStrategyProvider;
 
     @Autowired
     private SchedulerConfigService scheduleConfigService;
@@ -50,6 +50,9 @@ public class IntegrationTestSchedulerRestController {
 
     @Autowired
     private ScheduleCipherPoolCleanupService scheduleCipherPoolCleanupService;
+
+    @Autowired
+    private SchedulerTerminationService schedulerTerminationService;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/schedule/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -91,7 +94,7 @@ public class IntegrationTestSchedulerRestController {
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scheduler/strategy/{strategyId}", method = RequestMethod.PUT, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void setSchedulerStrategy(@PathVariable("strategyId") String strategyId) {
-        schedulerStrategyFactory.setStrategyIdentifier(strategyId);
+        schedulerStrategyProvider.setStrategyIdentifier(strategyId);
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS
@@ -103,6 +106,20 @@ public class IntegrationTestSchedulerRestController {
             throw new IllegalArgumentException("SecHub job: " + sechubJobUUID + " not found!");
         }
         return job.get().getEncryptionCipherPoolId();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/termination-state/{terminate}", method = RequestMethod.PUT)
+    public void changeTerinationServiceState(@PathVariable("terminate") boolean terminate) {
+        if (terminate) {
+            schedulerTerminationService.terminate();
+        } else {
+            schedulerTerminationService.internalResetTermination();
+        }
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/termination-state", method = RequestMethod.GET)
+    public boolean fetchTerminationState() {
+        return schedulerTerminationService.isTerminating();
     }
 
 }

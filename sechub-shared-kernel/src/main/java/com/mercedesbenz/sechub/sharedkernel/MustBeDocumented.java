@@ -28,12 +28,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface MustBeDocumented {
 
     /**
-     * If this scope is used, it shall be replaced in generated output by lower
-     * cased class name of class where annotation is used
-     */
-    String SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED = "definingClassNameToLowercase";
-
-    /**
      * A description what the documented part is used for
      *
      * @return description
@@ -41,13 +35,15 @@ public @interface MustBeDocumented {
     String value() default "";
 
     /**
-     * The scope name for the documentation - when not set
-     * {@link #SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED} is used as scope name. Thus
-     * information can be used for generating documentation and separate groups etc.
+     * The scope name for the documentation - default fallback value is
+     * {@link DocumentationScopeConstants#SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED}
+     * (will result in a generated scope name depending on annotated class package).
+     * The scope information is used for generating documentation and separate
+     * groups etc.
      *
      * @return scope
      */
-    String scope() default SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED;
+    String scope() default DocumentationScopeConstants.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED;
 
     /**
      * When <code>true</code> the information of this annotation must be handled

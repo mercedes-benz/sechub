@@ -24,6 +24,8 @@ public class SecHubJobBatchTriggerServiceTest {
 
     private SystemMonitorService monitoringService;
 
+    private SchedulerTerminationService schedulerTerminationService;
+
     @Before
     public void before() throws Exception {
         serviceToTest = new SchedulerJobBatchTriggerService();
@@ -33,12 +35,14 @@ public class SecHubJobBatchTriggerServiceTest {
         environmentService = mock(ClusterEnvironmentService.class);
         configService = mock(SchedulerConfigService.class);
         monitoringService = mock(SystemMonitorService.class);
+        schedulerTerminationService = mock(SchedulerTerminationService.class);
 
         serviceToTest.launcherService = launcherService;
         serviceToTest.markerService = markerService;
         serviceToTest.environmentService = environmentService;
         serviceToTest.configService = configService;
         serviceToTest.monitorService = monitoringService;
+        serviceToTest.schedulerTerminationService = schedulerTerminationService;
 
     }
 

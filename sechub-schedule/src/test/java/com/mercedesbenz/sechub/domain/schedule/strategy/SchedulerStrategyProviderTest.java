@@ -7,13 +7,13 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SchedulerStrategyFactoryTest {
+class SchedulerStrategyProviderTest {
 
     private static final String FIRST_COME_FIRST_SERVE = "first-come-first-serve";
     private static final String ONLY_ONE_SCAN_PER_PROJECT = "only-one-scan-per-project-at-a-time";
     private static final String ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP = "only-one-scan-per-project-and-module-group";
 
-    private SchedulerStrategyFactory factoryToTest;
+    private SchedulerStrategyProvider factoryToTest;
     private FirstComeFirstServeSchedulerStrategy firstComeFirstServeStrategy;
     private OnlyOneScanPerProjectAtSameTimeStrategy onlyOneScanPerProjectStrategy;
     private OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy onlyOneScanPerProjectAndModuleGroupStrategy;
@@ -25,7 +25,7 @@ class SchedulerStrategyFactoryTest {
         onlyOneScanPerProjectStrategy = mock(OnlyOneScanPerProjectAtSameTimeStrategy.class);
         onlyOneScanPerProjectAndModuleGroupStrategy = mock(OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy.class);
 
-        factoryToTest = new SchedulerStrategyFactory();
+        factoryToTest = new SchedulerStrategyProvider();
 
         factoryToTest.firstComeFirstServeStrategy = firstComeFirstServeStrategy;
         factoryToTest.onlyOneScanPerProjectStrategy = onlyOneScanPerProjectStrategy;
@@ -38,7 +38,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(FIRST_COME_FIRST_SERVE);
 
         /* execute */
-        SchedulerStrategy strategy = factoryToTest.build();
+        SchedulerStrategy strategy = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(strategy, firstComeFirstServeStrategy);
@@ -50,7 +50,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(ONLY_ONE_SCAN_PER_PROJECT);
 
         /* execute */
-        SchedulerStrategy strategy = factoryToTest.build();
+        SchedulerStrategy strategy = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(strategy, onlyOneScanPerProjectStrategy);
@@ -62,7 +62,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP);
 
         /* execute */
-        SchedulerStrategy strategy = factoryToTest.build();
+        SchedulerStrategy strategy = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(strategy, onlyOneScanPerProjectAndModuleGroupStrategy);
@@ -74,7 +74,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier("");
 
         /* execute */
-        SchedulerStrategy strategy = factoryToTest.build();
+        SchedulerStrategy strategy = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(strategy, firstComeFirstServeStrategy);
@@ -86,7 +86,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(null);
 
         /* execute */
-        SchedulerStrategy strategy = factoryToTest.build();
+        SchedulerStrategy strategy = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(strategy, firstComeFirstServeStrategy);
@@ -98,7 +98,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier("123");
 
         /* execute */
-        SchedulerStrategy result = factoryToTest.build();
+        SchedulerStrategy result = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(result, firstComeFirstServeStrategy);
@@ -110,7 +110,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(FIRST_COME_FIRST_SERVE);
 
         /* execute */
-        SchedulerStrategy result = factoryToTest.build();
+        SchedulerStrategy result = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(result, firstComeFirstServeStrategy);
@@ -123,7 +123,7 @@ class SchedulerStrategyFactoryTest {
         factoryToTest.setStrategyIdentifier(ONLY_ONE_SCAN_PER_PROJECT);
 
         /* execute */
-        SchedulerStrategy result = factoryToTest.build();
+        SchedulerStrategy result = factoryToTest.getStrategy();
 
         /* test */
         assertEquals(result, onlyOneScanPerProjectStrategy);

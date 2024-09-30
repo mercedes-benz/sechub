@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: MIT
 == Concepts
+include::../shared/concepts/concept_include_all.adoc[]
 
-include::../shared/configuration/mapping.adoc[]
+// for rtechdoc we add the usescases below concept to have the linking inside documentation
+include::./../gen/gen_usecases.adoc[]
+
+=== Domain driven design
+
+include::./../shared/domain_message_bus.adoc[]
+
+== Configurations
 
 include::../shared/configuration/execution_profiles.adoc[]
 
@@ -9,22 +17,5 @@ include::../shared/configuration/executor_config.adoc[]
 
 include::../shared/configuration/scan_config.adoc[]
 
-include::../shared/concepts/concept_modules_and_module_groups.adoc[]
-
 include::../shared/configuration/project_scan_config_technical-details.adoc[]
-
-include::../shared/concepts/concept_falsepositive_handling.adoc[]
-
-include::../shared/concepts/concept_auto_clean.adoc[]
-
-=== Analytics
-include::../shared/concepts/concept_analytic.adoc[]
-
-=== Statistics
-include::../shared/concepts/concept_statistic.adoc[]
-
-=== Domain driven design
-include::./../shared/domain_message_bus.adoc[]
-
-include::./../gen/gen_usecases.adoc[]
 

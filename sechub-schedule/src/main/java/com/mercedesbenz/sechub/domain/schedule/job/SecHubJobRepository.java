@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,4 +40,17 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
     @Modifying
     @Query(ScheduleSecHubJob.QUERY_DELETE_JOB_OLDER_THAN)
     public int deleteJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+
+    /**
+     * Marks all jobs for given uuids as SUSPENDED and also set ended date time in
+     * one transaction
+     *
+     * @param sechubJobUUIDs
+     * @param ended
+     */
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(ScheduleSecHubJob.QUERY_MARK_JOBS_AS_SUSPENDED)
+    public void markJobsAsSuspended(@Param("sechubJobUUIDs") Set<UUID> sechubJobUUIDs, @Param("endTime") LocalDateTime ended);
+
 }

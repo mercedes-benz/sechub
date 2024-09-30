@@ -86,6 +86,11 @@ public class JobCreator {
         return this;
     }
 
+    public JobCreator ended(LocalDateTime dateTime) {
+        job.ended = dateTime;
+        return this;
+    }
+
     public JobCreator project(String projectId) {
         job.projectId = projectId;
         return this;

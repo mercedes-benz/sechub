@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,6 +263,69 @@ public class SecHubJobRepositoryDBTest {
         /* test */
         assertFalse(list.isEmpty());
         assertTrue(list.contains(newJob4));
+    }
+
+    @Test
+    void markJobsAsSuspended() {
+        /* prepare */
+        String projectId = "p1";
+
+        // persist data
+        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job1);
+
+        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        LocalDateTime ended = LocalDateTime.of(2024, 9, 23, 17, 42, 00);// we want to avoid storage round problems in test
+
+        /* execute */
+        jobRepository.markJobsAsSuspended(Set.of(job1.getUUID()), ended);
+
+        /* test */
+        Optional<ScheduleSecHubJob> job1Loaded = jobRepository.findById(job1.getUUID());
+        Optional<ScheduleSecHubJob> job2Loaded = jobRepository.findById(job2.getUUID());
+
+        assertEquals(ExecutionState.SUSPENDED, job1Loaded.get().getExecutionState());
+        assertEquals(ExecutionState.READY_TO_START, job2Loaded.get().getExecutionState());
+
+        assertEquals(ended, job1Loaded.get().getEnded());
+        assertNull(job2Loaded.get().getEnded());
+
+    }
+
+    @Test
+    void markJobsAsSuspended_multi() {
+        /* prepare */
+        String projectId = "p1";
+
+        // persist data
+        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job1);
+
+        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        entityManager.persist(job2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        LocalDateTime ended = LocalDateTime.of(2024, 9, 23, 17, 42, 10); // we want to avoid storage round problems in test
+
+        /* execute */
+        jobRepository.markJobsAsSuspended(Set.of(job1.getUUID(), job2.getUUID()), ended);
+
+        /* test */
+        Optional<ScheduleSecHubJob> job1Loaded = jobRepository.findById(job1.getUUID());
+        Optional<ScheduleSecHubJob> job2Loaded = jobRepository.findById(job2.getUUID());
+
+        assertEquals(ExecutionState.SUSPENDED, job1Loaded.get().getExecutionState());
+        assertEquals(ExecutionState.SUSPENDED, job2Loaded.get().getExecutionState());
+
+        assertEquals(ended, job1Loaded.get().getEnded());
+        assertEquals(ended, job2Loaded.get().getEnded());
     }
 
     @Test
@@ -564,6 +628,128 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJobData result = findDataOrNullByJobUUID(key, jobUUID);
         assertNull(result);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /* ------------------ next job to execute suspended --------------- */
+    /* -------------------------------------------------------------------------- */
+
+    @ParameterizedTest
+    @EnumSource(mode = Mode.EXCLUDE, value = ExecutionState.class, names = "SUSPENDED")
+    void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_no_suspended_exists_but_only_one_job_in_other_state(ExecutionState state) {
+
+        /* prepare */
+        jobCreator.being(state).ended(LocalDateTime.now().minusSeconds(2)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
+
+        /* test */
+        assertFalse(uuid.isPresent());
+    }
+
+    @Test
+    void custom_query_nextJobIdToExecuteSuspended_2000_ms_duration_one_suspended_exist_but_only_1_second_so_nothing_returned() {
+        /* prepare */
+        jobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(1)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 2000L);
+
+        /* test */
+        assertFalse(uuid.isPresent());
+    }
+
+    @Test
+    void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_one_suspended_exist_older_1_second_returned() {
+        /* prepare */
+        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob.getUUID(), uuid.get());
+    }
+
+    @Test
+    void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_three_suspended_exist_both_older_1_second_older_returned() {
+        /* prepare */
+        jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
+        ScheduleSecHubJob newJob2 = jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
+                .ended(LocalDateTime.now().minusSeconds(3)).create();
+        jobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob2.getUUID(), uuid.get());
+    }
+
+    @Test
+    void custom_query_nextJobIdToExecuteSuspended_3000_ms_duration_three_suspended_exist_but_olders_only_2_second_returns_last_created_because_latest_suspended() {
+        /* prepare */
+        jobCreator.created(LocalDateTime.now().minusSeconds(15)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        ScheduleSecHubJob newJob2 = jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
+                .ended(LocalDateTime.now().minusSeconds(3)).create();
+        jobCreator.created(LocalDateTime.now().minusSeconds(16)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 3000L);
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob2.getUUID(), uuid.get());
+    }
+
+    @Test
+    void custom_query_nextJobIdToExecuteSuspended_5000_ms_duration_three_suspended_exist_both_younger_5_seconds_none_returned() {
+        /* prepare */
+        jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
+        jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(3)).create();
+        jobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 5000L);
+
+        /* test */
+        assertFalse(uuid.isPresent());
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* ------------------------ */
+    /* -------------------------------------------------------------------------- */
+
+    @ParameterizedTest
+    @EnumSource(value = ExecutionState.class, names = { "READY_TO_START", "SUSPENDED" }, mode = Mode.EXCLUDE)
+    void custom_query_getJob_returns_not_created_job_because_not_in_accepted_state(ExecutionState state) {
+        /* prepare */
+        ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
+
+        /* execute */
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+
+        /* test */
+        assertFalse(result.isPresent());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ExecutionState.class, names = { "READY_TO_START", "SUSPENDED" }, mode = Mode.INCLUDE)
+    void custom_query_getJob_returns_created_job_because_in_accepted_state(ExecutionState state) {
+        /* prepare */
+        ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
+
+        /* execute */
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+
+        /* test */
+        assertTrue(result.isPresent());
+        assertEquals(created, result.get());
+    }
+
+    /* -------------------------------------------------------------------------- */
 
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {

@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model.job;
 
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
+
 /**
- * Represents the execution state of a scheduled SecHub job
+ * Represents the execution state of a scheduled SecHub job.
+ *
+ * Attention: never change existing enum values because they are used for
+ * persistence as identifiers! Only add new ones!
  *
  * @author Albert Tregnaghi
  *
  */
+@MustBeKeptStable
 public enum ExecutionState {
 
     INITIALIZING("Initializing. E.g. Workspace has pending uploads etc."),
@@ -19,7 +25,13 @@ public enum ExecutionState {
 
     CANCELED("The job has been canceled"),
 
-    ENDED("Has ended - with failure or success");
+    SUSPENDED("The job has been suspended and can be resumed by another SecHub instance"),
+
+    RESUMING("A former suspended job is resuming"),
+
+    ENDED("Has ended - with failure or success"),
+
+    ;
 
     private String description;
 

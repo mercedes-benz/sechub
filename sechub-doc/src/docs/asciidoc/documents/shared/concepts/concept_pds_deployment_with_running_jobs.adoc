@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-pds-deployment-with-running-jobs]]
+
+When a new {pds} deployment starts, running jobs must be treated in a way that the running jobs
+are "transfered" to the new instances.
+
+This is done following way:
+
+`SIGTERM` signal from OS is recognized and still running jobs are set to state `READY_FOR_RESTART`.
+
+Because the job stores its state via meta data (see <<concept-pds_solution_metadata,{pds} meta data>> )
+it is possible reuse/relaunch the job from new instances. The {pds} scheduler mechanism to determine
+next job to start handles this state before others.
+ 
+[NOTE]
+====
+K8s (Kubernetes) sends a SIGTERM signal when doing rolling updates. Means we have here a zero down 
+time with K8s + {pds}.
+====
+
+[WARNING]
+====
+Other signals (e.g. `SIGKILL`) are *NOT treated*! For those cases the jobs must be restarted manually
+afterwards.
+====
+

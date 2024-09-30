@@ -28,6 +28,7 @@ include::documents/pds/about_pds.adoc[]
 include::documents/pds/pds_download.adoc[]
 
 == Concept
+=== Product delegation server
 include::documents/shared/concepts/concept_pds.adoc[]
 
 == Runtime view

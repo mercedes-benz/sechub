@@ -41,6 +41,7 @@ public class SchedulerStatusService {
         long amountOfJobsStarted = jobRepository.countJobsInExecutionState(ExecutionState.STARTED);
         long amountOfJobsCancelRequested = jobRepository.countJobsInExecutionState(ExecutionState.CANCEL_REQUESTED);
         long amountOfJobsCanceled = jobRepository.countJobsInExecutionState(ExecutionState.CANCELED);
+        long amountOfJobsSuspended = jobRepository.countJobsInExecutionState(ExecutionState.SUSPENDED);
         long amountOfJobsEnded = jobRepository.countJobsInExecutionState(ExecutionState.ENDED);
 
         boolean processingEnabled = configService.isJobProcessingEnabled();
@@ -55,6 +56,7 @@ public class SchedulerStatusService {
         sm.setAmountOfJobsCancelRequested(amountOfJobsCancelRequested);
         sm.setAmountOfJobsCanceled(amountOfJobsCanceled);
         sm.setAmountOfJobsEnded(amountOfJobsEnded);
+        sm.setAmountOfJobsSuspended(amountOfJobsSuspended);
 
         message.set(MessageDataKeys.SCHEDULER_STATUS_DATA, sm);
 

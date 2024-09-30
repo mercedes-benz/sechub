@@ -4,12 +4,14 @@ package com.mercedesbenz.sechub.domain.schedule;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -19,8 +21,9 @@ import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategy;
-import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
+import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerNextJobResolver;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
 /**
  * This service is only responsible to mark next {@link ScheduleSecHubJob} to
@@ -39,9 +42,7 @@ public class ScheduleJobMarkerService {
     SecHubJobRepository jobRepository;
 
     @Autowired
-    SchedulerStrategyFactory schedulerStrategyFactory;
-
-    private SchedulerStrategy schedulerStrategy;
+    SchedulerNextJobResolver nextJobResolver;
 
     private ScheduleSecHubJobMessagesSupport jobMessageSupport = new ScheduleSecHubJobMessagesSupport();
 
@@ -50,29 +51,33 @@ public class ScheduleJobMarkerService {
      *         be executed
      */
     @Transactional
+    @UseCaseSystemResumesSuspendedJobs(@Step(number = 3, name = "Mark next job to execute", description = "When a suspended job is the next one, the job execution state will be changed to RESUMING"))
     public ScheduleSecHubJob markNextJobToExecuteByThisInstance() {
 
-        schedulerStrategy = schedulerStrategyFactory.build();
-
         if (LOG.isTraceEnabled()) {
-            /* NOSONAR */LOG.trace("Trigger execution of next job started");
+            LOG.trace("Trigger execution of next job started");
         }
 
-        UUID nextJobId = schedulerStrategy.nextJobId();
+        UUID nextJobId = nextJobResolver.resolveNextJobUUID();
         if (nextJobId == null) {
             return null;
         }
 
-        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJob(nextJobId);
+        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJobWhenExecutable(nextJobId);
         if (!secHubJobOptional.isPresent()) {
-            if (LOG.isTraceEnabled()) {
-                /* NOSONAR */LOG.trace("No job found.");
-            }
+            LOG.error("Did not found executablejob for next job UUID:{}. This is very problematic and should never happen!", nextJobId);
             return null;
         }
         ScheduleSecHubJob secHubJob = secHubJobOptional.get();
-        secHubJob.setExecutionState(ExecutionState.STARTED);
-        secHubJob.setStarted(LocalDateTime.now());
+        ExecutionState state = secHubJob.getExecutionState();
+
+        if (ExecutionState.SUSPENDED.equals(state)) {
+            secHubJob.setExecutionState(ExecutionState.RESUMING);
+            secHubJob.setEnded(null); // reset end timestamp, because no longer "ended"
+        } else {
+            secHubJob.setExecutionState(ExecutionState.STARTED);
+            secHubJob.setStarted(LocalDateTime.now());
+        }
         return jobRepository.save(secHubJob);
     }
 
@@ -82,7 +87,7 @@ public class ScheduleJobMarkerService {
             return;
         }
         if (LOG.isTraceEnabled()) {
-            /* NOSONAR */LOG.trace("Mark execution failed for job:{}", secHubJob.getUUID());
+            LOG.trace("Mark execution failed for job:{}", secHubJob.getUUID());
         }
         secHubJob.setExecutionResult(ExecutionResult.FAILED);
         secHubJob.setExecutionState(ExecutionState.ENDED);
@@ -90,4 +95,17 @@ public class ScheduleJobMarkerService {
         jobMessageSupport.addMessages(secHubJob, Arrays.asList(new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed")));
         jobRepository.save(secHubJob);
     }
+
+    /**
+     * Marks SecHub jobs for given UUIDS as SUSPENDED and also set ended date time.
+     * This is done in a new transaction
+     *
+     * @param sechubJobUUIDs
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markJobsAsSuspended(Set<UUID> sechubJobUUIDs) {
+        LOG.info("Mark jobs with next uuids as suspended: {}", sechubJobUUIDs);
+        jobRepository.markJobsAsSuspended(sechubJobUUIDs, LocalDateTime.now());
+    }
+
 }
