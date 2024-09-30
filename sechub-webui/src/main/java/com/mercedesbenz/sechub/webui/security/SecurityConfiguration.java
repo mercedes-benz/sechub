@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -50,13 +48,7 @@ public class SecurityConfiguration {
                 )
                 /* Enable stateful sessions */
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                /* Enable Basic Auth */
-                .httpBasic(withDefaults())
-                .formLogin(form -> form
-                        .loginPage(RequestConstants.LOGIN_CLASSIC)
-                        .permitAll()
-                        .successHandler(authenticationSuccessHandler));
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         if (environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED)) {
             MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient(new RestTemplate());
@@ -66,6 +58,17 @@ public class SecurityConfiguration {
                 .tokenEndpoint(token -> token.accessTokenResponseClient(mercedesBenzOAuth2AccessTokenClient))
                 .successHandler(authenticationSuccessHandler));
         }
+
+        /*
+            Enable Form Login
+            Note: This must be the last configuration in order to set the default 'loginPage' to oAuth2
+            because spring uses the 'loginPage' from the first authentication method configured
+        */
+        httpSecurity
+                .formLogin(form -> form
+                .loginPage(RequestConstants.LOGIN_CLASSIC)
+                .permitAll()
+                .successHandler(authenticationSuccessHandler));
 
         /* @formatter:on */
 

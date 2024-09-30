@@ -1,7 +1,7 @@
 {
-  "access_token":"eyDkfdaOiJSUdfadsfdsfzI1NiIsImtpZCI6IjFlOWdkazcifQ.eyJhenAiOiJodHR",
+  "access_token":"access_token",
   "token_type":"Bearer",
   "expires_in":3600,
-  "refresh_token": "eyAaOiJSUzI1NiIsImdfsafdfadstpZCI6IjFlOWdkazcifQ.eyJhenAiOiJodHR",
-  "id_token":"eyJXTI6IjFlOWdkazcifQ.eyJhenAiOiJodHRwczovLdfsafdsafe2xvY2FsaG9zdDo4NDQzL2F1dGgvcmVmcmVzaCIsInN1YiI6ImF1dGgwfDUxMjM0NTY3ODkwMTI3NjU4MDkxMmEwM2IiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJpYXQiOjE0NzU2MjA2ODQsImV4cCI6MTQ3NTYyNDI4NCwibm9uY2UiOiIyNTIwMjIyMjIifQ"
+  "refresh_token": "refresh_token",
+  "id_token":"id_token"
 }

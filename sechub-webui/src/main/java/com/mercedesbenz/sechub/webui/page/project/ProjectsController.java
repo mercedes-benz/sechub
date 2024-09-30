@@ -21,7 +21,7 @@ class ProjectsController {
         this.projectInfoService = projectInfoService;
     }
 
-    @GetMapping(value = { RequestConstants.ROOT, RequestConstants.PROJECTS })
+    @GetMapping(RequestConstants.PROJECTS)
     String index(Model model) {
         model.addAttribute("sechubServerUrl", accessService.getSecHubServerUri());
         model.addAttribute("projectIds", projectInfoService.fetchProjectIdsForCurrentUser());

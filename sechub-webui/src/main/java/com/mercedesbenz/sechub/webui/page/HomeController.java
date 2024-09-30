@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.webui.RequestConstants;
 @Controller
 public class HomeController {
 
-    @GetMapping(RequestConstants.HOME)
+    @GetMapping({ RequestConstants.ROOT, RequestConstants.HOME })
     public String home(@AuthenticationPrincipal OidcUser principal, Model model) {
         if (principal != null) {
             model.addAttribute("principal", principal.getAttribute("name"));

@@ -34,7 +34,7 @@ class ProjectsControllerTest {
         /* @formatter:off */
         mockMvc
                 .perform(get("/projects"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection());
         /* @formatter:on */
     }
 
