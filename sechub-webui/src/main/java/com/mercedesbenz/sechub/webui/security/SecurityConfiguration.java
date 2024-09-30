@@ -51,7 +51,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         if (environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED)) {
-            MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient(new RestTemplate());
+            RestTemplate restTemplate = new RestTemplate();
+            MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient(restTemplate);
             /* Enable OAuth2 */
             httpSecurity.oauth2Login(oauth2 -> oauth2
                 .loginPage(RequestConstants.LOGIN_OAUTH2)
