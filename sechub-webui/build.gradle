@@ -18,13 +18,10 @@ dependencies {
     implementation library.springboot_starter_thymeleaf
     implementation library.logstashLogbackEncoder
     implementation library.thymeleaf_extras_springsecurity5
-    // TODO: make library for this
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.aspectj:aspectjweaver'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation library.springboot_starter_oauth2_client
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation library.springboot_starter_test
+    testImplementation library.springframework_security_test
 
     developmentOnly library.springboot_devtoolssf
 }
