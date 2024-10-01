@@ -89,9 +89,15 @@ class MercedesBenzOAuth2AccessTokenClient implements OAuth2AccessTokenResponseCl
 
         Map<String, Object> additionalParameters = Map.of(ID_TOKEN, jwtResponse.getIdToken());
 
-        return OAuth2AccessTokenResponse.withToken(jwtResponse.getAccessToken()).tokenType(OAuth2AccessToken.TokenType.BEARER)
-                .expiresIn(jwtResponse.getExpiresIn()).refreshToken(jwtResponse.getRefreshToken()).additionalParameters(additionalParameters).build();
-
+        // @formatter:off
+        return OAuth2AccessTokenResponse
+                .withToken(jwtResponse.getAccessToken())
+                .tokenType(OAuth2AccessToken.TokenType.BEARER)
+                .expiresIn(jwtResponse.getExpiresIn())
+                .refreshToken(jwtResponse.getRefreshToken())
+                .additionalParameters(additionalParameters)
+                .build();
+        // @formatter:on
     }
 
     private static HttpEntity<MultiValueMap<String, String>> getMultiValueMapHttpEntity(OAuth2AuthorizationCodeGrantRequest authorizationGrantRequest,
@@ -111,6 +117,6 @@ class MercedesBenzOAuth2AccessTokenClient implements OAuth2AccessTokenResponseCl
     private static String getBasicAuthHeaderValue(String clientId, String clientSecret) {
         String clientIdClientSecret = CLIENT_ID_CLIENT_SECRET_FORMAT.formatted(clientId, clientSecret);
         String clientIdClientSecretB64Encoded = Base64.getEncoder().encodeToString(clientIdClientSecret.getBytes());
-        return String.format(BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT, clientIdClientSecretB64Encoded);
+        return BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT.formatted(clientIdClientSecretB64Encoded);
     }
 }
