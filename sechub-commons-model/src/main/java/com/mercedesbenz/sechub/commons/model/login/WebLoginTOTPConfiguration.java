@@ -14,9 +14,9 @@ public class WebLoginTOTPConfiguration {
     public static final String PROPERTY_TOKEN_LENGTH = "tokenLength";
     public static final String PROPERTY_HASH_ALGORITHM = "hashAlgorithm";
 
-    private static final int DEFAULT_VALIDITY_IN_SECONDS = 30;
-    private static final int DEFAULT_TOKEN_LENGTH = 6;
-    private static final TOTPHashAlgorithm DEFAULT_HASH_ALGORITHM = TOTPHashAlgorithm.HMAC_SHA1;
+    public static final int DEFAULT_VALIDITY_IN_SECONDS = 30;
+    public static final int DEFAULT_TOKEN_LENGTH = 6;
+    public static final TOTPHashAlgorithm DEFAULT_HASH_ALGORITHM = TOTPHashAlgorithm.HMAC_SHA1;
 
     private SealedObject seed;
     private int validityInSeconds;

@@ -10,6 +10,18 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 class WebLoginTOTPConfigurationTest {
 
     @Test
+    void default_values_are_as_expected() {
+        /* execute */
+        WebLoginTOTPConfiguration defaultConfig = new WebLoginTOTPConfiguration();
+
+        /* test */
+        assertEquals(null, defaultConfig.getSeed());
+        assertEquals(WebLoginTOTPConfiguration.DEFAULT_VALIDITY_IN_SECONDS, defaultConfig.getValidityInSeconds());
+        assertEquals(WebLoginTOTPConfiguration.DEFAULT_TOKEN_LENGTH, defaultConfig.getTokenLength());
+        assertEquals(WebLoginTOTPConfiguration.DEFAULT_HASH_ALGORITHM, defaultConfig.getHashAlgorithm());
+    }
+
+    @Test
     void default_values_are_used_correctly_during_json_serialization_and_deserialization() {
         /* prepare */
         WebLoginTOTPConfiguration expectedConfig = new WebLoginTOTPConfiguration();

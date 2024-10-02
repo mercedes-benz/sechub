@@ -17,6 +17,7 @@
     "url" : "https://productfailure.demo.example.org",
     "api" : {
       "type" : "openApi",
+      "apiDefinitionUrl" : "https://productfailure.demo.example.org/api/v1/swagger/?format=openapi",
       "use" : [ "open-api-file-reference" ] //<3>
     },
     "clientCertificate" : {
