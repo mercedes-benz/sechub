@@ -13,15 +13,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import com.mercedesbenz.sechub.webui.YamlPropertyLoaderFactory;
 
 @SpringBootTest
+@ActiveProfiles("oauth2-enabled")
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 class OAuth2PropertiesTest {
 
@@ -67,8 +68,7 @@ class OAuth2PropertiesTest {
     /* @formatter:on */
 
     @Configuration
-    @EnableConfigurationProperties(OAuth2Properties.class)
-    @ContextConfiguration(classes = OAuth2PropertiesTest.class)
+    @Import(OAuth2PropertiesConfig.class)
     static class TestConfig {
     }
 

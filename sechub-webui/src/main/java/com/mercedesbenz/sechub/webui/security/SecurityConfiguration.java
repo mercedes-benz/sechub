@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +26,6 @@ import com.mercedesbenz.sechub.webui.RequestConstants;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties(OAuth2Properties.class)
 class SecurityConfiguration {
     private static final String[] PUBLIC_PATHS = { RequestConstants.LOGIN_CLASSIC, RequestConstants.LOGIN_OAUTH2, "/css/**", "/js/**", "/images/**" };
     private static final String SCOPE = "openid";
@@ -34,8 +34,12 @@ class SecurityConfiguration {
     private final Environment environment;
     private final OAuth2Properties oAuth2Properties;
 
-    SecurityConfiguration(Environment environment, OAuth2Properties oAuth2Properties) {
+    SecurityConfiguration(@Autowired Environment environment, @Autowired(required = false) OAuth2Properties oAuth2Properties) {
         this.environment = environment;
+        if (isOAuth2Enabled() && oAuth2Properties == null) {
+            throw new NoSuchBeanDefinitionException(
+                    "No qualifying bean of type 'OAuth2Properties' available: expected at least 1 bean which qualifies as autowire candidate.");
+        }
         this.oAuth2Properties = oAuth2Properties;
     }
 
@@ -80,7 +84,7 @@ class SecurityConfiguration {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
-        if (environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED)) {
+        if (isOAuth2Enabled()) {
             RestTemplate restTemplate = new RestTemplate();
             Base64EncodedClientIdAndSecretOAuth2AccessTokenClient base64EncodedClientIdAndSecretOAuth2AccessTokenClient = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
             /* Enable OAuth2 */
@@ -104,6 +108,10 @@ class SecurityConfiguration {
         /* @formatter:on */
 
         return httpSecurity.build();
+    }
+
+    private boolean isOAuth2Enabled() {
+        return environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED);
     }
 
 }
