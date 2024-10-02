@@ -301,9 +301,12 @@ WARNING: `username` and `password` are like input but {sechub} tries
          So do *NOT* use `input` for credentials!
 
 ====== Example form based login with TOTP
-TIP: In most cases it is enough to specify a `seed` for the TOTP configuration in SecHub.
-For the optional values `validityInSecods`, `tokenLength` and `hashAlgorithm` there are defaults which will be used if this values are not specified.
-This defaults are well-known and any authentication provider or application should provide the optional data if it uses something other than the defaults.
+The TOTP configuration is generally never used without any other login mechanism. It is meant to be used as an additional authentication factor.
+In this example TOTP is used in combination with form based login, which is left out in the example for better readability.
+
+TIP: Most of the time it is enough to specify a `seed` for the TOTP configuration in SecHub.
+The optional values `validityInSecods`, `tokenLength` and `hashAlgorithm` have defaults which will be used if nothing is specified.
+The defaults are well-known and any authentication provider or application should provide the optional data if it uses anything other than the defaults.
 
 [source,json]
 ----
