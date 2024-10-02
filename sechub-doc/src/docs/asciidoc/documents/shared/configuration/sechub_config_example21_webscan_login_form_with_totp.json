@@ -1,0 +1,16 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "login" : {
+      "url" : "https://productfailure.demo.example.org/login",
+      "form" : { ... },
+      "totp" : { //<1>
+        "seed" : "example-seed", //<2>
+        "validityInSecods" : "60", //<3>
+        "tokenLength" : "8", //<4>
+        "hashAlgorithm" : "HMAC_SHA256" //<5>
+      }
+    }
+  }
+}

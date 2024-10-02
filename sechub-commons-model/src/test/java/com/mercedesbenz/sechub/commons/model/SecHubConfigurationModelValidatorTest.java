@@ -1,10 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.CONTAINS_NO_SCAN_CONFIGURATION;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.SECHUB_CONFIGURATION_TOO_LARGE;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -26,6 +40,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
+import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SecHubConfigurationModelValidatorTest {
@@ -1579,6 +1596,63 @@ class SecHubConfigurationModelValidatorTest {
         /* prepare */
         String json = TestFileReader.readTextFromFile("src/test/resources/sechub_config_web_scan_includes_excludes_with_wildcards.json");
         SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void invalid_totp_configuration_result_has_errors() {
+        /* prepare */
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfiguration.getWebScan().get();
+
+        WebLoginTOTPConfiguration totpConfig = new WebLoginTOTPConfiguration();
+        totpConfig.setSeed(null);
+        totpConfig.setValidityInSeconds(4);
+        totpConfig.setTokenLength(0);
+        totpConfig.setHashAlgorithm(null);
+
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        login.setTotp(totpConfig);
+
+        secHubWebScanConfiguration.setLogin(Optional.of(login));
+        sechubConfiguration.setWebScan(secHubWebScanConfiguration);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, 0, "The TOTP 'seed' must never be null if TOTP shall be used!", WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID);
+        assertHasError(result, 1, "The TOTP 'validityInSeconds' must be at least 5 seconds!", WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID);
+        assertHasError(result, 2, "The TOTP 'tokenLength' must be greater zero!", WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID);
+        assertHasError(result, 3, "The TOTP 'hashAlgorithm' must never be null if TOTP shall be used!", WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID);
+    }
+
+    @Test
+    void valid_totp_configuration_result_has_no_errors() {
+        /* prepare */
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfiguration.getWebScan().get();
+
+        WebLoginTOTPConfiguration totpConfig = new WebLoginTOTPConfiguration();
+        totpConfig.setSeed("example-seed");
+        totpConfig.setValidityInSeconds(5);
+        totpConfig.setTokenLength(1);
+        totpConfig.setHashAlgorithm(TOTPHashAlgorithm.HMAC_SHA256);
+
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        login.setTotp(totpConfig);
+
+        secHubWebScanConfiguration.setLogin(Optional.of(login));
+        sechubConfiguration.setWebScan(secHubWebScanConfiguration);
 
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
