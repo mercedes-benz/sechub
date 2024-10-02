@@ -8,12 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.webui.security.SecurityConfiguration;
+import com.mercedesbenz.sechub.webui.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.webui.security.SecurityTestConfiguration;
 
 @WebMvcTest(LoginClassicController.class)
-@Import(SecurityConfiguration.class)
+@Import(SecurityTestConfiguration.class)
+@TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 class LoginClassicControllerTest {
 
     private final MockMvc mockMvc;

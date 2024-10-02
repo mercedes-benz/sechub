@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
 import java.util.Base64;
@@ -24,32 +25,33 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * <p>
- * Custom {@code OAuth2AccessTokenResponseClient} implementation for retrieving
- * a JWT token response from the Mercedes-Benz IDP (or Global Authentication
- * Service, GAS) after a successful authentication request.
+ * Custom implementation of {@link OAuth2AccessTokenResponseClient} for
+ * retrieving a JWT token response from a configured Identity Provider (IDP)
+ * after a successful OAuth2 authorization code grant request.
  * </p>
  * <p>
- * This customization is necessary because the Mercedes-Benz IDP requires a
- * Basic Authorization header containing the base64-encoded client ID and client
- * secret. The default {@code OAuth2AccessTokenResponseClient} implementation
- * does not supply this header, necessitating this custom implementation.
+ * This class handles the exchange of the authorization code for an access
+ * token, refresh token, and ID token by making a POST request to the token
+ * endpoint of the IDP. The client credentials (client ID and client secret) are
+ * encoded in Base64 and included in the Authorization header of the request.
  * </p>
  * <p>
- * For further details on the integration and authentication process, please
- * refer to the <a href=
- * "https://pages.git.i.mercedes-benz.com/IAM/GAS-OIDC-Integration_Guide/docs/guide/authentication/">
- * GAS OIDC Integration Guide</a>.
+ * The response from the IDP is expected to be a {@link JwtResponse}, which
+ * includes the access token, refresh token, ID token, and the expiration time
+ * of the access token.
  * </p>
  *
  * @see OAuth2AccessTokenResponseClient
+ * @see OAuth2AuthorizationCodeGrantRequest
+ * @see OAuth2AccessTokenResponse
  * @see SecurityConfiguration
  * @see JwtResponse
  *
  * @author hamidonos
  */
-class MercedesBenzOAuth2AccessTokenClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
+class Base64EncodedClientIdAndSecretOAuth2AccessTokenClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MercedesBenzOAuth2AccessTokenClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Base64EncodedClientIdAndSecretOAuth2AccessTokenClient.class);
     private static final String GRANT_TYPE_VALUE = "authorization_code";
     private static final String BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT = "Basic %s";
     private static final String CLIENT_ID_CLIENT_SECRET_FORMAT = "%s:%s";
@@ -57,7 +59,7 @@ class MercedesBenzOAuth2AccessTokenClient implements OAuth2AccessTokenResponseCl
 
     private final RestTemplate restTemplate;
 
-    MercedesBenzOAuth2AccessTokenClient(RestTemplate restTemplate) {
+    Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

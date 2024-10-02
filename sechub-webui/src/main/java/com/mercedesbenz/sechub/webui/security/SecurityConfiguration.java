@@ -1,14 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
@@ -16,19 +22,43 @@ import org.springframework.web.client.RestTemplate;
 import com.mercedesbenz.sechub.webui.ApplicationProfiles;
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
-/**
- * @author hamidonos
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfiguration {
+@EnableConfigurationProperties(OAuth2Properties.class)
+class SecurityConfiguration {
     private static final String[] PUBLIC_PATHS = { RequestConstants.LOGIN_CLASSIC, RequestConstants.LOGIN_OAUTH2, "/css/**", "/js/**", "/images/**" };
+    private static final String SCOPE = "openid";
+    private static final String USER_NAME_ATTRIBUTE_NAME = "sub";
 
     private final Environment environment;
+    private final OAuth2Properties oAuth2Properties;
 
-    public SecurityConfiguration(Environment environment) {
+    SecurityConfiguration(Environment environment, OAuth2Properties oAuth2Properties) {
         this.environment = environment;
+        this.oAuth2Properties = oAuth2Properties;
+    }
+
+    @Bean
+    @Profile(ApplicationProfiles.OAUTH2_ENABLED)
+    ClientRegistrationRepository clientRegistrationRepository() {
+        /* @formatter:off */
+        ClientRegistration clientRegistration = ClientRegistration
+                .withRegistrationId(oAuth2Properties.getProvider())
+                .clientId(oAuth2Properties.getClientId())
+                .clientSecret(oAuth2Properties.getClientSecret())
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri(oAuth2Properties.getRedirectUri())
+                .issuerUri(oAuth2Properties.getIssuerUri()).scope(SCOPE)
+                .authorizationUri(oAuth2Properties.getAuthorizationUri())
+                .tokenUri(oAuth2Properties.getTokenUri())
+                .userInfoUri(oAuth2Properties.getUserInfoUri())
+                .jwkSetUri(oAuth2Properties.getJwkSetUri())
+                .userNameAttributeName(USER_NAME_ATTRIBUTE_NAME)
+                .build();
+        /* @formatter:on */
+
+        return new InMemoryClientRegistrationRepository(clientRegistration);
     }
 
     @Bean
@@ -52,11 +82,11 @@ public class SecurityConfiguration {
 
         if (environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED)) {
             RestTemplate restTemplate = new RestTemplate();
-            MercedesBenzOAuth2AccessTokenClient mercedesBenzOAuth2AccessTokenClient = new MercedesBenzOAuth2AccessTokenClient(restTemplate);
+            Base64EncodedClientIdAndSecretOAuth2AccessTokenClient base64EncodedClientIdAndSecretOAuth2AccessTokenClient = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
             /* Enable OAuth2 */
             httpSecurity.oauth2Login(oauth2 -> oauth2
                 .loginPage(RequestConstants.LOGIN_OAUTH2)
-                .tokenEndpoint(token -> token.accessTokenResponseClient(mercedesBenzOAuth2AccessTokenClient))
+                .tokenEndpoint(token -> token.accessTokenResponseClient(base64EncodedClientIdAndSecretOAuth2AccessTokenClient))
                 .successHandler(authenticationSuccessHandler));
         }
 
@@ -75,4 +105,5 @@ public class SecurityConfiguration {
 
         return httpSecurity.build();
     }
+
 }

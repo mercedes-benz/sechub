@@ -19,6 +19,7 @@ dependencies {
     implementation library.logstashLogbackEncoder
     implementation library.thymeleaf_extras_springsecurity5
     implementation library.springboot_starter_oauth2_client
+    implementation library.findbugs
 
     testImplementation library.springboot_starter_test
     testImplementation library.springframework_security_test

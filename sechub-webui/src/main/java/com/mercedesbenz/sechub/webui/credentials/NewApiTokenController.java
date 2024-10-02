@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.page.credentials;
+package com.mercedesbenz.sechub.webui.credentials;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.mercedesbenz.sechub.webui.RequestConstants;
-import com.mercedesbenz.sechub.webui.page.user.UserInfoService;
 import com.mercedesbenz.sechub.webui.sechubaccess.SecHubAccessService;
+import com.mercedesbenz.sechub.webui.user.UserInfoService;
 
 @Controller
 class NewApiTokenController {

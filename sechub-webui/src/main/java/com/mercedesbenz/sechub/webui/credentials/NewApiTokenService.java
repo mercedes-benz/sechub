@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.page.credentials;
+package com.mercedesbenz.sechub.webui.credentials;
 
 import org.springframework.stereotype.Service;
 

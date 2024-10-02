@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.security;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -38,12 +39,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.jayway.jsonpath.JsonPath;
 
-class MercedesBenzOAuth2AccessTokenClientTest {
+class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
 
     // @formatter:off
     private static final RestTemplate restTemplate = new RestTemplate();
     private static final MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-    private static final MercedesBenzOAuth2AccessTokenClient client = new MercedesBenzOAuth2AccessTokenClient(restTemplate);
+    private static final Base64EncodedClientIdAndSecretOAuth2AccessTokenClient client = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
     private static final ClientRegistration clientRegistration = ClientRegistration.withRegistrationId(Constants.REGISTRATION_ID)
             .clientId(Constants.CLIENT_ID)
             .clientSecret(Constants.CLIENT_SECRET)
@@ -166,7 +167,7 @@ class MercedesBenzOAuth2AccessTokenClientTest {
     }
 
     private static final class Constants {
-        private static final String REGISTRATION_ID = "mercedes-benz";
+        private static final String REGISTRATION_ID = "registration-id";
         private static final String CLIENT_ID = "client-id";
         private static final String CLIENT_SECRET = "client-secret";
         private static final String GRANT_TYPE_VALUE = "authorization_code";
@@ -174,7 +175,7 @@ class MercedesBenzOAuth2AccessTokenClientTest {
         private static final String CLIENT_ID_CLIENT_SECRET_FORMAT = "%s:%s";
         private static final String APPLICATION_FORM_URLENCODED_VALUE = "%s;charset=%s".formatted(MediaType.APPLICATION_FORM_URLENCODED_VALUE,
                 StandardCharsets.UTF_8);
-        private static final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/mercedes-benz";
+        private static final String REDIRECT_URI = "http://localhost:8080/login/oauth2/code/registration-id";
         private static final String TOKEN_URI = "https://localhost:8080/oauth2/token";
         private static final String AUTHORIZATION_URI = "https://localhost:8080/oauth2/authorize";
         private static final String STATE = "state";

@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.webui.ApplicationProfiles;
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
 @Controller
-@Profile({ ApplicationProfiles.OAUTH2_ENABLED, ApplicationProfiles.TEST })
+@Profile(ApplicationProfiles.OAUTH2_ENABLED)
 class LoginOAuth2Controller {
 
     @GetMapping(RequestConstants.LOGIN_OAUTH2)
