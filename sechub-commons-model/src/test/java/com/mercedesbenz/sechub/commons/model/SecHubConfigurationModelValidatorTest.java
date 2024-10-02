@@ -1,24 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.CONTAINS_NO_SCAN_CONFIGURATION;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_LOCATION_NOT_DEFINED;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_ONLY_FOR_ONE_SOURCE_OR_BINARY;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_NOT_DEFINED;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.REMOTE_DATA_MIXED_WITH_FILESYSTEM_NOT_ALLOWED;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.SECHUB_CONFIGURATION_TOO_LARGE;
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
 import java.net.URI;
