@@ -179,7 +179,7 @@ class ExampleFilesValidTest {
         assertEquals(1, sources.size());
 
         SecHubSourceDataConfiguration source = sources.get(0);
-        validateOpenApiPart(config, source);
+        assertOpenApiPart(config, source);
     }
 
     @Test
@@ -196,10 +196,10 @@ class ExampleFilesValidTest {
         assertEquals(2, sources.size());
 
         SecHubSourceDataConfiguration source1 = sources.get(0);
-        validateOpenApiPart(config, source1);
+        assertOpenApiPart(config, source1);
 
         SecHubSourceDataConfiguration source2 = sources.get(1);
-        validateCertificatePart(config, source2);
+        assertClientCertificatePart(config, source2);
     }
 
     @Test
@@ -216,7 +216,7 @@ class ExampleFilesValidTest {
         assertEquals(1, sources.size());
 
         SecHubSourceDataConfiguration source = sources.get(0);
-        validateCertificatePart(config, source);
+        assertClientCertificatePart(config, source);
     }
 
     @Test
@@ -367,7 +367,7 @@ class ExampleFilesValidTest {
         assertEquals("#doLogin", action3.getSelector().get());
     }
 
-    private void validateOpenApiPart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
+    private void assertOpenApiPart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
         assertEquals("open-api-file-reference", source.getUniqueName());
 
         List<String> folders = source.getFileSystem().get().getFolders();
@@ -388,7 +388,7 @@ class ExampleFilesValidTest {
         assertTrue(uses.contains("open-api-file-reference"));
     }
 
-    private void validateCertificatePart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
+    private void assertClientCertificatePart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
         assertEquals("client-certificate-file-reference", source.getUniqueName());
 
         List<String> folders = source.getFileSystem().get().getFolders();
