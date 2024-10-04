@@ -34,11 +34,8 @@ def create_rules(table_body, wanted_status):
         id_value = splitted_row[0].strip()
         name = splitted_row[1].strip()
         status = splitted_row[2].strip()
-
         type_value = splitted_row[4].strip().lower()
 
-        if '-' in id_value:
-            continue
         if status not in wanted_status:
             continue
 
