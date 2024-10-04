@@ -32,6 +32,15 @@ public enum ExampleFile {
 
     WEBSCAN_HEADER_SCAN("src/docs/asciidoc/documents/shared/configuration/sechub_config_example15_web_scan_header.json"),
 
+    WEBSCAN_HEADER_FROM_DATA_REFERENCE("src/docs/asciidoc/documents/shared/configuration/sechub_config_example17_web_scan_header_value_from_data_section.json"),
+
+    WEBSCAN_CLIENT_CERTIFICATE("src/docs/asciidoc/documents/shared/configuration/sechub_config_example4_webscan_login_clientcertificate.json"),
+
+    WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI(
+            "src/docs/asciidoc/documents/shared/configuration/sechub_config_example16_webscan_client_certificate_with_openAPI.json"),
+
+    WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP("src/docs/asciidoc/documents/shared/configuration/sechub_config_example21_webscan_login_form_with_totp.json"),
+
     ;
 
     private String path;

@@ -44,6 +44,8 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_NON_UNIQUE_HEADER_CONFIGURATION("The webscan config contains header configurations that default to the same URL scope!"),
 
+    WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID("The TOTP configuration inside the webscan config login section is invalid!"),
+
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!"),

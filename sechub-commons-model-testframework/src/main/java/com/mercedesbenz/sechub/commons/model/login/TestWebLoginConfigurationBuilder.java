@@ -41,6 +41,17 @@ public class TestWebLoginConfigurationBuilder {
         return builder;
     }
 
+    public TestWebLoginConfigurationBuilder totp(String seed, int validityInSeconds, TOTPHashAlgorithm hashAlgorithm, int tokenLength) {
+        WebLoginTOTPConfiguration totp = new WebLoginTOTPConfiguration();
+        totp.setSeed(seed);
+        totp.setValidityInSeconds(validityInSeconds);
+        totp.setHashAlgorithm(hashAlgorithm);
+        totp.setTokenLength(tokenLength);
+        loginConfig.setTotp(totp);
+
+        return this;
+    }
+
     public class ScriptPageEntryBuilder {
         private List<Page> pages = new ArrayList<>();
 

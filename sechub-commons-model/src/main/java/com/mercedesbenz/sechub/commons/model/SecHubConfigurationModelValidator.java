@@ -21,8 +21,13 @@ import java.util.regex.Pattern;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 
 public class SecHubConfigurationModelValidator {
+
+    private static final int MIN_TOTP_VALIDITY_IN_SECONDS = 5;
+    private static final int MIN_TOTP_TOKEN_LENGTH = 1;
 
     private static final String QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.quote(SecHubWebScanConfiguration.WEBSCAN_URL_WILDCARD_SYMBOL);
     private static final Pattern PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL = Pattern.compile(QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL);
@@ -288,6 +293,7 @@ public class SecHubConfigurationModelValidator {
         handleIncludesAndExcludes(context, webScan);
         handleApi(context, webScan);
         handleHTTPHeaders(context, webScan);
+        handleLoginData(context, webScan);
 
     }
 
@@ -491,6 +497,35 @@ public class SecHubConfigurationModelValidator {
 
     private String createUrlWithoutWildCards(String url) {
         return PATTERN_QUOTED_WEBSCAN_URL_WILDCARD_SYMBOL.matcher(url).replaceAll("");
+    }
+
+    private void handleLoginData(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        Optional<WebLoginConfiguration> loginOpt = webScan.getLogin();
+        if (loginOpt.isEmpty()) {
+            return;
+        }
+        WebLoginConfiguration login = loginOpt.get();
+        handleTOTP(context, login);
+
+    }
+
+    private void handleTOTP(InternalValidationContext context, WebLoginConfiguration login) {
+        WebLoginTOTPConfiguration totp = login.getTotp();
+        if (totp == null) {
+            return;
+        }
+        if (totp.getSeed() == null) {
+            context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'seed' must never be null if TOTP shall be used!");
+        }
+        if (totp.getValidityInSeconds() < MIN_TOTP_VALIDITY_IN_SECONDS) {
+            context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'validityInSeconds' must be at least 5 seconds!");
+        }
+        if (totp.getTokenLength() < MIN_TOTP_TOKEN_LENGTH) {
+            context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'tokenLength' must be greater zero!");
+        }
+        if (totp.getHashAlgorithm() == null) {
+            context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'hashAlgorithm' must never be null if TOTP shall be used!");
+        }
     }
 
     private void handleInfraScanConfiguration(InternalValidationContext context) {

@@ -11,9 +11,13 @@ public class WebLoginConfiguration {
 
     public static final String PROPERTY_BASIC = "basic";
     public static final String PROPERTY_FORM = "form";
+    public static final String PROPERTY_TOTP = "totp";
+
     private URL url;
     Optional<BasicLoginConfiguration> basic = Optional.empty();
     Optional<FormLoginConfiguration> form = Optional.empty();
+
+    private WebLoginTOTPConfiguration totp;
 
     public URL getUrl() {
         return url;
@@ -30,4 +34,13 @@ public class WebLoginConfiguration {
     public Optional<FormLoginConfiguration> getForm() {
         return form;
     }
+
+    public WebLoginTOTPConfiguration getTotp() {
+        return totp;
+    }
+
+    public void setTotp(WebLoginTOTPConfiguration totp) {
+        this.totp = totp;
+    }
+
 }

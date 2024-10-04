@@ -19,10 +19,10 @@
       "en/contacts/<*>",
       "en/contacts",
       "en/contacts/"
-    ]
-  },
-  "maxScanDuration": { //<5>
-    "duration": 1,
-    "unit": "hour" //<6>
+    ],
+    "maxScanDuration": { //<5>
+      "duration": 1,
+      "unit": "hour" //<6>
+  }
   }
 }

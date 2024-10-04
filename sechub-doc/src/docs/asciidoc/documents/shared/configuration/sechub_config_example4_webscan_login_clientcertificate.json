@@ -10,7 +10,7 @@
     } ]
   },
   "webScan" : {
-    "url" : "https://my-app.com",
+    "url" : "https://productfailure.demo.example.org",
     "clientCertificate" : {
       "password" : "{{ .CERT_PASSWORD }}", //<2>
       "use" : [ "client-certificate-file-reference" ] //<3>

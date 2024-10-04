@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import com.mercedesbenz.sechub.commons.model.JSONConverterException;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.login.*;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
@@ -82,7 +82,8 @@ class ExampleFilesValidTest {
 
     @ParameterizedTest
     @EnumSource(value = ExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
-            "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE" }, mode = EnumSource.Mode.INCLUDE)
+            "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE", "WEBSCAN_HEADER_SCAN", "WEBSCAN_CLIENT_CERTIFICATE",
+            "WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP" }, mode = EnumSource.Mode.INCLUDE)
     void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(ExampleFile file) {
         /* prepare */
         String json = TestFileReader.readTextFromFile(file.getPath());
@@ -96,6 +97,216 @@ class ExampleFilesValidTest {
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         assertNotNull(webScan.getUrl(), "No URI set in file: " + file.getPath());
+    }
+
+    @Test
+    void webscan_anonymous_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_ANONYMOUS.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://www.gamechanger.example.org", webScanConfig.getUrl().toString());
+        assertEquals(7, webScanConfig.getIncludes().get().size());
+        assertEquals(7, webScanConfig.getExcludes().get().size());
+
+        WebScanDurationConfiguration maxScanDuration = webScanConfig.getMaxScanDuration().get();
+        assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.getUnit());
+        assertEquals(1, maxScanDuration.getDuration());
+    }
+
+    @Test
+    void webscan_basic_auth_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_BASIC_AUTH.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        WebLoginConfiguration login = webScanConfig.getLogin().get();
+        assertEquals("https://productfailure.demo.example.org/login", login.getUrl().toString());
+
+        BasicLoginConfiguration basicAuth = login.getBasic().get();
+        String user = new String(basicAuth.getUser());
+        String pwd = new String(basicAuth.getPassword());
+        assertEquals("{{ .LOGIN_USER }}", user);
+        assertEquals("{{ .LOGIN_PWD }}", pwd);
+        assertEquals("{{ .LOGIN_REALM }}", basicAuth.getRealm().get());
+    }
+
+    @Test
+    void webscan_form_based_script_auth_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        WebLoginConfiguration login = webScanConfig.getLogin().get();
+        assertEquals("https://productfailure.demo.example.org/login", login.getUrl().toString());
+
+        FormLoginConfiguration form = login.getForm().get();
+        Script script = form.getScript().get();
+        List<Page> pages = script.getPages().get();
+
+        assertEquals(2, pages.size());
+        assertValidFormScriptFirstPage(pages.get(0));
+        assertValidFormScriptSecondPage(pages.get(1));
+    }
+
+    @Test
+    void webscan_openapi_with_data_reference_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_OPENAPI_WITH_DATA_REFERENCE.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubDataConfiguration data = config.getData().get();
+        List<SecHubSourceDataConfiguration> sources = data.getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration source = sources.get(0);
+        assertOpenApiPart(config, source);
+    }
+
+    @Test
+    void webscan_client_certificate_with_data_reference_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubDataConfiguration data = config.getData().get();
+        List<SecHubSourceDataConfiguration> sources = data.getSources();
+        assertEquals(2, sources.size());
+
+        SecHubSourceDataConfiguration source1 = sources.get(0);
+        assertOpenApiPart(config, source1);
+
+        SecHubSourceDataConfiguration source2 = sources.get(1);
+        assertClientCertificatePart(config, source2);
+    }
+
+    @Test
+    void webscan_client_certificate_with_openapi_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_CLIENT_CERTIFICATE.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubDataConfiguration data = config.getData().get();
+        List<SecHubSourceDataConfiguration> sources = data.getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration source = sources.get(0);
+        assertClientCertificatePart(config, source);
+    }
+
+    @Test
+    void webscan_header_scan_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_HEADER_SCAN.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        List<HTTPHeaderConfiguration> headers = webScanConfig.getHeaders().get();
+        assertEquals(2, headers.size());
+
+        HTTPHeaderConfiguration header1 = headers.get(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("{{ .HEADER_VALUE }}", header1.getValue());
+        assertTrue(header1.getOnlyForUrls().isEmpty());
+        assertTrue(header1.isSensitive());
+
+        HTTPHeaderConfiguration header2 = headers.get(1);
+        assertEquals("x-file-size", header2.getName());
+        assertEquals("123456", header2.getValue());
+        assertEquals(3, header2.getOnlyForUrls().get().size());
+        assertFalse(header2.isSensitive());
+    }
+
+    @Test
+    void webscan_header_from_data_reference_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubDataConfiguration data = config.getData().get();
+        List<SecHubSourceDataConfiguration> sources = data.getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration source = sources.get(0);
+        assertEquals("header-value-file-reference", source.getUniqueName());
+
+        List<String> folders = source.getFileSystem().get().getFolders();
+        assertTrue(folders.isEmpty());
+        List<String> files = source.getFileSystem().get().getFiles();
+        assertEquals(1, files.size());
+        assertEquals("header_value.txt", files.get(0));
+
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        HTTPHeaderConfiguration header = webScanConfig.getHeaders().get().get(0);
+        assertEquals("Authorization", header.getName());
+
+        Set<String> uses = header.getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, uses.size());
+        assertTrue(uses.contains("header-value-file-reference"));
+    }
+
+    @Test
+    void webscan_form_based_script_auth_with_totp_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        WebLoginConfiguration login = webScanConfig.getLogin().get();
+        assertEquals("https://productfailure.demo.example.org/login", login.getUrl().toString());
+
+        FormLoginConfiguration form = login.getForm().get();
+        Script script = form.getScript().get();
+        List<Page> pages = script.getPages().get();
+
+        assertEquals(1, pages.size());
+        assertValidFormScriptFirstPage(pages.get(0));
+
+        WebLoginTOTPConfiguration totp = login.getTotp();
+        assertEquals("example-seed", totp.getSeed());
+        assertEquals(60, totp.getValidityInSeconds());
+        assertEquals(8, totp.getTokenLength());
+        assertEquals(TOTPHashAlgorithm.HMAC_SHA256, totp.getHashAlgorithm());
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {
@@ -115,6 +326,87 @@ class ExampleFilesValidTest {
         }
         fail("No parameter with key:" + parameterKey + " found in (" + (isMandatory ? "mandatory" : "optional") + " configuration of product:" + setup.getId()
                 + " !");
+    }
+
+    private void assertValidFormScriptFirstPage(Page firstPage) {
+        List<Action> actionsFirstPage = firstPage.getActions().get();
+        assertEquals(3, actionsFirstPage.size());
+
+        Action action1 = actionsFirstPage.get(0);
+        assertEquals(ActionType.USERNAME, action1.getType());
+        assertEquals("#example_login_userid", action1.getSelector().get());
+        assertEquals("{{ .LOGIN_USER }}", action1.getValue().get());
+
+        Action action2 = actionsFirstPage.get(1);
+        assertEquals(ActionType.PASSWORD, action2.getType());
+        assertEquals("#example_login_pwd", action2.getSelector().get());
+        assertEquals("{{ .LOGIN_PWD }}", action2.getValue().get());
+
+        Action action3 = actionsFirstPage.get(2);
+        assertEquals(ActionType.CLICK, action3.getType());
+        assertEquals("#next", action3.getSelector().get());
+        assertEquals("Click to go to next page", action3.getDescription().get());
+    }
+
+    private void assertValidFormScriptSecondPage(Page secondPage) {
+        List<Action> actionsSecondPage = secondPage.getActions().get();
+        assertEquals(3, actionsSecondPage.size());
+
+        Action action1 = actionsSecondPage.get(0);
+        assertEquals(ActionType.INPUT, action1.getType());
+        assertEquals("#example_other_inputfield", action1.getSelector().get());
+        assertEquals("{{ .OTHER_VALUE }}", action1.getValue().get());
+
+        Action action2 = actionsSecondPage.get(1);
+        assertEquals(ActionType.WAIT, action2.getType());
+        assertEquals("1", action2.getValue().get());
+        assertEquals(SecHubTimeUnit.SECOND, action2.getUnit().get());
+
+        Action action3 = actionsSecondPage.get(2);
+        assertEquals(ActionType.CLICK, action3.getType());
+        assertEquals("#doLogin", action3.getSelector().get());
+    }
+
+    private void assertOpenApiPart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
+        assertEquals("open-api-file-reference", source.getUniqueName());
+
+        List<String> folders = source.getFileSystem().get().getFolders();
+        assertTrue(folders.isEmpty());
+        List<String> files = source.getFileSystem().get().getFiles();
+        assertEquals(1, files.size());
+        assertEquals("gamechanger-webapp/src/main/resources/openapi3.json", files.get(0));
+
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        SecHubWebScanApiConfiguration apiConfiguration = webScanConfig.getApi().get();
+        assertEquals(SecHubWebScanApiType.OPEN_API, apiConfiguration.getType());
+        assertEquals("https://productfailure.demo.example.org/api/v1/swagger/?format=openapi", apiConfiguration.getApiDefinitionUrl().toString());
+
+        Set<String> uses = apiConfiguration.getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, uses.size());
+        assertTrue(uses.contains("open-api-file-reference"));
+    }
+
+    private void assertClientCertificatePart(SecHubScanConfiguration config, SecHubSourceDataConfiguration source) {
+        assertEquals("client-certificate-file-reference", source.getUniqueName());
+
+        List<String> folders = source.getFileSystem().get().getFolders();
+        assertTrue(folders.isEmpty());
+        List<String> files = source.getFileSystem().get().getFiles();
+        assertEquals(1, files.size());
+        assertEquals("path/to/backend-cert.p12", files.get(0));
+
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://productfailure.demo.example.org", webScanConfig.getUrl().toString());
+
+        ClientCertificateConfiguration clientCertificateConfiguration = webScanConfig.getClientCertificate().get();
+        String pwd = new String(clientCertificateConfiguration.getPassword());
+        assertEquals("{{ .CERT_PASSWORD }}", pwd);
+
+        Set<String> uses = clientCertificateConfiguration.getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, uses.size());
+        assertTrue(uses.contains("client-certificate-file-reference"));
     }
 
 }
