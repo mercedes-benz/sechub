@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2024-10-04 08:57:42.290081",
+  "timestamp" : "2024-10-07 07:29:08.282732",
   "origin" : "https://www.zaproxy.org/docs/alerts/",
   "rules" : {
     "Directory-Browsing-0" : {
@@ -20,59 +20,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/3"
     },
-    "Session-ID-in-URL-Rewrite-3-1" : {
-      "id" : "3-1",
-      "name" : "Session ID in URL Rewrite",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/3-1"
-    },
-    "Session-ID-in-URL-Rewrite-3-2" : {
-      "id" : "3-2",
-      "name" : "Session ID in URL Rewrite",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/3-2"
-    },
-    "Referer-Exposes-Session-ID-3-3" : {
-      "id" : "3-3",
-      "name" : "Referer Exposes Session ID",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/3-3"
-    },
     "Path-Traversal-6" : {
       "id" : "6",
       "name" : "Path Traversal",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/6"
-    },
-    "Path-Traversal-6-1" : {
-      "id" : "6-1",
-      "name" : "Path Traversal",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/6-1"
-    },
-    "Path-Traversal-6-2" : {
-      "id" : "6-2",
-      "name" : "Path Traversal",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/6-2"
-    },
-    "Path-Traversal-6-3" : {
-      "id" : "6-3",
-      "name" : "Path Traversal",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/6-3"
-    },
-    "Path-Traversal-6-4" : {
-      "id" : "6-4",
-      "name" : "Path Traversal",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/6-4"
-    },
-    "Path-Traversal-6-5" : {
-      "id" : "6-5",
-      "name" : "Path Traversal",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/6-5"
     },
     "Remote-File-Inclusion-7" : {
       "id" : "7",
@@ -146,47 +98,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10019"
     },
-    "Content-Type-Header-Missing-10019-1" : {
-      "id" : "10019-1",
-      "name" : "Content-Type Header Missing",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10019-1"
-    },
-    "Content-Type-Header-Empty-10019-2" : {
-      "id" : "10019-2",
-      "name" : "Content-Type Header Empty",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10019-2"
-    },
     "Anti-clickjacking-Header-10020" : {
       "id" : "10020",
       "name" : "Anti-clickjacking Header",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10020"
-    },
-    "Missing-Anti-clickjacking-Header-10020-1" : {
-      "id" : "10020-1",
-      "name" : "Missing Anti-clickjacking Header",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10020-1"
-    },
-    "Multiple-X-Frame-Options-Header-Entries-10020-2" : {
-      "id" : "10020-2",
-      "name" : "Multiple X-Frame-Options Header Entries",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10020-2"
-    },
-    "X-Frame-Options-Defined-via-META-(Non-compliant-with-Spec)-10020-3" : {
-      "id" : "10020-3",
-      "name" : "X-Frame-Options Defined via META (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10020-3"
-    },
-    "X-Frame-Options-Setting-Malformed-10020-4" : {
-      "id" : "10020-4",
-      "name" : "X-Frame-Options Setting Malformed",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10020-4"
     },
     "X-Content-Type-Options-Header-Missing-10021" : {
       "id" : "10021",
@@ -254,42 +170,6 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10032"
     },
-    "Potential-IP-Addresses-Found-in-the-Viewstate-10032-1" : {
-      "id" : "10032-1",
-      "name" : "Potential IP Addresses Found in the Viewstate",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-1"
-    },
-    "Emails-Found-in-the-Viewstate-10032-2" : {
-      "id" : "10032-2",
-      "name" : "Emails Found in the Viewstate",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-2"
-    },
-    "Old-Asp.Net-Version-in-Use-10032-3" : {
-      "id" : "10032-3",
-      "name" : "Old Asp.Net Version in Use",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-3"
-    },
-    "Viewstate-without-MAC-Signature-(Unsure)-10032-4" : {
-      "id" : "10032-4",
-      "name" : "Viewstate without MAC Signature (Unsure)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-4"
-    },
-    "Viewstate-without-MAC-Signature-(Sure)-10032-5" : {
-      "id" : "10032-5",
-      "name" : "Viewstate without MAC Signature (Sure)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-5"
-    },
-    "Split-Viewstate-in-Use-10032-6" : {
-      "id" : "10032-6",
-      "name" : "Split Viewstate in Use",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10032-6"
-    },
     "Directory-Browsing-10033" : {
       "id" : "10033",
       "name" : "Directory Browsing",
@@ -308,71 +188,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10035"
     },
-    "Strict-Transport-Security-Header-Not-Set-10035-1" : {
-      "id" : "10035-1",
-      "name" : "Strict-Transport-Security Header Not Set",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-1"
-    },
-    "Strict-Transport-Security-Disabled-10035-2" : {
-      "id" : "10035-2",
-      "name" : "Strict-Transport-Security Disabled",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-2"
-    },
-    "Strict-Transport-Security-Multiple-Header-Entries-(Non-compliant-with-Spec)-10035-3" : {
-      "id" : "10035-3",
-      "name" : "Strict-Transport-Security Multiple Header Entries (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-3"
-    },
-    "Strict-Transport-Security-Header-on-Plain-HTTP-Response-10035-4" : {
-      "id" : "10035-4",
-      "name" : "Strict-Transport-Security Header on Plain HTTP Response",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-4"
-    },
-    "Strict-Transport-Security-Missing-Max-Age-(Non-compliant-with-Spec)-10035-5" : {
-      "id" : "10035-5",
-      "name" : "Strict-Transport-Security Missing Max-Age (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-5"
-    },
-    "Strict-Transport-Security-Defined-via-META-(Non-compliant-with-Spec)-10035-6" : {
-      "id" : "10035-6",
-      "name" : "Strict-Transport-Security Defined via META (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-6"
-    },
-    "Strict-Transport-Security-Max-Age-Malformed-(Non-compliant-with-Spec)-10035-7" : {
-      "id" : "10035-7",
-      "name" : "Strict-Transport-Security Max-Age Malformed (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-7"
-    },
-    "Strict-Transport-Security-Malformed-Content-(Non-compliant-with-Spec)-10035-8" : {
-      "id" : "10035-8",
-      "name" : "Strict-Transport-Security Malformed Content (Non-compliant with Spec)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10035-8"
-    },
     "HTTP-Server-Response-Header-10036" : {
       "id" : "10036",
       "name" : "HTTP Server Response Header",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10036"
-    },
-    "Server-Leaks-its-Webserver-Application-via-\"Server\"-HTTP-Response-Header-Field-10036-1" : {
-      "id" : "10036-1",
-      "name" : "Server Leaks its Webserver Application via \"Server\" HTTP Response Header Field",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10036-1"
-    },
-    "Server-Leaks-Version-Information-via-\"Server\"-HTTP-Response-Header-Field-10036-2" : {
-      "id" : "10036-2",
-      "name" : "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10036-2"
     },
     "Server-Leaks-Information-via-\"X-Powered-By\"-HTTP-Response-Header-Field(s)-10037" : {
       "id" : "10037",
@@ -385,24 +205,6 @@
       "name" : "Content Security Policy (CSP) Header Not Set",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10038"
-    },
-    "Content-Security-Policy-(CSP)-Header-Not-Set-10038-1" : {
-      "id" : "10038-1",
-      "name" : "Content Security Policy (CSP) Header Not Set",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10038-1"
-    },
-    "Obsolete-Content-Security-Policy-(CSP)-Header-Found-10038-2" : {
-      "id" : "10038-2",
-      "name" : "Obsolete Content Security Policy (CSP) Header Found",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10038-2"
-    },
-    "Content-Security-Policy-(CSP)-Report-Only-Header-Found-10038-3" : {
-      "id" : "10038-3",
-      "name" : "Content Security Policy (CSP) Report-Only Header Found",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10038-3"
     },
     "X-Backend-Server-Header-Information-Leak-10039" : {
       "id" : "10039",
@@ -440,35 +242,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10044"
     },
-    "Big-Redirect-Detected-(Potential-Sensitive-Information-Leak)-10044-1" : {
-      "id" : "10044-1",
-      "name" : "Big Redirect Detected (Potential Sensitive Information Leak)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10044-1"
-    },
-    "Multiple-HREFs-Redirect-Detected-(Potential-Sensitive-Information-Leak)-10044-2" : {
-      "id" : "10044-2",
-      "name" : "Multiple HREFs Redirect Detected (Potential Sensitive Information Leak)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10044-2"
-    },
     "Source-Code-Disclosure-/WEB-INF-Folder-10045" : {
       "id" : "10045",
       "name" : "Source Code Disclosure - /WEB-INF Folder",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/10045"
-    },
-    "Source-Code-Disclosure-/WEB-INF-Folder-10045-1" : {
-      "id" : "10045-1",
-      "name" : "Source Code Disclosure - /WEB-INF Folder",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/10045-1"
-    },
-    "Properties-File-Disclosure-/WEB-INF-folder-10045-2" : {
-      "id" : "10045-2",
-      "name" : "Properties File Disclosure - /WEB-INF folder",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/10045-2"
     },
     "HTTPS-Content-Available-via-HTTP-10047" : {
       "id" : "10047",
@@ -482,59 +260,17 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/10048"
     },
-    "Remote-Code-Execution-Shell-Shock-10048-1" : {
-      "id" : "10048-1",
-      "name" : "Remote Code Execution - Shell Shock",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/10048-1"
-    },
-    "Remote-Code-Execution-Shell-Shock-10048-2" : {
-      "id" : "10048-2",
-      "name" : "Remote Code Execution - Shell Shock",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/10048-2"
-    },
     "Content-Cacheability-10049" : {
       "id" : "10049",
       "name" : "Content Cacheability",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10049"
     },
-    "Non-Storable-Content-10049-1" : {
-      "id" : "10049-1",
-      "name" : "Non-Storable Content",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10049-1"
-    },
-    "Storable-but-Non-Cacheable-Content-10049-2" : {
-      "id" : "10049-2",
-      "name" : "Storable but Non-Cacheable Content",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10049-2"
-    },
-    "Storable-and-Cacheable-Content-10049-3" : {
-      "id" : "10049-3",
-      "name" : "Storable and Cacheable Content",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10049-3"
-    },
     "Retrieved-from-Cache-10050" : {
       "id" : "10050",
       "name" : "Retrieved from Cache",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10050"
-    },
-    "Retrieved-from-Cache-10050-1" : {
-      "id" : "10050-1",
-      "name" : "Retrieved from Cache",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10050-1"
-    },
-    "Retrieved-from-Cache-10050-2" : {
-      "id" : "10050-2",
-      "name" : "Retrieved from Cache",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10050-2"
     },
     "Relative-Path-Confusion-10051" : {
       "id" : "10051",
@@ -554,101 +290,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10054"
     },
-    "Cookie-without-SameSite-Attribute-10054-1" : {
-      "id" : "10054-1",
-      "name" : "Cookie without SameSite Attribute",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10054-1"
-    },
-    "Cookie-with-SameSite-Attribute-None-10054-2" : {
-      "id" : "10054-2",
-      "name" : "Cookie with SameSite Attribute None",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10054-2"
-    },
-    "Cookie-with-Invalid-SameSite-Attribute-10054-3" : {
-      "id" : "10054-3",
-      "name" : "Cookie with Invalid SameSite Attribute",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10054-3"
-    },
     "CSP-10055" : {
       "id" : "10055",
       "name" : "CSP",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10055"
-    },
-    "CSP:-X-Content-Security-Policy-10055-1" : {
-      "id" : "10055-1",
-      "name" : "CSP: X-Content-Security-Policy",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-1"
-    },
-    "CSP:-X-WebKit-CSP-10055-2" : {
-      "id" : "10055-2",
-      "name" : "CSP: X-WebKit-CSP",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-2"
-    },
-    "CSP:-Notices-10055-3" : {
-      "id" : "10055-3",
-      "name" : "CSP: Notices",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-3"
-    },
-    "CSP:-Wildcard-Directive-10055-4" : {
-      "id" : "10055-4",
-      "name" : "CSP: Wildcard Directive",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-4"
-    },
-    "CSP:-script-src-unsafe-inline-10055-5" : {
-      "id" : "10055-5",
-      "name" : "CSP: script-src unsafe-inline",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-5"
-    },
-    "CSP:-style-src-unsafe-inline-10055-6" : {
-      "id" : "10055-6",
-      "name" : "CSP: style-src unsafe-inline",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-6"
-    },
-    "CSP:-script-src-unsafe-hashes-10055-7" : {
-      "id" : "10055-7",
-      "name" : "CSP: script-src unsafe-hashes",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-7"
-    },
-    "CSP:-style-src-unsafe-hashes-10055-8" : {
-      "id" : "10055-8",
-      "name" : "CSP: style-src unsafe-hashes",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-8"
-    },
-    "CSP:-Malformed-Policy-(Non-ASCII)-10055-9" : {
-      "id" : "10055-9",
-      "name" : "CSP: Malformed Policy (Non-ASCII)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-9"
-    },
-    "CSP:-script-src-unsafe-eval-10055-10" : {
-      "id" : "10055-10",
-      "name" : "CSP: script-src unsafe-eval",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-10"
-    },
-    "CSP:-Meta-Policy-Invalid-Directive-10055-11" : {
-      "id" : "10055-11",
-      "name" : "CSP: Meta Policy Invalid Directive",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-11"
-    },
-    "CSP:-Header-&-Meta-10055-12" : {
-      "id" : "10055-12",
-      "name" : "CSP: Header & Meta",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10055-12"
     },
     "X-Debug-Token-Information-Leak-10056" : {
       "id" : "10056",
@@ -686,18 +332,6 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10063"
     },
-    "Permissions-Policy-Header-Not-Set-10063-1" : {
-      "id" : "10063-1",
-      "name" : "Permissions Policy Header Not Set",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10063-1"
-    },
-    "Deprecated-Feature-Policy-Header-Set-10063-2" : {
-      "id" : "10063-2",
-      "name" : "Deprecated Feature Policy Header Set",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10063-2"
-    },
     "Use-of-SAML-10070" : {
       "id" : "10070",
       "name" : "Use of SAML",
@@ -709,24 +343,6 @@
       "name" : "Base64 Disclosure",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10094"
-    },
-    "ASP.NET-ViewState-Disclosure-10094-1" : {
-      "id" : "10094-1",
-      "name" : "ASP.NET ViewState Disclosure",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10094-1"
-    },
-    "ASP.NET-ViewState-Integrity-10094-2" : {
-      "id" : "10094-2",
-      "name" : "ASP.NET ViewState Integrity",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10094-2"
-    },
-    "Base64-Disclosure-10094-3" : {
-      "id" : "10094-3",
-      "name" : "Base64 Disclosure",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10094-3"
     },
     "Backup-File-Disclosure-10095" : {
       "id" : "10095",
@@ -788,18 +404,6 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10105"
     },
-    "Authentication-Credentials-Captured-10105-1" : {
-      "id" : "10105-1",
-      "name" : "Authentication Credentials Captured",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10105-1"
-    },
-    "Weak-Authentication-Method-10105-2" : {
-      "id" : "10105-2",
-      "name" : "Weak Authentication Method",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10105-2"
-    },
     "HTTP-Only-Site-10106" : {
       "id" : "10106",
       "name" : "HTTP Only Site",
@@ -854,18 +458,6 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10115"
     },
-    "Script-Served-From-Malicious-Domain-(polyfill)-10115-1" : {
-      "id" : "10115-1",
-      "name" : "Script Served From Malicious Domain (polyfill)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10115-1"
-    },
-    "Script-Served-From-Malicious-Domain-(polyfill)-10115-2" : {
-      "id" : "10115-2",
-      "name" : "Script Served From Malicious Domain (polyfill)",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/10115-2"
-    },
     "Absence-of-Anti-CSRF-Tokens-10202" : {
       "id" : "10202",
       "name" : "Absence of Anti-CSRF Tokens",
@@ -896,24 +488,6 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/20016"
     },
-    "Cross-Domain-Misconfiguration-Adobe-Read-20016-1" : {
-      "id" : "20016-1",
-      "name" : "Cross-Domain Misconfiguration - Adobe - Read",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20016-1"
-    },
-    "Cross-Domain-Misconfiguration-Adobe-Send-20016-2" : {
-      "id" : "20016-2",
-      "name" : "Cross-Domain Misconfiguration - Adobe - Send",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20016-2"
-    },
-    "Cross-Domain-Misconfiguration-Silverlight-20016-3" : {
-      "id" : "20016-3",
-      "name" : "Cross-Domain Misconfiguration - Silverlight",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20016-3"
-    },
     "Source-Code-Disclosure-CVE-2012-1823-20017" : {
       "id" : "20017",
       "name" : "Source Code Disclosure - CVE-2012-1823",
@@ -931,30 +505,6 @@
       "name" : "External Redirect",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/20019"
-    },
-    "External-Redirect-20019-1" : {
-      "id" : "20019-1",
-      "name" : "External Redirect",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20019-1"
-    },
-    "External-Redirect-20019-2" : {
-      "id" : "20019-2",
-      "name" : "External Redirect",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20019-2"
-    },
-    "External-Redirect-20019-3" : {
-      "id" : "20019-3",
-      "name" : "External Redirect",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20019-3"
-    },
-    "External-Redirect-20019-4" : {
-      "id" : "20019-4",
-      "name" : "External Redirect",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/20019-4"
     },
     "Buffer-Overflow-30001" : {
       "id" : "30001",
@@ -1154,24 +704,6 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40040"
     },
-    "CORS-Header-40040-1" : {
-      "id" : "40040-1",
-      "name" : "CORS Header",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/40040-1"
-    },
-    "CORS-Misconfiguration-40040-2" : {
-      "id" : "40040-2",
-      "name" : "CORS Misconfiguration",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/40040-2"
-    },
-    "CORS-Misconfiguration-40040-3" : {
-      "id" : "40040-3",
-      "name" : "CORS Misconfiguration",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/40040-3"
-    },
     "File-Upload-40041" : {
       "id" : "40041",
       "name" : "File Upload",
@@ -1189,18 +721,6 @@
       "name" : "Log4Shell",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40043"
-    },
-    "Log4Shell-(CVE-2021-44228)-40043-1" : {
-      "id" : "40043-1",
-      "name" : "Log4Shell (CVE-2021-44228)",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/40043-1"
-    },
-    "Log4Shell-(CVE-2021-45046)-40043-2" : {
-      "id" : "40043-2",
-      "name" : "Log4Shell (CVE-2021-45046)",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/40043-2"
     },
     "Exponential-Entity-Expansion-(Billion-Laughs-Attack)-40044" : {
       "id" : "40044",
@@ -1232,18 +752,6 @@
       "type" : "tool",
       "link" : "https://www.zaproxy.org/docs/alerts/50007"
     },
-    "GraphQL-Endpoint-Supports-Introspection-50007-1" : {
-      "id" : "50007-1",
-      "name" : "GraphQL Endpoint Supports Introspection",
-      "type" : "tool",
-      "link" : "https://www.zaproxy.org/docs/alerts/50007-1"
-    },
-    "GraphQL-Server-Implementation-Identified-50007-2" : {
-      "id" : "50007-2",
-      "name" : "GraphQL Server Implementation Identified",
-      "type" : "tool",
-      "link" : "https://www.zaproxy.org/docs/alerts/50007-2"
-    },
     "Insecure-JSF-ViewState-90001" : {
       "id" : "90001",
       "name" : "Insecure JSF ViewState",
@@ -1268,77 +776,11 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/90004"
     },
-    "Insufficient-Site-Isolation-Against-Spectre-Vulnerability-90004-1" : {
-      "id" : "90004-1",
-      "name" : "Insufficient Site Isolation Against Spectre Vulnerability",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90004-1"
-    },
-    "Insufficient-Site-Isolation-Against-Spectre-Vulnerability-90004-2" : {
-      "id" : "90004-2",
-      "name" : "Insufficient Site Isolation Against Spectre Vulnerability",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90004-2"
-    },
-    "Insufficient-Site-Isolation-Against-Spectre-Vulnerability-90004-3" : {
-      "id" : "90004-3",
-      "name" : "Insufficient Site Isolation Against Spectre Vulnerability",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90004-3"
-    },
     "Fetch-Metadata-Request-Headers-90005" : {
       "id" : "90005",
       "name" : "Fetch Metadata Request Headers",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/90005"
-    },
-    "Sec-Fetch-Site-Header-is-Missing-90005-1" : {
-      "id" : "90005-1",
-      "name" : "Sec-Fetch-Site Header is Missing",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-1"
-    },
-    "Sec-Fetch-Mode-Header-is-Missing-90005-2" : {
-      "id" : "90005-2",
-      "name" : "Sec-Fetch-Mode Header is Missing",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-2"
-    },
-    "Sec-Fetch-Dest-Header-is-Missing-90005-3" : {
-      "id" : "90005-3",
-      "name" : "Sec-Fetch-Dest Header is Missing",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-3"
-    },
-    "Sec-Fetch-User-Header-is-Missing-90005-4" : {
-      "id" : "90005-4",
-      "name" : "Sec-Fetch-User Header is Missing",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-4"
-    },
-    "Sec-Fetch-Site-Header-Has-an-Invalid-Value-90005-5" : {
-      "id" : "90005-5",
-      "name" : "Sec-Fetch-Site Header Has an Invalid Value",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-5"
-    },
-    "Sec-Fetch-Mode-Header-Has-an-Invalid-Value-90005-6" : {
-      "id" : "90005-6",
-      "name" : "Sec-Fetch-Mode Header Has an Invalid Value",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-6"
-    },
-    "Sec-Fetch-Dest-Header-Has-an-Invalid-Value-90005-7" : {
-      "id" : "90005-7",
-      "name" : "Sec-Fetch-Dest Header Has an Invalid Value",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-7"
-    },
-    "Sec-Fetch-User-Header-Has-an-Invalid-Value-90005-8" : {
-      "id" : "90005-8",
-      "name" : "Sec-Fetch-User Header Has an Invalid Value",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/90005-8"
     },
     "Charset-Mismatch-90011" : {
       "id" : "90011",
@@ -1363,18 +805,6 @@
       "name" : "Server Side Code Injection",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/90019"
-    },
-    "Server-Side-Code-Injection-PHP-Code-Injection-90019-1" : {
-      "id" : "90019-1",
-      "name" : "Server Side Code Injection - PHP Code Injection",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/90019-1"
-    },
-    "Server-Side-Code-Injection-ASP-Code-Injection-90019-2" : {
-      "id" : "90019-2",
-      "name" : "Server Side Code Injection - ASP Code Injection",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/90019-2"
     },
     "Remote-OS-Command-Injection-90020" : {
       "id" : "90020",
@@ -1706,53 +1136,17 @@
       "type" : "client passive",
       "link" : "https://www.zaproxy.org/docs/alerts/120000"
     },
-    "Information-Disclosure-Information-in-Browser-localStorage-120000-1" : {
-      "id" : "120000-1",
-      "name" : "Information Disclosure - Information in Browser localStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120000-1"
-    },
-    "Information-Disclosure-Information-in-Browser-sessionStorage-120000-2" : {
-      "id" : "120000-2",
-      "name" : "Information Disclosure - Information in Browser sessionStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120000-2"
-    },
     "Information-Disclosure-Sensitive-Information-in-Browser-Storage-120001" : {
       "id" : "120001",
       "name" : "Information Disclosure - Sensitive Information in Browser Storage",
       "type" : "client passive",
       "link" : "https://www.zaproxy.org/docs/alerts/120001"
     },
-    "Information-Disclosure-Sensitive-Information-in-Browser-localStorage-120001-1" : {
-      "id" : "120001-1",
-      "name" : "Information Disclosure - Sensitive Information in Browser localStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120001-1"
-    },
-    "Information-Disclosure-Sensitive-Information-in-Browser-sessionStorage-120001-2" : {
-      "id" : "120001-2",
-      "name" : "Information Disclosure - Sensitive Information in Browser sessionStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120001-2"
-    },
     "Information-Disclosure-JWT-in-Browser-Storage-120002" : {
       "id" : "120002",
       "name" : "Information Disclosure - JWT in Browser Storage",
       "type" : "client passive",
       "link" : "https://www.zaproxy.org/docs/alerts/120002"
-    },
-    "Information-Disclosure-JWT-in-Browser-localStorage-120002-1" : {
-      "id" : "120002-1",
-      "name" : "Information Disclosure - JWT in Browser localStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120002-1"
-    },
-    "Information-Disclosure-JWT-in-Browser-sessionStorage-120002-2" : {
-      "id" : "120002-2",
-      "name" : "Information Disclosure - JWT in Browser sessionStorage",
-      "type" : "client passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/120002-2"
     }
   }
 }
