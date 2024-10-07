@@ -136,6 +136,18 @@ runs:
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
+    # Copy the index.js to the root of the repository
+    # By doing this any file and folder references inside the scan action will be relative to the root of the repository
+    # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
+    # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
+    - name: Copy index.js To Root Of Repository
+      run: |
+        cp dist/index.js ../../../sechub-scan.js
+        sed -i 's/exec-child/sechub-exec-child/g' sechub-scan.js
+        cp dist/exec-child.js ../../../sechub-exec-child.js
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
       env:
@@ -145,13 +157,6 @@ runs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
           core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
-
-    - name: Copy index.js To Root Of Repository
-      run: |
-        cp dist/index.js ../../../sechub-scan.js
-        cp dist/exec-child.js ../../../exec-child.js
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
 
     - name: Run SecHub Scan
       run: node sechub-scan.js
