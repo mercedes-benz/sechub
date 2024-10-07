@@ -43,12 +43,13 @@ elif [ ! -d "$git_directory" ] ; then
 
 # If exactly one '.git' directory was found we scan the git history
 else
-  cd "$repository_root_directory"
+  scan_target_directory="$repository_root_directory"
   gitleaks_options="git . $gitleaks_options"
   echo ".git folder was uploaded for the secret scan. Perform secret scan with history deepscan." | tee "$PDS_JOB_USER_MESSAGES_FOLDER"/history-scan.txt
 fi
 
 echo "### Running Gitleaks"
+cd "$scan_target_directory"
 gitleaks $gitleaks_options
 
 # Secret-Validation
