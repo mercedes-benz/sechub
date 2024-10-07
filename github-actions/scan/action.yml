@@ -146,8 +146,13 @@ runs:
           core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
+    - name: Copy index.js To Root Of Repository
+      run: cp dist/index.js ../../../sechub-scan.js
+      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
     - name: Run SecHub Scan
-      run: node dist/index.js
+      run: node sechub-scan.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
@@ -167,5 +172,4 @@ runs:
         ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
         ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
         ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
