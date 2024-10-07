@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <li>{@code expiresIn}: The duration in seconds until the access token
  * expires.</li>
  * <li>{@code refreshToken}: The token used to obtain a new access token without
- * re-authenticating.</li>
+ * re-authenticating (optional).</li>
  * </ul>
  * </p>
  *
@@ -54,16 +54,20 @@ class JwtResponse {
     private final Long expiresIn;
     private final String refreshToken;
 
+    /* @formatter:off */
     @JsonCreator
-    JwtResponse(@JsonProperty(JSON_PROPERTY_ACCESS_TOKEN) String accessToken, @JsonProperty(JSON_PROPERTY_TOKEN_TYPE) String tokenType,
-            @JsonProperty(JSON_PROPERTY_ID_TOKEN) String idToken, @JsonProperty(JSON_PROPERTY_EXPIRES_IN) Long expiresIn,
-            @JsonProperty(JSON_PROPERTY_REFRESH_TOKEN) String refreshToken) {
+    JwtResponse(@JsonProperty(JSON_PROPERTY_ACCESS_TOKEN) String accessToken,
+                @JsonProperty(JSON_PROPERTY_TOKEN_TYPE) String tokenType,
+                @JsonProperty(JSON_PROPERTY_ID_TOKEN) String idToken,
+                @JsonProperty(JSON_PROPERTY_EXPIRES_IN) Long expiresIn,
+                @JsonProperty(JSON_PROPERTY_REFRESH_TOKEN) String refreshToken) {
         this.accessToken = requireNonNull(accessToken, JSON_PROPERTY_ACCESS_TOKEN + " must not be null");
         this.tokenType = requireNonNull(tokenType, JSON_PROPERTY_TOKEN_TYPE + " must not be null");
         this.idToken = requireNonNull(idToken, JSON_PROPERTY_ID_TOKEN + " must not be null");
         this.expiresIn = requireNonNull(expiresIn, JSON_PROPERTY_EXPIRES_IN + " must not be null");
         this.refreshToken = refreshToken;
     }
+    /* @formatter:on */
 
     String getAccessToken() {
         return accessToken;
