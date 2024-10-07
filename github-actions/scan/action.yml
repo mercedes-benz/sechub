@@ -147,7 +147,9 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Copy index.js To Root Of Repository
-      run: cp dist/index.js ../../../sechub-scan.js
+      run: |
+        cp dist/index.js ../../../sechub-scan.js
+        cp dist/exec-child.js ../../../exec-child.js
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
