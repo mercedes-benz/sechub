@@ -143,7 +143,7 @@ runs:
     - name: Copy index.js To Root Of Repository
       run: |
         cp dist/index.js ../../../sechub-scan.js
-        sed -i 's/exec-child/sechub-exec-child/g' sechub-scan.js
+        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
         cp dist/exec-child.js ../../../sechub-exec-child.js
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
