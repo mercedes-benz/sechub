@@ -83,7 +83,7 @@ ext {
       httpmime:                                "4.3.1",
 
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.13.0",
+      owaspzap_client_api:                     "1.14.0",
       jcommander:                              "1.82",
       
       thymeleaf_extras_springsecurity5:        "3.1.2.RELEASE",
