@@ -120,7 +120,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 7 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
-                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressStateFetcher").
                  to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 8 */
            asyncEvent(MessageID.JOB_DONE).
@@ -182,7 +182,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 6 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
-                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressStateFetcher").
                  to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 7 */
            asyncEvent(MessageID.JOB_DONE).
@@ -279,7 +279,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 5 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
-                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressStateFetcher").
                  to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 6 */
            asyncEvent(MessageID.JOB_DONE).
@@ -338,7 +338,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 5 */
            syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
-                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressStateFetcher").
                  to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 6 */
            asyncEvent(MessageID.JOB_DONE).

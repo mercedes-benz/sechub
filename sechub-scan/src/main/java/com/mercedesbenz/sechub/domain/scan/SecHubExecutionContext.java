@@ -48,6 +48,8 @@ public class SecHubExecutionContext {
 
     private boolean prepareFailed;
 
+    private boolean suspended;
+
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
         this(sechubJobUUID, configuration, executedBy, executionUUID, null);
     }
@@ -179,6 +181,14 @@ public class SecHubExecutionContext {
 
     public boolean hasPrepareFailed() {
         return prepareFailed;
+    }
+
+    public void markSuspended() {
+        this.suspended = true;
+    }
+
+    public boolean isSuspended() {
+        return suspended;
     }
 
 }

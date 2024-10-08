@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2023-07-03 09:09:26.333556",
+  "timestamp" : "2024-10-07 07:29:08.282732",
   "origin" : "https://www.zaproxy.org/docs/alerts/",
   "rules" : {
     "Directory-Browsing-0" : {
@@ -55,6 +55,12 @@
       "name" : "Vulnerable JS Library",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10003"
+    },
+    "Tech-Detection-Passive-Scanner-10004" : {
+      "id" : "10004",
+      "name" : "Tech Detection Passive Scanner",
+      "type" : "tool",
+      "link" : "https://www.zaproxy.org/docs/alerts/10004"
     },
     "In-Page-Banner-Information-Leak-10009" : {
       "id" : "10009",
@@ -188,9 +194,9 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10036"
     },
-    "Server-Leaks-Information-via-'X-Powered-By'-HTTP-Response-Header-Field(s)-10037" : {
+    "Server-Leaks-Information-via-\"X-Powered-By\"-HTTP-Response-Header-Field(s)-10037" : {
       "id" : "10037",
-      "name" : "Server Leaks Information via 'X-Powered-By' HTTP Response Header Field(s)",
+      "name" : "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10037"
     },
@@ -236,9 +242,9 @@
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10044"
     },
-    "Source-Code-Disclosure-/WEB-INF-folder-10045" : {
+    "Source-Code-Disclosure-/WEB-INF-Folder-10045" : {
       "id" : "10045",
-      "name" : "Source Code Disclosure - /WEB-INF folder",
+      "name" : "Source Code Disclosure - /WEB-INF Folder",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/10045"
     },
@@ -344,15 +350,15 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/10095"
     },
-    "Timestamp-Disclosure-10096" : {
+    "Timestamp-Disclosure-Unix-10096" : {
       "id" : "10096",
-      "name" : "Timestamp Disclosure",
+      "name" : "Timestamp Disclosure - Unix",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10096"
     },
-    "Hash-Disclosure-10097" : {
+    "Hash-Disclosure-MD4-/-MD5-10097" : {
       "id" : "10097",
-      "name" : "Hash Disclosure",
+      "name" : "Hash Disclosure - MD4 / MD5",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10097"
     },
@@ -367,6 +373,18 @@
       "name" : "Source Code Disclosure - PHP",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10099"
+    },
+    "Access-Control-Issue-Improper-Authentication-10101" : {
+      "id" : "10101",
+      "name" : "Access Control Issue - Improper Authentication",
+      "type" : "tool",
+      "link" : "https://www.zaproxy.org/docs/alerts/10101"
+    },
+    "Access-Control-Issue-Improper-Authorization-10102" : {
+      "id" : "10102",
+      "name" : "Access Control Issue - Improper Authorization",
+      "type" : "tool",
+      "link" : "https://www.zaproxy.org/docs/alerts/10102"
     },
     "Image-Exposes-Location-or-Privacy-Data-10103" : {
       "id" : "10103",
@@ -433,6 +451,12 @@
       "name" : "Verification Request Identified",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10113"
+    },
+    "Script-Served-From-Malicious-Domain-(polyfill)-10115" : {
+      "id" : "10115",
+      "name" : "Script Served From Malicious Domain (polyfill)",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/10115"
     },
     "Absence-of-Anti-CSRF-Tokens-10202" : {
       "id" : "10202",
@@ -722,6 +746,12 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40047"
     },
+    "ExtensionGraphQl-50007" : {
+      "id" : "50007",
+      "name" : "ExtensionGraphQl",
+      "type" : "tool",
+      "link" : "https://www.zaproxy.org/docs/alerts/50007"
+    },
     "Insecure-JSF-ViewState-90001" : {
       "id" : "90001",
       "name" : "Insecure JSF ViewState",
@@ -745,6 +775,12 @@
       "name" : "Insufficient Site Isolation Against Spectre Vulnerability",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/90004"
+    },
+    "Fetch-Metadata-Request-Headers-90005" : {
+      "id" : "90005",
+      "name" : "Fetch Metadata Request Headers",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/90005"
     },
     "Charset-Mismatch-90011" : {
       "id" : "90011",
@@ -860,6 +896,186 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/90036"
     },
+    "NoSQL-Injection-MongoDB-(Time-Based)-90039" : {
+      "id" : "90039",
+      "name" : "NoSQL Injection - MongoDB (Time Based)",
+      "type" : "active",
+      "link" : "https://www.zaproxy.org/docs/alerts/90039"
+    },
+    "Server-is-running-on-Clacks-GNU-Terry-Pratchett-100002" : {
+      "id" : "100002",
+      "name" : "Server is running on Clacks - GNU Terry Pratchett",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100002"
+    },
+    "Cookie-Set-Without-HttpOnly-Flag-100003" : {
+      "id" : "100003",
+      "name" : "Cookie Set Without HttpOnly Flag",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100003"
+    },
+    "Content-Security-Policy-Violations-Reporting-Enabled-100004" : {
+      "id" : "100004",
+      "name" : "Content Security Policy Violations Reporting Enabled",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100004"
+    },
+    "SameSite-Cookie-Attribute-Protection-Used-100005" : {
+      "id" : "100005",
+      "name" : "SameSite Cookie Attribute Protection Used",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100005"
+    },
+    "Information-Disclosure-IP-Exposed-via-F5-BIG-IP-Persistence-Cookie-100006" : {
+      "id" : "100006",
+      "name" : "Information Disclosure - IP Exposed via F5 BIG-IP Persistence Cookie",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100006"
+    },
+    "Information-Disclosure-Base64-encoded-String-100007" : {
+      "id" : "100007",
+      "name" : "Information Disclosure - Base64-encoded String",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100007"
+    },
+    "Information-Disclosure-Credit-Card-Number-100008" : {
+      "id" : "100008",
+      "name" : "Information Disclosure - Credit Card Number",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100008"
+    },
+    "Information-Disclosure-Email-Addresses-100009" : {
+      "id" : "100009",
+      "name" : "Information Disclosure - Email Addresses",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100009"
+    },
+    "Information-Disclosure-Hash-100010" : {
+      "id" : "100010",
+      "name" : "Information Disclosure - Hash",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100010"
+    },
+    "Information-Disclosure-HTML-Comments-100011" : {
+      "id" : "100011",
+      "name" : "Information Disclosure - HTML Comments",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100011"
+    },
+    "Information-Disclosure-IBAN-Numbers-100012" : {
+      "id" : "100012",
+      "name" : "Information Disclosure - IBAN Numbers",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100012"
+    },
+    "Information-Disclosure-Private-IP-Address-100013" : {
+      "id" : "100013",
+      "name" : "Information Disclosure - Private IP Address",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100013"
+    },
+    "Reflected-HTTP-GET-Parameter(s)-100014" : {
+      "id" : "100014",
+      "name" : "Reflected HTTP GET Parameter(s)",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100014"
+    },
+    "HUNT-Methodology-100015" : {
+      "id" : "100015",
+      "name" : "HUNT Methodology",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100015"
+    },
+    "Missing-Security-Headers-100016" : {
+      "id" : "100016",
+      "name" : "Missing Security Headers",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100016"
+    },
+    "Non-Static-Site-Detected-100017" : {
+      "id" : "100017",
+      "name" : "Non Static Site Detected",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100017"
+    },
+    "Relative-Path-Overwrite-100018" : {
+      "id" : "100018",
+      "name" : "Relative Path Overwrite",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100018"
+    },
+    "Information-Disclosure-Server-Header-100019" : {
+      "id" : "100019",
+      "name" : "Information Disclosure - Server Header",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100019"
+    },
+    "Information-Disclosure-SQL-Error-100020" : {
+      "id" : "100020",
+      "name" : "Information Disclosure - SQL Error",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100020"
+    },
+    "Telerik-UI-for-ASP.NET-AJAX-Cryptographic-Weakness-(CVE-2017-9248)-100021" : {
+      "id" : "100021",
+      "name" : "Telerik UI for ASP.NET AJAX Cryptographic Weakness (CVE-2017-9248)",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100021"
+    },
+    "Upload-Form-Discovered-100022" : {
+      "id" : "100022",
+      "name" : "Upload Form Discovered",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100022"
+    },
+    "Information-Disclosure-X-Powered-By-Header-100023" : {
+      "id" : "100023",
+      "name" : "Information Disclosure - X-Powered-By Header",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100023"
+    },
+    "Cross-Site-WebSocket-Hijacking-100025" : {
+      "id" : "100025",
+      "name" : "Cross-Site WebSocket Hijacking",
+      "type" : "script active",
+      "link" : "https://www.zaproxy.org/docs/alerts/100025"
+    },
+    "JWT-None-Exploit-100026" : {
+      "id" : "100026",
+      "name" : "JWT None Exploit",
+      "type" : "script active",
+      "link" : "https://www.zaproxy.org/docs/alerts/100026"
+    },
+    "File-Content-Disclosure-(CVE-2019-5418)-100029" : {
+      "id" : "100029",
+      "name" : "File Content Disclosure (CVE-2019-5418)",
+      "type" : "script active",
+      "link" : "https://www.zaproxy.org/docs/alerts/100029"
+    },
+    "Backup-File-Detected-100030" : {
+      "id" : "100030",
+      "name" : "Backup File Detected",
+      "type" : "script active",
+      "link" : "https://www.zaproxy.org/docs/alerts/100030"
+    },
+    "Information-Disclosure-Google-API-Key-100034" : {
+      "id" : "100034",
+      "name" : "Information Disclosure - Google API Key",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100034"
+    },
+    "Information-Disclosure-Java-Stack-Trace-100035" : {
+      "id" : "100035",
+      "name" : "Information Disclosure - Java Stack Trace",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100035"
+    },
+    "Information-Disclosure-Amazon-S3-Bucket-URL-100036" : {
+      "id" : "100036",
+      "name" : "Information Disclosure - Amazon S3 Bucket URL",
+      "type" : "script passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/100036"
+    },
     "Application-Error-Disclosure-via-WebSockets-110001" : {
       "id" : "110001",
       "name" : "Application Error Disclosure via WebSockets",
@@ -907,6 +1123,30 @@
       "name" : "Information Disclosure - Suspicious Comments in XML via WebSocket",
       "type" : "websocket passive",
       "link" : "https://www.zaproxy.org/docs/alerts/110008"
+    },
+    "Full-Path-Disclosure-110009" : {
+      "id" : "110009",
+      "name" : "Full Path Disclosure",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/110009"
+    },
+    "Information-Disclosure-Information-in-Browser-Storage-120000" : {
+      "id" : "120000",
+      "name" : "Information Disclosure - Information in Browser Storage",
+      "type" : "client passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/120000"
+    },
+    "Information-Disclosure-Sensitive-Information-in-Browser-Storage-120001" : {
+      "id" : "120001",
+      "name" : "Information Disclosure - Sensitive Information in Browser Storage",
+      "type" : "client passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/120001"
+    },
+    "Information-Disclosure-JWT-in-Browser-Storage-120002" : {
+      "id" : "120002",
+      "name" : "Information Disclosure - JWT in Browser Storage",
+      "type" : "client passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/120002"
     }
   }
 }

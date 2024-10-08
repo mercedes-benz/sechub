@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.assertProject;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.ensureExecutorConfigUUID;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.waitForJobDoneAndEvenWaitWhileJobIsFailing;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,9 +36,11 @@ import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -61,6 +61,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigList;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class AsUser {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
@@ -964,6 +965,59 @@ public class AsUser {
 
     public ProjectFalsePositivesDefinition startFalsePositiveDefinition(TestProject project) {
         return new ProjectFalsePositivesDefinition(project);
+    }
+
+    /**
+     * This triggers a PDS code scan in asynchronous way. It will use
+     * {@link IntegrationTestExampleConstants#PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS}.
+     * It will map wanted traffic light to corresponding reference ids: <br>
+     * <table border='1px'>
+     * <tr>
+     * <th>Traffic light</th>
+     * <th>used reference-id</th>
+     * </tr>
+     * <tr>
+     * <td>GREEN</td>
+     * <td>low-id</td>
+     * </tr>
+     * <tr>
+     * <td>YELLOW</td>
+     * <td>medium-id</td>
+     * </tr>
+     * <tr>
+     * <td>RED</td>
+     * <td>critical-id</td>
+     * </tr>
+     * </table>
+     * Please look at
+     * {@link IntegrationTestExampleConstants#PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS}
+     * for the finding details.
+     *
+     * @param project            - test project
+     * @param wantedTrafficLight - which kind of report is wanted
+     * @return uuid of SecHub job
+     */
+    public UUID triggerAsyncPDSCodeScanWithWantedTrafficLightResult(TestProject project, TrafficLight wantedTrafficLight) {
+        /* @formatter:off */
+        String referenceId = switch (wantedTrafficLight) {
+        case GREEN -> "low-id";
+        case YELLOW -> "medium-id";
+        case RED -> "critical-id";
+        default -> {
+            throw new IllegalArgumentException("Traffic light type: "+wantedTrafficLight+" is not supported by this test helper method!");
+        }
+    };
+
+
+        UUID jobUUID = createCodeScanWithTemplate(
+                IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
+                project, NOT_MOCKED,
+                TemplateData.builder().addReferenceId(referenceId).build());
+
+        uploadSourcecode(project, jobUUID, PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS).
+        approveJob(project, jobUUID);
+        /* @formatter:on */
+        return jobUUID;
     }
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {

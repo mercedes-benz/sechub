@@ -14,14 +14,17 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.cluster.ClusterEnvironmentService;
 import com.mercedesbenz.sechub.sharedkernel.logging.AlertLogService;
 import com.mercedesbenz.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
 import jakarta.annotation.PostConstruct;
 
@@ -83,6 +86,12 @@ public class SchedulerJobBatchTriggerService {
     @Autowired
     AlertLogService alertLogService;
 
+    @Autowired
+    SchedulerTerminationService schedulerTerminationService;
+
+    @Autowired
+    ScheduleResumeJobService resumeJobService;
+
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
@@ -92,19 +101,27 @@ public class SchedulerJobBatchTriggerService {
     // default 10 seconds delay and 5 seconds initial
     @MustBeDocumented(value = "Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. "
             + "For initial delay " + DEFAULT_INITIAL_DELAY_MILLIS
-            + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.", scope = "schedule")
+            + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.", scope = DocumentationScopeConstants.SCOPE_SCHEDULE)
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @UseCaseSchedulerStartsJob(@Step(number = 1, name = "Scheduling", description = "Fetches next schedule job from queue and trigger execution."))
+    @UseCaseSystemResumesSuspendedJobs(@Step(number = 1, name = "Schedule suspended jobs", description = "Scheduler checks not only for new jobs but also for resumed ones."))
     public void triggerExecutionOfNextJob() {
         if (LOG.isTraceEnabled()) {
             /* NOSONAR */LOG.trace("Trigger execution of next job started. Environment: {}", environmentService.getEnvironment());
         }
+        if (schedulerTerminationService.isTerminating()) {
+            LOG.trace("Terminating, stop scheduling on this instance");
+            return;
+        }
+
+        /* check scheduling enabled cluster wide */
         if (!configService.isJobProcessingEnabled()) {
             LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}", environmentService.getEnvironment());
             return;
         }
 
+        /* check scheduling possible in health situation */
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached()) {
                 alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(),
@@ -117,6 +134,7 @@ public class SchedulerJobBatchTriggerService {
                 return;
             }
         }
+
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
             try {
@@ -125,6 +143,12 @@ public class SchedulerJobBatchTriggerService {
                 if (next == null) {
                     return;
                 }
+                if (ExecutionState.RESUMING.equals(next.getExecutionState())) {
+                    LOG.info("Resuming job: {}", next.getUUID());
+                    resumeJobService.resume(next);
+                    return;
+                }
+
                 try {
                     launcherService.executeJob(next);
                 } catch (Exception e) {

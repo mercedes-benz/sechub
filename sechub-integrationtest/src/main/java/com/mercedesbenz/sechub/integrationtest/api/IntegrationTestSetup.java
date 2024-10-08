@@ -30,7 +30,9 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import ch.qos.logback.classic.Level;
 
 public class IntegrationTestSetup implements TestRule {
-
+    // please keep this private static field at top - reason: initialize setup
+    // support as soon as possible...
+    private static final LocalDeveloperFileSetupSupport support = LocalDeveloperFileSetupSupport.INSTANCE;
     public static final String SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.only.necessary4documentation";
     public static final String SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.never.necessary4documentation";
 
@@ -60,6 +62,10 @@ public class IntegrationTestSetup implements TestRule {
     private static Boolean testInternalAdminAvailableCache;
 
     private static final Map<Class<? extends TestScenario>, TestScenario> scenarioClassToInstanceMap = new LinkedHashMap<>();
+
+    private static boolean criticalIntegrationSetupProblemDetected;
+    private static String criticalProblem;
+    private static String criticalTestClass;
 
     /**
      * The next lines are absolute necessary stuff - why? Unfortunately apache http
@@ -161,14 +167,20 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             } else {
-                integrationTestEnabled = LocalDeveloperFileSetupSupport.INSTANCE.isAlwaysSecHubIntegrationTestRunning()
-                        || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
+                integrationTestEnabled = support.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
                 if (!integrationTestEnabled) {
                     String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                             + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";
                     Assume.assumeTrue(message, false);
                 }
             }
+
+            if (criticalIntegrationSetupProblemDetected) {
+                // in this case we cannot test anything else any longer
+                throw new IllegalStateException("CRITICAL integration setup problem detected:\nProblem:" + criticalProblem
+                        + "\nTestClass where critical error happend:" + criticalTestClass + "\nLook into console output for more details");
+            }
+
             handleDocumentationTestsSpecialIfWanted();
             assertNecessaryTestServersRunning();
             assertTestAPIInternalSuperAdminAvailable(scenario);
@@ -178,10 +190,6 @@ public class IntegrationTestSetup implements TestRule {
             String testClass = description.getClassName();
             String testMethod = description.getMethodName();
             try {
-                boolean sechubServerScenario = scenario instanceof SecHubServerTestScenario;
-                if (sechubServerScenario) {
-                    TestAPI.ensureNoLongerJobExecution();
-                }
                 String scenarioName = scenario.getName();
                 LOG.info("############################################################################################################");
                 LOG.info("###");
@@ -191,6 +199,11 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.info("###   Class =" + testClass);
                 LOG.info("###   Method=" + testMethod);
                 LOG.info("############################################################################################################");
+
+                boolean sechubServerScenario = scenario instanceof SecHubServerTestScenario;
+                if (sechubServerScenario) {
+                    TestAPI.ensureNoLongerJobExecution();
+                }
 
                 scenario.prepare(testClass, testMethod);
 
@@ -227,6 +240,12 @@ public class IntegrationTestSetup implements TestRule {
 
                 logEnd(TestTag.SCENARIO_FAILURE, testClass, testMethod, startTime);
 
+                if (e instanceof CriticalTestProblemException) {
+                    criticalProblem = e.getMessage();
+                    criticalTestClass = "Integration test scenario setup critical failure in " + scenario.getName();
+                    criticalIntegrationSetupProblemDetected = true;
+                }
+
                 throw e;
             }
             try {
@@ -236,6 +255,22 @@ public class IntegrationTestSetup implements TestRule {
 
                 String lastURL = TestRestHelper.getLastUrl();
                 throw new IntegrationTestException("HTTP ERROR " + code + " '" + (code != null ? e.getStatusText() : "?") + "', " + lastURL, e);
+            } catch (CriticalTestProblemException e) {
+                criticalProblem = e.getMessage();
+                criticalIntegrationSetupProblemDetected = true;
+                criticalTestClass = testClass;
+
+                LOG.error("############################################################################################################");
+                LOG.error("###");
+                LOG.error("### [CRITICAL] - Critical test problem detected. Will now fail all other tests without execution");
+                LOG.error("###              because test results will be no longer valid or cannot be executed any longer!");
+                LOG.error("###");
+                LOG.error("############################################################################################################");
+                LOG.error("###   Class  =" + testClass);
+                LOG.error("###   Method =" + testMethod);
+                LOG.error("###   Problem=" + criticalProblem);
+                LOG.error("############################################################################################################");
+
             } finally {
                 logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }

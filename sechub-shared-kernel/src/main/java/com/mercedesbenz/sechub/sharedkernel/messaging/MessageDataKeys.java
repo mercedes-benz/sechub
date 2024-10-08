@@ -149,10 +149,15 @@ public class MessageDataKeys {
      * Must contain job uuid,since
      */
     public static final MessageDataKey<JobMessage> JOB_DONE_DATA = createJobMessageKey("job.done.data");
+
     /**
      * Must contain job uuid,since
      */
     public static final MessageDataKey<JobMessage> JOB_FAILED_DATA = createJobMessageKey("job.failed.data");
+    /**
+     * Must contain job uuid,since
+     */
+    public static final MessageDataKey<JobMessage> JOB_SUSPENDED_DATA = createJobMessageKey("job.suspended.data");
 
     /**
      * Must contain job uuid,job owner (but can be null)

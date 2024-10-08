@@ -3,10 +3,14 @@ package com.mercedesbenz.sechub.domain.schedule;
 
 import java.util.UUID;
 
-public class UUIDContainer {
+public class SchedulerSecHubJobRuntimeData {
 
     private UUID secHubJobUUID;
     private UUID executionUUID;
+
+    public SchedulerSecHubJobRuntimeData(UUID sechubJobUUID) {
+        this.secHubJobUUID = sechubJobUUID;
+    }
 
     public String getExecutionUUIDAsString() {
         return getUUIDAsString(executionUUID);

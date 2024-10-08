@@ -7,6 +7,7 @@ services:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
                 - GITLEAKS_VERSION=${GITLEAKS_VERSION}
+                - SECRETVALIDATION_WRAPPER_VERSION=${SECRETVALIDATION_WRAPPER_VERSION}
             context: docker/
             dockerfile: Gitleaks.dockerfile
         container_name: pds-gitleaks

@@ -26,4 +26,9 @@ public class InfoLogScanJobListener implements ScanJobListener {
         LOG.info("Job {} has ended", jobUUID);
     }
 
+    @Override
+    public void suspended(UUID jobUUID) {
+        LOG.info("Job {} has been suspended", jobUUID);
+    }
+
 }

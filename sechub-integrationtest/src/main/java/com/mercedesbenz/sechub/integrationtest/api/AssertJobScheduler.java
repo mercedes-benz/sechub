@@ -93,6 +93,8 @@ public class AssertJobScheduler<R> extends AbstractAssert {
 
         CANCEL_REQUESTED,
 
+        SUSPENDED,
+
         ENDED;
 
     }

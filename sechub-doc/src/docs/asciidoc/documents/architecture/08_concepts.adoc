@@ -2,48 +2,4 @@
 [[section-concepts]]
 == Cross-cutting Concepts
 
-=== Security tools
-include::../shared/concepts/concept_modules_and_module_groups.adoc[]
-
-=== Domain Driven Design
-include::../shared/concepts/concept_simple_domain_driven_design.adoc[]
-
-
-=== Resilience
-include::../shared/concepts/concept_simple_resilience.adoc[]
-
-=== Mappings
-include::../shared/concepts/concept_mappings.adoc[]
-
-// Product delegation server (headline in include - level3)
-include::../shared/concepts/concept_pds.adoc[]
-
-
-include::../shared/concepts/concept_archive_extraction.adoc[]
-
-// False-positive handling (headline in include - level3)
-include::../shared/concepts/concept_falsepositive_handling.adoc[]
-
-// Product execution profiles and executor configurations (headline in include - level3)
-include::../shared/concepts/execution-profiles/concept_execution_profiles_and_config.adoc[]
-
-include::../shared/concepts/concept_product_results.adoc[]
-
-include::../shared/concepts/concept_job_status.adoc[]
-
-include::../shared/concepts/concept_job_cancellation.adoc[]
-
-include::../shared/concepts/concept_auto_clean.adoc[]
-
-include::../shared/concepts/pds-solutions/concept_pds_solution.adoc[]
-
-=== Analytics
-include::../shared/concepts/concept_analytic.adoc[]
-
-=== Statistics
-include::../shared/concepts/concept_statistic.adoc[]
-
-=== Data encryption
-include::../shared/concepts/concept_sechub_data_encryption.adoc[]
-
-
+include::../shared/concepts/concept_include_all.adoc[]

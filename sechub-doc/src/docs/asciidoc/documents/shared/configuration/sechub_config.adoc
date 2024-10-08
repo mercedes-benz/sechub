@@ -300,6 +300,35 @@ WARNING: `username` and `password` are like input but {sechub} tries
          to hide these information in logs or at UI where possible.
          So do *NOT* use `input` for credentials!
 
+====== Example form based login with TOTP
+The TOTP configuration is generally never used without any other login mechanism. It is meant to be used as an additional authentication factor.
+In this example TOTP is used in combination with form based login, which is left out in the example for better readability.
+
+TIP: Most of the time it is enough to specify a `seed` for the TOTP configuration in {sechub}.
+The optional values `validityInSecods`, `tokenLength` and `hashAlgorithm` have defaults which will be used if nothing is specified.
+The defaults are well-known and any authentication provider or application should provide the optional data if it uses anything other than the defaults.
+
+[source,json]
+----
+include::sechub_config_example21_webscan_login_form_with_totp.json[]
+----
+<1> Start of TOTP configuration.
+<2> The `seed` is the only __mandatory__ field for the TOTP configuration.
+It represents the secret key used to generate TOTP values.
+<3> The `validityInSecods` is an __optional__ field, which represents the maximum amount of seconds a TOTP is valid.
+This depends on the authentication provider or the application, providing the `seed` to the user.
+If no specific `validityInSecods` is provided do not configure this value and {sechub} will use the default.
+<4> The `tokenLength` is an __optional__ field, which represents the length of the TOTP the authentication provider or the application expects.
+As before, this depends on the authentication provider or the application, providing the `seed` to the user.
+If no specific `tokenLength` is provided do not configure this value and {sechub} will use the default.
+<5> The `hashAlgorithm` is an __optional__ field, representing the hash algorithm, which is used by the authentication provider or the application during the computation of the TOTP.
+As before, this depends on the authentication provider or the application, providing the `seed` to the user.
+If no specific `hashAlgorithm` is provided do not configure this value and {sechub} will use the default. +
+The currently available hash algorithms are:
+- `HMAC_SHA1`
+- `HMAC_SHA256`
+- `HMAC_SHA512`
+
 [[sechub-config-example-webscan-openapi]]
 ====== Example OpenAPI scan
 [source,json,title="Open API scan"]

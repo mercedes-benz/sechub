@@ -1,0 +1,49 @@
+// this will include all concepts at level 3. can be used by architecture and tech doc to have same info
+
+=== Security tools
+include::concept_modules_and_module_groups.adoc[]
+
+=== Domain Driven Design
+include::concept_simple_domain_driven_design.adoc[]
+
+=== Resilience
+include::concept_simple_resilience.adoc[]
+
+=== Job restarts
+include::concept_sechub_job_restart_handling.adoc[]
+
+=== Deployment without scheduler stop
+include::concept_sechub_deployment_without_scheduler_stop.adoc[]
+
+=== Mappings
+include::concept_mappings.adoc[]
+
+// Product delegation server (headline in include - level3)
+include::concept_sechub_point_of_view_for_pds.adoc[]
+
+include::concept_archive_extraction.adoc[]
+
+// False-positive handling (headline in include - level3)
+include::concept_falsepositive_handling.adoc[]
+
+// Product execution profiles and executor configurations (headline in include - level3)
+include::execution-profiles/concept_execution_profiles_and_config.adoc[]
+
+include::concept_product_results.adoc[]
+
+include::concept_job_status.adoc[]
+
+include::concept_job_cancellation.adoc[]
+
+include::concept_auto_clean.adoc[]
+
+include::pds-solutions/concept_pds_solution.adoc[]
+
+=== Analytics
+include::concept_analytic.adoc[]
+
+=== Statistics
+include::concept_statistic.adoc[]
+
+=== Data encryption
+include::concept_sechub_data_encryption.adoc[]

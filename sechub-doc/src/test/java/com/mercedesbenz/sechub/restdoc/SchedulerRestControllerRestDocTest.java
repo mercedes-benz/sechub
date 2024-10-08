@@ -61,7 +61,9 @@ import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.commons.model.login.ActionType;
 import com.mercedesbenz.sechub.commons.model.login.FormLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.docgen.util.RestDocTestFileSupport;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleJobStatus;
@@ -734,7 +736,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED)
-    public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
+    public void restDoc_userCreatesNewJob_webScan_login_form_script_and_totp_as_second_auth_factor() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
@@ -753,6 +755,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    					webConfig().
 	    						addURI("https://localhost/mywebapp").
 	    						login("https://localhost/mywebapp/login").
+	    						  totp("example-seed", 30, TOTPHashAlgorithm.HMAC_SHA1, 6).
 	    						  formScripted("username1","password1").
 	    						    createPage().
     	    						    createAction().
@@ -809,6 +812,11 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP).description("Optional TOTP configuration as an additional authentication factor.").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_SEED).description("The seed/secret for the TOTP generation. If TOTP is configured this parameter is mandatory."),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_VALIDITY_IN_SECONDS).description("The time in seconds the generated TOTP is valid. In most cases nothing is specified and the default of '"+WebLoginTOTPConfiguration.DEFAULT_VALIDITY_IN_SECONDS+"' seconds is used.").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_TOKEN_LENGTH).description("The length of the generated TOTP. In most cases nothing is specified and the default length '"+WebLoginTOTPConfiguration.DEFAULT_TOKEN_LENGTH+"' is used.").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_HASH_ALGORITHM).description("The hash algorithm to generate the TOTP. In most cases nothing is specified and the  default hash algorithm '"+WebLoginTOTPConfiguration.DEFAULT_HASH_ALGORITHM+"' is used. Currently available values are: 'HMAC_SHA1', 'HMAC_SHA256', 'HMAC_SHA512'").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT).description("script").optional(),

@@ -5,7 +5,7 @@
 hide empty fields
 hide empty methods
 
-'You can find more examles at https://plantuml.com/class-diagram
+'You can find more examples at https://plantuml.com/class-diagram
 
 !include module_sechub_job.puml
 !include module_sechub_eventbus.puml

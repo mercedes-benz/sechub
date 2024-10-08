@@ -1,0 +1,80 @@
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examples at https://plantuml.com/class-diagram
+
+package com.mercedesbenz.sechub.domain.scan {
+	
+	class ScanProgressStateFetcher 
+	 
+	class ScanJobExecutor {
+	
+	}
+	 
+	class ScanJobExecutionRunnable {
+	
+	}
+}
+
+
+
+package com.mercedesbenz.sechub.domain.schedule {
+
+	class SynchronSecHubJobExecutor {
+	   void suspend()
+	}
+	
+	class SchedulerTerminationService {
+	   void terminate()
+	   boolean isTerminating()
+	}
+	
+	class SchedulerJobBatchTriggerService {
+	   void triggerExecutionOfNextJob()
+	}
+	
+	class SchedulerJobStatusRequestHandler {
+	   DomainMessageSynchronousResult returnStatus();
+	}
+	
+	database DB {
+    	entity ScheduleSecHubJob {
+    	}
+	}
+	
+}
+
+SchedulerJobBatchTriggerService ..> SchedulerTerminationService 
+SynchronSecHubJobExecutor -> ScheduleSecHubJob : persists with execution state\n`SUSPENDED`
+
+
+node EventBus {
+}
+
+node springcontainer as "Spring boot container" {
+}
+
+cloud OS {
+
+}
+OS -[#red,bold]> springcontainer: SIGTERM
+springcontainer -[#red,bold]> SchedulerTerminationService: PreDestroy\ncalls terminate()
+
+ScanProgressStateFetcher ...> EventBus : REQUEST_SCHEDULER_JOB_STATUS
+EventBus ...> SchedulerJobStatusRequestHandler: REQUEST_SCHEDULER_JOB_STATUS
+ScanJobExecutor -> ScanProgressStateFetcher 
+ScanJobExecutor --> ScanJobExecutionRunnable: suspends
+
+SchedulerTerminationService --> SynchronSecHubJobExecutor
+SchedulerJobStatusRequestHandler ... ScheduleSecHubJob : reads
+
+note top of SchedulerJobBatchTriggerService
+Blocks execution of any new jobs 
+inside the scheduler instance when
+isTerminating() returns true
+end note 
+
+@enduml

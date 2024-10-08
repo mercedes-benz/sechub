@@ -3,7 +3,9 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
+import com.mercedesbenz.sechub.sharedkernel.MutableProgressState;
+import com.mercedesbenz.sechub.sharedkernel.ProgressState;
+import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -12,24 +14,25 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SchedulerJobMessage;
 
-public class ScanProgressMonitor implements ProgressMonitor {
+public class ScanProgressStateFetcher implements ProgressStateFetcher {
 
     private DomainMessageService eventBus;
     private UUID sechubJobUUID;
 
-    ScanProgressMonitor(DomainMessageService eventBus, UUID sechubJobUUID) {
+    ScanProgressStateFetcher(DomainMessageService eventBus, UUID sechubJobUUID) {
         this.eventBus = eventBus;
         this.sechubJobUUID = sechubJobUUID;
     }
 
     @Override
-    public boolean isCanceled() {
+    public ProgressState fetchProgressState() {
         SchedulerJobMessage jobStatusResponse = sendRequestBatchJobStatusRequestSynchron();
-        /*
-         * we accept both states here - for the progress it does not matter: it is
-         * canceled
-         */
-        return jobStatusResponse.isCancelRequested() || jobStatusResponse.isCanceled();
+
+        MutableProgressState state = new MutableProgressState();
+        state.setCanceled(jobStatusResponse.isCancelRequested() || jobStatusResponse.isCanceled());
+        state.setSuspended(jobStatusResponse.isSuspended());
+
+        return state;
     }
 
     @IsSendingSyncMessage(MessageID.REQUEST_SCHEDULER_JOB_STATUS)
@@ -43,11 +46,6 @@ public class ScanProgressMonitor implements ProgressMonitor {
         DomainMessageSynchronousResult response = eventBus.sendSynchron(request);
         SchedulerJobMessage jobStatusRepsonse = response.get(MessageDataKeys.SCHEDULER_JOB_STATUS);
         return jobStatusRepsonse;
-    }
-
-    @Override
-    public String getId() {
-        return "" + sechubJobUUID;
     }
 
 }

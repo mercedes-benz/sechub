@@ -12,13 +12,22 @@ import jakarta.persistence.LockModeType;
 
 public interface SecHubJobRepositoryCustom {
 
-    Optional<ScheduleSecHubJob> getJob(UUID id);
+    /**
+     * Returns job when in executable - means execution state is either
+     * READY_TO_START or SUSPENDED.
+     *
+     * @param sechubJobUUID job uuid to search for
+     * @return job or <code>null</code>
+     */
+    Optional<ScheduleSecHubJob> getJobWhenExecutable(UUID sechubJobUUID);
 
     Optional<UUID> nextJobIdToExecuteFirstInFirstOut(Set<Long> acceptedEncryptiondPoolIds);
 
     Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds);
 
     Optional<UUID> nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(Set<Long> acceptedEncryptiondPoolIds);
+
+    Optional<UUID> nextJobIdToExecuteSuspended(Set<Long> supportedPoolIds, long minumSuspendDurationInMilliseconds);
 
     /**
      * Fetches next jobs which have been canceled or have ended but have an

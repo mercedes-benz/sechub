@@ -45,6 +45,8 @@ public enum PDSUseCaseIdentifier {
 
     UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15, false),
 
+    UC_SYSTEM_SIGTERM_HANDLING(19, false),
+
     ;
 
     /* +---------------------------------------------------------------------+ */
@@ -60,10 +62,24 @@ public enum PDSUseCaseIdentifier {
 
     private static final int WANTED_ID_LENGTH = 3;
 
+    /**
+     * Create identifier with given unique number - will assume there is a REST api
+     * available
+     *
+     * @param usecaseNumber unique number of usecase
+     */
     private PDSUseCaseIdentifier(int usecaseNumber) {
         this(usecaseNumber, true);
     }
 
+    /**
+     * Create identifier with given unique number
+     *
+     * @param usecaseNumber unique number of usecase
+     * @param hasRestAPI    when <code>true</code> a rest api and corresponding
+     *                      tests do exist, <code>false</code> when no REST api
+     *                      exists for this usecase
+     */
     private PDSUseCaseIdentifier(int usecaseNumber, boolean hasRestAPI) {
         this.uniqueId = createUseCaseID(usecaseNumber);
         this.hasRestApi = hasRestAPI;

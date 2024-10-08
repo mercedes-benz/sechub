@@ -628,6 +628,39 @@ components:
         password:
           description: password
           type: string
+          
+    WebLoginTOTPConfiguration:
+      title: WebLoginTOTPConfiguration
+      description: TOTP definition
+      type: object
+      properties:
+        seed:
+          description: Seed to generate TOTP values
+          format: password
+          type: string
+        validityInSeconds:
+          description: Time the generated TOTP is valid
+          type: integer
+          default: 30
+          format: int32
+        tokenLength:
+          description: Length of the generated TOTP
+          type: integer
+          default: 6
+          format: int32
+        hashAlgorithm:
+          $ref: '#/components/schemas/TOTPHashAlgorithm'
+      required:
+        - seed
+          
+    TOTPHashAlgorithm:
+      type: string
+      enum:
+        - HmacSHA1
+        - HmacSHA256
+        - HmacSHA512
+      description: Representing the TOTP hash algorithms.
+      default: HmacSHA1
 
     WebLoginConfiguration:
       title: WebLoginConfiguration
@@ -640,6 +673,8 @@ components:
           $ref: '#/components/schemas/FormLoginConfiguration'
         url:
           $ref: '#/components/schemas/URI'
+        totp:
+          $ref: '#/components/schemas/WebLoginTOTPConfiguration'
       required:
         - url
 

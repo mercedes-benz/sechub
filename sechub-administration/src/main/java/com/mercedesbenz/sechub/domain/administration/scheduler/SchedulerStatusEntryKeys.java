@@ -18,6 +18,10 @@ public enum SchedulerStatusEntryKeys implements StatusEntryKey {
 
     SCHEDULER_JOBS_CANCEL_REQUESTED("status.scheduler.jobs.cancel_requested"),
 
+    SCHEDULER_JOBS_RESUMING("status.scheduler.jobs.resuming"),
+
+    SCHEDULER_JOBS_SUSPENDED("status.scheduler.jobs.suspended"),
+
     SCHEDULER_JOBS_ENDED("status.scheduler.jobs.ended"),
 
     ;
