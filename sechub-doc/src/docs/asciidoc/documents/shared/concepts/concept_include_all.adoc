@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // this will include all concepts at level 3. can be used by architecture and tech doc to have same info
 
 === Security tools
