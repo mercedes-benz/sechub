@@ -148,6 +148,12 @@ runs:
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
+    # Delete the SecHub GitHub Actions Scan source code after the scan artifact is built
+    # That way we avoid scanning the scan source code itself
+    - name: Delete SecHub GitHub Actions Scan Subdirectory
+      run: rm -rf ${{ github.workspace }}/sechub/github-actions/scan
+      shell: bash
+
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
       env:
