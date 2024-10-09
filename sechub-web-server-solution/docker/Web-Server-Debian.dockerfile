@@ -54,7 +54,7 @@ RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
 
-# Clone SecHub repo and build SecHub WebUI jar file
+# Clone SecHub repo and build sechub-web-server jar file
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
@@ -107,7 +107,7 @@ FROM builder-${BUILD_TYPE} as builder
 RUN echo "build stage"
 
 #-------------------
-# WebUI Server Image
+# Web Server Image
 #-------------------
 
 FROM ${BASE_IMAGE} AS webui
