@@ -54,15 +54,15 @@ RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
 
-# Clone SecHub repo and build SecHub WebUI jar file
+# Clone SecHub repo and build sechub-web-server jar file
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub" && \
-    ./gradlew ensureLocalhostCertificate :sechub-api-java:build :sechub-webui:build -Dsechub.build.stage=api-necessary --console=plain && \
-    cd sechub-webui/build/libs/ && \
+    ./gradlew ensureLocalhostCertificate :sechub-api-java:build :sechub-web-server:build -Dsechub.build.stage=api-necessary --console=plain && \
+    cd sechub-web-server/build/libs/ && \
     rm -f *-javadoc.jar *-plain.jar *-sources.jar && \
-    cp sechub-webui-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
+    cp sechub-web-server-*.jar --target-directory "$WEBUI_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
@@ -82,9 +82,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Download the SecHub WebUI jar file
 RUN cd "$WEBUI_ARTIFACT_FOLDER" && \
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-webui-$WEBUI_VERSION.jar.sha256sum" && \
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-webui-$WEBUI_VERSION.jar" && \
-    sha256sum --check "sechub-webui-$WEBUI_VERSION.jar.sha256sum"
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-web-server-$WEBUI_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$WEBUI_VERSION-webui/sechub-web-server-$WEBUI_VERSION.jar" && \
+    sha256sum --check "sechub-web-server-$WEBUI_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -97,7 +97,7 @@ ARG WEBUI_VERSION
 
 RUN mkdir --parent "$WEBUI_ARTIFACT_FOLDER"
 
-COPY copy/sechub-webui-*.jar "$WEBUI_ARTIFACT_FOLDER"
+COPY copy/sechub-web-server-*.jar "$WEBUI_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder
@@ -107,7 +107,7 @@ FROM builder-${BUILD_TYPE} as builder
 RUN echo "build stage"
 
 #-------------------
-# WebUI Server Image
+# Web Server Image
 #-------------------
 
 FROM ${BASE_IMAGE} AS webui
@@ -131,7 +131,7 @@ ENV USER="webui"
 ENV UID="4242"
 ENV GID="${UID}"
 ENV WEBUI_VERSION="${WEBUI_VERSION}"
-ENV WEBUI_FOLDER="/sechub-webui"
+ENV WEBUI_FOLDER="/sechub-web-server"
 
 # non-root user
 # using fixed group and user ids

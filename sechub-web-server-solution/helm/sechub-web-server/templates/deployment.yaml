@@ -68,7 +68,7 @@ spec:
         - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
 {{- end }}
       # SecHub webui container
-      - name: sechub-webui
+      - name: sechub-web-server
         image: {{ .Values.image }}
         resources:
           # min container memory
@@ -78,13 +78,13 @@ spec:
           limits:
             memory: "{{ .Values.resources.limits.memory }}"
         ports:
-        - name: sechub-webui
+        - name: sechub-web-server
           containerPort: 4443
         # startupProbe:
         #   httpGet:
         #     scheme: HTTPS
         #     path: /api/anonymous/check/alive
-        #     port: sechub-webui
+        #     port: sechub-web-server
         #   failureThreshold: 24
         #   periodSeconds: 5
         #   successThreshold: 1
@@ -94,14 +94,14 @@ spec:
         #   httpGet:
         #     scheme: HTTPS
         #     path: /api/anonymous/check/alive
-        #     port: sechub-webui
+        #     port: sechub-web-server
         #   failureThreshold: 3
         #   periodSeconds: 10
         #   successThreshold: 1
         #   timeoutSeconds: 3
         volumeMounts:
 {{- if ne .Values.webui.ssl.keystoreAlias "undefined" }}
-          - mountPath: /sechub-webui/secrets/secret-ssl
+          - mountPath: /sechub-web-server/secrets/secret-ssl
             name: secret-webui-ssl-volume
 {{- end }}
         env:
@@ -154,7 +154,7 @@ spec:
         - name: SECHUB_WEBUI_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_WEBUI_SSL_KEYSTORE_LOCATION
-          value: "/sechub-webui/{{ .Values.webui.ssl.keystoreAlias }}.p12"
+          value: "/sechub-web-server/{{ .Values.webui.ssl.keystoreAlias }}.p12"
         - name: SECHUB_WEBUI_SSL_KEYSTORE_ALIAS
           value: "{{ .Values.webui.ssl.keystoreAlias }}"
         - name: SECHUB_WEBUI_SSL_KEYSTORE_PASSWORD

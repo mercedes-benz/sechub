@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 apiVersion: v2
-name: sechub-webui
+name: sechub-web-server
 description: SecHub WebUI Helm chart for Kubernetes
 
 type: application
