@@ -59,7 +59,7 @@ start_server() {
         -Dfile.encoding=UTF-8 \
         -Dserver.port=4443 \
         -Dserver.address=0.0.0.0 \
-        -jar $WEBUI_FOLDER/sechub-webui-*.jar &
+        -jar $WEBUI_FOLDER/sechub-web-server-*.jar &
 
     # Get process pid and wait until it ends
     #   The pid will be needed by function trigger_shutdown() in case we receive a termination signal.

@@ -7,7 +7,7 @@ source "../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 # Only variables from .env can be used in the Docker-Compose file
 # all other variables are only available in the container
 setup_environment_file ".env" "env"
-setup_environment_file ".env-webui" "env-webui"
+setup_environment_file ".env-webui-server" "env-webui-server"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

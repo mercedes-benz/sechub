@@ -2,9 +2,9 @@
 
 # This is a sample values file containing the defaults.
 
-name: sechub-webui
+name: sechub-web-server
 
-image: "ghcr.io/mercedes-benz/sechub/sechub-webui:latest"
+image: "ghcr.io/mercedes-benz/sechub/sechub-web-server:latest"
 # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
 #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 #   Example:

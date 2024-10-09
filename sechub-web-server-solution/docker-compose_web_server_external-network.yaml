@@ -12,11 +12,11 @@ services:
         - TAG=${TAG}
         - BRANCH=${BRANCH}
       context: docker/
-      dockerfile: WebUI-Debian.dockerfile
+      dockerfile: docker/Web-Server-Debian.dockerfile
     container_name: webui
     env_file:
       - .env
-      - .env-webui
+      - .env-web-server-server
     ports:
       - "${HOST_NAME}:${WEBUI_PORT}:4443"
       - "${HOST_NAME}:${JAVA_DEBUG_PORT}:15025"

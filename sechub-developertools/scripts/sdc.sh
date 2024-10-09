@@ -356,7 +356,7 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
     
     step "Generate and build Java projects related to SecHub Java API"
-    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI :sechub-webui:build -Dsechub.build.stage=api-necessary
+    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI :sechub-web-server:build -Dsechub.build.stage=api-necessary
     
     step "Integration test"
     eval "${CMD_EXEC_ALL_INTEGRATIONTESTS}"
