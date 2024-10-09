@@ -40,7 +40,7 @@ webui:
   spring:
     # Spring profiles (comma-separated list):
     # - Server mode: 'ssl-cert-provided' (self-signed SSL cert included) or 'ssl-cert-required' (SSL certificate required by external config)
-    # - SecHub connection: 'basic-auth-mocked' or leave empty for connect to configured SecHub server
+    # - SecHub connection: 'classic-auth-enabled' or leave empty for connect to configured SecHub server
     profiles: "ssl-cert-provided"
     # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:

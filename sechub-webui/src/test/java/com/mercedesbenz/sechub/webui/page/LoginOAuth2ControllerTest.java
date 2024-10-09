@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.webui.YamlPropertyLoaderFactory;
 import com.mercedesbenz.sechub.webui.security.SecurityTestConfiguration;
 
-@WebMvcTest(LoginOAuth2Controller.class)
+@WebMvcTest({ LoginOAuth2Controller.class, LoginClassicController.class })
 @Import(SecurityTestConfiguration.class)
-@ActiveProfiles("oauth2-enabled")
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
+@ActiveProfiles("oauth2-enabled")
 class LoginOAuth2ControllerTest {
 
     private final MockMvc mockMvc;
@@ -34,6 +34,15 @@ class LoginOAuth2ControllerTest {
         mockMvc
                 .perform(get("/login/oauth2"))
                 .andExpect(status().isOk());
+        /* @formatter:on */
+    }
+
+    @Test
+    void login_classic_auth_page_is_not_accessible_when_classic_auth_is_disabled() throws Exception {
+        /* @formatter:off */
+        mockMvc
+                .perform(get("/login/classic"))
+                .andExpect(status().isNotFound());
         /* @formatter:on */
     }
 }

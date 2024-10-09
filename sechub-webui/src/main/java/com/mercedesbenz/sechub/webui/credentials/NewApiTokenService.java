@@ -28,7 +28,7 @@ class NewApiTokenService {
     boolean requestNewApiToken(String emailAddress) {
         /* @formatter:off */
 
-        return accessService.createExecutorForResult(Boolean.class).
+        Boolean result = accessService.createExecutorForResult(Boolean.class).
             whenDoing("request a new api token").
             callAndReturn(client -> {
                 client.requestNewApiToken(emailAddress);
@@ -36,6 +36,8 @@ class NewApiTokenService {
             }).
             onErrorReturn(exception -> Boolean.FALSE).
             execute();
+
+        return Boolean.TRUE.equals(result);
 
         /* @formatter:on */
     }

@@ -40,6 +40,9 @@ class SecurityConfiguration {
             throw new NoSuchBeanDefinitionException(
                     "No qualifying bean of type 'OAuth2Properties' available: expected at least 1 bean which qualifies as autowire candidate.");
         }
+        if (!isOAuth2Enabled() && !isClassicAuthEnabled()) {
+            throw new IllegalStateException("At least one authentication method must be enabled");
+        }
         this.oAuth2Properties = oAuth2Properties;
     }
 
@@ -94,16 +97,18 @@ class SecurityConfiguration {
                 .successHandler(authenticationSuccessHandler));
         }
 
-        /*
-            Enable Form Login
-            Note: This must be the last configuration in order to set the default 'loginPage' to oAuth2
-            because spring uses the 'loginPage' from the first authentication method configured
-        */
-        httpSecurity
+        if (isClassicAuthEnabled()) {
+            /*
+                Enable Classic Authentication
+                Note: This must be the last configuration in order to set the default 'loginPage' to oAuth2
+                because spring uses the 'loginPage' from the first authentication method configured
+            */
+            httpSecurity
                 .formLogin(form -> form
                 .loginPage(RequestConstants.LOGIN_CLASSIC)
                 .permitAll()
                 .successHandler(authenticationSuccessHandler));
+        }
 
         /* @formatter:on */
 
@@ -112,6 +117,10 @@ class SecurityConfiguration {
 
     private boolean isOAuth2Enabled() {
         return environment.matchesProfiles(ApplicationProfiles.OAUTH2_ENABLED);
+    }
+
+    private boolean isClassicAuthEnabled() {
+        return environment.matchesProfiles(ApplicationProfiles.CLASSIC_AUTH_ENABLED);
     }
 
 }

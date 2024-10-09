@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.mercedesbenz.sechub.webui.RequestConstants;
 
 @Controller
-public class HomeController {
+class HomeController {
 
     @GetMapping({ RequestConstants.ROOT, RequestConstants.HOME })
     public String home(@AuthenticationPrincipal OidcUser principal, Model model) {

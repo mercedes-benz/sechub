@@ -21,6 +21,7 @@ import org.springframework.core.io.support.EncodedResource;
 public class YamlPropertyLoaderFactory extends DefaultPropertySourceFactory {
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
         Resource actualResource = resource.getResource();
         if (actualResource.exists()) {

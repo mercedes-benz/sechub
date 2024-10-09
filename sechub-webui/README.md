@@ -13,7 +13,7 @@ To start the application locally use the `webui_local` profile.
 This will include the following profiles:
 
 - `ssl-cert-provided`: a default ssl certificate will be used by the WebUI server
-- `basic-auth-mocked`: mock the SecHub Server & enable login with preconfigured credentials at `/login/classic`)
+- `classic-auth-enabled`: enable classic login (for now with preconfigured credentials) at `/login/classic`)
 - `local`: includes any local configurations matching `application-local.${USER}.yml`
 
 If you want to provide local configurations, create a file named `application-local.${USER}.yml` in the `src/main/resources` directory.
