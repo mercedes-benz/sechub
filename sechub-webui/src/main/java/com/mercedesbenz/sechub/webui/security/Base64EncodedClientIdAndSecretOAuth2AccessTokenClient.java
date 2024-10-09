@@ -85,7 +85,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClient implements OAuth2Acc
             }
         } catch (RestClientException e) {
             String errMsg = "Failed to get JWT token response";
-            LOG.atError().log(errMsg, e);
+            LOG.error(errMsg, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errMsg, e);
         }
 

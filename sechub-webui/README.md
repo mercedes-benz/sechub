@@ -39,11 +39,11 @@ sechub:
       client-secret: example-client-secret
       provider: example-provider
       redirect-uri: {baseUrl}/login/oauth2/code/{provider}
-      issuer-uri: https://sso.example-provider.com
-      authorization-uri: https://sso.example-provider.com/as/authorization.oauth2
-      token-uri: https://sso.example-provider.com/as/token.oauth2
-      user-info-uri: https://sso.example-provider.com/idp/userinfo.openid
-      jwk-set-uri: https://sso.example-provider.com/pf/JWKS
+      issuer-uri: https://sso.provider.example.org
+      authorization-uri: https://sso.provider.example.org/as/authorization.oauth2
+      token-uri: https://sso.provider.example.org/as/token.oauth2
+      user-info-uri: https://sso.provider.example.org/idp/userinfo.openid
+      jwk-set-uri: https://sso.provider.example.org/pf/JWKS
 ```
 
 Alternatively, you can provide the following environment variables:
@@ -53,9 +53,9 @@ SECHUB_SECURITY_OAUTH2_CLIENT_ID=example-client-id
 SECHUB_SECURITY_OAUTH2_CLIENT_SECRET=example-client-secret
 SECHUB_SECURITY_OAUTH2_PROVIDER=example-provider
 SECHUB_SECURITY_OAUTH2_REDIRECT_URI={baseUrl}/login/oauth2/code/{provider}
-SECHUB_SECURITY_OAUTH2_ISSUER_URI=https://sso.example-provider.com
-SECHUB_SECURITY_OAUTH2_AUTHORIZATION_URI=https://sso.example-provider.com/as/authorization.oauth2
-SECHUB_SECURITY_OAUTH2_TOKEN_URI=https://sso.example-provider.com/as/token.oauth2
-SECHUB_SECURITY_OAUTH2_USER_INFO_URI=https://sso.example-provider.com/idp/userinfo.openid
-SECHUB_SECURITY_OAUTH2_JWK_SET_URI=https://sso.example-provider.com/pf/JWKS
+SECHUB_SECURITY_OAUTH2_ISSUER_URI=https://sso.provider.example.org
+SECHUB_SECURITY_OAUTH2_AUTHORIZATION_URI=https://sso.provider.example.org/as/authorization.oauth2
+SECHUB_SECURITY_OAUTH2_TOKEN_URI=https://sso.provider.example.org/as/token.oauth2
+SECHUB_SECURITY_OAUTH2_USER_INFO_URI=https://sso.provider.example.org/idp/userinfo.openid
+SECHUB_SECURITY_OAUTH2_JWK_SET_URI=https://sso.provider.example.org/pf/JWKS
 ```

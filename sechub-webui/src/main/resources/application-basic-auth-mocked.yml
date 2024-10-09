@@ -10,5 +10,5 @@ webui:
 spring:
   security:
     user:
-      name: sechub
-      password: password
+      name: mock-user
+      password: mock-password

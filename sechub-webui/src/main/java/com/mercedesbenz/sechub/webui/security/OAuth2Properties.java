@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 @ConfigurationProperties(prefix = OAuth2Properties.PREFIX)
-final class OAuth2Properties {
+public final class OAuth2Properties {
 
     static final String PREFIX = "sechub.security.oauth2";
     private static final String ERR_MSG_FORMAT = "The property '%s.%s' must not be null";
@@ -45,39 +45,39 @@ final class OAuth2Properties {
     }
     /* @formatter:on */
 
-    String getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    String getClientSecret() {
+    public String getClientSecret() {
         return clientSecret;
     }
 
-    String getProvider() {
+    public String getProvider() {
         return provider;
     }
 
-    String getRedirectUri() {
+    public String getRedirectUri() {
         return redirectUri;
     }
 
-    String getIssuerUri() {
+    public String getIssuerUri() {
         return issuerUri;
     }
 
-    String getAuthorizationUri() {
+    public String getAuthorizationUri() {
         return authorizationUri;
     }
 
-    String getTokenUri() {
+    public String getTokenUri() {
         return tokenUri;
     }
 
-    String getUserInfoUri() {
+    public String getUserInfoUri() {
         return userInfoUri;
     }
 
-    String getJwkSetUri() {
+    public String getJwkSetUri() {
         return jwkSetUri;
     }
 }

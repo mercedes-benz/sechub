@@ -29,7 +29,7 @@ class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        LOG.atDebug().log("Redirecting to %s".formatted(RequestConstants.HOME));
+        LOG.debug("Redirecting to %s".formatted(RequestConstants.HOME));
         response.sendRedirect(RequestConstants.HOME);
     }
 }

@@ -100,7 +100,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
         // execute
         client.getTokenResponse(authorizationCodeGrantRequest);
 
-        // verify
+        // test
         mockServer.verify();
     }
 
@@ -117,7 +117,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
         // execute
         OAuth2AccessTokenResponse oAuth2AccessTokenResponse = client.getTokenResponse(authorizationCodeGrantRequest);
 
-        // verify
+        // test
         mockServer.verify();
         assertThat(oAuth2AccessTokenResponse.getAccessToken().getTokenValue()).isEqualTo(JsonPath.read(jwtResponseJson, "$.access_token"));
         assertThat(oAuth2AccessTokenResponse.getAccessToken().getTokenType().getValue()).isEqualTo(JsonPath.read(jwtResponseJson, "$.token_type"));

@@ -9,7 +9,6 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
-import org.springframework.lang.Nullable;
 
 /**
  * Spring Boot's default property source factory does not support YAML files
@@ -22,7 +21,7 @@ import org.springframework.lang.Nullable;
 public class YamlPropertyLoaderFactory extends DefaultPropertySourceFactory {
 
     @Override
-    public PropertySource<?> createPropertySource(@Nullable String name, EncodedResource resource) throws IOException {
+    public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
         Resource actualResource = resource.getResource();
         if (actualResource.exists()) {
             YamlPropertySourceLoader loader = new YamlPropertySourceLoader();

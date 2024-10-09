@@ -34,4 +34,13 @@ class LoginClassicControllerTest {
                 .andExpect(status().isOk());
         /* @formatter:on */
     }
+
+    @Test
+    void login_o_auth_2_page_is_not_accessible_when_o_auth_2_is_disabled() throws Exception {
+        /* @formatter:off */
+        mockMvc
+                .perform(get("/login/oauth2"))
+                .andExpect(status().isNotFound());
+        /* @formatter:on */
+    }
 }

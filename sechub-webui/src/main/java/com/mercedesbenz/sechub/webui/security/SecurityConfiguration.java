@@ -80,9 +80,9 @@ class SecurityConfiguration {
                         /* Protect all other paths */
                         .anyRequest().authenticated()
                 )
-                /* Enable stateful sessions */
+                /* Make the application stateless */
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         if (isOAuth2Enabled()) {
             RestTemplate restTemplate = new RestTemplate();
