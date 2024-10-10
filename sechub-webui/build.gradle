@@ -13,11 +13,15 @@ plugins {
 dependencies {
     implementation project(':sechub-commons-core')
 	implementation project(':sechub-api-java')
+    implementation library.springboot_starter_web
     implementation library.springboot_starter_security
     implementation library.springboot_starter_thymeleaf
     implementation library.logstashLogbackEncoder
-    implementation library.springboot_starter_webflux
     implementation library.thymeleaf_extras_springsecurity5
+    implementation library.springboot_starter_oauth2_client
+
+    testImplementation library.springboot_starter_test
+    testImplementation library.springframework_security_test
 
     developmentOnly library.springboot_devtoolssf
 }

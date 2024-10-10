@@ -39,9 +39,9 @@ webui:
       appenderName: "LOGSTASH_JSON"
   spring:
     # Spring profiles (comma-separated list):
-    # - Server mode: 'webui_localserver' (self-signed cert) or 'webui_server' (provide SSL certificate)
-    # - SecHub connection: 'webui_mocked' or leave empty for connect to configured SecHub server
-    profiles: "webui_localserver"
+    # - Server mode: 'ssl-cert-provided' (self-signed SSL cert included) or 'ssl-cert-required' (SSL certificate required by external config)
+    # - SecHub connection: 'classic-auth-enabled' or leave empty for connect to configured SecHub server
+    profiles: "ssl-cert-provided"
     # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:
       logging:
