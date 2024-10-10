@@ -143,7 +143,7 @@ runs:
     - name: Copy index.js To Root Of Repository
       run: |
         cp dist/index.js ../../../sechub-scan.cjs
-        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
+        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.cjs
         cp dist/exec-child.js ../../../sechub-exec-child.js
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
@@ -165,7 +165,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node sechub-scan.js
+      run: node sechub-scan.cjs
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
