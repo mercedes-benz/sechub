@@ -142,7 +142,7 @@ runs:
     # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
     - name: Copy index.js To Root Of Repository
       run: |
-        cp dist/index.js ../../../sechub-scan.js
+        cp dist/index.js ../../../sechub-scan.cjs
         sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
         cp dist/exec-child.js ../../../sechub-exec-child.js
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
