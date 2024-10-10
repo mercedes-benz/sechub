@@ -23,7 +23,7 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
-webui:
+webServer:
   # Possible values: server, development
   startMode: server
   sechubConnection:
@@ -31,17 +31,17 @@ webui:
     url: "https://sechub-server:8443/"
     # trustAllCertificates - 'true' if server is deployed in the same k8s cluster
     trustAllCertificates: false
-    # Put the SecHub user id  in k8s secret secret-webui-connect:sechub_userid
-    # Put the SecHub apitoken in k8s secret secret-webui-connect:sechub_apitoken
+    # Put the SecHub user id  in k8s secret secret-web-server-connect:sechub_userid
+    # Put the SecHub apitoken in k8s secret secret-web-server-connect:sechub_apitoken
   logging:
     type:
       enabled: false
       appenderName: "LOGSTASH_JSON"
   spring:
     # Spring profiles (comma-separated list):
-    # - Server mode: 'webui_localserver' (self-signed cert) or 'webui_server' (provide SSL certificate)
-    # - SecHub connection: 'webui_mocked' or leave empty for connect to configured SecHub server
-    profiles: "webui_localserver"
+    # - Server mode: 'webserver_localserver' (self-signed cert) or 'webserver_server' (provide SSL certificate)
+    # - SecHub connection: 'webserver_mocked' or leave empty for connect to configured SecHub server
+    profiles: "webserver_localserver"
     # Configure Spring Boot's embedded Tomcat
     embeddedTomcat:
       logging:
@@ -51,7 +51,7 @@ webui:
     keystoreAlias: "undefined"
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be used.
-    # - otherwise, k8s secret `secret-webui-ssl` must be defined containing
+    # - otherwise, k8s secret `secret-webserver-ssl` must be defined containing
     #   - `keystore_file` (containing the ssl certificate chain)
     #     Inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl certificate to use
@@ -71,7 +71,7 @@ service:
   loadbalancer:
     ip: ""
     port:
-      name: webui-https
+      name: webserver-https
       number: 443
   # optional: Add annotations (goes to metadata.annotations)
   #           Can contain multiple lines. Example:
@@ -101,7 +101,7 @@ service:
 #   - name: SECHUB_EXAMPLE_VAR2
 #     valueFrom:
 #       secretKeyRef:
-#         name: secret-webui-example
+#         name: secret-web-server-example
 #         key: password
 
 go_mmproxy:

@@ -2,23 +2,23 @@
 
 version: "3"
 services:
-  webui:
+  web_server:
     build:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
         - BUILD_TYPE=${BUILD_TYPE}
-        - WEBUI_VERSION=${WEBUI_VERSION}
+        - WEBSERVER_VERSION=${WEBSERVER_VERSION}
         - JAVA_VERSION=${JAVA_VERSION}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
       context: docker/
       dockerfile: Web-Server-Debian.dockerfile
-    container_name: webui
+    container_name: web_server
     env_file:
       - .env
       - .env-web-server
     ports:
-      - "${HOST_NAME}:${WEBUI_PORT}:4443"
+      - "${HOST_NAME}:${WEBSERVER_PORT}:4443"
       - "${HOST_NAME}:${JAVA_DEBUG_PORT}:15025"
     networks:
       - "internal"

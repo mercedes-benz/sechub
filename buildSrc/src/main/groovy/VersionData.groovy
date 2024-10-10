@@ -6,7 +6,7 @@ class VersionData{
     private static final String ID_PDS = "pds";
     private static final String ID_PDS_TOOLS = "pds-tools"
     private static final String ID_SERVER = "server"
-    private static final String ID_WEBUI = "webui"
+    private static final String ID_WEB_SERVER = "web server"
     private static final String ID_WRAPPER_CHECKMARX = "checkmarx wrapper"
     private static final String ID_WRAPPER_OWASPZAP = "owasp-zap wrapper"
     private static final String ID_WRAPPER_PREPARE= "prepare wrapper"
@@ -28,7 +28,7 @@ class VersionData{
         initialize(ID_PDS,      "PDS")
         initialize(ID_PDS_TOOLS,"PDS-Tools")
         initialize(ID_SERVER,   "Server")
-        initialize(ID_WEBUI,    "WebUI")
+        initialize(ID_WEB_SERVER,    "Web Server")
         initialize(ID_WRAPPER_CHECKMARX,        "Checkmarx Wrapper")
         initialize(ID_WRAPPER_OWASPZAP,         "OWASP-ZAP Wrapper")
         initialize(ID_WRAPPER_PREPARE,          "Prepare Wrapper")
@@ -117,8 +117,8 @@ class VersionData{
         return map.get(ID_SERVER).getShortVersionForDocs()
     }
 
-    public String getWebuiVersion(){
-        return map.get(ID_WEBUI).getShortVersion()
+    public String getWebServerVersion(){
+        return map.get(ID_WEB_SERVER).getShortVersion()
     }
 
     public String getXrayWrapperVersion(){

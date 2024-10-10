@@ -14,7 +14,7 @@ spring:
     basename: "i18n/messages"
   profiles:
     group:
-      webui_prod: "webui_server"
-      webui_dev: "webui_localserver,webui_mocked"
-      webui_test: "webui_test"
-      webui_integrationtest: "webui_localserver,webui_integrationtest-data"
+      webserver_prod: "webserver_server"
+      webserver_dev: "webserver_localserver,webserver_mocked"
+      webserver_test: "webserver_test"
+      webserver_integrationtest: "webserver_localserver,webserver_integrationtest-data"

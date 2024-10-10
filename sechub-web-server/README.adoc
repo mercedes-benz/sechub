@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-= WebUI
+= Web Server
 
-WARNING: Don't use this early WebUI in production.
+WARNING: Don't use this early Web Server in production.
 
 == Development
 
@@ -10,7 +10,7 @@ Activate the Spring Boot Dev Profile by
 starting the application using the JVM argument:
 
 ----
--Dspring.profiles.active=webui_dev
+-Dspring.profiles.active=webserver_dev
 ----
 
 The started application will
@@ -24,7 +24,7 @@ The started application will
 
 ==== Integration test with running SecHub server
 ----
--Dspring.profiles.active=webui_integrationtest
+-Dspring.profiles.active=webserver_integrationtest
 ----
 
 The started application will
@@ -38,4 +38,4 @@ The started application will
   - Password: password
 
 === Access
-The WebUI is accessible at: https://localhost:4443/
+The Web Server is accessible at: https://localhost:4443/

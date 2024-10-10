@@ -47,7 +47,7 @@ task ensureLocalhostCertificate(type: Exec) {
 
 apply plugin: 'maven-publish'
 
-version = versionData.getWebuiVersion()
+version = versionData.getWebServerVersion()
 
 publishing {
     publications {
@@ -56,8 +56,8 @@ publishing {
             from components.java
 
             pom {
-                name = 'SecHub WebUI'
-                description = 'SecHub WebUI as a Spring Boot Jar. Ready to use.'
+                name = 'SecHub Web Server'
+                description = 'SecHub Web Server as a Spring Boot Jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/mercedes-benz/sechub'

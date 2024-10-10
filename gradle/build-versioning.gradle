@@ -49,7 +49,7 @@ def buildVersionFiles(){
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
     def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
     def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
-    def webuiVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-webui") }
+    def webServerVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-web-server") }
     def checkmarxWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-checkmarx-wrapper") }
     def owaspzapWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-owaspzap-wrapper") }
     def prepareWrapperVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-prepare-wrapper") }
@@ -261,26 +261,26 @@ def buildVersionFiles(){
 
 
     // ------------------------
-    // - WebUI
+    // - Web Server
     // ------------------------
 
-    // Get latest tagged webui version
-    def latestWebUITagCmd = [
+    // Get latest tagged web server version
+    def latestWebServerTagCmd = [
       'sh',
       '-c',
-      'git tag -l --sort=-creatordate | grep -e \'^v.*-webui$\' | head -1'
+      'git tag -l --sort=-creatordate | grep -e \'^v.*-web-server$\' | head -1'
     ]
-    def latestWebUITag = latestWebUITagCmd.execute().text.trim()
-    def latestWebUIVersion = latestWebUITag - 'v'
-    latestWebUIVersion = latestWebUIVersion - "-webui"
+    def latestWebServerTag = latestWebServerTagCmd.execute().text.trim()
+    def latestWebServerVersion = latestWebServerTag - 'v'
+    latestWebServerVersion = latestWebServerVersion - "-web-server"
 
-    def webuiVersionInfo = versionData.defineVersion("WebUI",buildVersionString(webuiVersionCommitTag, hasChanged, buildNumber),latestWebUIVersion)
+    def webServerVersionInfo = versionData.defineVersion("Web Server",buildVersionString(webServerVersionCommitTag, hasChanged, buildNumber),latestWebServerVersion)
 
     def stop = new Date()
 
     println(clientVersionInfo.describe())
     println(serverVersionInfo.describe())
-    println(webuiVersionInfo.describe())
+    println(webServerVersionInfo.describe())
     println(pdsVersionInfo.describe())
     println(pdsToolsVersionInfo.describe())
     println(librariesVersionInfo.describe())
@@ -337,7 +337,7 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion = calcversion - "-pds-tools"
         calcversion = calcversion - "-pds"
         calcversion = calcversion - "-server"
-        calcversion = calcversion - "-webui"
+        calcversion = calcversion - "-web-server"
         calcversion = calcversion - "-checkmarx-wrapper"
         calcversion = calcversion - "-owaspzap-wrapper"
         calcversion = calcversion - "-prepare-wrapper"

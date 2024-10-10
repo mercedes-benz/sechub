@@ -13,7 +13,7 @@ CPU_LIMIT=1.0
 BUILD_TYPE=build
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-WEBUI_VERSION="0.1.0"
+WEBSERVER_VERSION="0.1.0"
 
 # possible values: temurin, openj9, openjdk
 JAVA_DISTRIBUTION="temurin"
@@ -25,7 +25,7 @@ TAG=""
 BRANCH=""
 
 # Ports and IP Settings
-WEBUI_PORT="4443"
+WEBSERVER_PORT="4443"
 JAVA_DEBUG_PORT="15025"
 
 # default 127.0.0.1 (localhost)

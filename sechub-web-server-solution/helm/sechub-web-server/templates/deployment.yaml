@@ -28,10 +28,10 @@ spec:
         runAsGroup: 4242 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 4242    # This gid has write access to the mounted volumes.
       volumes:
-{{- if ne .Values.webui.ssl.keystoreAlias "undefined" }}
-        - name: secret-webui-ssl-volume
+{{- if ne .Values.webserver.ssl.keystoreAlias "undefined" }}
+        - name: secret-webserver-ssl-volume
           secret:
-            secretName: secret-webui-ssl
+            secretName: secret-webserver-ssl
 {{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
@@ -65,9 +65,9 @@ spec:
         - "-l"             # listen
         - "0.0.0.0:8080"   # on port 8080
         - "-4"             # tcp v4
-        - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
+        - "127.0.0.1:4443" # forward to SecHub Web Server container (localhost port 4443)
 {{- end }}
-      # SecHub webui container
+      # SecHub webserver container
       - name: sechub-web-server
         image: {{ .Values.image }}
         resources:
@@ -100,17 +100,17 @@ spec:
         #   successThreshold: 1
         #   timeoutSeconds: 3
         volumeMounts:
-{{- if ne .Values.webui.ssl.keystoreAlias "undefined" }}
+{{- if ne .Values.webserver.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-server/secrets/secret-ssl
-            name: secret-webui-ssl-volume
+            name: secret-webserver-ssl-volume
 {{- end }}
         env:
         # Server start mode
-        - name: WEBUI_START_MODE
-          value: "{{ .Values.webui.startMode }}"
+        - name: WEB_SERVER_START_MODE
+          value: "{{ .Values.webserver.startMode }}"
         # Spring profiles definition
         - name: SPRING_PROFILES_ACTIVE
-          value: "{{ .Values.webui.spring.profiles }}"
+          value: "{{ .Values.webserver.spring.profiles }}"
 {{- if .Values.env }}
         # ------------------------------------------------------------------------#
         # Scope: Additional environment variables for the SecHub web-ui container
@@ -123,17 +123,17 @@ spec:
         - name: DEPLOYMENT_COMMENT
           value: "{{ .Values.deploymentComment }}"
 {{- end }}
-{{- if .Values.webui.loggingType }}
+{{- if .Values.webserver.loggingType }}
         - name: LOGGING_TYPE
-          value: "{{ .Values.webui.loggingType }}"
+          value: "{{ .Values.webserver.loggingType }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Connection to SecHub server
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         - name: SECHUB_SERVER_URL
-          value: "{{ .Values.webui.sechubConnection.url }}"
-        - name: WEBUI_SECHUB_TRUST_ALL_CERTIFICATES
-{{- if .Values.webui.sechubConnection.trustAllCertificates }}
+          value: "{{ .Values.webserver.sechubConnection.url }}"
+        - name: WEBSERVER_SECHUB_TRUST_ALL_CERTIFICATES
+{{- if .Values.webserver.sechubConnection.trustAllCertificates }}
           value: "true"
 {{- else }}
           value: "false"
@@ -141,34 +141,34 @@ spec:
         - name: SECHUB_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-webui-connect
+               name: secret-webserver-connect
                key: sechub_userid
         - name: SECHUB_APITOKEN
           valueFrom:
             secretKeyRef:
-               name: secret-webui-connect
+               name: secret-webserver-connect
                key: sechub_apitoken
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        - name: SECHUB_WEBUI_SSL_KEYSTORE_TYPE
+        - name: SECHUB_webserver_SSL_KEYSTORE_TYPE
           value: "PKCS12"
-        - name: SECHUB_WEBUI_SSL_KEYSTORE_LOCATION
-          value: "/sechub-web-server/{{ .Values.webui.ssl.keystoreAlias }}.p12"
-        - name: SECHUB_WEBUI_SSL_KEYSTORE_ALIAS
-          value: "{{ .Values.webui.ssl.keystoreAlias }}"
-        - name: SECHUB_WEBUI_SSL_KEYSTORE_PASSWORD
+        - name: SECHUB_WEBSERVER_SSL_KEYSTORE_LOCATION
+          value: "/sechub-web-server/{{ .Values.webserver.ssl.keystoreAlias }}.p12"
+        - name: SECHUB_WEBSERVER_SSL_KEYSTORE_ALIAS
+          value: "{{ .Values.webserver.ssl.keystoreAlias }}"
+        - name: SECHUB_WEBSERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-webui-ssl
+               name: secret-webserver-ssl
                key: keystore_password
-{{- if .Values.webui.spring.embeddedTomcat.logging.enabled }}
+{{- if .Values.webserver.spring.embeddedTomcat.logging.enabled }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Scope: embedded Tomcat
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # Logging to stdout:
         - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
-          value: "{{ .Values.webui.spring.embeddedTomcat.logging.enabled }}"
+          value: "{{ .Values.webserver.spring.embeddedTomcat.logging.enabled }}"
         - name: SERVER_TOMCAT_ACCESSLOG_DIRECTORY
           value: "/dev"
         - name: SERVER_TOMCAT_ACCESSLOG_PREFIX
@@ -180,15 +180,15 @@ spec:
         - name: SERVER_TOMCAT_ACCESSLOG_FILE_DATE_FORMAT
           value: ""
         - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
-          value: "{{ .Values.webui.spring.embeddedTomcat.logging.accessLogFormat }}"
+          value: "{{ .Values.webserver.spring.embeddedTomcat.logging.accessLogFormat }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Scope: development
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         - name: JAVA_ENABLE_DEBUG
-          value: "{{ .Values.webui.development.javaDebug | toString }}"
+          value: "{{ .Values.webserver.development.javaDebug | toString }}"
         - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
-          value: "{{ .Values.webui.development.keepContainerAliveAfterApplicationCrash | toString }}"
+          value: "{{ .Values.webserver.development.keepContainerAliveAfterApplicationCrash | toString }}"
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + end of environment variables section
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

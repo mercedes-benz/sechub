@@ -1,10 +1,10 @@
-# Start mode of WebUI.
+# Start mode of Web Server.
 # Possible values are: server, development
 # The development mode just starts the container and waits
-WEBUI_START_MODE="server"
+WEB_SERVER_START_MODE="server"
 
 # Spring profiles:
-SPRING_PROFILES_ACTIVE="webui_localserver"
+SPRING_PROFILES_ACTIVE="webserver_localserver"
 
 # SecHub Server
 # For local server: https://localhost:8443

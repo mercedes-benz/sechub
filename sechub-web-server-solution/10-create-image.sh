@@ -3,7 +3,7 @@
 
 REGISTRY="$1"
 VERSION="$2"
-WEBUI_VERSION="$3"
+WEBSERVER_VERSION="$3"
 BASE_IMAGE="$4"  # optional
 BUILD_TYPE="$5" # optional
 DEFAULT_BASE_IMAGE="debian:12-slim"
@@ -14,9 +14,9 @@ cd `dirname $0`
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <webui version> [<base image> <build type>]
+usage: $0 <docker registry> <version tag> <webserver version> [<base image> <build type>]
 
-Builds a docker image of SecHub WebUI <webui version> for <docker registry>
+Builds a docker image of SecHub Web Server <webserver version> for <docker registry>
 with tag <version tag>.
 
 Optional environment variables or options:
@@ -36,8 +36,8 @@ if [[ -z "$VERSION" ]] ; then
   FAILED=true
 fi
 
-if [[ -z "$WEBUI_VERSION" ]] ; then
-  echo "Please provide a SecHub WebUI release version as 3rd parameter."
+if [[ -z "$WEBSERVER_VERSION" ]] ; then
+  echo "Please provide a SecHub Web Server release version as 3rd parameter."
   FAILED=true
 fi
 
@@ -60,8 +60,8 @@ echo ">> Base image: $BASE_IMAGE"
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
 echo ">> Build type: $BUILD_TYPE"
 
-BUILD_ARGS+=" --build-arg WEBUI_VERSION=$WEBUI_VERSION"
-echo ">> SecHub WebUI release version: $WEBUI_VERSION"
+BUILD_ARGS+=" --build-arg WEBSERVER_VERSION=$WEBSERVER_VERSION"
+echo ">> SecHub Web Server release version: $WEBSERVER_VERSION"
 
 echo "Copying install-java scripts into the docker directory"
 cp --recursive --force ../sechub-solutions-shared/install-java/ docker/
@@ -73,5 +73,5 @@ export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/WebUI-Debian.dockerfile docker/
+       --file docker/Web-Server-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
