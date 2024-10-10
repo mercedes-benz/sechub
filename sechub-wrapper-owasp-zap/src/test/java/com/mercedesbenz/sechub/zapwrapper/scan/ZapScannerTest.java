@@ -641,7 +641,7 @@ class ZapScannerTest {
         scannerToTest.cleanUp();
 
         /* test */
-        verify(clientApiFacade, never()).removeReplacerRule(any());
+        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
     }
 
     @ParameterizedTest
@@ -659,7 +659,8 @@ class ZapScannerTest {
 
         /* test */
         int times = sechubWebScanConfig.getHeaders().get().size();
-        verify(clientApiFacade, times(times)).removeReplacerRule(any());
+        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiFacade, times(times + 1)).removeReplacerRule(any());
     }
 
     @ParameterizedTest
@@ -683,7 +684,8 @@ class ZapScannerTest {
                 times += header.getOnlyForUrls().get().size() - 1;
             }
         }
-        verify(clientApiFacade, times(times)).removeReplacerRule(any());
+        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiFacade, times(times + 1)).removeReplacerRule(any());
     }
 
     @Test
