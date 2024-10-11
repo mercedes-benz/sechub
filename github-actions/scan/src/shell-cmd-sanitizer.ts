@@ -1,5 +1,19 @@
+// SPDX-License-Identifier: MIT
+
 const COMMAND_INJECTION_PATTERN = /[;&|`$\\<>"'*()\[\]{}\n\t]/;
 
+/**
+ * Sanitizes a shell command to prevent command injection attacks.
+ *
+ * This function performs the following steps:
+ * 1. Removes duplicate whitespaces caused by optional arguments.
+ * 2. Checks the command against a predefined pattern for potential command injection characters.
+ * 3. Throws a `CommandInjectionError` if any injection characters are detected.
+ *
+ * @param {string} shellCommand - The shell command to be sanitized.
+ * @returns {string} - The sanitized shell command.
+ * @throws {CommandInjectionError} - If command injection characters are detected in the shell command.
+ */
 export function sanitize(shellCommand: string): string {
     // remove duplicate whitespaces caused by optional arguments
     shellCommand = shellCommand.replace(/\s+/g, ' ');
