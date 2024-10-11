@@ -3,6 +3,8 @@
 import * as shell from 'shelljs';
 import { LaunchContext } from './launcher';
 import * as core from '@actions/core';
+import * as shellCmdSanitizer from "./shell-cmd-sanitizer";
+
 /**
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param context launch context
@@ -10,10 +12,12 @@ import * as core from '@actions/core';
 export function scan(context: LaunchContext) {
     const addScmHistory = context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '';
     let shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} ${addScmHistory} scan`;
-    // remove duplicate whitespaces caused by optional arguments
-    shellCommand = shellCommand.replace(/\s+/g, ' ');
+
+    shellCommand = shellCmdSanitizer.sanitize(shellCommand);
+
     core.debug(`scan shell command: ${shellCommand}`);
 
+    // execute the scan
     const shellString =  shell.exec(shellCommand);
 
     core.debug(`scan exit code: ${shellString.code}`);
@@ -52,12 +56,13 @@ export function extractJobUUID(output: string): string{
  * @param context launch context
 */
 export function getReport(jobUUID: string, format: string, context: LaunchContext) {
-    const shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.projectName} --reportformat ${format} getReport`;
+    let shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.projectName} --reportformat ${format} getReport`;
     core.debug(`getReport shell command: ${shellCommand}`);
+
+    shellCommand = shellCmdSanitizer.sanitize(shellCommand);
     
     const shellString =  shell.exec(shellCommand);
     
     core.debug(`get report exit code: ${shellString.code}`);
     context.lastClientExitCode= shellString.code;
 }
-
