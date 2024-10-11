@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+webserver:
+  client:
+    mocked: true
+  sechub:
+    ## Mocked sechub user (necessary for credentialinjection, we have no defaults...)
+    userid: "mocked-user"
+    apitoken: "mocked-apitoken"
+
+spring:
+  security:
+    user:
+      name: mock-user
+      password: mock-password

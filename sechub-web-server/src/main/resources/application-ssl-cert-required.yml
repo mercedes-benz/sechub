@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+# This configuration is used for prod and int. It requires a valid certificate to be provided through the environment variables.
+
+server:
+  ssl:
+    keyStoreType:
+      ${SECHUB_WEBSERVER_SSL_KEYSTORE_TYPE}
+    key-store:
+       ${SECHUB_WEBSERVER_SSL_KEYSTORE_LOCATION}
+    key-store-password:
+       ${SECHUB_WEBSERVER_SSL_KEYSTORE_PASSWORD}
+    key-alias:
+       ${SECHUB_WEBSERVER_SSL_KEYSTORE_ALIAS}
