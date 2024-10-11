@@ -4,7 +4,8 @@
 WEB_SERVER_START_MODE="server"
 
 # Spring profiles:
-SPRING_PROFILES_ACTIVE="webserver_localserver"
+# please see the sechub-web-server application.yml for different profiles
+SPRING_PROFILES_ACTIVE="ssl-cert-provided,classic-auth-enabled,local"
 
 # SecHub Server
 # For local server: https://localhost:8443
