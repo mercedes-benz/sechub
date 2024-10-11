@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  webui:
+    build:
+      args:
+        - BUILD_TYPE=${BUILD_TYPE}
+        - WEBUI_VERSION=${WEBUI_VERSION}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+        - WEBUI_PORT=${WEBUI_PORT}
+        - WEBUI_HOST=${WEBUI_HOST}
+        - NODE_VERSION=${NODE_VERSION}
+      context: docker/
+      dockerfile: WebUI-Debian.dockerfile
+    container_name: webui
+    env_file:
+      - .env
+      - .env-webui
+    ports:
+      - "${WEBUI_HOST}:${WEBUI_PORT}:3000"
+    networks:
+      - "internal"
+
+networks:
+  internal:

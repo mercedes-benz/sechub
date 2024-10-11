@@ -9,15 +9,6 @@ Make sure to install the dependencies:
 ```bash
 # npm (initial build with npm 10.8.3)
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
 ## Development Server
