@@ -106,7 +106,7 @@ projectType = [
                    project(':sechub-wrapper-secretvalidation'),
             ],
 
-            springBootWebUIProjects:[
+            springBootWebApplicationProjects:[
                     project('sechub-web-server')
             ],
 
@@ -153,7 +153,7 @@ projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
-projectType.springBootProjects.addAll(projectType.springBootWebUIProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebApplicationProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

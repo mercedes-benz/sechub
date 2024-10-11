@@ -2,4 +2,4 @@
 
 == Web Server Image
 
-The files to create the WebUI container image.
+The files to create the Web Server container image.

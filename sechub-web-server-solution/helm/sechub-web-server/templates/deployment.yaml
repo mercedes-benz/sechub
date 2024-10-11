@@ -151,7 +151,7 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        - name: SECHUB_webserver_SSL_KEYSTORE_TYPE
+        - name: SECHUB_WEBSERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_WEBSERVER_SSL_KEYSTORE_LOCATION
           value: "/sechub-web-server/{{ .Values.webserver.ssl.keystoreAlias }}.p12"

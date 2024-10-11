@@ -2,7 +2,7 @@
 
 apiVersion: v2
 name: sechub-web-server
-description: SecHub WebUI Helm chart for Kubernetes
+description: SecHub Web Server Helm chart for Kubernetes
 
 type: application
 
