@@ -2,14 +2,16 @@
 package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ApiResponseElement;
 import org.zaproxy.clientapi.core.ApiResponseList;
+import org.zaproxy.clientapi.core.ApiResponseSet;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
@@ -370,18 +372,30 @@ public class ClientApiFacade {
     }
 
     /**
-     * Get a list of all URLs detected by the spider scan.
+     * For the given scanId read all the spider results and add them to a list. Each
+     * entry of the list consists of a Map with the form: {processed=true,
+     * statusReason=OK, method=GET, reasonNotProcessed=, messageId=6,
+     * url=http://example.com, statusCode=200}
      *
-     * @return api response of ZAP
-     * @throws ClientApiException when anything goes wrong communicating with ZAP
+     * @param scanId
+     * @param zapProductMessageHelper
+     * @throws ClientApiException
      */
-    public List<String> getAllSpiderUrls() throws ClientApiException {
-        List<ApiResponse> results = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-        List<String> urls = new ArrayList<>();
-        for (ApiResponse response : results) {
-            urls.add(response.toString());
+    public List<Map<String, ApiResponse>> getFullSpiderResults(String scanId) throws ClientApiException {
+        List<Map<String, ApiResponse>> fullResults = new LinkedList<>();
+
+        ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(scanId);
+        for (ApiResponse apiResponse : results.getItems()) {
+            ApiResponseList elementList = (ApiResponseList) apiResponse;
+
+            for (ApiResponse apiResponse2 : elementList.getItems()) {
+                if (apiResponse2 instanceof ApiResponseSet) {
+                    ApiResponseSet set = (ApiResponseSet) apiResponse2;
+                    fullResults.add(set.getValuesMap());
+                }
+            }
         }
-        return urls;
+        return fullResults;
     }
 
     /**

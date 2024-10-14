@@ -250,7 +250,10 @@ public class ZapScanner implements ZapScan {
         String followRedirects = "false";
         for (String url : scanContext.getZapURLsIncludeSet()) {
             clientApiFacade.addIncludeUrlPatternToContext(scanContext.getContextName(), url);
-            clientApiFacade.accessUrlViaZap(url, followRedirects);
+            // cannot try to access wildcarded URLs
+            if (!url.contains(".*")) {
+                clientApiFacade.accessUrlViaZap(url, followRedirects);
+            }
         }
 
         LOG.info("For scan {}: Adding exclude parts.", scanContext.getContextName());
@@ -631,7 +634,7 @@ public class ZapScanner implements ZapScan {
         /* stop spider - otherwise running in background */
         clientApiFacade.stopSpiderScan(scanId);
 
-        scanContext.getZapProductMessageHelper().writeUserMessagesWithScannedURLs(clientApiFacade.getAllSpiderUrls());
+        scanContext.getZapProductMessageHelper().writeUserMessagesWithDetectedURLs(clientApiFacade.getFullSpiderResults(scanId));
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
         remainingScanTime = remainingScanTime - (systemUtil.getCurrentTimeInMilliseconds() - startTime);
     }
