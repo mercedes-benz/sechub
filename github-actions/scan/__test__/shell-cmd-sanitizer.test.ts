@@ -2,10 +2,6 @@
 
 import * as shellSanitizer from '../src/shell-cmd-sanitizer';
 
-beforeEach(() => {
-    jest.clearAllMocks();
-});
-
 describe('sanitizeShellCommand', () => {
     test.each([
         ['rm -rf /; echo hacked'], // Command chaining

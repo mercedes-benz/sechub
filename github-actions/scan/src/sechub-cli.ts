@@ -17,7 +17,7 @@ export function scan(context: LaunchContext) {
 
     core.debug(`scan shell command: ${shellCommand}`);
 
-    // execute the scan
+    /* execute the scan */
     const shellString =  shell.exec(shellCommand);
 
     core.debug(`scan exit code: ${shellString.code}`);

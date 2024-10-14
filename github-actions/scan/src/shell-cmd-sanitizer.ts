@@ -15,7 +15,7 @@ const ALLOWED_SHELL_COMMAND_CHARACTERS = /^[a-zA-Z0-9_\- ]+$/;
  * @throws {CommandInjectionError} - If command injection characters are detected in the shell command.
  */
 export function sanitize(shellCommand: string): string {
-    // remove duplicate whitespaces caused by optional arguments
+    /* remove duplicate whitespaces caused by optional arguments */
     shellCommand = shellCommand.replace(/\s+/g, ' ');
 
     if (!ALLOWED_SHELL_COMMAND_CHARACTERS.test(shellCommand)) {
