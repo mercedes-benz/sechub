@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 
 import * as cli from '../src/sechub-cli';
-import { scan } from '../src/sechub-cli';
-import * as shell from 'shelljs';
+import {extractJobUUID, getReport, scan} from '../src/sechub-cli';
+import {execFileSync} from 'child_process';
 
-import * as shellCmdSanitizer from "../src/shell-cmd-sanitizer";
+import * as shellCmdSanitizer from "../src/shell-arg-sanitizer";
 
 jest.mock('@actions/core');
 
@@ -20,12 +20,8 @@ const output = `
         other
         `;
 
-jest.mock('shelljs', () => ({
-    exec: jest.fn(() => ({
-        code: 0,
-        stdout: output,
-        stderr: ''
-    }))
+jest.mock('child_process', () => ({
+    execFileSync: jest.fn(() => output)
 }));
 
 beforeEach(() => {
@@ -34,7 +30,7 @@ beforeEach(() => {
 
 describe('scan', function() {
 
-    it('sanitizes shell command', () => {
+    it('sanitizes shell arguments', () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -50,7 +46,11 @@ describe('scan', function() {
         scan(context);
 
         /* test */
-        expect(spySanitizeShellCommand).toBeCalledTimes(1);
+        expect(spySanitizeShellCommand).toBeCalledTimes(4);
+        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/sechub-cli');
+        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/config.json');
+        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/workspace');
+        expect(spySanitizeShellCommand).toBeCalledWith('');
     });
 
     it('return correct job id', function () {
@@ -87,8 +87,8 @@ describe('scan', function() {
         scan(context);
 
         /* test */
-        expect(shell.exec).toBeCalledTimes(1);
-        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace -addScmHistory scan');
+        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync).toBeCalledWith('/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'], { encoding: 'utf-8' });
     });
 
     it('with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
@@ -106,8 +106,8 @@ describe('scan', function() {
         scan(context);
 
         /* test */
-        expect(shell.exec).toBeCalledTimes(1);
-        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace scan');
+        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync).toBeCalledWith('/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'], { encoding: 'utf-8' });
     });
 
 });
@@ -129,7 +129,7 @@ describe('extractJobUUID', function () {
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
@@ -143,7 +143,7 @@ describe('extractJobUUID', function () {
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('1234');
@@ -160,7 +160,7 @@ describe('extractJobUUID', function () {
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('');
@@ -169,7 +169,7 @@ describe('extractJobUUID', function () {
 
 describe('getReport', function () {
 
-    it('sanitizes shell command', () => {
+    it('sanitizes shell arguments', () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -178,10 +178,14 @@ describe('getReport', function () {
         const spySanitizeShellCommand = jest.spyOn(shellCmdSanitizer, 'sanitize');
 
         /* execute */
-        cli.getReport('job-uuid', 'json', context);
+        getReport('job-uuid', 'json', context);
 
         /* test */
-        expect(spySanitizeShellCommand).toBeCalledTimes(1);
+        expect(spySanitizeShellCommand).toBeCalledTimes(4);
+        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/sechub-cli');
+        expect(spySanitizeShellCommand).toBeCalledWith('job-uuid');
+        expect(spySanitizeShellCommand).toBeCalledWith('project-name');
+        expect(spySanitizeShellCommand).toBeCalledWith('json');
     });
 
 });

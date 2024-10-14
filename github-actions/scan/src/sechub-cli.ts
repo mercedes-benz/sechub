@@ -1,32 +1,35 @@
 // SPDX-License-Identifier: MIT
 
-import * as shell from 'shelljs';
 import { LaunchContext } from './launcher';
 import * as core from '@actions/core';
-import * as shellCmdSanitizer from "./shell-cmd-sanitizer";
+import {execFileSync} from 'child_process';
+import {sanitize} from "./shell-arg-sanitizer";
 
 /**
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param context launch context
  */
 export function scan(context: LaunchContext) {
-    const addScmHistory = context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '';
-    let shellCommand = `${context.clientExecutablePath} -configfile ${context.configFileLocation} -output ${context.workspaceFolder} ${addScmHistory} scan`;
 
-    shellCommand = shellCmdSanitizer.sanitize(shellCommand);
+    const clientExecutablePath = sanitize(context.clientExecutablePath);
+    const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
+    const outputArgValue = sanitize(context.workspaceFolder);
+    const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
 
-    core.debug(`scan shell command: ${shellCommand}`);
+    try {
+        const output = execFileSync(clientExecutablePath,
+            ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
+            { encoding: 'utf-8' }
+        );
 
-    /* execute the scan */
-    const shellString =  shell.exec(shellCommand);
-
-    core.debug(`scan exit code: ${shellString.code}`);
-    context.lastClientExitCode= shellString.code;
-    
-    if (context.lastClientExitCode!=0){
-        core.error(shellString.stderr);
+        core.debug('Scan executed successfully');
+        context.lastClientExitCode = 0;
+        context.jobUUID=extractJobUUID(output);
+    } catch (error: any) {
+        core.error(`Error executing scan command: ${error.message}`);
+        core.error(`Standard error: ${error.stderr}`);
+        context.lastClientExitCode= error.status;
     }
-    context.jobUUID=extractJobUUID(shellString.stdout);
 }
 
 export function extractJobUUID(output: string): string{
@@ -52,17 +55,26 @@ export function extractJobUUID(output: string): string{
 /**
  * Executes the getReport method of the SecHub CLI. Sets the client exitcode inside context.
  * @param jobUUID job UUID for which the report should be downloaded
- * @param format format in which the report should be downloaded
+ * @param reportFormat format in which the report should be downloaded
  * @param context launch context
 */
-export function getReport(jobUUID: string, format: string, context: LaunchContext) {
-    let shellCommand = `${context.clientExecutablePath} -jobUUID ${jobUUID} -project ${context.projectName} --reportformat ${format} getReport`;
-    core.debug(`getReport shell command: ${shellCommand}`);
+export function getReport(jobUUID: string, reportFormat: string, context: LaunchContext) {
+    const clientExecutablePath = sanitize(context.clientExecutablePath);
+    const jobUUIDArgValue = sanitize(jobUUID);
+    const projectArgValue = sanitize(context.projectName);
+    const reportFormatArgValue = sanitize(reportFormat);
 
-    shellCommand = shellCmdSanitizer.sanitize(shellCommand);
-    
-    const shellString =  shell.exec(shellCommand);
-    
-    core.debug(`get report exit code: ${shellString.code}`);
-    context.lastClientExitCode= shellString.code;
+    try {
+        execFileSync(clientExecutablePath,
+            ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
+            { encoding: 'utf-8' }
+        );
+
+        core.debug('Get report executed successfully');
+        context.lastClientExitCode = 0;
+    } catch (error: any) {
+        core.error(`Error executing getReport command: ${error.message}`);
+        core.error(`Standard error: ${error.stderr}`);
+        context.lastClientExitCode= error.status;
+    }
 }
