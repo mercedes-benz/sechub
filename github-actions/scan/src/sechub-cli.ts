@@ -37,6 +37,7 @@ export function scan(context: LaunchContext) {
 
 export function extractJobUUID(output: string): string{
     const jobPrefix='job:';
+    core.info(`Extracting job uuid from scan output: ${output}`);
 
     const index1 =output.indexOf(jobPrefix);
     
@@ -46,12 +47,12 @@ export function extractJobUUID(output: string): string{
             const extracted=output.substring(index1+jobPrefix.length,index2);
 
             const jobUUID = extracted.trim();
-            core.debug(`extractJobUUID: ${jobUUID}`);
+            core.info(`Extracted job uuid from scan output: ${jobUUID}`);
             
             return jobUUID;
         }
     }
-    core.debug('extractJobUUID: no job uuid found!');
+    core.info('extractJobUUID: no job uuid found!');
     return '';
 }
 
