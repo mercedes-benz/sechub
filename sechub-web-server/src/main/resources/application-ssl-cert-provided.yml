@@ -10,7 +10,7 @@ server:
     key-store-password: '123456'
     key-alias: 'tomcat'
 
-webserver:
+web-server:
   sechub:
     server-url: "https://localhost:8443"
     trust-all-certificates: true

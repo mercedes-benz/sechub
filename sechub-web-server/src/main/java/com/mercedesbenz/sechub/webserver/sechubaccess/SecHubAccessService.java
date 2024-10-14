@@ -30,19 +30,19 @@ public class SecHubAccessService {
 
     static final Logger LOG = LoggerFactory.getLogger(SecHubAccessService.class);
 
-    @Value("${webserver.sechub.server-url}")
+    @Value("${web-server.sechub.server-url}")
     private String secHubServerUrl;
 
-    @Value("${webserver.sechub.trust-all-certificates:false}")
+    @Value("${web-server.sechub.trust-all-certificates:false}")
     private boolean trustAllCertificates;
 
-    @Value("${webserver.client.mocked:false}")
+    @Value("${web-server.client.mocked:false}")
     private boolean useMockedClient;
 
-    @Value("${webserver.sechub.userid}")
+    @Value("${web-server.sechub.userid}")
     private String userId;
 
-    @Value("${webserver.sechub.apitoken}")
+    @Value("${web-server.sechub.apitoken}")
     private String apiToken;
 
     private SecHubClient client;

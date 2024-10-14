@@ -8,7 +8,7 @@ SecHub Web Server is a web-based user interface for managing and interacting wit
 
 ## Profiles
 
-To start the application locally use the `webserver_local` profile.
+To start the application locally use the `web-server_local` profile.
 
 This will include the following profiles:
 
@@ -25,7 +25,7 @@ This will enable configurations suitable for local development and testing.
 
 To run the application in OAuth2 mode, include the `oauth2-enabled` profile.
 
-Note: The `webserver_prod` profile includes the `oauth2-enabled` profile.
+Note: The `web-server_prod` profile includes the `oauth2-enabled` profile.
 
 Make sure that you either provide a valid `application-oauth2-enabled.yml` file in the `src/main/resources` directory or set the required environment variables.
 

@@ -3,7 +3,7 @@
 
 REGISTRY="$1"
 VERSION="$2"
-WEBSERVER_VERSION="$3"
+WEB_SERVER_VERSION="$3"
 BASE_IMAGE="$4"  # optional
 BUILD_TYPE="$5" # optional
 DEFAULT_BASE_IMAGE="debian:12-slim"
@@ -36,7 +36,7 @@ if [[ -z "$VERSION" ]] ; then
   FAILED=true
 fi
 
-if [[ -z "$WEBSERVER_VERSION" ]] ; then
+if [[ -z "$WEB_SERVER_VERSION" ]] ; then
   echo "Please provide a SecHub Web Server release version as 3rd parameter."
   FAILED=true
 fi
@@ -60,8 +60,8 @@ echo ">> Base image: $BASE_IMAGE"
 BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
 echo ">> Build type: $BUILD_TYPE"
 
-BUILD_ARGS+=" --build-arg WEBSERVER_VERSION=$WEBSERVER_VERSION"
-echo ">> SecHub Web Server release version: $WEBSERVER_VERSION"
+BUILD_ARGS+=" --build-arg WEB_SERVER_VERSION=$WEB_SERVER_VERSION"
+echo ">> SecHub Web Server release version: $WEB_SERVER_VERSION"
 
 echo "Copying install-java scripts into the docker directory"
 cp --recursive --force ../sechub-solutions-shared/install-java/ docker/

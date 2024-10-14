@@ -10,7 +10,7 @@ Activate the Spring Boot Dev Profile by
 starting the application using the JVM argument:
 
 ----
--Dspring.profiles.active=webserver_dev
+-Dspring.profiles.active=web-server_dev
 ----
 
 The started application will
@@ -24,7 +24,7 @@ The started application will
 
 ==== Integration test with running SecHub server
 ----
--Dspring.profiles.active=webserver_integrationtest
+-Dspring.profiles.active=web-server_integrationtest
 ----
 
 The started application will

@@ -23,7 +23,7 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
-webServer:
+web-server:
   # Possible values: server, development
   startMode: server
   sechubConnection:
@@ -51,7 +51,7 @@ webServer:
     keystoreAlias: "undefined"
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be used.
-    # - otherwise, k8s secret `secret-webserver-ssl` must be defined containing
+    # - otherwise, k8s secret `secret-web-server-ssl` must be defined containing
     #   - `keystore_file` (containing the ssl certificate chain)
     #     Inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl certificate to use
@@ -71,7 +71,7 @@ service:
   loadbalancer:
     ip: ""
     port:
-      name: webserver-https
+      name: web-server-https
       number: 443
   # optional: Add annotations (goes to metadata.annotations)
   #           Can contain multiple lines. Example:

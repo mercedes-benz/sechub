@@ -30,13 +30,13 @@ wait_loop() {
 }
 
 setup_ssl() {
-  if [ -n "${SECHUB_WEBSERVER_SSL_KEYSTORE_ALIAS}" -a "${SECHUB_WEBSERVER_SSL_KEYSTORE_ALIAS}" != "undefined" ] ; then
+  if [ -n "${SECHUB_WEB_SERVER_SSL_KEYSTORE_ALIAS}" -a "${SECHUB_WEB_SERVER_SSL_KEYSTORE_ALIAS}" != "undefined" ] ; then
     # Create symlink to .p12 keystore file
-    ln -s "$WEBSERVER_FOLDER/secrets/secret-ssl/keystore_file" ${SECHUB_WEBSERVER_SSL_KEYSTORE_LOCATION}
+    ln -s "$WEB_SERVER_FOLDER/secrets/secret-ssl/keystore_file" ${SECHUB_WEB_SERVER_SSL_KEYSTORE_LOCATION}
     cat - <<EOF
 SSL server certificate:
-- alias: $SECHUB_WEBSERVER_SSL_KEYSTORE_ALIAS
-- location: $SECHUB_WEBSERVER_SSL_KEYSTORE_LOCATION
+- alias: $SECHUB_WEB_SERVER_SSL_KEYSTORE_ALIAS
+- location: $SECHUB_WEB_SERVER_SSL_KEYSTORE_LOCATION
 EOF
   fi
 }
@@ -49,17 +49,17 @@ start_server() {
 
     echo
     echo "Starting the SecHub Web Server"
-    echo "Web Server Version: $WEBSERVER_VERSION"
+    echo "Web Server Version: $WEB_SERVER_VERSION"
     echo "Web Server Spring Server Profiles: \"$SPRING_PROFILES_ACTIVE\""
-    echo "SecHub Server UserID: $WEBSERVER_SECHUB_USERID"
-    echo "SecHub Server URL:    $WEBSERVER_SECHUB_SERVER_URL"
-    echo "SecHub Server trust all certificates: $WEBSERVER_SECHUB_TRUST_ALL_CERTIFICATES"
+    echo "SecHub Server UserID: $WEB_SERVER_SECHUB_USERID"
+    echo "SecHub Server URL:    $WEB_SERVER_SECHUB_SERVER_URL"
+    echo "SecHub Server trust all certificates: $WEB_SERVER_SECHUB_TRUST_ALL_CERTIFICATES"
 
     java $JAVA_DEBUG_OPTIONS \
         -Dfile.encoding=UTF-8 \
         -Dserver.port=4443 \
         -Dserver.address=0.0.0.0 \
-        -jar $WEBSERVER_FOLDER/sechub-web-server-*.jar &
+        -jar $WEB_SERVER_FOLDER/sechub-web-server-*.jar &
 
     # Get process pid and wait until it ends
     #   The pid will be needed by function trigger_shutdown() in case we receive a termination signal.
@@ -70,7 +70,7 @@ start_server() {
 }
 
 keep_container_alive_or_exit() {
-    if [ "$KEEP_CONTAINER_ALIVE_AFTER_WEBSERVER_CRASHED" = "true" ] ; then
+    if [ "$KEEP_CONTAINER_ALIVE_AFTER_WEB_SERVER_CRASHED" = "true" ] ; then
         echo "[ERROR] WEB UI crashed, but keeping the container alive."
         wait_loop
     fi
@@ -85,9 +85,9 @@ check_setup () {
 
     # Set SecHub server properties for Spring Boot as env vars
     # (don't reveal confidential data in process list)
-    export WEBSERVER_SECHUB_SERVER_URL="$SECHUB_SERVER_URL"
-    export WEBSERVER_SECHUB_USERID="$SECHUB_USERID"
-    export WEBSERVER_SECHUB_APITOKEN="$SECHUB_APITOKEN"
+    export WEB_SERVER_SECHUB_SERVER_URL="$SECHUB_SERVER_URL"
+    export WEB_SERVER_SECHUB_USERID="$SECHUB_USERID"
+    export WEB_SERVER_SECHUB_APITOKEN="$SECHUB_APITOKEN"
 }
 
 check_variable () {

@@ -14,12 +14,12 @@ spring:
     basename: "i18n/messages"
   profiles:
     group:
-      webserver_prod: "ssl-cert-required,oauth2-enabled"
-      webserver_int: "ssl-cert-required,oauth2-enabled,classic-auth-enabled"
-      webserver_dev: "ssl-cert-provided,classic-auth-enabled"
-      webserver_local: "ssl-cert-provided,classic-auth-enabled,local"
-      webserver_test: "test"
-      webserver_integrationtest: "ssl-cert-provided,integrationtest-data"
+      web-server_prod: "ssl-cert-required,oauth2-enabled"
+      web-server_int: "ssl-cert-required,oauth2-enabled,classic-auth-enabled"
+      web-server_dev: "ssl-cert-provided,classic-auth-enabled"
+      web-server_local: "ssl-cert-provided,classic-auth-enabled,local"
+      web-server_test: "test"
+      web-server_integrationtest: "ssl-cert-provided,integrationtest-data"
   web:
     resources:
       static-locations: classpath:/static
