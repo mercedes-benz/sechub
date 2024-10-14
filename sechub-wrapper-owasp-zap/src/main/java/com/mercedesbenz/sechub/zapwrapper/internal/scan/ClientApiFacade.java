@@ -385,13 +385,13 @@ public class ClientApiFacade {
         List<Map<String, ApiResponse>> fullResults = new LinkedList<>();
 
         ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(scanId);
-        for (ApiResponse apiResponse : results.getItems()) {
-            ApiResponseList elementList = (ApiResponseList) apiResponse;
+        for (ApiResponse resultItem : results.getItems()) {
+            ApiResponseList elementList = (ApiResponseList) resultItem;
 
-            for (ApiResponse apiResponse2 : elementList.getItems()) {
-                if (apiResponse2 instanceof ApiResponseSet) {
-                    ApiResponseSet set = (ApiResponseSet) apiResponse2;
-                    fullResults.add(set.getValuesMap());
+            for (ApiResponse elementListItem : elementList.getItems()) {
+                if (elementListItem instanceof ApiResponseSet) {
+                    ApiResponseSet apiResponseSet = (ApiResponseSet) elementListItem;
+                    fullResults.add(apiResponseSet.getValuesMap());
                 }
             }
         }
