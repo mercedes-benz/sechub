@@ -105,7 +105,7 @@ runs:
         git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
         git config core.sparseCheckout true
-             
+        
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
         git checkout
@@ -142,16 +142,10 @@ runs:
     # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
     - name: Copy index.js To Root Of Repository
       run: |
-        cp dist/index.js ../../../sechub-scan.cjs
-        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.cjs
+        cp dist/index.js ../../../sechub-scan.js
+        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
         cp dist/exec-child.js ../../../sechub-exec-child.js
       working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
-
-    # Delete the SecHub GitHub Actions Scan source code after the scan artifact is built
-    # That way we avoid scanning the scan source code itself
-    - name: Delete SecHub GitHub Actions Scan Subdirectory
-      run: rm -rf ${{ github.workspace }}/sechub/github-actions/scan
       shell: bash
 
     - name: Set GitHub Environment Variables
@@ -165,7 +159,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node sechub-scan.cjs
+      run: node sechub-scan.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
