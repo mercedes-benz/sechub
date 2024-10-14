@@ -20,7 +20,14 @@ export function scan(context: LaunchContext) {
         const output = execFileSync(clientExecutablePath,
             ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
             {
-                env: { ...process.env },
+                env: {
+                    SECHUB_SERVER: process.env.SECHUB_SERVER,
+                    SECHUB_USERID: process.env.SECHUB_USERID,
+                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                },
                 encoding: 'utf-8'
             }
         );
@@ -69,11 +76,19 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
 
+    context
     try {
         execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
             {
-                env: { ...process.env },
+                env: {
+                    SECHUB_SERVER: process.env.SECHUB_SERVER,
+                    SECHUB_USERID: process.env.SECHUB_USERID,
+                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                },
                 encoding: 'utf-8'
             }
         );

@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-import * as cli from '../src/sechub-cli';
 import {extractJobUUID, getReport, scan} from '../src/sechub-cli';
 import {execFileSync} from 'child_process';
-
-import * as shellCmdSanitizer from "../src/shell-arg-sanitizer";
+import {sanitize} from "../src/shell-arg-sanitizer";
 
 jest.mock('@actions/core');
 
@@ -24,6 +22,8 @@ jest.mock('child_process', () => ({
     execFileSync: jest.fn(() => output)
 }));
 
+jest.mock('../src/shell-arg-sanitizer');
+
 beforeEach(() => {
     jest.clearAllMocks();
 });
@@ -40,17 +40,19 @@ describe('scan', function() {
                 addScmHistory: 'false'
             }
         };
-        const spySanitizeShellCommand = jest.spyOn(shellCmdSanitizer, 'sanitize');
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
 
         /* execute */
         scan(context);
 
         /* test */
-        expect(spySanitizeShellCommand).toBeCalledTimes(4);
-        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/sechub-cli');
-        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/config.json');
-        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/workspace');
-        expect(spySanitizeShellCommand).toBeCalledWith('');
+        expect(sanitize).toBeCalledTimes(4);
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('/path/to/config.json');
+        expect(sanitize).toBeCalledWith('/path/to/workspace');
+        expect(sanitize).toBeCalledWith('');
     });
 
     it('return correct job id', function () {
@@ -92,7 +94,14 @@ describe('scan', function() {
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
                 {
-                    env: { ...process.env },
+                    env: {
+                        SECHUB_SERVER: process.env.SECHUB_SERVER,
+                        SECHUB_USERID: process.env.SECHUB_USERID,
+                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                    },
                     encoding: 'utf-8'
                 }
             );
@@ -118,7 +127,14 @@ describe('scan', function() {
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
                 {
-                    env: { ...process.env },
+                    env: {
+                        SECHUB_SERVER: process.env.SECHUB_SERVER,
+                        SECHUB_USERID: process.env.SECHUB_USERID,
+                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                    },
                     encoding: 'utf-8'
                 }
             );
@@ -189,17 +205,19 @@ describe('getReport', function () {
             clientExecutablePath: '/path/to/sechub-cli',
             projectName: 'project-name',
         };
-        const spySanitizeShellCommand = jest.spyOn(shellCmdSanitizer, 'sanitize');
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
 
         /* execute */
         getReport('job-uuid', 'json', context);
 
         /* test */
-        expect(spySanitizeShellCommand).toBeCalledTimes(4);
-        expect(spySanitizeShellCommand).toBeCalledWith('/path/to/sechub-cli');
-        expect(spySanitizeShellCommand).toBeCalledWith('job-uuid');
-        expect(spySanitizeShellCommand).toBeCalledWith('project-name');
-        expect(spySanitizeShellCommand).toBeCalledWith('json');
+        expect(sanitize).toBeCalledTimes(4);
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('job-uuid');
+        expect(sanitize).toBeCalledWith('project-name');
+        expect(sanitize).toBeCalledWith('json');
     });
 
 });

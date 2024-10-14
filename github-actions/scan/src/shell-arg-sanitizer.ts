@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-const ALLOWED_SHELL_COMMAND_CHARACTERS = /^[a-zA-Z0-9._\-\/ ]+$/;
+import * as core from '@actions/core';
+import {execFileSync} from "child_process";
+
+const SHELL_ARGUMENT_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
 
 /**
  * Sanitizes a shell arg to prevent command injection attacks.
@@ -19,15 +22,40 @@ export function sanitize(arg: string): string {
         return arg;
     }
 
-    /* remove unnecessary whitespaces */
-    arg = arg.replace(/\s+/g, ' ');
-    arg = arg.trim();
+    /*
+        remove all whitespaces
+        argument should not have any whitespaces so this should never cause any issues
+    */
+    arg = arg.replace(/\s+/g, '')
 
-    if (!ALLOWED_SHELL_COMMAND_CHARACTERS.test(arg)) {
+    if (!SHELL_ARGUMENT_WHITELIST.test(arg)) {
+        core.error(`Argument has invalid characters: ${arg}`);
+        throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
+    }
+
+    if (isShellCommand(arg)) {
+        core.error(`Argument is an executable shell command: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
 
     return arg;
+}
+
+/**
+ * Function to check if a given string is a valid shell command using 'execFileSync'
+ * @param command - The command to check
+ * @returns A boolean indicating if the command is valid
+ */
+function isShellCommand(command: string): boolean {
+    try {
+        /* We use `command -v` to check if the command exists */
+        execFileSync('command', ['-v', command], { stdio: 'ignore' });
+        /* If no error is thrown, the command is valid */
+        return true;
+    } catch (error) {
+        /* If an error is thrown, the command is invalid */
+        return false;
+    }
 }
 
 export class CommandInjectionError extends Error {

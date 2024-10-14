@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import * as shellSanitizer from '../src/shell-arg-sanitizer';
+import * as shellArgSanitizer from '../src/shell-arg-sanitizer';
 
 describe('sanitize', () => {
     test.each([
@@ -28,27 +28,36 @@ describe('sanitize', () => {
         '%s throws CommandInjectionError',
         (arg) => {
             /* test */
-            expect(() => shellSanitizer.sanitize(arg)).toThrow('Command injection detected in shell argument: ' + arg);
+            expect(() => shellArgSanitizer.sanitize(arg)).toThrow(/Command injection detected in shell argument:/);
         }
     );
 
     test.each([
-        ['/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace scan'],
-        ['/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace -addScmHistory scan'],
-        ['/path/to/sechub-cli -jobUUID job-uuid -project project-name --reportformat json getReport']
+        ['/path/to/sechub-cli'],
+        ['-configfile'],
+        ['/path/to/config.json'],
+        ['-output'],
+        ['/path/to/workspace'],
+        ['-addScmHistory'],
+        ['scan'],
+        ['-jobUUID'],
+        ['-project'],
+        ['--reportformat'],
+        ['json'],
+        ['getReport']
     ])(
         'does not throw CommandInjectionError for safe shell argument: %s',
         (arg) => {
             /* test */
-            expect(() => shellSanitizer.sanitize(arg)).not.toThrow();
+            expect(() => shellArgSanitizer.sanitize(arg)).not.toThrow();
     });
 
-    it('removes duplicate whitespaces', function () {
+    it('removes whitespaces', function () {
         /* prepare */
         const arg = '  /path/to/sechub-cli   ';
 
         /* execute */
-        const sanitized = shellSanitizer.sanitize(arg);
+        const sanitized = shellArgSanitizer.sanitize(arg);
 
         /* test */
         expect(sanitized).toEqual('/path/to/sechub-cli');
