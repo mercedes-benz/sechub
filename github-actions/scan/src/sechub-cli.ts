@@ -19,7 +19,10 @@ export function scan(context: LaunchContext) {
     try {
         const output = execFileSync(clientExecutablePath,
             ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
-            { encoding: 'utf-8' }
+            {
+                env: { ...process.env },
+                encoding: 'utf-8'
+            }
         );
 
         core.debug('Scan executed successfully');
@@ -67,7 +70,10 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
     try {
         execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
-            { encoding: 'utf-8' }
+            {
+                env: { ...process.env },
+                encoding: 'utf-8'
+            }
         );
 
         core.debug('Get report executed successfully');

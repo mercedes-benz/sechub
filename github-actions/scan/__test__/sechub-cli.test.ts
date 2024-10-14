@@ -88,7 +88,14 @@ describe('scan', function() {
 
         /* test */
         expect(execFileSync).toBeCalledTimes(1);
-        expect(execFileSync).toBeCalledWith('/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'], { encoding: 'utf-8' });
+        expect(execFileSync)
+            .toBeCalledWith(
+                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
+                {
+                    env: { ...process.env },
+                    encoding: 'utf-8'
+                }
+            );
     });
 
     it('with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
@@ -107,7 +114,14 @@ describe('scan', function() {
 
         /* test */
         expect(execFileSync).toBeCalledTimes(1);
-        expect(execFileSync).toBeCalledWith('/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'], { encoding: 'utf-8' });
+        expect(execFileSync)
+            .toBeCalledWith(
+                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
+                {
+                    env: { ...process.env },
+                    encoding: 'utf-8'
+                }
+            );
     });
 
 });
