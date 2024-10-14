@@ -7,7 +7,7 @@ const ALLOWED_SHELL_COMMAND_CHARACTERS = /^[a-zA-Z0-9_\- ]+$/;
  *
  * This function performs the following steps:
  * 1. Removes duplicate whitespaces caused by optional arguments.
- * 2. Checks the command against a predefined pattern for potential command injection characters.
+ * 2. Checks the command against a predefined whitelist of allowed characters.
  * 3. Throws a `CommandInjectionError` if any injection characters are detected.
  *
  * @param {string} shellCommand - The shell command to be sanitized.
