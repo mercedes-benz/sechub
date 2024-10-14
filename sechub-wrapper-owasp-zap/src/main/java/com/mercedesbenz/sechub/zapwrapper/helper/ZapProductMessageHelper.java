@@ -92,7 +92,7 @@ public class ZapProductMessageHelper {
             break;
         case API_DEFINITION_CONFIG_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
-                    "Please files instead of folders for the API definition inside the filesystem->files section of the SecHub configuration."));
+                    "Please use files instead of folders for the API definition with the filesystem->files section of the SecHub configuration."));
             break;
         case TARGET_URL_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,

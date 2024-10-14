@@ -115,8 +115,7 @@ class ZapProductMessageHelperTest {
                     errorMessage);
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            assertEquals(
-                    "Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration.",
+            assertEquals("Please use files instead of folders for the API definition with the filesystem->files section of the SecHub configuration.",
                     messageContent, errorMessage);
             break;
         case TARGET_URL_INVALID:
