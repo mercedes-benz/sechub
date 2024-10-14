@@ -25,13 +25,14 @@ export function scan(context: LaunchContext) {
             }
         );
 
-        core.debug('Scan executed successfully');
+        core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
         context.jobUUID=extractJobUUID(output);
     } catch (error: any) {
         core.error(`Error executing scan command: ${error.message}`);
         core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode= error.status;
+        context.jobUUID=extractJobUUID(error.stdout);
     }
 }
 
