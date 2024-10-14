@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-const COMMAND_INJECTION_PATTERN = /[;&|`$\\<>"'*()\[\]{}\n\t]/;
+const ALLOWED_SHELL_COMMAND_CHARACTERS = /^[a-zA-Z0-9_\- ]+$/;
 
 /**
  * Sanitizes a shell command to prevent command injection attacks.
@@ -18,7 +18,7 @@ export function sanitize(shellCommand: string): string {
     // remove duplicate whitespaces caused by optional arguments
     shellCommand = shellCommand.replace(/\s+/g, ' ');
 
-    if (COMMAND_INJECTION_PATTERN.test(shellCommand)) {
+    if (!ALLOWED_SHELL_COMMAND_CHARACTERS.test(shellCommand)) {
         throw new CommandInjectionError(`Command injection detected in shell command: ${shellCommand}`);
     }
 
