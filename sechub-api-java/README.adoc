@@ -4,7 +4,7 @@
 The goal of the API is to:
 
 - have an easy to use library which can be used in SecHub plugins (Eclipse, IntelliJ),
-  our WebUI and also by users which want to use a Java library to interact directly with the REST API instead of using the SecHub command line client (`sechub-cli`)
+  our Web Server and also by users which want to use a Java library to interact directly with the REST API instead of using the SecHub command line client (`sechub-cli`)
   command line client (`sechub-cli`) 
 - have less effort when it comes to changes
 - detect OpenAPI file generation problems

@@ -1,0 +1,23 @@
+# Start mode of Web Server.
+# Possible values are: server, development
+# The development mode just starts the container and waits
+WEB_SERVER_START_MODE="server"
+
+# Spring profiles:
+# please see the sechub-web-server application.yml for different profiles
+SPRING_PROFILES_ACTIVE="ssl-cert-provided,classic-auth-enabled,local"
+
+# SecHub Server
+# For local server: https://localhost:8443
+# For Docker network: https://sechub:8443/
+SECHUB_SERVER_URL="https://sechub:8443/"
+
+# User credentials for SecHub server
+SECHUB_USERID="admin"
+SECHUB_APITOKEN='myTop$ecret!'
+
+# Enable Java Debugging
+JAVA_ENABLE_DEBUG=false
+
+# Keep the container alive after it crashed
+KEEP_CONTAINER_ALIVE_AFTER_WEB_SERVER_CRASHED=false

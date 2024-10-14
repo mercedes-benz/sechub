@@ -110,9 +110,9 @@ include 'sechub-cli',
 // Examples (are below 'sechub-examples' folder)
 'sechub-examples:example-sechub-api-java',
 
-/* WebUI */
-'sechub-webui',
-'sechub-webui-solution'
+/* Web Server and UI */
+'sechub-web-server',
+'sechub-web-server-solution'
 
 
 

@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+
+# Main settings
+server:
+  port:
+    4443
+  ssl:
+    enabled: true # always enabled
+    protocol: TLS
+    enabled-protocols: TLSv1.2,TLSv1.3
+
+spring:
+  messages:
+    basename: "i18n/messages"
+  profiles:
+    group:
+      web-server_prod: "ssl-cert-required,oauth2-enabled"
+      web-server_int: "ssl-cert-required,oauth2-enabled,classic-auth-enabled"
+      web-server_dev: "ssl-cert-provided,classic-auth-enabled"
+      web-server_local: "ssl-cert-provided,classic-auth-enabled,local"
+      web-server_test: "test"
+      web-server_integrationtest: "ssl-cert-provided,integrationtest-data"
+  web:
+    resources:
+      static-locations: classpath:/static

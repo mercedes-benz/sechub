@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+web-server:
+   sechub:
+      ## Setup integration test sechub user (currently admin, later other role)
+      userid: int-test_superadmin
+      apitoken: int-test_superadmin-pwd
