@@ -4,16 +4,14 @@ import * as core from '@actions/core';
 import * as shell from 'shelljs';
 import { ScanType, ContentType, SecHubConfigurationModel } from './configuration-model';
 import * as cm from './configuration-model';
-import {sanitize} from "./shell-arg-sanitizer";
 
 /**
  * Creates the sechub.json configuration file with the given user input values.
- * 
+ *
  * @param secHubJsonFilePath The path where the sechub.json file should be created
  * @param data The value to build the json from
  */
 export function createSecHubConfigJsonFile(secHubJsonFilePath: string, data: SecHubConfigurationModelBuilderData) {
-    secHubJsonFilePath = sanitize(secHubJsonFilePath);
     core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
     const secHubJson = createSecHubConfigurationModel(data);
     const stringifiedSecHubJson = JSON.stringify(secHubJson);
