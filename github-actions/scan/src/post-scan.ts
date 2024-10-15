@@ -3,12 +3,13 @@
 import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
 import * as fs from 'fs';
-import * as shell from 'shelljs';
 import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
 import { getReport } from './sechub-cli';
 import { getFieldFromJson } from './json-helper';
+import { execFileSync } from "child_process";
+import { sanitize } from "./shell-arg-sanitizer";
 
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
@@ -88,10 +89,16 @@ export async function uploadArtifact(context: LaunchContext, name: string, files
         const artifactName = name;
         const options = { continueOnError: true };
 
-        const rootDirectory = context.workspaceFolder;
+        const rootDirectory = sanitize(context.workspaceFolder);
         core.debug('rootDirectory: ' + rootDirectory);
         if (core.isDebug()) {
-            shell.exec(`ls ${rootDirectory}`);
+            const output = execFileSync('ls',
+                [rootDirectory],
+                {
+                    encoding: 'utf-8'
+                }
+            );
+            core.debug('Output: ' + output);
         }
         core.debug('files: ' + files);
 
@@ -110,8 +117,13 @@ export async function uploadArtifact(context: LaunchContext, name: string, files
  * @returns {string} - The JSON report file name or an empty string if not found.
  */
 function resolveReportNameForScanJob(context: LaunchContext): string {
-    const workspaceDir = getWorkspaceDir();
-    const filesInWorkspace = shell.ls(workspaceDir);
+    const workspaceDir = sanitize(getWorkspaceDir());
+    const filesInWorkspace = execFileSync('ls',
+        [workspaceDir],
+        {
+            encoding: 'utf-8'
+        }
+    );
 
     if (!context.jobUUID) {
         core.error('Illegal state: No job uuid resolved - not allowed at this point');

@@ -3,7 +3,7 @@
 import * as core from '@actions/core';
 import {execFileSync} from "child_process";
 
-const SHELL_ARGUMENT_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
+const SHELL_ARGUMENT_CHARACTER_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
 
 /**
  * Sanitizes a shell arg to prevent command injection attacks.
@@ -28,7 +28,7 @@ export function sanitize(arg: string): string {
     */
     arg = arg.replace(/\s+/g, '')
 
-    if (!SHELL_ARGUMENT_WHITELIST.test(arg)) {
+    if (!SHELL_ARGUMENT_CHARACTER_WHITELIST.test(arg)) {
         core.error(`Argument has invalid characters: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }

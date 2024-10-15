@@ -3,15 +3,31 @@
 import * as configBuilder from '../src/configuration-builder';
 import { SecHubConfigurationModel, ContentType, ScanType } from '../src/configuration-model';
 import { SecHubConfigurationModelBuilderData } from '../src/configuration-builder';
+import {sanitize} from "../src/shell-arg-sanitizer";
 
 jest.mock('@actions/core');
-
+jest.mock('../src/shell-arg-sanitizer');
 
 function dumpModel(model: SecHubConfigurationModel){
     const json = JSON.stringify(model, null, 2); // pretty printed output
 
     console.log('json='+json);
 }
+
+describe('createSecHubConfigJsonFile', function () {
+    test('sanitizes json path', () => {
+        /* prepare */
+        const secHubJsonFilePath = 'some/path/to/sechub.json';
+        const data = new SecHubConfigurationModelBuilderData();
+
+        /* execute */
+        configBuilder.createSecHubConfigJsonFile(secHubJsonFilePath, data);
+
+        /* test */
+        expect(sanitize).toBeCalledTimes(1);
+        expect(sanitize).toBeCalledWith('some/path/to/sechub.json');
+    });
+});
 
 describe('configuration-builder', function() {
     test('null parameters - a model is created with api version 1.0.0', function () {

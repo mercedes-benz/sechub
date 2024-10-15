@@ -23,7 +23,20 @@ describe('sanitize', () => {
         ['$(echo hello > /tmp/test)'], // Command substitution with redirection
         ['$(touch /tmp/test && ls /tmp)'], // Command substitution with logical AND
         ['$(cat /etc/passwd | grep root)'], // Command substitution with pipe
-        ['$(rm -rf /; echo hacked)']
+        ['$(rm -rf /; echo hacked)'],
+        ['kill'],
+        ['sleep'],
+        ['shutdown'],
+        ['reboot'],
+        ['halt'],
+        ['ps'],
+        ['top'],
+        ['killall'],
+        ['pkill'],
+        ['pgrep'],
+        ['chown'],
+        ['chmod'],
+        ['chgrp'],
     ])(
         '%s throws CommandInjectionError',
         (arg) => {
