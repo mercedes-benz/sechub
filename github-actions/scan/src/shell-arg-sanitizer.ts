@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import {execFileSync} from "child_process";
+const commandExistsSync = require('command-exists').sync
 
 const SHELL_ARGUMENT_CHARACTER_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
+const FULL_WORD_REGEX = /^[a-zA-Z]+$/;
 
 /**
  * Sanitizes a shell arg to prevent command injection attacks.
@@ -11,7 +12,8 @@ const SHELL_ARGUMENT_CHARACTER_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
  * This function performs the following steps:
  * 1. Removes duplicate whitespaces.
  * 2. Checks the arg against a predefined whitelist of allowed characters.
- * 3. Throws a `CommandInjectionError` if any injection characters are detected.
+ * 3. Checks if the arg is an executable shell command.
+ * 3. Throws a `CommandInjectionError` if any of the above checks are true.
  *
  * @param {string} arg - The shell argument to be sanitized.
  * @returns {string} - The sanitized shell command.
@@ -33,29 +35,12 @@ export function sanitize(arg: string): string {
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
 
-    if (isShellCommand(arg)) {
-        core.error(`Argument is an executable shell command: ${arg}`);
+    if (FULL_WORD_REGEX.test(arg) && commandExistsSync(arg)) {
+        core.error(`Argument is a command: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
 
     return arg;
-}
-
-/**
- * Function to check if a given string is a valid shell command using 'execFileSync'
- * @param command - The command to check
- * @returns A boolean indicating if the command is valid
- */
-function isShellCommand(command: string): boolean {
-    try {
-        /* We use `command -v` to check if the command exists */
-        execFileSync('command', ['-v', command], { stdio: 'ignore' });
-        /* If no error is thrown, the command is valid */
-        return true;
-    } catch (error) {
-        /* If an error is thrown, the command is invalid */
-        return false;
-    }
 }
 
 export class CommandInjectionError extends Error {

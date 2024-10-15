@@ -37,6 +37,12 @@ describe('sanitize', () => {
         ['chown'],
         ['chmod'],
         ['chgrp'],
+        ['passwd'],
+        ['su'],
+        ['sudo'],
+        ['chsh'],
+        ['chfn'],
+        ['chroot']
     ])(
         '%s throws CommandInjectionError',
         (arg) => {
