@@ -389,6 +389,10 @@ public class ClientApiFacade {
             ApiResponseList elementList = (ApiResponseList) resultItem;
 
             for (ApiResponse elementListItem : elementList.getItems()) {
+                // It seems like an ApiResponseSet is present if the URL was in scope.
+                // Otherwise, e.g. in case of third party services links like cloudflare or
+                // anything else that the crawler detects, elementListItem is of type
+                // ApiResponseElement, which does not contain a values map.
                 if (elementListItem instanceof ApiResponseSet) {
                     ApiResponseSet apiResponseSet = (ApiResponseSet) elementListItem;
                     fullResults.add(apiResponseSet.getValuesMap());
