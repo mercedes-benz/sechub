@@ -186,7 +186,7 @@ storage (S3/NFS) already.
 When not uploaded to storage, the file will be uploaded before the job is further processed.
 
 ====== Template PDS parameter calculation
-If validation and lazy uploaded did not fail, {sechub} will calculate a
+If validation and lazy upload did not fail, {sechub} will calculate a
 {pds} parameter : `pds.template.metadata` with JSON (see parameter syntax for details).
 
 .PDS parameter syntax for template meta data 
