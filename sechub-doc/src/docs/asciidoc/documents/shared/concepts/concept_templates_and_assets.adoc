@@ -163,7 +163,7 @@ The REST API will always create an audit log entry
 
 [IMPORTANT]
 ====
-This works only when {sechub} storage is reused by {pds}.
+This works only when the storage is shared between {sechub} and {pds}.
 If the {pds} uses its own storage (which should NOT be done for production, but only
 for PDS solution development) the assets must be uploaded directly to the PDS storage 
 location! 
