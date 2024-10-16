@@ -4,14 +4,14 @@ import * as core from '@actions/core';
 const commandExistsSync = require('command-exists').sync
 
 const SHELL_ARGUMENT_CHARACTER_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
-const FULL_WORD_REGEX = /^[a-zA-Z]+$/;
+const FULL_WORD = /^[a-zA-Z]+$/;
 
 /**
  * Sanitizes a shell arg to prevent command injection attacks.
  *
  * This function performs the following steps:
  * 1. Removes duplicate whitespaces.
- * 2. Checks the arg against a predefined whitelist of allowed characters.
+ * 2. Checks if the arg contains any characters that are not in the character whitelist.
  * 3. Checks if the arg is an executable shell command.
  * 3. Throws a `CommandInjectionError` if any of the above checks are true.
  *
@@ -35,7 +35,7 @@ export function sanitize(arg: string): string {
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
 
-    if (FULL_WORD_REGEX.test(arg) && commandExistsSync(arg)) {
+    if (FULL_WORD.test(arg) && commandExistsSync(arg)) {
         core.error(`Argument is a command: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }

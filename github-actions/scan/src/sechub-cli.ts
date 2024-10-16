@@ -76,7 +76,6 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
 
-    context
     try {
         execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
