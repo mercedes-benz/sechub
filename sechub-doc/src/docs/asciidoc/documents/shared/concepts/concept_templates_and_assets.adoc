@@ -115,7 +115,7 @@ Main reason why we store always in DB and use storage (S3/NFS) as a cache only:
 
 [IMPORTANT]
 ====
-When using templates and assets it is necessary to reuse {sechub} storage by {pds} 
+For templates and assets we use the shared storage between {sechub} and {pds} .
 solutions and not to provide own storage for {pds}. Diffeent storages are not supported here.
 ====
 
