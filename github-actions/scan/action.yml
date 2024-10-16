@@ -86,13 +86,12 @@ runs:
       with:
         node-version: 20
 
-    # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
-    - name: Cache SecHub GitHub Actions Scan Subdirectory
+    - name: Cache SecHub Directory
       id: cache-sechub-github-actions-scan
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/../sechub/github-actions/scan
-        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.repository }}
+        path: ${{ github.workspace }}/../sechub
+        key: ${{ runner.os }}-sechub-${{ github.repository }}
         # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
         # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
 
@@ -101,7 +100,7 @@ runs:
     - name: Checkout SecHub GitHub Actions Scan with Git
       # If the cache was a hit, we don't need to check out the repository again
       if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/..
       run: |
         git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
