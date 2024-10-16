@@ -17,7 +17,7 @@ understand exactly what to do. If the single-signon mechanism would change, ever
 would need to change their {sechub} configuration files! When talking about hundreds of projects
 this would be a great effort - for users and for support!
 
-And let us assume the used product has hundred of options which cannot be configured
+And let us assume the used product has hundreds of options which cannot be configured
 by a generic approach easily (e.g. form login definition in configuration): How could this product
 be provided in a desired way then?
  
