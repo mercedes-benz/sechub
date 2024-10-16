@@ -11,13 +11,16 @@ Make sure to install the dependencies:
 npm install
 ```
 
-## Development Server
+## Development Server (per default on https)
 
-Start the development server on `http://localhost:3000`:
+Start the development server on `https://localhost:3000`:
 
 ```bash
+# generate local certificates (only once)
+./generate-certificate.sh
+
 # npm
-npm run dev
+npm run dev -- -o
 ```
 
 ## Production

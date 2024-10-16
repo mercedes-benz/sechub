@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  web-ui:
+    build:
+      args:
+        - BUILD_TYPE=${BUILD_TYPE}
+        - WEB_UI_VERSION=${WEB_UI_VERSION}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+        - WEB_UI_PORT=${WEB_UI_PORT}
+        - WEB_UI_HOST=${WEB_UI_HOST}
+        - NODE_VERSION=${NODE_VERSION}
+        - NODE_ENV=${NODE_ENV}
+      context: docker/
+      dockerfile: Web-UI-Debian.dockerfile
+    working_dir: /var/www/html/web-ui
+    container_name: web-ui
+    env_file:
+      - .env
+      - .env-web-ui
+    networks:
+      - "internal"
+
+  nginx:
+    image: nginx:1.27
+    working_dir: /var/www/html
+    container_name: web-ui-nginx
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/certs:/etc/nginx/certs
+    ports:
+      - "8080:8080"
+      - "443:443"
+    depends_on:
+      - web-ui
+    networks:
+        - "internal"
+
+networks:
+  internal:

@@ -6,23 +6,21 @@ MEMORY_LIMIT=300M
 CPU_LIMIT=1.0
 
 # The build type of SecHub inside the container
-# Possible values are: build, copy, download
+# Possible values are: build, copy, download (currently only copy)
 # build - clones and build SecHub
-# copy - copies jar into container
+# copy - copies ./output directory container
 # download - downloads the SecHub jar
 BUILD_TYPE=copy
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-WEBUI_VERSION="0.1.0"
+WEB_UI_VERSION="0.1.0"
 
 # Git information if the BUILD_TYPE is set to `build`
 TAG=""
 BRANCH=""
 
 # Ports and IP Settings
-WEBUI_PORT="3000"
+WEB_UI_PORT="3000"
 
 # default 127.0.0.1 (localhost)
-WEBUI_HOST="127.0.0.1"
-
-NODE_ENV=production
+WEB_UI_HOST="127.0.0.1"
