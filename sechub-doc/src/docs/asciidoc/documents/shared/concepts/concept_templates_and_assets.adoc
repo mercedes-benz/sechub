@@ -97,7 +97,7 @@ When a template is used inside a  {sechub} configuration, the {sechub} start mec
 check if the file from database is already available at storage (S3/NFS) which represents
 a cache for the assets.
 
-If available the, the cached part will be used. Otherwise it will be uploaded
+If available, the cached part will be used. Otherwise it will be uploaded
 (see  <<sechub-concept-asset-upload-lazy,{sechub} lazy asset upload to storage>> )
 
 
