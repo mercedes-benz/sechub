@@ -196,7 +196,7 @@ If validation and lazy uploaded did not fail, {sechub} will calculate a
     "template-metadata" : [{//<1>
         {
             "template" : "single-singon", //<2>
-            "type: "webscan-login",//<3>
+            "type": "webscan-login",//<3>
             "assets" : [ //<4>
                 {
                     "id" : "asset-id-1", //<5>
