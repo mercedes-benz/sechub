@@ -138,12 +138,12 @@ runs:
 
     - name: Create Symlink for index.js
       run: |
+        DIST_PATH=${{ github.workspace }}/../sechub/github-actions/scan/dist
         UNIQUE_ID=${{ github.sha }}
-        sed -i "s/exec-child/sechub-exec-child-$UNIQUE_ID/g" index.js
-        ln -s index.js "sechub-scan-$UNIQUE_ID.js"
-        ln -s exec-child.js "sechub-exec-child-$UNIQUE_ID.js"
+        sed -i "s/exec-child/sechub-exec-child-$UNIQUE_ID/g" "$DIST_PATH/index.js"
+        ln -s "$DIST_PATH/index.js" "sechub-scan-$UNIQUE_ID.js"
+        ln -s "$DIST_PATH/exec-child.js" "sechub-exec-child-$UNIQUE_ID.js"
         echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.js" >> $GITHUB_ENV
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
       shell: bash
 
     - name: Set GitHub Environment Variables
