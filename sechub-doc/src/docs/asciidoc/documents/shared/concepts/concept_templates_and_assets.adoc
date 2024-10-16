@@ -126,7 +126,7 @@ An asset id has
 - maximum length of 40
 - can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
 
-At the storage for each product, there will be a ZIP file having the 
+At the storage for each product (as named in the `pds-config.json` of the {pds} solution), there will be a ZIP file having the 
 product identifier as filename
 
 For example:
