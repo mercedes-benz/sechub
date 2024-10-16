@@ -91,7 +91,7 @@ runs:
       id: cache-sechub-github-actions-scan
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan
+        path: ${{ github.workspace }}/../sechub/github-actions/scan
         key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.repository }}
         # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
         # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
@@ -101,6 +101,7 @@ runs:
     - name: Checkout SecHub GitHub Actions Scan with Git
       # If the cache was a hit, we don't need to check out the repository again
       if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
       run: |
         git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
@@ -114,7 +115,7 @@ runs:
     - name: Cache Node Modules
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
+        path: ${{ github.workspace }}/../sechub/github-actions/scan/node_modules
         key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
@@ -123,29 +124,27 @@ runs:
 
     - name: Npm Install
       run: npm install
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
       shell: bash
 
     - name: Npm Run Build
       run: npm run build
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
       shell: bash
 
     - name: Make index.js Executable
       run: chmod +x dist/index.js
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
       shell: bash
 
-    # Copy the index.js to the root of the repository
-    # By doing this any file and folder references inside the scan action will be relative to the root of the repository
-    # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
-    # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
-    - name: Copy index.js To Root Of Repository
+    - name: Create Symlink for index.js
       run: |
-        cp dist/index.js ../../../sechub-scan.js
-        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
-        cp dist/exec-child.js ../../../sechub-exec-child.js
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+        UUID = $(uuidgen)
+        sed -i "s/exec-child/sechub-exec-child-$UUID/g" index.js
+        ln -s index.js "sechub-scan-$UUID.js"
+        ln -s exec-child.js "sechub-exec-child-$UUID.js"
+        echo "SECHUB_SCAN=sechub-scan-$UUID.js" >> $GITHUB_ENV
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
       shell: bash
 
     - name: Set GitHub Environment Variables
@@ -159,7 +158,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node sechub-scan.js
+      run: node ${{ env.SECHUB_SCAN }}
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
