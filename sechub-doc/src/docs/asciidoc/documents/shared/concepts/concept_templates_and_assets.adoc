@@ -225,7 +225,7 @@ Before extraction is done a checksum for the downloaded ZIP file is created and 
 with the checksum from template meta data. If it is different the {pds} job will fail
 with a dedicated error message.
 
-If checksum wer evalid, the assets ZIP file will be unzipped below a subfolder with the 
+If the checksum is valid, the assets ZIP file will be unzipped below a subfolder with the 
 template type:
  
 [source,text]
