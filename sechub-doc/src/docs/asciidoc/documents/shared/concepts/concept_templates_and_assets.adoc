@@ -193,7 +193,7 @@ If validation and lazy upload did not fail, {sechub} will calculate a
 [source,json]
 ----
 {
-    "template-metadata" : [{//<1>
+    "template-metadata" : [ //<1>
         {
             "template" : "single-singon", //<2>
             "type": "webscan-login",//<3>
