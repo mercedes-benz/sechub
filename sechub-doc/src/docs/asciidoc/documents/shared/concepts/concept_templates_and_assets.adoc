@@ -148,7 +148,7 @@ structure looks like!
 ===== Administration REST end points for storage
 Over REST API Administrators will be able to 
 
-- list (ZIP) file names 
+- list (ZIP) file names +
   `GET /api/administration/asset/$assetId/list`
 - upload asset ZIP files by REST API and create checksum file +
   `PUT /api/administration/asset/$assetId/$productId`
