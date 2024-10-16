@@ -53,7 +53,7 @@ PUT will contain following body:
 <1> The type of the template. Currently possible: `webscan-login`
 <2> Array with asset identifiers assigned to the template
 <3> Variable definitions as list of key and value pairs which can be mandatory or optional. 
-Via the type {sechub} server is able to check that configuration is valid and give 
+Via the type {sechub} server is able to check if the configuration is valid and give 
 response to users when job starts.
 
 ===== Mapping templates to projects
