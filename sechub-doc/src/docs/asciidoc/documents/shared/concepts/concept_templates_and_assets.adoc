@@ -180,7 +180,7 @@ If this validation fails, the complete {sechub} job will fail and stop processin
 
 [[sechub-concept-asset-upload-lazy]]
 ====== Upload in storage as cache lazily
-When validation did not fail, {sechub} will check if the asset is already uploaded to
+When validation did not fail, {sechub} will check if the current version of the asset is already uploaded to
 storage (S3/NFS) already.
 
 When not uploaded to storage, the file will be uploaded before the job is further processed.
