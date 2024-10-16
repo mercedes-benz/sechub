@@ -86,7 +86,7 @@ is not able to define which template is used.
 
 [IMPORTANT]
 ====
-If the user wants to use a template but none is defined for the location (by type) a 
+If the user has defined a `templateData` section in the configuration but no template of that type is assigned to the project, a
 dedicated error message must be returned to user and the PDS job will always fail.
 ====
 
