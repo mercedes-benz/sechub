@@ -140,9 +140,10 @@ runs:
       run: |
         DIST_PATH=${{ github.workspace }}/../sechub/github-actions/scan/dist
         UNIQUE_ID=${{ github.sha }}
-        sed -i "s/exec-child/sechub-exec-child-$UNIQUE_ID/g" "$DIST_PATH/index.js"
+        sed -i "s/exec-child/exec-child-$UNIQUE_ID/g" "$DIST_PATH/index.js"
+        cat "$DIST_PATH/index.js"
         ln -s -v "$DIST_PATH/index.js" "sechub-scan-$UNIQUE_ID.js"
-        ln -s -v "$DIST_PATH/exec-child.js" "sechub-exec-child-$UNIQUE_ID.js"
+        ln -s -v "$DIST_PATH/exec-child.js" "exec-child-$UNIQUE_ID.js"
         echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.js" >> $GITHUB_ENV
       shell: bash
 
