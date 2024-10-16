@@ -87,7 +87,7 @@ is not able to define which template is used.
 [IMPORTANT]
 ====
 If the user has defined a `templateData` section in the configuration but no template of that type is assigned to the project, a
-dedicated error message must be returned to user and the PDS job will always fail.
+dedicated error message must be returned to the user and the {sechub} job will always fail.
 ====
 
 ===== Asset storage
