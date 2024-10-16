@@ -138,11 +138,11 @@ runs:
 
     - name: Create Symlink for index.js
       run: |
-        UUID = $(uuidgen)
-        sed -i "s/exec-child/sechub-exec-child-$UUID/g" index.js
-        ln -s index.js "sechub-scan-$UUID.js"
-        ln -s exec-child.js "sechub-exec-child-$UUID.js"
-        echo "SECHUB_SCAN=sechub-scan-$UUID.js" >> $GITHUB_ENV
+        UNIQUE_ID=${{ github.sha }}
+        sed -i "s/exec-child/sechub-exec-child-$UNIQUE_ID/g" index.js
+        ln -s index.js "sechub-scan-$UNIQUE_ID.js"
+        ln -s exec-child.js "sechub-exec-child-$UNIQUE_ID.js"
+        echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.js" >> $GITHUB_ENV
       working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
       shell: bash
 
