@@ -11,6 +11,8 @@ import { getFieldFromJson } from './json-helper';
 import { execFileSync } from "child_process";
 import { sanitize } from "./shell-arg-sanitizer";
 
+const NEW_LINE_SEPARATOR = '\n';
+
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
@@ -92,13 +94,16 @@ export async function uploadArtifact(context: LaunchContext, name: string, files
         const rootDirectory = sanitize(context.workspaceFolder);
         core.debug('rootDirectory: ' + rootDirectory);
         if (core.isDebug()) {
-            const output = execFileSync('ls',
+            const filesInWorkspace = execFileSync('ls',
                 [rootDirectory],
                 {
                     encoding: 'utf-8'
                 }
-            );
-            core.debug('Output: ' + output);
+            ).split(NEW_LINE_SEPARATOR);
+
+            for (const fileName of filesInWorkspace) {
+                core.debug(fileName);
+            }
         }
         core.debug('files: ' + files);
 
@@ -123,7 +128,7 @@ function resolveReportNameForScanJob(context: LaunchContext): string {
         {
             encoding: 'utf-8'
         }
-    );
+    ).split(NEW_LINE_SEPARATOR);
 
     if (!context.jobUUID) {
         core.error('Illegal state: No job uuid resolved - not allowed at this point');

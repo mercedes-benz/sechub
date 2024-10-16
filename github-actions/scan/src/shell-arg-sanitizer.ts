@@ -26,7 +26,7 @@ export function sanitize(arg: string): string {
 
     /*
         remove all whitespaces
-        argument should not have any whitespaces so this should never cause any issues
+        a single argument should not have any whitespaces so this should never cause any issues
     */
     arg = arg.replace(/\s+/g, '')
 
