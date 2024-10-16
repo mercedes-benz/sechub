@@ -82,7 +82,7 @@ include::../configuration/sechub_config_example22_webscan_with_template.json[]
 ----
 <1> Define template data for the login. The user
 is not able to define which template is used.
-<2> Setup template variables by a map. 
+<2> Setup template variables by a list of key and value pairs. 
 
 [IMPORTANT]
 ====
