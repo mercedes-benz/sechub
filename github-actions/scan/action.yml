@@ -144,6 +144,7 @@ runs:
         cat "$DIST_PATH/index.js"
         ln -s -v "$DIST_PATH/index.js" "sechub-scan-$UNIQUE_ID.js"
         ln -s -v "$DIST_PATH/exec-child.js" "exec-child-$UNIQUE_ID.js"
+        ls -l
         echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.js" >> $GITHUB_ENV
       shell: bash
 
