@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  BRANCH: develop
+  BUILD_TYPE: build
+  CPU_LIMIT: "1.0"
+  MEMORY_LIMIT: 300M
+  NODE_ENV: production
+  NODE_VERSION: 22.9.0
+  TAG: ""
+  WEB_UI_HOST: 127.0.0.1
+  WEB_UI_PORT: "3000"
+  WEB_UI_VERSION: 0.1.0
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: web-ui-env
+  name: env

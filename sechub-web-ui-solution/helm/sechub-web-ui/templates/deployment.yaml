@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 49%
+  selector:
+    matchLabels:
+      name: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.name }}
+    spec:
+      containers:
+        # Web-UI container
+        - name: { { .Values.name } }
+          image: { { .Values.image } }
+          workingDir: /var/www/html/web-ui
+          env:
+            - name: BRANCH
+              valueFrom:
+                configMapKeyRef:
+                  key: BRANCH
+                  name: env
+            - name: BUILD_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  key: BUILD_TYPE
+                  name: env
+            - name: CPU_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  key: CPU_LIMIT
+                  name: env
+            - name: MEMORY_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  key: MEMORY_LIMIT
+                  name: env
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_ENV
+                  name: env
+            - name: NODE_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_VERSION
+                  name: env
+            - name: TAG
+              valueFrom:
+                configMapKeyRef:
+                  key: TAG
+                  name: env
+            - name: WEB_UI_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: WEB_UI_HOST
+                  name: env
+            - name: WEB_UI_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: WEB_UI_PORT
+                  name: env
+            - name: WEB_UI_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  key: WEB_UI_VERSION
+                  name: env
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_ENV
+                  name: env-web-ui
+          securityContext:
+            runAsUser: 4242  # uid of the application user. (should be same as in the Nginx-Proxy.dockerfile)
+            runAsGroup: 4242 # gid of the application group. (should be same as in the Nginx-Proxy.dockerfile)
+            fsGroup: 4242    # This gid has write access to the mounted volumes.
+
+        # Nginx container for serving the web-ui
+        - name: {{ Values.name-nginx }}
+          image: {{ Values.image-nginx }}
+          workingDir: /var/www/html
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 443
+              protocol: TCP
+          restartPolicy: Always
+          volumes:
+          {{ - if ne .Values.web-ui.ssl.keystoreAlias "undefined" }}
+          - name: secret-web-ui-ssl-volume
+            secret:
+              secretName: secret-web-ui-ssl
+          {{ - end }}
+
+      restartPolicy: Always

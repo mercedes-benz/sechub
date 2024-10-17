@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    name: {{ .Values.name }}
+spec:
+  selector:
+    - name: {{ .Values.name }}
+    - name: {{ .Values.name-nginx }}
+      ports:
+        - name: "8080"
+          port: 8080
+          targetPort: 8080
+        - name: "443"
+          port: 443
+          targetPort: 443

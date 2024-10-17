@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-== WebUI Image
+== Web UI Image
 
-The files to create the WebUI container image.
+The files to create the Web UI container image.
+The Web UI is a Vue.js SPA build with nuxt.js and is build on a node.js image.
+
+NITRO_SSL_CERT and NITRO_SSL_KEY - if both are present, this will launch the server in HTTPS mode. In the vast majority of cases, this should not be used other than for testing, and the Nitro server should be run behind a reverse proxy like nginx or Cloudflare which terminates SSL.
