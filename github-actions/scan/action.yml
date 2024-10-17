@@ -159,7 +159,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node ${{ env.SECHUB_SCAN }}
+      run: node ${{ env.SECHUB_SCAN }} --preserve-symlinks
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
