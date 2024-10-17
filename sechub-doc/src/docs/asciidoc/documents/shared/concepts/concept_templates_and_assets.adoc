@@ -31,39 +31,53 @@ assets and also a variable definition. It can be administrated via
 REST end points:
 
 ```
-PUT    /api/administration/template/$template-id
-GET    /api/administration/template/$template-id
-DELETE /api/administration/template/$template-id
+PUT    /api/admin/template/$template-id
+GET    /api/admin/template/$template-id
+DELETE /api/admin/template/$template-id
 ```
 
-PUT will contain following body:
+PUT will contain a body with the template data:
 
+====== Template definition
+The template definitions are hold inside {sechub} database.
+A template is defined by following json syntax:
+
+.Template definition syntax
 [source,json]
 ----
-{
-    "type" : "webscan-login",//<1>
-    "assets" : ["asset-id-1"]//<2>
-    "variables" : {//<3>
-        "username" : "mandatory",//<4>
-        "password" : "mandatory",
-        "tip-of-the-day" : "optional"//<5>
-    }
-}
+include::../snippet/template-definition-syntax.json[]
 ----
 <1> The type of the template. Currently possible: `webscan-login`
 <2> Array with asset identifiers assigned to the template
 <3> Variable definitions as list of key and value pairs which can be mandatory or optional. 
 Via the type {sechub} server is able to check if the configuration is valid and give 
 response to users when job starts.
+<4> Name of the variable
+<5> Describes if the variable is optional.  +
+    When `false` configuration must contain the variable inside template data. When `true`
+    the configuration is valid without the variable. The default is `false`.
+<6> Variable content validation definition ((optional)
+<7> Minimum length (optional)
+<8> Maximum length (optional)
+<9> Regular expression (optional). If defined, the content must match the given regular expression
+    to be valid. 
 
+[CAUTION]
+====
+The validation section inside the definition is only for a "first simple check" on {sechub} side, to
+stop before any {pds} job is created. 
+
+*But {pds} solutions which are using templates must ensure,that the given user content 
+(variable) is correct and not some malicious injected data!*
+====
 ===== Mapping templates to projects
 ```
-PUT     /api/admin/project/$projectId/template/$templateid
+PUT     /api/admin/project/$projectId/template
 DELETE  /api/admin/project/$projectId/template/$templateid
-GET     /api/admin/project/$projectId/template/list
+GET     /api/admin/project/$projectId/templates
 ```
 
-[IMPORTANT]
+[NOTE]
 ====
 The mapping is stored with template type as part of the composite key: 
 If two template definitions with same type are uploaded, the last one will
@@ -84,52 +98,27 @@ include::../configuration/sechub_config_example22_webscan_with_template.json[]
 is not able to define which template is used.
 <2> Setup template variables by a list of key and value pairs. 
 
-[IMPORTANT]
-====
 If the user has defined a `templateData` section in the configuration but no template of that type is assigned to the project, a
 dedicated error message must be returned to the user and the {sechub} job will always fail.
-====
-
-===== Asset storage
-The assets are initially stored in {sechub} database, together with the asset file checksum.
-
-When a template is used inside a  {sechub} configuration, the {sechub} start mechanism will 
-check if the file from database is already available at storage (S3/NFS) which represents
-a cache for the assets.
-
-If available, the cached part will be used. Otherwise it will be uploaded
-(see  <<sechub-concept-asset-upload-lazy,{sechub} lazy asset upload to storage>> )
-
-
-[TIP]
-====
-Main reason why we store always in DB and use storage (S3/NFS) as a cache only:
-
-1. Restore a DB backup on a fresh installation:  +
-   Administrators can just apply the database backup and everything works again
-2. Storage could be volatile/be deleted etc. (we rely to the database)
-3. For having two clusters ( {sechub} and {pds} having not same database we need
-   a way to exchange.
-====
-
 
 [IMPORTANT]
 ====
-For templates and assets we use the shared storage between {sechub} and {pds} .
-solutions and not to provide own storage for {pds}. Diffeent storages are not supported here.
+For templates and assets we must use shared storage between {sechub} and {pds} .
+{pds} solutions may not to provide own storage for {pds} - different storages 
+are not supported here.
 ====
 
-`/assets/$assetId/`
+====== Asset id format
+An asset id
 
-An asset id has
-
-- maximum length of 40
+- has a maximum length of 40
 - can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
 
-At the storage for each product (as named in the `pds-config.json` of the {pds} solution), there will be a ZIP file having the 
-product identifier as filename
+====== {sechub} server uses product identifiers for asset ids
+The {sechub} server will use the product identifiers (like in the executor configurations)
+as filenames when storing asset data inside database (and also inside storage).
 
-For example:
+Here an example for storage paths:
 ```
 /assets/
    asset-id-1/
@@ -145,7 +134,8 @@ The PDS solution defines which kind of template data is necessary and how the
 structure looks like!
 ====
 
-===== Administration REST end points for storage
+===== Administration
+====== General
 Over REST API Administrators will be able to 
 
 - list (ZIP) file names +
@@ -161,16 +151,35 @@ Over REST API Administrators will be able to
 
 The REST API will always create an audit log entry 
 
+====== Upload
+The upload and delete operations will always handle DB and storage (S3/NFS)!
+If an asset ZIP file already exists, the operation will overwrite the file and the 
+old sha256 checksum in both locations.
+
+[TIP]
+====
+Main reason why we store always in DB and use storage (S3/NFS) as a cache only:
+
+1. Restore a DB backup on a fresh installation:  +
+   Administrators can just apply the database backup and everything works again
+2. Storage could be volatile/be deleted etc. (we rely to the database)
+3. For having multiple and also different cluster types ( {sechub} cluster and multiple {pds} clusters)
+   having not same database we need a common way to exchange data.
+   Each {pds} cluster and also the {sechub} cluster have their own
+   database - means cannot be used for exchange.
+====
+ 
+
 [IMPORTANT]
 ====
 This works only when the storage is shared between {sechub} and {pds}.
 If the {pds} uses its own storage (which should NOT be done for production, but only
-for PDS solution development) the assets must be uploaded directly to the PDS storage 
-location! 
+for PDS solution development) the assets would needed to be uploaded directly to the PDS storage 
+location with correct checksum etc. 
 ====
 
-===== SecHub template and asset handling
-====== Validation
+===== SecHub runtime
+====== Validate config uses valid template location
 When a {sechub} job starts and there is a template data definition inside the configuration, 
 {sechub} will validate if the project has a template assigned for the location inside
 the configuration. e.g. templates with type `webscan-login` may only be defined inside 
@@ -179,51 +188,43 @@ web scan login configuration).
 If this validation fails, the complete {sechub} job will fail and stop processing.
 
 [[sechub-concept-asset-upload-lazy]]
-====== Upload in storage as cache lazily
-When validation did not fail, {sechub} will check if the current version of the asset is already uploaded to
-storage (S3/NFS) already.
+====== Validate config uses valid template location 
 
-When not uploaded to storage, the file will be uploaded before the job is further processed.
+When validation did not fail, {sechub} will check if the current version of the
+necessary product specific asset ZIP file is exsting in storage. 
+
+When not uploaded to storage, the file will be uploaded before the job is 
+further processed.
 
 ====== Template PDS parameter calculation
-If validation and lazy upload did not fail, {sechub} will calculate a
-{pds} parameter : `pds.template.metadata` with JSON (see parameter syntax for details).
+If the job configuration has valid template data and the template 
+is available in storage, {sechub} will calculate the
+{pds} parameter : `pds.template.metadata` with JSON:
 
-.PDS parameter syntax for template meta data 
+[[sechub-concept-template-metadata-example]]
+.PDS parameter syntax for template meta data
 [source,json]
 ----
-{
-    "template-metadata" : [ //<1>
-        {
-            "template" : "single-singon", //<2>
-            "type": "webscan-login",//<3>
-            "assets" : [ //<4>
-                {
-                    "id" : "asset-id-1", //<5>
-                    "sha256" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b" //<6> 
-                }
-            ]
-        }]
-    }     
-}
-
+include::../snippet/pds-param-template-metadata-syntax.json[]
 ----
 <1> Meta data array
 <2> Template identifier - just as an information for logging etc.
 <3> Template type
 <4> Asset information array
-<5> ID of the asset, necessary for storage download
-<6> checksum of the asset ZIP file, necessary to check after download
+<5> Asset identifier
+<6> Name of file (inside asset)
+<7> Checksum of the file (SHA256)
 
-===== PDS asset handling
+===== PDS runtime
+====== Asset handling
 {sechub} calls {pds}, with {pds} parameter `pds.template.metadata` (syntax is described above).
 
-The {pds} intance will fetch all wanted asset ZIP file for the current product 
-from storage (S3 or NFS) and extract it to `$workspaceFolder/assets/`. 
+The {pds} instance will fetch all defined files from storage (S3 or NFS) 
+and extract/copy it to `$workspaceFolder/assets/`. 
 
-Before extraction is done a checksum for the downloaded ZIP file is created and compared
-with the checksum from template meta data. If it is different the {pds} job will fail
-with a dedicated error message.
+Before extraction is done a checksum for the downloaded file is created and compared
+with the checksum from template meta data. The checksum algorithm is SHA256.
+If it is different the {pds} job will fail with a dedicated error message.
 
 If the checksum is valid, the assets ZIP file will be unzipped below a subfolder with the 
 template type:
@@ -238,7 +239,7 @@ template type:
 
 An example:
 
-The `MY_PRODUCT.zip` file contains
+The `WEBSCAN_PRODUCT_ID.zip` file contains
 
 [source,text]
 ----
@@ -249,25 +250,15 @@ The `MY_PRODUCT.zip` file contains
 
 and the template meta data looks like this:
 
-[source,text]
+[source,json]
 ----
-{
-    "template-metadata" : {
-        {
-            "type: "webscan-login",
-            "assets" : [
-                {
-                    "id" : "asset-id-1",
-                    "sha256" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b" 
-                }
-            ]
-        }
-    }     
-}
+include::../snippet/pds-param-template-metadata-example1.json[]
 ----
 
+The extraction is done into folder:
+`$workspaceFolder/assets/$type/`
 
-It will be extracted the following way.
+For the former example `WEBSCAN_PRODUCT_ID.zip` will be extracted the following way:
 
 [source,text]
 ----
@@ -275,29 +266,37 @@ It will be extracted the following way.
      assets/
         webscan-login/
                     script.js
-                    develoment/
+                    development/
                               debug-settings.json
    
 ----
 
 ====== Pseudo code for usage inside PDS solutions/wrappers
 
-Here an example (but pseudo code) how a product could use the assets inside:
+Here an example (but pseudo code) how a product could use the assets inside 
+a wrapper application for a PDS solution:
 
 [source,java]
 ----
-WebScanTemplateData data = util.fetchWebScanTemplateData(sechubConfig);
-if (data!=null){
+
+import com.mercedesbenz.sechub.commons.model.template.*;
+
+WebScanTemplateData templateData = util.fetchWebScanTemplateData(sechubConfig);
+if (templateData!=null){
+
     // folder=/$workspaceFolder/assets
     File folder = util.getAssetFolder();
     
-    // in example: it is a web scan...
-    script = folder.getChild("webscan-login/script.js");
+    // fetch file: in example it is a web scan login template
+    File scriptFile = folder.getChild(ID_WEBSCAN_LOGIN+"/script.js");
     
-    script = replaceVariableInScript(data.getVariable("username"), script);
-    script = replaceVariableInScript(data.getVariable("password"), script);
+    // process
+    String script = readTextFile(scriptFile);
+    script = replaceVariableInScript(templateData.getVariable("username"), script);
+    script = replaceVariableInScript(templateData.getVariable("password"), script);
     
-    // use script....
+    // use script
+    // ...
 }
 
 ----

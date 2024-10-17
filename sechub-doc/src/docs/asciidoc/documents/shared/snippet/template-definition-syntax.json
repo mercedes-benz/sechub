@@ -1,0 +1,26 @@
+{
+    "templateDefinition" : { 
+    
+        "id" : "$templateId", 
+    
+        "type" : "$templateType", //<1>
+        
+        "assets" : ["$assetId1" , "$assetId2", /* .. ,*/ "$assetIdn"], //<2>
+        
+        "variables" : [ //<3>
+            { 
+                "name" : "$variableName", // <4>
+                "optional": false, // <5>
+                
+                "validation" : {  // <6>
+                
+                    "minLength" : 1, // <7>
+                    "maxLength" : 100, // <8>
+                    
+                    "regularExpression" : "$regularExpression" // <9>
+                } 
+            }
+        ]
+    }
+    
+}
