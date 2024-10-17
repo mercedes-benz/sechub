@@ -2,18 +2,24 @@
 package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ApiResponseElement;
 import org.zaproxy.clientapi.core.ApiResponseList;
+import org.zaproxy.clientapi.core.ApiResponseSet;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 public class ClientApiFacade {
+
+    private static final String URL_KEY = "url";
+    private static final String STATUS_CODE_KEY = "statusCode";
+    private static final String STATUS_REASON_KEY = "statusReason";
+    private static final String METHOD_KEY = "method";
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientApiFacade.class);
 
@@ -370,18 +376,43 @@ public class ClientApiFacade {
     }
 
     /**
-     * Get a list of all URLs detected by the spider scan.
+     * Logs all spider results with additional meta data and counts the amount of
+     * spider results logged.
      *
-     * @return api response of ZAP
-     * @throws ClientApiException when anything goes wrong communicating with ZAP
+     * @param scanId
+     * @return the amount of spider results logged
+     * @throws ClientApiException
      */
-    public List<String> getAllSpiderUrls() throws ClientApiException {
-        List<ApiResponse> results = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-        List<String> urls = new ArrayList<>();
-        for (ApiResponse response : results) {
-            urls.add(response.toString());
+    public long logFullSpiderResults(String scanId) throws ClientApiException {
+        int numberOfSpiderResults = 0;
+        ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(scanId);
+        for (ApiResponse resultItem : results.getItems()) {
+            ApiResponseList elementList = (ApiResponseList) resultItem;
+
+            for (ApiResponse elementListItem : elementList.getItems()) {
+                // It seems like an ApiResponseSet is present if the URL was in scope.
+                // Otherwise, e.g. in case of third party services links like cloudflare or
+                // anything else that the crawler detects, elementListItem is of type
+                // ApiResponseElement, which does not contain a values map.
+                if (elementListItem instanceof ApiResponseSet) {
+                    ApiResponseSet apiResponseSet = (ApiResponseSet) elementListItem;
+                    Map<String, String> result = createSafeMap(apiResponseSet.getValuesMap());
+                    String url = result.get(URL_KEY);
+                    // robots.txt and sitemap.xml always appear inside the sites tree even if they
+                    // are not available. Because of this it is skipped here.
+                    if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
+                        continue;
+                    }
+                    String statusCode = result.get(STATUS_CODE_KEY);
+                    String statusReason = result.get(STATUS_REASON_KEY);
+                    String method = result.get(METHOD_KEY);
+
+                    LOG.info("URL: '{}' returned status code: '{}/{}' on detection phase for request method: '{}'", url, statusCode, statusReason, method);
+                    numberOfSpiderResults++;
+                }
+            }
         }
-        return urls;
+        return numberOfSpiderResults;
     }
 
     /**
@@ -635,5 +666,27 @@ public class ClientApiFacade {
 
     private String getIdOfApiResponseElement(ApiResponseElement apiResponseElement) {
         return apiResponseElement.getValue();
+    }
+
+    private Map<String, String> createSafeMap(Map<String, ApiResponse> valuesMap) {
+        ApiResponse url = valuesMap.get(URL_KEY);
+        ApiResponse statusCode = valuesMap.get(STATUS_CODE_KEY);
+        ApiResponse statusReason = valuesMap.get(STATUS_REASON_KEY);
+        ApiResponse method = valuesMap.get(METHOD_KEY);
+
+        Map<String, String> safeMap = new HashMap<>();
+        String safeUrl = url != null ? url.toString() : "";
+        safeMap.put(URL_KEY, safeUrl);
+
+        String safeStatusCode = statusCode != null ? statusCode.toString() : "";
+        safeMap.put(STATUS_CODE_KEY, safeStatusCode);
+
+        String safeStatusReason = statusReason != null ? statusReason.toString() : "";
+        safeMap.put(STATUS_REASON_KEY, safeStatusReason);
+
+        String safeMethod = method != null ? method.toString() : "";
+        safeMap.put(METHOD_KEY, safeMethod);
+
+        return safeMap;
     }
 }
