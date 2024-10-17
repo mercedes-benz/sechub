@@ -2,8 +2,7 @@
 package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,6 +15,11 @@ import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 public class ClientApiFacade {
+
+    private static final String URL_KEY = "url";
+    private static final String STATUS_CODE_KEY = "statusCode";
+    private static final String STATUS_REASON_KEY = "statusReason";
+    private static final String METHOD_KEY = "method";
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientApiFacade.class);
 
@@ -372,18 +376,15 @@ public class ClientApiFacade {
     }
 
     /**
-     * For the given scanId read all the spider results and add them to a list. Each
-     * entry of the list consists of a Map with the form: {processed=true,
-     * statusReason=OK, method=GET, reasonNotProcessed=, messageId=6,
-     * url=http://example.com, statusCode=200}
+     * Logs all spider results with additional meta data and counts the amount of
+     * spider results logged.
      *
      * @param scanId
-     * @param zapProductMessageHelper
+     * @return the amount of spider results logged
      * @throws ClientApiException
      */
-    public List<Map<String, ApiResponse>> getFullSpiderResults(String scanId) throws ClientApiException {
-        List<Map<String, ApiResponse>> fullResults = new LinkedList<>();
-
+    public long logFullSpiderResults(String scanId) throws ClientApiException {
+        int numberOfSpiderResults = 0;
         ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(scanId);
         for (ApiResponse resultItem : results.getItems()) {
             ApiResponseList elementList = (ApiResponseList) resultItem;
@@ -395,11 +396,23 @@ public class ClientApiFacade {
                 // ApiResponseElement, which does not contain a values map.
                 if (elementListItem instanceof ApiResponseSet) {
                     ApiResponseSet apiResponseSet = (ApiResponseSet) elementListItem;
-                    fullResults.add(apiResponseSet.getValuesMap());
+                    Map<String, String> result = createSafeMap(apiResponseSet.getValuesMap());
+                    String url = result.get(URL_KEY);
+                    // robots.txt and sitemap.xml always appear inside the sites tree even if they
+                    // are not available. Because of this it is skipped here.
+                    if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
+                        continue;
+                    }
+                    String statusCode = result.get(STATUS_CODE_KEY);
+                    String statusReason = result.get(STATUS_REASON_KEY);
+                    String method = result.get(METHOD_KEY);
+
+                    LOG.info("URL: '{}' returned status code: '{}/{}' on detection phase for request method: '{}'", url, statusCode, statusReason, method);
+                    numberOfSpiderResults++;
                 }
             }
         }
-        return fullResults;
+        return numberOfSpiderResults;
     }
 
     /**
@@ -653,5 +666,27 @@ public class ClientApiFacade {
 
     private String getIdOfApiResponseElement(ApiResponseElement apiResponseElement) {
         return apiResponseElement.getValue();
+    }
+
+    private Map<String, String> createSafeMap(Map<String, ApiResponse> valuesMap) {
+        ApiResponse url = valuesMap.get(URL_KEY);
+        ApiResponse statusCode = valuesMap.get(STATUS_CODE_KEY);
+        ApiResponse statusReason = valuesMap.get(STATUS_REASON_KEY);
+        ApiResponse method = valuesMap.get(METHOD_KEY);
+
+        Map<String, String> safeMap = new HashMap<>();
+        String safeUrl = url != null ? url.toString() : "";
+        safeMap.put(URL_KEY, safeUrl);
+
+        String safeStatusCode = statusCode != null ? statusCode.toString() : "";
+        safeMap.put(STATUS_CODE_KEY, safeStatusCode);
+
+        String safeStatusReason = statusReason != null ? statusReason.toString() : "";
+        safeMap.put(STATUS_REASON_KEY, safeStatusReason);
+
+        String safeMethod = method != null ? method.toString() : "";
+        safeMap.put(METHOD_KEY, safeMethod);
+
+        return safeMap;
     }
 }

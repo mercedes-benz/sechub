@@ -250,8 +250,11 @@ public class ZapScanner implements ZapScan {
         String followRedirects = "false";
         for (String url : scanContext.getZapURLsIncludeSet()) {
             clientApiFacade.addIncludeUrlPatternToContext(scanContext.getContextName(), url);
-            // cannot try to access wildcarded URLs
-            if (!url.contains(".*")) {
+            // Cannot not perform initial connection check to included URL with wildcards
+            if (url.contains(".*")) {
+                LOG.info("For scan {}: Cannot not perform initial connection check to included URL: {} because it contains wildcards.",
+                        scanContext.getContextName(), url);
+            } else {
                 clientApiFacade.accessUrlViaZap(url, followRedirects);
             }
         }
@@ -324,20 +327,20 @@ public class ZapScanner implements ZapScan {
     void executeScan(String zapContextId) throws ClientApiException {
         UserInformation userInfo = configureLoginInsideZapContext(zapContextId);
         if (userInfo != null) {
+            runSpiderAsUser(zapContextId, userInfo.zapuserId);
+            passiveScan();
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAjaxSpiderAsUser(userInfo.userName);
             }
-            runSpiderAsUser(zapContextId, userInfo.zapuserId);
-            passiveScan();
             if (scanContext.isActiveScanEnabled()) {
                 runActiveScanAsUser(zapContextId, userInfo.zapuserId);
             }
         } else {
+            runSpider();
+            passiveScan();
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAjaxSpider();
             }
-            runSpider();
-            passiveScan();
             if (scanContext.isActiveScanEnabled()) {
                 runActiveScan();
             }
@@ -423,14 +426,14 @@ public class ZapScanner implements ZapScan {
             clientApiFacade.createNewSession("Cleaned after scan", "true");
             LOG.info("New and empty session inside Zap created.");
 
-            // Remove x-sechub-dast header
-            LOG.info("Remove '{}' replacer rule.", X_SECHUB_DAST_HEADER_NAME);
-            clientApiFacade.removeReplacerRule(X_SECHUB_DAST_HEADER_NAME);
-
             // Replacer rules are persistent even after restarting ZAP
             // This means we need to cleanUp after every scan.
             LOG.info("Start cleaning up replacer rules.");
             cleanUpReplacerRules();
+
+            // Remove x-sechub-dast header replacer rule
+            LOG.info("Remove '{}' replacer rule.", X_SECHUB_DAST_HEADER_NAME);
+            clientApiFacade.removeReplacerRule(X_SECHUB_DAST_HEADER_NAME);
 
             // disable client certificate here, the imported client certificate will be
             // removed on ZAP shutdown automatically anyway
@@ -634,7 +637,9 @@ public class ZapScanner implements ZapScan {
         /* stop spider - otherwise running in background */
         clientApiFacade.stopSpiderScan(scanId);
 
-        scanContext.getZapProductMessageHelper().writeUserMessagesWithDetectedURLs(clientApiFacade.getFullSpiderResults(scanId));
+        long numberOfSpiderResults = clientApiFacade.logFullSpiderResults(scanId);
+        scanContext.getZapProductMessageHelper()
+                .writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Scanned %s URLs during the scan.".formatted(numberOfSpiderResults)));
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
         remainingScanTime = remainingScanTime - (systemUtil.getCurrentTimeInMilliseconds() - startTime);
     }

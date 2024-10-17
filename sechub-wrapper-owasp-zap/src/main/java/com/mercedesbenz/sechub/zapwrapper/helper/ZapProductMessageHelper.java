@@ -3,11 +3,9 @@ package com.mercedesbenz.sechub.zapwrapper.helper;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zaproxy.clientapi.core.ApiResponse;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -60,26 +58,6 @@ public class ZapProductMessageHelper {
         }
     }
 
-    public void writeUserMessagesWithDetectedURLs(List<Map<String, ApiResponse>> results) {
-        // The map looks like this: {processed=true, statusReason=OK, method=GET,
-        // reasonNotProcessed=, messageId=6, url=http://example.com, statusCode=200}
-        for (Map<String, ApiResponse> result : results) {
-            String url = result.get("url").toString();
-            // robots.txt and sitemap.xml always appear inside the sites tree even if they
-            // are not available. Because of this it is skipped here.
-            if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
-                continue;
-            }
-            String statusCode = result.get("statusCode").toString();
-            String statusReason = result.get("statusReason").toString();
-            String method = result.get("method").toString();
-
-            String message = "URL: '%s' returned status code: '%s/%s' on detection phase for request method: '%s'".formatted(url, statusCode, statusReason,
-                    method);
-            writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, message));
-        }
-    }
-
     private void writeProductErrorForExitCode(ZapWrapperExitCode exitCode) throws IOException {
         if (exitCode == null) {
             return;
@@ -92,7 +70,7 @@ public class ZapProductMessageHelper {
             break;
         case API_DEFINITION_CONFIG_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
-                    "Please use files instead of folders for the API definition with the filesystem->files section of the SecHub configuration."));
+                    "Please check your webscan api section inside the sechub configuration file. Only use supported api types and use filesystem->files instead of filesystem->folders for the API definition files."));
             break;
         case TARGET_URL_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,

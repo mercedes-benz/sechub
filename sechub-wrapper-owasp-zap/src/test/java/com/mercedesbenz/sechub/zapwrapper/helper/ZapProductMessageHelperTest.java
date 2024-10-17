@@ -115,7 +115,8 @@ class ZapProductMessageHelperTest {
                     errorMessage);
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            assertEquals("Please use files instead of folders for the API definition with the filesystem->files section of the SecHub configuration.",
+            assertEquals(
+                    "Please check your webscan api section inside the sechub configuration file. Only use supported api types and use filesystem->files instead of filesystem->folders for the API definition files.",
                     messageContent, errorMessage);
             break;
         case TARGET_URL_INVALID:

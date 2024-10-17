@@ -85,7 +85,6 @@ class ZapScannerTest {
         doNothing().when(helper).writeProductError(any());
         doNothing().when(helper).writeProductMessages(any());
         doNothing().when(helper).writeSingleProductMessage(any());
-        doNothing().when(helper).writeUserMessagesWithDetectedURLs(any());
 
         doNothing().when(systemUtil).waitForMilliseconds(ZapScanner.CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
         when(systemUtil.getCurrentTimeInMilliseconds()).thenCallRealMethod();
@@ -338,12 +337,19 @@ class ZapScannerTest {
         when(clientApiFacade.accessUrlViaZap(any(), any())).thenReturn(response);
         when(clientApiFacade.addExcludeUrlPatternToContext(any(), any())).thenReturn(response);
 
+        /* @formatter:off */
+        int includesWithoutWildcards = (int) includes.stream()
+                                                     .filter(s -> !s.contains(".*"))
+                                                     .count();
+        /* @formatter:on */
+
         /* execute */
         scannerToTest.addIncludedAndExcludedUrlsToContext();
 
         /* test */
         verify(clientApiFacade, times(includes.size())).addIncludeUrlPatternToContext(any(), any());
-        verify(clientApiFacade, times(2)).accessUrlViaZap(any(), any());
+        // make sure this method is only called for includes without wildcards
+        verify(clientApiFacade, times(includesWithoutWildcards)).accessUrlViaZap(any(), any());
         verify(clientApiFacade, times(excludes.size())).addExcludeUrlPatternToContext(any(), any());
     }
 
@@ -770,11 +776,10 @@ class ZapScannerTest {
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
         ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
         when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
-        doNothing().when(messageHelper).writeUserMessagesWithDetectedURLs(any());
 
         when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
         when(clientApiFacade.getSpiderStatusForScan(scanId)).thenReturn(42);
-        when(clientApiFacade.getFullSpiderResults(scanId)).thenReturn(null);
+        when(clientApiFacade.logFullSpiderResults(scanId)).thenReturn(0L);
 
         /* execute */
         scannerToTest.waitForSpiderResults(scanId);
@@ -783,10 +788,9 @@ class ZapScannerTest {
         verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).getZapProductMessageHelper();
-        verify(messageHelper, times(1)).writeUserMessagesWithDetectedURLs(any());
         verify(clientApiFacade, atLeast(1)).getSpiderStatusForScan(scanId);
         verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
-        verify(clientApiFacade, times(1)).getFullSpiderResults(scanId);
+        verify(clientApiFacade, times(1)).logFullSpiderResults(scanId);
     }
 
     @Test
@@ -909,11 +913,10 @@ class ZapScannerTest {
         when(scanContext.isActiveScanEnabled()).thenReturn(true);
         ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
         when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
-        doNothing().when(messageHelper).writeUserMessagesWithDetectedURLs(any());
 
         when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
         when(clientApiFacade.getSpiderStatusForScan(scanId)).thenReturn(42);
-        when(clientApiFacade.getFullSpiderResults(scanId)).thenReturn(null);
+        when(clientApiFacade.logFullSpiderResults(scanId)).thenReturn(0L);
         when(clientApiFacade.startSpiderScan(any(), any(), any(), any(), any())).thenReturn(scanId);
 
         /* execute */
@@ -923,10 +926,9 @@ class ZapScannerTest {
         verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
         verify(scanContext, times(1)).isActiveScanEnabled();
         verify(scanContext, times(1)).getZapProductMessageHelper();
-        verify(messageHelper, times(1)).writeUserMessagesWithDetectedURLs(any());
         verify(clientApiFacade, atLeast(1)).getSpiderStatusForScan(scanId);
         verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
-        verify(clientApiFacade, times(1)).getFullSpiderResults(scanId);
+        verify(clientApiFacade, times(1)).logFullSpiderResults(scanId);
         verify(clientApiFacade, times(1)).startSpiderScan(any(), any(), any(), any(), any());
     }
 
