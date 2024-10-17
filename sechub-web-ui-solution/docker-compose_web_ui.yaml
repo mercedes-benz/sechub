@@ -24,12 +24,11 @@ services:
       - "internal"
 
   nginx:
-    image: nginx:1.27
+    build:
+        context: docker/nginx
+        dockerfile: Nginx-Proxy.dockerfile
     working_dir: /var/www/html
     container_name: web-ui-nginx
-    volumes:
-      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./config/nginx/certs:/etc/nginx/certs
     ports:
       - "8080:8080"
       - "443:443"

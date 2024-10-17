@@ -9,11 +9,6 @@ source "../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 setup_environment_file ".env" "env"
 setup_environment_file ".env-web-ui" "env-web-ui"
 
-if [ ! -d "config/nginx/certs" ]; then
-  ../sechub-web-ui/generate_local_certificates.sh
-  mv certs config/nginx/
-fi
-
 # Use Docker BuildKit
 # necessary for switching between build stages
 export BUILDKIT_PROGRESS=plain
