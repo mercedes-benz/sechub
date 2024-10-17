@@ -131,18 +131,30 @@ runs:
       working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
       shell: bash
 
-    - name: Make index.js Executable
-      run: chmod +x dist/index.js
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
+    # The .cjs file extension stands for "CommonJS" and is used to indicate that the file is a CommonJS module.
+    # CommonJS is a module system used in Node.js that allows you to export and import modules using module.exports and require().
+    # The .cjs extension is particularly useful in environments where both CommonJS and ES Modules are used,
+    # as it helps to explicitly distinguish between the two module types.
+    - name: Create CommonJs Version of index.js
+      run: mv index.js index.cjs
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
       shell: bash
 
-    - name: Create Symlink for index.js
+    - name: Make index.cjs Executable
+      run: chmod +x index.cjs
+      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
+      shell: bash
+
+    # This step creates a symlink in the root of the repository which points to index.cjs file
+    # By doing this we can avoid putting the scan source code into the repository and still run the scan with the repository as the working directory
+    # Symlinks are ignored by the SecHub scan
+    - name: Create Symlink for index.cjs
       run: |
         DIST_PATH=${{ github.workspace }}/../sechub/github-actions/scan/dist
+        # This unique ID will make sure that no file can conflict with the sechub-scan.cjs file
         UNIQUE_ID=${{ github.sha }}
-        ln -s -v "$DIST_PATH/index.js" "sechub-scan-$UNIQUE_ID.js"
-        ls -l
-        echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.js" >> $GITHUB_ENV
+        ln -s -v "$DIST_PATH/index.cjs" "sechub-scan-$UNIQUE_ID.cjs"
+        echo "SECHUB_SCAN=sechub-scan-$UNIQUE_ID.cjs" >> $GITHUB_ENV
       shell: bash
 
     - name: Set GitHub Environment Variables
