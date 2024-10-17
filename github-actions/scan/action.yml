@@ -87,7 +87,7 @@ runs:
         node-version: 20
 
     - name: Cache SecHub Directory
-      id: cache-sechub-github-actions-scan
+      id: cache-sechub
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/../sechub
@@ -95,12 +95,17 @@ runs:
         # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
         # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
 
-    # Checkout the 'github-actions/scan' subfolder from the SecHub repository
+    - name: Create SecHub Directory
+      if: ${{ steps.cache-sechub.outputs.cache-hit != 'true' }}
+      run: mkdir -p ${{ github.workspace }}/../sechub
+      shell: bash
+
+    # Checkout the 'github-actions/scan' subfolder from the SecHub repository inside the 'sechub' directory
     # This contains the source code for the SecHub Scan GitHub Action
     - name: Checkout SecHub GitHub Actions Scan with Git
       # If the cache was a hit, we don't need to check out the repository again
-      if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
-      working-directory: ${{ github.workspace }}/..
+      if: ${{ steps.cache-sechub.outputs.cache-hit != 'true' }}
+      working-directory: ${{ github.workspace }}/../sechub
       run: |
         git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
@@ -114,8 +119,8 @@ runs:
     - name: Cache Node Modules
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/../sechub/github-actions/scan/node_modules
-        key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+        path: ${{ github.workspace }}/../sechub/sechub/github-actions/scan/node_modules
+        key: ${{ runner.os }}-sechub-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
           ${{ runner.os }}-sechub-github-actions-scan-node-
@@ -123,12 +128,12 @@ runs:
 
     - name: Npm Install
       run: npm install
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/../sechub/sechub/github-actions/scan
       shell: bash
 
     - name: Npm Run Build
       run: npm run build
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan
+      working-directory: ${{ github.workspace }}/../sechub/sechub/github-actions/scan
       shell: bash
 
     # The .cjs file extension stands for "CommonJS" and is used to indicate that the file is a CommonJS module.
@@ -137,12 +142,12 @@ runs:
     # as it helps to explicitly distinguish between the two module types.
     - name: Create CommonJs Version of index.js
       run: mv index.js index.cjs
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
+      working-directory: ${{ github.workspace }}/../sechub/sechub/github-actions/scan/dist
       shell: bash
 
     - name: Make index.cjs Executable
       run: chmod +x index.cjs
-      working-directory: ${{ github.workspace }}/../sechub/github-actions/scan/dist
+      working-directory: ${{ github.workspace }}/../sechub/sechub/github-actions/scan/dist
       shell: bash
 
     # This step creates a symlink in the root of the repository which points to index.cjs file
@@ -150,7 +155,7 @@ runs:
     # Symlinks are ignored by the SecHub scan
     - name: Create Symlink for index.cjs
       run: |
-        DIST_PATH=${{ github.workspace }}/../sechub/github-actions/scan/dist
+        DIST_PATH=${{ github.workspace }}/../sechub/sechub/github-actions/scan/dist
         # This unique ID will make sure that no file can conflict with the sechub-scan.cjs file
         UNIQUE_ID=${{ github.sha }}
         ln -s -v "$DIST_PATH/index.cjs" "sechub-scan-$UNIQUE_ID.cjs"
