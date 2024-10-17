@@ -15,7 +15,7 @@ if [ ! -d "config/nginx/certs" ]; then
 fi
 
 # Use Docker BuildKit
-# nesessary for switching between build stages
+# necessary for switching between build stages
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 

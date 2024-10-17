@@ -9,8 +9,8 @@ CPU_LIMIT=1.0
 # Possible values are: build, copy, download (currently only copy)
 # build - clones and build SecHub
 # copy - copies ./output directory container
-# download - downloads the SecHub jar
-BUILD_TYPE=copy
+# download (not implemented)
+BUILD_TYPE=build
 
 # The PDS version used if the BUILD_TYPE is set to `download`
 WEB_UI_VERSION="0.1.0"
