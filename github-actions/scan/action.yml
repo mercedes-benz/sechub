@@ -89,17 +89,15 @@ runs:
     - name: Cache SecHub Directory
       id: cache-sechub
       uses: actions/cache@v3
-      working-directory: ${{ github.workspace }}/..
       with:
-        path: /sechub
+        path: ${{ github.workspace }}/../sechub
         key: ${{ runner.os }}-sechub-${{ github.repository }}
         # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
         # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
 
     - name: Create SecHub Directory
       if: ${{ steps.cache-sechub.outputs.cache-hit != 'true' }}
-      working-directory: ${{ github.workspace }}/..
-      run: mkdir sechub
+      run: mkdir -p ${{ github.workspace }}/../sechub
       shell: bash
 
     # Checkout the 'github-actions/scan' subfolder from the SecHub repository inside the 'sechub' directory
@@ -120,9 +118,8 @@ runs:
 
     - name: Cache Node Modules
       uses: actions/cache@v3
-      working-directory: ${{ github.workspace }}/../sechub
       with:
-        path: /sechub/github-actions/scan/node_modules
+        path: ${{ github.workspace }}/../sechub/sechub/github-actions/scan/node_modules
         key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
