@@ -21,7 +21,7 @@ permissions:
   pull-requests: write
 
 env:
-  ACTIONS_BASE_IMAGE_ALPINE: alpine:3.17
+  ACTIONS_BASE_IMAGE_ALPINE: alpine:3.20
   ACTIONS_BASE_IMAGE_DEBIAN: debian:12-slim
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
   ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"

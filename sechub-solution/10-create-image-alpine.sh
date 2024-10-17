@@ -16,7 +16,7 @@ usage: $0 <docker registry> <version tag> <base image> [<SecHub server release v
 Builds a docker image of SecHub server
 for <docker registry> with tag <version tag>.
 Required:
-- <base image> ; An Alpine based image. Example: alpine:3.17
+- <base image> ; An Alpine based image. Example: alpine:3.20
 Optional:
 - <SecHub server release version> parameter (mandatory for build type "download")
   See https://github.com/mercedes-benz/sechub/releases
