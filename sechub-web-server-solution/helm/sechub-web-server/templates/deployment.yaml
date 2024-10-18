@@ -36,7 +36,8 @@ spec:
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
       - name: setup
-        image: "{{ .Values.go_mmproxy.image }}"
+        image: {{ .Values.go_mmproxy.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
         - "/bin/sh"
         - "-cx"
@@ -53,7 +54,8 @@ spec:
 {{- if .Values.go_mmproxy.enabled }}
       # go-mmproxy sidecar container
       - name: go-mmproxy
-        image: "{{ .Values.go_mmproxy.image }}"
+        image: {{ .Values.go_mmproxy.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 8080
         securityContext:
@@ -70,6 +72,7 @@ spec:
       # SecHub web-server container
       - name: sechub-web-server
         image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
           # min container memory
           requests:
