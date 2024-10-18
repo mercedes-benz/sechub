@@ -14,9 +14,9 @@ cd `dirname $0`
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <webserver version> [<base image> <build type>]
+usage: $0 <docker registry> <version tag> <web-server version> [<base image> <build type>]
 
-Builds a docker image of SecHub Web Server <webserver version> for <docker registry>
+Builds a docker image of SecHub Web Server <web-server version> for <docker registry>
 with tag <version tag>.
 
 Optional environment variables or options:
