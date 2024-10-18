@@ -3,12 +3,27 @@
 
 SLEEP_TIME_IN_WAIT_LOOP="2h"
 
+###########################
+# Trap and process signals
+trap trigger_shutdown INT QUIT TERM
+
+trigger_shutdown()
+{
+  if [ -n "$PID_JAVA_SERVER" ] ; then
+    echo "`basename $0`: Caught shutdown signal! Sending SIGTERM to Java server process $PID_JAVA_SERVER"
+    kill -TERM "$PID_JAVA_SERVER"
+    # Wait until Java server process has ended
+    wait "$PID_JAVA_SERVER"
+  fi
+  exit
+}
+###########################
+
 check_variable() {
   value="$1"
   name="$2"
 
-  if [ -z "$value" ]
-  then
+  if [ -z "$value" ] ; then
     echo "Mandatory environment variable $name not set."
     exit 1
   fi
@@ -28,6 +43,13 @@ wait_loop() {
   done
 }
 
+keep_container_alive_or_exit() {
+  if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ] ; then
+    echo "[ERROR] SecHub server crashed, but keeping the container alive."
+    wait_loop
+  fi
+}
+
 init_scheduler_settings() {
   if [ -z "$SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY" ] ; then
     export SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY="10000"
@@ -37,7 +59,26 @@ init_scheduler_settings() {
   export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY=$(( $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY / 10 * $(shuf -i 0-10 -n 1) ))
 }
 
-localserver() {
+init_s3_settings() {
+  # Set storage variables for Java Spring app:
+  check_variable "$S3_ENDPOINT" "S3_ENDPOINT"
+  export SECHUB_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
+  check_variable "$S3_BUCKETNAME" "S3_BUCKETNAME"
+  export SECHUB_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
+  check_variable "$S3_ACCESSKEY" "S3_ACCESSKEY"
+  export SECHUB_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
+  check_variable "$S3_SECRETKEY" "S3_SECRETKEY"
+  export SECHUB_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
+
+  cat - <<EOF
+Using S3 object storage:
+- Endpoint: $S3_ENDPOINT
+- Bucket: $S3_BUCKETNAME
+EOF
+}
+
+# Mode "localserver" is meant for local development
+prepare_localserver_startup() {
   check_setup
 
   profiles="dev,real_products,mocked_notifications"
@@ -87,15 +128,10 @@ localserver() {
   export SECHUB_NOTIFICATION_EMAIL_FROM="example@example.org"
   export SECHUB_NOTIFICATION_SMTP_HOSTNAME="example.org"
 
-  echo "Starting up SecHub server"
-  java $java_debug_options \
-    -Dfile.encoding=UTF-8 \
-    -Dserver.port=8443 \
-    -Dserver.address=0.0.0.0 \
-    -jar /sechub/sechub-server*.jar
+  SECHUB_SERVER_JAVA_OPTIONS="-Dserver.port=8443 -Dserver.address=0.0.0.0"
 }
 
-startup_server() {
+prepare_server_startup() {
   check_variable "$SPRING_PROFILES_ACTIVE" "SPRING_PROFILES_ACTIVE"
 
   # Initial job scheduling settings
@@ -131,18 +167,13 @@ SecHub server settings:
 - Job scheduling is activated every ${SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY}ms
 - Job scheduling initial delay: ${SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY}ms
 
-Starting up SecHub server
 EOF
-  java $java_debug_options \
-    -Dfile.encoding=UTF-8 \
-    -XX:InitialRAMPercentage=50 \
-    -XX:MaxRAMPercentage=80 \
-    -XshowSettings:vm \
-    -jar /sechub/sechub-server*.jar
+
+  SECHUB_SERVER_JAVA_OPTIONS="-XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm"
 }
 
 #####################################
-echo "Starting run script: run.sh $@"
+echo "Starting run script: $0 $@"
 echo "Java version:"
 java --version
 
@@ -153,26 +184,25 @@ if [ "$JAVA_ENABLE_DEBUG" = "true" ] ; then
 fi
 
 if [ "$S3_ENABLED" = "true" ] ; then
-  # Set storage variables for Java Spring app:
-  export SECHUB_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
-  export SECHUB_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
-  export SECHUB_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
-  export SECHUB_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
-
-  cat - <<EOF
-Using S3 object storage:
-- Endpoint: $S3_ENDPOINT
-- Bucket: $S3_BUCKETNAME
-EOF
+  init_s3_settings
 fi
 
-# Startup SecHub server
+# Prepare SecHub server startup
 case "$SECHUB_START_MODE" in
-  localserver) localserver ;;
-  server) startup_server ;;
+  localserver) prepare_localserver_startup ;;
+  server) prepare_server_startup ;;
   *) wait_loop ;;
 esac
 
-if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ] ; then
-  wait_loop
-fi
+echo "Starting up SecHub server"
+java $java_debug_options \
+  -Dfile.encoding=UTF-8 \
+  $SECHUB_SERVER_JAVA_OPTIONS \
+  -jar /sechub/sechub-server*.jar &
+
+# Get process pid and wait until it ends
+#   The pid is needed by function trigger_shutdown() in case we receive a termination signal.
+PID_JAVA_SERVER=$!
+wait "$PID_JAVA_SERVER"
+
+keep_container_alive_or_exit

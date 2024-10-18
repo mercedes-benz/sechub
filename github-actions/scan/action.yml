@@ -105,7 +105,7 @@ runs:
         git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
         cd sechub
         git config core.sparseCheckout true
-             
+        
         echo "github-actions/scan/" >> .git/info/sparse-checkout
         
         git checkout

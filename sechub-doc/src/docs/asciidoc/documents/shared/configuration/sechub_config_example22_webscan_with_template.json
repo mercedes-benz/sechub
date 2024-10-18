@@ -1,0 +1,19 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://productfailure.demo.example.org",
+    "login" : {
+            
+      "templateData" : { //<1>
+        "variables" : {  //<2>
+          "username" : "the-user",  
+          "password" : "the-password"
+        }
+      },
+      
+      "totp" : {
+        "seed" : "example-seed"
+      }
+    }
+  }
+}

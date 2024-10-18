@@ -6,7 +6,6 @@ import { SecHubConfigurationModelBuilderData } from '../src/configuration-builde
 
 jest.mock('@actions/core');
 
-
 function dumpModel(model: SecHubConfigurationModel){
     const json = JSON.stringify(model, null, 2); // pretty printed output
 
