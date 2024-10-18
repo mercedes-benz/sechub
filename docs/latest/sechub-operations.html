@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.2.0 modified (commit b7dcad3)</span>
+<span id="revnumber"> Server 2.3.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -791,7 +791,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.2.0 modified (commit b7dcad3) - Build date: 20240930151750</code></p>
+<p>Documentation version: <code>Server 2.3.0 - Build date: 20241018103858</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1369,8 +1369,36 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-configuration-scope-schedule" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Scope 'schedule'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.nextjob.suspend.miniumum-duration.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The scheduler automatically restarts the next suspended jobs, regardless of the defined schedule strategy.
+This is done to get suspended jobs of another shut down instance back up and running as quickly as possible.</p>
+<p class="tableblock">To avoid suspended jobs being restarted too quickly, you can use this value to set the minimum time that must pass
+before the next suspended job can be restarted. The value is defined in milliseconds.</p>
+<p class="tableblock">The (previous) end date of the suspended job is used. For example, this value is important for
+K8s redeployment, because the servers that have not yet been updated should not immediately continue with the
+suspended jobs - they will also be shut down soon and would suspend the restarted jobs again&#8230;&#8203;</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'scheduler'</caption>
+<caption class="title">Table 15. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1432,7 +1460,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'sec'</caption>
+<caption class="title">Table 16. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1499,7 +1527,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'security'</caption>
+<caption class="title">Table 17. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1521,7 +1549,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'server'</caption>
+<caption class="title">Table 18. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1543,7 +1571,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'storage'</caption>
+<caption class="title">Table 19. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1630,7 +1658,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'system'</caption>
+<caption class="title">Table 20. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1662,7 +1690,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'target'</caption>
+<caption class="title">Table 21. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1694,7 +1722,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'administration'</caption>
+<caption class="title">Table 22. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1716,7 +1744,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'scan'</caption>
+<caption class="title">Table 23. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1738,7 +1766,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'schedule'</caption>
+<caption class="title">Table 24. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -2385,7 +2413,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. PDS executor configuration parameters</caption>
+<caption class="title">Table 25. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3664,7 +3692,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.2.0 modified (commit b7dcad3)<br>
+ Server 2.3.0<br>
 </div>
 </div>
 </body>
