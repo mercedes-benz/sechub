@@ -7,6 +7,8 @@ replicaCount: 1
 image:
   registry: "ghcr.io/mercedes-benz/sechub/pds-checkmarx"
   tag: "latest"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "IfNotPresent"
 
 resources:
   requests:
