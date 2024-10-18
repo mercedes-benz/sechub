@@ -3,12 +3,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Values.name-nginx }}-policy
+  name: {{ .Values.name }}-policy
 spec:
   ingress:
   - ports:
-    - port: 443
+    - port: 8443
       protocol: TCP
   podSelector:
     matchLabels:
-      name: {{ .Values.name-nginx }}
+      name: {{ .Values.reverseProxy.name }}

@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  labels:
-    io.kompose.service: web-ui-env-web-ui
-  name: env-web-ui

@@ -31,7 +31,7 @@ services:
     container_name: web-ui-nginx
     ports:
       - "8080:8080"
-      - "443:443"
+      - "443:8443"
     depends_on:
       - web-ui
     networks:

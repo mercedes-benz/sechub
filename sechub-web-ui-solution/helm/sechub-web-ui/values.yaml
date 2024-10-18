@@ -2,18 +2,17 @@
 
 # This is a sample values file containing the defaults.
 
-name: sechub-web-ui
-name-nginx: sechub-web-ui-nginx
+name: web-ui
 
-image: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
+# image: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
+image: "registry-emea.app.corpintra.net/sechub/web-ui:0.0.1"
+
 # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
 #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 #   Example:
 # imagePullSecrets: |-
 #   - name: sechub-pull-secret
 #   - name: sps2
-
-image-nginx: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
 
 # Number of instances to spin up
 replicaCount: 1
@@ -26,8 +25,8 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
-web-ui:
- ssl:
+webui:
+  ssl:
     keystoreAlias: "undefined"
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be used.
@@ -41,3 +40,15 @@ web-ui:
 #  When setting to a different value than before, it forces k8s to spin up a new container.
 #  This way, you can force deployments e.g. when only secrets have changed.
 deploymentComment: "my deployment comment"
+
+reverseProxy:
+  name: web-ui-nginx
+  #image: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
+  image: "registry-emea.app.corpintra.net/sechub/web-ui-nginx:0.0.4"
+
+service:
+  loadbalancer:
+    ip: ""
+    port:
+      name: web-ui-https
+      number: 443

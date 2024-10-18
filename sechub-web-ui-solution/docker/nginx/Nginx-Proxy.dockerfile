@@ -4,6 +4,14 @@ FROM debian:12-slim
 
 ARG USER=www-data
 
+ENV UID="4242"
+ENV GID="${UID}"
+
+# non-root user
+# using fixed group and user ids
+RUN usermod -u "$UID" "$USER" && \
+    groupmod -g "$GID" "$USER"
+
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
