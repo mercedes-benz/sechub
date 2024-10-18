@@ -123,7 +123,7 @@ ext {
         springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
         springboot_starter_validation:         "org.springframework.boot:spring-boot-starter-validation",
         springboot_starter_webflux:            "org.springframework.boot:spring-boot-starter-webflux",
-
+        springboot_starter_oauth2_client:      "org.springframework.boot:spring-boot-starter-oauth2-client",
         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:         "org.springframework.security:spring-security-test", 
         springframework_web:                   "org.springframework:spring-web",

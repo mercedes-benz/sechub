@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+= Web Server
+
+WARNING: Don't use this early Web Server in production.
+
+== Development
+
+=== Standalone with mocked SecHub server access
+Activate the Spring Boot Dev Profile by 
+starting the application using the JVM argument:
+
+----
+-Dspring.profiles.active=web-server_dev
+----
+
+The started application will
+
+- used mocked sechub access (with mocked data)
+- start with self signed certificate
+- Login credentials
+  - User: user
+  - Password: password
+- Class auto reloading is activated
+
+==== Integration test with running SecHub server
+----
+-Dspring.profiles.active=web-server_integrationtest
+----
+
+The started application will
+
+- use running SecHub integration test server (port 8443)
+- use predefined integrationtest sechub admin credentials
+- trust generated inerationtest self signed certificate
+- start with self signed certificate 
+- Login credentials
+  - User: user
+  - Password: password
+
+=== Access
+The Web Server is accessible at: https://localhost:4443/

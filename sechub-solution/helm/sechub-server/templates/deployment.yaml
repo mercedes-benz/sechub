@@ -429,7 +429,7 @@ spec:
 # --------------------------------------------------------------------------------------------- #
         - name: SECHUB_START_MODE
           value: "server"
-        # When debug flag is set, rest call reponse error messages do also contains stacktraces.
+        # When debug flag is set, rest call reponse error messages do also contain stacktraces.
         - name: SECHUB_SERVER_DEBUG
           value: "false"
         # Loglevel of Hikari database connection pooling

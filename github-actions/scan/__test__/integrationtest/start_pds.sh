@@ -40,6 +40,8 @@ fi
 
 SCRIPT_DIR="$(dirname -- "$0")"
 
+export PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR=$SHARED_VOLUME
+
 echo "Start PDS at localhost:${SERVER_PORT}, executable at: ${PATH_TO_EXECUTABLE}"
 # `curl -s --insecure https://localhost:${this.serverPort}/api/anonymous/check/alive`;
 java \
@@ -48,6 +50,5 @@ java \
  -Dpds.config.heartbeat.verbose.logging.enabled=false \
  -Dserver.ssl.key-store="${PATH_TO_CERTIFICATE}" \
  -Dserver.port="${SERVER_PORT}" \
- -Dpds.storage.sharedvolume.upload.dir="$SHARED_VOLUME" \
  -Dpds.config.file="$PDS_CONFIG_FILE" \
  -jar "${PATH_TO_EXECUTABLE}">>"${PATH_TO_LOGFILE}" &
