@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 2.0.0 modified (commit b7dcad3)</span>
+<span id="revnumber"> PDS 2.0.0 modified (commit f2188d9)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -542,72 +542,78 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#product-delegation-server">3.1. Product delegation server</a>
 <ul class="sectlevel3">
-<li><a href="#general">3.1.1. General</a></li>
-<li><a href="#handling-of-resources">3.1.2. Handling of resources</a></li>
-<li><a href="#big-picture">3.1.3. Big picture</a></li>
-<li><a href="#encryption">3.1.4. Encryption</a>
+<li><a href="#general">3.1.1. General</a>
 <ul class="sectlevel4">
-<li><a href="#general-2">3.1.4.1. General</a></li>
-<li><a href="#pds-startup">3.1.4.2. PDS startup</a></li>
-<li><a href="#administration">3.1.4.3. Administration</a>
+<li><a href="#pds-in-an-nutshell">3.1.1.1. PDS In an nutshell</a></li>
+<li><a href="#handling-of-resources">3.1.1.2. Handling of resources</a></li>
+<li><a href="#communication-between-sechub-and-pds">3.1.1.3. Communication between SecHub and PDS</a></li>
+</ul>
+</li>
+<li><a href="#details-about-pds">3.1.2. Details about PDS</a></li>
+<li><a href="#encryption">3.1.3. Encryption</a>
+<ul class="sectlevel4">
+<li><a href="#general-2">3.1.3.1. General</a></li>
+<li><a href="#pds-startup">3.1.3.2. PDS startup</a></li>
+<li><a href="#administration">3.1.3.3. Administration</a>
 <ul class="sectlevel5">
-<li><a href="#section-shared-concepts-pds-data-encryption-rotation">3.1.4.3.1. Encryption rotation</a></li>
-<li><a href="#encryption-status">3.1.4.3.2. Encryption status</a></li>
-<li><a href="#cleanup-old-encrypted-data">3.1.4.3.3. Cleanup old encrypted data</a></li>
+<li><a href="#section-shared-concepts-pds-data-encryption-rotation">3.1.3.3.1. Encryption rotation</a></li>
+<li><a href="#encryption-status">3.1.3.3.2. Encryption status</a></li>
+<li><a href="#cleanup-old-encrypted-data">3.1.3.3.3. Cleanup old encrypted data</a></li>
 </ul>
 </li>
-<li><a href="#diagrams">3.1.4.4. Diagrams</a></li>
+<li><a href="#diagrams">3.1.3.4. Diagrams</a></li>
 </ul>
 </li>
-<li><a href="#concept-pds-auto-cleanup">3.1.5. Auto cleanup</a></li>
-<li><a href="#pds-storage-and-sharing">3.1.6. Storage and sharing</a>
+<li><a href="#concept-pds-auto-cleanup">3.1.4. Auto cleanup</a></li>
+<li><a href="#pds-storage-and-sharing">3.1.5. Storage and sharing</a>
 <ul class="sectlevel4">
-<li><a href="#shared-s3-storage">3.1.6.1. Shared S3 storage</a></li>
-<li><a href="#pds-storage-different-s3">3.1.6.2. Different S3 storages</a></li>
-<li><a href="#same-shared-volume-nfs">3.1.6.3. Same shared volume (NFS)</a></li>
-<li><a href="#pds-storage-different-sharedvolume">3.1.6.4. Different shared volumes (NFS)</a></li>
-<li><a href="#pds-storage-mixing-sharedvolume-and-s3">3.1.6.5. Mixing S3 and shared volume (NFS)</a></li>
+<li><a href="#shared-s3-storage">3.1.5.1. Shared S3 storage</a></li>
+<li><a href="#pds-storage-different-s3">3.1.5.2. Different S3 storages</a></li>
+<li><a href="#same-shared-volume-nfs">3.1.5.3. Same shared volume (NFS)</a></li>
+<li><a href="#pds-storage-different-sharedvolume">3.1.5.4. Different shared volumes (NFS)</a></li>
+<li><a href="#pds-storage-mixing-sharedvolume-and-s3">3.1.5.5. Mixing S3 and shared volume (NFS)</a></li>
 </ul>
 </li>
-<li><a href="#pds-process-handling">3.1.7. Process execution</a>
+<li><a href="#pds-process-handling">3.1.6. Process execution</a>
 <ul class="sectlevel4">
-<li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.7.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
-<li><a href="#how-pds-handles-meta-data">3.1.7.2. How PDS handles meta data</a>
+<li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.6.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
+<li><a href="#how-pds-handles-meta-data">3.1.6.2. How PDS handles meta data</a>
 <ul class="sectlevel5">
-<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.7.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
+<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
 </ul>
 </li>
-<li><a href="#how-pds-handles-storage-data">3.1.7.3. How PDS handles storage data</a>
+<li><a href="#how-pds-handles-storage-data">3.1.6.3. How PDS handles storage data</a>
 <ul class="sectlevel5">
-<li><a href="#pds-fetches-sourcecode-from-storage">3.1.7.3.1. Source code fetching</a></li>
-<li><a href="#pds-fetches-binaries-from-storage">3.1.7.3.2. Binaries fetching</a></li>
-<li><a href="#pds-explanation-data-structure">3.1.7.3.3. Data structure inside TAR and ZIP files</a></li>
-<li><a href="#automated-extraction-of-relevant-parts">3.1.7.3.4. Automated Extraction of relevant parts</a></li>
+<li><a href="#pds-fetches-sourcecode-from-storage">3.1.6.3.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">3.1.6.3.2. Binaries fetching</a></li>
+<li><a href="#pds-explanation-data-structure">3.1.6.3.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">3.1.6.3.4. Automated Extraction of relevant parts</a></li>
 </ul>
 </li>
-<li><a href="#how-pds-handles-user-messages">3.1.7.4. How PDS handles user messages</a></li>
-<li><a href="#how-pds-handles-execution-events">3.1.7.5. How PDS handles execution events</a></li>
+<li><a href="#how-pds-handles-user-messages">3.1.6.4. How PDS handles user messages</a></li>
+<li><a href="#how-pds-handles-execution-events">3.1.6.5. How PDS handles execution events</a></li>
 </ul>
 </li>
-<li><a href="#section-shared-concepts-pds-events-dataflow">3.1.8. PDS events</a>
+<li><a href="#section-shared-concepts-pds-events-dataflow">3.1.7. PDS events</a>
 <ul class="sectlevel4">
-<li><a href="#overview">3.1.8.1. Overview</a></li>
-<li><a href="#handling-events-in-launcher-script">3.1.8.2. Handling events in launcher script</a></li>
-<li><a href="#how-pds-product-executors-configure-the-pds-adapter">3.1.8.3. How PDS product executors configure the PDS adapter</a></li>
-<li><a href="#overview-2">3.1.8.4. Overview</a></li>
+<li><a href="#overview">3.1.7.1. Overview</a></li>
+<li><a href="#handling-events-in-launcher-script">3.1.7.2. Handling events in launcher script</a></li>
+<li><a href="#how-pds-product-executors-configure-the-pds-adapter">3.1.7.3. How PDS product executors configure the PDS adapter</a></li>
+<li><a href="#overview-2">3.1.7.4. Overview</a></li>
+<li><a href="#how-pds-handles-deployment-with-running-jobs">3.1.7.5. How PDS handles deployment with running jobs</a></li>
 </ul>
 </li>
-<li><a href="#sechub-integration">3.1.9. SecHub integration</a>
+<li><a href="#sechub-integration">3.1.8. SecHub integration</a>
 <ul class="sectlevel4">
-<li><a href="#executors-and-adapters">3.1.9.1. Executors and Adapters</a>
+<li><a href="#executors-and-adapters">3.1.8.1. Executors and Adapters</a>
 <ul class="sectlevel5">
-<li><a href="#executors">3.1.9.1.1. Executors</a></li>
-<li><a href="#adapters">3.1.9.1.2. Adapters</a></li>
+<li><a href="#executors">3.1.8.1.1. Executors</a></li>
+<li><a href="#adapters">3.1.8.1.2. Adapters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#howto-integrate-a-new-product-via-pds">3.1.10. HowTo integrate a new product via PDS</a></li>
+<li><a href="#howto-integrate-a-new-product-via-pds">3.1.9. HowTo integrate a new product via PDS</a></li>
 </ul>
 </li>
 </ul>
@@ -687,6 +693,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#job-execution">4.7.1.2. Job execution</a></li>
 <li><a href="#monitoring">4.7.1.3. Monitoring</a></li>
 <li><a href="#auto-cleanup">4.7.1.4. Auto cleanup</a></li>
+<li><a href="#other">4.7.1.5. Other</a></li>
 </ul>
 </li>
 <li><a href="#section-usecase-PDS_UC_001">4.7.2. PDS_UC_001-User creates job</a></li>
@@ -707,11 +714,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-PDS_UC_016">4.7.17. PDS_UC_016-User fetches job messages</a></li>
 <li><a href="#section-usecase-PDS_UC_017">4.7.18. PDS_UC_017-Admin fetches job meta data</a></li>
 <li><a href="#section-usecase-PDS_UC_018">4.7.19. PDS_UC_018-System handles job cancellation requests</a></li>
+<li><a href="#section-usecase-PDS_UC_019">4.7.20. PDS_UC_019-System handles SIGTERM</a></li>
 </ul>
 </li>
 <li><a href="#rest-api">4.8. REST API</a>
 <ul class="sectlevel3">
-<li><a href="#big-picture-2">4.8.1. Big picture</a></li>
+<li><a href="#big-picture">4.8.1. Big picture</a></li>
 <li><a href="#create-job">4.8.2. Create JOB</a></li>
 <li><a href="#upload-data">4.8.3. Upload data</a></li>
 <li><a href="#mark-job-ready-to-start">4.8.4. Mark JOB ready to start</a></li>
@@ -807,7 +815,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 2.0.0 modified (commit b7dcad3) - Build date: 20240930151750</code></p>
+<p>Documentation version: <code>PDS 2.0.0 modified (commit f2188d9) - Build date: 20241018103858</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -849,6 +857,8 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 <h3 id="product-delegation-server">3.1. Product delegation server</h3>
 <div class="sect3">
 <h4 id="general">3.1.1. General</h4>
+<div class="sect4">
+<h5 id="pds-in-an-nutshell">3.1.1.1. PDS In an nutshell</h5>
 <div class="paragraph">
 <p>There are many open source clients available having no server component inside so lacking:</p>
 </div>
@@ -890,7 +900,7 @@ need to provide a <code>ProductDelegationServer</code> (in short form <code>PDS<
 <p>provides REST access</p>
 </li>
 <li>
-<p>a very simple privilege model with just two users (<code>tech user</code> + <code>admin user</code>),
+<p>a very simple priviledge model with just two users (<code>tech user</code> + <code>admin user</code>),
 basic auth via <code>TLS</code>, credentials are simply defined by environment entries on startup</p>
 </li>
 <li>
@@ -906,8 +916,8 @@ available as environment variables at runtime</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="handling-of-resources">3.1.2. Handling of resources</h4>
+<div class="sect4">
+<h5 id="handling-of-resources">3.1.1.2. Handling of resources</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -919,23 +929,56 @@ available as environment variables at runtime</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="big-picture">3.1.3. Big picture</h4>
+<div class="sect4">
+<h5 id="communication-between-sechub-and-pds">3.1.1.3. Communication between SecHub and PDS</h5>
+<div class="paragraph">
+<p>The communication between SecHub server and PDS is very similar to the communication between SecHub client and SecHub server.
+The <code>PDS adapter</code> will do following steps from SecHub side - as a client of PDS:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>creates a PDS job</p>
+</li>
+<li>
+<p><em>(Optional: Only necessary when PDS does not resuse SecHub storage)</em> uploads sources and/or binaries to PDS</p>
+</li>
+<li>
+<p>approves PDS job</p>
+</li>
+<li>
+<p>waits until PDS job has finished</p>
+</li>
+<li>
+<p>downloads PDS report data</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As shown in next figure:</p>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_concept_product_delgation_server_bigpicture.png" alt="Diagram" width="1569" height="982">
 </div>
 </div>
 </div>
+</div>
 <div class="sect3">
-<h4 id="encryption">3.1.4. Encryption</h4>
+<h4 id="details-about-pds">3.1.2. Details about PDS</h4>
+<div class="paragraph">
+<p>For more details please refer to the &lt;&lt;<a href="https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html,PDS" class="bare">https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html,PDS</a> documentation&gt;&gt;  available at</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="encryption">3.1.3. Encryption</h4>
 <div id="section-shared-concepts-pds-data-encryption" class="paragraph">
 <p>In PDS we can have also some sensitive data we want to be encrypted. For example: The remote data
 section inside the sechub job configuration contains credentials to fetch data.
 Such sensitive information shall be always encrypted.</p>
 </div>
 <div class="sect4">
-<h5 id="general-2">3.1.4.1. General</h5>
+<h5 id="general-2">3.1.3.1. General</h5>
 <div class="paragraph">
 <p>We want</p>
 </div>
@@ -1008,7 +1051,7 @@ the environment variable name to use inside the database but never plain values!
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-startup">3.1.4.2. PDS startup</h5>
+<h5 id="pds-startup">3.1.3.2. PDS startup</h5>
 <div class="paragraph">
 <p>A PDS server only knows the encryption defined inside two variables:</p>
 </div>
@@ -1045,9 +1088,9 @@ There is no pooling of different encryptions (in constrast to SecHub, where pool
 </div>
 </div>
 <div class="sect4">
-<h5 id="administration">3.1.4.3. Administration</h5>
+<h5 id="administration">3.1.3.3. Administration</h5>
 <div class="sect5">
-<h6 id="section-shared-concepts-pds-data-encryption-rotation">3.1.4.3.1. Encryption rotation</h6>
+<h6 id="section-shared-concepts-pds-data-encryption-rotation">3.1.3.3.1. Encryption rotation</h6>
 <div class="paragraph">
 <p>There is no complete rotation of encryption - old data will have no encryption update.</p>
 </div>
@@ -1092,14 +1135,14 @@ just all).</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="encryption-status">3.1.4.3.2. Encryption status</h6>
+<h6 id="encryption-status">3.1.3.3.2. Encryption status</h6>
 <div class="paragraph">
 <p>There is no direct possibility to check encryption status. But the job contains a creation time stamp
 and can be mapped to the startup of containers if this would become necessary.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="cleanup-old-encrypted-data">3.1.4.3.3. Cleanup old encrypted data</h6>
+<h6 id="cleanup-old-encrypted-data">3.1.3.3.3. Cleanup old encrypted data</h6>
 <div class="paragraph">
 <p><a href="#concept-pds-auto-cleanup]">Auto Cleanup</a> automatically removes old information.
 This means that old encrypted information (with older encryption settings) automatically
@@ -1111,7 +1154,7 @@ disappears after a certain period of time.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="diagrams">3.1.4.4. Diagrams</h5>
+<h5 id="diagrams">3.1.3.4. Diagrams</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_encryption_pds.svg" alt="Diagram" width="1269" height="430">
@@ -1121,7 +1164,7 @@ disappears after a certain period of time.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="concept-pds-auto-cleanup">3.1.5. Auto cleanup</h4>
+<h4 id="concept-pds-auto-cleanup">3.1.4. Auto cleanup</h4>
 <div class="paragraph">
 <p>The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.</p>
 </div>
@@ -1131,7 +1174,7 @@ Administrators can change the default configuration via REST.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pds-storage-and-sharing">3.1.6. Storage and sharing</h4>
+<h4 id="pds-storage-and-sharing">3.1.5. Storage and sharing</h4>
 <div class="paragraph">
 <p>PDS needs - like SecHub - the possiblity to store job data in a central storage location when
 operating inside a cluster <em>(it&#8217;s not clear which cluster member uploads job data and which one does execute
@@ -1191,7 +1234,7 @@ URLs are NOT supported - only file paths. So you must mount your network file st
 </table>
 </div>
 <div class="sect4">
-<h5 id="shared-s3-storage">3.1.6.1. Shared S3 storage</h5>
+<h5 id="shared-s3-storage">3.1.5.1. Shared S3 storage</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-shared-s3-buckets">next example</a> PDS and SecHub are using the same S3 bucket to store files uploaded by the user.</p>
 </div>
@@ -1238,7 +1281,7 @@ Read there for more details - it&#8217;s the same - except there are not 2 diffe
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-different-s3">3.1.6.2. Different S3 storages</h5>
+<h5 id="pds-storage-different-s3">3.1.5.2. Different S3 storages</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-diff-s3-buckets">next example</a> PDS and SecHub are using different S3 buckets as storage.</p>
 </div>
@@ -1299,7 +1342,7 @@ This will NOT WORK! The job storage will not be found and an error will be throw
 </div>
 </div>
 <div class="sect4">
-<h5 id="same-shared-volume-nfs">3.1.6.3. Same shared volume (NFS)</h5>
+<h5 id="same-shared-volume-nfs">3.1.5.3. Same shared volume (NFS)</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-shared-nfs">next example</a> PDS server and SecHub are using same shared volume as storage.</p>
 </div>
@@ -1346,7 +1389,7 @@ Read there for more details - it&#8217;s the same - except there are not 2 diffe
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-different-sharedvolume">3.1.6.4. Different shared volumes (NFS)</h5>
+<h5 id="pds-storage-different-sharedvolume">3.1.5.4. Different shared volumes (NFS)</h5>
 <div class="paragraph">
 <p>In the <a href="#section-pds-s3-storage-example-diff-nfs">next example</a> PDS and SecHub are using different shared volumes as storage.</p>
 </div>
@@ -1407,7 +1450,7 @@ This will NOT WORK! The job storage will not be found and an error will be throw
 </div>
 </div>
 <div class="sect4">
-<h5 id="pds-storage-mixing-sharedvolume-and-s3">3.1.6.5. Mixing S3 and shared volume (NFS)</h5>
+<h5 id="pds-storage-mixing-sharedvolume-and-s3">3.1.5.5. Mixing S3 and shared volume (NFS)</h5>
 <div class="paragraph">
 <p>This <a href="#section-pds-s3-storage-example-s3-nfs-mixed">example</a> is only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes:
 <code>pds.config.use.sechub.storage</code> cannot be used in this case.</p>
@@ -1424,7 +1467,7 @@ PDS instances for product <code>XYZ</code> would use a NFS to store job data. Bu
 </div>
 </div>
 <div class="sect3">
-<h4 id="pds-process-handling">3.1.7. Process execution</h4>
+<h4 id="pds-process-handling">3.1.6. Process execution</h4>
 <div class="paragraph">
 <p>PDS instances are executing so called <code>caller scripts</code> by spanning a new process. At this time
 dedicated environment variables are automatically injected and available inside the scripts.</p>
@@ -1449,7 +1492,7 @@ the PDS configuration file and make the script callable.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.7.1. How PDS provides output and error stream content of running jobs in clustered environments</h5>
+<h5 id="how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.6.1. How PDS provides output and error stream content of running jobs in clustered environments</h5>
 <div class="paragraph">
 <p>We use <code>error.txt</code> and <code>output.txt</code> inside the workspace location of
 a running PDS job.</p>
@@ -1490,7 +1533,7 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-meta-data">3.1.7.2. How PDS handles meta data</h5>
+<h5 id="how-pds-handles-meta-data">3.1.6.2. How PDS handles meta data</h5>
 <div id="concept-pds_solution_metadata" class="paragraph">
 <p>When communication of PDS with the used product is stateful and is a long running operation,
 it can be useful to store such state/meta data.</p>
@@ -1532,7 +1575,7 @@ of the job run must be available, see next diagram for details:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.7.2.1. Checkmarx PDS solution adapter meta data handling</h6>
+<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.1. Checkmarx PDS solution adapter meta data handling</h6>
 <div class="paragraph">
 <p>The PDS solution for <code>Checkmarx</code> does reuse the already existing <code>CheckmarxAdapter</code> class.
 A <code>sechub-wrapper-checkmarx</code> gradle project was introduced which contains a simple spring boot
@@ -1550,14 +1593,14 @@ reading or writing to the database but uses the <code>metadata.txt</code> file f
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-storage-data">3.1.7.3. How PDS handles storage data</h5>
+<h5 id="how-pds-handles-storage-data">3.1.6.3. How PDS handles storage data</h5>
 <div class="paragraph">
 <p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
 temporary into its local filesystem. After the scan has been done, the temporary local files
 will be automatically deleted.</p>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-sourcecode-from-storage">3.1.7.3.1. Source code fetching</h6>
+<h6 id="pds-fetches-sourcecode-from-storage">3.1.6.3.1. Source code fetching</h6>
 <div class="paragraph">
 <p>Source code is always contained in a file called <code>sourcecode.zip</code>.
 When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
@@ -1572,7 +1615,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-binaries-from-storage">3.1.7.3.2. Binaries fetching</h6>
+<h6 id="pds-fetches-binaries-from-storage">3.1.6.3.2. Binaries fetching</h6>
 <div class="paragraph">
 <p>Binaries are always contained in a file called <code>binaries.tar</code>.
 When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
@@ -1587,7 +1630,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-explanation-data-structure">3.1.7.3.3. Data structure inside TAR and ZIP files</h6>
+<h6 id="pds-explanation-data-structure">3.1.6.3.3. Data structure inside TAR and ZIP files</h6>
 <div id="data-structure-tar-and-zip-files" class="paragraph">
 <p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
 data configuration parts inside <code><em>data</em></code> folder.</p>
@@ -1786,7 +1829,7 @@ __data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
 </div>
 </div>
 <div class="sect5">
-<h6 id="automated-extraction-of-relevant-parts">3.1.7.3.4. Automated Extraction of relevant parts</h6>
+<h6 id="automated-extraction-of-relevant-parts">3.1.6.3.4. Automated Extraction of relevant parts</h6>
 <div class="paragraph">
 <p>Only files and folders which are available for the configured scan type will be automatically
 extracted!<br>
@@ -1931,7 +1974,7 @@ The <code>PDS</code> for license scanning will only extract <code>license-binari
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-user-messages">3.1.7.4. How PDS handles user messages</h5>
+<h5 id="how-pds-handles-user-messages">3.1.6.4. How PDS handles user messages</h5>
 <div id="section-shared-concepts-product-message-pds-dataflow" class="paragraph">
 <p>Inside a PDS workspace a special messages folder exists. The launcher script can create there
 dedicated user message files by creating simple text files (see <a href="#table-link-pds-launcher-script-variable-messages">PDS_JOB_USER_MESSAGES_FOLDER</a>
@@ -1947,18 +1990,18 @@ PDS Job. Those SecHub messages can be fetched by technical user via REST API.</p
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-execution-events">3.1.7.5. How PDS handles execution events</h5>
+<h5 id="how-pds-handles-execution-events">3.1.6.5. How PDS handles execution events</h5>
 
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-shared-concepts-pds-events-dataflow">3.1.8. PDS events</h4>
+<h4 id="section-shared-concepts-pds-events-dataflow">3.1.7. PDS events</h4>
 <div class="paragraph">
 <p>Sometimes it is necessary that the PDS inform the script about changes.
 This can be done by execution events.</p>
 </div>
 <div class="sect4">
-<h5 id="overview">3.1.8.1. Overview</h5>
+<h5 id="overview">3.1.7.1. Overview</h5>
 <div class="paragraph">
 <p>The product adapter is able to read and write events into a dedicated folder inside the workspace.
 This is utilized by the <code>PDSWorkspaceService</code> class.</p>
@@ -1983,7 +2026,7 @@ As an example for an event the PDS cancel service calls are additionally shown (
 </div>
 </div>
 <div class="sect4">
-<h5 id="handling-events-in-launcher-script">3.1.8.2. Handling events in launcher script</h5>
+<h5 id="handling-events-in-launcher-script">3.1.7.2. Handling events in launcher script</h5>
 <div class="paragraph">
 <p>The launcher scripts (or in started wrapper applications by these scripts) have the
 environment variable <code>PDS_JOB_EVENTS_FOLDER</code> injected.</p>
@@ -2014,7 +2057,7 @@ be stopped automatically (otherwise the ZAP scan will still proceed&#8230;&#8203
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-product-executors-configure-the-pds-adapter">3.1.8.3. How PDS product executors configure the PDS adapter</h5>
+<h5 id="how-pds-product-executors-configure-the-pds-adapter">3.1.7.3. How PDS product executors configure the PDS adapter</h5>
 <div id="concept-pds_adapter_configuration" class="paragraph">
 <p>The different PDS product executors have different config builders which inherit from different abstract base classes
 (e.g. <code>AbstractCodeScanAdapterConfigBuilder</code>). We have no multi inheritance in Java, but we do also not
@@ -2025,20 +2068,68 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect4">
-<h5 id="overview-2">3.1.8.4. Overview</h5>
+<h5 id="overview-2">3.1.7.4. Overview</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_pds_adapter_configuration_overview.png" alt="Diagram" width="1494" height="926">
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="how-pds-handles-deployment-with-running-jobs">3.1.7.5. How PDS handles deployment with running jobs</h5>
+<div id="section-shared-concepts-pds-deployment-with-running-jobs" class="paragraph">
+<p>When a new PDS deployment starts, running jobs must be treated in a way that the running jobs
+are "transfered" to the new instances.</p>
+</div>
+<div class="paragraph">
+<p>This is done following way:</p>
+</div>
+<div class="paragraph">
+<p><code>SIGTERM</code> signal from OS is recognized and still running jobs are set to state <code>READY_FOR_RESTART</code>.</p>
+</div>
+<div class="paragraph">
+<p>Because the job stores its state via meta data (see <a href="#concept-pds_solution_metadata">PDS meta data</a> )
+it is possible reuse/relaunch the job from new instances. The PDS scheduler mechanism to determine
+next job to start handles this state before others.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>K8s (Kubernetes) sends a SIGTERM signal when doing rolling updates. Means we have here a zero down
+time with K8s + PDS.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Other signals (e.g. <code>SIGKILL</code>) are <strong>NOT treated</strong>! For those cases the jobs must be restarted manually
+afterwards.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="sechub-integration">3.1.9. SecHub integration</h4>
+<h4 id="sechub-integration">3.1.8. SecHub integration</h4>
 <div class="sect4">
-<h5 id="executors-and-adapters">3.1.9.1. Executors and Adapters</h5>
+<h5 id="executors-and-adapters">3.1.8.1. Executors and Adapters</h5>
 <div class="sect5">
-<h6 id="executors">3.1.9.1.1. Executors</h6>
+<h6 id="executors">3.1.8.1.1. Executors</h6>
 <div class="paragraph">
 <p>With <code>PDS</code> there is a default <code>REST</code> <code>API</code> available.</p>
 </div>
@@ -2048,7 +2139,7 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect5">
-<h6 id="adapters">3.1.9.1.2. Adapters</h6>
+<h6 id="adapters">3.1.8.1.2. Adapters</h6>
 <div class="paragraph">
 <p>The Adapter will always be the same, but filled with other necessary parameters.</p>
 </div>
@@ -2068,7 +2159,7 @@ So there will be no need to write any adapter or executor when using PDS!
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto-integrate-a-new-product-via-pds">3.1.10. HowTo integrate a new product via PDS</h4>
+<h4 id="howto-integrate-a-new-product-via-pds">3.1.9. HowTo integrate a new product via PDS</h4>
 <div class="paragraph">
 <p>Having new security product XYZ but being a command line tool, we</p>
 </div>
@@ -4044,6 +4135,19 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 </ul>
 </div>
 </div>
+<div class="sect4">
+<h5 id="other">4.7.1.5. Other</h5>
+<div class="paragraph">
+<p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-PDS_UC_019">PDS_UC_019-System handles SIGTERM</a></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="section-usecase-PDS_UC_001">4.7.2. PDS_UC_001-User creates job</h4>
@@ -4887,11 +4991,47 @@ instead of result - but it&#8217;s no JSON!</p>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_019">4.7.20. PDS_UC_019-System handles SIGTERM</h4>
+<div class="paragraph">
+<p>The PDS does listen to SIGTERM signal from OS and does necessary steps for next restart.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mark running jobs needing restart</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All running jobs in queue, which are not already done, will get the state READY_TO_RESTART</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="rest-api">4.8. REST API</h3>
 <div class="sect3">
-<h4 id="big-picture-2">4.8.1. Big picture</h4>
+<h4 id="big-picture">4.8.1. Big picture</h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_concept_product_delgation_server_bigpicture.png" alt="Diagram" width="1569" height="982">
@@ -5076,7 +5216,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 2.0.0 modified (commit b7dcad3)<br>
+ PDS 2.0.0 modified (commit f2188d9)<br>
 </div>
 </div>
 </body>
