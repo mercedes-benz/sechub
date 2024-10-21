@@ -40,11 +40,11 @@ public class ScheduleJobMarkerServiceTest {
 
         secHubJob = mock(ScheduleSecHubJob.class);
 
-        when(jobRepository.getJobWhenExecutable(uuid)).thenReturn(Optional.of(secHubJob));
+        when(jobRepository.getJobAndIncrementVersionWhenExecutable(uuid)).thenReturn(Optional.of(secHubJob));
     }
 
     @Test
-    public void markNextJobExecutedByThisPOD__calls_nextJobResolver() throws Exception {
+    public void markNextJobExecutedByThisInstance__calls_nextJobResolver() throws Exception {
         /* execute */
         serviceToTest.markNextJobToExecuteByThisInstance();
 
@@ -53,7 +53,7 @@ public class ScheduleJobMarkerServiceTest {
     }
 
     @Test
-    public void markNextJobExecutedByThisPOD__next_job_found_updates_execution_state_to_started() throws Exception {
+    public void markNextJobExecutedByThisInstance__next_job_found_updates_execution_state_to_started() throws Exception {
         /* prepare */
         when(nextJobResolver.resolveNextJobUUID()).thenReturn(uuid);
         when(jobRepository.save(secHubJob)).thenReturn(secHubJob);
@@ -72,7 +72,7 @@ public class ScheduleJobMarkerServiceTest {
     }
 
     @Test
-    public void markNextJobExecutedByThisPOD__next_job_not_found() throws Exception {
+    public void markNextJobExecutedByThisInstance__next_job_not_found() throws Exception {
         /* prepare */
         when(nextJobResolver.resolveNextJobUUID()).thenReturn(null);
 

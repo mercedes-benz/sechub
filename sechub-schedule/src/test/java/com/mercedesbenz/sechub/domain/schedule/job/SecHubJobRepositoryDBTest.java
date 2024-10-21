@@ -729,7 +729,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
 
         /* execute */
-        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
 
         /* test */
         assertFalse(result.isPresent());
@@ -742,7 +742,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
 
         /* execute */
-        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
 
         /* test */
         assertTrue(result.isPresent());

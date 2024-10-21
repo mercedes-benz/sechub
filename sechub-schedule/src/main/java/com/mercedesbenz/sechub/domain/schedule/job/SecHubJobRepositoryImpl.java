@@ -95,7 +95,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public Optional<ScheduleSecHubJob> getJobWhenExecutable(UUID id) {
+    public Optional<ScheduleSecHubJob> getJobAndIncrementVersionWhenExecutable(UUID id) {
         Query query = em.createQuery(JPQL_STRING_SELECT_BY_JOB_ID);
         query.setParameter(PARAM_EXECUTION_STATES, Set.of(ExecutionState.READY_TO_START, ExecutionState.SUSPENDED));
         query.setParameter(PARAM_UUID, id);
