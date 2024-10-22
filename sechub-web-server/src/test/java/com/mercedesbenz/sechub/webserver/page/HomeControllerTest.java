@@ -14,12 +14,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.webserver.security.JwtRequestPostProcessor;
 import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
 
 @WebMvcTest(HomeController.class)
 @Import(SecurityTestConfiguration.class)
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
-@ActiveProfiles("classic-auth-enabled")
+@ActiveProfiles("oauth2-enabled")
 class HomeControllerTest {
 
     private final MockMvc mockMvc;
@@ -41,10 +42,17 @@ class HomeControllerTest {
     @Test
     @WithMockUser
     void home_page_is_accessible_with_authenticated_user() throws Exception {
+        // prepare
+        String encryptedJwt = "37eb9nQkgX13l41KCOR7nA==";
+
         /* @formatter:off */
+
+        // execute & test
         mockMvc
-                .perform(get("/home"))
-                .andExpect(status().isOk());
+                .perform(get("/home").with(JwtRequestPostProcessor.fromJwt(encryptedJwt)))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+
         /* @formatter:on */
     }
 }
