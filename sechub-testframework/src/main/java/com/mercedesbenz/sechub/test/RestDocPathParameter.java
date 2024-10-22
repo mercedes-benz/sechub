@@ -39,6 +39,8 @@ public enum RestDocPathParameter {
 
     PROJECT_DATA_ID("id"),
 
+    TEMPLATE_ID("templateId"),
+
     ;
 
     private String restDocName;

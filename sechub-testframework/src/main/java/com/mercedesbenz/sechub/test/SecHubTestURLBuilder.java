@@ -19,6 +19,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ADMIN_JOBS = API_ADMIN_JOB + "s";
     private static final String API_ADMIN_SCHEDULER = API_ADMIN + "/scheduler";
 
+    private static final String API_ADMIN_TEMPLATE = API_ADMIN + "/template";
     private static final String API_ADMIN_SCAN = API_ADMIN + "/scan";
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
@@ -225,6 +226,25 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildAdminChangesUserEmailAddress(String userId, String newEmailAddress) {
         return buildUrl(API_ADMIN_USER, userId, "email", newEmailAddress);
+    }
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin/templates and assets................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public String buildUserCreatesOrUpdatesTemplate(String templateId) {
+        return buildUrl(API_ADMIN_TEMPLATE, templateId);
+    }
+
+    public String buildUserDeletesTemplate(String templateId) {
+        return buildUrl(API_ADMIN_TEMPLATE, templateId);
+    }
+
+    public String buildUserFetchesTemplate(String templateId) {
+        return buildUrl(API_ADMIN_TEMPLATE, templateId);
+    }
+
+    public String buildUserFetchesTemplateList() {
+        return buildUrl(API_ADMIN_TEMPLATE + "s");
     }
 
     /* +-----------------------------------------------------------------------+ */

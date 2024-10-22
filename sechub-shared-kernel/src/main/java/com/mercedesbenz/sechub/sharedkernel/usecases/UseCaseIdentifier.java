@@ -176,9 +176,19 @@ public enum UseCaseIdentifier {
 
     UC_ENCRYPTION_CLEANUP(77, false), // encryption cleanup is done by auto cleanup mechanism, no REST call necessary
 
+    /* job suspension */
     UC_SYSTEM_SUSPENDS_JOBS_WHEN_SIGTERM_RECEIVED(79, false),
 
     UC_SYSTEM_RESUMES_FORMER_SUSPENDED_JOBS(80, false),
+
+    /* templates */
+    UC_ADMIN_CREATES_OR_UPDATES_TEMPLATE(81),
+
+    UC_ADMIN_DELETES_TEMPLATE(82),
+
+    UC_ADMIN_FETCHES_TEMPLATE(83),
+
+    UC_ADMIN_FETCHES_ALL_TEMPLATE_IDS(84),
 
     ;
 

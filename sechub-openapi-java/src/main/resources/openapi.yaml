@@ -1982,8 +1982,53 @@ components:
             $ref: '#/components/schemas/SecHubJobInfoForUser'
         projectId:
           type: string
-
-
+    
+    TemplateType:
+      title: TemplateType
+      type: string
+      enum:
+        - WEBSCAN_LOGIN
+    
+    TemplateVariableValidation:
+      title: TemplateVariableValidation
+      type: object
+      properties:
+        minLength: 
+          type: integer
+          format: int32
+        maxLength: 
+          type: integer
+          format: int32
+        regularExpression: 
+          type: string
+    
+    TemplateVariable:
+      title: TemplateVariable
+      type: object
+      properties:
+        name:
+          type: string
+        optional:
+          type: boolean
+        validation: 
+          $ref: '#/components/schemas/TemplateVariableValidation' 
+          
+    TemplateDefinition:
+      title: TemplateDefinition
+      type: object
+      properties: 
+        type:
+          $ref: '#/components/schemas/TemplateType' 
+        assets:
+          type: array
+          items:
+            type: string
+        variables:
+          type: array
+          items:
+             $ref: '#/components/schemas/TemplateVariable'
+         
+    
 security:
   - basicAuth: [ ]
 
@@ -3736,3 +3781,94 @@ paths:
       x-content-type: application/json
       tags:
         - Other
+        
+  /api/admin/template/{templateId}:
+    post:
+      summary: Admin creates or updates a template
+      description: An administrator wants to create a new template or to update a template definition
+      operationId: adminCreateOrUpdateTemplate
+      parameters:
+      - name: templateId
+        description: The template id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Configuration
+        
+    delete:
+      summary: Admin deletes a template
+      description: An administrator wants to delete an existing template
+      operationId: adminDeleteTemplate
+      parameters:
+      - name: templateId
+        description: The template id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+        
+    get:
+      summary: Admin fetches template
+      description: An administrator wants to fetch the template definition by template id
+      operationId: adminFetchTemplate
+      parameters:
+      - name: templateId
+        description: The template id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+          content:
+           application/json:
+             schema:
+                $ref: '#/components/schemas/TemplateDefinition'
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+  
+  /api/admin/templates:
+    get:
+      summary: Admin fetches template ids
+      description: An administrator wants to fetch a list containing all available template identifiers
+      operationId: adminFetchTemplateIds
+      parameters:
+      - name: templateId
+        description: The template id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+  
