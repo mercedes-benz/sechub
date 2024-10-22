@@ -12,8 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * {@code JwtCookieResolver} implements {@link BearerTokenResolver} to provide
- * custom Bearer Token resolution. The Bearer Token (JWT) is read from the
- * cookies.
+ * custom Bearer Token resolution. The encrypted JWT is read from the cookies
+ * and decrypted using {@link AES256Encryption}.
+ *
+ * @see BearerTokenResolver
+ * @see AES256Encryption
  *
  * @author hamidonos
  */

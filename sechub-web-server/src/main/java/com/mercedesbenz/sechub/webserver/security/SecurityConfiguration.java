@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webserver.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.webserver.ApplicationProfiles;
@@ -84,10 +89,16 @@ class SecurityConfiguration {
     SecurityFilterChain securityFilterChainAuthenticated(HttpSecurity httpSecurity) throws Exception {
         AuthenticationEntryPoint authenticationEntryPoint = new MissingAuthenticationEntryPointHandler();
         BearerTokenResolver bearerTokenResolver = new JwtCookieResolver(aes256Encryption);
-
         /* @formatter:off */
+        RequestMatcher publicPathsMatcher = new OrRequestMatcher(
+                Arrays.stream(PUBLIC_PATHS)
+                        .map(AntPathRequestMatcher::new)
+                        .toArray(AntPathRequestMatcher[]::new)
+        );
+        RequestMatcher protectedPathsMatcher = new NegatedRequestMatcher(publicPathsMatcher);
+
         httpSecurity
-                .securityMatcher(new AntPathRequestMatcher("/home"))
+                .securityMatcher(protectedPathsMatcher)
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .bearerTokenResolver(bearerTokenResolver)
