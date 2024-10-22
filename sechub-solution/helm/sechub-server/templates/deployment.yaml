@@ -424,6 +424,8 @@ spec:
         # SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY is the delay after which the scheduler looks for the next job
         - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
           value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
+        - name: SECHUB_SCHEDULE_NEXTJOB_SUSPEND_MINIUMUM_DURATION_MILLISECONDS
+          value: "{{ .Values.server.jobScheduling.minimumSuspensionTimeInMilliseconds | int64 }}"
         # Scheduler strategy
         - name: SECHUB_SCHEDULER_STRATEGY_ID
           value: "{{ .Values.server.jobScheduling.strategy }}"
