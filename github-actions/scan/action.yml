@@ -119,6 +119,7 @@ runs:
       with:
         node-version: 20
         cache: 'npm'
+        cache-dependency-path: ${{ github.workspace }}/sechub/github-actions/scan
 
     # Caching is done by actions/setup-node above
     # - name: Cache Node Modules
