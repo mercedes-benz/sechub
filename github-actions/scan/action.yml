@@ -83,8 +83,9 @@ runs:
   steps:
     - name: Overview of setup
       run: |
+        echo "CWD=`pwd`"
         echo "---"
-        du ~
+        find ~ -type f
         echo "---"
       shell: bash
 
