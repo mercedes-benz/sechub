@@ -123,6 +123,7 @@ jobs:
       - name: Commit build artifacts from above steps
         id: github-actions_commit
         run: |
+          git add -f dist/*
           git commit -am "SecHub release job @github-actions for Github Action ${{ inputs.ghaction-version }} #${{ steps.release-issue.outputs.number }}" || true
           COMMITS=`git log --oneline --branches --not --remotes`
           echo "commits=$COMMITS" >> $GITHUB_OUTPUT
