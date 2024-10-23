@@ -95,7 +95,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/sechub/github-actions/scan
-        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.repository }}
+        key: ${{ runner.os }}-sechub-github-actions-scan-${{ inputs.branch }}
         # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
         # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
 
@@ -105,13 +105,17 @@ runs:
       # If the cache was a hit, we don't need to check out the repository again
       if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
       run: |
-        git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
+        git clone --no-checkout --branch=${{ inputs.branch }} --depth 1 https://github.com/mercedes-benz/sechub.git
         cd sechub
         git config core.sparseCheckout true
-        
-        echo "github-actions/scan/" >> .git/info/sparse-checkout
-        
+        echo "github-actions/scan/" > .git/info/sparse-checkout
         git checkout
+      shell: bash
+
+    - name: Update SecHub GitHub Actions Scan with Git pull
+      run: |
+        cd sechub
+        git pull
       shell: bash
 
     - name: Setup Node.js
