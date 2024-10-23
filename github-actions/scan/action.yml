@@ -82,9 +82,10 @@ runs:
   using: composite
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 20
+        cache: 'npm'
 
     # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub GitHub Actions Scan Subdirectory
@@ -111,15 +112,16 @@ runs:
         git checkout
       shell: bash
 
-    - name: Cache Node Modules
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
-        key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
-          ${{ runner.os }}-sechub-github-actions-scan-node-
-          ${{ runner.os }}-   
+    # Caching is done by actions/setup-node above
+    # - name: Cache Node Modules
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
+    #     key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
+    #       ${{ runner.os }}-sechub-github-actions-scan-node-
+    #       ${{ runner.os }}-   
 
     - name: Npm Install
       run: npm install
