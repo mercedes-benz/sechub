@@ -136,7 +136,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
                 and().
                 document(
                             requestFields(
-                                    fieldWithPath(PROPERTY_TYPE).description("The template type. Currently supported types are: "+ TemplateType.values()),
+                                    fieldWithPath(PROPERTY_TYPE).description("The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: "+ TemplateType.values()),
 
                                     fieldWithPath(PROPERTY_ASSETS).description("An array list containing ids of referenced assets"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_NAME).description("The variable name"),

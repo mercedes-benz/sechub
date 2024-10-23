@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 
 class TemplateServiceTest {
@@ -78,25 +79,36 @@ class TemplateServiceTest {
     void update_createOrUpdateTemplate_stores_existing_template_with_new_template_definition() throws Exception {
 
         /* prepare */
-        TemplateDefinition templateDefinition = mock(TemplateDefinition.class);
-        when(templateDefinition.toFormattedJSON()).thenReturn("formatted-json-new");
+        TemplateVariable variable1 = new TemplateVariable();
+        variable1.setName("var1");
+        
+        TemplateDefinition existingTemplateDefinition = new TemplateDefinition();
+        existingTemplateDefinition.setId("template1");
+        existingTemplateDefinition.setType(TemplateType.WEBSCAN_LOGIN);
+        existingTemplateDefinition.getAssets().add("asset1");
+        existingTemplateDefinition.getVariables().add(variable1);
 
-        Template existingTemplate = mock(Template.class);
-        when(existingTemplate.getId()).thenReturn("template1");
-        when(existingTemplate.getDefinition()).thenReturn("formatted-json-old");
+        Template existingTemplate = new Template("template1");
+        existingTemplate.setDefinition(existingTemplateDefinition.toFormattedJSON());
+        
         when(repository.findById("template1")).thenReturn(Optional.of(existingTemplate));
+        
+        TemplateDefinition templateDefinition = new TemplateDefinition();
+        templateDefinition.setId("some-other-id-which-will-be-ignored");
+        templateDefinition.setType(null); //just set to null to have another value than the stored one
 
         /* execute */
         serviceToTest.createOrUpdateTemplate("template1", templateDefinition);
 
         /* test */
-        verify(templateDefinition).setId("template1");
         ArgumentCaptor<Template> captor = ArgumentCaptor.captor();
         verify(repository).save(captor.capture());
 
         Template storedTemplate = captor.getValue();
-        assertThat(storedTemplate).isEqualTo(existingTemplate);
-        verify(storedTemplate).setDefinition("formatted-json-new");
+        TemplateDefinition storedDefinition = TemplateDefinition.from(storedTemplate.getDefinition());
+        
+        assertThat(storedTemplate.getId()).as("stored template id may not change").isEqualTo("template1"); //
+        assertThat(storedDefinition.getType()).as("stored template type may not change").isEqualTo(TemplateType.WEBSCAN_LOGIN);
     }
 
     @Test
