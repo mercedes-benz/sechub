@@ -27,6 +27,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             requests:
               memory: "{{ .Values.resources.requests.memory }}"
