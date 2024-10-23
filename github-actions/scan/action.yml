@@ -81,6 +81,13 @@ runs:
   # By doing this we don't have to manually build & check-in the artifacts anymore
   using: composite
   steps:
+    - name: Overview of setup
+      run: |
+        echo "---"
+        du ~
+        echo "---"
+      shell: bash
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
