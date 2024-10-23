@@ -89,12 +89,6 @@ runs:
         echo "---"
       shell: bash
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
-
     # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub GitHub Actions Scan Subdirectory
       id: cache-sechub-github-actions-scan
@@ -120,6 +114,12 @@ runs:
         git checkout
       shell: bash
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
     # Caching is done by actions/setup-node above
     # - name: Cache Node Modules
     #   uses: actions/cache@v3
@@ -131,15 +131,15 @@ runs:
     #       ${{ runner.os }}-sechub-github-actions-scan-node-
     #       ${{ runner.os }}-   
 
-    - name: Npm Install
-      run: npm install
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
+    # - name: Npm Install
+    #   run: npm install
+    #   working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+    #   shell: bash
 
-    - name: Npm Run Build
-      run: npm run build
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
+    # - name: Npm Run Build
+    #   run: npm run build
+    #   working-directory: ${{ github.workspace }}/sechub/github-actions/scan
+    #   shell: bash
 
     - name: Make index.js Executable
       run: chmod +x dist/index.js
