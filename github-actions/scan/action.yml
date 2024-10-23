@@ -90,6 +90,13 @@ runs:
       shell: bash
 
     # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
+    - name: Cache SecHub client
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/.sechub-gha/client/
+        key: ${{ runner.os }}-sechub-client-cache
+
+    # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub GitHub Actions Scan Subdirectory
       id: cache-sechub-github-actions-scan
       uses: actions/cache@v3
