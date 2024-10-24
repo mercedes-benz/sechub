@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
-          key: ${{ runner.os }}-pds-${{ env.pds_version }}
+          key: ${{ runner.os }}-sechub-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
         uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73
