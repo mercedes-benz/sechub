@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.webserver.page;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,6 +20,7 @@ import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
 @Import(SecurityTestConfiguration.class)
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 @ActiveProfiles("classic-auth-enabled")
+@Disabled("Temporarily disabled until integration with SecHub Server")
 class LoginClassicControllerTest {
 
     private final MockMvc mockMvc;

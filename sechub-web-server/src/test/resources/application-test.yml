@@ -11,8 +11,9 @@ sechub:
       authorization-uri: authorization-uri
       token-uri: token-uri
       user-info-uri: user-info-uri
-      jwk-set-uri: jwk-set-uri
-
+      jwk-set-uri: https://example.org/jwk-set-uri
+    encryption:
+      secret-key: test-test-test-test-test-test-32
 server:
   ssl:
     enabled: false

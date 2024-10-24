@@ -14,18 +14,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * {@code OAuth2SuccessHandler} implements {@link AuthenticationSuccessHandler}
- * to provide custom behavior upon successful authentication. This handler
- * redirects the user to the /home page specified in {@link RequestConstants}.
+ * {@code ClassicLoginSuccessHandler} implements
+ * {@link AuthenticationSuccessHandler} to provide custom behavior upon
+ * successful authentication. This handler redirects the user to the /home page
+ * specified in {@link RequestConstants}.
  *
  * @see SecurityConfiguration
  * @see RequestConstants
  *
  * @author hamidonos
  */
-class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+class ClassicLoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoginAuthenticationSuccessHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClassicLoginSuccessHandler.class);
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

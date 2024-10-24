@@ -109,24 +109,25 @@ ext {
    
    library = [
         /* spring */
-        springboot_starter_thymeleaf:          "org.springframework.boot:spring-boot-starter-thymeleaf",
+        springboot_starter_thymeleaf:              "org.springframework.boot:spring-boot-starter-thymeleaf",
 
-        springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",
+        springboot_devtoolssf:                     "org.springframework.boot:spring-boot-devtools",
 
-        springboot_starter_data_jpa:           "org.springframework.boot:spring-boot-starter-data-jpa",
-        springboot_starter_data_rest:          "org.springframework.boot:spring-boot-starter-data-rest",
-        springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
-        springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
-        springboot_starter_test:               "org.springframework.boot:spring-boot-starter-test",
-        springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
-        springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
-        springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
-        springboot_starter_validation:         "org.springframework.boot:spring-boot-starter-validation",
-        springboot_starter_webflux:            "org.springframework.boot:spring-boot-starter-webflux",
-        springboot_starter_oauth2_client:      "org.springframework.boot:spring-boot-starter-oauth2-client",
-        springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
-        springframework_security_test:         "org.springframework.security:spring-security-test", 
-        springframework_web:                   "org.springframework:spring-web",
+        springboot_starter_data_jpa:               "org.springframework.boot:spring-boot-starter-data-jpa",
+        springboot_starter_data_rest:              "org.springframework.boot:spring-boot-starter-data-rest",
+        springboot_starter_security :              "org.springframework.boot:spring-boot-starter-security",
+        springboot_starter_web:                    "org.springframework.boot:spring-boot-starter-web",
+        springboot_starter_test:                   "org.springframework.boot:spring-boot-starter-test",
+        springboot_starter_json:                   "org.springframework.boot:spring-boot-starter-json",
+        springboot_starter_actuator:               "org.springframework.boot:spring-boot-starter-actuator",
+        springboot_starter_mail:                   "org.springframework.boot:spring-boot-starter-mail",
+        springboot_starter_validation:             "org.springframework.boot:spring-boot-starter-validation",
+        springboot_starter_webflux:                "org.springframework.boot:spring-boot-starter-webflux",
+        springboot_starter_oauth2_client:          "org.springframework.boot:spring-boot-starter-oauth2-client",
+        springboot_starter_oauth2_resource_server: "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+        springframework_restdocs:                  "org.springframework.restdocs:spring-restdocs-mockmvc",
+        springframework_security_test:             "org.springframework.security:spring-security-test",
+        springframework_web:                       "org.springframework:spring-web",
 
         micrometer_prometheus:                 "io.micrometer:micrometer-registry-prometheus",
 

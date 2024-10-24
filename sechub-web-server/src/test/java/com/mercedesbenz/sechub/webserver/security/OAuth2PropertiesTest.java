@@ -45,7 +45,7 @@ class OAuth2PropertiesTest {
         assertThat(properties.getAuthorizationUri()).isEqualTo("authorization-uri");
         assertThat(properties.getTokenUri()).isEqualTo("token-uri");
         assertThat(properties.getUserInfoUri()).isEqualTo("user-info-uri");
-        assertThat(properties.getJwkSetUri()).isEqualTo("jwk-set-uri");
+        assertThat(properties.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
     }
 
     /* @formatter:off */
