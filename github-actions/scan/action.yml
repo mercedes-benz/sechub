@@ -74,19 +74,11 @@ outputs:
 
 runs:
   # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
-  # By doing this we don't have to manually build & check-in the artifacts anymore
   using: composite
   steps:
-    - name: Set GitHub Path
-      run: |
-        echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-        echo "GITHUB_ACTION_PATH=$GITHUB_ACTION_PATH"
-        echo "---"
-        ls -al "$GITHUB_ACTION_PATH"/dist/
-        echo "---"
+    - name: Checks
+      run: node version || true
       shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
 
     # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub client
@@ -102,22 +94,6 @@ runs:
         # cache: 'npm'
         # cache-dependency-path: ${{ github.action_path }}
 
-    # # Copy the index.js to the root of the repository
-    # # By doing this any file and folder references inside the scan action will be relative to the root of the repository
-    # # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
-    # # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
-    # - name: Copy index.js To root of repository
-    #   run: |
-    #     cp "$GITHUB_ACTION_PATH"/dist/index.js sechub-scan.js
-    #     sed -i 's/exec-child/sechub-exec-child/g' sechub-scan.js
-    #     chmod +x sechub-scan.js
-    #     cp "$GITHUB_ACTION_PATH"/dist/exec-child.js sechub-exec-child.js
-    #     ls -al
-    #   working-directory: ${{ github.workspace }}
-    #   shell: bash
-    #   env:
-    #     GITHUB_ACTION_PATH: ${{ github.action_path }}
-
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
       env:
@@ -127,29 +103,6 @@ runs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
           core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
-
-    # - name: Run SecHub Scan
-    #   run: node sechub-scan.js
-    #   env:
-    #     config-path: ${{ inputs.config-path }}
-    #     url: ${{ inputs.url }}
-    #     api-token: ${{ inputs.api-token }}
-    #     user: ${{ inputs.user }}
-    #     project-name: ${{ inputs.project-name }}
-    #     version: ${{ inputs.version }}
-    #     add-scm-history: ${{ inputs.add-scm-history }}
-    #     scan-types: ${{ inputs.scan-types }}
-    #     content-type: ${{ inputs.content-type }}
-    #     include-folders: ${{ inputs.include-folders }}
-    #     exclude-folders: ${{ inputs.exclude-folders }}
-    #     report-formats: ${{ inputs.report-formats }}
-    #     trust-all: ${{ inputs.trust-all }}
-    #     debug: ${{ inputs.debug }}
-    #     fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
-    #     ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
-    #     ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
-    #     ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
-    #   shell: bash
 
     - name: Run SecHub Scan
       run: node "$GITHUB_ACTION_PATH"/dist/index.js
