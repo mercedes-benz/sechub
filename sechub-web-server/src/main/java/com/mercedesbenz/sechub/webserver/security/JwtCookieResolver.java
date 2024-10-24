@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.webserver.security;
 import java.util.Arrays;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 
 import com.mercedesbenz.sechub.webserver.encryption.AES256Encryption;
@@ -24,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 class JwtCookieResolver implements BearerTokenResolver {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JwtCookieResolver.class);
     private static final String MISSING_JWT_VALUE = "missing-jwt";
     private static final Base64.Decoder DECODER = Base64.getDecoder();
 
@@ -38,6 +41,8 @@ class JwtCookieResolver implements BearerTokenResolver {
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {
+            LOG.debug("No cookies found in the request");
+
             /*
              * If the JWT cookie is not found, we return a constant string to indicate that
              * the JWT is missing. We do this because we want to pass exception handling
@@ -59,12 +64,18 @@ class JwtCookieResolver implements BearerTokenResolver {
         /* @formatter:on */
 
         if (jwt == null) {
+            LOG.debug("Request is missing the 'access_token' cookie");
             /* same here */
             return MISSING_JWT_VALUE;
         }
 
-        byte[] jwtBytes = DECODER.decode(jwt);
-
-        return aes256Encryption.decrypt(jwtBytes);
+        try {
+            byte[] jwtBytes = DECODER.decode(jwt);
+            return aes256Encryption.decrypt(jwtBytes);
+        } catch (Exception e) {
+            LOG.debug("Failed to decrypt JWT cookie", e);
+            /* same here */
+            return MISSING_JWT_VALUE;
+        }
     }
 }

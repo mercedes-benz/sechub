@@ -11,12 +11,14 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.webserver.encryption.AES256Encryption;
 
@@ -37,7 +39,9 @@ class JwtCookieResolverTest {
     private static final JwtCookieResolver jwtCookieResolver = new JwtCookieResolver(aes256Encryption);
     private static final HttpServletRequest httpServletRequest = mock();
 
-    static {
+    @BeforeEach
+    void beforeEach() {
+        Mockito.reset(aes256Encryption);
         when(aes256Encryption.decrypt(any())).thenReturn(JWT);
     }
 
@@ -65,6 +69,37 @@ class JwtCookieResolverTest {
         when(httpServletRequest.getCookies()).thenReturn(array);
 
         // execute
+        String jwt = jwtCookieResolver.resolve(httpServletRequest);
+
+        // test
+        assertThat(jwt).isEqualTo(MISSING_JWT_VALUE);
+    }
+
+    @Test
+    void resolve_returns_missing_jwt_value_when_access_token_decoding_fails() {
+        // prepare
+        Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED.concat("-invalid-b64"));
+        Cookie[] cookies = List.of(jwtCookie).toArray(new Cookie[0]);
+        when(httpServletRequest.getCookies()).thenReturn(cookies);
+
+        // execute & test
+
+        String jwt = jwtCookieResolver.resolve(httpServletRequest);
+
+        // test
+        assertThat(jwt).isEqualTo(MISSING_JWT_VALUE);
+    }
+
+    @Test
+    void resolve_returns_missing_jwt_value_when_access_token_decryption_fails() {
+        // prepare
+        Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED);
+        Cookie[] cookies = List.of(jwtCookie).toArray(new Cookie[0]);
+        when(httpServletRequest.getCookies()).thenReturn(cookies);
+        when(aes256Encryption.decrypt(any())).thenThrow(new RuntimeException());
+
+        // execute & test
+
         String jwt = jwtCookieResolver.resolve(httpServletRequest);
 
         // test
