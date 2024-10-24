@@ -229,21 +229,29 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ admin/templates and assets................+ */
+    /* +............................ admin: templates and assets................+ */
     /* +-----------------------------------------------------------------------+ */
-    public String buildUserCreatesOrUpdatesTemplate(String templateId) {
+    public String buildAdminAssignsTemplateToProjectUrl(String templateId, String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "template", templateId);
+    }
+
+    public String buildAdminUnAssignsTemplateToProjectUrl(String templateId, String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "template", templateId);
+    }
+
+    public String buildAdminCreatesOrUpdatesTemplate(String templateId) {
         return buildUrl(API_ADMIN_TEMPLATE, templateId);
     }
 
-    public String buildUserDeletesTemplate(String templateId) {
+    public String buildAdminDeletesTemplate(String templateId) {
         return buildUrl(API_ADMIN_TEMPLATE, templateId);
     }
 
-    public String buildUserFetchesTemplate(String templateId) {
+    public String buildAdminFetchesTemplate(String templateId) {
         return buildUrl(API_ADMIN_TEMPLATE, templateId);
     }
 
-    public String buildUserFetchesTemplateList() {
+    public String buildAdminFetchesTemplateList() {
         return buildUrl(API_ADMIN_TEMPLATE + "s");
     }
 
@@ -705,6 +713,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildIntegrationTestFetchTerminationState() {
         return buildUrl(API_ANONYMOUS, "integrationtest/termination-state");
+    }
+
+    public String buildIntegrationTestFetchScanProjectConfigurations(String projectId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/project-scanconfig/" + projectId);
     }
 
 }

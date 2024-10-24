@@ -28,6 +28,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsTemplateFromProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
@@ -85,6 +87,9 @@ public class ProjectAdministrationRestController {
 
     @Autowired
     ListProjectsService listProjectsService;
+
+    @Autowired
+    ProjectTemplateService projectTemplateService;
 
     /* @formatter:off */
 	@UseCaseAdminCreatesProject(
@@ -178,6 +183,22 @@ public class ProjectAdministrationRestController {
     public void changeProjectAccessLevel(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "projectAccessLevel") ProjectAccessLevel projectAccessLevel) {
         /* @formatter:on */
         projectAccessLevelChangeService.changeProjectAccessLevel(projectId, projectAccessLevel);
+    }
+
+    /* @formatter:off */
+    @UseCaseAdminAssignsTemplateToProject(@Step(number = 1, name = "Rest call", description = "Admin does call REST API to assign a template to project", needsRestDoc = true))
+    @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_TEMPLATE_TO_PROJECT, method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void assignTemplateToProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "templateId") String templateId) {
+        /* @formatter:on */
+        projectTemplateService.assignTemplateToProject(templateId, projectId);
+    }
+
+    /* @formatter:off */
+    @UseCaseAdminUnassignsTemplateFromProject(@Step(number = 1, name = "Rest call", description = "Admin does call REST API to unassign a template from project", needsRestDoc = true))
+    @RequestMapping(path = AdministrationAPIConstants.API_UNASSIGN_TEMPLATE_FROM_PROJECT, method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void unassignTemplateFromProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "templateId") String templateId) {
+        /* @formatter:on */
+        projectTemplateService.unassignTemplateFromProject(templateId, projectId);
     }
 
     @InitBinder

@@ -115,7 +115,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
     @UseCaseRestDoc(useCase = UseCaseAdminCreatesOrUpdatesTemplate.class)
     public void restdoc_admin_creates_or_updates_template() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserCreatesOrUpdatesTemplate(TEMPLATE_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminCreatesOrUpdatesTemplate(TEMPLATE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminCreatesOrUpdatesTemplate.class;
 
         String content = definition.toFormattedJSON();
@@ -158,7 +158,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
     @UseCaseRestDoc(useCase = UseCaseAdminDeletesTemplate.class)
     public void restdoc_admin_deletes_template() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserDeletesTemplate(TEMPLATE_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesTemplate(TEMPLATE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeletesTemplate.class;
 
         /* execute + test @formatter:off */
@@ -189,9 +189,9 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         /* prepare */
         definition.setId(TEST_TEMPLATE_ID1); // to have this in result as well, for create/delete it was not necessary, but
                                              // here we want it
-        when(templateService.fetchTemplate(TEST_TEMPLATE_ID1)).thenReturn(definition);
+        when(templateService.fetchTemplateDefinition(TEST_TEMPLATE_ID1)).thenReturn(definition);
 
-        String apiEndpoint = https(PORT_USED).buildUserFetchesTemplate(TEMPLATE_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesTemplate(TEMPLATE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminFetchesTemplate.class;
 
         /* execute + test @formatter:off */
@@ -234,7 +234,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         /* prepare */
         when(templateService.fetchAllTemplateIds()).thenReturn(List.of(TEST_TEMPLATE_ID1, TEST_TEMPLATE_ID2));
 
-        String apiEndpoint = https(PORT_USED).buildUserFetchesTemplateList();
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesTemplateList();
         Class<? extends Annotation> useCase = UseCaseAdminFetchesAllTemplateIds.class;
 
         /* execute + test @formatter:off */

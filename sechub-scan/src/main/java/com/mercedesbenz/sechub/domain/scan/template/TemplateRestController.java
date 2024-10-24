@@ -70,7 +70,7 @@ public class TemplateRestController {
 
         auditLogService.log("fetches template definition for template: {}", logSanitizer.sanitize(templateId, -1));
 
-        return templateService.fetchTemplate(templateId);
+        return templateService.fetchTemplateDefinition(templateId);
 
     }
 

@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.template;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +14,19 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesOrUpdatesTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAllTemplateIds;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesTemplate;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsTemplateFromProject;
+import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -30,9 +38,24 @@ public class TemplateService {
 
     private TemplateRepository repository;
 
-    TemplateService(@Autowired TemplateRepository repository) {
-        this.repository = repository;
+    private ScanProjectConfigService configService;
+
+    private TemplateTypeScanConfigIdResolver resolver;
+
+    private UserInputAssertion inputAssertion;
+
+/* @formatter:off */
+    TemplateService(
+            @Autowired TemplateRepository repository,
+            @Autowired ScanProjectConfigService configService,
+            @Autowired UserInputAssertion inputAssertion,
+            @Autowired TemplateTypeScanConfigIdResolver resolver) {
+        this.repository=repository;
+        this.configService=configService;
+        this.resolver=resolver;
+        this.inputAssertion=inputAssertion;
     }
+    /* @formatter:on */
 
     @UseCaseAdminCreatesOrUpdatesTemplate(@Step(number = 2, name = "Service creates or updates template"))
     public void createOrUpdateTemplate(String templateId, TemplateDefinition newTemplateDefinition) {
@@ -64,8 +87,8 @@ public class TemplateService {
                 // which is important because it may not change when we
                 // have templates assigned to projects (we only allow one template per type
                 // for a project!)
-                LOG.warn("Update will not set type '{}' to template '{}' because type is immutable. Will keep origin type '{}'", newTemplateDefinition.getType(), templateId,
-                        originType);
+                LOG.warn("Update will not set type '{}' to template '{}' because type is immutable. Will keep origin type '{}'",
+                        newTemplateDefinition.getType(), templateId, originType);
 
                 newTemplateDefinition.setType(originType);
             }
@@ -77,18 +100,27 @@ public class TemplateService {
         LOG.info("Template {} has been updated/created", templateId);
     }
 
-    @UseCaseAdminDeletesTemplate(@Step(number = 2, name = "Service deletes template"))
+    @UseCaseAdminDeletesTemplate(@Step(number = 2, name = "Service removes all assignments and deletes template completely"))
     public void deleteTemplate(String templateId) {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
         }
+        Set<String> allTemplateConfigIds = resolver.resolveAllPossibleConfigIds();
+        configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 
-        /* FIXME Albert Tregnaghi, 2024-10-22: delete relations to projects before! */
         repository.deleteById(templateId);
     }
 
+    /**
+     * Fetches template definition by given template id
+     *
+     * @param templateId template identifier
+     * @return definition, never <code>null</code>
+     *
+     * @throws NotFoundException if no template exists for given identifier
+     */
     @UseCaseAdminFetchesTemplate(@Step(number = 2, name = "Service fetches template"))
-    public TemplateDefinition fetchTemplate(String templateId) {
+    public TemplateDefinition fetchTemplateDefinition(String templateId) {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
         }
@@ -104,6 +136,59 @@ public class TemplateService {
     @UseCaseAdminFetchesAllTemplateIds(@Step(number = 2, name = "Services fetches all template ids"))
     public List<String> fetchAllTemplateIds() {
         return repository.findAllTemplateIds();
+    }
+
+    @UseCaseAdminAssignsTemplateToProject(@Step(number = 3, name = "service assigns project to template in scan domain"))
+    public void assignTemplateToProject(String templateId, String projectId) {
+        inputAssertion.assertIsValidTemplateId(templateId);
+        inputAssertion.assertIsValidProjectId(projectId);
+
+        LOG.debug("try to assign template '{}' to project '{}'", templateId, projectId);
+
+        TemplateDefinition template = fetchTemplateDefinition(templateId);
+        ScanProjectConfigID key = resolver.resolve(template.getType());
+
+        configService.set(projectId, key, templateId);
+
+        LOG.info("assigned template '{}' to project '{}'", templateId, projectId);
+    }
+
+    @UseCaseAdminUnassignsTemplateFromProject(@Step(number = 3, name = "service unassigns project from template in scan domain"))
+    public void unassignTemplateFromProject(String templateId, String projectId) {
+        inputAssertion.assertIsValidTemplateId(templateId);
+        inputAssertion.assertIsValidProjectId(projectId);
+
+        LOG.debug("try to unassign template '{}' from project '{}'", templateId, projectId);
+
+        TemplateDefinition template = fetchTemplateDefinition(templateId);
+        ScanProjectConfigID key = resolver.resolve(template.getType());
+
+        ScanProjectConfig config = configService.get(projectId, key);
+        String value = config.getData();
+
+        if (!templateId.equals(value)) {
+            LOG.warn("Cannot unassign template {} from project {} , because for '{}' the (other) template '{}' is set!", templateId, projectId, key.getId(),
+                    value);
+            return;
+        }
+
+        configService.unset(projectId, key);
+
+        LOG.info("unassigned template '{}' from project '{}'", templateId, projectId);
+    }
+
+    public List<String> fetchAssignedTemplateIdsForProject(String projectId) {
+        List<String> result = new ArrayList<>();
+        for (TemplateType type : TemplateType.values()) {
+            ScanProjectConfigID configId = resolver.resolve(type);
+            ScanProjectConfig config = configService.get(projectId, configId, false);
+            if (config == null) {
+                continue;
+            }
+            String templateId = config.getData();
+            result.add(templateId);
+        }
+        return result;
     }
 
 }
