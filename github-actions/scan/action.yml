@@ -102,21 +102,21 @@ runs:
         # cache: 'npm'
         # cache-dependency-path: ${{ github.action_path }}
 
-    # Copy the index.js to the root of the repository
-    # By doing this any file and folder references inside the scan action will be relative to the root of the repository
-    # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
-    # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
-    - name: Copy index.js To root of repository
-      run: |
-        cp "$GITHUB_ACTION_PATH"/dist/index.js sechub-scan.js
-        sed -i 's/exec-child/sechub-exec-child/g' sechub-scan.js
-        chmod +x sechub-scan.js
-        cp "$GITHUB_ACTION_PATH"/dist/exec-child.js sechub-exec-child.js
-        ls -al
-      working-directory: ${{ github.workspace }}
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
+    # # Copy the index.js to the root of the repository
+    # # By doing this any file and folder references inside the scan action will be relative to the root of the repository
+    # # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
+    # # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
+    # - name: Copy index.js To root of repository
+    #   run: |
+    #     cp "$GITHUB_ACTION_PATH"/dist/index.js sechub-scan.js
+    #     sed -i 's/exec-child/sechub-exec-child/g' sechub-scan.js
+    #     chmod +x sechub-scan.js
+    #     cp "$GITHUB_ACTION_PATH"/dist/exec-child.js sechub-exec-child.js
+    #     ls -al
+    #   working-directory: ${{ github.workspace }}
+    #   shell: bash
+    #   env:
+    #     GITHUB_ACTION_PATH: ${{ github.action_path }}
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
@@ -151,7 +151,7 @@ runs:
     #     ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
     #   shell: bash
 
-    - name: Run2 SecHub Scan
+    - name: Run SecHub Scan
       run: node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
