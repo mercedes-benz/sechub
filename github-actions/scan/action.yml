@@ -76,11 +76,7 @@ runs:
   # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
   using: composite
   steps:
-    - name: Checks
-      run: node version || true
-      shell: bash
-
-    # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
+    # Cache the SecHub client
     - name: Cache SecHub client
       uses: actions/cache@v3
       with:
@@ -91,8 +87,8 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
-        # cache: 'npm'
-        # cache-dependency-path: ${{ github.action_path }}
+        cache: 'npm'
+        cache-dependency-path: ${{ github.action_path }}/package-lock.json
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
