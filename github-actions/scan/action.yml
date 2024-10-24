@@ -89,6 +89,17 @@ runs:
         echo "---"
       shell: bash
 
+    - name: Set GitHub Path
+      run: |
+        #echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+        echo "GITHUB_ACTION_PATH=$GITHUB_ACTION_PATH"
+        echo "---"
+        find "$GITHUB_ACTION_PATH" -type f
+        echo "---"
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
     # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
     - name: Cache SecHub client
       uses: actions/cache@v3
