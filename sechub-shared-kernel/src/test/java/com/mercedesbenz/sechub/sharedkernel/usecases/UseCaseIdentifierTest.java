@@ -7,12 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UseCaseIdentifierTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UseCaseIdentifierTest.class);
+
     @Test
     void usecase_numbers_are_unique() {
-        for (UseCaseIdentifier identifier : UseCaseIdentifier.values()) {
+        UseCaseIdentifier[] values = UseCaseIdentifier.values();
+        // log out the number of values - a hint what number is next one (enum source
+        // numbering is fragmented and not always easy to read...)
+        LOG.info("Check uniqueness of {}  - found {} entries. Next free identifier number should be: {}", UseCaseIdentifier.class.getSimpleName(),
+                values.length, values.length + 1);
+        for (UseCaseIdentifier identifier : values) {
             searchForDuplicates(identifier);
         }
     }

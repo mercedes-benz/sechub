@@ -59,6 +59,10 @@ public class ProjectDataDeleteService {
         productResultRepository.deleteAllResultsForProject(projectId);
         scanReportRepository.deleteAllReportsForProject(projectId);
         scanLogRepository.deleteAllLogDataForProject(projectId);
+        /*
+         * next line deletes any project related configuration - this includes template
+         * assignment
+         */
         scanProjectConfigRepository.deleteAllConfigurationsForProject(projectId);
         profileRepository.deleteAllProfileRelationsToProject(projectId);
 

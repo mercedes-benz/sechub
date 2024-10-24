@@ -17,7 +17,7 @@ public class SetterGetterGenerationSupport {
         this.context = context;
     }
 
-    public void generateMethod(Method method, Template template, String visibility, boolean handleNull, String callFieldName) {
+    public void generateMethod(Method method, CodeTemplate template, String visibility, boolean handleNull, String callFieldName) {
         List<Parameter> paramList = getParameters(method);
 
         String methodSignature = createMethodSignature(method, paramList, visibility);

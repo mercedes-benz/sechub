@@ -1,25 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ACCESS_LEVEL;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.PROJECT_ID;
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.USER_ID;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
@@ -63,6 +55,7 @@ import com.mercedesbenz.sechub.domain.administration.project.ProjectJsonInput;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectMetaDataEntity;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectTemplateService;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectUpdateWhitelistService;
 import com.mercedesbenz.sechub.domain.administration.user.User;
@@ -72,6 +65,8 @@ import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsTemplateFromProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
@@ -134,6 +129,9 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
     @MockBean
     ProjectChangeAccessLevelService projectChangeAccessLevelService;
+
+    @MockBean
+    ProjectTemplateService projectTemplateService;
 
     @Before
     public void before() {
@@ -246,7 +244,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
 	                		),
                             pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id to delete")
                             )
 				));
 		/* @formatter:on */
@@ -276,7 +274,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
 	                		),
                             pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
                             )
                 ));
@@ -324,7 +322,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
                 		),
 		                pathParameters(
-		                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+		                        parameterWithName(PROJECT_ID.paramName()).description("The project id"),
 		                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues)
 		                )
                 ));
@@ -356,7 +354,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
 	                		),
                             pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
                             )
 				));
@@ -388,7 +386,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
 	                		),
                             pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
                             )
 				));
@@ -456,13 +454,14 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
                 		),
                         pathParameters(
-							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
+							parameterWithName(PROJECT_ID.paramName()).description("The project id to show details for")
                         ),
                         responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_TEMPLATES).description("A list of all templates assigned to the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
@@ -535,19 +534,85 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
                 		),
                         pathParameters(
-                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
+                            parameterWithName(PROJECT_ID.paramName()).description("The project id to change details for")
                         ),
                         responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_TEMPLATES).description("A list of all templates assigned to the project"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
                         )
                 ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminAssignsTemplateToProject.class)
+    public void restdoc_assign_template2project() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminAssignsTemplateToProjectUrl(TEMPLATE_ID.pathElement(), PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminAssignsTemplateToProject.class;
+
+        /* execute + test @formatter:off */
+        mockMvc.perform(
+                put(apiEndpoint, "projectId1", "template1").
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+        andExpect(status().isOk()).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
+                            requestHeaders(
+
+                            ),
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                                    parameterWithName(TEMPLATE_ID.paramName()).description("The id of the template to assign to project")
+                            )
+                ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminUnassignsTemplateFromProject.class)
+    public void restdoc_unassign_templateFromproject() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminUnAssignsTemplateToProjectUrl(TEMPLATE_ID.pathElement(), PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUnassignsTemplateFromProject.class;
+
+        /* execute + test @formatter:off */
+        mockMvc.perform(
+                delete(apiEndpoint, "projectId1", "template1").
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+        andExpect(status().isOk()).
+        andDo(defineRestService().
+                with().
+                useCaseData(useCase).
+                tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
+                        requestHeaders(
+
+                                ),
+                        pathParameters(
+                                parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                                parameterWithName(TEMPLATE_ID.paramName()).description("The id of the template to unassign from project")
+                                )
+                        ));
 
         /* @formatter:on */
     }

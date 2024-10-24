@@ -37,6 +37,8 @@ import com.mercedesbenz.sechub.domain.scan.product.config.DefaultProductExecutor
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfileRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
@@ -91,6 +93,9 @@ public class IntegrationTestScanRestController {
 
     @Autowired
     private ScanConfigService scanConfigService;
+
+    @Autowired
+    private ScanProjectConfigRepository scanProjectConfigRepository;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/scan/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -260,6 +265,11 @@ public class IntegrationTestScanRestController {
         }
         LOG.info("PDS product result found in database: {}. list = {}", pdsResultFound, list);
         return list;
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project-scanconfig/{projectId}", method = RequestMethod.GET)
+    public List<ScanProjectConfig> fetchScanConfigValue(@PathVariable("projectId") String projectId) {
+        return scanProjectConfigRepository.findAllForProject(projectId);
     }
 
 }

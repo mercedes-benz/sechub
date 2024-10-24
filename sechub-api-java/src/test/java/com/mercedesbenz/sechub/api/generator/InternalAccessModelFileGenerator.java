@@ -41,7 +41,7 @@ public class InternalAccessModelFileGenerator {
         LOG.debug("To      : {}", genFile);
         LOG.debug("");
 
-        Template template = new Template();
+        CodeTemplate template = new CodeTemplate();
         template.addLine("// SPDX-License-Identifier: MIT");
         template.addLine("package " + context.getTargetAbstractModelPackage() + ";");
         template.addLine("");
@@ -102,7 +102,7 @@ public class InternalAccessModelFileGenerator {
 
     }
 
-    private void generateMethods(Template template, List<Method> methods) {
+    private void generateMethods(CodeTemplate template, List<Method> methods) {
         for (Method method : methods) {
             context.getSetterGetterSupport().generateMethod(method, template, "public", true, "delegate");
         }

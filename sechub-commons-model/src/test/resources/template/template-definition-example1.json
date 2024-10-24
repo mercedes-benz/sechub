@@ -1,0 +1,14 @@
+{
+  "type" : "webscan-login",
+  "assets" : [ "asset1", "asset2" ],
+  "variables" : [ {
+    "name" : "variable1",
+    "optional" : true,
+    "validation" : {
+      "minLength" : 1,
+      "maxLength" : 100,
+      "regularExpression" : "[a-z].*"
+    }
+  } ],
+  "id" : "identifier"
+}

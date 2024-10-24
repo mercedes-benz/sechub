@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -16,7 +17,10 @@ import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
 import com.mercedesbenz.sechub.domain.scan.config.UpdateScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -68,6 +72,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     @Autowired
     ScanConfigService configService;
 
+    @Autowired
+    TemplateService templateService;
+
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -114,10 +121,45 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
         case REQUEST_PURGE_JOB_RESULTS:
             return handleJobRestartHardRequested(request);
-
+        case REQUEST_ASSIGN_TEMPLATE_TO_PROJECT:
+            return handleAssignTemplateToProjectRequest(request);
+        case REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT:
+            return handleUnassignTemplateFromProjectRequest(request);
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsRecevingSyncMessage(MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT)
+    private DomainMessageSynchronousResult handleAssignTemplateToProjectRequest(DomainMessage request) {
+        SecHubProjectToTemplate projectToTemplate = request.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
+        String templateId = projectToTemplate.getTemplateId();
+        String projectId = projectToTemplate.getProjectId();
+
+        try {
+            templateService.assignTemplateToProject(templateId, projectId);
+            List<String> templateIds = templateService.fetchAssignedTemplateIdsForProject(projectId);
+            return templateAssignmentDone(projectId, templateIds);
+        } catch (Exception e) {
+            return templateAssignmentFailed(e);
+        }
+
+    }
+
+    @IsRecevingSyncMessage(MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT)
+    private DomainMessageSynchronousResult handleUnassignTemplateFromProjectRequest(DomainMessage request) {
+        SecHubProjectToTemplate projectToTemplate = request.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
+        String templateId = projectToTemplate.getTemplateId();
+        String projectId = projectToTemplate.getProjectId();
+
+        try {
+            templateService.unassignTemplateFromProject(templateId, projectId);
+            List<String> templateIds = templateService.fetchAssignedTemplateIdsForProject(projectId);
+            return templateUnassignmentDone(projectId, templateIds);
+        } catch (Exception e) {
+            return templateUnassignmentFailed(e);
+        }
+
     }
 
     @IsRecevingSyncMessage(MessageID.REQUEST_PURGE_JOB_RESULTS)
@@ -144,6 +186,40 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     private DomainMessageSynchronousResult purgeDone(UUID jobUUID) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_DONE);
         result.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
+        return result;
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT, answeringTo = MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT, branchName = "success")
+    private DomainMessageSynchronousResult templateAssignmentDone(String projectId, List<String> assignedTemplates) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT);
+        SecHubProjectTemplates templates = new SecHubProjectTemplates();
+        templates.setProjectId(projectId);
+        templates.getTemplateIds().addAll(assignedTemplates);
+
+        result.set(MessageDataKeys.PROJECT_TEMPLATES, templates);
+        return result;
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT, answeringTo = MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT, branchName = "failed")
+    private DomainMessageSynchronousResult templateAssignmentFailed(Exception failure) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT, failure);
+        return result;
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT, answeringTo = MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT, branchName = "success")
+    private DomainMessageSynchronousResult templateUnassignmentDone(String projectId, List<String> assignedTemplates) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT);
+        SecHubProjectTemplates templates = new SecHubProjectTemplates();
+        templates.setProjectId(projectId);
+        templates.getTemplateIds().addAll(assignedTemplates);
+
+        result.set(MessageDataKeys.PROJECT_TEMPLATES, templates);
+        return result;
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT, answeringTo = MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT, branchName = "failed")
+    private DomainMessageSynchronousResult templateUnassignmentFailed(Exception failure) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT, failure);
         return result;
     }
 

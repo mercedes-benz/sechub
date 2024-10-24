@@ -22,6 +22,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
@@ -809,6 +810,15 @@ public class DeveloperAdministration {
 
     public SecHubEncryptionStatus fetchEncryptionStatus() {
         return asTestUser().fetchEncryptionStatus();
+    }
+
+    public TemplateDefinition fetchTemplateOrNull(String templateId) {
+        return asTestUser().fetchTemplateDefinitionOrNull(templateId);
+
+    }
+
+    public void createOrUpdateTemplate(String templateId, TemplateDefinition templateDefinition) {
+        asTestUser().createOrUpdateTemplate(templateId, templateDefinition);
     }
 
 }

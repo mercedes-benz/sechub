@@ -107,6 +107,12 @@ public class AdministrationAPIConstants {
     public static final String API_CHANGE_PROJECT_ACCESSLEVEL = API_ADMINISTRATION + "project/{projectId}/accesslevel/{projectAccessLevel}";
 
     /* +-----------------------------------------------------------------------+ */
+    /* +............................ Templates.................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String API_ASSIGN_TEMPLATE_TO_PROJECT = API_ADMINISTRATION + "project/{projectId}/template/{templateId}";
+    public static final String API_UNASSIGN_TEMPLATE_FROM_PROJECT = API_ADMINISTRATION + "project/{projectId}/template/{templateId}";
+
+    /* +-----------------------------------------------------------------------+ */
     /* +............................ Encryption................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String API_ADMIN_ENCRYPTION_ROTATION = API_ADMINISTRATION + "encryption/rotate";

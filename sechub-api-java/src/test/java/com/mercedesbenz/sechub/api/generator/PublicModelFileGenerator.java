@@ -46,7 +46,7 @@ public class PublicModelFileGenerator {
 
         String internalAccessClass = context.getTargetAbstractModelPackage() + "." + info.targetInternalAccessClassName;
 
-        Template template = new Template();
+        CodeTemplate template = new CodeTemplate();
         template.addLine("// SPDX-License-Identifier: MIT");
         template.addLine("package " + context.getTargetModelPackage() + ";");
         template.addLine("");
@@ -114,13 +114,13 @@ public class PublicModelFileGenerator {
 
     }
 
-    private void generatePublicSetterGetterMethods(MapGenInfo info, Template template) {
+    private void generatePublicSetterGetterMethods(MapGenInfo info, CodeTemplate template) {
         for (Method method : collectGettersAndSetters(info.fromGenclazz)) {
             context.getSetterGetterSupport().generateMethod(method, template, "public", false, "internalAccess");
         }
     }
 
-    private void generateAdditionalWrapperMethods(MapGenInfo info, Template template) {
+    private void generateAdditionalWrapperMethods(MapGenInfo info, CodeTemplate template) {
 
         Map<String, BeanDataContainer> map = info.getReferenceMap();
         for (String beanName : map.keySet()) {
@@ -130,7 +130,7 @@ public class PublicModelFileGenerator {
 
     }
 
-    private void generateMethodsToReferenceOtherWrapper(String beanName, BeanDataContainer other, Template template) {
+    private void generateMethodsToReferenceOtherWrapper(String beanName, BeanDataContainer other, CodeTemplate template) {
         String fieldName = asFieldName(beanName);
         if (other.isAsList()) {
 
@@ -168,7 +168,7 @@ public class PublicModelFileGenerator {
         }
     }
 
-    private void generateAdditionalWrapperFields(MapGenInfo info, Template template) {
+    private void generateAdditionalWrapperFields(MapGenInfo info, CodeTemplate template) {
 
         Map<String, BeanDataContainer> map = info.getReferenceMap();
         for (String beanName : map.keySet()) {
@@ -178,7 +178,7 @@ public class PublicModelFileGenerator {
 
     }
 
-    private void generateAdditionalWrapperFieldsForOther(String beanName, BeanDataContainer other, Template template) {
+    private void generateAdditionalWrapperFieldsForOther(String beanName, BeanDataContainer other, CodeTemplate template) {
         template.addLine("    private " + other.asTargetTypeResult() + " " + asFieldName(beanName) + ";");
     }
 }
