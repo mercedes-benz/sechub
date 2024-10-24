@@ -24,7 +24,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
@@ -37,6 +40,8 @@ import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
@@ -1423,6 +1428,54 @@ public class AsUser {
         String url = getUrlBuilder().buildAdminFetchesEncryptionStatus();
         String json = getRestHelper().getJSON(url);
         return SecHubEncryptionStatus.fromString(json);
+    }
+
+    public void createOrUpdateTemplate(String templateid, TemplateDefinition definition) {
+        String url = getUrlBuilder().buildAdminCreatesOrUpdatesTemplate(templateid);
+        getRestHelper().postJson(url, definition.toFormattedJSON());
+    }
+
+    public TemplateDefinition fetchTemplateDefinitionOrNull(String templateId) {
+        String url = getUrlBuilder().buildAdminFetchesTemplate(templateId);
+        try {
+            String json = getRestHelper().getJSON(url);
+            return TemplateDefinition.from(json);
+
+        } catch (HttpClientErrorException e) {
+            HttpStatusCode statusCode = e.getStatusCode();
+            if (statusCode.equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw e;
+        }
+    }
+
+    public void assignTemplateToProject(String templateid, TestProject project) {
+        String url = getUrlBuilder().buildAdminAssignsTemplateToProjectUrl(templateid, project.getProjectId());
+        getRestHelper().put(url);
+    }
+
+    public void unassignTemplateFromProject(String templateid, TestProject project) {
+        String url = getUrlBuilder().buildAdminUnAssignsTemplateToProjectUrl(templateid, project.getProjectId());
+        getRestHelper().delete(url);
+    }
+
+    public ProjectDetailInformation fetchProjectDetailInformation(TestProject project) {
+        String url = getUrlBuilder().buildAdminFetchProjectInfoUrl(project.getProjectId());
+        String json = getRestHelper().getJSON(url);
+        ProjectDetailInformation result = JSONConverter.get().fromJSON(ProjectDetailInformation.class, json);
+        return result;
+    }
+
+    public void deleteTemplate(String templateId) {
+        String url = getUrlBuilder().buildAdminDeletesTemplate(templateId);
+        getRestHelper().delete(url);
+    }
+
+    public List<String> fetchTemplateList() {
+        String url = getUrlBuilder().buildAdminFetchesTemplateList();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(String.class, json);
     }
 
 }

@@ -96,6 +96,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.scheduler.EnableSc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.status.CheckStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.CreateOrUpdateTemplateAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
@@ -250,6 +251,11 @@ public class CommandUI {
         add(mappingsMenu, new UpdateGlobalMappingAction(context));
 
         menu.add(new ConfigureAutoCleanupAction(context));
+
+        JMenu templatesMenu = new JMenu("Templates");
+        menu.add(templatesMenu);
+        add(templatesMenu, new CreateOrUpdateTemplateAction(context));
+
     }
 
     public void createEncryptionMenu() {

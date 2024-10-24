@@ -38,6 +38,14 @@ DELETE /api/admin/template/$template-id
 
 PUT will contain a body with the template data:
 
+====== Template id format
+A template id
+
+- has a minimum length of 3
+- has a maximum length of 40
+- can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
+
+
 ====== Template definition
 The template definitions are hold inside {sechub} database.
 A template is defined by following json syntax:
@@ -47,7 +55,8 @@ A template is defined by following json syntax:
 ----
 include::../snippet/template-definition-syntax.json[]
 ----
-<1> The type of the template. Currently possible: `webscan-login`
+<1> The type of the template. Must be set when a template is created. Will
+    be ignored on updates. Possible values are: `webscan-login`
 <2> Array with asset identifiers assigned to the template
 <3> Variable definitions as list of key and value pairs which can be mandatory or optional. 
 Via the type {sechub} server is able to check if the configuration is valid and give 
@@ -71,9 +80,33 @@ stop before any {pds} job is created.
 (variable) is correct and not some malicious injected data!*
 ====
 ===== Mapping templates to projects
+
+plantuml::./diagrams/diagram_templates-mapping-to-projects.puml[format=svg, title="Mapping of templates and projects"]
+
+
+As shown in the figure above, the template data is hold inside domain "scan". The reason is, that
+template details are necessary inside the scan operation and no where else.
+
+The association between project and used templates is done in administration domain because the project
+entity and its details are used here. At the `administration` domain only the template identifiers 
+used by this project are necessary.
+
+A mapping of templates to a project is dependent on the template type: Same type of a template cannot
+be added twice to a project! Because the `administration` domain does not know about the template details,
+a synchronous event to `scan` domain will be sent to assign the template to the project.
+
+The scan domain will update this information inside `ScanProjectConfig` entities and will drop
+a former assigned template of same type from the config.
+
+After this is done as a syncron result the scan domain will return all assigned 
+templates, as shown in next figure:
+
+plantuml::./diagrams/diagram_templates-mapping-to-projects-events.puml[format=svg, title="Mapping of templates and projects (Events)"]
+
+
 ```
-PUT     /api/admin/project/$projectId/template
-DELETE  /api/admin/project/$projectId/template/$templateid
+PUT     /api/admin/project/$projectId/template/$templateId
+DELETE  /api/admin/project/$projectId/template/$templateId
 GET     /api/admin/project/$projectId/templates
 ```
 
@@ -111,6 +144,7 @@ are not supported here.
 ====== Asset id format
 An asset id
 
+- has a minimum length of 3
 - has a maximum length of 40
 - can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
 

@@ -97,6 +97,9 @@ public class ProjectAdministrationRestControllerMockTest {
     @MockBean
     ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
+    @MockBean
+    ProjectTemplateService projectTemplateService;
+
     @Before
     public void before() {
         when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);

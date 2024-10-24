@@ -17,15 +17,21 @@ public class ProjectDetailInformation {
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_ACCESSLEVEL = "accessLevel";
     public static final String PROPERTY_DESCRIPTION = "description";
+    public static final String PROPERTY_TEMPLATES = "templates";
 
     private String projectId;
 
     private List<String> users = new ArrayList<>();
     private List<String> whitelist = new ArrayList<>();
+    private List<String> templates = new ArrayList<>();
     private Map<String, String> metaData = new HashMap<>();
     private String owner;
     private String description;
     private String accessLevel;
+
+    ProjectDetailInformation() {
+        /* for JSON */
+    }
 
     public ProjectDetailInformation(Project project) {
         this.projectId = project.getId();
@@ -37,6 +43,8 @@ public class ProjectDetailInformation {
         project.getWhiteList().forEach(uri -> this.whitelist.add(uri.toASCIIString()));
 
         project.getMetaData().forEach(entry -> this.metaData.put(entry.key, entry.value));
+
+        project.getTemplates().forEach(templateid -> this.templates.add(templateid));
 
         this.owner = project.getOwner().getName();
 
@@ -71,5 +79,9 @@ public class ProjectDetailInformation {
 
     public String getAccessLevel() {
         return accessLevel;
+    }
+
+    public List<String> getTemplates() {
+        return templates;
     }
 }

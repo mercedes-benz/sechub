@@ -42,6 +42,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -1694,4 +1695,10 @@ public class TestAPI {
         return getSuperAdminRestHelper().getBooleanFromURL(url);
     }
 
+    public static List<ScanProjectConfig> fetchScanProjectConfigurations(TestProject project) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanProjectConfigurations(project.getProjectId());
+        String json = getSuperAdminRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(ScanProjectConfig.class, json);
+
+    }
 }

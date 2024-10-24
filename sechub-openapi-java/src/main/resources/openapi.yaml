@@ -150,6 +150,11 @@ components:
           items:
             type: string
           type: array
+        templates:
+          description: A list of all assigned templates
+          items:
+            type: string
+          type: array
       example:
         owner: owner
         metaData:
@@ -163,6 +168,9 @@ components:
         users:
           - user1
           - user2
+        templates:
+          - template1
+          - template2
 
     ProjectWhitelist:
       title: ProjectWhitelist
@@ -2538,7 +2546,60 @@ paths:
           description: "Not acceptable"
       tags:
         - Project Administration
-
+  /api/admin/project/{projectId}/template/{templateId}:
+    put:
+      summary: Admin assigns template to project
+      description: An administrator assigns a template to a project
+      operationId: adminAssignTemplateToProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: templateId
+          description: The id of the template to assign to project 
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+    delete:
+      summary: Admin unassigns template from project
+      description: An administrator unassigns a template from a project
+      operationId: adminUnassignTemplateFromProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: templateId
+          description: The id of the template to assign to project 
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+ 
   ###################
   ## User Profile ##
   ###################

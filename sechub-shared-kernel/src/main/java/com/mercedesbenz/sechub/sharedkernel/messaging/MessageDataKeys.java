@@ -8,6 +8,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
+import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
 
 /**
  *
@@ -36,6 +38,8 @@ public class MessageDataKeys {
     private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
     private static final SecHubEncryptionMessageDataProvider SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER = new SecHubEncryptionMessageDataProvider();
     private static final SecHubEncryptionStatusMessageDataProvider SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER = new SecHubEncryptionStatusMessageDataProvider();
+    private static final SecHubProjectToTemplateMessageDataProvider SECHUB_PROJECT_TO_TEMPLATE_MESSAGE_DATA_PROVIDER = new SecHubProjectToTemplateMessageDataProvider();
+    private static final SecHubProjectTemplatesMessageDataProvider SECHUB_PROJECT_TEMPLATES_MESSAGE_DATA_PROVIDER = new SecHubProjectTemplatesMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -60,7 +64,14 @@ public class MessageDataKeys {
             SECHUB_ENCRYPTION_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<SecHubDomainEncryptionStatus> SECHUB_DOMAIN_ENCRYPTION_STATUS = createKey("sechub.domain.encryption.status",
+
             SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubProjectToTemplate> PROJECT_TO_TEMPLATE = createKey("sechub.project2template.data",
+            SECHUB_PROJECT_TO_TEMPLATE_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubProjectTemplates> PROJECT_TEMPLATES = createKey("sechub.project.templates.data",
+            SECHUB_PROJECT_TEMPLATES_MESSAGE_DATA_PROVIDER);
 
     /**
      * Use this generic key when you just want to define timestamp without using a
