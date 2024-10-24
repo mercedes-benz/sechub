@@ -77,20 +77,12 @@ runs:
   # By doing this we don't have to manually build & check-in the artifacts anymore
   using: composite
   steps:
-    - name: Overview of setup
-      run: |
-        echo "CWD=`pwd`"
-        echo "---"
-        find ~ -type f
-        echo "---"
-      shell: bash
-
     - name: Set GitHub Path
       run: |
         echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
         echo "GITHUB_ACTION_PATH=$GITHUB_ACTION_PATH"
         echo "---"
-        find "$GITHUB_ACTION_PATH" -type f
+        ls -al "$GITHUB_ACTION_PATH"/dist/
         echo "---"
       shell: bash
       env:
