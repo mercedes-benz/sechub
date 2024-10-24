@@ -99,8 +99,8 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
-        cache: 'npm'
-        cache-dependency-path: ${{ github.action_path }}
+        # cache: 'npm'
+        # cache-dependency-path: ${{ github.action_path }}
 
     # Copy the index.js to the root of the repository
     # By doing this any file and folder references inside the scan action will be relative to the root of the repository
