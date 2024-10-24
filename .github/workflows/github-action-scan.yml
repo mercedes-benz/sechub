@@ -33,7 +33,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Clean install
         run: npm ci 
@@ -51,12 +51,23 @@ jobs:
           git status
           mkdir "${{ github.workspace }}/build" -p
           git status >> "${{ github.workspace }}/build/git-status.txt"
+
       - name: Define integration test setup
         id : version-selector
         run: |
-          echo "sechub_server_version=2.3.1" >> "$GITHUB_ENV"
+          # Make sure that INTEGRATIONTEST_SECHUB_SERVER_VERSION and INTEGRATIONTEST_PDS_VERSION
+          # are defined in https://github.com/mercedes-benz/sechub/settings/variables/actions
+          if [ -z "${{ vars.INTEGRATIONTEST_SECHUB_SERVER_VERSION }}" ] ; then
+            echo "INTEGRATIONTEST_SECHUB_SERVER_VERSION variable is undefined. Exiting."
+            exit 1
+          fi
+          if [ -z "${{ vars.INTEGRATIONTEST_PDS_VERSION }}" ] ; then
+            echo "INTEGRATIONTEST_PDS_VERSION variable is undefined. Exiting."
+            exit 1
+          fi
+          echo "sechub_server_version=${{ vars.INTEGRATIONTEST_SECHUB_SERVER_VERSION }}" >> "$GITHUB_ENV"
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
-          echo "pds_version=2.0.0" >> "$GITHUB_ENV"
+          echo "pds_version=${{ vars.INTEGRATIONTEST_PDS_VERSION }}" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
 
       - name: Cache SecHub server download    
