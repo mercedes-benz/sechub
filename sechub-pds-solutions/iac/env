@@ -1,4 +1,4 @@
 # The base image to use
 # uncomment to use local image
 # BASE_IMAGE="pds-base_pds"
-KICS_VERSION="2.0.1"
+KICS_VERSION="2.1.3"
