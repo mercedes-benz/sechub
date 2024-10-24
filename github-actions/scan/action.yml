@@ -73,11 +73,11 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
-  # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
+  # Instead of using the 'node' image, we use the 'composite' strategy to cache artifacts before running the scan
   using: composite
   steps:
     - name: Cache SecHub client
-      uses: actions/cache@v3
+      uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
         path: ${{ github.workspace }}/.sechub-gha/client/
         key: ${{ runner.os }}-sechub-client-cache
