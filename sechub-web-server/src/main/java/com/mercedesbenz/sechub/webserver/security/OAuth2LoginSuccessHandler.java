@@ -6,6 +6,7 @@ import static java.util.Objects.requireNonNullElseGet;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,9 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p>
  * This handler will also populate a secure HTTP-only cookie containing the JWT
- * token which can be used in subsequent requests to authenticate the user.
+ * token which can be used in subsequent requests to authenticate the user. Note
+ * that the JWT is encrypted using {@link AES256Encryption} and encoded using
+ * {@link Base64}.
  * </p>
  *
  * @see SecurityConfiguration
@@ -45,6 +48,7 @@ import jakarta.servlet.http.HttpServletResponse;
 class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(OAuth2LoginSuccessHandler.class);
+    private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final int DEFAULT_EXPIRY_SECONDS = 3600;
     private static final String BASE_PATH = "/";
 
@@ -67,8 +71,9 @@ class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> Instant.now().plusSeconds(DEFAULT_EXPIRY_SECONDS));
         long expirySeconds = expiresAt.getEpochSecond() - issuedAt.getEpochSecond();
         String jwt = oAuth2AccessToken.getTokenValue();
-        String encryptedJwt = aes256Encryption.encrypt(jwt);
-        response.addCookie(createJwtCookie(encryptedJwt, expirySeconds));
+        byte[] encryptedJwtBytes = aes256Encryption.encrypt(jwt);
+        String encryptedJwtB64Encoded = ENCODER.encodeToString(encryptedJwtBytes);
+        response.addCookie(createJwtCookie(encryptedJwtB64Encoded, expirySeconds));
         LOG.debug("Redirecting to {}", RequestConstants.HOME);
         response.sendRedirect(RequestConstants.HOME);
     }

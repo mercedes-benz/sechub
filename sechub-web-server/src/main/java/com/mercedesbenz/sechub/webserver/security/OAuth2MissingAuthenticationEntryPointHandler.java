@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * {@code MissingAuthenticationEntryPointHandler} implements
+ * {@code OAuth2MissingAuthenticationEntryPointHandler} implements
  * {@link AuthenticationEntryPoint} to provide custom behavior upon missing or
  * invalid authentication. This class is used by Spring's
  * <i>oauth2ResourceServer</i> configuration to redirect the user to the OAuth2
@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author hamidonos
  */
-class MissingAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
+class OAuth2MissingAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.sendRedirect(RequestConstants.LOGIN_OAUTH2);

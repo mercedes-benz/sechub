@@ -2,10 +2,12 @@
 package com.mercedesbenz.sechub.webserver.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -25,8 +27,10 @@ class JwtCookieResolverTest {
 
     private static final String MISSING_JWT_VALUE = "missing-jwt";
     private static final String ACCESS_TOKEN = "access_token";
-    private static final String ENCRYPTED_JWT = "encrypted-jwt";
     private static final String JWT = "jwt";
+    private static final String ENCRYPTED_JWT = "encrypted-jwt";
+    private static final String ENCRYPTED_JWT_B64_ENCODED = Base64.getEncoder().encodeToString(ENCRYPTED_JWT.getBytes());
+    private static final byte[] DECRYPTED_JWT_B64_DECODED = Base64.getDecoder().decode(ENCRYPTED_JWT_B64_ENCODED);
     private static final String BASE_PATH = "/";
 
     private static final AES256Encryption aes256Encryption = mock();
@@ -34,13 +38,13 @@ class JwtCookieResolverTest {
     private static final HttpServletRequest httpServletRequest = mock();
 
     static {
-        when(aes256Encryption.decrypt(ENCRYPTED_JWT)).thenReturn(JWT);
+        when(aes256Encryption.decrypt(any())).thenReturn(JWT);
     }
 
     @Test
     void resolve_reads_and_decrypts_jwt_from_cookies_successfully() {
         // prepare
-        Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT);
+        Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED);
         Cookie someOtherCookie = createJwtCookie("some-other-cookie-name", "some-other-cookie-value");
         Cookie[] cookies = List.of(jwtCookie, someOtherCookie).toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(cookies);
@@ -50,7 +54,7 @@ class JwtCookieResolverTest {
 
         // test
         assertThat(jwt).isEqualTo(JWT);
-        verify(aes256Encryption).decrypt(ENCRYPTED_JWT);
+        verify(aes256Encryption).decrypt(DECRYPTED_JWT_B64_DECODED);
     }
 
     @ParameterizedTest
@@ -83,7 +87,7 @@ class JwtCookieResolverTest {
             return Stream.of(
                     Arguments.of((Object) null),
                     Arguments.of(List.of()),
-                    Arguments.of(List.of(createJwtCookie("invalid-cookie-name", ENCRYPTED_JWT)))
+                    Arguments.of(List.of(createJwtCookie("invalid-cookie-name", ENCRYPTED_JWT_B64_ENCODED)))
             );
             // @formatter:on
         }

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -86,8 +87,9 @@ class SecurityConfiguration {
 
     @Bean
     @Profile(ApplicationProfiles.OAUTH2_ENABLED)
-    SecurityFilterChain securityFilterChainAuthenticated(HttpSecurity httpSecurity) throws Exception {
-        AuthenticationEntryPoint authenticationEntryPoint = new MissingAuthenticationEntryPointHandler();
+    SecurityFilterChain securityFilterChainAuthenticated(HttpSecurity httpSecurity, @Autowired(required = false) AuthenticationManager authenticationManager)
+            throws Exception {
+        AuthenticationEntryPoint authenticationEntryPoint = new OAuth2MissingAuthenticationEntryPointHandler();
         BearerTokenResolver bearerTokenResolver = new JwtCookieResolver(aes256Encryption);
         /* @formatter:off */
         RequestMatcher publicPathsMatcher = new OrRequestMatcher(
@@ -105,6 +107,14 @@ class SecurityConfiguration {
                         .jwt(jwt -> jwt.jwkSetUri(oAuth2Properties.getJwkSetUri()))
                 );
         /* @formatter:on */
+
+        if (authenticationManager != null) {
+            /*
+             * This is useful to mock authentication when no real authentication manager can
+             * be constructed (e.g. in tests)
+             */
+            httpSecurity.authenticationManager(authenticationManager);
+        }
 
         return httpSecurity.build();
     }

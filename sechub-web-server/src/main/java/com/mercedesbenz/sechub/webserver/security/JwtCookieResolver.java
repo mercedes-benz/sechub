@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.webserver.security;
 
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 
@@ -13,7 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * {@code JwtCookieResolver} implements {@link BearerTokenResolver} to provide
  * custom Bearer Token resolution. The encrypted JWT is read from the cookies
- * and decrypted using {@link AES256Encryption}.
+ * and decrypted using {@link AES256Encryption}. Note that the JWT is expected
+ * in {@link Base64} encoded format.
  *
  * @see BearerTokenResolver
  * @see AES256Encryption
@@ -23,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 class JwtCookieResolver implements BearerTokenResolver {
 
     private static final String MISSING_JWT_VALUE = "missing-jwt";
+    private static final Base64.Decoder DECODER = Base64.getDecoder();
 
     private final AES256Encryption aes256Encryption;
 
@@ -60,6 +63,8 @@ class JwtCookieResolver implements BearerTokenResolver {
             return MISSING_JWT_VALUE;
         }
 
-        return aes256Encryption.decrypt(jwt);
+        byte[] jwtBytes = DECODER.decode(jwt);
+
+        return aes256Encryption.decrypt(jwtBytes);
     }
 }

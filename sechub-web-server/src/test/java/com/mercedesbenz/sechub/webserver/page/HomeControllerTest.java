@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
-import com.mercedesbenz.sechub.webserver.security.JwtRequestPostProcessor;
 import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
+import com.mercedesbenz.sechub.webserver.security.WithMockJwtUser;
 
 @WebMvcTest(HomeController.class)
 @Import(SecurityTestConfiguration.class)
@@ -24,35 +24,33 @@ import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
 class HomeControllerTest {
 
     private final MockMvc mockMvc;
+    private final RequestPostProcessor requestPostProcessor;
 
     @Autowired
-    public HomeControllerTest(MockMvc mockMvc) {
+    HomeControllerTest(MockMvc mockMvc, RequestPostProcessor requestPostProcessor) {
         this.mockMvc = mockMvc;
+        this.requestPostProcessor = requestPostProcessor;
     }
 
     @Test
     void home_page_is_not_accessible_anonymously() throws Exception {
-        /* @formatter:off */
+        // @formatter:off
         mockMvc
                 .perform(get("/home"))
                 .andExpect(status().is3xxRedirection());
-        /* @formatter:on */
+        // @formatter:on
     }
 
     @Test
-    @WithMockUser
+    @WithMockJwtUser
     void home_page_is_accessible_with_authenticated_user() throws Exception {
-        // prepare
-        String encryptedJwt = "37eb9nQkgX13l41KCOR7nA==";
-
-        /* @formatter:off */
-
         // execute & test
-        mockMvc
-                .perform(get("/home").with(JwtRequestPostProcessor.fromJwt(encryptedJwt)))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
 
-        /* @formatter:on */
+        // @formatter:off
+        mockMvc
+                .perform(get("/home").with(requestPostProcessor))
+                .andExpect(status().isOk())
+                .andReturn();
+        // @formatter:on
     }
 }

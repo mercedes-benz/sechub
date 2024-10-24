@@ -9,7 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Base64;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,8 @@ class OAuth2LoginSuccessHandlerTest {
 
     private static final String ACCESS_TOKEN = "access_token";
     private static final String ENCRYPTED_JWT = "this-is-an-encrypted-jwt";
+    private static final byte[] ENCRYPTED_JWT_BYTES = ENCRYPTED_JWT.getBytes(StandardCharsets.UTF_8);
+    private static final String ENCRYPTED_JWT_BASE64_ENCODED = Base64.getEncoder().encodeToString(ENCRYPTED_JWT_BYTES);
     private static final String PROVIDER = "example-provider";
     private static final String PRINCIPAL = "example-principal";
     private static final String JWT = "this-is-a-plain-jwt";
@@ -51,7 +55,7 @@ class OAuth2LoginSuccessHandlerTest {
     void beforeEach() {
         reset(aes256Encryption, httpServletResponse);
         when(oAuth2Properties.getProvider()).thenReturn(PROVIDER);
-        when(aes256Encryption.encrypt(anyString())).thenReturn(ENCRYPTED_JWT);
+        when(aes256Encryption.encrypt(anyString())).thenReturn(ENCRYPTED_JWT_BYTES);
         when(oAuth2AuthorizedClientService.loadAuthorizedClient(PROVIDER, PRINCIPAL)).thenReturn(oauth2AuthorizedClient);
         when(authentication.getName()).thenReturn(PRINCIPAL);
         when(oauth2AuthorizedClient.getAccessToken()).thenReturn(oAuth2AccessToken);
@@ -75,7 +79,7 @@ class OAuth2LoginSuccessHandlerTest {
         ArgumentMatcher<Cookie> jwt = cookie -> {
             // @formatter:off
             if (!ACCESS_TOKEN.equals(cookie.getName())) return false;
-            if (!ENCRYPTED_JWT.equals(cookie.getValue())) return false;
+            if (!ENCRYPTED_JWT_BASE64_ENCODED.equals(cookie.getValue())) return false;
             if (cookie.getMaxAge() != expirySeconds) return false;
             if (!cookie.isHttpOnly()) return false;
             if (!cookie.getSecure()) return false;

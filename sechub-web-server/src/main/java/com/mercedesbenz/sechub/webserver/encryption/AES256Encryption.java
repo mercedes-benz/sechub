@@ -3,62 +3,87 @@ package com.mercedesbenz.sechub.webserver.encryption;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Base64;
+import java.security.InvalidKeyException;
 
 import javax.crypto.Cipher;
+import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
 @Component
 @EnableConfigurationProperties(AES256EncryptionProperties.class)
 public class AES256Encryption {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AES256Encryption.class);
     private static final String TRANSFORMATION = "AES";
-    private static final Base64.Encoder ENCODER = Base64.getEncoder();
-    private static final Base64.Decoder DECODER = Base64.getDecoder();
+    private static final CryptoAccess<SecretKey> secretKeyCryptoAccess = new CryptoAccess<>();
 
     private final Cipher encrypt;
     private final Cipher decrypt;
+    private final SealedObject sealedSecretKey;
 
     AES256Encryption(AES256EncryptionProperties properties) throws GeneralSecurityException {
         SecretKey secretKey = new SecretKeySpec(properties.getSecretKeyBytes(), TRANSFORMATION);
+        this.sealedSecretKey = secretKeyCryptoAccess.seal(secretKey);
+
         this.encrypt = Cipher.getInstance(TRANSFORMATION);
-        encrypt.init(Cipher.ENCRYPT_MODE, secretKey);
+        try {
+            initEncrypt();
+        } catch (Exception e) {
+            throw new GeneralSecurityException(e);
+        }
+
         this.decrypt = Cipher.getInstance(TRANSFORMATION);
-        decrypt.init(Cipher.DECRYPT_MODE, secretKey);
+        try {
+            initDecrypt();
+        } catch (Exception e) {
+            throw new GeneralSecurityException(e);
+        }
     }
 
-    public String encrypt(String plainText) {
+    public byte[] encrypt(String plainText) {
         byte[] encryptedBytes;
 
         try {
             encryptedBytes = encrypt.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            String errMsg = "Failed to encrypt text: %s".formatted(e.getMessage());
-            LOG.debug(errMsg);
-            throw new RuntimeException(errMsg, e);
+            initEncrypt();
+            throw new AES256EncryptionException("Failed to encrypt text", e);
         }
 
-        return ENCODER.encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String decrypt(String encryptedText) {
+    public String decrypt(byte[] encryptedBytes) {
         byte[] decryptedBytes;
 
         try {
-            decryptedBytes = decrypt.doFinal(DECODER.decode(encryptedText));
+            decryptedBytes = decrypt.doFinal(encryptedBytes);
         } catch (Exception e) {
-            String errMsg = "Failed to decrypt text: %s".formatted(e.getMessage());
-            LOG.debug(errMsg);
-            throw new RuntimeException(errMsg, e);
+            initDecrypt();
+            throw new AES256EncryptionException("Failed to decrypt text", e);
         }
 
         return new String(decryptedBytes, StandardCharsets.UTF_8);
+    }
+
+    private void initEncrypt() {
+        try {
+            this.encrypt.init(Cipher.ENCRYPT_MODE, secretKeyCryptoAccess.unseal(sealedSecretKey));
+        } catch (InvalidKeyException e) {
+            throw new AES256EncryptionException("Failed to init encryption cipher", e);
+        }
+    }
+
+    private void initDecrypt() {
+        try {
+            this.decrypt.init(Cipher.DECRYPT_MODE, secretKeyCryptoAccess.unseal(sealedSecretKey));
+        } catch (InvalidKeyException e) {
+            throw new AES256EncryptionException("Failed to init decryption cipher", e);
+        }
     }
 }
