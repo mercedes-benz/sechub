@@ -128,8 +128,31 @@ runs:
           core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
-    - name: Run SecHub Scan
-      run: node sechub-scan.js
+    # - name: Run SecHub Scan
+    #   run: node sechub-scan.js
+    #   env:
+    #     config-path: ${{ inputs.config-path }}
+    #     url: ${{ inputs.url }}
+    #     api-token: ${{ inputs.api-token }}
+    #     user: ${{ inputs.user }}
+    #     project-name: ${{ inputs.project-name }}
+    #     version: ${{ inputs.version }}
+    #     add-scm-history: ${{ inputs.add-scm-history }}
+    #     scan-types: ${{ inputs.scan-types }}
+    #     content-type: ${{ inputs.content-type }}
+    #     include-folders: ${{ inputs.include-folders }}
+    #     exclude-folders: ${{ inputs.exclude-folders }}
+    #     report-formats: ${{ inputs.report-formats }}
+    #     trust-all: ${{ inputs.trust-all }}
+    #     debug: ${{ inputs.debug }}
+    #     fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
+    #     ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
+    #     ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
+    #     ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
+    #   shell: bash
+
+    - name: Run2 SecHub Scan
+      run: node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
@@ -149,4 +172,5 @@ runs:
         ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
         ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
         ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
       shell: bash
