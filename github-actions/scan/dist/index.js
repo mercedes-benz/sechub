@@ -28428,8 +28428,11 @@ function getFieldFromJson(field, jsonData) {
     return currentKey;
 }
 
+;// CONCATENATED MODULE: external "node:os"
+const external_node_os_namespaceObject = require("node:os");
 ;// CONCATENATED MODULE: ./src/post-scan.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -28456,7 +28459,7 @@ function collectJsonReportData(context) {
     let text = '';
     try {
         core.info('Get Report as json');
-        text = external_fs_.readFileSync(filePath, 'utf8');
+        text = (0,lib.readFileSync)(filePath, 'utf8');
     }
     catch (error) {
         core.warning(`Error reading JSON file: ${error}`);
@@ -28662,7 +28665,15 @@ function buildSummary(trafficLight, totalFindings, findings) {
 function setOutput(field, value, dataFormat) {
     value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
     core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    /*
+     * Disabling this until GitHub releases a fix for this. See: https://github.com/actions/toolkit/issues/1218
+     * core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+     */
+    /* Temporary hack until core actions output is fixed */
+    const output = process.env['GITHUB_OUTPUT'];
+    if (output) {
+        (0,lib.appendFileSync)(output, `${field}=${value}${external_node_os_namespaceObject.EOL}`);
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/projectname-resolver.ts
