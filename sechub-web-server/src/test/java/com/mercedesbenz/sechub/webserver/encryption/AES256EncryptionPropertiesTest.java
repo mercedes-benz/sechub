@@ -37,23 +37,23 @@ class AES256EncryptionPropertiesTest {
 
     @Test
     void construct_aes256encryption_properties_with_null_secret_key_fails() {
-        // @formatter:off
-        // execute & test
+        /* @formatter:off */
+        /* execute & test */
         assertThatThrownBy(() -> new AES256EncryptionProperties(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.encryption.secret-key' must not be null");
-        // @formatter:on
+        /* @formatter:on */
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "", "1", "est-test-test-test-test-test-31", "-test-test-test-test-test-test-33" })
     void construct_aes256encryption_properties_with_non_256_bit_long_secret_key_fails(String secretKey) {
-        // @formatter:off
-        // execute & test
+        /* @formatter:off */
+        /* execute & test */
         assertThatThrownBy(() -> new AES256EncryptionProperties(secretKey))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property sechub.security.encryption.secret-key must be a 256-bit string");
-        // @formatter:on
+        /* @formatter:on */
     }
 
     @Configuration
