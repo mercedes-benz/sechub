@@ -5,6 +5,8 @@
 name: sechub-web-server
 
 image: "ghcr.io/mercedes-benz/sechub/sechub-web-server:latest"
+# See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+imagePullPolicy: "IfNotPresent"
 # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
 #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 #   Example:
@@ -23,7 +25,7 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
-web-server:
+web_server:
   # Possible values: server, development
   startMode: server
   sechubConnection:
