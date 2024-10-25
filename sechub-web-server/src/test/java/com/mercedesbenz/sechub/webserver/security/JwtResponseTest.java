@@ -40,7 +40,7 @@ class JwtResponseTest {
 
     @Test
     void construct_jwt_response_from_valid_json_is_successful() throws JsonProcessingException {
-        // execute
+        /* execute */
         JwtResponse jwtResponse = objectMapper.readValue(jwtResponseJson, JwtResponse.class);
 
         // assert
@@ -56,29 +56,29 @@ class JwtResponseTest {
 
     @Test
     void construct_jwt_response_from_valid_json_with_no_refresh_token_is_successful() throws JsonProcessingException {
-        // prepare
+        /* prepare */
         String jwtResponseJsonWithoutRefreshToken = removeJsonKeyAndValue("refresh_token");
 
-        // execute & assert
+        /* execute & test */
 
-        // @formatter:off
+        /* @formatter:off */
         assertDoesNotThrow(() -> {
             JwtResponse jwtResponse = objectMapper.readValue(jwtResponseJsonWithoutRefreshToken, JwtResponse.class);
             assertThat(jwtResponse.getRefreshToken()).isNull();
         });
-        // @formatter:on
+        /* @formatter:on */
     }
 
     @ParameterizedTest
     @ArgumentsSource(InvalidJwtResponseJsonProvider.class)
     void construct_jwt_response_from_invalid_json_fails(String invalidJwtResponseJson, String expectedErrMsg) {
-        // execute & assert
+        /* execute & test */
 
-        // @formatter:off
+        /* @formatter:off */
         assertThatThrownBy(() -> objectMapper.readValue(invalidJwtResponseJson, JwtResponse.class))
                 .isInstanceOf(ValueInstantiationException.class)
                 .hasMessageContaining(expectedErrMsg);
-        // @formatter:on
+        /* @formatter:on */
     }
 
     private static String removeJsonKeyAndValue(String key) throws JsonProcessingException {

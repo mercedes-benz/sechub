@@ -91,7 +91,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClient implements OAuth2Acc
 
         Map<String, Object> additionalParameters = Map.of(ID_TOKEN, jwtResponse.getIdToken());
 
-        // @formatter:off
+        /* @formatter:off */
         return OAuth2AccessTokenResponse
                 .withToken(jwtResponse.getAccessToken())
                 .tokenType(OAuth2AccessToken.TokenType.BEARER)
@@ -99,7 +99,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClient implements OAuth2Acc
                 .refreshToken(jwtResponse.getRefreshToken())
                 .additionalParameters(additionalParameters)
                 .build();
-        // @formatter:on
+        /* @formatter:on */
     }
 
     private static HttpEntity<MultiValueMap<String, String>> getMultiValueMapHttpEntity(OAuth2AuthorizationCodeGrantRequest authorizationGrantRequest,
