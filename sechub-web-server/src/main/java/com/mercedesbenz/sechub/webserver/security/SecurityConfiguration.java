@@ -40,8 +40,17 @@ import com.mercedesbenz.sechub.webserver.encryption.AES256Encryption;
 class SecurityConfiguration {
     static final String ACCESS_TOKEN = "access_token";
 
-    private static final String[] PUBLIC_PATHS = { RequestConstants.LOGIN_CLASSIC, RequestConstants.LOGIN_OAUTH2, "/css/**", "/js/**", "/images/**",
-            "/oauth2/**", "/login/**" };
+    /* @formatter:off */
+    private static final String[] PUBLIC_PATHS = {
+            RequestConstants.LOGIN,
+            "/login/**",
+            "/css/**",
+            "/js/**",
+            "/images/**",
+            "/oauth2/**",
+            "sechub-logo.svg"
+    };
+    /* @formatter:on */
     private static final String SCOPE = "openid";
     private static final String USER_NAME_ATTRIBUTE_NAME = "sub";
 
@@ -89,7 +98,7 @@ class SecurityConfiguration {
     @Profile(ApplicationProfiles.OAUTH2_ENABLED)
     SecurityFilterChain securityFilterChainAuthenticated(HttpSecurity httpSecurity, @Autowired(required = false) AuthenticationManager authenticationManager)
             throws Exception {
-        AuthenticationEntryPoint authenticationEntryPoint = new OAuth2MissingAuthenticationEntryPointHandler();
+        AuthenticationEntryPoint authenticationEntryPoint = new MissingAuthenticationEntryPointHandler();
         BearerTokenResolver bearerTokenResolver = new JwtCookieResolver(aes256Encryption);
         /* @formatter:off */
         RequestMatcher publicPathsMatcher = new OrRequestMatcher(
@@ -120,12 +129,13 @@ class SecurityConfiguration {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChainAnonymous(HttpSecurity httpSecurity, OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+    SecurityFilterChain securityFilterChainAnonymous(HttpSecurity httpSecurity,
+            @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
         /* @formatter:off */
 
         httpSecurity
-                /* Disable CSRF */
                 .securityMatcher(PUBLIC_PATHS)
+                /* Disable CSRF */
                 .csrf(AbstractHttpConfigurer::disable)
                 /* Make the application stateless */
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
@@ -134,10 +144,14 @@ class SecurityConfiguration {
         if (isOAuth2Enabled()) {
             RestTemplate restTemplate = new RestTemplate();
             Base64EncodedClientIdAndSecretOAuth2AccessTokenClient base64EncodedClientIdAndSecretOAuth2AccessTokenClient = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
+            if (oAuth2AuthorizedClientService == null) {
+                throw new NoSuchBeanDefinitionException(
+                        "No qualifying bean of type 'OAuth2AuthorizedClientService' available: expected at least 1 bean which qualifies as autowire candidate.");
+            }
             AuthenticationSuccessHandler authenticationSuccessHandler = new OAuth2LoginSuccessHandler(oAuth2Properties, oAuth2AuthorizedClientService, aes256Encryption);
             /* Enable OAuth2 */
             httpSecurity.oauth2Login(oauth2 -> oauth2
-                .loginPage(RequestConstants.LOGIN_OAUTH2)
+                .loginPage(RequestConstants.LOGIN)
                 .tokenEndpoint(token -> token.accessTokenResponseClient(base64EncodedClientIdAndSecretOAuth2AccessTokenClient))
                 .successHandler(authenticationSuccessHandler));
         }
@@ -151,7 +165,7 @@ class SecurityConfiguration {
             AuthenticationSuccessHandler authenticationSuccessHandler = new ClassicLoginSuccessHandler();
             httpSecurity
                 .formLogin(form -> form
-                .loginPage(RequestConstants.LOGIN_CLASSIC)
+                .loginPage(RequestConstants.LOGIN)
                 .successHandler(authenticationSuccessHandler));
         }
 
