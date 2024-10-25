@@ -34,23 +34,23 @@ class HomeControllerTest {
 
     @Test
     void home_page_is_not_accessible_anonymously() throws Exception {
-        // @formatter:off
+        /* @formatter:off */
         mockMvc
                 .perform(get("/home"))
                 .andExpect(status().is3xxRedirection());
-        // @formatter:on
+        /* @formatter:on */
     }
 
     @Test
     @WithMockJwtUser
     void home_page_is_accessible_with_authenticated_user() throws Exception {
-        // execute & test
+        /* execute & test */
 
-        // @formatter:off
+        /* @formatter:off */
         mockMvc
                 .perform(get("/home").with(requestPostProcessor))
                 .andExpect(status().isOk())
                 .andReturn();
-        // @formatter:on
+        /* @formatter:on */
     }
 }

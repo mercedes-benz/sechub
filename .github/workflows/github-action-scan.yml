@@ -31,15 +31,15 @@ jobs:
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       
       - name: Use Node.js
-        # We do not define a dedicated node version here, we just use the default environment
-        # which should be the default environment for the github actions runtime as well
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
+        with:
+          node-version: 22
 
       - name: Clean install
         run: npm ci 
         
       - name: Build
-        run: npm run build --if-present
+        run: npm run build
         
       - name: Run unit tests
         run: npm test
@@ -51,12 +51,23 @@ jobs:
           git status
           mkdir "${{ github.workspace }}/build" -p
           git status >> "${{ github.workspace }}/build/git-status.txt"
+
       - name: Define integration test setup
         id : version-selector
         run: |
-          echo "sechub_server_version=1.9.0" >> "$GITHUB_ENV"
+          # Make sure that INTEGRATIONTEST_SECHUB_SERVER_VERSION and INTEGRATIONTEST_PDS_VERSION
+          # are defined in https://github.com/mercedes-benz/sechub/settings/variables/actions
+          if [ -z "${{ vars.INTEGRATIONTEST_SECHUB_SERVER_VERSION }}" ] ; then
+            echo "INTEGRATIONTEST_SECHUB_SERVER_VERSION variable is undefined. Exiting."
+            exit 1
+          fi
+          if [ -z "${{ vars.INTEGRATIONTEST_PDS_VERSION }}" ] ; then
+            echo "INTEGRATIONTEST_PDS_VERSION variable is undefined. Exiting."
+            exit 1
+          fi
+          echo "sechub_server_version=${{ vars.INTEGRATIONTEST_SECHUB_SERVER_VERSION }}" >> "$GITHUB_ENV"
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
-          echo "pds_version=1.6.0" >> "$GITHUB_ENV"
+          echo "pds_version=${{ vars.INTEGRATIONTEST_PDS_VERSION }}" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
 
       - name: Cache SecHub server download    
@@ -71,7 +82,7 @@ jobs:
         uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
-          key: ${{ runner.os }}-pds-${{ env.pds_version }}
+          key: ${{ runner.os }}-sechub-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
         uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73

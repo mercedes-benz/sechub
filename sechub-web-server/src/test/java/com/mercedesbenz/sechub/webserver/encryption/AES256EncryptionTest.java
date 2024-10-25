@@ -27,26 +27,26 @@ class AES256EncryptionTest {
 
     @Test
     void encrypt_decrypt_returns_same_value() {
-        // prepare
+        /* prepare */
         String plainText = "test";
 
-        // execute
+        /* execute */
         byte[] encryptedTextBytes = aes256Encryption.encrypt(plainText);
         String decryptedText = aes256Encryption.decrypt(encryptedTextBytes);
 
-        // test
+        /* test */
         assertThat(decryptedText).isEqualTo(plainText);
     }
 
     @Test
     void encrypt_returns_correctly_encrypted_text() {
-        // prepare
+        /* prepare */
         String plainText = "test";
 
-        // execute
+        /* execute */
         byte[] encryptedTextBytes = aes256Encryption.encrypt(plainText);
 
-        // test
+        /* test */
         String encryptedTextB64Encoded = ENCODER.encodeToString(encryptedTextBytes);
         String expected = "SBRD1/R10NQuOFBdpC0S0g==";
         assertThat(encryptedTextB64Encoded).isEqualTo(expected);
@@ -54,23 +54,23 @@ class AES256EncryptionTest {
 
     @Test
     void encrypt_exceptions_are_handled_well() {
-        // execute & assert
+        /* execute & test */
 
-        // @formatter:off
+        /* @formatter:off */
         assertThatThrownBy(() -> aes256Encryption.encrypt(null))
                 .isInstanceOf(AES256EncryptionException.class)
                 .hasMessageContaining("Failed to encrypt text");
-        // @formatter:on
+        /* @formatter:on */
     }
 
     @Test
     void decrypt_exceptions_are_handled_well() {
-        // execute & assert
+        /* execute & test */
 
-        // @formatter:off
+        /* @formatter:off */
         assertThatThrownBy(() -> aes256Encryption.decrypt(null))
                 .isInstanceOf(AES256EncryptionException.class)
                 .hasMessageContaining("Failed to decrypt text");
-        // @formatter:on
+        /* @formatter:on */
     }
 }

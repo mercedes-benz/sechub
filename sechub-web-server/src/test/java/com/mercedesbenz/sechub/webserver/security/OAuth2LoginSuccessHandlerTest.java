@@ -64,42 +64,42 @@ class OAuth2LoginSuccessHandlerTest {
 
     @Test
     void on_authentication_success_sends_a_valid_redirect_containing_the_encrypted_jwt_cookie() throws IOException {
-        // prepare
+        /* prepare */
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
         when(oAuth2AccessToken.getExpiresAt()).thenReturn(now.plusSeconds(60));
         int expirySeconds = 60;
 
-        // execute
+        /* execute */
         oAuth2LoginSuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
 
-        // test
+        /* test */
         verify(aes256Encryption).encrypt(JWT);
         verify(httpServletResponse).sendRedirect(RequestConstants.HOME);
         ArgumentMatcher<Cookie> jwt = cookie -> {
-            // @formatter:off
+            /* @formatter:off */
             if (!ACCESS_TOKEN.equals(cookie.getName())) return false;
             if (!ENCRYPTED_JWT_BASE64_ENCODED.equals(cookie.getValue())) return false;
             if (cookie.getMaxAge() != expirySeconds) return false;
             if (!cookie.isHttpOnly()) return false;
             if (!cookie.getSecure()) return false;
             return BASE_PATH.equals(cookie.getPath());
-            // @formatter:on
+            /* @formatter:on */
         };
         verify(httpServletResponse).addCookie(argThat(jwt));
     }
 
     @Test
     void on_authentication_success_assumes_default_expiry_when_expires_at_is_null() throws IOException {
-        // prepare
+        /* prepare */
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
         when(oAuth2AccessToken.getExpiresAt()).thenReturn(null);
 
-        // execute
+        /* execute */
         oAuth2LoginSuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
 
-        // test
+        /* test */
         ArgumentMatcher<Cookie> jwt = cookie -> cookie.getMaxAge() == DEFAULT_EXPIRY_SECONDS;
         verify(httpServletResponse).addCookie(argThat(jwt));
     }

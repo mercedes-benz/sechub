@@ -13,6 +13,6 @@ public final class ApplicationProfiles {
     public static final String TEST = "test";
 
     private ApplicationProfiles() {
-        // Prevent instantiation
+        /* Prevent instantiation */
     }
 }

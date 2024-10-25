@@ -47,16 +47,16 @@ class JwtCookieResolverTest {
 
     @Test
     void resolve_reads_and_decrypts_jwt_from_cookies_successfully() {
-        // prepare
+        /* prepare */
         Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED);
         Cookie someOtherCookie = createJwtCookie("some-other-cookie-name", "some-other-cookie-value");
         Cookie[] cookies = List.of(jwtCookie, someOtherCookie).toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(cookies);
 
-        // execute
+        /* execute */
         String jwt = jwtCookieResolver.resolve(httpServletRequest);
 
-        // test
+        /* test */
         assertThat(jwt).isEqualTo(JWT);
         verify(aes256Encryption).decrypt(DECRYPTED_JWT_B64_DECODED);
     }
@@ -64,45 +64,45 @@ class JwtCookieResolverTest {
     @ParameterizedTest
     @ArgumentsSource(JwtCookieResolverTest.InvalidCookieListProvider.class)
     void resolve_returns_missing_jwt_value_when_jwt_cookie_is_not_found(List<Cookie> cookies) {
-        // prepare
+        /* prepare */
         Cookie[] array = cookies == null ? null : cookies.toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(array);
 
-        // execute
+        /* execute */
         String jwt = jwtCookieResolver.resolve(httpServletRequest);
 
-        // test
+        /* test */
         assertThat(jwt).isEqualTo(MISSING_JWT_VALUE);
     }
 
     @Test
     void resolve_returns_missing_jwt_value_when_access_token_decoding_fails() {
-        // prepare
+        /* prepare */
         Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED.concat("-invalid-b64"));
         Cookie[] cookies = List.of(jwtCookie).toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(cookies);
 
-        // execute & test
+        /* execute & test */
 
         String jwt = jwtCookieResolver.resolve(httpServletRequest);
 
-        // test
+        /* test */
         assertThat(jwt).isEqualTo(MISSING_JWT_VALUE);
     }
 
     @Test
     void resolve_returns_missing_jwt_value_when_access_token_decryption_fails() {
-        // prepare
+        /* prepare */
         Cookie jwtCookie = createJwtCookie(ACCESS_TOKEN, ENCRYPTED_JWT_B64_ENCODED);
         Cookie[] cookies = List.of(jwtCookie).toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(cookies);
         when(aes256Encryption.decrypt(any())).thenThrow(new RuntimeException());
 
-        // execute & test
+        /* execute & test */
 
         String jwt = jwtCookieResolver.resolve(httpServletRequest);
 
-        // test
+        /* test */
         assertThat(jwt).isEqualTo(MISSING_JWT_VALUE);
     }
 
@@ -118,13 +118,13 @@ class JwtCookieResolverTest {
     static class InvalidCookieListProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            // @formatter:off
+            /* @formatter:off */
             return Stream.of(
                     Arguments.of((Object) null),
                     Arguments.of(List.of()),
                     Arguments.of(List.of(createJwtCookie("invalid-cookie-name", ENCRYPTED_JWT_B64_ENCODED)))
             );
-            // @formatter:on
+            /* @formatter:on */
         }
     }
 }

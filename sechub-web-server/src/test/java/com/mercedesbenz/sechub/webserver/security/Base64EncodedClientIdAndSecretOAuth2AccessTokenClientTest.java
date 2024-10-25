@@ -41,7 +41,7 @@ import com.jayway.jsonpath.JsonPath;
 
 class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
 
-    // @formatter:off
+    /* @formatter:off */
     private static final RestTemplate restTemplate = new RestTemplate();
     private static final MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
     private static final Base64EncodedClientIdAndSecretOAuth2AccessTokenClient client = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
@@ -64,7 +64,7 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
             .redirectUri(Constants.REDIRECT_URI)
             .state(Constants.STATE)
             .build();
-    // @formatter:on
+    /* @formatter:on */
     private static final OAuth2AuthorizationExchange authorizationExchange = new OAuth2AuthorizationExchange(authorizationRequest, authorizationResponse);
     private static final OAuth2AuthorizationCodeGrantRequest authorizationCodeGrantRequest = new OAuth2AuthorizationCodeGrantRequest(clientRegistration,
             authorizationExchange);
@@ -85,39 +85,39 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
 
     @Test
     void get_token_response_executes_correctly_formatted_http_request() {
-        // prepare
+        /* prepare */
         String tokenUri = clientRegistration.getProviderDetails().getTokenUri();
         String authorizationHeaderValue = getBasicAuthHeaderValue(clientRegistration.getClientId(), clientRegistration.getClientSecret());
-        // @formatter:off
+        /* @formatter:off */
         mockServer.expect(requestTo(tokenUri))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(header(HttpHeaders.CONTENT_TYPE, Constants.APPLICATION_FORM_URLENCODED_VALUE))
                 .andExpect(header(HttpHeaders.AUTHORIZATION, authorizationHeaderValue))
                 .andExpect(content().formData(getMultiValueMap(authorizationCodeGrantRequest)))
                 .andRespond(withSuccess(jwtResponseJson, MediaType.APPLICATION_JSON));
-        // @formatter:on
+        /* @formatter:on */
 
-        // execute
+        /* execute */
         client.getTokenResponse(authorizationCodeGrantRequest);
 
-        // test
+        /* test */
         mockServer.verify();
     }
 
     @Test
     void get_token_response_returns_o_auth_access_token_as_expected() {
-        // prepare
+        /* prepare */
         String tokenUri = clientRegistration.getProviderDetails().getTokenUri();
-        // @formatter:off
+        /* @formatter:off */
         mockServer.expect(requestTo(tokenUri))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess(jwtResponseJson, MediaType.APPLICATION_JSON));
-        // @formatter:on
+        /* @formatter:on */
 
-        // execute
+        /* execute */
         OAuth2AccessTokenResponse oAuth2AccessTokenResponse = client.getTokenResponse(authorizationCodeGrantRequest);
 
-        // test
+        /* test */
         mockServer.verify();
         assertThat(oAuth2AccessTokenResponse.getAccessToken().getTokenValue()).isEqualTo(JsonPath.read(jwtResponseJson, "$.access_token"));
         assertThat(oAuth2AccessTokenResponse.getAccessToken().getTokenType().getValue()).isEqualTo(JsonPath.read(jwtResponseJson, "$.token_type"));
@@ -132,19 +132,19 @@ class Base64EncodedClientIdAndSecretOAuth2AccessTokenClientTest {
 
     @Test
     void get_token_response_handles_rest_client_exception_well() {
-        // prepare
+        /* prepare */
         String tokenUri = clientRegistration.getProviderDetails().getTokenUri();
-        // @formatter:off
+        /* @formatter:off */
         mockServer.expect(requestTo(tokenUri))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess("", MediaType.APPLICATION_JSON));
 
-        // execute & assert
+        /* execute & test */
 
         assertThatThrownBy(() -> client.getTokenResponse(authorizationCodeGrantRequest))
                 .isExactlyInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Failed to get JWT token response");
-        // @formatter:on
+        /* @formatter:on */
     }
 
     private static MultiValueMap<String, String> getMultiValueMap(OAuth2AuthorizationCodeGrantRequest authorizationGrantRequest) {

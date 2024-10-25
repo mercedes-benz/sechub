@@ -23,6 +23,6 @@ import jakarta.servlet.http.HttpServletResponse;
 class OAuth2MissingAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        response.sendRedirect(RequestConstants.LOGIN);
+        response.sendRedirect(RequestConstants.LOGIN_OAUTH2);
     }
 }
