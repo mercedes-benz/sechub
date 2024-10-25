@@ -28,7 +28,7 @@ spec:
         runAsGroup: 4242 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 4242    # This gid has write access to the mounted volumes.
       volumes:
-{{- if ne .Values.web-server.ssl.keystoreAlias "undefined" }}
+{{- if ne .Values.web_server.ssl.keystoreAlias "undefined" }}
         - name: secret-web-server-ssl-volume
           secret:
             secretName: secret-web-server-ssl
@@ -103,17 +103,17 @@ spec:
         #   successThreshold: 1
         #   timeoutSeconds: 3
         volumeMounts:
-{{- if ne .Values.web-server.ssl.keystoreAlias "undefined" }}
+{{- if ne .Values.web_server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-server/secrets/secret-ssl
             name: secret-web-server-ssl-volume
 {{- end }}
         env:
         # Server start mode
         - name: WEB_SERVER_START_MODE
-          value: "{{ .Values.web-server.startMode }}"
+          value: "{{ .Values.web_server.startMode }}"
         # Spring profiles definition
         - name: SPRING_PROFILES_ACTIVE
-          value: "{{ .Values.web-server.spring.profiles }}"
+          value: "{{ .Values.web_server.spring.profiles }}"
 {{- if .Values.env }}
         # ------------------------------------------------------------------------#
         # Scope: Additional environment variables for the SecHub web-ui container
@@ -126,17 +126,17 @@ spec:
         - name: DEPLOYMENT_COMMENT
           value: "{{ .Values.deploymentComment }}"
 {{- end }}
-{{- if .Values.web-server.loggingType }}
+{{- if .Values.web_server.loggingType }}
         - name: LOGGING_TYPE
-          value: "{{ .Values.web-server.loggingType }}"
+          value: "{{ .Values.web_server.loggingType }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Connection to SecHub server
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         - name: SECHUB_SERVER_URL
-          value: "{{ .Values.web-server.sechubConnection.url }}"
+          value: "{{ .Values.web_server.sechubConnection.url }}"
         - name: WEB_SERVER_SECHUB_TRUST_ALL_CERTIFICATES
-{{- if .Values.web-server.sechubConnection.trustAllCertificates }}
+{{- if .Values.web_server.sechubConnection.trustAllCertificates }}
           value: "true"
 {{- else }}
           value: "false"
@@ -157,21 +157,21 @@ spec:
         - name: SECHUB_WEB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_WEB_SERVER_SSL_KEYSTORE_LOCATION
-          value: "/sechub-web-server/{{ .Values.web-server.ssl.keystoreAlias }}.p12"
+          value: "/sechub-web-server/{{ .Values.web_server.ssl.keystoreAlias }}.p12"
         - name: SECHUB_WEB_SERVER_SSL_KEYSTORE_ALIAS
-          value: "{{ .Values.web-server.ssl.keystoreAlias }}"
+          value: "{{ .Values.web_server.ssl.keystoreAlias }}"
         - name: SECHUB_WEB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
                name: secret-web-server-ssl
                key: keystore_password
-{{- if .Values.web-server.spring.embeddedTomcat.logging.enabled }}
+{{- if .Values.web_server.spring.embeddedTomcat.logging.enabled }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Scope: embedded Tomcat
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # Logging to stdout:
         - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
-          value: "{{ .Values.web-server.spring.embeddedTomcat.logging.enabled }}"
+          value: "{{ .Values.web_server.spring.embeddedTomcat.logging.enabled }}"
         - name: SERVER_TOMCAT_ACCESSLOG_DIRECTORY
           value: "/dev"
         - name: SERVER_TOMCAT_ACCESSLOG_PREFIX
@@ -183,15 +183,15 @@ spec:
         - name: SERVER_TOMCAT_ACCESSLOG_FILE_DATE_FORMAT
           value: ""
         - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
-          value: "{{ .Values.web-server.spring.embeddedTomcat.logging.accessLogFormat }}"
+          value: "{{ .Values.web_server.spring.embeddedTomcat.logging.accessLogFormat }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Scope: development
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         - name: JAVA_ENABLE_DEBUG
-          value: "{{ .Values.web-server.development.javaDebug | toString }}"
+          value: "{{ .Values.web_server.development.javaDebug | toString }}"
         - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
-          value: "{{ .Values.web-server.development.keepContainerAliveAfterApplicationCrash | toString }}"
+          value: "{{ .Values.web_server.development.keepContainerAliveAfterApplicationCrash | toString }}"
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + end of environment variables section
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
