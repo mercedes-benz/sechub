@@ -48,7 +48,7 @@ class SecurityConfiguration {
             "/js/**",
             "/images/**",
             "/oauth2/**",
-            "sechub-logo.svg"
+            "/sechub-logo.svg"
     };
     /* @formatter:on */
     private static final String SCOPE = "openid";
