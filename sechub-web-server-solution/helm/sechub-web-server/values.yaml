@@ -25,7 +25,7 @@ resources:
     # Maximum container memory size
     memory: 1Gi
 
-web-server:
+web_server:
   # Possible values: server, development
   startMode: server
   sechubConnection:
