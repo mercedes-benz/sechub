@@ -6,12 +6,14 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.api.MockedSecHubClient;
 import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClientException;
+import com.mercedesbenz.sechub.webserver.ApplicationProfiles;
 
 import jakarta.annotation.PostConstruct;
 
@@ -26,6 +28,7 @@ import jakarta.annotation.PostConstruct;
  *
  */
 @Service
+@Profile(ApplicationProfiles.CLASSIC_AUTH_ENABLED)
 public class SecHubAccessService {
 
     static final Logger LOG = LoggerFactory.getLogger(SecHubAccessService.class);
