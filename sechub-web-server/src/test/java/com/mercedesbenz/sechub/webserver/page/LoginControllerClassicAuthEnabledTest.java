@@ -44,7 +44,8 @@ class LoginControllerClassicAuthEnabledTest {
                 .andExpect(model().attribute("isClassicAuthEnabled", true))
                 .andExpect(model().attributeDoesNotExist("registrationId"))
                 .andExpect(content().string(not(containsString("You will be redirected to your OAuth2 Provider for authentication."))))
-                .andExpect(content().string(containsString("Login with your provided User ID & API Token.")));
+                .andExpect(content().string(containsString("Login with your provided User ID & API Token.")))
+                .andExpect(content().string(containsString("Don't have an account? <a href=\"/register\">Register</a>")));
         /* @formatter:on */
     }
 }
