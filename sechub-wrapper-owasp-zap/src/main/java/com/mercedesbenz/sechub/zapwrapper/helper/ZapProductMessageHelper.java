@@ -58,17 +58,6 @@ public class ZapProductMessageHelper {
         }
     }
 
-    public void writeUserMessagesWithScannedURLs(List<String> urls) {
-        for (String url : urls) {
-            // robots.txt and sitemap.xml always appear inside the sites tree even if they
-            // are not available. Because of this it is skipped here.
-            if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
-                continue;
-            }
-            writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
-        }
-    }
-
     private void writeProductErrorForExitCode(ZapWrapperExitCode exitCode) throws IOException {
         if (exitCode == null) {
             return;
@@ -81,7 +70,7 @@ public class ZapProductMessageHelper {
             break;
         case API_DEFINITION_CONFIG_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
-                    "Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration."));
+                    "Please check your webscan api section inside the sechub configuration file. Only use supported api types and use filesystem->files instead of filesystem->folders for the API definition files."));
             break;
         case TARGET_URL_INVALID:
             productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
