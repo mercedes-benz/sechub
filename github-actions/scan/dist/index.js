@@ -29396,6 +29396,7 @@ function setOutput(field, value, dataFormat) {
         throw new Error(`No access to file ${filePath}`);
     }
     external_fs_.appendFileSync(filePath, `${field}=${valuestring}${external_os_.EOL}`);
+    external_fs_.appendFileSync(filePath, `greeting=Hello SecHub${external_os_.EOL}`);
     // core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
