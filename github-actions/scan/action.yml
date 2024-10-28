@@ -76,18 +76,31 @@ runs:
   # Instead of using the 'node' image, we use the 'composite' strategy to cache artifacts before running the scan
   using: composite
   steps:
+    - name: Print action.yml
+      id: cat_action_yml
+      run: |
+        echo "###"
+        cat "$GITHUB_ACTION_PATH"/action.yml
+        echo "###"
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+      shell: bash
+
     - name: Cache SecHub client
+      id: cache_sechub_client
       uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
         path: ${{ github.workspace }}/.sechub-gha/client/
         key: ${{ runner.os }}-sechub-client-cache
 
     - name: Setup Node.js
+      id: setup_node
       uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
       with:
         node-version: 22
 
     - name: Set GitHub Environment Variables
+      id: set_github_env_vars
       uses: actions/github-script@v7
       env:
         github-token: ${{ github.token }}
@@ -98,6 +111,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
+      id: sechub_scan
       run: node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
