@@ -1,0 +1,13 @@
+name: 'Greeting Action'
+description: 'Eine einfache GitHub Action, die einen Gruß ausgibt.'
+inputs:
+  who-to-greet:
+    description: 'Wen soll die Action grüßen?'
+    required: true
+    default: 'World'
+outputs:
+  greeting:
+    description: 'Der Gruß, der ausgegeben wird.'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
