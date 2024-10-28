@@ -1,5 +1,6 @@
 # Node Version
 NODE_VERSION=22.9.0
+BASE_IMAGE=debian:12-slim
 
 # Resource limits
 MEMORY_LIMIT=300M
@@ -7,7 +8,7 @@ CPU_LIMIT=1.0
 
 # The build type of SecHub inside the container
 # Possible values are: build, copy, download (currently only copy)
-# build - clones and build SecHub
+# build - clones and build from SecHub repository
 # copy - copies ./output directory container
 # download (not implemented)
 BUILD_TYPE=build
@@ -18,9 +19,3 @@ WEB_UI_VERSION="0.1.0"
 # Git information if the BUILD_TYPE is set to `build`
 TAG=""
 BRANCH=""
-
-# Ports and IP Settings
-WEB_UI_PORT="3000"
-
-# default 127.0.0.1 (localhost)
-WEB_UI_HOST="127.0.0.1"

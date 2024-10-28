@@ -6,36 +6,22 @@ services:
     build:
       args:
         - BUILD_TYPE=${BUILD_TYPE}
+        - BASE_IMAGE=${BASE_IMAGE}
         - WEB_UI_VERSION=${WEB_UI_VERSION}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
-        - WEB_UI_PORT=${WEB_UI_PORT}
-        - WEB_UI_HOST=${WEB_UI_HOST}
         - NODE_VERSION=${NODE_VERSION}
-        - NODE_ENV=${NODE_ENV}
       context: docker/
       dockerfile: Web-UI-Debian.dockerfile
     working_dir: /var/www/html/web-ui
     container_name: web-ui
-    env_file:
-      - .env
-      - .env-web-ui
-    networks:
-      - "internal"
-
-  nginx:
-    build:
-        context: docker/nginx
-        dockerfile: Nginx-Proxy.dockerfile
-    working_dir: /var/www/html
-    container_name: web-ui-nginx
     ports:
       - "8080:8080"
       - "443:8443"
-    depends_on:
-      - web-ui
+    env_file:
+      - .env
     networks:
-        - "internal"
+      - "internal"
 
 networks:
   internal:

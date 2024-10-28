@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,29 +18,73 @@ spec:
     metadata:
       labels:
         name: {{ .Values.name }}
+{{- if .Values.templateMetadataAnnotations }}
+      annotations:
+        {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
+{{- end }}
     spec:
+      securityContext:
+        runAsUser: 4242  # uid of the application user. (should be same as in the Dockerfile)
+        runAsGroup: 4242 # gid of the application group. (should be same as in the Dockerfile)
+        fsGroup: 4242    # This gid has write access to the mounted volumes.
+{{- if .Values.go_mmproxy.enabled }}
+      initContainers:
+        - name: setup
+          image: "{{ .Values.go_mmproxy.image }}"
+          command:
+            - "/bin/sh"
+            - "-cx"
+          args:
+            - |
+              /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
+              /sbin/ip route add local 0.0.0.0/0 dev lo table 123
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+{{- end }}
       containers:
+{{- if .Values.go_mmproxy.enabled }}
+      # go-mmproxy sidecar container
+      - name: go-mmproxy
+        image: "{{ .Values.go_mmproxy.image }}"
+        ports:
+          - containerPort: 8080
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        args:
+          - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
+          - "-l"             # listen
+          - "0.0.0.0:8080"   # on port 8080
+          - "-4"             # tcp v4
+          - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
+{{- end }}
+
         # Web-UI container
         - name: {{ .Values.name }}
           image: {{ .Values.image }}
           labels:
             name: {{ .Values.name }}
-          workingDir: /var/www/html/web-ui
-          securityContext:
-            runAsUser: 4242  # uid of the application user. (should be same as in the Nginx-Proxy.dockerfile)
-            runAsGroup: 4242 # gid of the application group. (should be same as in the Nginx-Proxy.dockerfile)
-            fsGroup: 4242    # This gid has write access to the mounted volumes.
-
-        # Nginx container for serving the web-ui
-        - name: {{ .Values.reverseProxy.name }}
-          image: {{ .Values.reverseProxy.image }}
-          labels:
-            name: {{ .Values.reverseProxy.name }}
-          workingDir: /var/www/html
-          securityContext:
-            runAsUser: 4242  # uid of the application user. (should be same as in the Nginx-Proxy.dockerfile)
-            runAsGroup: 4242 # gid of the application group. (should be same as in the Nginx-Proxy.dockerfile)
-            fsGroup: 4242    # This gid has write access to the mounted volumes.
           ports:
-          - name: {{ .Values.reverseProxy.name }}
+          - name: {{ .Values.name }}
             containerPort: 8443
+          volumeMounts:
+{{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
+          - mountPath: /sechub-webui/secrets/secret-ssl
+            name: secret-webui-ssl-volume
+{{- end }}
+          env:
+            - name: DEPLOYMENT_COMMENT
+              value: "{{ .Values.deploymentComment }}"
+          resources:
+            # min container memory
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+            # max container memory
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ .Values.imagePullSecrets | indent 8 | trim }}
+{{- end }}

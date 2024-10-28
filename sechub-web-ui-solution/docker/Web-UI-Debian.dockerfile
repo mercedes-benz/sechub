@@ -6,7 +6,8 @@
 
 # The image argument needs to be placed on top
 ARG NODE_VERSION
-ARG BASE_IMAGE=node:${NODE_VERSION}-slim
+ARG NODE_BASE_IMAGE=node:${NODE_VERSION}-slim
+ARG BASE_IMAGE
 
 # Build args
 ARG WEB_UI_VERSION
@@ -17,7 +18,7 @@ ARG NODE_ENV
 # Builder Build
 #-------------------
 
-FROM ${BASE_IMAGE} AS builder-build
+FROM ${NODE_BASE_IMAGE} AS builder-build
 ARG WEB_UI_BUILD_FOLDER="/build"
 ARG WEB_UI_ARTIFACTS="/artifacts"
 
@@ -40,7 +41,7 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub/sechub-web-ui" && \
     npm install && \
-    npm run build && \
+    npx nuxi generate && \
     cp -r .output "${WEB_UI_ARTIFACTS}" && \
     rm -rf "${WEB_UI_BUILD_FOLDER}"
 
@@ -48,7 +49,7 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
 # Builder Copy Build
 #-------------------
 
-FROM ${BASE_IMAGE} AS builder-copy
+FROM ${NODE_BASE_IMAGE} AS builder-copy
 ARG WEB_UI_ARTIFACTS="/artifacts"
 
 RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
@@ -67,37 +68,63 @@ RUN echo "build stage"
 #-------------------
 
 FROM ${BASE_IMAGE} AS web-ui
+ARG USER=www-data
 ARG WEB_UI_ARTIFACTS="/artifacts"
-ARG WEB_UI_FOLDER="/var/www/html/web-ui"
+ARG WEB_UI_FOLDER="/var/www/html/"
 
-COPY --from=builder "${WEB_UI_ARTIFACTS}" "${WEB_UI_FOLDER}"
+COPY --from=builder "${WEB_UI_ARTIFACTS}/.output" "${WEB_UI_FOLDER}"
 
 # env vars in container
-ENV USER="web-ui"
 ENV UID="4242"
 ENV GID="${UID}"
 ENV WEB_UI_VERSION="${WEB_UI_VERSION}"
 ENV WEB_UI_FOLDER="${WEB_UI_FOLDER}"
 
-# env for Vue.js and Nuxt
-ENV PORT="${WEB_UI_PORT}"
-ENV HOST="${WEB_UI_HOST}"
-ENV NODE_ENV=${NODE_ENV}
-
 # non-root user
 # using fixed group and user ids
-RUN groupadd --gid "$GID" "$USER" && \
-    useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
+RUN usermod -u "$UID" "$USER" && \
+    groupmod -g "$GID" "$USER"
 
-# Copy run script into the container
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install nginx openssl sed && \
+    apt-get --assume-yes clean
+
+# Create self-signed certificate
+RUN cd /tmp && \
+    openssl req \
+        -new \
+        -newkey rsa:2048 \
+        -days 365 \
+        -nodes \
+        -x509 \
+        -subj "/C=DE/ST=BW/L=Stuttgart/O=Loadbalancer/CN=localhost" \
+        -keyout localhost.key \
+        -out localhost.cert
+
+# Certificates
+RUN mkdir -p /certificates && \
+    mv /tmp/localhost.cert /certificates/localhost.cert && \
+    mv /tmp/localhost.key /certificates/localhost.key
+
+# Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
+# see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
+RUN openssl dhparam -out /certificates/certsdhparam.pem 2048
+
+# Copy configuration script
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Create PID file and set permissions
+RUN touch /var/run/nginx.pid && \
+    chmod 755 ${WEB_UI_FOLDER} && \
+    chown -R "$USER:$USER" /certificates /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid ${WEB_UI_FOLDER}
+
+# Copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# Set permissions
-RUN chown --recursive "$USER:$USER" "$WEB_UI_FOLDER"
-
-# Set workspace
-WORKDIR "$WEB_UI_FOLDER"
+ENV LOADBALANCER_START_MODE=server
 
 # Switch from root to non-root user
 USER "$USER"
