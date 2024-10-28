@@ -79,7 +79,8 @@ runs:
     - name: Print action.yml
       id: cat_action_yml
       run: |
-        echo "###"
+        find . -type f | grep -v node_modules
+        echo "### cat $GITHUB_ACTION_PATH/action.yml"
         cat "$GITHUB_ACTION_PATH"/action.yml
         echo "###"
       env:
