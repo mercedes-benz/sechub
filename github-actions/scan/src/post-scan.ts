@@ -3,6 +3,7 @@
 import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
 import * as fs from 'fs';
+import * as os from 'os';
 import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
@@ -278,7 +279,17 @@ function buildSummary(trafficLight: string, totalFindings: number, findings: { m
 function setOutput(field: string, value: any, dataFormat: string) {
 
     value = value ?? (dataFormat === 'number' ? 0 : 'FAILURE');
+    let valuestring = value.toString()
 
-    core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    core.debug(`Output ${field}=${valuestring}`);
+
+    const filePath = process.env[`GITHUB_OUTPUT`];
+    if (!filePath) {
+        throw new Error(`Empty environment variable GITHUB_OUTPUT`);
+    }
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`No access to file ${filePath}`);
+    }
+    fs.appendFileSync(filePath, `${field}=${valuestring}${os.EOL}`);
+    // core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
