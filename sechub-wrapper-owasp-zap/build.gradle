@@ -13,6 +13,7 @@ dependencies {
 
     implementation library.owaspzap_client_api
     implementation library.jcommander
+    implementation library.commons_codec
 
     implementation spring_boot_dependency.slf4j_api
     implementation spring_boot_dependency.logback_classic
