@@ -59,6 +59,8 @@ inputs:
     default: true
 
 outputs:
+  greeting:
+    description: 'temporary for analysis'
   scan-trafficlight:
     description: 'Color of the traffic light reported by SecHub'
   scan-findings-count:
@@ -76,17 +78,6 @@ runs:
   # Instead of using the 'node' image, we use the 'composite' strategy to cache artifacts before running the scan
   using: composite
   steps:
-    - name: Print action.yml
-      id: cat_action_yml
-      run: |
-        find . -type f | grep -v node_modules
-        echo "### cat $GITHUB_ACTION_PATH/action.yml"
-        cat "$GITHUB_ACTION_PATH"/action.yml
-        echo "###"
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-      shell: bash
-
     - name: Cache SecHub client
       id: cache_sechub_client
       uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
