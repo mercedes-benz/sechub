@@ -291,6 +291,5 @@ function setOutput(field: string, value: any, dataFormat: string) {
         throw new Error(`No access to file ${filePath}`);
     }
     fs.appendFileSync(filePath, `${field}=${valuestring}${os.EOL}`);
-    fs.appendFileSync(filePath, `greeting=Hello SecHub${os.EOL}`);
     // core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }

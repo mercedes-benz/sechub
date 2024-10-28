@@ -59,8 +59,6 @@ inputs:
     default: true
 
 outputs:
-  greeting:
-    description: 'temporary for analysis'
   scan-trafficlight:
     description: 'Color of the traffic light reported by SecHub'
   scan-findings-count:
