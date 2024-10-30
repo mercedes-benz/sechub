@@ -28990,8 +28990,6 @@ function ensureJsonReportAtBeginning(reportFormats) {
 
 // EXTERNAL MODULE: ./node_modules/@actions/artifact/lib/artifact-client.js
 var artifact_client = __nccwpck_require__(2605);
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
 // EXTERNAL MODULE: external "child_process"
 var external_child_process_ = __nccwpck_require__(2081);
 ;// CONCATENATED MODULE: ./src/shell-arg-sanitizer.ts
@@ -29154,7 +29152,6 @@ function getFieldFromJson(field, jsonData) {
 
 ;// CONCATENATED MODULE: ./src/post-scan.ts
 // SPDX-License-Identifier: MIT
-
 
 
 
@@ -29388,15 +29385,15 @@ function setOutput(field, value, dataFormat) {
     value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
     let valuestring = value.toString();
     core.debug(`Output ${field}=${valuestring}`);
-    const filePath = process.env[`GITHUB_OUTPUT`];
-    if (!filePath) {
-        throw new Error(`Empty environment variable GITHUB_OUTPUT`);
-    }
-    if (!external_fs_.existsSync(filePath)) {
-        throw new Error(`No access to file ${filePath}`);
-    }
-    external_fs_.appendFileSync(filePath, `${field}=${valuestring}${external_os_.EOL}`);
-    // core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    // const filePath = process.env[`GITHUB_OUTPUT`];
+    // if (!filePath) {
+    //     throw new Error(`Empty environment variable GITHUB_OUTPUT`);
+    // }
+    // if (!fs.existsSync(filePath)) {
+    //     throw new Error(`No access to file ${filePath}`);
+    // }
+    // fs.appendFileSync(filePath, `${field}=${valuestring}${os.EOL}`);
+    core.setOutput(field, valuestring);
 }
 
 ;// CONCATENATED MODULE: ./src/projectname-resolver.ts
@@ -29433,6 +29430,8 @@ function projectname_resolver_asJsonObject(text) {
     }
 }
 
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
 
 function getPlatform() {

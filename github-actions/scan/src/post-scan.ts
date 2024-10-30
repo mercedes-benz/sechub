@@ -283,13 +283,13 @@ function setOutput(field: string, value: any, dataFormat: string) {
 
     core.debug(`Output ${field}=${valuestring}`);
 
-    const filePath = process.env[`GITHUB_OUTPUT`];
-    if (!filePath) {
-        throw new Error(`Empty environment variable GITHUB_OUTPUT`);
-    }
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`No access to file ${filePath}`);
-    }
-    fs.appendFileSync(filePath, `${field}=${valuestring}${os.EOL}`);
-    // core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    // const filePath = process.env[`GITHUB_OUTPUT`];
+    // if (!filePath) {
+    //     throw new Error(`Empty environment variable GITHUB_OUTPUT`);
+    // }
+    // if (!fs.existsSync(filePath)) {
+    //     throw new Error(`No access to file ${filePath}`);
+    // }
+    // fs.appendFileSync(filePath, `${field}=${valuestring}${os.EOL}`);
+    core.setOutput(field, valuestring);
 }
