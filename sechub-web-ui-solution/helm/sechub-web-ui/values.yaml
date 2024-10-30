@@ -5,6 +5,7 @@
 name: web-ui
 
 image: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
+imagePullPolicy: "IfNotPresent"
 
 # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
 #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -45,7 +46,7 @@ service:
     ip: ""
     port:
       name: web-ui-https
-      number: 8443
+      number: 4443
   # optional: Add annotations (goes to metadata.annotations)
   #           Can contain multiple lines. Example:
   # annotations: |-

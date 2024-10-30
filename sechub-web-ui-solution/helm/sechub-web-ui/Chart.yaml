@@ -3,15 +3,12 @@
 apiVersion: v2
 name: sechub-web-ui
 description: SecHub Web UI Helm chart for Kubernetes to deploy a vue.js web application
+home: https://github.com/mercedes-benz/sechub
 
 type: application
-
-maintainers:
-  - name: Laura Bottner
-  - name: Sven Dolderer
 
 # This is the chart version.
 # This version number should be incremented each time you make changes to the chart and its templates.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.0.1
+version: 0.1.0

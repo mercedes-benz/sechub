@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 # SPDX-License-Identifier: MIT
 
 debug () {
@@ -9,17 +9,13 @@ debug () {
     done
 }
 
-server () {
-    echo "Check configuration file"
-    nginx -t
-    
-    echo "Start Nginx"
-    nginx -g 'daemon off;'
-}
-
-if [ "$LOADBALANCER_START_MODE" = "server" ]
+if [ "$LOADBALANCER_START_MODE" != "server" ]
 then
-    server
-else
     debug
 fi
+
+echo "Check configuration file"
+nginx -t
+
+echo "Start Nginx"
+nginx -g 'daemon off;'

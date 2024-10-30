@@ -27,53 +27,81 @@ spec:
         runAsUser: 4242  # uid of the application user. (should be same as in the Dockerfile)
         runAsGroup: 4242 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 4242    # This gid has write access to the mounted volumes.
+      volumes:
+{{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
+      - name: secret-web-ui-ssl-volume
+        secret:
+          secretName: secret-web-ui-ssl
+{{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
-        - name: setup
-          image: "{{ .Values.go_mmproxy.image }}"
-          command:
-            - "/bin/sh"
-            - "-cx"
-          args:
-            - |
-              /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
-              /sbin/ip route add local 0.0.0.0/0 dev lo table 123
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
+      - name: setup
+        image: "{{ .Values.go_mmproxy.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+        - "/bin/sh"
+        - "-cx"
+        args:
+        - |
+          /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
+          /sbin/ip route add local 0.0.0.0/0 dev lo table 123
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
 {{- end }}
       containers:
 {{- if .Values.go_mmproxy.enabled }}
       # go-mmproxy sidecar container
       - name: go-mmproxy
         image: "{{ .Values.go_mmproxy.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-          - containerPort: 8080
+        - containerPort: 8080
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
         args:
-          - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
-          - "-l"             # listen
-          - "0.0.0.0:8080"   # on port 8080
-          - "-4"             # tcp v4
-          - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
+        - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
+        - "-l"             # listen
+        - "0.0.0.0:8080"   # on port 8080
+        - "-4"             # tcp v4
+        - "127.0.0.1:4443" # forward to SecHub WebUI container (localhost port 4443)
 {{- end }}
 
         # Web-UI container
-        - name: {{ .Values.name }}
-          image: {{ .Values.image }}
-          labels:
-            name: {{ .Values.name }}
-          ports:
-          - name: {{ .Values.name }}
-            containerPort: 8443
+      - name: {{ .Values.name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        labels:
+          name: {{ .Values.name }}
+        ports:
+        - name: {{ .Values.name }}-https
+        containerPort: 4443
+        startupProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /alive-test.html
+              port: { { .Values.name } }-https
+            failureThreshold: 24
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /alive-test.html
+              port: { { .Values.name } }-https
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
           volumeMounts:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
-          - mountPath: /sechub-webui/secrets/secret-ssl
-            name: secret-webui-ssl-volume
+          - mountPath: /sechub-web-ui/secrets/secret-ssl
+            name: secret-web-ui-ssl-volume
 {{- end }}
           env:
             - name: DEPLOYMENT_COMMENT

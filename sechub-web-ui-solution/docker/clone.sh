@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 # SPDX-License-Identifier: MIT
 
 GIT_URL="$1"
@@ -13,11 +13,11 @@ fi
 
 git_args=""
 
-if [ ! -z "$TAG" ]
+if [ -n "$TAG" ]
 then
     echo "Tag: $TAG"
     git_args="--branch $TAG"
-elif [ ! -z "$BRANCH" ]
+elif [ -n "$BRANCH" ]
 then
     echo "Branch: $BRANCH"
     git_args="--branch $BRANCH"

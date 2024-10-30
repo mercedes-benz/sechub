@@ -8,6 +8,9 @@
 ARG NODE_VERSION
 ARG NODE_BASE_IMAGE=node:${NODE_VERSION}-slim
 ARG BASE_IMAGE
+ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
+ARG GIT_BRANCH
+ARG GIT_TAG
 
 # Build args
 ARG WEB_UI_VERSION
@@ -22,10 +25,6 @@ FROM ${NODE_BASE_IMAGE} AS builder-build
 ARG WEB_UI_BUILD_FOLDER="/build"
 ARG WEB_UI_ARTIFACTS="/artifacts"
 
-ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
-ARG BRANCH
-ARG TAG
-
 RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
 RUN mkdir --parent "${WEB_UI_BUILD_FOLDER}"
 
@@ -38,12 +37,11 @@ COPY clone.sh "$WEB_UI_BUILD_FOLDER/clone.sh"
 
 RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     chmod 755 clone.sh && \
-    ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
+    ./clone.sh "$GIT_URL" "$GIT_BRANCH" "$GIT_TAG" && \
     cd "sechub/sechub-web-ui" && \
     npm install && \
     npx nuxi generate && \
-    cp -r .output "${WEB_UI_ARTIFACTS}" && \
-    rm -rf "${WEB_UI_BUILD_FOLDER}"
+    cp -r .output "${WEB_UI_ARTIFACTS}"
 
 #-------------------
 # Builder Copy Build
@@ -72,7 +70,7 @@ ARG USER=www-data
 ARG WEB_UI_ARTIFACTS="/artifacts"
 ARG WEB_UI_FOLDER="/var/www/html/"
 
-COPY --from=builder "${WEB_UI_ARTIFACTS}/.output" "${WEB_UI_FOLDER}"
+COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${WEB_UI_FOLDER}"
 
 # env vars in container
 ENV UID="4242"
