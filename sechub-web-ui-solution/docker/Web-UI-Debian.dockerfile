@@ -5,8 +5,8 @@
 #-------------------
 
 # The image argument needs to be placed on top
-ARG NODE_VERSION
-ARG NODE_BASE_IMAGE=node:${NODE_VERSION}-slim
+ARG NODE_VERSION="22.9.0"
+ARG NODE_BASE_IMAGE="node:${NODE_VERSION}-slim"
 ARG BASE_IMAGE
 
 # Build args

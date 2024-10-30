@@ -1,5 +1,4 @@
 # Node Version
-NODE_VERSION=22.9.0
 BASE_IMAGE=debian:12-slim
 
 # Resource limits
@@ -17,5 +16,5 @@ BUILD_TYPE=build
 WEB_UI_VERSION="0.1.0"
 
 # Git information if the BUILD_TYPE is set to `build`
-TAG=""
-BRANCH=""
+GIT_TAG=""
+GIT_BRANCH=""

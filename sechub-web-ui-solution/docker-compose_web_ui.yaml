@@ -10,7 +10,6 @@ services:
         - WEB_UI_VERSION=${WEB_UI_VERSION}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
-        - NODE_VERSION=${NODE_VERSION}
       context: docker/
       dockerfile: Web-UI-Debian.dockerfile
     working_dir: /var/www/html/web-ui

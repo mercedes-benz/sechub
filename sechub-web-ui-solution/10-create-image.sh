@@ -4,17 +4,15 @@
 REGISTRY="$1"
 VERSION="$2"
 WEB_UI_VERSION="$3"
-BASE_IMAGE="$4"  # optional
-BUILD_TYPE="$5" # optional
 DEFAULT_BASE_IMAGE="debian:12-slim"
-DEFAULT_BUILD_TYPE="download"
+DEFAULT_BUILD_TYPE="build"
 
 cd `dirname $0`
 
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <web ui version> [<base image> <build type>]
+usage: $0 <docker registry> <version tag> <web ui version>
 
 Builds a docker image of SecHub Web UI <we bui version> for <docker registry>
 with tag <version tag>.
@@ -22,6 +20,8 @@ with tag <version tag>.
 Optional environment variables or options:
 BASE_IMAGE - <base image> to build from ; defaults to $DEFAULT_BASE_IMAGE
 BUILD_TYPE - <build type> (one of: build copy download) ; defaults to $DEFAULT_BUILD_TYPE
+GIT_TAG - <tag> to checkout from the repository (when BUILD_TYPE=build)
+GIT_BRANCH - <branch> to checkout from the repository (when BUILD_TYPE=build)
 EOF
 }
 
@@ -62,6 +62,16 @@ echo ">> Build type: $BUILD_TYPE"
 
 BUILD_ARGS+=" --build-arg WEB_UI_VERSION=$WEB_UI_VERSION"
 echo ">> SecHub Web UI release version: $WEB_UI_VERSION"
+
+if [[ -n "$GIT_TAG" ]]; then
+    BUILD_ARGS+=" --build-arg GIT_TAG=$GIT_TAG"
+    echo ">> Git tag: $GIT_TAG"
+fi
+
+if [[ -n "$GIT_BRANCH" ]]; then
+    BUILD_ARGS+=" --build-arg GIT_BRANCH=$GIT_BRANCH"
+    echo ">> Git branch: $GIT_BRANCH"
+fi
 
 # Use Docker BuildKit
 # nesessary for switching between build stages
