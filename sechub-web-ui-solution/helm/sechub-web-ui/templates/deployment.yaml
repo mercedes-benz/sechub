@@ -79,25 +79,25 @@ spec:
         ports:
         - name: {{ .Values.name }}-https
           containerPort: 8443
-#        startupProbe:
-#          httpGet:
-#            scheme: HTTPS
-#            path: /alive-test.html
-#            port: {{ .Values.name }}-https
-#          failureThreshold: 24
-#          periodSeconds: 5
-#          successThreshold: 1
-#          timeoutSeconds: 1
-#          initialDelaySeconds: 5
-#        livenessProbe:
-#          httpGet:
-#            scheme: HTTPS
-#            path: /alive-test.html
-#            port: {{ .Values.name }}-https
-#          failureThreshold: 3
-#          periodSeconds: 10
-#          successThreshold: 1
-#          timeoutSeconds: 3
+        startupProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health/alive.html
+            port: {{ .Values.name }}-https
+          failureThreshold: 24
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health/alive.html
+            port: {{ .Values.name }}-https
+          failureThreshold: 2
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
         volumeMounts:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-ui/secrets/secret-ssl

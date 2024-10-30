@@ -66,22 +66,30 @@ RUN echo "build stage"
 #-------------------
 
 FROM ${BASE_IMAGE} AS web-ui
+ARG HTDOCS_FOLDER="/var/www/html"
 ARG USER=www-data
 ARG WEB_UI_ARTIFACTS="/artifacts"
-ARG WEB_UI_FOLDER="/var/www/html/"
-
-COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${WEB_UI_FOLDER}"
 
 # env vars in container
 ENV UID="4242"
 ENV GID="${UID}"
+ENV CERTIFICATE_DIRECTORY="/etc/nginx/certificates"
+ENV LOADBALANCER_START_MODE="server"
 ENV WEB_UI_VERSION="${WEB_UI_VERSION}"
-ENV WEB_UI_FOLDER="${WEB_UI_FOLDER}"
+ENV HTDOCS_FOLDER="${HTDOCS_FOLDER}"
 
-# non-root user
-# using fixed group and user ids
+# using fixed group and user ids + prepare alive check file
 RUN usermod -u "$UID" "$USER" && \
-    groupmod -g "$GID" "$USER"
+    groupmod -g "$GID" "$USER" && \
+    NGINX_ALIVE_DIR="$HTDOCS_FOLDER/health"
+    mkdir -p "$NGINX_ALIVE_DIR"
+    echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
+
+# Copy configuration script
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy run script into container
+COPY run.sh /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -98,31 +106,25 @@ RUN cd /tmp && \
         -nodes \
         -x509 \
         -subj "/C=DE/ST=BW/L=Stuttgart/O=Loadbalancer/CN=localhost" \
-        -keyout localhost.key \
-        -out localhost.cert
+        -keyout sechub-web-ui.key \
+        -out sechub-web-ui.cert
 
-# Certificates
-RUN mkdir -p /certificates && \
-    mv /tmp/localhost.cert /certificates/localhost.cert && \
-    mv /tmp/localhost.key /certificates/localhost.key
+# Prepare certificates
+RUN mkdir -p "$CERTIFICATE_DIRECTORY" && \
+    mv /tmp/sechub-web-ui.cert "$CERTIFICATE_DIRECTORY"/sechub-web-ui.cert && \
+    mv /tmp/sechub-web-ui.key "$CERTIFICATE_DIRECTORY"/sechub-web-ui.key && \
+    # Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
+    # see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
+    openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048
 
-# Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
-# see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
-RUN openssl dhparam -out /certificates/certsdhparam.pem 2048
-
-# Copy configuration script
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy content to web server's document root
+COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
 
 # Create PID file and set permissions
 RUN touch /var/run/nginx.pid && \
-    chmod 755 ${WEB_UI_FOLDER} && \
-    chown -R "$USER:$USER" /certificates /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid ${WEB_UI_FOLDER}
-
-# Copy run script into container
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
-
-ENV LOADBALANCER_START_MODE=server
+    chmod 755 "$HTDOCS_FOLDER" && \
+    chown -R "$USER:$USER" "$CERTIFICATE_DIRECTORY" "$HTDOCS_FOLDER" /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid && \
+    chmod +x /run.sh
 
 # Switch from root to non-root user
 USER "$USER"
