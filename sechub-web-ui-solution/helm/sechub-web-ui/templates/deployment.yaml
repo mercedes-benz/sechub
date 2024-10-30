@@ -29,9 +29,9 @@ spec:
         fsGroup: 4242    # This gid has write access to the mounted volumes.
       volumes:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
-      - name: secret-web-ui-ssl-volume
-        secret:
-          secretName: secret-web-ui-ssl
+        - name: secret-web-ui-ssl-volume
+          secret:
+            secretName: secret-web-ui-ssl
 {{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
@@ -78,41 +78,42 @@ spec:
           name: {{ .Values.name }}
         ports:
         - name: {{ .Values.name }}-https
-        containerPort: 4443
+          containerPort: 4443
         startupProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /alive-test.html
-              port: { { .Values.name } }-https
-            failureThreshold: 24
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 1
-            initialDelaySeconds: 5
-          livenessProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /alive-test.html
-              port: { { .Values.name } }-https
-            failureThreshold: 3
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-          volumeMounts:
+          httpGet:
+            scheme: HTTPS
+            path: /alive-test.html
+            port: {{ .Values.name }}-https
+          failureThreshold: 24
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /alive-test.html
+            port: {{ .Values.name }}-https
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        volumeMounts:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-ui/secrets/secret-ssl
             name: secret-web-ui-ssl-volume
 {{- end }}
-          env:
-            - name: DEPLOYMENT_COMMENT
-              value: "{{ .Values.deploymentComment }}"
-          resources:
-            # min container memory
-            requests:
-              memory: "{{ .Values.resources.requests.memory }}"
-            # max container memory
-            limits:
-              memory: "{{ .Values.resources.limits.memory }}"
+        env:
+          - name: DEPLOYMENT_COMMENT
+            value: "{{ .Values.deploymentComment }}"
+        resources:
+          # min container memory
+          requests:
+            memory: "{{ .Values.resources.requests.memory }}"
+          # max container memory
+          limits:
+            memory: "{{ .Values.resources.limits.memory }}"
 {{- if .Values.imagePullSecrets }}
-      imagePullSecrets: {{ .Values.imagePullSecrets | indent 8 | trim }}
+      imagePullSecrets:
+        {{ .Values.imagePullSecrets | indent 8 | trim }}
 {{- end }}
