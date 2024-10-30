@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
+
   app: {
     head: {
       title: 'SecHub',
@@ -13,6 +14,14 @@ export default defineNuxtConfig({
       head: {
         title: 'SecHub'
       }
+    }
+  },
+
+  // Dev Server per default on https
+  devServer: {
+    https: {
+      key: './certs/local-server.key',
+      cert: './certs/local-server.crt'
     }
   },
 

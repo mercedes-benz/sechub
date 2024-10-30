@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    name: {{ .Values.name }}
+{{- if .Values.service.annotations }}
+  annotations:
+    {{ .Values.service.annotations | indent 4 | trim }}
+{{- end }}
+{{- if .Values.service.finalizers }}
+  finalizers:
+    {{ .Values.service.finalizers | indent 4 | trim }}
+{{- end }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.service.loadbalancer.ip }}
+  selector:
+    name: {{ .Values.name }}
+  ports:
+    - name: {{ .Values.service.loadbalancer.port.name }}
+      port: {{ .Values.service.loadbalancer.port.number }}
+      protocol: TCP
+{{- if .Values.go_mmproxy.enabled }}
+      targetPort: 8080
+{{- else }}
+      targetPort: 8443
+{{- end }}

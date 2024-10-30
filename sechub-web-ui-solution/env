@@ -1,0 +1,20 @@
+# Node Version
+BASE_IMAGE=debian:12-slim
+
+# Resource limits
+MEMORY_LIMIT=300M
+CPU_LIMIT=1.0
+
+# The build type of SecHub inside the container
+# Possible values are: build, copy, download (currently only copy)
+# build - clones and build from SecHub repository
+# copy - copies ./output directory container
+# download (not implemented)
+BUILD_TYPE=build
+
+# The PDS version used if the BUILD_TYPE is set to `download`
+WEB_UI_VERSION="0.1.0"
+
+# Git information if the BUILD_TYPE is set to `build`
+GIT_TAG=""
+GIT_BRANCH=""
