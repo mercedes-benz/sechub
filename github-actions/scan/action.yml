@@ -57,10 +57,6 @@ inputs:
     description: 'Job will be marked as failed if SecHub finds something'
     required: false
     default: true
-  branch:
-    description: 'Branch of the SecHub repository to use for the scan action'
-    required: false
-    default: 'master'
 
 outputs:
   scan-trafficlight:
@@ -77,76 +73,19 @@ outputs:
     description: 'Readable summary of the findings reported by SecHub'
 
 runs:
-  # Instead of using the 'node' image, we use the 'composite' strategy to build & cache the artifacts before running the scan
-  # By doing this we don't have to manually build & check-in the artifacts anymore
+  # Instead of using the 'node' image, we use the 'composite' strategy to cache artifacts before running the scan
   using: composite
   steps:
+    - name: Cache SecHub client
+      uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
+      with:
+        path: ${{ github.workspace }}/.sechub-gha/client/
+        key: ${{ runner.os }}-sechub-client-cache
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
       with:
-        node-version: 20
-
-    # Cache the 'sechub/github-actions/scan' subdirectory of the SecHub repository to speed up the checkout process
-    - name: Cache SecHub GitHub Actions Scan Subdirectory
-      id: cache-sechub-github-actions-scan
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan
-        key: ${{ runner.os }}-sechub-github-actions-scan-${{ github.repository }}
-        # Note: cache-hit will only be set to true when a cache hit occurs for the exact key match.
-        # For a partial key match via 'restore-keys' or a cache miss, it will be set to false
-
-    # Checkout the 'github-actions/scan' subfolder from the SecHub repository
-    # This contains the source code for the SecHub Scan GitHub Action
-    - name: Checkout SecHub GitHub Actions Scan with Git
-      # If the cache was a hit, we don't need to check out the repository again
-      if: ${{ steps.cache-sechub-github-actions-scan.outputs.cache-hit != 'true' }}
-      run: |
-        git clone --no-checkout --branch=${{ inputs.branch }} https://github.com/mercedes-benz/sechub.git
-        cd sechub
-        git config core.sparseCheckout true
-             
-        echo "github-actions/scan/" >> .git/info/sparse-checkout
-        
-        git checkout
-      shell: bash
-
-    - name: Cache Node Modules
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/sechub/github-actions/scan/node_modules
-        key: ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-sechub-github-actions-scan-node-${{ hashFiles('**/package-lock.json') }}
-          ${{ runner.os }}-sechub-github-actions-scan-node-
-          ${{ runner.os }}-   
-
-    - name: Npm Install
-      run: npm install
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
-
-    - name: Npm Run Build
-      run: npm run build
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
-
-    - name: Make index.js Executable
-      run: chmod +x dist/index.js
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
-
-    # Copy the index.js to the root of the repository
-    # By doing this any file and folder references inside the scan action will be relative to the root of the repository
-    # The index.js file will be copied as 'sechub-scan.js' and the 'exec-child.js' file will be copied as 'sechub-exec-child.js'
-    # This is done to avoid any conflicts with existing 'index.js' & 'exec-child.js' files in the repository
-    - name: Copy index.js To Root Of Repository
-      run: |
-        cp dist/index.js ../../../sechub-scan.js
-        sed -i 's/exec-child/sechub-exec-child/g' ../../../sechub-scan.js
-        cp dist/exec-child.js ../../../sechub-exec-child.js
-      working-directory: ${{ github.workspace }}/sechub/github-actions/scan
-      shell: bash
+        node-version: 22
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
@@ -159,7 +98,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node sechub-scan.js
+      run: node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
@@ -179,4 +118,5 @@ runs:
         ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
         ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
         ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
       shell: bash

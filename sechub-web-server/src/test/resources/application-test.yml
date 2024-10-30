@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: MIT
+
+sechub:
+  security:
+    oauth2:
+      client-id: client-id
+      client-secret: client-secret
+      provider: provider
+      redirect-uri: redirect-uri
+      issuer-uri: issuer-uri
+      authorization-uri: authorization-uri
+      token-uri: token-uri
+      user-info-uri: user-info-uri
+      jwk-set-uri: https://example.org/jwk-set-uri
+    encryption:
+      secret-key: test-test-test-test-test-test-32
+server:
+  ssl:
+    enabled: false

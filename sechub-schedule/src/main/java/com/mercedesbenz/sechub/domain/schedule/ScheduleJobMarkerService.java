@@ -58,16 +58,17 @@ public class ScheduleJobMarkerService {
             LOG.trace("Trigger execution of next job started");
         }
 
-        UUID nextJobId = nextJobResolver.resolveNextJobUUID();
-        if (nextJobId == null) {
+        UUID nextJobUUID = nextJobResolver.resolveNextJobUUID();
+        if (nextJobUUID == null) {
             return null;
         }
 
-        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJobWhenExecutable(nextJobId);
+        Optional<ScheduleSecHubJob> secHubJobOptional = jobRepository.getJobAndIncrementVersionWhenExecutable(nextJobUUID);
         if (!secHubJobOptional.isPresent()) {
-            LOG.error("Did not found executablejob for next job UUID:{}. This is very problematic and should never happen!", nextJobId);
+            LOG.trace("Did not find executable job for next job uuid. Job UUID was {}. ", nextJobUUID);
             return null;
         }
+
         ScheduleSecHubJob secHubJob = secHubJobOptional.get();
         ExecutionState state = secHubJob.getExecutionState();
 

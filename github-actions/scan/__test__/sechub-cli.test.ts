@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-import * as cli from '../src/sechub-cli';
-import { scan } from '../src/sechub-cli';
-import * as shell from 'shelljs';
+import {extractJobUUID, getReport, scan} from '../src/sechub-cli';
+import {execFileSync} from 'child_process';
+import {sanitize} from "../src/shell-arg-sanitizer";
 
 jest.mock('@actions/core');
 
@@ -18,21 +18,44 @@ const output = `
         other
         `;
 
-jest.mock('shelljs', () => ({
-    exec: jest.fn(() => ({
-        code: 0,
-        stdout: output,
-        stderr: ''
-    }))
+jest.mock('child_process', () => ({
+    execFileSync: jest.fn(() => output)
 }));
+
+jest.mock('../src/shell-arg-sanitizer');
 
 beforeEach(() => {
     jest.clearAllMocks();
 });
 
-describe('sechub-cli', function() {
+describe('scan', function() {
 
-    it('scan - return correct job id', function () {
+    it('sanitizes shell arguments', () => {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            configFileLocation: '/path/to/config.json',
+            workspaceFolder: '/path/to/workspace',
+            inputData: {
+                addScmHistory: 'false'
+            }
+        };
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
+
+        /* execute */
+        scan(context);
+
+        /* test */
+        expect(sanitize).toBeCalledTimes(4);
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('/path/to/config.json');
+        expect(sanitize).toBeCalledWith('/path/to/workspace');
+        expect(sanitize).toBeCalledWith('');
+    });
+
+    it('return correct job id', function () {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -51,7 +74,7 @@ describe('sechub-cli', function() {
         expect(context.jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
 
-    it('scan - with addScmHistory flag true - executes SecHub client with -addScmHistory', function () {
+    it('with addScmHistory flag true - executes SecHub client with -addScmHistory', function () {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -66,11 +89,25 @@ describe('sechub-cli', function() {
         scan(context);
 
         /* test */
-        expect(shell.exec).toBeCalledTimes(1);
-        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace -addScmHistory scan');
+        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync)
+            .toBeCalledWith(
+                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
+                {
+                    env: {
+                        SECHUB_SERVER: process.env.SECHUB_SERVER,
+                        SECHUB_USERID: process.env.SECHUB_USERID,
+                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                    },
+                    encoding: 'utf-8'
+                }
+            );
     });
 
-    it('scan - with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
+    it('with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -85,11 +122,29 @@ describe('sechub-cli', function() {
         scan(context);
 
         /* test */
-        expect(shell.exec).toBeCalledTimes(1);
-        expect(shell.exec).toBeCalledWith('/path/to/sechub-cli -configfile /path/to/config.json -output /path/to/workspace scan');
+        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync)
+            .toBeCalledWith(
+                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
+                {
+                    env: {
+                        SECHUB_SERVER: process.env.SECHUB_SERVER,
+                        SECHUB_USERID: process.env.SECHUB_USERID,
+                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                    },
+                    encoding: 'utf-8'
+                }
+            );
     });
 
-    it('extractJobUUID - returns job uuid from sechub client output snippet', function () {
+});
+
+describe('extractJobUUID', function () {
+
+    it('returns job uuid from sechub client output snippet', function () {
 
         const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
@@ -104,28 +159,28 @@ describe('sechub-cli', function() {
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
-    
-    it('extractJobUUID - returns job uuid from string with "job: xxxx"', function () {
-        
+
+    it('returns job uuid from string with "job: xxxx"', function () {
+
         const output = `
         The uuid for job:1234
         can be extracted
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('1234');
     });
 
-    it('extractJobUUID - returns empty string when no job id is available', function () {
-        
+    it('returns empty string when no job id is available', function () {
+
         const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
         2024-03-08 13:58:18 (+01:00) Zipping folder: __test__/integrationtest/test-sources (/home/xyzgithub-actions/scan/__test__/integrationtest/test-sources)
@@ -135,9 +190,34 @@ describe('sechub-cli', function() {
         `;
 
         /* execute */
-        const jobUUID= cli.extractJobUUID(output);
+        const jobUUID= extractJobUUID(output);
 
         /* test */
         expect(jobUUID).toEqual('');
     });
+});
+
+describe('getReport', function () {
+
+    it('sanitizes shell arguments', () => {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            projectName: 'project-name',
+        };
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
+
+        /* execute */
+        getReport('job-uuid', 'json', context);
+
+        /* test */
+        expect(sanitize).toBeCalledTimes(4);
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('job-uuid');
+        expect(sanitize).toBeCalledWith('project-name');
+        expect(sanitize).toBeCalledWith('json');
+    });
+
 });

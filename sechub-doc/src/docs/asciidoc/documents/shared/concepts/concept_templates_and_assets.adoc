@@ -1,0 +1,308 @@
+// SPDX-License-Identifier: MIT
+[[sechub-concept-templates-and-assets]]
+==== Templates and assets
+===== About 
+When it comes to complex configurations it can be cumbersome for {sechub} users, difficult for support
+and - depending on the product - very hard to provide a complete generic approach via {sechub}  configuration
+only. 
+
+===== Example situation
+To clarify this abstract situation here an example: +
+
+Think about a wide range of applications inside a corporation which want to use a common 
+single sign on with multi factor authentication and some other specific parts.
+
+The login configuration would become complex and error prone because not every user would
+understand exactly what to do. If the single-signon mechanism would change, every project/user
+would need to change their {sechub} configuration files! When talking about hundreds of projects
+this would be a great effort - for users and for support!
+
+And let us assume the used product has hundreds of options which cannot be configured
+by a generic approach easily (e.g. form login definition in configuration): How could this product
+be provided in a desired way then?
+ 
+And what if there are some specific parts which are not 100% same in every of these projects? 
+ 
+This is the reason for the "templates and assets" concept which is described below.
+
+===== Templates
+{sechub} can have multiple templates . Every template has a type and can contains a set of 
+assets and also a variable definition. It can be administrated via
+REST end points:
+
+```
+PUT    /api/administration/template/$template-id
+GET    /api/administration/template/$template-id
+DELETE /api/administration/template/$template-id
+```
+
+PUT will contain following body:
+
+[source,json]
+----
+{
+    "type" : "webscan-login",//<1>
+    "assets" : ["asset-id-1"]//<2>
+    "variables" : {//<3>
+        "username" : "mandatory",//<4>
+        "password" : "mandatory",
+        "tip-of-the-day" : "optional"//<5>
+    }
+}
+----
+<1> The type of the template. Currently possible: `webscan-login`
+<2> Array with asset identifiers assigned to the template
+<3> Variable definitions as list of key and value pairs which can be mandatory or optional. 
+Via the type {sechub} server is able to check if the configuration is valid and give 
+response to users when job starts.
+
+===== Mapping templates to projects
+```
+PUT     /api/admin/project/$projectId/template/$templateid
+DELETE  /api/admin/project/$projectId/template/$templateid
+GET     /api/admin/project/$projectId/template/list
+```
+
+[IMPORTANT]
+====
+The mapping is stored with template type as part of the composite key: 
+If two template definitions with same type are uploaded, the last one will
+overwrite the first one.
+====
+
+===== SecHub configuration file
+The users can now define in their {sechub} configuration file that they want to use the
+configured template for web scanning by defining a templateData section inside the login
+configuration.
+
+For example:
+[source,json]
+----
+include::../configuration/sechub_config_example22_webscan_with_template.json[]
+----
+<1> Define template data for the login. The user
+is not able to define which template is used.
+<2> Setup template variables by a list of key and value pairs. 
+
+[IMPORTANT]
+====
+If the user has defined a `templateData` section in the configuration but no template of that type is assigned to the project, a
+dedicated error message must be returned to the user and the {sechub} job will always fail.
+====
+
+===== Asset storage
+The assets are initially stored in {sechub} database, together with the asset file checksum.
+
+When a template is used inside a  {sechub} configuration, the {sechub} start mechanism will 
+check if the file from database is already available at storage (S3/NFS) which represents
+a cache for the assets.
+
+If available, the cached part will be used. Otherwise it will be uploaded
+(see  <<sechub-concept-asset-upload-lazy,{sechub} lazy asset upload to storage>> )
+
+
+[TIP]
+====
+Main reason why we store always in DB and use storage (S3/NFS) as a cache only:
+
+1. Restore a DB backup on a fresh installation:  +
+   Administrators can just apply the database backup and everything works again
+2. Storage could be volatile/be deleted etc. (we rely to the database)
+3. For having two clusters ( {sechub} and {pds} having not same database we need
+   a way to exchange.
+====
+
+
+[IMPORTANT]
+====
+For templates and assets we use the shared storage between {sechub} and {pds} .
+solutions and not to provide own storage for {pds}. Diffeent storages are not supported here.
+====
+
+`/assets/$assetId/`
+
+An asset id has
+
+- maximum length of 40
+- can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
+
+At the storage for each product (as named in the `pds-config.json` of the {pds} solution), there will be a ZIP file having the 
+product identifier as filename
+
+For example:
+```
+/assets/
+   asset-id-1/
+      PDS_OWASP_ZAP.zip
+      PDS_OWASP_ZAP.zip.sha256
+      OTHER_PRODUCT_X.zip
+      OTHER_PRODUCT_X.zip.sha256
+```
+[TIP]
+====
+The content and the structure inside the ZIP files is absolute solution specific :
+The PDS solution defines which kind of template data is necessary and how the 
+structure looks like!
+====
+
+===== Administration REST end points for storage
+Over REST API Administrators will be able to 
+
+- list (ZIP) file names +
+  `GET /api/administration/asset/$assetId/list`
+- upload asset ZIP files by REST API and create checksum file +
+  `PUT /api/administration/asset/$assetId/$productId`
+- download asset files by REST API  +
+  `GET /api/administration/asset/$assetId/$productId`
+- delete single asset file by REST API  +
+  `DELETE /api/administration/asset/$assetId/$productId`
+- delete all asset files by REST API  +
+  `DELETE /api/administration/asset/$assetId`
+
+The REST API will always create an audit log entry 
+
+[IMPORTANT]
+====
+This works only when the storage is shared between {sechub} and {pds}.
+If the {pds} uses its own storage (which should NOT be done for production, but only
+for PDS solution development) the assets must be uploaded directly to the PDS storage 
+location! 
+====
+
+===== SecHub template and asset handling
+====== Validation
+When a {sechub} job starts and there is a template data definition inside the configuration, 
+{sechub} will validate if the project has a template assigned for the location inside
+the configuration. e.g. templates with type `webscan-login` may only be defined inside 
+web scan login configuration).
+
+If this validation fails, the complete {sechub} job will fail and stop processing.
+
+[[sechub-concept-asset-upload-lazy]]
+====== Upload in storage as cache lazily
+When validation did not fail, {sechub} will check if the current version of the asset is already uploaded to
+storage (S3/NFS) already.
+
+When not uploaded to storage, the file will be uploaded before the job is further processed.
+
+====== Template PDS parameter calculation
+If validation and lazy upload did not fail, {sechub} will calculate a
+{pds} parameter : `pds.template.metadata` with JSON (see parameter syntax for details).
+
+.PDS parameter syntax for template meta data 
+[source,json]
+----
+{
+    "template-metadata" : [ //<1>
+        {
+            "template" : "single-singon", //<2>
+            "type": "webscan-login",//<3>
+            "assets" : [ //<4>
+                {
+                    "id" : "asset-id-1", //<5>
+                    "sha256" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b" //<6> 
+                }
+            ]
+        }]
+    }     
+}
+
+----
+<1> Meta data array
+<2> Template identifier - just as an information for logging etc.
+<3> Template type
+<4> Asset information array
+<5> ID of the asset, necessary for storage download
+<6> checksum of the asset ZIP file, necessary to check after download
+
+===== PDS asset handling
+{sechub} calls {pds}, with {pds} parameter `pds.template.metadata` (syntax is described above).
+
+The {pds} intance will fetch all wanted asset ZIP file for the current product 
+from storage (S3 or NFS) and extract it to `$workspaceFolder/assets/`. 
+
+Before extraction is done a checksum for the downloaded ZIP file is created and compared
+with the checksum from template meta data. If it is different the {pds} job will fail
+with a dedicated error message.
+
+If the checksum is valid, the assets ZIP file will be unzipped below a subfolder with the 
+template type:
+ 
+[source,text]
+----
+`$workspaceFolder/
+     assets/
+        $template-type/
+                    ...
+----
+
+An example:
+
+The `MY_PRODUCT.zip` file contains
+
+[source,text]
+----
+/script.js
+/development/
+             debug-settings.json
+----
+
+and the template meta data looks like this:
+
+[source,text]
+----
+{
+    "template-metadata" : {
+        {
+            "type: "webscan-login",
+            "assets" : [
+                {
+                    "id" : "asset-id-1",
+                    "sha256" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b" 
+                }
+            ]
+        }
+    }     
+}
+----
+
+
+It will be extracted the following way.
+
+[source,text]
+----
+`$workspaceFolder/
+     assets/
+        webscan-login/
+                    script.js
+                    develoment/
+                              debug-settings.json
+   
+----
+
+====== Pseudo code for usage inside PDS solutions/wrappers
+
+Here an example (but pseudo code) how a product could use the assets inside:
+
+[source,java]
+----
+WebScanTemplateData data = util.fetchWebScanTemplateData(sechubConfig);
+if (data!=null){
+    // folder=/$workspaceFolder/assets
+    File folder = util.getAssetFolder();
+    
+    // in example: it is a web scan...
+    script = folder.getChild("webscan-login/script.js");
+    
+    script = replaceVariableInScript(data.getVariable("username"), script);
+    script = replaceVariableInScript(data.getVariable("password"), script);
+    
+    // use script....
+}
+
+----
+
+
+
+
+

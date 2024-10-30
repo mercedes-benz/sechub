@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.14
+FROM alpine:3.20
 
 ARG DATABASE_FOLDER=/database
 ENV PGDATA="$DATABASE_FOLDER/data"

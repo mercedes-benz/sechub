@@ -14,12 +14,12 @@ public interface SecHubJobRepositoryCustom {
 
     /**
      * Returns job when in executable - means execution state is either
-     * READY_TO_START or SUSPENDED.
+     * READY_TO_START or SUSPENDED. Will also automatically increment version.
      *
      * @param sechubJobUUID job uuid to search for
      * @return job or <code>null</code>
      */
-    Optional<ScheduleSecHubJob> getJobWhenExecutable(UUID sechubJobUUID);
+    Optional<ScheduleSecHubJob> getJobAndIncrementVersionWhenExecutable(UUID sechubJobUUID);
 
     Optional<UUID> nextJobIdToExecuteFirstInFirstOut(Set<Long> acceptedEncryptiondPoolIds);
 

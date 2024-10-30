@@ -19,6 +19,9 @@ permissions:
   issues: write
   pull-requests: write
 
+env:
+  GHACTION: github-actions/scan
+
 jobs:
   release-version:
     name: Create Github Action release
@@ -38,7 +41,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
         with:
           ref: master
 
@@ -46,9 +49,9 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Use Node.js
-        # We do not define a dedicated node version here, we just use the default environment
-        # which should be the default environment for the github actions runtime as well
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
+        with:
+          node-version: 22
 
       - name: Git setup
         run: |
@@ -91,7 +94,6 @@ jobs:
       # ----------------------
       - name: Build github-actions/scan and set package version to v${{ inputs.ghaction-version }}
         run: |
-          GHACTION="github-actions/scan"
           cd $GHACTION
           echo "# $GHACTION - Update package version to ${{ inputs.ghaction-version }}"
           echo "$( jq --arg a "${{ inputs.ghaction-version }}" '.version = $a' package.json )" > package.json
@@ -123,6 +125,7 @@ jobs:
       - name: Commit build artifacts from above steps
         id: github-actions_commit
         run: |
+          git add -f "$GHACTION"/dist/*
           git commit -am "SecHub release job @github-actions for Github Action ${{ inputs.ghaction-version }} #${{ steps.release-issue.outputs.number }}" || true
           COMMITS=`git log --oneline --branches --not --remotes`
           echo "commits=$COMMITS" >> $GITHUB_OUTPUT
