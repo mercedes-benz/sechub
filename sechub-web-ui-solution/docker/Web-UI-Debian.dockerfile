@@ -8,9 +8,6 @@
 ARG NODE_VERSION
 ARG NODE_BASE_IMAGE=node:${NODE_VERSION}-slim
 ARG BASE_IMAGE
-ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
-ARG GIT_BRANCH
-ARG GIT_TAG
 
 # Build args
 ARG WEB_UI_VERSION
@@ -22,6 +19,9 @@ ARG NODE_ENV
 #-------------------
 
 FROM ${NODE_BASE_IMAGE} AS builder-build
+ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
+ARG GIT_BRANCH
+ARG GIT_TAG
 ARG WEB_UI_BUILD_FOLDER="/build"
 ARG WEB_UI_ARTIFACTS="/artifacts"
 

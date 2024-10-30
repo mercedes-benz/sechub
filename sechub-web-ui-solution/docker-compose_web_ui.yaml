@@ -16,7 +16,6 @@ services:
     working_dir: /var/www/html/web-ui
     container_name: web-ui
     ports:
-      - "8080:8080"
       - "443:8443"
     env_file:
       - .env
