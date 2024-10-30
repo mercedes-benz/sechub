@@ -162,7 +162,7 @@ TIP: Defaults to latest job. +
 Download the {sechub} report. (A result will only exist when the {sechub} job has finished)
 
 You can choose the format with `-reportformat <format>`. Default is `json`. +
-Currently supported: `json`, `html`, `spdx-json`. If an unsupported format is provided then `json` will always be the fallback.
+Currently supported: `json`, `html`, `spdx-json`(only for license scans). If an unsupported format is provided then `json` will always be the fallback.
 
 **Minimum call syntax**
 ----
