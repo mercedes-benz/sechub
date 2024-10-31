@@ -5,25 +5,24 @@
 #-------------------
 
 # The image argument needs to be placed on top
+ARG BASE_IMAGE
 ARG NODE_VERSION="22.9.0"
 ARG NODE_BASE_IMAGE="node:${NODE_VERSION}-slim"
-ARG BASE_IMAGE
+ARG WEB_UI_ARTIFACTS="/artifacts"
 
 # Build args
 ARG WEB_UI_VERSION
 ARG BUILD_TYPE
 
-ARG NODE_ENV
 #-------------------
 # Builder Build
 #-------------------
-
 FROM ${NODE_BASE_IMAGE} AS builder-build
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
 ARG GIT_BRANCH
 ARG GIT_TAG
 ARG WEB_UI_BUILD_FOLDER="/build"
-ARG WEB_UI_ARTIFACTS="/artifacts"
+ARG WEB_UI_ARTIFACTS
 
 RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
 RUN mkdir --parent "${WEB_UI_BUILD_FOLDER}"
@@ -46,9 +45,8 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
 #-------------------
 # Builder Copy Build
 #-------------------
-
 FROM ${NODE_BASE_IMAGE} AS builder-copy
-ARG WEB_UI_ARTIFACTS="/artifacts"
+ARG WEB_UI_ARTIFACTS
 
 RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
 
@@ -57,18 +55,17 @@ COPY ./copy "${WEB_UI_ARTIFACTS}"
 #-------------------
 # Builder
 #-------------------
-
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 RUN echo "build stage"
 
 #-------------------
 # WebUI Server Image
 #-------------------
-
 FROM ${BASE_IMAGE} AS web-ui
 ARG HTDOCS_FOLDER="/var/www/html"
 ARG USER=www-data
-ARG WEB_UI_ARTIFACTS="/artifacts"
+ARG WEB_UI_ARTIFACTS
+ARG WEB_UI_VERSION
 
 # env vars in container
 ENV UID="4242"
@@ -81,12 +78,9 @@ ENV HTDOCS_FOLDER="${HTDOCS_FOLDER}"
 # using fixed group and user ids + prepare alive check file
 RUN usermod -u "$UID" "$USER" && \
     groupmod -g "$GID" "$USER" && \
-    NGINX_ALIVE_DIR="$HTDOCS_FOLDER/health"
-    mkdir -p "$NGINX_ALIVE_DIR"
+    NGINX_ALIVE_DIR="$HTDOCS_FOLDER/health" && \
+    mkdir -p "$NGINX_ALIVE_DIR" && \
     echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
-
-# Copy configuration script
-COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy run script into container
 COPY run.sh /run.sh
@@ -96,6 +90,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --assume-yes upgrade && \
     apt-get --assume-yes install nginx openssl sed && \
     apt-get --assume-yes clean
+
+# Copy configuration script
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Create self-signed certificate
 RUN cd /tmp && \
@@ -107,7 +104,8 @@ RUN cd /tmp && \
         -x509 \
         -subj "/C=DE/ST=BW/L=Stuttgart/O=Loadbalancer/CN=localhost" \
         -keyout sechub-web-ui.key \
-        -out sechub-web-ui.cert
+        -out sechub-web-ui.cert \
+    2>&1 | sed 's/\.//g'
 
 # Prepare certificates
 RUN mkdir -p "$CERTIFICATE_DIRECTORY" && \
@@ -115,7 +113,7 @@ RUN mkdir -p "$CERTIFICATE_DIRECTORY" && \
     mv /tmp/sechub-web-ui.key "$CERTIFICATE_DIRECTORY"/sechub-web-ui.key && \
     # Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
     # see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
-    openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048
+    openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048 2>&1 | sed 's/\.//g'
 
 # Copy content to web server's document root
 COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
