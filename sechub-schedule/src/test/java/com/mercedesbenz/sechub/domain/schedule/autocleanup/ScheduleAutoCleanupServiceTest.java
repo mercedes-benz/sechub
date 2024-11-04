@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
@@ -23,8 +22,8 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResultInspector;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 import com.mercedesbenz.sechub.test.TestCanaryException;
 
 class ScheduleAutoCleanupServiceTest {
@@ -36,7 +35,7 @@ class ScheduleAutoCleanupServiceTest {
     private TimeCalculationService timeCalculationService;
     private AutoCleanupResultInspector inspector;
     private ScheduleCipherPoolCleanupService encryptionPoolCleanupService;
-    private StorageService storageService;
+    private SecHubStorageService storageService;
     private JobStorage jobStorage;
 
     @BeforeEach
@@ -49,7 +48,7 @@ class ScheduleAutoCleanupServiceTest {
         timeCalculationService = mock(TimeCalculationService.class);
         inspector = mock(AutoCleanupResultInspector.class);
         encryptionPoolCleanupService = mock(ScheduleCipherPoolCleanupService.class);
-        storageService = mock(StorageService.class);
+        storageService = mock(SecHubStorageService.class);
 
         jobStorage = mock(JobStorage.class);
 
@@ -149,7 +148,7 @@ class ScheduleAutoCleanupServiceTest {
         jobUUIDsAndProjectIdsOfOlderJobs.add(new Object[] { jobUUID, "project-id" });
 
         when(jobRepository.findJobUUIDsAndProjectIdsForJobsOlderThan(cleanTime)).thenReturn(jobUUIDsAndProjectIdsOfOlderJobs);
-        when(storageService.createJobStorage(SecHubStorageUtil.createStoragePath("project-id"), jobUUID)).thenReturn(jobStorage);
+        when(storageService.createJobStorageForProject("project-id", jobUUID)).thenReturn(jobStorage);
 
         /* execute */
         serviceToTest.cleanup();

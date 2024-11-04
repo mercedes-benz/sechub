@@ -36,8 +36,8 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 import jakarta.annotation.PostConstruct;
 
@@ -75,7 +75,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     CheckmarxInstallSetup installSetup;
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @Autowired
     MetaDataInspector scanMetaDataCollector;
@@ -107,7 +107,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         UUID jobUUID = data.getSechubExecutionContext().getSechubJobUUID();
         String projectId = data.getSechubExecutionContext().getConfiguration().getProjectId();
 
-        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorageForProject(projectId, jobUUID);
 
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
                 .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);

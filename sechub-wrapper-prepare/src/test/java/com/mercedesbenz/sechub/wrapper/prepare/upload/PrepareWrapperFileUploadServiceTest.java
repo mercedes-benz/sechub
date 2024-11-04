@@ -28,7 +28,7 @@ class PrepareWrapperFileUploadServiceTest {
         uploadServiceToTest = new PrepareWrapperFileUploadService();
         jobStorage = mock(JobStorage.class);
         PrepareWrapperStorageService storageService = mock(PrepareWrapperStorageService.class);
-        when(storageService.createJobStorage(anyString(), any(UUID.class))).thenReturn(jobStorage);
+        when(storageService.createJobStorageForPath(anyString(), any(UUID.class))).thenReturn(jobStorage);
 
         uploadServiceToTest.storageService = storageService;
 

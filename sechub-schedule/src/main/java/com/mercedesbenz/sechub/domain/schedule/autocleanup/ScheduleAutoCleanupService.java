@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolCleanupService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobDataRepository;
@@ -20,9 +19,9 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResultInspector;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScheduleAutoCleanExecution;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
 public class ScheduleAutoCleanupService {
@@ -48,7 +47,7 @@ public class ScheduleAutoCleanupService {
     ScheduleCipherPoolCleanupService encryptionPoolCleanupService;
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @UseCaseScheduleAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
@@ -105,8 +104,7 @@ public class ScheduleAutoCleanupService {
             UUID jobUUID = (UUID) jobUUIDAndProjectId[0];
             String projectId = (String) jobUUIDAndProjectId[1];
 
-            String path = SecHubStorageUtil.createStoragePath(projectId);
-            JobStorage jobStorage = storageService.createJobStorage(path, jobUUID);
+            JobStorage jobStorage = storageService.createJobStorageForProject(projectId, jobUUID);
             try {
                 jobStorage.deleteAll();
             } catch (IOException e) {

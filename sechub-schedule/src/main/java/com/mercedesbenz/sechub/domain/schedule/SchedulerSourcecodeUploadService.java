@@ -33,11 +33,11 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -57,7 +57,7 @@ public class SchedulerSourcecodeUploadService {
     SchedulerSourcecodeUploadConfiguration configuration;
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @Autowired
     CheckSumSupport checkSumSupport;
@@ -109,7 +109,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
-        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorageForProject(projectId, jobUUID);
         try {
             store(projectId, jobUUID, file, checkSum, traceLogID, jobStorage);
         } finally {
