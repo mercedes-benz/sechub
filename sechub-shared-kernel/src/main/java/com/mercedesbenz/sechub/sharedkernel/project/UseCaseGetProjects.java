@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.sharedkernel.project;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
+/* @formatter:off */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@UseCaseDefinition(
+        id=UseCaseIdentifier.UC_GET_PROJECTS,
+        group=UseCaseGroup.OTHER,
+        apiName="getProjects",
+        title="get projects",
+        description="User, Owner or Admin is listing all projects that he has access to.")
+public @interface UseCaseGetProjects {
+
+    Step value();
+}
+/* @formatter:on */

@@ -51,6 +51,11 @@ public class APIConstants {
     public static final String API_PROJECT = "/api/project/";
 
     /**
+     * get all assigned / owned projects and details
+     */
+    public static final String API_PROJECTS = "/api/projects";
+
+    /**
      * Actuator endpoints are available anonymous
      */
     public static final String ACTUATOR = "/actuator/";

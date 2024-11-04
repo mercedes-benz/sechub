@@ -180,6 +180,8 @@ public enum UseCaseIdentifier {
 
     UC_SYSTEM_RESUMES_FORMER_SUSPENDED_JOBS(80, false),
 
+    UC_GET_PROJECTS(81),
+
     ;
 
     /* +-----------------------------------------------------------------------+ */

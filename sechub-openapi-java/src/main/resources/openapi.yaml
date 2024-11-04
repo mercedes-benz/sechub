@@ -2191,6 +2191,23 @@ paths:
   ## Project Administration ##
   ############################
 
+  /api/projects:
+    get:
+      summary: Get list of owned and assigned projects
+      description: Get list of owned and assigned projects with
+      operationId: getProjects
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type:
+                  - array
+          description: "Ok"
+      x-content-type: application/json
+      tags:
+        - Project Administration
+
   /api/admin/project:
     post:
       summary: Admin creates a project
