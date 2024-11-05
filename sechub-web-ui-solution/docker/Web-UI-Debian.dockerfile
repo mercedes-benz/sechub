@@ -127,4 +127,6 @@ RUN touch /var/run/nginx.pid && \
 # Switch from root to non-root user
 USER "$USER"
 
+WORKDIR "$HTDOCS_FOLDER"
+
 CMD ["/run.sh"]
