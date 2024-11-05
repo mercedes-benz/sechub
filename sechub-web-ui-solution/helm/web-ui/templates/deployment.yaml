@@ -74,8 +74,6 @@ spec:
       - name: web-ui
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        labels:
-          name: web-ui
         ports:
         - name: web-ui-https
           containerPort: 4443
