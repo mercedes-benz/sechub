@@ -24,6 +24,7 @@ env:
   ACTIONS_BASE_IMAGE_DEBIAN: debian:12-slim
   ACTIONS_SECHUB_REGISTRY: ghcr.io/mercedes-benz/sechub
   ACTIONS_HELM_REGISTRY: "oci://ghcr.io/mercedes-benz/sechub/helm-charts"
+  WEB_UI_RELEASE_ZIPFILE: "sechub-web-ui_htdocs.zip"
 
 jobs:
   release-version:
@@ -53,19 +54,13 @@ jobs:
       - name: "Temporary tag server version: v${{ inputs.web-ui-version }}-web-ui"
         run: git tag v${{ inputs.web-ui-version }}-web-ui
 
-      # ----------------------
-      # Setup + Caching
-      # ----------------------
-      - name: Set up JDK 17
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73
+      # ------------------------------
+      # Node.js is needed for building
+      # ------------------------------
+      - name: Use Node.js
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
         with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808
-        with:
-          cache-read-only: false
+          node-version: 22
 
       - name: Docker login to ghcr.io
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
@@ -110,7 +105,15 @@ jobs:
       # ----------------------
       # Build SecHub Web-UI
       # ----------------------
-      # tbd
+      - name: Build SecHub web-ui
+        run: |
+          cd sechub-web-ui && \
+          npm install && \
+          npx nuxi generate && \
+          cd .output/public && \
+          echo '${{ inputs.web-ui-version }}' > sechub-web-ui_version.txt && \
+          zip -r ../../../$WEB_UI_RELEASE_ZIPFILE *
+
 
       - name: Collect GIT status
         if: always()
@@ -134,124 +137,114 @@ jobs:
         if: always()
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
-          name: sechub-web-ui
-          path: sechub-web-ui/build/libs
+          name: sechub-web-ui_htdocs
+          path: sechub-web-ui/.output/
           retention-days: 14
-
-      # -----------------------------------------
-      # Assert releaseable: Check for uncommitted changes
-      # -----------------------------------------
-      - name: Assert releasable
-        run: |
-          git status
-          ./gradlew assertReleaseable
 
       - name: Create Web-UI release
         id: create_web-ui_release
         uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own
         with:
           tag_name: v${{ inputs.web-ui-version }}-web-ui
           commitish: master
           release_name: web-ui Version ${{ inputs.web-ui-version }}
           body: |
-            Changes in this Release
-            - Some minor changes on Web-UI implementation
+            Changes in this release:
+            - New shiny Web-UI features
 
             For more details please look at [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1)
           draft: true
           prerelease: false
 
-      - name: Create sha256 checksum file for Web-UI jar
-        run: |
-          cd sechub-web-ui/build/libs
-          sha256sum sechub-web-ui-${{ inputs.web-ui-version }}.jar > sechub-web-ui-${{ inputs.web-ui-version }}.jar.sha256sum
+      - name: Create sha256 checksum file for Web-UI zip file
+        run: sha256sum $WEB_UI_RELEASE_ZIPFILE > $WEB_UI_RELEASE_ZIPFILE.sha256sum
 
-      - name: Upload Web-UI release asset sechub-web-ui-${{ inputs.web-ui-version }}.jar
+      - name: Upload Web-UI release asset ${{ env.WEB_UI_RELEASE_ZIPFILE }}
         uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_web-ui_release.outputs.upload_url }}
-          asset_path: sechub-web-ui/build/libs/sechub-web-ui-${{ inputs.web-ui-version }}.jar
-          asset_name: sechub-web-ui-${{ inputs.web-ui-version }}.jar
+          asset_path: ${{ env.WEB_UI_RELEASE_ZIPFILE }}
+          asset_name: ${{ env.WEB_UI_RELEASE_ZIPFILE }}
           asset_content_type: application/zip
 
-      - name: Upload Web-UI release asset sechub-web-ui-${{ inputs.web-ui-version }}.jar.sha256sum
+      - name: Upload Web-UI release asset ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
         uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_web-ui_release.outputs.upload_url }}
-          asset_path: sechub-web-ui/build/libs/sechub-web-ui-${{ inputs.web-ui-version }}.jar.sha256sum
-          asset_name: sechub-web-ui-${{ inputs.web-ui-version }}.jar.sha256sum
+          asset_path: ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
+          asset_name: ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
           asset_content_type: text/plain
 
-      # -----------------------------------------
-      # Create release issue
-      # -----------------------------------------
-      - name: Create SecHub Web-UI ${{ inputs.web-ui-version }} release issue
-        uses: dacbd/create-issue-action@main
-        with:
-          token: ${{ github.token }}
-          title: Release SecHub Web-UI ${{ inputs.web-ui-version }}
-          body: |
-            See [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1) for details.
+      # # -----------------------------------------
+      # # Create release issue
+      # # -----------------------------------------
+      # - name: Create SecHub Web-UI ${{ inputs.web-ui-version }} release issue
+      #   uses: dacbd/create-issue-action@main
+      #   with:
+      #     token: ${{ github.token }}
+      #     title: Release SecHub Web-UI ${{ inputs.web-ui-version }}
+      #     body: |
+      #       See [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1) for details.
 
-            Please close this issue after the release.
-          milestone: ${{ inputs.web-ui-milestone-number }}
+      #       Please close this issue after the release.
+      #     milestone: ${{ inputs.web-ui-milestone-number }}
 
-      # Build SecHub Web-UI container image + push to ghcr
-      - name: Build sechub-web-ui ${{ inputs.web-ui-version }} container image + push to ghcr
-        run: |
-          WEB_SERVER_VERSION="${{ inputs.web-ui-version }}"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/sechub-web-ui"
-          VERSION_TAG="${WEB_SERVER_VERSION}"
-          cp sechub-web-ui/build/libs/sechub-web-ui-${WEB_SERVER_VERSION}.jar sechub-web-ui-solution/docker/copy/
-          cd sechub-web-ui-solution
-          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
-          echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
-          ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "WEB_SERVER_VERSION" "$ACTIONS_BASE_IMAGE_DEBIAN" copy
-          echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
-          ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
+      # # Build SecHub Web-UI container image + push to ghcr
+      # - name: Build sechub-web-ui ${{ inputs.web-ui-version }} container image + push to ghcr
+      #   run: |
+      #     WEB_SERVER_VERSION="${{ inputs.web-ui-version }}"
+      #     DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/sechub-web-ui"
+      #     VERSION_TAG="${WEB_SERVER_VERSION}"
+      #     cp sechub-web-ui/build/libs/sechub-web-ui-${WEB_SERVER_VERSION}.jar sechub-web-ui-solution/docker/copy/
+      #     cd sechub-web-ui-solution
+      #     echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
+      #     echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
+      #     ./10-create-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" "WEB_SERVER_VERSION" "$ACTIONS_BASE_IMAGE_DEBIAN" copy
+      #     echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
+      #     ./20-push-image.sh "$DOCKER_REGISTRY" "$VERSION_TAG" yes
 
-      - name: Build sechub-web-ui Helm chart + push to ghcr
-        shell: bash
-        run: |
-          cd sechub-web-ui-solution/helm
-          echo "# Building Helm chart for SecHub Web-UI"
-          helm package sechub-web-ui
-          helm push sechub-web-ui-*.tgz $ACTIONS_HELM_REGISTRY
+      # - name: Build sechub-web-ui Helm chart + push to ghcr
+      #   shell: bash
+      #   run: |
+      #     cd sechub-web-ui-solution/helm
+      #     echo "# Building Helm chart for SecHub Web-UI"
+      #     helm package sechub-web-ui
+      #     helm push sechub-web-ui-*.tgz $ACTIONS_HELM_REGISTRY
 
-      # -----------------------------------------
-      # Create a pull request for merging back `master` into `develop`
-      # -----------------------------------------
-      - name: pull-request master to develop
-        id: pr_master_to_develop
-        continue-on-error: true
-        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: "master"
-          destination_branch: "develop"
-          pr_allow_empty: true  # should allow an empty PR, but seems not to work
-          pr_title: '2 - After web-ui release: Merge master back into develop [auto-generated]'
-          pr_body: |
-            After SecHub Web-UI release
-            - Web-UI '${{ inputs.web-ui-version }}'
+      # # -----------------------------------------
+      # # Create a pull request for merging back `master` into `develop`
+      # # -----------------------------------------
+      # - name: pull-request master to develop
+      #   id: pr_master_to_develop
+      #   continue-on-error: true
+      #   uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     source_branch: "master"
+      #     destination_branch: "develop"
+      #     pr_allow_empty: true  # should allow an empty PR, but seems not to work
+      #     pr_title: '2 - After web-ui release: Merge master back into develop [auto-generated]'
+      #     pr_body: |
+      #       After SecHub Web-UI release
+      #       - Web-UI '${{ inputs.web-ui-version }}'
 
-            Merge master branch back into develop
+      #       Merge master branch back into develop
 
-            -> Please merge **after** the release has been published.
+      #       -> Please merge **after** the release has been published.
 
-      - name: Print PR infos if PR was created
-        if: steps.pr_master_to_develop.outcome == 'success'
-        run: |
-          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
-          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+      # - name: Print PR infos if PR was created
+      #   if: steps.pr_master_to_develop.outcome == 'success'
+      #   run: |
+      #     echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
+      #     echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
-      - name: Print info if no PR was created
-        if: steps.pr_master_to_develop.outcome != 'success'
-        run: |
-          echo "Nothing to merge - no pull request necessary."
+      # - name: Print info if no PR was created
+      #   if: steps.pr_master_to_develop.outcome != 'success'
+      #   run: |
+      #     echo "Nothing to merge - no pull request necessary."
