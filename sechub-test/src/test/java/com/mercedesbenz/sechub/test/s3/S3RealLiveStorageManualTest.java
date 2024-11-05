@@ -48,7 +48,7 @@ class S3RealLiveStorageManualTest implements ManualTest {
         MultiStorageService service = new MultiStorageService(setup, s3Setup);
 
         UUID jobUUID = UUID.randomUUID();
-        JobStorage jobStorage = service.createJobStorage("test-only", jobUUID);
+        JobStorage jobStorage = service.createJobStorageForProject("test-only", jobUUID);
 
         /* check preconditions */
         boolean existsBefore = jobStorage.isExisting(S3_OBJECT_NAME);

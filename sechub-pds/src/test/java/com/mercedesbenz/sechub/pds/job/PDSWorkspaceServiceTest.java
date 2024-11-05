@@ -64,7 +64,7 @@ class PDSWorkspaceServiceTest {
         PDSProductSetup setup = new PDSProductSetup();
         when(serverConfigService.getProductSetupOrNull(any())).thenReturn(setup);
 
-        when(storageService.createJobStorage(any(), any())).thenReturn(storage);
+        when(storageService.createJobStorageForPath(any(), any())).thenReturn(storage);
 
         serviceToTest = new PDSWorkspaceService();
         serviceToTest.storageService = storageService;
@@ -206,7 +206,7 @@ class PDSWorkspaceServiceTest {
         serviceToTest.prepare(jobUUID, config, null);
 
         /* test */
-        verify(storageService).createJobStorage("xyz/abc/project1", config.getSechubJobUUID());
+        verify(storageService).createJobStorageForPath("xyz/abc/project1", config.getSechubJobUUID());
     }
 
     private PDSExecutionParameterEntry createEntry(String key, String value) {
