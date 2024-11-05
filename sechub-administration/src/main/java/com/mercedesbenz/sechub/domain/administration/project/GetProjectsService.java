@@ -2,14 +2,11 @@ package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -24,43 +21,56 @@ public class GetProjectsService {
         this.userInputAssertion = userInputAssertion;
         this.projectRepository = projectRepository;
     }
-   //Todo: Superadmin and tests!!!
+
     public GetProjectsDTO[] getProjects(String userId) {
         userInputAssertion.assertIsValidUserId(userId);
-        User user = userRepository.findOrFailUser(userId);
 
+        User user = userRepository.findOrFailUser(userId);
         List<GetProjectsDTO> projects = new ArrayList<>();
 
-        for (Project userProject : user.getProjects()) {
-            GetProjectsDTO getProjectsDTO = new GetProjectsDTO();
-            Project project = projectRepository.findOrFailProject(userProject.getId());
-
-            getProjectsDTO.setProjectId(project.getId());
-            getProjectsDTO.setOwner(project.getOwner().getName());
-
-            if (project.getOwner().equals(user)) {
-                getProjectsDTO.setOwned(true);
-                List<String> assinedUsers = new ArrayList<>();
-                project.getUsers().forEach(projectUser -> assinedUsers.add(projectUser.getName()));
-                getProjectsDTO.setAssinedUsers(Optional.of(assinedUsers.toArray(new String[0])));
-            }
-        }
+        getProjectsForUser(user, projects);
 
         return projects.toArray(new GetProjectsDTO[0]);
     }
 
-    public String[] userListProjects(String userId) {
-        userInputAssertion.assertIsValidUserId(userId);
-        User user = userRepository.findOrFailUser(userId);
-        return getProjects(user);
+    private void getProjectsForUser(User user, List<GetProjectsDTO> projects) {
+        if (user.isSuperAdmin()) {
+            for (Project project : projectRepository.findAll()) {
+                GetProjectsDTO getProjectsDTO = createGetProjectsDTO(project);
+
+                // TODO: is equals the correct method to compare the user?
+                if (user.equals(project.getOwner())) {
+                    getProjectsDTO.setOwned(true);
+                }
+
+                addAssignedUsers(project, getProjectsDTO);
+                projects.add(getProjectsDTO);
+            }
+        } else {
+            for (Project project : user.getProjects()) {
+                GetProjectsDTO getProjectsDTO = createGetProjectsDTO(project);
+
+                // TODO: is equals the correct method to compare the user?
+                if (user.equals(project.getOwner())) {
+                    getProjectsDTO.setOwned(true);
+                    addAssignedUsers(project, getProjectsDTO);
+                }
+                projects.add(getProjectsDTO);
+            }
+        }
     }
 
-    private static String[] getProjects(User user) {
-        List<String> projectIDs = new ArrayList<>();
+    private static void addAssignedUsers(Project project, GetProjectsDTO getProjectsDTO) {
+        List<String> assignedUsers = new ArrayList<>();
+        project.getUsers().forEach(projectUser -> assignedUsers.add(projectUser.getName()));
+        getProjectsDTO.setAssignedUsers(assignedUsers.toArray(new String[0]));
+    }
 
-        for (Project project : user.getProjects()) {
-            projectIDs.add(project.getId());
-        }
-        return projectIDs.toArray(new String[0]);
+    private static GetProjectsDTO createGetProjectsDTO(Project project) {
+        GetProjectsDTO getProjectsDTO = new GetProjectsDTO();
+
+        getProjectsDTO.setProjectId(project.getId());
+        getProjectsDTO.setOwner(project.getOwner().getName());
+        return getProjectsDTO;
     }
 }

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
         id=UseCaseIdentifier.UC_GET_PROJECTS,
-        group=UseCaseGroup.OTHER,
+        group=UseCaseGroup.PROJECT_ADMINISTRATION,
         apiName="getProjects",
         title="get projects",
         description="User, Owner or Admin is listing all projects that he has access to.")

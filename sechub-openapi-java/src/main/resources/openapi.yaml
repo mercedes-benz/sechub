@@ -276,6 +276,29 @@ components:
         - READ_ONLY
         - NONE
 
+    GetProjectDTO:
+      title: GetProjectDTO
+      description: "The project names with information according to the call"
+      type: object
+      required:
+        - projectId
+        - owner
+        - isOwned
+      properties:
+        projectId:
+          description: The name of the project.
+          type: string
+        owner:
+          description: Username of the owner of this project. An owner is the person
+            in charge.
+          type: string
+        isOwned:
+          description: True, when project is owned by the user
+          type: boolean
+        assignedUsers:
+          description: List of usernames assigned to the project
+          type: array
+
 
     ######################
     ## SecHub Execution ##
@@ -2203,6 +2226,8 @@ paths:
               schema:
                 type:
                   - array
+                items:
+                  $ref: '#/components/schemas/GetProjectDTO'
           description: "Ok"
       x-content-type: application/json
       tags:

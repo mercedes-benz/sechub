@@ -23,7 +23,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
-    private static final String API_USER = "/api/user";
+    public static final String API_PROJECTS = "/api/projects";
 
     public static SecHubTestURLBuilder https(int port) {
         return new SecHubTestURLBuilder("https", port);
@@ -462,7 +462,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     /* +............................ user self service .....+ */
     /* +-----------------------------------------------------------------------+ */
     public String buildUserListProjectsUrl() {
-        return buildUrl(API_USER, "projects");
+        return buildUrl(API_PROJECTS);
     }
 
     /* +-----------------------------------------------------------------------+ */
