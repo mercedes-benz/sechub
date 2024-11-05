@@ -7,11 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.storage.core.AssetStorage;
+import com.mercedesbenz.sechub.storage.core.AssetStorageFactory;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
 
-public class SharedVolumeJobStorageFactory implements JobStorageFactory {
+public class SharedVolumeJobStorageFactory implements JobStorageFactory, AssetStorageFactory {
     private Path sharedVolumeUploadDirectory;
 
     public SharedVolumeJobStorageFactory(SharedVolumeSetup sharedVolumeSetup) {
@@ -25,6 +27,12 @@ public class SharedVolumeJobStorageFactory implements JobStorageFactory {
     @Override
     public JobStorage createJobStorage(String projectId, UUID jobUUID) {
         return new SharedVolumeJobStorage(sharedVolumeUploadDirectory, projectId, jobUUID);
+    }
+
+    @Override
+    public AssetStorage createAssetStorage(String assetId) {
+        /* FIXME Albert Tregnaghi, 2024-10-25:implement */
+        return null;
     }
 
 }
