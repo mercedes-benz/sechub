@@ -3,12 +3,14 @@ package com.mercedesbenz.sechub.domain.administration.project;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProjectData {
     public static final String PROPERTY_PROJECT_ID = "projectId";
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_IS_OWNED = "isOwned";
     public static final String PROPERTY_ASSIGNED_USERS = "assignedUsers";
+
     private String projectId;
     private String owner;
     private Boolean isOwned;
@@ -31,6 +33,7 @@ public class ProjectData {
         this.assignedUsers = assignedUsers;
     }
 
+    @JsonProperty(PROPERTY_IS_OWNED)
     public boolean isOwned() {
         return isOwned;
     }

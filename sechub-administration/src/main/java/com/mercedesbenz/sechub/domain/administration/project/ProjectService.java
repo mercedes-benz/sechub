@@ -20,7 +20,7 @@ public class ProjectService {
         this.userInputAssertion = userInputAssertion;
     }
 
-    public ProjectData[] getProjectData(String userId) {
+    public ProjectData[] getProjectDataList(String userId) {
         userInputAssertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
@@ -38,7 +38,7 @@ public class ProjectService {
             if (user.equals(project.getOwner()) || user.isSuperAdmin()) {
                 projectData.setOwned(true);
                 addAssignedUsersToProjectData(project, projectData);
-            }else{
+            } else {
                 projectData.setOwned(false);
             }
 

@@ -35,7 +35,7 @@ class ProjectServiceTest {
         setUpTestCase(userId, true);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectData(userId);
+        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
@@ -54,7 +54,7 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectData(userId);
+        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
@@ -75,7 +75,7 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectData(userId);
+        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
@@ -98,7 +98,7 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectData(userId);
+        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
@@ -114,7 +114,7 @@ class ProjectServiceTest {
         // test case:
         // user1 is owner of project1
         // user2 is owner of project2 and project3
-        // user2 has user3 assigned to project2
+        // user3 is assigned to project2
 
         User user1 = mock(User.class);
         User user2 = mock(User.class);

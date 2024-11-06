@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.lang.annotation.Annotation;
 
-import com.mercedesbenz.sechub.domain.administration.project.ProjectRestController;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -33,12 +32,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectRestController;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjects;
+import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjectDataList;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -65,11 +65,11 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
     private UserContextService userContextService;
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseGetProjects.class)
+    @UseCaseRestDoc(useCase = UseCaseGetProjectDataList.class)
     public void user_role_get_projects() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildGetProjects();
-        Class<? extends Annotation> useCase = UseCaseGetProjects.class;
+        Class<? extends Annotation> useCase = UseCaseGetProjectDataList.class;
 
         String username = "user1";
 
@@ -80,13 +80,10 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         String[] assignedUsers = new String[] { "user1", "user2" };
         projectData.setAssignedUsers(assignedUsers);
 
-        ProjectData[] projectDataArray = new ProjectData[] {projectData};
+        ProjectData[] projectDataArray = new ProjectData[] { projectData };
 
         when(userContextService.getUserId()).thenReturn(username);
-        when(projectService.getProjectData(username)).thenReturn(projectDataArray);
-
-        // TODO: Laura - getting 403 forbidden error
-        // also when ROLE_SUPERADMIN
+        when(projectService.getProjectDataList(username)).thenReturn(projectDataArray);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

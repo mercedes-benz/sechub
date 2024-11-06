@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjects;
+import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjectDataList;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -24,11 +24,11 @@ public class ProjectRestController {
         this.userContextService = userContextService;
     }
 
-    @UseCaseGetProjects(@Step(number = 1, name = "Rest API call to get Projects with information", description = "Rest api call to get projects with details", needsRestDoc = true))
+    @UseCaseGetProjectDataList(@Step(number = 1, name = "Rest API call to get Projects with information", description = "Rest api call to get projects with details", needsRestDoc = true))
     @RequestMapping(path = AdministrationAPIConstants.API_GET_PROJECTS, method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
-    public ProjectData[] getProjects() {
+    public ProjectData[] getProjectDataList() {
         String userId = userContextService.getUserId();
-        return projectService.getProjectData(userId);
+        return projectService.getProjectDataList(userId);
     }
 }

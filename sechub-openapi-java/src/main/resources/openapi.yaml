@@ -276,8 +276,8 @@ components:
         - READ_ONLY
         - NONE
 
-    GetProjectDTO:
-      title: GetProjectDTO
+    ProjectData:
+      title: ProjectData
       description: "The project names with information according to the call"
       type: object
       required:
@@ -2217,8 +2217,8 @@ paths:
   /api/projects:
     get:
       summary: Get list of owned and assigned projects
-      description: Get list of owned and assigned projects with
-      operationId: getProjects
+      description: Get list of owned and assigned projects with project id, owner and assigned users (if caller is owner or admin)
+      operationId: getProjectDataList
       responses:
         "200":
           content:
@@ -2227,7 +2227,7 @@ paths:
                 type:
                   - array
                 items:
-                  $ref: '#/components/schemas/GetProjectDTO'
+                  $ref: '#/components/schemas/ProjectData'
           description: "Ok"
       x-content-type: application/json
       tags:
