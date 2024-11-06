@@ -73,7 +73,7 @@ public class MultiStorageService implements StorageService {
 
     @Override
     public AssetStorage createAssetStorage(String assetId) {
-        return assetStorageFactory.createAssetStorage(assetId);
+        return assetStorageFactory.createAssetStorage(SecHubStorageUtil.createAssetStoragePath(),assetId);
     }
 
 }

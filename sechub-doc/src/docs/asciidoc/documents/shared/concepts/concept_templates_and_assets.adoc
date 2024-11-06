@@ -79,7 +79,7 @@ stop before any {pds} job is created.
 *But {pds} solutions which are using templates must ensure,that the given user content 
 (variable) is correct and not some malicious injected data!*
 ====
-===== Mapping templates to projects
+====== Mapping templates to projects
 
 plantuml::./diagrams/diagram_templates-mapping-to-projects.puml[format=svg, title="Mapping of templates and projects"]
 
@@ -117,7 +117,7 @@ If two template definitions with same type are uploaded, the last one will
 overwrite the first one.
 ====
 
-===== SecHub configuration file
+====== Templates in SecHub configuration file
 The users can now define in their {sechub} configuration file that they want to use the
 configured template for web scanning by defining a templateData section inside the login
 configuration.
@@ -141,6 +141,7 @@ For templates and assets we must use shared storage between {sechub} and {pds} .
 are not supported here.
 ====
 
+===== Assets
 ====== Asset id format
 An asset id
 
@@ -149,8 +150,9 @@ An asset id
 - can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
 
 ====== {sechub} server uses product identifiers for asset ids
-The {sechub} server will use the product identifiers (like in the executor configurations)
-as filenames when storing asset data inside database (and also inside storage).
+The {sechub} server will use the product identifiers from {pds} executor configurations
+as filenames when storing asset data inside database and storage. The product identifiers
+are also defined inside the {pds} server configuration files.
 
 Here an example for storage paths:
 ```
@@ -168,24 +170,31 @@ The PDS solution defines which kind of template data is necessary and how the
 structure looks like!
 ====
 
-===== Administration
-====== General
+====== Asset operations
+*General*
+
+*Usecases*
+
+- Admin creates or updates asset
+-  
+
 Over REST API Administrators will be able to 
 
+- upload asset ZIP files by REST API and create checksum file +
+  `PUT /api/administration/asset/$assetId/file/$filename`
+- download asset files by REST API  +
+  `GET /api/administration/asset/$assetId/file/$filename`
 - list (ZIP) file names +
   `GET /api/administration/asset/$assetId/list`
-- upload asset ZIP files by REST API and create checksum file +
-  `PUT /api/administration/asset/$assetId/$productId`
-- download asset files by REST API  +
-  `GET /api/administration/asset/$assetId/$productId`
 - delete single asset file by REST API  +
-  `DELETE /api/administration/asset/$assetId/$productId`
-- delete all asset files by REST API  +
+  `DELETE /api/administration/asset/$assetId/file/$filename`
+- delete all asset data by REST API  +
   `DELETE /api/administration/asset/$assetId`
 
 The REST API will always create an audit log entry 
 
-====== Upload
+*Upload*
+
 The upload and delete operations will always handle DB and storage (S3/NFS)!
 If an asset ZIP file already exists, the operation will overwrite the file and the 
 old sha256 checksum in both locations.

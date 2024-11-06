@@ -485,6 +485,14 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ADMIN, "encryption/status");
     }
 
+    public String buildAdminUploadsAssetFile(String assetId) {
+        return buildUrl(API_ADMIN, "asset", assetId, "file");
+    }
+
+    public String buildAdminDownloadsAssetFile(String assetId, String fileName) {
+        return buildUrl(API_ADMIN, "asset", assetId, "file", fileName);
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */
@@ -718,5 +726,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     public String buildIntegrationTestFetchScanProjectConfigurations(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project-scanconfig/" + projectId);
     }
+
+   
 
 }

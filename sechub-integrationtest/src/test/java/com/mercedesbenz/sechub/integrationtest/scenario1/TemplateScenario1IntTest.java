@@ -71,7 +71,7 @@ public class TemplateScenario1IntTest {
         as(SUPER_ADMIN).createProject(Scenario1.PROJECT_1, SUPER_ADMIN); // not done in this scenario automatically
 
         /* check preconditions */
-        assertTemplateNotInsideTemplteList();
+        assertTemplateNotInsideTemplateList();
 
         /* execute + test */
         assertTemplateCanBeCreated();
@@ -101,11 +101,11 @@ public class TemplateScenario1IntTest {
         as(SUPER_ADMIN).deleteTemplate(templateId);
 
         // check cleanup worked
-        assertTemplateNotInsideTemplteList();
+        assertTemplateNotInsideTemplateList();
 
     }
 
-    private void assertTemplateNotInsideTemplteList() {
+    private void assertTemplateNotInsideTemplateList() {
         List<String> templateIds = as(SUPER_ADMIN).fetchTemplateList();
         assertThat(templateIds).doesNotContain(templateId);
     }

@@ -1478,4 +1478,33 @@ public class AsUser {
         return JSONConverter.get().fromJSONtoListOf(String.class, json);
     }
 
+    public AsUser uploadAssetFile(String assetId, File file) {
+        String url = getUrlBuilder().buildAdminUploadsAssetFile(assetId);
+        String checkSum = TestAPI.createSHA256Of(file);
+        /* @formatter:off */
+        autoDumper.execute(() -> getRestHelper().upload(url,file,checkSum)
+        );
+        /* @formatter:on */
+        return this;
+    }
+
+    public File downloadAssetFile(String assetId, String fileName) {
+        String url = getUrlBuilder().buildAdminDownloadsAssetFile(assetId, fileName);
+        /* @formatter:off */
+        RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
+
+        ResponseExtractor<File> responseExtractor = response -> {
+            Path path = TestUtil.createTempFileInBuildSubFolder("assets/"+assetId, fileName);
+            Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
+            if (TestUtil.isDeletingTempFiles()) {
+                path.toFile().deleteOnExit();
+            }
+            return path.toFile();
+        };
+        RestTemplate template = getRestHelper().getTemplate();
+        File downloadedAssetFile = template.execute(url, HttpMethod.GET, requestCallback, responseExtractor);
+        
+        return downloadedAssetFile;
+    }
+
 }

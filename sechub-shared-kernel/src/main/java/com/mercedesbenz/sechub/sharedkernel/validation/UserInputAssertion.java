@@ -53,6 +53,9 @@ public class UserInputAssertion {
     @Autowired
     AssetIdValidation assetIdValidation;
 
+    @Autowired
+    AssetFileNameValidation assetFilenameValidation;
+
     /**
      * Asserts this is a valid project id. If not, a {@link NotAcceptableException}
      * will be thrown
@@ -135,6 +138,16 @@ public class UserInputAssertion {
      */
     public void assertIsValidAssetId(String assetId) {
         assertValid(assetId, assetIdValidation, "Asset id is not valid");
+    }
+
+    /**
+     * Asserts this is an valid asset filename. If not, a
+     * {@link NotAcceptableException} will be thrown
+     * 
+     * @param fileName
+     */
+    public void assertIsValidAssetFileName(String fileName) {
+        assertValid(fileName, assetFilenameValidation, "Asset filename is not valid");
     }
 
 }

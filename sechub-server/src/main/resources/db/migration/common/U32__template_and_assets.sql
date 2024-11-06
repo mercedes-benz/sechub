@@ -5,3 +5,4 @@ DROP TABLE IF EXISTS adm_project_templates
 DROP INDEX IF EXISTS i02_scan_template_id;
 DROP TABLE IF EXISTS scan_template;
 
+DROP TABLE scan_asset_file;

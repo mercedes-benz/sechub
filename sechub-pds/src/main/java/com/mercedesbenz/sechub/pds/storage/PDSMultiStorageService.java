@@ -75,8 +75,8 @@ public class PDSMultiStorageService implements StorageService {
     }
 
     @Override
-    public AssetStorage createAssetStorage(String assetId) {
-        return assetStorageFactory.createAssetStorage(assetId);
+    public AssetStorage createAssetStorage(String storagePath, String assetId) {
+        return assetStorageFactory.createAssetStorage(storagePath, assetId);
     }
 
 }

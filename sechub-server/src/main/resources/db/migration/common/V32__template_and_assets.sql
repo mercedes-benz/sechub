@@ -19,3 +19,14 @@ CREATE TABLE adm_project_templates
 );
 
 ALTER TABLE adm_project_templates ADD CONSTRAINT c09_adm_project_template_project_id FOREIGN KEY (project_project_id) REFERENCES adm_project (project_id);
+
+CREATE TABLE scan_asset_file
+(
+     asset_id varchar(40) not null, -- 40 characters allowed, see AssetIdValidation
+     file_name varchar(100) not null, -- 100 characters allowed, see AssetFileNameValidation
+     data bytea, -- not null,
+     checksum varchar(80) not null,
+     version integer,
+     
+     PRIMARY KEY (asset_id, file_name)
+);

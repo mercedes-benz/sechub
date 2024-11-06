@@ -190,11 +190,22 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_FETCHES_ALL_TEMPLATE_IDS(84),
 
-    // template2Project
     UC_ADMIN_ASSIGNES_TEMPLATE_TO_PROJECT(85),
 
-    UC_ADMIN_UNASSIGNES_TEMPLATE_FROM_PROJECT(86),;
+    UC_ADMIN_UNASSIGNES_TEMPLATE_FROM_PROJECT(86),
 
+    /* assets */
+    UC_ADMIN_UPLOADS_ASSET_FILE(87),
+    
+    UC_ADMIN_DOWNLOADS_ASSET_FILE(88),
+
+    UC_ADMIN_FETCHES_LISTS_OF_ASSET_FILENAMES(89),
+    
+    UC_ADMIN_DELETES_ONE_FILE_FROM_ASSET(90),
+    
+    UC_ADMIN_DELETES_ASSET_COMPLETELY(91),
+    
+    ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +-----------------------------------------------------------------------+ */

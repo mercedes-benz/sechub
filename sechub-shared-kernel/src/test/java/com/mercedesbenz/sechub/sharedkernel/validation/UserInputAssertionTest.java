@@ -40,7 +40,7 @@ public class UserInputAssertionTest {
     @Test
     void templateIdValidation_used_for_assert_templateId() {
 
-        /* prepar */
+        /* prepare */
         TemplateIdValidation templateIdValidation = mock(TemplateIdValidation.class);
         when(templateIdValidation.validate("x")).thenReturn(new ValidationResult());
         assertToTest.templateIdValidation = templateIdValidation;
@@ -55,7 +55,7 @@ public class UserInputAssertionTest {
     @Test
     void assetIdValidation_used_for_assert_assetId() {
 
-        /* prepar */
+        /* prepare */
         AssetIdValidation assetIdValidation = mock(AssetIdValidation.class);
         when(assetIdValidation.validate("x")).thenReturn(new ValidationResult());
         assertToTest.assetIdValidation = assetIdValidation;
@@ -65,6 +65,21 @@ public class UserInputAssertionTest {
 
         /* test */
         verify(assetIdValidation).validate("x");
+    }
+    
+    @Test
+    void assetFilenameValidation_used_for_assert_asseFilename() {
+        
+        /* prepare */
+        AssetFileNameValidation validation = mock(AssetFileNameValidation.class);
+        when(validation.validate("x")).thenReturn(new ValidationResult());
+        assertToTest.assetFilenameValidation = validation;
+        
+        /* execute */
+        assertToTest.assertIsValidAssetFileName("x");
+        
+        /* test */
+        verify(validation).validate("x");
     }
 
 }

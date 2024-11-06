@@ -6,8 +6,8 @@ import com.mercedesbenz.sechub.storage.core.AssetStorage;
 
 public class AwsS3AssetStorage extends AbstractAwsS3Storage implements AssetStorage {
 
-    public AwsS3AssetStorage(AmazonS3 client, String bucketName, String assetId) {
-        super(client, bucketName, "assets", assetId);
+    public AwsS3AssetStorage(AmazonS3 client, String bucketName, String storagePath, String assetId) {
+        super(client, bucketName, storagePath, assetId);
     }
     
 }
