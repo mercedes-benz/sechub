@@ -35,7 +35,7 @@ public class PrepareWrapperStorageService implements StorageService {
     }
 
     @Override
-    public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
+    public JobStorage createJobStorageForPath(String storagePath, UUID jobUUID) {
         return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 

@@ -1,15 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webserver.credentials;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.mercedesbenz.sechub.webserver.ApplicationProfiles;
 import com.mercedesbenz.sechub.webserver.RequestConstants;
 import com.mercedesbenz.sechub.webserver.sechubaccess.SecHubAccessService;
 import com.mercedesbenz.sechub.webserver.user.UserInfoService;
 
 @Controller
+@Profile(ApplicationProfiles.CLASSIC_AUTH_ENABLED)
 class NewApiTokenController {
 
     private final NewApiTokenService newApiTokenService;

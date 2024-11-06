@@ -55,9 +55,9 @@ public class PrepareWrapperFileUploadService {
     }
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, File file, String checkSum) {
-        String storagePath = SecHubStorageUtil.createStoragePath(projectId);
+        String storagePath = SecHubStorageUtil.createStoragePathForProject(projectId);
 
-        JobStorage jobStorage = storageService.createJobStorage(storagePath, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorageForPath(storagePath, jobUUID);
 
         try {
             UploadFileNameData uploadFileNameData;

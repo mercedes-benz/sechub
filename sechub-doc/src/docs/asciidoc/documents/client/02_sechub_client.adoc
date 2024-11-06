@@ -159,7 +159,10 @@ TIP: Defaults to latest job. +
      This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
 ===== getReport
-Will fetch the report as json. (result will only exist when job is done)
+Download the {sechub} report. (A result will only exist when the {sechub} job has finished)
+
+You can choose the format with `-reportformat <format>`. Default is `json`. +
+Currently supported: `json`, `html`, `spdx-json`(only for license scans). If an unsupported format is provided then `json` will always be the fallback.
 
 **Minimum call syntax**
 ----

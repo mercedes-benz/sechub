@@ -54,8 +54,8 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecur
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @SuppressWarnings("deprecation")
 @RunWith(SpringRunner.class)
@@ -85,7 +85,7 @@ public class CheckmarxProductExecutorMockTest {
     CheckmarxInstallSetup installSetup;
 
     @MockBean
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @MockBean
     SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
@@ -100,7 +100,7 @@ public class CheckmarxProductExecutorMockTest {
     public void before() throws Exception {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
-        when(storageService.createJobStorage(any(), any())).thenReturn(storage);
+        when(storageService.createJobStorageForProject(any(), any())).thenReturn(storage);
 
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");

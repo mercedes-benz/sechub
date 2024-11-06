@@ -55,6 +55,8 @@ ext {
       apache_commons_fileupload2_jakarta:      "2.0.0-M1",
       apache_commons_compress:                 "1.25.0",
       apache_commons_lang3:                    "3.14.0",
+      
+      commons_codec:                           "1.17.1",
 
       /* testing */                            
       junit4:                                  "4.13.2",
@@ -158,6 +160,8 @@ ext {
 	
         apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
         apache_commons_lang3:                  "org.apache.commons:commons-lang3:${libraryVersion.apache_commons_lang3}",
+        
+        commons_codec:                         "commons-codec:commons-codec:${libraryVersion.commons_codec}",
 
         // JDK 10 build problems handling
         // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j

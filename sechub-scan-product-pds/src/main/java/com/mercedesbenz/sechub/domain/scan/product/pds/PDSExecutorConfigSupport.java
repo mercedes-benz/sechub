@@ -90,7 +90,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     private void handleSecHubStorageIfNecessary(SecHubConfiguration secHubConfiguration, Map<String, String> parametersToSend) {
         if (isReusingSecHubStorage()) {
             String projectId = secHubConfiguration.getProjectId();
-            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+            String sechubStoragePath = SecHubStorageUtil.createStoragePathForProject(projectId);
 
             parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
         }

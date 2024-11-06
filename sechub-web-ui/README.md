@@ -10,24 +10,18 @@ Make sure to install the dependencies:
 ```bash
 # npm (initial build with npm 10.8.3)
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Development Server (per default on https)
 
-Start the development server on `http://localhost:3000`:
+Start the development server on `https://localhost:3000`:
 
 ```bash
+# generate local certificates (only once)
+./generate-certificate.sh
+
 # npm
-npm run dev
+npm run dev -- -o
 ```
 
 ## Production
