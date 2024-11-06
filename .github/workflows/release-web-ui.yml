@@ -148,7 +148,7 @@ jobs:
         with:
           tag_name: v${{ inputs.web-ui-version }}-web-ui
           commitish: master
-          release_name: web-ui Version ${{ inputs.web-ui-version }}
+          release_name: web-ui frontend Version ${{ inputs.web-ui-version }}
           body: |
             Changes in this release:
             - New shiny Web-UI features
