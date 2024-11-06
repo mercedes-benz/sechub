@@ -202,6 +202,7 @@ jobs:
           VERSION_TAG="${WEB_UI_VERSION}"
           echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
           echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
+          mkdir -p sechub-web-ui-solution/docker/copy
           cp -r sechub-web-ui/.output sechub-web-ui-solution/docker/copy
           cd sechub-web-ui-solution
           export BASE_IMAGE="$ACTIONS_BASE_IMAGE_DEBIAN"
