@@ -461,7 +461,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ user self service .....+ */
     /* +-----------------------------------------------------------------------+ */
-    public String buildUserListProjectsUrl() {
+    public String buildGetProjects() {
         return buildUrl(API_PROJECTS);
     }
 

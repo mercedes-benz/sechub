@@ -1,0 +1,12 @@
+User, Owner or Admin fetches a list containing information about assigned and/ or owned projects.
+
+The Project data contains the following information:
+
+- Project ID
+- Owner
+- is owned
+- assigned users (can only be viewed by owner or admin)
+
+A project user can see only projects he is assigned to.
+A project owner can see all projects he owns and the assigned users.
+A project admin can see assigned or owned projects and all assigned users.

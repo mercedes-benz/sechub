@@ -14,21 +14,21 @@ import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjects;
 import jakarta.annotation.security.RolesAllowed;
 
 @RestController
-public class GetProjectsRestController {
+public class ProjectRestController {
 
-    final private GetProjectsService getProjectsService;
+    final private ProjectService projectService;
     final private UserContextService userContextService;
 
-    public GetProjectsRestController(GetProjectsService getProjectsService, UserContextService userContextService) {
-        this.getProjectsService = getProjectsService;
+    public ProjectRestController(ProjectService projectService, UserContextService userContextService) {
+        this.projectService = projectService;
         this.userContextService = userContextService;
     }
 
-    @UseCaseGetProjects(@Step(number = 1, name = "Rest API call", description = "Rest api call to get projects with details", needsRestDoc = true))
+    @UseCaseGetProjects(@Step(number = 1, name = "Rest API call to get Projects with information", description = "Rest api call to get projects with details", needsRestDoc = true))
     @RequestMapping(path = AdministrationAPIConstants.API_GET_PROJECTS, method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
-    public GetProjectsDTO[] getProjects() {
+    public ProjectData[] getProjects() {
         String userId = userContextService.getUserId();
-        return getProjectsService.getProjects(userId);
+        return projectService.getProjectData(userId);
     }
 }

@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
         group=UseCaseGroup.PROJECT_ADMINISTRATION,
         apiName="getProjects",
         title="get projects",
-        description="User, Owner or Admin is listing all projects that he has access to.")
+        description="project/get_projects.adoc")
 public @interface UseCaseGetProjects {
 
     Step value();

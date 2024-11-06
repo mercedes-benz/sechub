@@ -2,13 +2,17 @@ package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.Optional;
 
-import jakarta.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-public class GetProjectsDTO {
+public class ProjectData {
+    public static final String PROPERTY_PROJECT_ID = "projectId";
+    public static final String PROPERTY_OWNER = "owner";
+    public static final String PROPERTY_IS_OWNED = "isOwned";
+    public static final String PROPERTY_ASSIGNED_USERS = "assignedUsers";
     private String projectId;
     private String owner;
-    private boolean isOwned;
-    @Nullable
+    private Boolean isOwned;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String[] assignedUsers;
 
     public void setProjectId(String projectId) {
@@ -19,8 +23,8 @@ public class GetProjectsDTO {
         this.owner = owner;
     }
 
-    public void setOwned(boolean owned) {
-        isOwned = owned;
+    public void setOwned(boolean isOwned) {
+        this.isOwned = isOwned;
     }
 
     public void setAssignedUsers(String[] assignedUsers) {

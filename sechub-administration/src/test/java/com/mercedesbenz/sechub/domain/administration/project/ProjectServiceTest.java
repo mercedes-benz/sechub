@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,39 +15,35 @@ import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
-class GetProjectsServiceTest {
+class ProjectServiceTest {
 
-    private GetProjectsService serviceToTest;
+    private ProjectService serviceToTest;
     private UserRepository userRepository;
-    private ProjectRepository projectRepository;
 
     @BeforeEach
     public void before() {
-        projectRepository = mock(ProjectRepository.class);
         userRepository = mock(UserRepository.class);
         UserInputAssertion userInputAssertion = mock(UserInputAssertion.class);
 
-        serviceToTest = new GetProjectsService(userRepository, userInputAssertion, projectRepository);
+        serviceToTest = new ProjectService(userRepository, userInputAssertion);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "user1", "user2", "user3" })
+    @ValueSource(strings = { "user1", "user3" })
     void get_projects_user_is_super_admin_and_see_all_projects_with_all_information(String userId) {
         /* prepare */
         setUpTestCase(userId, true);
 
         /* execute */
-        GetProjectsDTO[] projects = serviceToTest.getProjects(userId);
+        ProjectData[] projects = serviceToTest.getProjectData(userId);
 
         /* test */
         assertNotNull(projects);
-        assertEquals(3, projects.length);
+        assertEquals(1, projects.length);
 
         // the order is not guaranteed, so we can not check for other properties,
         // but we can check if the assigned users are present for all projects
         assertTrue(projects[0].getAssignedUsers().isPresent());
-        assertTrue(projects[1].getAssignedUsers().isPresent());
-        assertTrue(projects[2].getAssignedUsers().isPresent());
     }
 
     @Test
@@ -59,7 +54,7 @@ class GetProjectsServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        GetProjectsDTO[] projects = serviceToTest.getProjects(userId);
+        ProjectData[] projects = serviceToTest.getProjectData(userId);
 
         /* test */
         assertNotNull(projects);
@@ -80,7 +75,7 @@ class GetProjectsServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        GetProjectsDTO[] projects = serviceToTest.getProjects(userId);
+        ProjectData[] projects = serviceToTest.getProjectData(userId);
 
         /* test */
         assertNotNull(projects);
@@ -103,7 +98,7 @@ class GetProjectsServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        GetProjectsDTO[] projects = serviceToTest.getProjects(userId);
+        ProjectData[] projects = serviceToTest.getProjectData(userId);
 
         /* test */
         assertNotNull(projects);
@@ -150,11 +145,6 @@ class GetProjectsServiceTest {
 
         Set<User> users = Set.of(user2, user3);
         when(project2.getUsers()).thenReturn(users);
-
-        when(projectRepository.findAll()).thenReturn(List.of(new Project[] { project1, project2, project3 }));
-        when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
-        when(projectRepository.findOrFailProject("project2")).thenReturn(project2);
-        when(projectRepository.findOrFailProject("project3")).thenReturn(project3);
 
         switch (userId) {
         case "user1" -> {

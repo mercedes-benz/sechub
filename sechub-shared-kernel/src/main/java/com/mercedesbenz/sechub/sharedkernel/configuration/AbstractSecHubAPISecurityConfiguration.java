@@ -23,6 +23,7 @@ public abstract class AbstractSecHubAPISecurityConfiguration {
 						requestMatchers(APIConstants.API_USER + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_PROJECT + "**").hasAnyRole(ROLE_USER, ROLE_SUPERADMIN).
 						requestMatchers(APIConstants.API_OWNER + "**").hasAnyRole(ROLE_OWNER, ROLE_SUPERADMIN).
+						requestMatchers(APIConstants.API_PROJECTS + "**").hasAnyRole(ROLE_USER, ROLE_OWNER, ROLE_SUPERADMIN).
 
 						requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll().
 						requestMatchers(APIConstants.ERROR_PAGE).permitAll().
