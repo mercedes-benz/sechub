@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  web-ui:
+    build:
+      args:
+        - BUILD_TYPE=${BUILD_TYPE}
+        - BASE_IMAGE=${BASE_IMAGE}
+        - WEB_UI_VERSION=${WEB_UI_VERSION}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+      context: docker/
+      dockerfile: Web-UI-Debian.dockerfile
+    working_dir: /var/www/html/web-ui
+    container_name: web-ui
+    ports:
+      - "443:8443"
+    env_file:
+      - .env
+    networks:
+      - "internal"
+
+networks:
+  internal:

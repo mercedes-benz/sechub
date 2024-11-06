@@ -3,16 +3,10 @@
 apiVersion: v2
 name: sechub-server
 description: SecHub server Helm chart for Kubernetes
-
+home: https://github.com/mercedes-benz/sechub
 type: application
-
-maintainers:
-  - name: Sven Dolderer
-  - name: Jeremias Eppler
-  - name: Rouven Haertel
 
 # This is the chart version.
 # This version number should be incremented each time you make changes to the chart and its templates.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-
-version: 2.0.0
+version: 2.1.0

@@ -70,7 +70,7 @@ public class PDSFileUploadJobServiceTest {
         when(archiveSupportProvider.getArchiveSupport()).thenReturn(archiveSupport);
 
         storage = mock(JobStorage.class);
-        when(storageService.createJobStorage(null, jobUUID)).thenReturn(storage);
+        when(storageService.createJobStorageForPath(null, jobUUID)).thenReturn(storage);
 
         when(workspaceService.getUploadFolder(jobUUID)).thenReturn(new File(tmpUploadPath.toFile(), jobUUID.toString()));
 

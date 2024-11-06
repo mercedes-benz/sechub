@@ -128,7 +128,7 @@ public class PDSFileUploadJobService {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
 
-        JobStorage jobStorage = storageService.createJobStorage(null, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorageForPath(null, jobUUID);
 
         try {
             store(jobUUID, request, fileName, jobStorage);

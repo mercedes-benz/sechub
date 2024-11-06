@@ -32,8 +32,9 @@ if [ "$SHARED_VOLUME" = "" ]; then
     exit 1
 fi
 
-
 SCRIPT_DIR="$(dirname -- "$0")"
+
+export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR=$SHARED_VOLUME
 
 echo "Start SecHub server at localhost:${SERVER_PORT}, executable at: ${PATH_TO_EXECUTABLE}"
 # `curl -s --insecure https://localhost:${this.serverPort}/api/anonymous/check/alive`;
@@ -44,5 +45,4 @@ java \
  -Dsechub.server.debug=true \
  -Dserver.port="${SERVER_PORT}" \
  -Dsechub.integrationtest.ignore.missing.serverproject=true \
- -Dsechub.storage.sharedvolume.upload.dir="$SHARED_VOLUME" \
  -jar "${PATH_TO_EXECUTABLE}">>"${PATH_TO_LOGFILE}" &

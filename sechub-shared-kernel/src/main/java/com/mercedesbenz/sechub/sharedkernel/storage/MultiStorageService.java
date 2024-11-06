@@ -15,7 +15,6 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 import com.mercedesbenz.sechub.storage.s3.AwsS3JobStorageFactory;
 import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorageFactory;
 
@@ -28,7 +27,7 @@ import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorage
  *
  */
 @Service
-public class MultiStorageService implements StorageService {
+public class MultiStorageService implements SecHubStorageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultiStorageService.class);
 
@@ -40,14 +39,14 @@ public class MultiStorageService implements StorageService {
 
         if (s3Setup.isAvailable()) {
             AwsS3JobStorageFactory awsJobFactory = new AwsS3JobStorageFactory(s3Setup);
-            
+
             jobStorageFactory = awsJobFactory;
             assetStorageFactory = awsJobFactory;
 
         } else if (sharedVolumeSetup.isAvailable()) {
             SharedVolumeJobStorageFactory sharedVolumeStorageFactory = new SharedVolumeJobStorageFactory(sharedVolumeSetup);
-            jobStorageFactory=sharedVolumeStorageFactory;
-            assetStorageFactory=sharedVolumeStorageFactory;
+            jobStorageFactory = sharedVolumeStorageFactory;
+            assetStorageFactory = sharedVolumeStorageFactory;
 
         }
 
@@ -60,20 +59,13 @@ public class MultiStorageService implements StorageService {
     }
 
     @Override
-    public JobStorage createJobStorage(String projectId, UUID jobUUID) {
-        /*
-         * we use here "jobstorage/${projectId} - so we have same job storage path as
-         * before in sechub itself - for PDS own prefix (storageId) is used insdide
-         * storagePath. We could have changed to something like
-         * "sechub/jobstarge/${projectId}" but this would have forced migration issues.
-         * So we keep this "old style"
-         */
-        return jobStorageFactory.createJobStorage(SecHubStorageUtil.createStoragePath(projectId), jobUUID);
+    public JobStorage createJobStorageForPath(String storagePath, UUID jobUUID) {
+        return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 
     @Override
-    public AssetStorage createAssetStorage(String assetId) {
-        return assetStorageFactory.createAssetStorage(SecHubStorageUtil.createAssetStoragePath(),assetId);
+    public AssetStorage createAssetStorage(String storagePath, String assetId) {
+        return assetStorageFactory.createAssetStorage(storagePath, assetId);
     }
 
 }

@@ -8,6 +8,8 @@ replicaCount: 1
 image:
   registry: "ghcr.io/mercedes-benz/sechub/sechub-server"
   tag: "latest"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "IfNotPresent"
   # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
   #   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   #   Example:
@@ -52,6 +54,10 @@ server:
   jobScheduling:
     # Job scheduling is activated in intervals (2000=every 2s)
     activationIntervalInMilliseconds: 2000
+    # When a server is stopped (e.g. when deploying a new version) then
+    # a SecHub job will remain suspended at least this amount of time.
+    # This helps that no "old server" will resume a suspended job during a deployment.
+    minimumSuspensionTimeInMilliseconds: 60000
     # Job scheduling strategy - Possible values:
     # - first-come-first-serve (one project can have multiple scan jobs running in parallel
     # - only-one-scan-per-project-at-a-time (one project can only have one running scan job at a time)

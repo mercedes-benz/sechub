@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,8 @@ import com.mercedesbenz.sechub.test.TestUtil;
 @ContextConfiguration(classes = { SecHubJobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class })
 public class SecHubJobRepositoryDBTest {
 
+    private static final String PROJECT_ID = "p0";
+
     private static final Set<Long> FIRST_ENCRYPTION_POOL_ENTRY_ONLY = Set.of(0L);
 
     @Autowired
@@ -60,7 +63,7 @@ public class SecHubJobRepositoryDBTest {
 
     @BeforeEach
     void before() {
-        jobCreator = jobCreator("p0", entityManager);
+        jobCreator = jobCreator(PROJECT_ID, entityManager);
     }
 
     @Test
@@ -729,7 +732,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
 
         /* execute */
-        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
 
         /* test */
         assertFalse(result.isPresent());
@@ -742,7 +745,7 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
 
         /* execute */
-        Optional<ScheduleSecHubJob> result = jobRepository.getJobWhenExecutable(created.getUUID());
+        Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
 
         /* test */
         assertTrue(result.isPresent());
@@ -953,6 +956,30 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(2, allJobsNow.size());
+    }
+
+    @Test
+    void test_data_4_jobs_select_job_uuids_and_project_ids_1_day_still_has_2() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        LocalDateTime olderThan = olderThanForDelete(testData.before_1_day);
+
+        /* execute */
+        List<Object[]> jobUUIDSAndprojectIds = jobRepository.findJobUUIDsAndProjectIdsForJobsOlderThan(olderThan);
+
+        /* test */
+        assertEquals(2, jobUUIDSAndprojectIds.size());
+
+        Iterator<Object[]> iterator = jobUUIDSAndprojectIds.iterator();
+        Object[] entry = iterator.next();
+        assertEquals(testData.job1_90_days_before_created.getUUID(), entry[0]);
+        assertEquals(PROJECT_ID, entry[1]);
+
+        entry = iterator.next();
+        assertEquals(testData.job2_2_days_before_created.getUUID(), entry[0]);
+        assertEquals(PROJECT_ID, entry[1]);
     }
 
     @Test

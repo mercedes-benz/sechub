@@ -306,7 +306,7 @@ public class PDSWorkspaceService {
 
         LOG.debug("PDS job {}: feching storage for storagePath={}, {}-jobUUID={}, useSecHubStorage={}", pdsJobUUID, storagePath,
                 useSecHubStorage ? "sechub" : "pds", pdsOrSecHubJobUUID, useSecHubStorage);
-        JobStorage storage = storageService.createJobStorage(storagePath, pdsOrSecHubJobUUID);
+        JobStorage storage = storageService.createJobStorageForPath(storagePath, pdsOrSecHubJobUUID);
 
         storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
 

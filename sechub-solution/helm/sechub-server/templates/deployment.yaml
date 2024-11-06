@@ -57,7 +57,8 @@ spec:
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
       - name: setup
-        image: "{{ .Values.go_mmproxy.image }}"
+        image: {{ .Values.go_mmproxy.image }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - "/bin/sh"
         - "-cx"
@@ -74,7 +75,8 @@ spec:
 {{- if .Values.go_mmproxy.enabled }}
       # go-mmproxy sidecar container
       - name: go-mmproxy
-        image: "{{ .Values.go_mmproxy.image }}"
+        image: {{ .Values.go_mmproxy.image }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8080
         securityContext:
@@ -91,6 +93,7 @@ spec:
       # SecHub server container
       - name: sechub-server
         image: {{ .Values.image.registry }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
           # min container memory
           requests:
@@ -421,6 +424,8 @@ spec:
         # SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY is the delay after which the scheduler looks for the next job
         - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
           value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
+        - name: SECHUB_SCHEDULE_NEXTJOB_SUSPEND_MINIUMUM_DURATION_MILLISECONDS
+          value: "{{ .Values.server.jobScheduling.minimumSuspensionTimeInMilliseconds | int64 }}"
         # Scheduler strategy
         - name: SECHUB_SCHEDULER_STRATEGY_ID
           value: "{{ .Values.server.jobScheduling.strategy }}"
@@ -429,7 +434,7 @@ spec:
 # --------------------------------------------------------------------------------------------- #
         - name: SECHUB_START_MODE
           value: "server"
-        # When debug flag is set, rest call reponse error messages do also contains stacktraces.
+        # When debug flag is set, rest call reponse error messages do also contain stacktraces.
         - name: SECHUB_SERVER_DEBUG
           value: "false"
         # Loglevel of Hikari database connection pooling

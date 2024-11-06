@@ -36,9 +36,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 /**
  * Scan service - main entry point for scans
@@ -57,7 +57,7 @@ public class ScanService implements SynchronMessageHandler {
     private static final int DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS = 60000;
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @Autowired
     ProductExecutionServiceContainer productExecutionServiceContainer;
@@ -185,7 +185,7 @@ public class ScanService implements SynchronMessageHandler {
         }
         String projectId = configuration.getProjectId();
         UUID jobUUID = context.getSechubJobUUID();
-        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorageForProject(projectId, jobUUID);
 
         try {
             storage.deleteAll();
