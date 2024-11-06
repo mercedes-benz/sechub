@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # generates self singed certificates for local development
 openssl genrsa 2048 > local-server.key
 chmod 400 local-server.key
