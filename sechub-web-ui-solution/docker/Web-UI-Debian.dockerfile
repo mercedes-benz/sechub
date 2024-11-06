@@ -25,15 +25,14 @@ ARG GIT_TAG
 ARG WEB_UI_BUILD_FOLDER="/build"
 ARG WEB_UI_ARTIFACTS
 
-RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
-RUN mkdir --parent "${WEB_UI_BUILD_FOLDER}"
-
-RUN apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet git wget && \
-    apt-get clean
+RUN mkdir --parent "${WEB_UI_ARTIFACTS}" "${WEB_UI_BUILD_FOLDER}"
 
 COPY clone.sh "$WEB_UI_BUILD_FOLDER/clone.sh"
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install --assume-yes --quiet git wget && \
+    apt-get clean
 
 RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     chmod 755 clone.sh && \
@@ -55,6 +54,30 @@ RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
 COPY copy/ "${WEB_UI_ARTIFACTS}"
 
 
+#-----------------------
+# Builder Download Build
+#-----------------------
+FROM ${BASE_IMAGE} AS builder-download
+ARG WEB_UI_ARTIFACTS
+ARG WEB_UI_VERSION
+
+ENV WEB_UI_VERSION="${WEB_UI_VERSION}"
+ENV WEB_UI_RELEASE_ZIP="sechub-web-ui_htdocs.zip"
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install --assume-yes --quiet unzip wget && \
+    apt-get clean
+
+RUN mkdir -p "${WEB_UI_ARTIFACTS}/.output/public" && \
+    cd "${WEB_UI_ARTIFACTS}/.output/public" && \
+    wget "https://github.com/mercedes-benz/sechub/releases/download/v${WEB_UI_VERSION}-web-ui/${WEB_UI_RELEASE_ZIP}" && \
+    wget "https://github.com/mercedes-benz/sechub/releases/download/v${WEB_UI_VERSION}-web-ui/${WEB_UI_RELEASE_ZIP}.sha256sum" && \
+    sha256sum --check "${WEB_UI_RELEASE_ZIP}.sha256sum" && \
+    unzip ${WEB_UI_RELEASE_ZIP} && \
+    rm -f "${WEB_UI_RELEASE_ZIP}" "${WEB_UI_RELEASE_ZIP}.sha256sum"
+    
+    
 #-------------------
 # Builder
 #-------------------
