@@ -14,6 +14,7 @@ ARG WEB_UI_ARTIFACTS="/artifacts"
 ARG WEB_UI_VERSION
 ARG BUILD_TYPE
 
+
 #-------------------
 # Builder Build
 #-------------------
@@ -42,21 +43,24 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     npx nuxi generate && \
     cp -r .output "${WEB_UI_ARTIFACTS}"
 
+
 #-------------------
 # Builder Copy Build
 #-------------------
-FROM ${NODE_BASE_IMAGE} AS builder-copy
+FROM ${BASE_IMAGE} AS builder-copy
 ARG WEB_UI_ARTIFACTS
 
 RUN mkdir --parent "${WEB_UI_ARTIFACTS}"
 
-COPY ./copy "${WEB_UI_ARTIFACTS}"
+COPY copy/ "${WEB_UI_ARTIFACTS}"
+
 
 #-------------------
 # Builder
 #-------------------
 FROM builder-${BUILD_TYPE} AS builder
 RUN echo "build stage"
+
 
 #-------------------
 # WebUI Server Image
@@ -126,5 +130,7 @@ RUN touch /var/run/nginx.pid && \
 
 # Switch from root to non-root user
 USER "$USER"
+
+WORKDIR "$HTDOCS_FOLDER"
 
 CMD ["/run.sh"]

@@ -2,8 +2,7 @@
 
 # This is a sample values file containing the defaults.
 
-name: web-ui
-
+# SecHub web-ui container image:
 image: "ghcr.io/mercedes-benz/sechub/sechub-web-ui:latest"
 imagePullPolicy: "IfNotPresent"
 
