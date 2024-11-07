@@ -5,7 +5,7 @@ REGISTRY="$1"
 VERSION="$2"
 WEB_UI_VERSION="$3"
 DEFAULT_BASE_IMAGE="debian:12-slim"
-DEFAULT_BUILD_TYPE="build"
+DEFAULT_BUILD_TYPE="download"
 
 cd `dirname $0`
 
