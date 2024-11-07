@@ -20,6 +20,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ADMIN_SCHEDULER = API_ADMIN + "/scheduler";
 
     private static final String API_ADMIN_TEMPLATE = API_ADMIN + "/template";
+    private static final String API_ADMIN_ASSET = API_ADMIN + "/asset";
     private static final String API_ADMIN_SCAN = API_ADMIN + "/scan";
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
@@ -229,7 +230,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ admin: templates and assets................+ */
+    /* +............................ admin: templates .........................+ */
     /* +-----------------------------------------------------------------------+ */
     public String buildAdminAssignsTemplateToProjectUrl(String templateId, String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "template", templateId);
@@ -253,6 +254,33 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildAdminFetchesTemplateList() {
         return buildUrl(API_ADMIN_TEMPLATE + "s");
+    }
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin: assets ............................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public String buildAdminUploadsAssetFile(String assetId) {
+        return buildUrl(API_ADMIN_ASSET, assetId, "file");
+    }
+
+    public String buildAdminDownloadsAssetFile(String assetId, String fileName) {
+        return buildUrl(API_ADMIN_ASSET, assetId, "file", fileName);
+    }
+
+    public String buildAdminFetchesAllAssetIds() {
+        return buildUrl(API_ADMIN_ASSET, "ids");
+    }
+
+    public String buildAdminFetchesAssetDetails(String assetId) {
+        return buildUrl(API_ADMIN_ASSET, assetId, "details");
+    }
+
+    public String buildAdminDeletesAssetFile(String assetId, String fileName) {
+        return buildUrl(API_ADMIN_ASSET, assetId, "file", fileName);
+    }
+
+    public String buildAdminDeletesAsset(String assetId) {
+        return buildUrl(API_ADMIN_ASSET, assetId);
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -483,14 +511,6 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildAdminFetchesEncryptionStatus() {
         return buildUrl(API_ADMIN, "encryption/status");
-    }
-
-    public String buildAdminUploadsAssetFile(String assetId) {
-        return buildUrl(API_ADMIN, "asset", assetId, "file");
-    }
-
-    public String buildAdminDownloadsAssetFile(String assetId, String fileName) {
-        return buildUrl(API_ADMIN, "asset", assetId, "file", fileName);
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -726,7 +746,5 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     public String buildIntegrationTestFetchScanProjectConfigurations(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project-scanconfig/" + projectId);
     }
-
-   
 
 }

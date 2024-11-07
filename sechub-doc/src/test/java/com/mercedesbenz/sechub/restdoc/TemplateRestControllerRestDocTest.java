@@ -66,7 +66,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
     private MockMvc mockMvc;
 
     @MockBean
-    private TemplateRepository tempplateRepository;
+    private TemplateRepository templateRepository;
 
     @MockBean
     TemplateService templateService;

@@ -31,26 +31,27 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
 
     /**
      * Creates a shared volume storage
+     *
      * @param rootLocation
      * @param rootStoragePath
      * @param additionalStoragePathParts
      */
-    public AbstractSharedVolumeStorage(Path rootLocation, String rootStoragePath, Object ... additionalStoragePathParts) {
+    public AbstractSharedVolumeStorage(Path rootLocation, String rootStoragePath, Object... additionalStoragePathParts) {
         requireNonNull(rootLocation, "rootLocation may not be null");
         requireNonNull(rootStoragePath, "storagePath may not be null");
 
         this.volumePath = rootLocation.resolve(rootStoragePath);
-        if (additionalStoragePathParts!=null) {
-            for (Object additionalStoragePathPart: additionalStoragePathParts) {
-                if (additionalStoragePathPart==null) {
+        if (additionalStoragePathParts != null) {
+            for (Object additionalStoragePathPart : additionalStoragePathParts) {
+                if (additionalStoragePathPart == null) {
                     LOG.warn("Additional part was null at position: ");
                     continue;
                 }
-                this.volumePath= volumePath.resolve(additionalStoragePathPart.toString());
+                this.volumePath = volumePath.resolve(additionalStoragePathPart.toString());
             }
         }
-        this.relativePath=volumePath.relativize(rootLocation);
-        
+        this.relativePath = volumePath.relativize(rootLocation).toAbsolutePath().normalize();
+
         LOG.debug("Created {} with releative path:{}, volumePath: {}", getClass().getSimpleName(), relativePath, volumePath);
     }
 
@@ -94,17 +95,31 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
             throw new StorageException("Could not initialize storage directory at: " + volumePath, e);
         }
 
-        LOG.info("storing {} in path {}", name, relativePath);
+        LOG.trace("storing {} in path {}", name, relativePath);
 
         Path pathToFile = getPathToFile(name);
 
         try (InputStream inputStream = stream) {
             Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
 
-            LOG.debug("Stored: {} at {}", name, pathToFile);
+            LOG.info("Stored: {} at {}", name, pathToFile);
         } catch (Exception e) {
             throw new IOException("Was not able to store input stream into file: " + pathToFile, e);
         }
+    }
+
+    @Override
+    public void delete(String name) throws IOException {
+        assertNotClosed();
+
+        Path path = getPathToFile(name);
+        if (!Files.exists(path)) {
+            LOG.debug("File '{}' did not exis in volumePatht: {}, skip deletion", name, volumePath);
+            return;
+        }
+        Files.delete(path);
+        LOG.info("Deleted: {} at {}", name, path);
+
     }
 
     public void deleteAll() throws IOException {
@@ -117,7 +132,7 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
             }
             FileSystemUtils.deleteRecursively(volumePath);
 
-            LOG.info("deleted all inside {}", volumePath);
+            LOG.info("Deleted all inside {}", volumePath);
 
         } catch (Exception e) {
             throw new IOException("Was not able to delete all from: " + volumePath, e);
@@ -168,7 +183,7 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
 
     private void assertNotClosed() {
         if (closed) {
-            throw new IllegalStateException(getClass().getSimpleName()+" already closed!");
+            throw new IllegalStateException(getClass().getSimpleName() + " already closed!");
         }
 
     }

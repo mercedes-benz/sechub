@@ -6,12 +6,14 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
@@ -23,6 +25,11 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesAssetCompletely;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesOneFileFromAsset;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDownloadsAssetFile;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAssetDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAssetIds;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUploadsAssetFile;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
@@ -74,11 +81,11 @@ public class AssetService {
             persistFileAndChecksumInDatabase(fileName, file, checkSum, assetId);
 
             storeUploadFileAndSha256Checksum(assetId, fileName, file, checkSum);
-            
-            LOG.info("Successfully uploaded asset file: {} for asset: {}", fileName, assetId);
-            
+
+            LOG.info("Successfully uploaded file '{}' for asset '{}'", fileName, assetId);
+
         } catch (IOException e) {
-            throw new SecHubRuntimeException("Was not able to upload file:" + fileName + " for asset:" + assetId, e);
+            throw new SecHubRuntimeException("Was not able to upload file '" + fileName + "' for asset '" + assetId + "'", e);
         }
     }
 
@@ -90,13 +97,13 @@ public class AssetService {
         AssetFile assetFile = new AssetFile(key);
         assetFile.setChecksum(checkSum);
         assetFile.setData(file.getBytes());
-        
+
         repository.save(assetFile);
     }
 
     private String assertAssetFile(MultipartFile file) {
         notNull(file, "file may not be null!");
-        String fileName = file.getName();
+        String fileName = file.getOriginalFilename();
 
         inputAssertion.assertIsValidAssetFileName(fileName);
 
@@ -114,7 +121,7 @@ public class AssetService {
             assertCheckSumCorrect(checkSum, inputStream);
 
         } catch (IOException e) {
-            LOG.error("Was not able to validate uploaded file checksum for file: {} in asset: {}", fileName, assetid, e);
+            LOG.error("Was not able to validate uploaded file checksum for file '{}' in asset '{}'", fileName, assetid, e);
             throw new SecHubRuntimeException("Was not able to validate uploaded asset checksum");
         }
     }
@@ -146,8 +153,8 @@ public class AssetService {
             assetStorage.store(createFileNameForChecksum(fileName), new StringInputStream(checkSum), checksumSizeInBytes);
 
         } catch (IOException e) {
-            LOG.error("Was not able to store file: {} for asset: {}!", fileName, assetId, e);
-            throw new SecHubRuntimeException("Was not able to upload file:" + fileName + " for asset: " + assetId);
+            LOG.error("Was not able to store file '{}' for asset '{}' !", fileName, assetId, e);
+            throw new SecHubRuntimeException("Was not able to upload file '" + fileName + " for asset '" + assetId + "'");
         }
     }
 
@@ -155,20 +162,65 @@ public class AssetService {
         return fileName + DOT_CHECKSUM;
     }
 
+    @UseCaseAdminDownloadsAssetFile(@Step(number = 2, name = "Service downloads asset file from database"))
     public void downloadAssetFile(String assetId, String fileName, ServletOutputStream outputStream) throws IOException {
         inputAssertion.assertIsValidAssetId(assetId);
         inputAssertion.assertIsValidAssetFileName(fileName);
-        
+
         notNull(outputStream, "output stream may not be null!");
-        
+
         AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
         Optional<AssetFile> result = repository.findById(key);
         if (result.isEmpty()) {
-            throw new NotFoundException("For asset:"+assetId+" no file with name:"+fileName+" exists!");
+            throw new NotFoundException("For asset:" + assetId + " no file with name:" + fileName + " exists!");
         }
         AssetFile assetFile = result.get();
         outputStream.write(assetFile.getData());
-        
+
+    }
+
+    @UseCaseAdminFetchesAssetIds(@Step(number = 2, name = "Service fetches all asset ids from database"))
+    public List<String> fetchAllAssetIds() {
+        return repository.fetchAllAssetIds();
+    }
+
+    @UseCaseAdminFetchesAssetDetails(@Step(number = 2, name = "Service fetches asset details for given asset id"))
+    public AssetDetailData fetchAssetDetails(String assetId) {
+        inputAssertion.assertIsValidAssetId(assetId);
+
+        List<AssetFile> assetFiles = repository.fetchAllAssetFilesWithAssetId(assetId);
+        if (assetFiles.isEmpty()) {
+            throw new NotFoundException("No asset data available for asset id:" + assetId);
+        }
+
+        AssetDetailData data = new AssetDetailData();
+        data.setAssetId(assetId);
+        for (AssetFile assetFile : assetFiles) {
+            AssetFileData information = new AssetFileData();
+            information.setFileName(assetFile.getKey().getFileName());
+            information.setChecksum(assetFile.getChecksum());
+            data.getFiles().add(information);
+        }
+
+        return data;
+    }
+
+    @UseCaseAdminDeletesOneFileFromAsset(@Step(number = 2, name = "Services deletes file from asset"))
+    public void deleteAssetFile(String assetId, String fileName) throws IOException {
+        inputAssertion.assertIsValidAssetId(assetId);
+        inputAssertion.assertIsValidAssetFileName(fileName);
+
+        repository.deleteById(AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build());
+        storageService.createAssetStorage(assetId).delete(fileName);
+    }
+
+    @UseCaseAdminDeletesAssetCompletely(@Step(number = 2, name = "Services deletes all asset parts"))
+    @Transactional
+    public void deleteAsset(String assetId) throws IOException {
+        inputAssertion.assertIsValidAssetId(assetId);
+
+        repository.deleteAssetFilesHavingAssetId(assetId);
+        storageService.createAssetStorage(assetId).deleteAll();
     }
 
 }

@@ -149,6 +149,13 @@ public abstract class AbstractAwsS3Storage implements Storage {
     }
 
     @Override
+    public void delete(String name) throws IOException {
+        assertNotClosed();
+
+        client.deleteObject(bucketName, getObjectName(name));
+    }
+
+    @Override
     public void deleteAll() throws IOException {
 
         assertNotClosed();

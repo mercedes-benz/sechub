@@ -66,18 +66,18 @@ public class UserInputAssertionTest {
         /* test */
         verify(assetIdValidation).validate("x");
     }
-    
+
     @Test
     void assetFilenameValidation_used_for_assert_asseFilename() {
-        
+
         /* prepare */
         AssetFileNameValidation validation = mock(AssetFileNameValidation.class);
         when(validation.validate("x")).thenReturn(new ValidationResult());
         assertToTest.assetFilenameValidation = validation;
-        
+
         /* execute */
         assertToTest.assertIsValidAssetFileName("x");
-        
+
         /* test */
         verify(validation).validate("x");
     }

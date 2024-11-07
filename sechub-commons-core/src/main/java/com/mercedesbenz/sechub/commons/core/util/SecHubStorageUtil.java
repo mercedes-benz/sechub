@@ -13,7 +13,7 @@ public class SecHubStorageUtil {
     public static String createStoragePathForProject(String projectId) {
         return "jobstorage/" + projectId;
     }
-    
+
     public static String createAssetStoragePath() {
         return "assets";
     }

@@ -83,7 +83,7 @@ public class AssetFile {
     /**
      * Asset id and file name or only strings. To avoid confusion in constructor
      * usage, this builder was introduced.
-     * 
+     *
      * @author Albert Tregnaghi
      *
      */

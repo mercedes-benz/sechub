@@ -11,8 +11,7 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 public class SharedVolumeJobStorage extends AbstractSharedVolumeStorage implements JobStorage {
 
     public SharedVolumeJobStorage(Path rootLocation, String storagePath, UUID jobUUID) {
-        super(rootLocation, storagePath, jobUUID);
-        requireNonNull(jobUUID, "jobUUID may not be null");
+        super(rootLocation, storagePath, requireNonNull(jobUUID, "jobUUID may not be null"));
     }
 
 }

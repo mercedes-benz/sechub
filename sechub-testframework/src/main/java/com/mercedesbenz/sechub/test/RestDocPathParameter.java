@@ -41,6 +41,10 @@ public enum RestDocPathParameter {
 
     TEMPLATE_ID("templateId"),
 
+    ASSET_ID("assetId"),
+
+    FILE_NAME("fileName"),
+
     ;
 
     private String restDocName;

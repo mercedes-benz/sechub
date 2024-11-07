@@ -15,12 +15,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_FETCHES_LISTS_OF_ASSET_FILENAMES,
+		id=UseCaseIdentifier.UC_ADMIN_FETCHES_ASSET_IDS,
 		group=UseCaseGroup.CONFIGURATION,
-		apiName="adminFetchListOfAssetFilenames",
-		title="Admin fetches asset file names",
-		description="An administrator fetches all file names of an asset.")
-public @interface UseCaseAdminFetchesFilenamesOfAsset {
+		apiName="adminFetchAssetIds",
+		title="Admin fetches asset ids",
+		description="An administrator fetches all available asset ids.")
+public @interface UseCaseAdminFetchesAssetIds {
 
 	Step value();
 }

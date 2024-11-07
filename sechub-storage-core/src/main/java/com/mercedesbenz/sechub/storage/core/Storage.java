@@ -8,7 +8,7 @@ import java.util.Set;
 public interface Storage {
 
     /**
-     * Stores given stream for this asset
+     * Stores given stream a storage object
      *
      * @param name   name for storage object
      * @param stream origin data stream
@@ -16,7 +16,7 @@ public interface Storage {
     public void store(String name, InputStream stream) throws IOException;
 
     /**
-     * Stores given stream for this job
+     * Stores given stream a storage object
      *
      * @param name                 name for storage object
      * @param stream               origin data stream
@@ -32,6 +32,14 @@ public interface Storage {
      * @throws IOException
      */
     public InputStream fetch(String name) throws IOException;
+
+    /**
+     * Deletes object
+     *
+     * @param name name for storage object
+     * @throws IOException
+     */
+    public void delete(String name) throws IOException;
 
     /*
      * Deletes all content of this storage

@@ -30,8 +30,8 @@ public class SharedVolumeJobStorageFactory implements JobStorageFactory, AssetSt
     }
 
     @Override
-    public AssetStorage createAssetStorage(String storagePath, String assetId) {
-        return new SharedVolumeAssetStorage(sharedVolumeUploadDirectory, storagePath, assetId);
+    public AssetStorage createAssetStorage(String assetId) {
+        return new SharedVolumeAssetStorage(sharedVolumeUploadDirectory, assetId);
     }
 
 }

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model.template;
 
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;

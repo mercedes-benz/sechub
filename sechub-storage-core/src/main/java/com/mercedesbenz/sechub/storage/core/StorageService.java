@@ -24,10 +24,10 @@ public interface StorageService {
      * Creates a new asset storage object. If you no longer need the asset storage
      * object, you have to close the storage object to save resources.
      *
-     * @param storagePath storage path for assets
-     * @param assetId     asset identifier
+     * @param assetId asset identifier
+     *
      * @return asset storage object
      */
-    public AssetStorage createAssetStorage(String storagePath, String assetId);
+    public AssetStorage createAssetStorage(String assetId);
 
 }

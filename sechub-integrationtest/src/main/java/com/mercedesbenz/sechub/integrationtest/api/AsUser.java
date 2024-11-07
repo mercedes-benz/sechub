@@ -42,6 +42,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
+import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
@@ -1488,6 +1489,13 @@ public class AsUser {
         return this;
     }
 
+    public AsUser uploadAssetFiles(String assetId, File... files) {
+        for (File file : files) {
+            uploadAssetFile(assetId, file);
+        }
+        return this;
+    }
+
     public File downloadAssetFile(String assetId, String fileName) {
         String url = getUrlBuilder().buildAdminDownloadsAssetFile(assetId, fileName);
         /* @formatter:off */
@@ -1503,8 +1511,30 @@ public class AsUser {
         };
         RestTemplate template = getRestHelper().getTemplate();
         File downloadedAssetFile = template.execute(url, HttpMethod.GET, requestCallback, responseExtractor);
-        
+
         return downloadedAssetFile;
+    }
+
+    public List<String> fetchAllAssetIds() {
+        String url = getUrlBuilder().buildAdminFetchesAllAssetIds();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(String.class, json);
+    }
+
+    public AssetDetailData fetchAssetDetails(String assetId) {
+        String url = getUrlBuilder().buildAdminFetchesAssetDetails(assetId);
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSON(AssetDetailData.class, json);
+    }
+
+    public void deleteAssetFile(String assetId, String fileName) {
+        String url = getUrlBuilder().buildAdminDeletesAssetFile(assetId, fileName);
+        getRestHelper().delete(url);
+    }
+
+    public void deleteAsset(String assetId) {
+        String url = getUrlBuilder().buildAdminDeletesAsset(assetId);
+        getRestHelper().delete(url);
     }
 
 }

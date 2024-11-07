@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.util.Optional;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariableValidation;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
@@ -24,10 +26,13 @@ public class CreateOrUpdateTemplateAction extends AbstractUIAction {
             return;
         }
 
+        String dialogTitle = null;
         String templateId = templateIdOpt.get();
         TemplateDefinition templateDefinition = getContext().getAdministration().fetchTemplateOrNull(templateId);
         if (templateDefinition == null) {
-            String title = "New template";
+            /* we create an example here */
+
+            String title = "Create new template:" + templateId;
             String message = "Please enter template type";
             Optional<TemplateType> templateTypeOpt = getUserInputFromCombobox(title, TemplateType.WEBSCAN_LOGIN, message, TemplateType.values());
             if (!templateTypeOpt.isPresent()) {
@@ -36,9 +41,26 @@ public class CreateOrUpdateTemplateAction extends AbstractUIAction {
             templateDefinition = new TemplateDefinition();
             templateDefinition.setId(templateId);
             templateDefinition.setType(templateTypeOpt.get());
+
+            templateDefinition.getAssets().add("example-asset-id");
+            TemplateVariable exampleVariable = new TemplateVariable();
+            exampleVariable.setName("example-variable");
+            exampleVariable.setOptional(true);
+            TemplateVariableValidation validation = new TemplateVariableValidation();
+            validation.setMinLength(2);
+            validation.setMaxLength(100);
+            validation.setRegularExpression("[0-9a-z].*");
+
+            exampleVariable.setValidation(validation);
+            templateDefinition.getVariables().add(exampleVariable);
+
+            dialogTitle = "New Template:" + templateId + " (by example)";
+
+        } else {
+            dialogTitle = "Change existing template:" + templateId;
         }
 
-        Optional<String> templateDefInputOpt = getUserInputFromTextArea("Template definition", templateDefinition.toFormattedJSON());
+        Optional<String> templateDefInputOpt = getUserInputFromTextArea(dialogTitle, templateDefinition.toFormattedJSON());
         if (templateDefInputOpt.isEmpty()) {
             return;
         }

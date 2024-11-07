@@ -52,4 +52,6 @@ public enum InputCacheIdentifier {
 
     TEMPLATE_ID,
 
+    ASSET_ID,
+
 }

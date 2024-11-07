@@ -58,8 +58,8 @@ public class AwsS3JobStorageFactory implements JobStorageFactory, AssetStorageFa
     }
 
     @Override
-    public AssetStorage createAssetStorage(String storagePath, String assetId) {
-        return new AwsS3AssetStorage(s3Client, bucketName, storagePath, assetId);
+    public AssetStorage createAssetStorage(String assetId) {
+        return new AwsS3AssetStorage(s3Client, bucketName, assetId);
     }
 
 }

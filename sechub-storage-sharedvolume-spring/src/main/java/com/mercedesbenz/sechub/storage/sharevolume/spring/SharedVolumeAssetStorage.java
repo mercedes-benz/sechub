@@ -9,9 +9,8 @@ import com.mercedesbenz.sechub.storage.core.AssetStorage;
 
 public class SharedVolumeAssetStorage extends AbstractSharedVolumeStorage implements AssetStorage {
 
-    public SharedVolumeAssetStorage(Path rootLocation, String storagePath, String assetId) {
-        super(rootLocation,storagePath, assetId);
-        requireNonNull(assetId, "assetId may not be null");
+    public SharedVolumeAssetStorage(Path rootLocation, String assetId) {
+        super(rootLocation, "assets", requireNonNull(assetId, "assetId may not be null"));
     }
 
 }

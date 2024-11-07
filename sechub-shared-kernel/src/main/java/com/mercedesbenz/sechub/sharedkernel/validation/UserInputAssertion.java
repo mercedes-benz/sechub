@@ -143,7 +143,7 @@ public class UserInputAssertion {
     /**
      * Asserts this is an valid asset filename. If not, a
      * {@link NotAcceptableException} will be thrown
-     * 
+     *
      * @param fileName
      */
     public void assertIsValidAssetFileName(String fileName) {

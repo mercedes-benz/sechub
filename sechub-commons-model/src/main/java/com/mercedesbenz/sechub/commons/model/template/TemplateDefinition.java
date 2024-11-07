@@ -4,8 +4,10 @@ package com.mercedesbenz.sechub.commons.model.template;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mercedesbenz.sechub.commons.model.JSONable;
 
+@JsonPropertyOrder({ "id", "type", "variables", "assets" })
 public class TemplateDefinition implements JSONable<TemplateDefinition> {
 
     private static TemplateDefinition IMPORTER = new TemplateDefinition();

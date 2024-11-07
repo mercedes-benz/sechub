@@ -21,10 +21,9 @@ public class AssetFileNameValidationImpl extends AbstractSimpleStringValidation 
         if (context.isInValid()) {
             return;
         }
-        validateNoUpperCaseCharacters(context);
         validateSameLengthWhenTrimmed(context);
         validateLength(context);
-        validateOnlyAlphabeticDigitOrAllowedParts(context, '-', '_');
+        validateOnlyAlphabeticDigitOrAllowedParts(context, '.', '-', '_');
     }
 
     @Override

@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.asset.ManageAssetsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigurePDSAutoCleanupAction;
@@ -96,7 +97,10 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.scheduler.EnableSc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.status.CheckStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.AssignTemplateToProjectAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.template.CreateOrUpdateTemplateAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.FetchAllTemplateIdentifiersAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.UnassignTemplateFromProjectAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
@@ -255,6 +259,12 @@ public class CommandUI {
         JMenu templatesMenu = new JMenu("Templates");
         menu.add(templatesMenu);
         add(templatesMenu, new CreateOrUpdateTemplateAction(context));
+        add(templatesMenu, new FetchAllTemplateIdentifiersAction(context));
+
+        add(templatesMenu, new AssignTemplateToProjectAction(context));
+        add(templatesMenu, new UnassignTemplateFromProjectAction(context));
+
+        menu.add(new ManageAssetsAction(context));
 
     }
 

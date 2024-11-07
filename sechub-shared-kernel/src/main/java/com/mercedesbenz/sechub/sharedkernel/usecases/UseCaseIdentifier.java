@@ -196,15 +196,17 @@ public enum UseCaseIdentifier {
 
     /* assets */
     UC_ADMIN_UPLOADS_ASSET_FILE(87),
-    
+
     UC_ADMIN_DOWNLOADS_ASSET_FILE(88),
 
-    UC_ADMIN_FETCHES_LISTS_OF_ASSET_FILENAMES(89),
-    
-    UC_ADMIN_DELETES_ONE_FILE_FROM_ASSET(90),
-    
-    UC_ADMIN_DELETES_ASSET_COMPLETELY(91),
-    
+    UC_ADMIN_FETCHES_ASSET_IDS(89),
+
+    UC_ADMIN_FETCHES_ASSET_DETAILS(90),
+
+    UC_ADMIN_DELETES_ONE_FILE_FROM_ASSET(91),
+
+    UC_ADMIN_DELETES_ASSET_COMPLETELY(92),
+
     ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */

@@ -198,10 +198,10 @@ public class TestUtil {
         }
         return dirAsPath;
     }
-    
+
     public static Path createTempFileInBuildSubFolder(String subFolderName, String explicitFileName, FileAttribute<?>... attributes) throws IOException {
         Path parent = ensureBuildTmpDirAsFile();
-        if (subFolderName!=null) {
+        if (subFolderName != null) {
             parent = parent.resolve(subFolderName);
         }
         Path filePath = parent.resolve(explicitFileName);
@@ -214,13 +214,13 @@ public class TestUtil {
                 throw new RuntimeException("Cannot delete former temp file", e);
             }
         }
+        Files.createDirectories(filePath.getParent());
         Files.createFile(filePath, attributes);
         if (isDeletingTempFiles()) {
             filePath.toFile().deleteOnExit();
         }
         return filePath;
     }
-    
 
     /**
      * Creates a temporary file inside gradle build folder at
@@ -237,7 +237,7 @@ public class TestUtil {
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String explicitFileName, FileAttribute<?>... attributes) throws IOException {
-       return createTempFileInBuildSubFolder(null, explicitFileName, attributes);
+        return createTempFileInBuildSubFolder(null, explicitFileName, attributes);
     }
 
     private static Path ensureBuildTmpDirAsFile() throws IOException {

@@ -43,16 +43,16 @@ public class PDSMultiStorageService implements StorageService {
 
         if (s3Setup.isAvailable()) {
             AwsS3JobStorageFactory awsJobFactory = new AwsS3JobStorageFactory(s3Setup);
-            
+
             jobStorageFactory = awsJobFactory;
             assetStorageFactory = awsJobFactory;
 
         } else if (sharedVolumeSetup.isAvailable()) {
             SharedVolumeJobStorageFactory sharedVolumeStorageFactory = new SharedVolumeJobStorageFactory(sharedVolumeSetup);
-            
+
             jobStorageFactory = sharedVolumeStorageFactory;
-            assetStorageFactory=sharedVolumeStorageFactory;
-            
+            assetStorageFactory = sharedVolumeStorageFactory;
+
         }
 
         if (jobStorageFactory == null || assetStorageFactory == null) {
@@ -75,8 +75,8 @@ public class PDSMultiStorageService implements StorageService {
     }
 
     @Override
-    public AssetStorage createAssetStorage(String storagePath, String assetId) {
-        return assetStorageFactory.createAssetStorage(storagePath, assetId);
+    public AssetStorage createAssetStorage(String assetId) {
+        return assetStorageFactory.createAssetStorage(assetId);
     }
 
 }

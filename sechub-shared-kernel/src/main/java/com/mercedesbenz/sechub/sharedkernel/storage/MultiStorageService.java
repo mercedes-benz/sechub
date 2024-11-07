@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.AssetStorageFactory;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -64,8 +63,8 @@ public class MultiStorageService implements SecHubStorageService {
     }
 
     @Override
-    public AssetStorage createAssetStorage(String storagePath, String assetId) {
-        return assetStorageFactory.createAssetStorage(storagePath, assetId);
+    public AssetStorage createAssetStorage(String assetId) {
+        return assetStorageFactory.createAssetStorage(assetId);
     }
 
 }
