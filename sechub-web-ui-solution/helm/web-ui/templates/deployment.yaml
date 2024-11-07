@@ -104,6 +104,8 @@ spec:
         env:
           - name: DEPLOYMENT_COMMENT
             value: "{{ .Values.deploymentComment }}"
+          - name: WEB_UI_SSL_KEYSTORE_ALIAS
+            value: "{{ .Values.web_ui.ssl.keystoreAlias }}"
         resources:
           # min container memory
           requests:
