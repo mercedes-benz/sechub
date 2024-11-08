@@ -9,8 +9,8 @@ This Helm chart is used to deploy the SecHub Web UI to a Kubernetes cluster.
 The web-ui container image is shipped with initially created self-signed certificates.
 
 ### User-provided SSL keystore
-If you want to provide your own "official" certificates,
-you need to create a pkcs12 keystore with a "name" attribute (e.g. `sechub-web-ui.example.com`).
+If you want to provide your own officially signed certificates,
+you need to create a pkcs12 keystore with a "-name" attribute (e.g. `sechub-web-ui.example.com`).
 
 #### How to create the .p12 keystore
 Create a private key (`sechub-web-ui.key`), create a certificate signed by a CA of your trust (`sechub-web-ui.cert`).
