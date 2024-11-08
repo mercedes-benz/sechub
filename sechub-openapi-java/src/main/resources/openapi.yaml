@@ -2218,7 +2218,7 @@ paths:
     get:
       summary: Get list of owned and assigned projects
       description: Get list of owned and assigned projects with project id, owner and assigned users (if caller is owner or admin)
-      operationId: getProjectDataList
+      operationId: getAssignedProjectDataList
       responses:
         "200":
           content:

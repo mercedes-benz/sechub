@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import static java.util.stream.Collectors.toSet;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -25,7 +21,7 @@ public class ProjectService {
         this.userInputAssertion = userInputAssertion;
     }
 
-    public List<ProjectData> getProjectDataList(String userId) {
+    public List<ProjectData> getAssignedProjectDataList(String userId) {
         userInputAssertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
@@ -34,26 +30,19 @@ public class ProjectService {
     }
 
     private List<ProjectData> collectProjectDataForUser(User user) {
-        // TODO: 11/8/24 Sets to stream, to set or version two?
-        Set<Project> projects = Stream.of(user.getProjects(), user.getOwnedProjects()).flatMap(Set::stream).collect(toSet());
-
-        /*
-         * List<Project> projects = new
-         * ArrayList<>(user.getProjects().stream().toList()); for (Project project :
-         * user.getOwnedProjects()) { if (!projects.contains(project)) {
-         * projects.add(project); } }
-         */
 
         List<ProjectData> projectDataList = new ArrayList<>();
-        for (Project project : projects.stream().toList()) {
+        for (Project project : user.getProjects()) {
             ProjectData projectData = createProjectDataForProject(project);
 
-            if (user.isSuperAdmin() || user.equals(project.getOwner())) {
-                projectData.setOwned(true);
+            boolean isOwner = user.equals(project.getOwner());
+
+            projectData.setOwned(isOwner);
+
+            if (user.isSuperAdmin() || isOwner) {
                 addAssignedUsersToProjectData(project, projectData);
-            } else {
-                projectData.setOwned(false);
             }
+
             projectDataList.add(projectData);
         }
 

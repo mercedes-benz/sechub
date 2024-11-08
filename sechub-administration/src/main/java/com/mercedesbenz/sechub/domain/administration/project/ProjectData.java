@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,18 +33,21 @@ public class ProjectData {
     }
 
     @JsonProperty(PROPERTY_IS_OWNED)
-    public boolean isOwned() {
+    public Boolean isOwned() {
         return isOwned;
     }
 
+    @JsonProperty(PROPERTY_PROJECT_ID)
     public String getProjectId() {
         return projectId;
     }
 
+    @JsonProperty(PROPERTY_OWNER)
     public String getOwner() {
         return owner;
     }
 
+    @JsonProperty(PROPERTY_ASSIGNED_USERS)
     public String[] getAssignedUsers() {
         return assignedUsers;
     }

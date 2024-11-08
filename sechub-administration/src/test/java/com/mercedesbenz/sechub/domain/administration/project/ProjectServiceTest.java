@@ -1,17 +1,23 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
+import static com.mercedesbenz.sechub.domain.administration.user.TestUserCreationFactory.createProjectUser;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.mockito.Mockito;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
@@ -19,150 +25,127 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class ProjectServiceTest {
 
-    private static ProjectService serviceToTest;
-    private static UserRepository userRepository;
+    private static final UserRepository userRepository = mock();
+    private static final UserInputAssertion userInputAssertion = mock();
+    private static final ProjectService serviceToTest = new ProjectService(userRepository, userInputAssertion);
 
-    @BeforeAll
-    static void beforeAll() {
-        userRepository = mock();
-        UserInputAssertion userInputAssertion = mock();
-
-        serviceToTest = new ProjectService(userRepository, userInputAssertion);
+    @BeforeEach
+    void beforeEach() {
+        Mockito.reset(userRepository);
+        setUpTestCase();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "user1", "user3" })
-    void get_projects_user_is_super_admin_and_see_all_projects_with_all_information(String userId) {
-        /* prepare */
-        setUpTestCase(userId, true);
-
+    @ArgumentsSource(ProjectServiceArgumentsProvider.class)
+    void users_receive_expected_number_of_projects(String userId, int expectedProjects, boolean isOwner, String expectedOwner) {
         /* execute */
-        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
         /* test */
-        assertNotNull(projects);
-        assertEquals(1, projects.size());
+        assertThat(projects).isNotNull();
+        assertThat(projects.size()).isEqualTo(expectedProjects);
 
-        // the order is not guaranteed, so we can not check for other properties,
-        // but we can check if the assigned users are present for all projects
-        assertNotNull(projects.get(0).getAssignedUsers());
+        for (ProjectData project : projects) {
+            assertThat(project.isOwned()).isEqualTo(isOwner);
+            assertThat(project.getOwner()).isEqualTo(expectedOwner);
+        }
     }
 
     @Test
-    void get_projects_user1_and_see_all_owned_projects_with_all_information() {
-        /* prepare */
-        String userId = "user1";
-
-        setUpTestCase(userId, false);
-
-        /* execute */
-        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
-
-        /* test */
-        assertNotNull(projects);
-        assertEquals(1, projects.size());
-
-        assertEquals("project1", projects.get(0).getProjectId());
-        assertEquals("user1@mail", projects.get(0).getOwner());
-        assertTrue(projects.get(0).isOwned());
-        assertEquals(0, projects.get(0).getAssignedUsers().length);
-    }
-
-    @Test
-    void get_projects_user2_and_see_all_owned_projects_with_all_information() {
+    void user2_sees_assigned_and_owned_projects_with_users() {
         /* prepare */
         String userId = "user2";
 
-        setUpTestCase(userId, false);
-
         /* execute */
-        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
         /* test */
-        assertNotNull(projects);
-        assertEquals(2, projects.size());
+        assertThat(projects.get(0).getAssignedUsers()).isNotNull();
+        assertThat(projects.get(1).getAssignedUsers()).isNotNull();
 
-        assertEquals("user2@mail", projects.get(0).getOwner());
-        assertTrue(projects.get(0).isOwned());
-        assertEquals(0, projects.get(0).getAssignedUsers().length);
+        // List of projects is unsorted
+        assertThat(projects.get(0).getProjectId()).isIn("project2", "project3");
+        assertThat(projects.get(1).getProjectId()).isIn("project2", "project3");
 
-        assertEquals("user2@mail", projects.get(1).getOwner());
-        assertTrue(projects.get(1).isOwned());
-        assertTrue(projects.get(1).getAssignedUsers().length > 0);
+        assertThat(projects.get(0).getAssignedUsers().length).isGreaterThan(0);
+        assertThat(projects.get(1).getAssignedUsers().length).isGreaterThan(0);
     }
 
     @Test
-    void get_projects_user3_and_see_assigned_project_with_owner_but_no_users() {
+    void user3_sees_assigned_project_without_users() {
         /* prepare */
         String userId = "user3";
 
-        setUpTestCase(userId, false);
-
         /* execute */
-        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
         /* test */
-        assertNotNull(projects);
-        assertEquals(1, projects.size());
-
-        assertEquals("project2", projects.get(0).getProjectId());
-        assertEquals("user2@mail", projects.get(0).getOwner());
-        assertFalse(projects.get(0).isOwned());
-        assertNull(projects.get(0).getAssignedUsers());
+        assertThat(projects.get(0).getProjectId()).isEqualTo("project2");
+        assertThat(projects.get(0).getAssignedUsers()).isNull();
     }
 
-    private void setUpTestCase(String userId, boolean isAdmin) {
+    @Test
+    void user4_is_admin_and_sees_assigned_project_with_users() {
+        /* prepare */
+        String userId = "user4";
+
+        /* execute */
+        List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
+
+        /* test */
+        assertThat(projects.get(0).getProjectId()).isEqualTo("project2");
+        assertThat(projects.get(0).getAssignedUsers().length).isEqualTo(3);
+        assertThat(projects.get(0).getAssignedUsers()).contains("user2@example.org", "user3@example.org", "user4@example.org");
+    }
+
+    private void setUpTestCase() {
         // test case:
-        // user1 is owner of project1
-        // user2 is owner of project2 and project3
+        // user1 is owner of project1, project1 has no users, user1 is super admin
+        // user2 is owner of project2 and project3 and assigned to project2 and project3
         // user3 is assigned to project2
+        // user4 is assigned to project2 and is super admin
 
-        User user1 = mock(User.class);
-        User user2 = mock(User.class);
-        User user3 = mock(User.class);
+        Project project1 = createProject("project1");
+        Project project2 = createProject("project2");
+        Project project3 = createProject("project3");
 
-        Project project1 = mock(Project.class);
-        Project project2 = mock(Project.class);
-        Project project3 = mock(Project.class);
+        User user1 = createProjectUser("user1", Set.of(), false);
+        User user2 = createProjectUser("user2", Set.of(project2, project3), false);
+        User user3 = createProjectUser("user3", Set.of(project2), false);
+        User user4 = createProjectUser("user4", Set.of(project2), true);
 
-        when(user1.getName()).thenReturn("user1");
-        when(user1.getEmailAddress()).thenReturn("user1@mail");
-        when(user2.getName()).thenReturn("user2");
-        when(user2.getEmailAddress()).thenReturn("user2@mail");
-        when(user3.getName()).thenReturn("user3");
-        when(user3.getEmailAddress()).thenReturn("user3@mail");
+        project1.owner = user1;
 
-        when(user1.getProjects()).thenReturn(Set.of(project1));
-        when(user1.getOwnedProjects()).thenReturn(Set.of(project1));
-        when(user2.getProjects()).thenReturn(Set.of(project2, project3));
-        when(user2.getOwnedProjects()).thenReturn(Set.of(project2, project3));
-        when(user3.getProjects()).thenReturn(Set.of(project2));
-        when(user3.getOwnedProjects()).thenReturn(Set.of());
+        project2.owner = user2;
+        project2.users = Set.of(user2, user3, user4);
 
-        when(project1.getOwner()).thenReturn(user1);
-        when(project2.getOwner()).thenReturn(user2);
-        when(project3.getOwner()).thenReturn(user2);
+        project3.owner = user2;
+        project3.users = Set.of(user2);
 
-        when(project1.getId()).thenReturn("project1");
-        when(project2.getId()).thenReturn("project2");
-        when(project3.getId()).thenReturn("project3");
-
-        Set<User> users = Set.of(user2, user3);
-        when(project2.getUsers()).thenReturn(users);
-
-        switch (userId) {
-        case "user1" -> {
-            when(user1.isSuperAdmin()).thenReturn(isAdmin);
-            when(userRepository.findOrFailUser(userId)).thenReturn(user1);
-        }
-        case "user2" -> {
-            when(user2.isSuperAdmin()).thenReturn(isAdmin);
-            when(userRepository.findOrFailUser("user2")).thenReturn(user2);
-        }
-        case "user3" -> {
-            when(user3.isSuperAdmin()).thenReturn(isAdmin);
-            when(userRepository.findOrFailUser("user3")).thenReturn(user3);
-        }
-        }
+        when(userRepository.findOrFailUser("user1")).thenReturn(user1);
+        when(userRepository.findOrFailUser("user2")).thenReturn(user2);
+        when(userRepository.findOrFailUser("user3")).thenReturn(user3);
+        when(userRepository.findOrFailUser("user4")).thenReturn(user4);
     }
+
+    private Project createProject(String projectId) {
+        Project project = new Project();
+        project.id = projectId;
+        return project;
+    }
+
+    private static class ProjectServiceArgumentsProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            /* @formatter:off */
+            return Stream.of(
+                    Arguments.of("user1", 0, true, "user1@example.org"),
+                    Arguments.of("user2", 2, true, "user2@example.org"),
+                    Arguments.of("user3", 1, false, "user2@example.org"),
+                    Arguments.of("user4", 1, false, "user2@example.org"));
+        }
+        /* @formatter:on */
+    }
+
 }

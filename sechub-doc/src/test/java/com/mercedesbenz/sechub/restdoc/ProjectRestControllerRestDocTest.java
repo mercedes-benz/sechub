@@ -39,7 +39,7 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjectDataList;
+import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -65,11 +65,11 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
     private UserContextService userContextService;
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseGetProjectDataList.class)
+    @UseCaseRestDoc(useCase = UseCaseGetAssignedProjectDataList.class)
     public void user_role_get_projects() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildGetProjects();
-        Class<? extends Annotation> useCase = UseCaseGetProjectDataList.class;
+        Class<? extends Annotation> useCase = UseCaseGetAssignedProjectDataList.class;
 
         String username = "user1";
 
@@ -82,7 +82,7 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
-        when(projectService.getProjectDataList(username)).thenReturn(projectDataList);
+        when(projectService.getAssignedProjectDataList(username)).thenReturn(projectDataList);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

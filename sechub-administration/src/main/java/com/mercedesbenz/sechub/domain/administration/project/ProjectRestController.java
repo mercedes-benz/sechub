@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetProjectDataList;
+import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -28,11 +28,11 @@ public class ProjectRestController {
         this.userContextService = userContextService;
     }
 
-    @UseCaseGetProjectDataList(@Step(number = 1, name = "Rest API call to get Projects with information", description = "Rest api call to get projects with details", needsRestDoc = true))
+    @UseCaseGetAssignedProjectDataList(@Step(number = 1, name = "Rest API call to get Projects with information", description = "Rest api call to get projects with details", needsRestDoc = true))
     @RequestMapping(path = API_PROJECTS, method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
-    public List<ProjectData> getProjectDataList() {
+    public List<ProjectData> getAssignedProjectDataList() {
         String userId = userContextService.getUserId();
-        return projectService.getProjectDataList(userId);
+        return projectService.getAssignedProjectDataList(userId);
     }
 }

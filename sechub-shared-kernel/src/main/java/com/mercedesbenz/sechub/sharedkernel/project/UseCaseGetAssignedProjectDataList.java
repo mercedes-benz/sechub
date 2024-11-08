@@ -17,10 +17,10 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
         id=UseCaseIdentifier.UC_GET_PROJECT_DATA,
         group=UseCaseGroup.PROJECT_ADMINISTRATION,
-        apiName="getProjectDataList",
-        title="get project data",
+        apiName="getAssignedProjectDataList",
+        title="get assigned project data",
         description="project/get_project_data.adoc")
-public @interface UseCaseGetProjectDataList {
+public @interface UseCaseGetAssignedProjectDataList {
 
     Step value();
 }
