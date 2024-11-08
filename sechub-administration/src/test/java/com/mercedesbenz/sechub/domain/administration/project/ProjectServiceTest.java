@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,13 +19,13 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class ProjectServiceTest {
 
-    private ProjectService serviceToTest;
-    private UserRepository userRepository;
+    private static ProjectService serviceToTest;
+    private static UserRepository userRepository;
 
-    @BeforeEach
-    public void before() {
-        userRepository = mock(UserRepository.class);
-        UserInputAssertion userInputAssertion = mock(UserInputAssertion.class);
+    @BeforeAll
+    static void beforeAll() {
+        userRepository = mock();
+        UserInputAssertion userInputAssertion = mock();
 
         serviceToTest = new ProjectService(userRepository, userInputAssertion);
     }
@@ -35,15 +37,15 @@ class ProjectServiceTest {
         setUpTestCase(userId, true);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
-        assertEquals(1, projects.length);
+        assertEquals(1, projects.size());
 
         // the order is not guaranteed, so we can not check for other properties,
         // but we can check if the assigned users are present for all projects
-        assertTrue(projects[0].getAssignedUsers().isPresent());
+        assertNotNull(projects.get(0).getAssignedUsers());
     }
 
     @Test
@@ -54,17 +56,16 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
-        assertEquals(1, projects.length);
+        assertEquals(1, projects.size());
 
-        assertEquals("project1", projects[0].getProjectId());
-        assertEquals("user1", projects[0].getOwner());
-        assertTrue(projects[0].isOwned());
-        assertTrue(projects[0].getAssignedUsers().isPresent());
-        assertEquals(0, projects[0].getAssignedUsers().get().length);
+        assertEquals("project1", projects.get(0).getProjectId());
+        assertEquals("user1@mail", projects.get(0).getOwner());
+        assertTrue(projects.get(0).isOwned());
+        assertEquals(0, projects.get(0).getAssignedUsers().length);
     }
 
     @Test
@@ -75,19 +76,19 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
-        assertEquals(2, projects.length);
+        assertEquals(2, projects.size());
 
-        assertEquals("user2", projects[0].getOwner());
-        assertTrue(projects[0].isOwned());
-        assertTrue(projects[0].getAssignedUsers().isPresent());
+        assertEquals("user2@mail", projects.get(0).getOwner());
+        assertTrue(projects.get(0).isOwned());
+        assertEquals(0, projects.get(0).getAssignedUsers().length);
 
-        assertEquals("user2", projects[1].getOwner());
-        assertTrue(projects[1].isOwned());
-        assertTrue(projects[1].getAssignedUsers().isPresent());
+        assertEquals("user2@mail", projects.get(1).getOwner());
+        assertTrue(projects.get(1).isOwned());
+        assertTrue(projects.get(1).getAssignedUsers().length > 0);
     }
 
     @Test
@@ -98,16 +99,16 @@ class ProjectServiceTest {
         setUpTestCase(userId, false);
 
         /* execute */
-        ProjectData[] projects = serviceToTest.getProjectDataList(userId);
+        List<ProjectData> projects = serviceToTest.getProjectDataList(userId);
 
         /* test */
         assertNotNull(projects);
-        assertEquals(1, projects.length);
+        assertEquals(1, projects.size());
 
-        assertEquals("project2", projects[0].getProjectId());
-        assertEquals("user2", projects[0].getOwner());
-        assertFalse(projects[0].isOwned());
-        assertFalse(projects[0].getAssignedUsers().isPresent());
+        assertEquals("project2", projects.get(0).getProjectId());
+        assertEquals("user2@mail", projects.get(0).getOwner());
+        assertFalse(projects.get(0).isOwned());
+        assertNull(projects.get(0).getAssignedUsers());
     }
 
     private void setUpTestCase(String userId, boolean isAdmin) {
@@ -125,8 +126,11 @@ class ProjectServiceTest {
         Project project3 = mock(Project.class);
 
         when(user1.getName()).thenReturn("user1");
+        when(user1.getEmailAddress()).thenReturn("user1@mail");
         when(user2.getName()).thenReturn("user2");
+        when(user2.getEmailAddress()).thenReturn("user2@mail");
         when(user3.getName()).thenReturn("user3");
+        when(user3.getEmailAddress()).thenReturn("user3@mail");
 
         when(user1.getProjects()).thenReturn(Set.of(project1));
         when(user1.getOwnedProjects()).thenReturn(Set.of(project1));

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 User, Owner or Admin fetches a list containing information about assigned and/ or owned projects.
 
 The Project data contains the following information:

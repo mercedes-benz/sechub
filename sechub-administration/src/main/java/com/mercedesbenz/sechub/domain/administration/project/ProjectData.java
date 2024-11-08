@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.Optional;
@@ -46,7 +47,7 @@ public class ProjectData {
         return owner;
     }
 
-    public Optional<String[]> getAssignedUsers() {
-        return Optional.ofNullable(assignedUsers);
+    public String[] getAssignedUsers() {
+        return assignedUsers;
     }
 }

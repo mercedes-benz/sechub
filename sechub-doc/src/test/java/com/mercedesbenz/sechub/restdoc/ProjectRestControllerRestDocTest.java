@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
@@ -11,6 +12,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -51,7 +52,6 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles({ Profiles.TEST })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-@TestPropertySource(properties = "logging.level.root=DEBUG")
 public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -79,11 +79,10 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         projectData.setOwned(true);
         String[] assignedUsers = new String[] { "user1", "user2" };
         projectData.setAssignedUsers(assignedUsers);
-
-        ProjectData[] projectDataArray = new ProjectData[] { projectData };
+        List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
-        when(projectService.getProjectDataList(username)).thenReturn(projectDataArray);
+        when(projectService.getProjectDataList(username)).thenReturn(projectDataList);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

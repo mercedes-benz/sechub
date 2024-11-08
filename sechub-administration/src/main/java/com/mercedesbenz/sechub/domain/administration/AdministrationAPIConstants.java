@@ -77,7 +77,6 @@ public class AdministrationAPIConstants {
 
     public static final String API_LIST_ALL_PROJECTS = API_ADMINISTRATION + "projects";
 
-    public static final String API_GET_PROJECTS = API_PROJECTS;
     // inspired by
     // https://developer.github.com/v3/orgs/members/#add-or-update-organization-membership
     private static final String COMMON_API_PROJECT_MEMBERSHIPS = API_ADMINISTRATION + "project/{projectId}/membership/{userId}";
