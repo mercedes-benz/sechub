@@ -148,7 +148,7 @@ COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
 # Create PID file and set permissions
 RUN touch /var/run/nginx.pid && \
     chmod 755 "$HTDOCS_FOLDER" && \
-    chown -R "$USER:$USER" "$CERTIFICATE_DIRECTORY" "$HTDOCS_FOLDER" /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid && \
+    chown -R "$USER:$USER" "$CERTIFICATE_DIRECTORY" /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid && \
     chmod +x /run.sh
 
 # Switch from root to non-root user

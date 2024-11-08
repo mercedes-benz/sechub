@@ -27,12 +27,12 @@ resources:
 web_ui:
   ssl:
     keystoreAlias: "undefined"
-    # Alias in .p12 keystore.
+    # Alias in pkcs12 (.p12) keystore.
     # - On `undefined`, a self-signed certificate will be used.
-    # - otherwise, k8s secret `secret-webui-ssl` must be defined containing
+    # - otherwise, a Kubernetes secret `secret-web-ui-ssl` must be defined containing
     #   - `keystore_file` (containing the ssl certificate chain)
     #     Inside the .p12 keystore, an alias with this name is expected
-    #     pointing to the ssl certificate to use
+    #     pointing to the ssl key and certificate to use
     #   - `keystore_password`
 
 # deploymentComment (optional):
