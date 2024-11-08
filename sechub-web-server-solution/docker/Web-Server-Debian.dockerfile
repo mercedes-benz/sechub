@@ -146,7 +146,7 @@ COPY --from=builder "$WEB_SERVER_ARTIFACT_FOLDER" "$WEB_SERVER_FOLDER"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet tree unzip && \
+    apt-get install --assume-yes --quiet bind9-host curl netcat-openbsd tree unzip vim-tiny && \
     apt-get clean
 
 COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
