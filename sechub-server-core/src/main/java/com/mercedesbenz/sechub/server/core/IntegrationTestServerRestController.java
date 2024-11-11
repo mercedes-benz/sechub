@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
-import com.mercedesbenz.sechub.sharedkernel.security.AuthorityConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector.JsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
@@ -39,6 +36,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspec
 import com.mercedesbenz.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.AuthorityConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
