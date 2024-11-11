@@ -28,10 +28,10 @@ jobs:
         working-directory: github-actions/scan
     steps:
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Use Node.js
-        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
           node-version: 22
 
@@ -72,20 +72,20 @@ jobs:
 
       - name: Cache SecHub server download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a 
         with:
           path: ./build/sechub-runtime/server/${{ env.sechub_server_version }}/
           key: ${{ runner.os }}-sechub-server-${{ env.sechub_server_version }}
        
       - name: Cache PDS download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
-        uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a 
         with:
           path: ./build/sechub-runtime/pds/${{ env.pds_version }}/
           key: ${{ runner.os }}-sechub-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73
+        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
         with:
           java-version: 17
           distribution: temurin

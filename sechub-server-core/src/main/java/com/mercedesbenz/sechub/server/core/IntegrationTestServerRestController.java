@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.AuthorityConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector.JsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
@@ -36,13 +39,10 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventInspec
 import com.mercedesbenz.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
-import com.mercedesbenz.sechub.sharedkernel.security.AuthorityConstants;
-import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 /**
  * Contains additional rest call functionality for integration test server
@@ -60,7 +60,7 @@ public class IntegrationTestServerRestController {
     private ConfigurableApplicationContext context;
 
     @Autowired
-    private StorageService storageService;
+    private SecHubStorageService storageService;
 
     @Autowired
     private UserContextService userContextService;
@@ -205,7 +205,7 @@ public class IntegrationTestServerRestController {
         }
         LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId, 30), jobUUID);
 
-        JobStorage storage = storageService.createJobStorage(projectId, jobUUID);
+        JobStorage storage = storageService.createJobStorageForProject(projectId, jobUUID);
         if (!storage.isExisting(fileName)) {
             throw new NotFoundException("file not uploaded:" + fileName);
         }

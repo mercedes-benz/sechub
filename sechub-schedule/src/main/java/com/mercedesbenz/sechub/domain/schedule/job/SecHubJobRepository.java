@@ -36,6 +36,33 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
     public long countJobsInExecutionStateAndEncryptedWithPoolId(@Param("executionState") ExecutionState state,
             @Param("encryptionPoolId") Long encryptionPoolId);
 
+    /**
+     * Resolve job uuids together with project ids of jobs which are older than
+     * given time stamp. <br>
+     * <br>
+     * Example usage:
+     *
+     * <pre>
+     * <code>
+     *  for (Object part: result) {
+     *
+     *      UUID jobUUID = part[0];
+     *      String projectId = part[1];
+     *
+     *      doSomethingForJobAndProject(jobUUID,projectId);
+     *  }
+     *
+     * </code>
+     * </pre>
+     *
+     *
+     * @param cleanTimeStamp
+     * @return list containing object arrays of size 2. Format is described in
+     *         javadoc before.
+     */
+    @Query(ScheduleSecHubJob.QUERY_SELECT_JOB_UUID_AND_PROJECT_ID_FOR_JOBS_OLDER_THAN)
+    public List<Object[]> findJobUUIDsAndProjectIdsForJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+
     @Transactional
     @Modifying
     @Query(ScheduleSecHubJob.QUERY_DELETE_JOB_OLDER_THAN)

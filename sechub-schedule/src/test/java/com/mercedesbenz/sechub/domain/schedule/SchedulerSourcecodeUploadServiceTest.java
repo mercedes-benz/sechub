@@ -25,10 +25,10 @@ import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @SuppressWarnings("deprecation")
 public class SchedulerSourcecodeUploadServiceTest {
@@ -36,7 +36,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private static final String PROJECT1 = "project1";
     private SchedulerSourcecodeUploadService serviceToTest;
     private CheckSumSupport checkSumSupport;
-    private StorageService mockedStorageService;
+    private SecHubStorageService mockedStorageService;
     private UUID randomUuid;
     private ScheduleAssertService mockedAssertService;
     private MultipartFile file;
@@ -53,13 +53,13 @@ public class SchedulerSourcecodeUploadServiceTest {
         randomUuid = UUID.randomUUID();
 
         checkSumSupport = mock(CheckSumSupport.class);
-        mockedStorageService = mock(StorageService.class);
+        mockedStorageService = mock(SecHubStorageService.class);
         mockedAssertService = mock(ScheduleAssertService.class);
 
         ScheduleSecHubJob job = new ScheduleSecHubJob();
         when(mockedAssertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
         storage = mock(JobStorage.class);
-        when(mockedStorageService.createJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
+        when(mockedStorageService.createJobStorageForProject(PROJECT1, randomUuid)).thenReturn(storage);
 
         file = mock(MultipartFile.class);
         when(file.getSize()).thenReturn(1024L); // just not empty

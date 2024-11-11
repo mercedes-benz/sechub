@@ -81,6 +81,10 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_ENCRYPTION_POOL_ID = "encryptionCipherPoolId";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
+
+    public static final String QUERY_SELECT_JOB_UUID_AND_PROJECT_ID_FOR_JOBS_OLDER_THAN = "SELECT j." + PROPERTY_UUID + ", j." + PROPERTY_PROJECT_ID
+            + " FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";
+
     public static final String QUERY_MARK_JOBS_AS_SUSPENDED = "UPDATE ScheduleSecHubJob j SET j." + PROPERTY_EXECUTION_STATE + " = 'SUSPENDED', j."
             + PROPERTY_ENDED + " =:endTime where j." + PROPERTY_UUID + " in :sechubJobUUIDs";
 

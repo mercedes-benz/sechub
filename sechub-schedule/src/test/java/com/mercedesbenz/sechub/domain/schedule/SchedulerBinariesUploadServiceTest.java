@@ -29,9 +29,9 @@ import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class SchedulerBinariesUploadServiceTest {
     private static final String PROJECT1 = "project1";
     private SchedulerBinariesUploadService serviceToTest;
     private CheckSumSupport checkSumSupport;
-    private StorageService storageService;
+    private SecHubStorageService storageService;
     private UUID randomUuid;
     private ScheduleAssertService assertService;
 
@@ -56,7 +56,7 @@ public class SchedulerBinariesUploadServiceTest {
         randomUuid = UUID.randomUUID();
 
         checkSumSupport = mock(CheckSumSupport.class);
-        storageService = mock(StorageService.class);
+        storageService = mock(SecHubStorageService.class);
         assertService = mock(ScheduleAssertService.class);
         storage = mock(JobStorage.class);
         httpRequest = mock(HttpServletRequest.class);
@@ -66,7 +66,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         ScheduleSecHubJob job = new ScheduleSecHubJob();
         when(assertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
-        when(storageService.createJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
+        when(storageService.createJobStorageForProject(PROJECT1, randomUuid)).thenReturn(storage);
 
         /* attach at service to test */
         serviceToTest = new SchedulerBinariesUploadService();

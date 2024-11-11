@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-ui-policy
+spec:
+  ingress:
+  - ports:
+{{- if .Values.go_mmproxy.enabled }}
+    - port: 8080
+{{- else }}
+    - port: 4443
+{{- end }}
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      name: web-ui
