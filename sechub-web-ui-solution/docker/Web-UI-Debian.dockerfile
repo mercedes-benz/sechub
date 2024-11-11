@@ -115,7 +115,7 @@ COPY run.sh /run.sh
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install nginx openssl sed && \
+    apt-get --assume-yes install bind9-host curl netcat-openbsd nginx openssl sed vim-tiny && \
     apt-get --assume-yes clean
 
 # Copy configuration script
