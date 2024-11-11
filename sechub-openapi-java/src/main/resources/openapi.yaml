@@ -2036,15 +2036,35 @@ components:
           items:
              $ref: '#/components/schemas/TemplateVariable'
          
+    AssetDetailData:
+      title: AssetDetailData
+      type: object
+      properties:
+        assetId:
+          type: string
+        files:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/AssetFileData'
     
+    AssetFileData:
+      title: AssetFileData
+      type: object
+      properties:
+         fileName:
+           type: string
+         checksum:
+           type: string
+           
 security:
   - basicAuth: [ ]
 
 paths:
 
-  #############
+  ############
   ## System ##
-  #############
+  ############
 
   /api/anonymous/check/alive:
     get:
@@ -3933,3 +3953,164 @@ paths:
       tags:
         - Configuration
   
+  /api/admin/asset/ids:
+    get:
+      summary: Admin fetches asset ids
+      description: An administrator fetches all available asset ids.
+      operationId: adminFetchAssetIds
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  type: string
+      tags:
+        - Configuration
+  
+  /api/admin/asset/{assetId}/details:
+    get:
+      summary: Admin fetches asset details
+      description: "An administrator fetches details about an asset. For example: the result will contain names but also checksum of files."
+      operationId: adminFetchAssetDetails
+      parameters:
+      - name: assetId
+        description: The asset identifier
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetDetailData'
+                
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+        
+  /api/admin/asset/{assetId}:
+    delete:
+      summary: Admin deletes asset comletely
+      description: An administrator deletes an asset completely.
+      operationId: adminDeletesAssetCompletely
+      parameters:
+      - name: assetId
+        description: TThe asset identifier for the asset which shall be deleted completely
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+          
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+        
+  /api/admin/asset/{assetId}/file:
+    post:
+      summary: Admin uploads an asset file
+      description: "An administrator uploads a file for an asset. If the file already exits, it will be overriden."
+      operationId: adminUploadsAssetFile
+      parameters:
+        - name: assetId
+          description: The id of the asset to which the uploaded file belongs to
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The asset file to upload
+                checkSum:
+                  type: string
+                  description: A sha256 checksum for file upload validation
+              required:
+                - file
+                - checkSum
+            encoding:
+              file:
+                contentType: multipart/form-data
+      responses:
+        "200":
+          description: "Ok"
+        "406":
+          description: "Not acceptable"
+      x-content-type: multipart/form-data
+      tags:
+        - Configuration
+        
+  /api/admin/asset/{assetId}/file/{fileName}:
+    get:
+      summary: Admin downloads an asset file
+      description: An administrator downloads a file fom an asset.
+      operationId: adminDownloadsAssetFile
+      parameters:
+      - name: assetId
+        description: The asset identifier of the asset containing the file.
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fileName
+        description: The name of the file inside the asset which shall be downloaded.
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: "Ok"
+          
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration
+        
+    delete:
+      summary: Admin deletes an asset file
+      description: An administrator deletes a file fom an asset.
+      operationId: adminDeletesAssetFile
+      parameters:
+      - name: assetId
+        description: The asset identifier for the asset in which the file shall be deleted.
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fileName
+        description: The name of the file to delete inside the asset.
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+          
+        "404":
+          description: "Not found"
+      tags:
+        - Configuration

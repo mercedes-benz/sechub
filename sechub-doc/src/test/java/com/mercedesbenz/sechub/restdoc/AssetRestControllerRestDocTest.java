@@ -246,7 +246,7 @@ public class AssetRestControllerRestDocTest implements TestIsNecessaryForDocumen
                                     requestHeaders(
                                     ),
                                     pathParameters(
-                                            parameterWithName(ASSET_ID.paramName()).description("The id of the asset for the file shall be uploaded.")
+                                            parameterWithName(ASSET_ID.paramName()).description("The id of the asset to which the uploaded file belongs to")
                                     ),
                                     queryParameters(
                                             parameterWithName(MULTIPART_CHECKSUM).description("A sha256 checksum for file upload validation")

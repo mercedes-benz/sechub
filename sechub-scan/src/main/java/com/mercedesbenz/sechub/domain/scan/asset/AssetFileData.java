@@ -8,17 +8,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 public class AssetFileData {
 
-    private String checksum;
-
     private String fileName;
 
-    public String getChecksum() {
-        return checksum;
-    }
-
-    public void setChecksum(String checksum) {
-        this.checksum = checksum;
-    }
+    private String checksum;
 
     public String getFileName() {
         return fileName;
@@ -26,6 +18,14 @@ public class AssetFileData {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
     }
 
     @Override
