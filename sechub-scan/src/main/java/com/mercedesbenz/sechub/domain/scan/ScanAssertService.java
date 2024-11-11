@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.scan.access.ScanUserAccessToProjectValidationService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.error.ForbiddenException;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ProjectIdValidation;
 

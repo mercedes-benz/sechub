@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.authorization.service;
 
-import static com.mercedesbenz.sechub.sharedkernel.RoleConstants.*;
+import static com.mercedesbenz.sechub.sharedkernel.security.RoleConstants.isOwnerRole;
+import static com.mercedesbenz.sechub.sharedkernel.security.RoleConstants.isSuperAdminRole;
+import static com.mercedesbenz.sechub.sharedkernel.security.RoleConstants.isUserRole;
 
 import java.util.Set;
 

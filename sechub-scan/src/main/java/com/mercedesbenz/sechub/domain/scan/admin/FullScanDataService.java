@@ -13,8 +13,8 @@ import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLog;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownloadsFullScanDataForJob;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 

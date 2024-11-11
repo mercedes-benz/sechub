@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.authorization;
 
 import java.util.Objects;
 
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

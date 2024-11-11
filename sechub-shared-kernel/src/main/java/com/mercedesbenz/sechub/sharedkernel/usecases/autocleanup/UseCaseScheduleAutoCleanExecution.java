@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;

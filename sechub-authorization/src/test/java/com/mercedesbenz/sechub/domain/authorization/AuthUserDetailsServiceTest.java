@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.authorization;
 
-import static com.mercedesbenz.sechub.sharedkernel.AuthorityConstants.*;
+import static com.mercedesbenz.sechub.sharedkernel.security.AuthorityConstants.*;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -11,12 +11,12 @@ import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 
-public class AuthUserRestAPIConfigurationTest {
+public class AuthUserDetailsServiceTest {
 
     @Test
-    public void adoptUserAcumultesAuthorities() {
+    public void adoptUserAccumultesAuthorities() {
         AuthUser entity = createAuthUser();
 
         entity.setRoleOwner(true);
@@ -24,7 +24,7 @@ public class AuthUserRestAPIConfigurationTest {
         entity.setRoleSuperAdmin(true);
 
         /* execute */
-        UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
+        UserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN,
@@ -40,7 +40,7 @@ public class AuthUserRestAPIConfigurationTest {
         entity.setRoleSuperAdmin(false);
 
         /* execute */
-        UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
+        UserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
@@ -56,7 +56,7 @@ public class AuthUserRestAPIConfigurationTest {
         entity.setRoleSuperAdmin(false);
 
         /* execute */
-        UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
+        UserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
@@ -71,7 +71,7 @@ public class AuthUserRestAPIConfigurationTest {
         entity.setRoleSuperAdmin(true);
 
         /* execute */
-        UserDetails result = AuthUserRestAPIConfiguration.adoptUser(entity);
+        UserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);

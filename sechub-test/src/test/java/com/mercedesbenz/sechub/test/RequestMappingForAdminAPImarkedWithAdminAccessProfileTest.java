@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mercedesbenz.sechub.docgen.reflections.Reflections;
 import com.mercedesbenz.sechub.docgen.util.ReflectionsFactory;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 
 /**
  * This tests that SecHub REST API for administrators is protected by special

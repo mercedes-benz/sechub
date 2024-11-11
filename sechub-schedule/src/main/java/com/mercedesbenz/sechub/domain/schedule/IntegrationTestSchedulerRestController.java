@@ -19,8 +19,8 @@ import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleCipherPoolClea
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyProvider;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 
 /**
  * Contains additional rest call functionality for integration tests on scan

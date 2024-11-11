@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionDataValidator;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminStartsEncryptionRotation;
 

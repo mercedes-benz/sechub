@@ -46,7 +46,7 @@ import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseDefinition;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 

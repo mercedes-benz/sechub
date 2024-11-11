@@ -14,7 +14,7 @@ import org.mockito.InOrder;
 
 import com.mercedesbenz.sechub.domain.authorization.AuthUser;
 import com.mercedesbenz.sechub.domain.authorization.AuthUserRepository;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class AuthUserUpdateRolesServiceTest {

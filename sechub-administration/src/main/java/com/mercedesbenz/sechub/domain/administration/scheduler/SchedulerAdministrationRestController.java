@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminTriggersRefreshOfSchedulerStatus;
