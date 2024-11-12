@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: web-server
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -13,11 +13,11 @@ spec:
       maxUnavailable: 49%
   selector:
     matchLabels:
-      name: {{ .Values.name }}
+      name: web-server
   template:
     metadata:
       labels:
-        name: {{ .Values.name }}
+        name: web-server
 {{- if .Values.templateMetadataAnnotations }}
       annotations:
         {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
@@ -29,9 +29,9 @@ spec:
         fsGroup: 4242    # This gid has write access to the mounted volumes.
       volumes:
 {{- if ne .Values.web_server.ssl.keystoreAlias "undefined" }}
-        - name: secret-web-server-ssl-volume
+        - name: secret-web-ui-ssl-volume
           secret:
-            secretName: secret-web-server-ssl
+            secretName: secret-web-ui-ssl
 {{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
@@ -70,7 +70,7 @@ spec:
         - "127.0.0.1:4443" # forward to SecHub Web Server container (localhost port 4443)
 {{- end }}
       # SecHub web-server container
-      - name: sechub-web-server
+      - name: web-server
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
@@ -81,13 +81,13 @@ spec:
           limits:
             memory: "{{ .Values.resources.limits.memory }}"
         ports:
-        - name: sechub-web-server
+        - name: web-server
           containerPort: 4443
         # startupProbe:
         #   httpGet:
         #     scheme: HTTPS
         #     path: /api/anonymous/check/alive
-        #     port: sechub-web-server
+        #     port: web-server
         #   failureThreshold: 24
         #   periodSeconds: 5
         #   successThreshold: 1
@@ -97,7 +97,7 @@ spec:
         #   httpGet:
         #     scheme: HTTPS
         #     path: /api/anonymous/check/alive
-        #     port: sechub-web-server
+        #     port: web-server
         #   failureThreshold: 3
         #   periodSeconds: 10
         #   successThreshold: 1
@@ -105,7 +105,7 @@ spec:
         volumeMounts:
 {{- if ne .Values.web_server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-server/secrets/secret-ssl
-            name: secret-web-server-ssl-volume
+            name: secret-web-ui-ssl-volume
 {{- end }}
         env:
         # Server start mode
@@ -114,9 +114,12 @@ spec:
         # Spring profiles definition
         - name: SPRING_PROFILES_ACTIVE
           value: "{{ .Values.web_server.spring.profiles }}"
+        # Encryption key for access token - a string of 32 characters
+        - name: SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
+          value: "{{ .Values.web_server.security.encryptionKey }}"
 {{- if .Values.env }}
         # ------------------------------------------------------------------------#
-        # Scope: Additional environment variables for the SecHub web-ui container
+        # Scope: Additional environment variables for the SecHub web-server container
         # ----------------------------------------------------------------------- #
         {{ .Values.env | indent 8 | trim }}
 {{- end }}
@@ -141,16 +144,6 @@ spec:
 {{- else }}
           value: "false"
 {{- end }}
-        - name: SECHUB_USERID
-          valueFrom:
-            secretKeyRef:
-               name: secret-web-server-connect
-               key: sechub_userid
-        - name: SECHUB_APITOKEN
-          valueFrom:
-            secretKeyRef:
-               name: secret-web-server-connect
-               key: sechub_apitoken
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -163,7 +156,7 @@ spec:
         - name: SECHUB_WEB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-web-server-ssl
+               name: secret-web-ui-ssl
                key: keystore_password
 {{- if .Values.web_server.spring.embeddedTomcat.logging.enabled }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -2,9 +2,7 @@
 
 # This is a sample values file containing the defaults.
 
-name: sechub-web-server
-
-image: "ghcr.io/mercedes-benz/sechub/sechub-web-server:latest"
+image: "ghcr.io/mercedes-benz/sechub/web-server:latest"
 # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
 imagePullPolicy: "IfNotPresent"
 # Optional: If your image is in a private registry, you can specify pull secrets defined in k8s
@@ -26,22 +24,25 @@ resources:
     memory: 1Gi
 
 web_server:
-  # Possible values: server, development
-  startMode: server
+  security:
+    # Encryption key for access token - a string of 32 characters
+    encryptionKey: "Change me. Change me. Change me."
   sechubConnection:
     # "sechub-server:8443" works when the server is deployed in the same k8s cluster
     url: "https://sechub-server:8443/"
     # trustAllCertificates - 'true' if server is deployed in the same k8s cluster
     trustAllCertificates: false
-    # Put the SecHub user id  in k8s secret secret-web-server-connect:sechub_userid
-    # Put the SecHub apitoken in k8s secret secret-web-server-connect:sechub_apitoken
+  # Possible values: server, development
+  startMode: server
   logging:
     type:
       enabled: false
       appenderName: "LOGSTASH_JSON"
   spring:
     # Spring profiles (comma-separated list):
-    # - Server mode: 'ssl-cert-provided' (self-signed SSL cert included) or 'ssl-cert-required' (SSL certificate required by external config)
+    # - Server mode:
+    #   - 'ssl-cert-provided' (use included self-signed SSL cert) or
+    #   - 'ssl-cert-required' (use external SSL certificate; see keystoreAlias below)
     # - SecHub connection: 'classic-auth-enabled' or leave empty for connect to configured SecHub server
     profiles: "ssl-cert-provided"
     # Configure Spring Boot's embedded Tomcat
@@ -53,7 +54,7 @@ web_server:
     keystoreAlias: "undefined"
     # Alias in .p12 keystore.
     # - On `undefined`, a self-signed certificate will be used.
-    # - otherwise, k8s secret `secret-web-server-ssl` must be defined containing
+    # - otherwise, k8s secret `secret-web-ui-ssl` must be defined containing
     #   - `keystore_file` (containing the ssl certificate chain)
     #     Inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl certificate to use
@@ -95,7 +96,7 @@ service:
 #   prometheus.io/path: "/actuator/prometheus"
 
 # ----------------------------------------------------------------------------------------------#
-# Optional: Additional environment variables for the SecHub web-ui container
+# Optional: Additional environment variables for the SecHub web-server container
 # --------------------------------------------------------------------------------------------- #
 # env: |-
 #   - name: SECHUB_EXAMPLE_VAR1

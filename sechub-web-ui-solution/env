@@ -10,7 +10,7 @@ CPU_LIMIT=1.0
 # build - clones and build from SecHub repository
 # copy - copies ./output directory container
 # download (not implemented)
-BUILD_TYPE=build
+BUILD_TYPE=download
 
 # The PDS version used if the BUILD_TYPE is set to `download`
 WEB_UI_VERSION="0.1.0"
