@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 public class AuthUserDetailsServiceTest {
 
     @Test
-    public void adoptUserAccumultesAuthorities() {
+    public void adoptUser_accumulates_authorities() {
         AuthUser entity = createAuthUser();
 
         entity.setRoleOwner(true);

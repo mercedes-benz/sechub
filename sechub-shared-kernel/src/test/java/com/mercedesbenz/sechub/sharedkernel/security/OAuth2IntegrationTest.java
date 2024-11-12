@@ -29,8 +29,8 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * <p>
  * Unlike {@link SecHubApiSecurityConfigurationTest}, which primarily tests if a
- * endpoint is secured on a abstract level, this class exercises the full OAuth2
- * flow with real OAuth2 mechanisms. We do that by relying the
+ * endpoint is secured on an abstract level, this class exercises the full
+ * OAuth2 flow with real OAuth2 mechanisms. We do that by relying on the
  * {@link AbstractSecHubAPISecurityConfiguration}.
  * </p>
  *

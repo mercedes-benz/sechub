@@ -9,12 +9,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class OAuth2Properties {
 
     static final String PREFIX = "sechub.security.oauth2";
-    private static final String ERR_MSG_FORMAT = "The property '%s.%s' must not be null";
 
     private final String jwkSetUri;
 
     public OAuth2Properties(String jwkSetUri) {
-        this.jwkSetUri = requireNonNull(jwkSetUri, ERR_MSG_FORMAT.formatted(PREFIX, "jwk-set-uri"));
+        this.jwkSetUri = requireNonNull(jwkSetUri, "The property 'sechub.security.oauth2.jwk-set-uri' must not be null");
     }
 
     public String getJwkSetUri() {

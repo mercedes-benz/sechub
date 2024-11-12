@@ -113,6 +113,17 @@ allprojects {
     task prepareGitPush(dependsOn: spotlessApply){
     
     }
+
+    /*
+     * Adds the -parameters compiler argument to every JavaCompile task in your Gradle build
+     * This argument instructs the Java compiler to include method parameter names in the compiled .class files
+     * This is required for the Spring Framework to resolve parameter names for 3rd party libraries
+     * E.g. for @ConfigurationProperties
+     */
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << "-parameters"
+    }
+
 }
 
 

@@ -27,13 +27,3 @@ dependencies {
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-testframework-spring')
 }
-
-/*
- * Retain parameter names in the bytecode.
- * This is required for the Spring Framework to resolve parameter names for 3rd party libraries.
- * E.g. for @ConfigurationProperties
- */
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs << "-parameters"
-}
-

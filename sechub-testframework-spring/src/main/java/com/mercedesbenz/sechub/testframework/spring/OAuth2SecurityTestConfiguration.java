@@ -32,7 +32,7 @@ import com.mercedesbenz.sechub.domain.authorization.AuthUserRepository;
 @Import({ AuthUserDetailsService.class })
 public class OAuth2SecurityTestConfiguration {
 
-    public static final String BEARER = OAuth2AccessToken.TokenType.BEARER.getValue() + " ";
+    public static final String BEARER_PREFIX = OAuth2AccessToken.TokenType.BEARER.getValue() + " ";
 
     public static final String ADMIN = "SUPERADMIN";
     public static final String OWNER = "OWNER";
@@ -53,7 +53,8 @@ public class OAuth2SecurityTestConfiguration {
      * returns a {@link Jwt} object. The behaviour is completely mocked and the
      * possible JWT tokens are pre-defined. Every possible JWT value is mapped to a
      * specific subject (or user id). The subject will be returned as part of the
-     * JWT decode process.
+     * JWT decode process. To keep testing as simple as possible, we map only ONE
+     * role to ONE user and provide here no combinations.
      */
     @Bean
     JwtDecoder jwtDecoder() {
@@ -108,7 +109,7 @@ public class OAuth2SecurityTestConfiguration {
     }
 
     public static String getJwtAuthHeader(String role) {
-        return BEARER + switch (role) {
+        return BEARER_PREFIX + switch (role) {
         case ADMIN -> ADMIN_JWT;
         case OWNER -> OWNER_JWT;
         case USER -> USER_JWT;
