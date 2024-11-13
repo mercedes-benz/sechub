@@ -6,6 +6,13 @@ metadata:
   name: {{ .Values.name }}-policy
 spec:
   ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: web-server # Allow SecHub Web-UI access
+    ports:
+    - protocol: TCP
+      port: 8443
   - ports:
 {{- if .Values.go_mmproxy.enabled }}
     - port: 8080

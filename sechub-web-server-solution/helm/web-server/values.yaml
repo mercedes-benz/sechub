@@ -28,9 +28,9 @@ web_server:
     # Encryption key for access token - a string of 32 characters
     encryptionKey: "Change me. Change me. Change me."
   sechubConnection:
-    # "sechub-server:8443" works when the server is deployed in the same k8s cluster
-    url: "https://sechub-server:8443/"
-    # trustAllCertificates - 'true' if server is deployed in the same k8s cluster
+    # Connection url to SecHub server
+    url: "https://sechub-server-internal:8443/"
+    # trustAllCertificates - 'true' if server uses a self-signed SSL certificate
     trustAllCertificates: false
   # Possible values: server, development
   startMode: server
