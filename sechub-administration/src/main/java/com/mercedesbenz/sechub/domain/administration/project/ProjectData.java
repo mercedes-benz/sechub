@@ -13,7 +13,6 @@ public class ProjectData {
     private String projectId;
     private String owner;
     private Boolean isOwned;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String[] assignedUsers;
 
     public void setProjectId(String projectId) {
@@ -47,6 +46,7 @@ public class ProjectData {
         return owner;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(PROPERTY_ASSIGNED_USERS)
     public String[] getAssignedUsers() {
         return assignedUsers;
