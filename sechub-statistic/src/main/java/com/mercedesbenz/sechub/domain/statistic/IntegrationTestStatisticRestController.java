@@ -23,8 +23,8 @@ import com.mercedesbenz.sechub.domain.statistic.job.JobStatistic;
 import com.mercedesbenz.sechub.domain.statistic.job.JobStatisticData;
 import com.mercedesbenz.sechub.domain.statistic.job.JobStatisticDataRepository;
 import com.mercedesbenz.sechub.domain.statistic.job.JobStatisticRepository;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 
 /**
  * Contains additional rest call functionality for integration tests on scan

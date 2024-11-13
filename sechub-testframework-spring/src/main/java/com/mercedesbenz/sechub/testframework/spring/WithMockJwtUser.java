@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webserver.security;
+package com.mercedesbenz.sechub.testframework.spring;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 
@@ -61,8 +63,9 @@ import org.springframework.security.test.context.support.WithSecurityContext;
  *
  * @author hamidonos
  */
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockJwtSecurityContextFactory.class)
 public @interface WithMockJwtUser {
-    String jwt() default SecurityTestConfiguration.JWT;
+    String jwt() default JwtMockAuthenticationTestConfiguration.JWT;
 }

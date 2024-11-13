@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccess.ProjectAccessCompositeKey;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogType;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 @Service
 public class ScanUserAccessToProjectValidationService {

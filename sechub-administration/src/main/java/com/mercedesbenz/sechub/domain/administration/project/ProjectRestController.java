@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import static com.mercedesbenz.sechub.sharedkernel.APIConstants.API_PROJECTS;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_PROJECTS;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 import jakarta.annotation.security.RolesAllowed;
 

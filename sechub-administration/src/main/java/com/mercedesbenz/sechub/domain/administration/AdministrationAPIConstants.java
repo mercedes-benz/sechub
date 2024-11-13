@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration;
 
-import static com.mercedesbenz.sechub.sharedkernel.APIConstants.*;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ADMINISTRATION;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ANONYMOUS;
 
 public class AdministrationAPIConstants {
 

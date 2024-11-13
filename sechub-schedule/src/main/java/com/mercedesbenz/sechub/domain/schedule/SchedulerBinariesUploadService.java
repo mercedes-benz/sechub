@@ -33,7 +33,6 @@ import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -44,10 +43,11 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,7 +63,7 @@ public class SchedulerBinariesUploadService {
     SchedulerBinariesUploadConfiguration configuration;
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     @Autowired
     CheckSumSupport checkSumSupport;
@@ -135,7 +135,7 @@ public class SchedulerBinariesUploadService {
     }
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
-        JobStorage jobStorage = storageService.createJobStorage(projectId, jobUUID);
+        JobStorage jobStorage = storageService.createJobStorageForProject(projectId, jobUUID);
         try {
             store(projectId, jobUUID, request, jobStorage);
         } finally {

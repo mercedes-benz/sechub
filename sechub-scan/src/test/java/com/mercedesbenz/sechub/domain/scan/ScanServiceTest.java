@@ -42,8 +42,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DummyEventInspector;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 public class ScanServiceTest {
 
@@ -59,7 +59,7 @@ public class ScanServiceTest {
     private InfrastructureScanProductExecutionService infrastructureScanProductExecutionService;
     private CreateScanReportService reportService;
     private ScanReport report;
-    private StorageService storageService;
+    private SecHubStorageService storageService;
     private JobStorage jobStorage;
     private ProjectScanLogService scanLogService;
     private ScanProjectConfigService scanProjectConfigService;
@@ -76,7 +76,7 @@ public class ScanServiceTest {
 
     @Before
     public void before() throws Exception {
-        storageService = mock(StorageService.class);
+        storageService = mock(SecHubStorageService.class);
         jobStorage = mock(JobStorage.class);
         scanProjectConfigService = mock(ScanProjectConfigService.class);
         scanJobListener = mock(ScanJobListener.class);
@@ -84,7 +84,7 @@ public class ScanServiceTest {
         ProgressStateFetcher progressStateFetcher = mock(ProgressStateFetcher.class);
         progressState = mock(ProgressState.class);
 
-        when(storageService.createJobStorage(any(), any())).thenReturn(jobStorage);
+        when(storageService.createJobStorageForProject(any(), any())).thenReturn(jobStorage);
         when(stateFetcherFactory.createProgressStateFetcher(any())).thenReturn(progressStateFetcher);
         when(progressStateFetcher.fetchProgressState()).thenReturn(progressState);
 

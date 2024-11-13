@@ -10,14 +10,14 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Component
 public class PDSStorageContentProviderFactory {
 
     @Autowired
-    StorageService storageService;
+    SecHubStorageService storageService;
 
     SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
@@ -33,7 +33,7 @@ public class PDSStorageContentProviderFactory {
             String projectId = model.getProjectId();
             UUID jobUUID = context.getSechubJobUUID();
 
-            storage = storageService.createJobStorage(projectId, jobUUID);
+            storage = storageService.createJobStorageForProject(projectId, jobUUID);
         }
 
         return new PDSStorageContentProvider(storage, reuseSecHubStorage, scanType, modelSupport, model);

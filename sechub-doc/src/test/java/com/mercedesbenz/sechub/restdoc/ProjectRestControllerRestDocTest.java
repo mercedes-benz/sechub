@@ -18,11 +18,9 @@ import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,10 +34,9 @@ import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectRestController;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectService;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -47,7 +44,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectRestController.class)
-@ContextConfiguration(classes = { ProjectRestController.class, ProjectRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectRestController.class })
 @WithMockUser(roles = RoleConstants.ROLE_USER)
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles({ Profiles.TEST })
@@ -113,12 +110,6 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
                         )
                 );
         /* @formatter:on */
-
-    }
-
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
 
     }
 }

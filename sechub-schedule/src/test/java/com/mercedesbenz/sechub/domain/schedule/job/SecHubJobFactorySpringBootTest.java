@@ -23,8 +23,8 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 @SpringBootTest(classes = SecHubJobFactory.class)
 class SecHubJobFactorySpringBootTest {

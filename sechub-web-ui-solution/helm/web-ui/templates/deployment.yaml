@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: web-ui
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -13,11 +13,11 @@ spec:
       maxUnavailable: 49%
   selector:
     matchLabels:
-      name: {{ .Values.name }}
+      name: web-ui
   template:
     metadata:
       labels:
-        name: {{ .Values.name }}
+        name: web-ui
 {{- if .Values.templateMetadataAnnotations }}
       annotations:
         {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
@@ -71,33 +71,31 @@ spec:
 {{- end }}
 
         # Web-UI container
-      - name: {{ .Values.name }}
+      - name: web-ui
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        labels:
-          name: {{ .Values.name }}
         ports:
-        - name: {{ .Values.name }}-https
-          containerPort: 8443
-#        startupProbe:
-#          httpGet:
-#            scheme: HTTPS
-#            path: /alive-test.html
-#            port: {{ .Values.name }}-https
-#          failureThreshold: 24
-#          periodSeconds: 5
-#          successThreshold: 1
-#          timeoutSeconds: 1
-#          initialDelaySeconds: 5
-#        livenessProbe:
-#          httpGet:
-#            scheme: HTTPS
-#            path: /alive-test.html
-#            port: {{ .Values.name }}-https
-#          failureThreshold: 3
-#          periodSeconds: 10
-#          successThreshold: 1
-#          timeoutSeconds: 3
+        - name: web-ui-https
+          containerPort: 4443
+        startupProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health/alive.html
+            port: web-ui-https
+          failureThreshold: 24
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health/alive.html
+            port: web-ui-https
+          failureThreshold: 2
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
         volumeMounts:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-ui/secrets/secret-ssl
@@ -106,6 +104,8 @@ spec:
         env:
           - name: DEPLOYMENT_COMMENT
             value: "{{ .Values.deploymentComment }}"
+          - name: WEB_UI_SSL_KEYSTORE_ALIAS
+            value: "{{ .Values.web_ui.ssl.keystoreAlias }}"
         resources:
           # min container memory
           requests:

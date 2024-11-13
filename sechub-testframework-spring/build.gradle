@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+/*============================================================================
+* Build file for subproject
+*
+* Root build file: "${rootProject.projectDir}/build.gradle"
+* ============================================================================
+*/
+dependencies {
+
+    implementation project(':sechub-authorization')
+    implementation library.springboot_starter_security
+    implementation library.springboot_starter_oauth2_resource_server
+    implementation library.springboot_starter_test
+    implementation library.springframework_security_test
+
+}

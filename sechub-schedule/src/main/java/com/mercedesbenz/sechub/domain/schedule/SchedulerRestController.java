@@ -15,11 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;

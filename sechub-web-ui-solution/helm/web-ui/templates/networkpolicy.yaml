@@ -3,16 +3,16 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Values.name }}-policy
+  name: web-ui-policy
 spec:
   ingress:
   - ports:
 {{- if .Values.go_mmproxy.enabled }}
     - port: 8080
 {{- else }}
-    - port: 8443
+    - port: 4443
 {{- end }}
       protocol: TCP
   podSelector:
     matchLabels:
-      name: {{ .Values.name }}
+      name: web-ui

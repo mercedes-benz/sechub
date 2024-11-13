@@ -8,12 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 import com.mercedesbenz.sechub.storage.s3.AwsS3JobStorageFactory;
 import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorageFactory;
 
@@ -26,7 +24,7 @@ import com.mercedesbenz.sechub.storage.sharevolume.spring.SharedVolumeJobStorage
  *
  */
 @Service
-public class MultiStorageService implements StorageService {
+public class MultiStorageService implements SecHubStorageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultiStorageService.class);
 
@@ -51,15 +49,8 @@ public class MultiStorageService implements StorageService {
     }
 
     @Override
-    public JobStorage createJobStorage(String projectId, UUID jobUUID) {
-        /*
-         * we use here "jobstorage/${projectId} - so we have same job storage path as
-         * before in sechub itself - for PDS own prefix (storageId) is used insdide
-         * storagePath. We could have changed to something like
-         * "sechub/jobstarge/${projectId}" but this would have forced migration issues.
-         * So we keep this "old style"
-         */
-        return jobStorageFactory.createJobStorage(SecHubStorageUtil.createStoragePath(projectId), jobUUID);
+    public JobStorage createJobStorageForPath(String storagePath, UUID jobUUID) {
+        return jobStorageFactory.createJobStorage(storagePath, jobUUID);
     }
 
 }

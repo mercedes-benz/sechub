@@ -17,8 +17,8 @@ import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionResult;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.test.SechubTestComponent;
 
 @SechubTestComponent

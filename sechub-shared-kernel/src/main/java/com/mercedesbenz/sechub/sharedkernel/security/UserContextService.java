@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.sharedkernel.security;
 
 import java.util.Collection;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class UserContextService {
 
     /**
-     * @return user id of current logged in user or <code>null</code>
+     * @return user id of current logged-in user or <code>null</code>
      */
     public String getUserId() {
         Authentication authentication = getAuthentication();
@@ -31,17 +31,19 @@ public class UserContextService {
         return hasRole(RoleConstants.ROLE_SUPERADMIN);
     }
 
-    public String getAuthories() {
+    public String getAuthorities() {
 
         StringBuilder sb = new StringBuilder();
         Authentication authentication = getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        for (GrantedAuthority auth : authorities) {
-            if (auth == null) {
-                continue;
+        if (authentication != null) {
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            for (GrantedAuthority auth : authorities) {
+                if (auth == null) {
+                    continue;
+                }
+                sb.append(auth.getAuthority());
+                sb.append(" ");
             }
-            sb.append(auth.getAuthority());
-            sb.append(" ");
         }
         return sb.toString().trim();
     }

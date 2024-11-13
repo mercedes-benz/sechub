@@ -37,10 +37,11 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobFactory;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
+import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 
 /**
  * Full spring boot tests which checks multiple parts. Why so much different
@@ -119,6 +120,9 @@ public class SecHubMultiSpringBootTest {
 
     @MockBean
     private UserInputAssertion assertion;
+
+    @MockBean
+    private JobStorageFactory jobStorageFactory;
 
     @BeforeEach
     void beforeEach() {

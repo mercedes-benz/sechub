@@ -41,7 +41,7 @@ projectType = [
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
-
+                    project(':sechub-testframework-spring'),
                     project(':sechub-storage-sharedvolume-spring'),
 
                     /* next projects added as spring boot projects only, because otherwise we get the (older)
