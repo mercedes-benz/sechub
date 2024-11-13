@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.sharedkernel.security;
 
 /**
  * SecHub role constants without {@link AuthorityConstants#AUTHORITY_ROLE_PREFIX
@@ -21,15 +21,15 @@ public class RoleConstants {
     private RoleConstants() {
     }
 
-    public static final boolean isSuperAdminRole(String role) {
+    public static boolean isSuperAdminRole(String role) {
         return ROLE_SUPERADMIN.equals(role);
     }
 
-    public static final boolean isUserRole(String role) {
+    public static boolean isUserRole(String role) {
         return ROLE_USER.equals(role);
     }
 
-    public static final boolean isOwnerRole(String role) {
+    public static boolean isOwnerRole(String role) {
         return ROLE_OWNER.equals(role);
     }
 

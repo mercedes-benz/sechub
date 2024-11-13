@@ -46,9 +46,9 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
+import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 import jakarta.validation.ValidationException;

@@ -18,7 +18,7 @@ import org.springframework.validation.Validator;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 @Component
 public class SecHubConfigurationValidator implements Validator {

@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 import com.mercedesbenz.sechub.webserver.security.OAuth2Properties;
 import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
 

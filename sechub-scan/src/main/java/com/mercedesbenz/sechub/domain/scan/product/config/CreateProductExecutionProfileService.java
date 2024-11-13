@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.AlreadyExistsException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
 
 import jakarta.annotation.security.RolesAllowed;

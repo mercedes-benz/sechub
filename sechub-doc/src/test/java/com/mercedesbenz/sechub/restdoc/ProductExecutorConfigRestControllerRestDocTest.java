@@ -50,9 +50,9 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigV
 import com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutorConfigService;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
+import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutorConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutorConfiguration;

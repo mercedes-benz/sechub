@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.docgen.reflections.Reflections;
 import com.mercedesbenz.sechub.docgen.util.ReflectionsFactory;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 

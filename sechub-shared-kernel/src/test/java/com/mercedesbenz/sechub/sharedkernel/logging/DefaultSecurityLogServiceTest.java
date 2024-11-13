@@ -19,7 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

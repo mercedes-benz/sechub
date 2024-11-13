@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupCreat
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupRestController;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupJsonInputValidator;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;

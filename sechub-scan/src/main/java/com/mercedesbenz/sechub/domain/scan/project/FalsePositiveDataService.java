@@ -15,9 +15,9 @@ import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service

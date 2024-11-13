@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.sharedkernel.security;
 
 /**
  * API constants, usable inside rest controllers etc. Be AWARE: its very

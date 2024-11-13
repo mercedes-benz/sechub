@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.sharedkernel.security;
 
 public class AuthorityConstants {
 

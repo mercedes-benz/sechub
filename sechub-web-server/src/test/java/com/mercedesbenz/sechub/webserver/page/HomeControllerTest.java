@@ -13,9 +13,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.testframework.spring.WithMockJwtUser;
+import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
-import com.mercedesbenz.sechub.webserver.security.WithMockJwtUser;
 
 @WebMvcTest(HomeController.class)
 @Import(SecurityTestConfiguration.class)

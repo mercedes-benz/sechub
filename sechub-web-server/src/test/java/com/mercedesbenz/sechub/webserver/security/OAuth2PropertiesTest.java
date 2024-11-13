@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 
 @SpringBootTest
 @ActiveProfiles("oauth2-enabled")

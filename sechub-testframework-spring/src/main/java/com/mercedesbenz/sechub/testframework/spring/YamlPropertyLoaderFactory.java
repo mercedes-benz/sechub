@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webserver;
+package com.mercedesbenz.sechub.testframework.spring;
 
 import java.io.IOException;
 import java.util.List;

@@ -13,7 +13,6 @@ import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.domain.administration.OneTimeTokenGenerator;
 import com.mercedesbenz.sechub.domain.administration.signup.Signup;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -24,6 +23,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
