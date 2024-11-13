@@ -109,7 +109,8 @@ RUN usermod -u "$UID" "$USER" && \
     mkdir -p "$NGINX_ALIVE_DIR" && \
     echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
 
-# Copy run script into container
+# Copy needed files into container
+COPY sechub-logo.svg "${HTDOCS_FOLDER}/sechub-logo.svg"
 COPY run.sh /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -118,7 +119,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --assume-yes install bind9-host curl netcat-openbsd nginx openssl sed vim-tiny && \
     apt-get --assume-yes clean
 
-# Copy configuration script
+# Copy Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Create self-signed certificate
