@@ -1,56 +1,61 @@
-<!-- SPDX-License-Identifier: MIT --->
-# Nuxt 3 Minimal Starter
+# sechub-web-ui
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This template should help get you started developing with Vue 3 in Vite.
 
-## Setup
+## Recommended IDE Setup
 
-Make sure to install the dependencies:
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-```bash
-# npm (initial build with npm 10.8.3)
+## SecHub Web UI
+
+### DEV 
+
+Install nvm and run correct node version
+
+```sh
+nvm use
+```
+
+Create local ceertificates
+
+```sh
+./generate_local_certificates.sh
+```
+
+## Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
 npm install
 ```
 
-## Development Server (per default on https)
+### Compile and Hot-Reload for Development
 
-Start the development server on `https://localhost:3000`:
-
-```bash
-# generate local certificates (only once)
-./generate-certificate.sh
-
-# npm
-npm run dev -- -o
+```sh
+npm run dev
 ```
 
-## Production
+### Type-Check, Compile and Minify for Production
 
-Build the application for production:
-
-```bash
-# npm
+```sh
 npm run build
 ```
 
-Locally preview production build:
+### Run Unit Tests with [Vitest](https://vitest.dev/)
 
-```bash
-# npm
-npm run preview
+```sh
+npm run test:unit
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Lint with [ESLint](https://eslint.org/)
 
-## Deployment
-
-### Entrypoint
-
-```bash
-# node (tested with node v22.9.0)
-node .output/server/index.mjs
+```sh
+npm run lint
 ```
-
-### Port and Host
-
-listening to default environment variables 'HOST' (default: 0.0.0.0) and PORT (default 3000)

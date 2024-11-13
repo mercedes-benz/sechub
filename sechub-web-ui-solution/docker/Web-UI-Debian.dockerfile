@@ -39,8 +39,8 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     ./clone.sh "$GIT_URL" "$GIT_BRANCH" "$GIT_TAG" && \
     cd "sechub/sechub-web-ui" && \
     npm install && \
-    npx nuxi generate && \
-    cp -r .output "${WEB_UI_ARTIFACTS}"
+    npm run build && \
+    cp -r dist "${WEB_UI_ARTIFACTS}"
 
 
 #-------------------
@@ -69,15 +69,15 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes --quiet unzip wget && \
     apt-get clean
 
-RUN mkdir -p "${WEB_UI_ARTIFACTS}/.output/public" && \
-    cd "${WEB_UI_ARTIFACTS}/.output/public" && \
+RUN mkdir -p "${WEB_UI_ARTIFACTS}/dist" && \
+    cd "${WEB_UI_ARTIFACTS}/dist" && \
     wget "https://github.com/mercedes-benz/sechub/releases/download/v${WEB_UI_VERSION}-web-ui/${WEB_UI_RELEASE_ZIP}" && \
     wget "https://github.com/mercedes-benz/sechub/releases/download/v${WEB_UI_VERSION}-web-ui/${WEB_UI_RELEASE_ZIP}.sha256sum" && \
     sha256sum --check "${WEB_UI_RELEASE_ZIP}.sha256sum" && \
     unzip ${WEB_UI_RELEASE_ZIP} && \
     rm -f "${WEB_UI_RELEASE_ZIP}" "${WEB_UI_RELEASE_ZIP}.sha256sum"
-    
-    
+
+
 #-------------------
 # Builder
 #-------------------
@@ -143,7 +143,7 @@ RUN mkdir -p "$CERTIFICATE_DIRECTORY" && \
     openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048 2>&1 | sed 's/\.//g'
 
 # Copy content to web server's document root
-COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
+COPY --from=builder "${WEB_UI_ARTIFACTS}/dist" "${HTDOCS_FOLDER}"
 
 # Create PID file and set permissions
 RUN touch /var/run/nginx.pid && \
