@@ -29,7 +29,7 @@ web_server:
     encryptionKey: "Change me. Change me. Change me."
   sechubConnection:
     # Connection url to SecHub server
-    url: "https://sechub-server-internal:8443/"
+    url: "https://sechub-server-internal:8443"
     # trustAllCertificates - 'true' if server uses a self-signed SSL certificate
     trustAllCertificates: false
   # Possible values: server, development
