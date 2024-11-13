@@ -1,9 +1,5 @@
 # SPDX-License-Identifier: MIT
 
-#-------------------
-# Global Variables
-#-------------------
-
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 
@@ -41,7 +37,6 @@ RUN mkdir --parent "$WEB_SERVER_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
     apt-get install --assume-yes --quiet git wget && \
     apt-get clean
 
@@ -62,7 +57,7 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     ./gradlew ensureLocalhostCertificate :sechub-api-java:build :sechub-web-server:build -Dsechub.build.stage=api-necessary --console=plain && \
     cd sechub-web-server/build/libs/ && \
     rm -f *-javadoc.jar *-plain.jar *-sources.jar && \
-    cp sechub-web-server-*.jar --target-directory "$WEB_SERVER_ARTIFACT_FOLDER"
+    cp sechub-web-server-*.jar "$WEB_SERVER_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
@@ -103,7 +98,7 @@ COPY copy/sechub-web-server-*.jar "$WEB_SERVER_ARTIFACT_FOLDER"
 # Builder
 #-------------------
 
-FROM builder-${BUILD_TYPE} as builder
+FROM builder-${BUILD_TYPE} AS builder
 RUN echo "build stage"
 
 #-------------------
@@ -141,7 +136,8 @@ RUN groupadd --gid "$GID" "$USER" && \
 # Create folders
 RUN mkdir --parents "$WEB_SERVER_FOLDER"
 
-COPY --from=builder "$WEB_SERVER_ARTIFACT_FOLDER" "$WEB_SERVER_FOLDER"
+# Copy run script into the container
+COPY run.sh /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -149,18 +145,17 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes --quiet bind9-host curl netcat-openbsd tree unzip vim-tiny && \
     apt-get clean
 
-COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
-
 # Install Java
+COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
-# Copy run script into the container
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
+# Copy application .jar into the container
+COPY --from=builder "$WEB_SERVER_ARTIFACT_FOLDER" "$WEB_SERVER_FOLDER"
 
 # Set permissions
-RUN chown --recursive "$USER:$USER" "$WEB_SERVER_FOLDER"
+RUN chown --recursive "$USER:$USER" "$WEB_SERVER_FOLDER" && \
+    chmod +x /run.sh
 
 # Set workspace
 WORKDIR "$WEB_SERVER_FOLDER"

@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Values.name }}-policy
+  name: web-server-policy
 spec:
   ingress:
   - ports:
@@ -15,4 +15,4 @@ spec:
       protocol: TCP
   podSelector:
     matchLabels:
-      name: {{ .Values.name }}
+      name: web-server
