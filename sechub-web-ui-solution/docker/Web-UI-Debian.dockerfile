@@ -109,7 +109,7 @@ RUN usermod -u "$UID" "$USER" && \
     mkdir -p "$NGINX_ALIVE_DIR" "$CERTIFICATE_DIRECTORY" && \
     echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
 
-# Copy run script into container
+# Copy launcher script into container
 COPY run.sh /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -119,13 +119,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y clean && \
     # Cleanup nginx default files
     cd /etc/nginx && \
-    rm -rf conf.d fastcgi* koi-* modules-* *_params sites-* snippets win-utf
+    rm -rf conf.d fastcgi* koi-* modules-* *_params sites-* snippets win-utf /var/www/html/index.nginx-debian.html
 
 # Copy Nginx configuration files
 COPY nginx/ /etc/nginx/
 
 # Copy content to web server's document root
-COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
+COPY --from=builder "${WEB_UI_ARTIFACTS}/dist" "${HTDOCS_FOLDER}"
 COPY htdocs/ "${HTDOCS_FOLDER}/"
 
 # Create self-signed certificate
@@ -147,9 +147,6 @@ RUN mv /tmp/sechub-web-ui.cert "$CERTIFICATE_DIRECTORY"/sechub-web-ui.cert && \
     # Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
     # see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
     openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048 2>&1 | sed 's/\.//g'
-
-# Copy content to web server's document root
-COPY --from=builder "${WEB_UI_ARTIFACTS}/.output/public" "${HTDOCS_FOLDER}"
 
 # Create PID file and set permissions
 RUN touch /var/run/nginx.pid && \
