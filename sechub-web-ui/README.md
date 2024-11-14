@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # SecHub Web UI
 
 This project is a web application that provides a user interface for the SecHub API. It is built with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), and [Vuetify](https://vuetifyjs.com/en/).
