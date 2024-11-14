@@ -6,8 +6,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
+import javax.crypto.SealedObject;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
 
 /**
@@ -22,16 +24,22 @@ public class TOTPGenerator {
     private static final int DEFAULT_TOTP_LENGTH = 6;
     private static final int DEFAULT_TOKEN_VALIDITY_TIME_IN_SECONDS = 30;
 
+    private SealedObject seed;
     private String hashAlgorithmName;
     private int totpLength;
     private int tokenValidityTimeInSeconds;
     private long digitsTruncate;
 
-    public TOTPGenerator() {
-        this(DEFAULT_TOTP_LENGTH, TOTPHashAlgorithm.HMAC_SHA1, DEFAULT_TOKEN_VALIDITY_TIME_IN_SECONDS);
+    public TOTPGenerator(String seed) {
+        this(seed, DEFAULT_TOTP_LENGTH, TOTPHashAlgorithm.HMAC_SHA1, DEFAULT_TOKEN_VALIDITY_TIME_IN_SECONDS);
     }
 
-    public TOTPGenerator(int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
+    public TOTPGenerator(String seed, int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
+        if (seed == null) {
+            throw new IllegalArgumentException("The specified seed must not be null!");
+        }
+
+        this.seed = CryptoAccess.CRYPTO_STRING.seal(seed);
         this.totpLength = totpLength;
         this.hashAlgorithmName = hashAlgorithm.getName();
         this.tokenValidityTimeInSeconds = tokenValidityTimeInSeconds;
@@ -48,12 +56,8 @@ public class TOTPGenerator {
      * @param currentTimeMillis
      * @return
      */
-    public String generateTOTP(byte[] seed, long currentTimeMillis) {
-        if (seed == null) {
-            throw new IllegalArgumentException("The specified seed must not be null!");
-        }
-
-        byte[] hash = computeHash(seed, currentTimeMillis);
+    public String generateTOTP(long currentTimeMillis) {
+        byte[] hash = computeHash(currentTimeMillis);
 
         int offset = hash[hash.length - 1] & 0xf;
         /* @formatter:off */
@@ -68,10 +72,10 @@ public class TOTPGenerator {
         return String.format("%0" + totpLength + "d", otp);
     }
 
-    private byte[] computeHash(byte[] seed, long currentTimeMillis) {
+    private byte[] computeHash(long currentTimeMillis) {
         try {
             Mac mac = Mac.getInstance(hashAlgorithmName);
-            mac.init(new SecretKeySpec(seed, hashAlgorithmName));
+            mac.init(new SecretKeySpec(CryptoAccess.CRYPTO_STRING.unseal(seed).getBytes(), hashAlgorithmName));
             byte[] timeBytes = computeTimeBytes(currentTimeMillis, tokenValidityTimeInSeconds);
             byte[] hash = mac.doFinal(timeBytes);
             return hash;

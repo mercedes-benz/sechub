@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.zapwrapper.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.DecoderException;
@@ -22,11 +23,8 @@ class TOTPGeneratorTest {
 
     @Test
     void secret_key_being_null_throws_exception() {
-        /* prepare */
-        TOTPGenerator totpGenerator = new TOTPGenerator();
-
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> totpGenerator.generateTOTP(null, 1000L));
+        assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null));
     }
 
     @Test
@@ -36,11 +34,12 @@ class TOTPGeneratorTest {
         byte[] seedBytes = new Base32().decode(seed);
         long timeMillis = 1724650799055L;
         String expectedToken = "950308";
+        String seedDecoded = new String(seedBytes, StandardCharsets.UTF_8);
 
-        TOTPGenerator totpGenerator = new TOTPGenerator();
+        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded);
 
         /* execute */
-        String generatedToken = totpGenerator.generateTOTP(seedBytes, timeMillis);
+        String generatedToken = totpGenerator.generateTOTP(timeMillis);
 
         /* test */
         assertEquals(expectedToken, generatedToken);
@@ -52,11 +51,12 @@ class TOTPGeneratorTest {
             int totpValidityTimeInSeconds, String expectedToken) throws DecoderException {
         /* prepare */
         byte[] seedBytes = Hex.decodeHex(seed);
+        String seedDecoded = new String(seedBytes, StandardCharsets.UTF_8);
 
-        TOTPGenerator totpGenerator = new TOTPGenerator(totpLength, algorithm, totpValidityTimeInSeconds);
+        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded, totpLength, algorithm, totpValidityTimeInSeconds);
 
         /* execute */
-        String generatedToken = totpGenerator.generateTOTP(seedBytes, timeInMillis);
+        String generatedToken = totpGenerator.generateTOTP(timeInMillis);
 
         /* test */
         assertEquals(expectedToken, generatedToken);
