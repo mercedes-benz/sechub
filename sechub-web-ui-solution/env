@@ -18,3 +18,4 @@ WEB_UI_VERSION="0.1.0"
 # Git information if the BUILD_TYPE is set to `build`
 GIT_TAG=""
 GIT_BRANCH=""
+WEB_UI_SSL_KEYSTORE_ALIAS="undefined"

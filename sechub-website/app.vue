@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script setup lang="ts">
 useSeoMeta({
   title: 'SecHub | Your security guardian.',
