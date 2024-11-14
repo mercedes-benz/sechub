@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/vue/20/solid';
