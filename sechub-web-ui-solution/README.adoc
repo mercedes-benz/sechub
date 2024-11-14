@@ -13,3 +13,5 @@ Attention: currently only self-signed certificates are used.
 ----
 ./01-start-single-docker-compose.sh
 ----
+
+The current webui is available at https://localhost
