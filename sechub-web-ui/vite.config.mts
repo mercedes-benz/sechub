@@ -69,10 +69,6 @@ export default defineConfig({
     ],
   },
   server: {
-    https: {
-        key: './certs/local-server.key',
-        cert: './certs/local-server.crt'
-    },
     port: 3000,
   },
 })
