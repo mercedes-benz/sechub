@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as os from 'os';
 
 export function getPlatform() {

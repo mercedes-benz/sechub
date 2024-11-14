@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script setup lang="ts">
 import { PlayIcon } from '@heroicons/vue/20/solid';
 </script>

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import axios from 'axios';
 import { load } from 'cheerio';
 import * as core from '@actions/core';

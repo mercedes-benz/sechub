@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as core from '@actions/core';
 
 /**
