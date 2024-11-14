@@ -2,12 +2,16 @@
 package com.mercedesbenz.sechub.integrationtest.scenario12;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
 import static com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +19,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -35,18 +50,65 @@ public class PDSWebScanJobScenario12IntTest {
     @Rule
     public Timeout timeOut = Timeout.seconds(600);
 
+    /* @formatter:off
+     *
+     * This is test is a web scan integration test which
+     * tests multiple features.
+     *
+     * The test prepares
+     * - web scan in general with dedicated setup
+     * - uses a SecHub configuration with template data inside
+     * - creates an asset, creates a template which uses the asset, assigns template
+     *
+     * The tests checks following:
+     *
+     * - pds_web_scan_has_expected_info_finding_with_given_target_url_and_product2_level_information_and_sechub_web_config_parts
+     * - pds web scan has expected info finding, with
+     *    - given target url
+     *    - product level information
+     *    - sechub web configuration parts
+     *
+     *  - PDS parameter for template meta data configuration is correct and transmitted to PDS
+     *    The parameter "pds.config.template.metadata.list" is normally not available inside
+     *    the scripts, but for testing we added the parameter inside server configuration so it
+     *    will be added to script level and can be checked by TestAPI
+     *
+     * @formatter:on
+     */
     @Test
-    public void pds_web_scan_has_expected_info_finding_with_given_target_url_and_product2_level_information_and_sechub_web_config_parts() {
+    public void pds_web_scan_can_be_executed_and_works() throws Exception {
         /* @formatter:off */
 
         /* prepare */
+        String assetId="asset-s12-pds-inttest-webscan";
+        File productZipFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath("/asset/scenario12/PDS_INTTEST_PRODUCT_WEBSCAN.zip");
+
         String configurationAsJson = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig-all-options.json");
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
         configuration.setProjectId("myTestProject");
 
         TestProject project = PROJECT_1;
         String targetURL = configuration.getWebScan().get().getUrl().toString();
-        as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
+
+        TemplateVariable userNameVariable = new TemplateVariable();
+        userNameVariable.setName("username");
+
+        TemplateVariable passwordVariable = new TemplateVariable();
+        passwordVariable.setName("password");
+
+        TemplateDefinition templateDefinition = new TemplateDefinition();
+        templateDefinition.setAssetId(assetId);
+        templateDefinition.setType(TemplateType.WEBSCAN_LOGIN);
+        templateDefinition.getVariables().add(userNameVariable);
+        templateDefinition.getVariables().add(passwordVariable);
+
+        String templateId = "template-scenario12-1";
+        as(SUPER_ADMIN).
+            updateWhiteListForProject(project, Arrays.asList(targetURL)).
+            uploadAssetFile(assetId, productZipFile).
+            createOrUpdateTemplate(templateId, templateDefinition).
+            assignTemplateToProject(templateId, project)
+        ;
 
         /* execute */
         UUID jobUUID = as(USER_1).withSecHubClient().startAsynchronScanFor(project, configuration).getJobUUID();
@@ -119,6 +181,13 @@ public class PDSWebScanJobScenario12IntTest {
             hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.INFO, "another-token.txtbearer-token.txtcertificate.p12openapi.json");
 
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+
+        String expectedMetaDataListJson = """
+                [{"template":"template-scenario12-1","type":"WEBSCAN_LOGIN","assetData":{"asset":"asset-s12-pds-inttest-webscan","file":"PDS_INTTEST_PRODUCT_WEBSCAN.zip","checksum":"ff06430bfc2d8c698ab8effa41b914525b8cca1c1eecefa76d248b25cc598fba"}}]
+                """.trim();
+        assertThat(variables.get("PDS_CONFIG_TEMPLATE_METADATA_LIST")).isEqualTo(expectedMetaDataListJson);
         /* @formatter:on */
     }
 

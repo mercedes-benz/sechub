@@ -15,12 +15,9 @@ class TemplateDefinitionTest {
     public void json_to_from_works() throws Exception {
 
         /* prepare */
-        TemplateDefinition definition = new TemplateDefinition();
-        definition.setId("identifier");
-        definition.getAssets().add("asset1");
-        definition.getAssets().add("asset2");
 
-        definition.setType(TemplateType.WEBSCAN_LOGIN);
+        TemplateDefinition definition = TemplateDefinition.builder().templateId("identifier").templateType(TemplateType.WEBSCAN_LOGIN).assetId("asset1")
+                .build();
 
         TemplateVariable variable1 = new TemplateVariable();
         variable1.setName("variable1");
@@ -40,7 +37,7 @@ class TemplateDefinitionTest {
         TemplateDefinition deserialized = TemplateDefinition.from(json);
         assertThat(deserialized.getId()).isEqualTo("identifier");
         assertThat(deserialized.getType()).isEqualTo(TemplateType.WEBSCAN_LOGIN);
-        assertThatList(deserialized.getAssets()).contains("asset1", "asset2");
+        assertThat(deserialized.getAssetId()).isEqualTo("asset1");
         assertThatList(deserialized.getVariables()).hasSize(1);
 
         TemplateVariable var1 = deserialized.getVariables().iterator().next();
@@ -67,7 +64,7 @@ class TemplateDefinitionTest {
         /* test */
         assertThat(deserialized.getId()).isEqualTo("identifier");
         assertThat(deserialized.getType()).isEqualTo(TemplateType.WEBSCAN_LOGIN);
-        assertThatList(deserialized.getAssets()).contains("asset1", "asset2");
+        assertThat(deserialized.getAssetId()).isEqualTo("asset0815");
         assertThatList(deserialized.getVariables()).hasSize(1);
 
         TemplateVariable var1 = deserialized.getVariables().iterator().next();

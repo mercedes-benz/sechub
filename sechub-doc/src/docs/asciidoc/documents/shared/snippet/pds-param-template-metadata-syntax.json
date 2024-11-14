@@ -1,16 +1,13 @@
-{
-    "templateMetaData" : [ //<1>
-        {
-            "template" : "$templateId", //<2>
-            "type": "$templateType", //<3>
-             
-            "assetData" : [ //<4>
-                {
-                    "asset" : "$assetId", //<5>
-                    "file" : "$fileName", //<6>
-                    "checksum" : "$fileChecksum" //<7>
-                }
-            ]
-        }]
-    }     
-}
+  [ //<1>
+    {
+        "template" : "templateId", //<2>
+        "type": "WEBSCAN_LOGIN", //<3>
+         
+        "assetData" : { //<4>
+                "asset" : "assetId", //<5>
+                "file" : "fileName", //<6>
+                "checksum" : "fileChecksum" //<7>
+        }
+        
+    }
+  ]

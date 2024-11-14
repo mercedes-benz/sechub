@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 
-public interface Storage {
+public interface Storage extends AutoCloseable {
 
     /**
      * Stores given stream a storage object

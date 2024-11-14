@@ -1,23 +1,23 @@
 {
     "templateDefinition" : { 
     
-        "id" : "$templateId", 
+        "id" : "$templateId",  //<1>
     
-        "type" : "$templateType", //<1>
+        "type" : "$templateType", //<2>
         
-        "assets" : ["$assetId1" , "$assetId2", /* .. ,*/ "$assetIdn"], //<2>
+        "assetId" : "$assetId", //<3>
         
-        "variables" : [ //<3>
+        "variables" : [ //<4>
             { 
-                "name" : "$variableName", // <4>
-                "optional": false, // <5>
+                "name" : "$variableName", // <5>
+                "optional": false, // <6>
                 
-                "validation" : {  // <6>
+                "validation" : {  // <7>
                 
-                    "minLength" : 1, // <7>
-                    "maxLength" : 100, // <8>
+                    "minLength" : 1, // <8>
+                    "maxLength" : 100, // <9>
                     
-                    "regularExpression" : "$regularExpression" // <9>
+                    "regularExpression" : "$regularExpression" // <10>
                 } 
             }
         ]

@@ -4,10 +4,12 @@ package com.mercedesbenz.sechub.domain.scan.asset;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFile.AssetFileCompositeKey;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
@@ -35,11 +37,9 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.ServletOutputStream;
 
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class AssetService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetService.class);
@@ -67,36 +67,90 @@ public class AssetService {
     /* @formatter:on */
 
     @UseCaseAdminUploadsAssetFile(@Step(number = 2, name = "Service tries to upload file for asset", description = "Uploaded file will be stored in database and in storage"))
-    public void uploadAssetFile(String assetId, MultipartFile file, String checkSum) {
+    public void uploadAssetFile(String assetId, MultipartFile multipartFile, String checkSum) {
         inputAssertion.assertIsValidAssetId(assetId);
 
         inputAssertion.assertIsValidSha256Checksum(checkSum);
 
-        String fileName = assertAssetFile(file);
+        String fileName = assertAssetFile(multipartFile);
 
-        handleChecksumValidation(fileName, file, checkSum, assetId);
+        handleChecksumValidation(fileName, multipartFile, checkSum, assetId);
 
         try {
             /* now store */
-            persistFileAndChecksumInDatabase(fileName, file, checkSum, assetId);
+            byte[] bytes = multipartFile.getBytes();
+            persistFileAndChecksumInDatabase(fileName, bytes, checkSum, assetId);
 
-            storeUploadFileAndSha256Checksum(assetId, fileName, file, checkSum);
+            ensureAssetFileInStorageAvailableAndHasSameChecksumAsInDatabase(fileName, assetId);
 
             LOG.info("Successfully uploaded file '{}' for asset '{}'", fileName, assetId);
 
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to upload file '" + fileName + "' for asset '" + assetId + "'", e);
+        } catch (ConfigurationFailureException e) {
+            throw new IllegalStateException("A configuration failure should not happen at this point!", e);
         }
     }
 
-    private void persistFileAndChecksumInDatabase(String fileName, MultipartFile file, String checkSum, String assetId) throws IOException {
+    /**
+     * Ensures file for asset exists in database and and also in storage (with same
+     * checksum). If the file is not inside database a {@link NotFoundException}
+     * will be thrown. If the file is not available in storage, or the checksum in
+     * storage is different than the checksum from database, the file will stored
+     * again in storage (with data from database)
+     *
+     * @param fileName file name
+     * @param assetId  asset identifier
+     * @throws ConfigurationFailureException if there are configuration problems
+     * @throws NotFoundException             when the asset or the file is not found
+     *                                       in database
+     *
+     */
+    public void ensureAssetFileInStorageAvailableAndHasSameChecksumAsInDatabase(String fileName, String assetId) throws ConfigurationFailureException {
+
+        try (AssetStorage assetStorage = storageService.createAssetStorage(assetId)) {
+            AssetFile assetFile = assertAssetFileFromDatabase(assetId, fileName);
+            String checksumFromDatabase = assetFile.getChecksum();
+
+            if (assetStorage.isExisting(fileName)) {
+                String checksumFileName = fileName + DOT_CHECKSUM;
+                if (assetStorage.isExisting(checksumFileName)) {
+
+                    String checksumFromStorage = null;
+                    try (InputStream inputStream = assetStorage.fetch(checksumFileName); Scanner scanner = new Scanner(inputStream)) {
+                        checksumFromStorage = scanner.hasNext() ? scanner.next() : "";
+                    }
+                    if (checksumFromStorage.equals(checksumFromDatabase)) {
+                        LOG.debug("Checksum for file '{}' in asset '{}' is '{}' in database and storage. Can be kept, no recration necessary", fileName,
+                                assetId, checksumFromStorage, checksumFromDatabase);
+                        return;
+                    }
+                    LOG.warn(
+                            "Checksum for file '{}' in asset '{}' was '{}' instead of expected value from database '{}'. Will recreated file and checksum in storage.",
+                            fileName, assetId, checksumFromStorage, checksumFromDatabase);
+                } else {
+                    LOG.warn("Asset storage for file '{}' in asset '{}' did exist, but checksum did not exist. Will recreated file and checksum in storage.",
+                            fileName, assetId);
+                }
+            } else {
+                LOG.info("Asset storage for file '{}' in asset '{}' does not exist and must be created.", fileName, assetId);
+            }
+            storeStream(fileName, checksumFromDatabase, assetStorage, assetFile.getData().length, new ByteArrayInputStream(assetFile.getData()));
+
+        } catch (NotFoundException | IOException e) {
+            throw new ConfigurationFailureException("Was not able to ensure file " + fileName + " in asset " + assetId, e);
+        }
+
+    }
+
+    private void persistFileAndChecksumInDatabase(String fileName, byte[] bytes, String checkSum, String assetId) throws IOException {
         /* delete if exists */
         AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
         repository.deleteById(key);
 
         AssetFile assetFile = new AssetFile(key);
         assetFile.setChecksum(checkSum);
-        assetFile.setData(file.getBytes());
+        assetFile.setData(bytes);
 
         repository.save(assetFile);
     }
@@ -133,29 +187,11 @@ public class AssetService {
         }
     }
 
-    private void storeUploadFileAndSha256Checksum(String assetId, String fileName, MultipartFile file, String checkSum) {
-        AssetStorage assetStorage = storageService.createAssetStorage(assetId);
-        try {
-            store(assetId, fileName, file, checkSum, assetStorage);
-        } finally {
-            assetStorage.close();
-        }
-    }
+    private void storeStream(String fileName, String checkSum, AssetStorage assetStorage, long fileSize, InputStream inputStream) throws IOException {
+        assetStorage.store(fileName, inputStream, fileSize);
 
-    private void store(String assetId, String fileName, MultipartFile file, String checkSum, AssetStorage assetStorage) {
-
-        try (InputStream inputStream = file.getInputStream()) {
-
-            long fileSize = file.getSize();
-            assetStorage.store(fileName, inputStream, fileSize);
-
-            long checksumSizeInBytes = checkSum.getBytes().length;
-            assetStorage.store(createFileNameForChecksum(fileName), new StringInputStream(checkSum), checksumSizeInBytes);
-
-        } catch (IOException e) {
-            LOG.error("Was not able to store file '{}' for asset '{}' !", fileName, assetId, e);
-            throw new SecHubRuntimeException("Was not able to upload file '" + fileName + " for asset '" + assetId + "'");
-        }
+        long checksumSizeInBytes = checkSum.getBytes().length;
+        assetStorage.store(createFileNameForChecksum(fileName), new StringInputStream(checkSum), checksumSizeInBytes);
     }
 
     private String createFileNameForChecksum(String fileName) {
@@ -169,14 +205,19 @@ public class AssetService {
 
         notNull(outputStream, "output stream may not be null!");
 
+        AssetFile assetFile = assertAssetFileFromDatabase(assetId, fileName);
+        outputStream.write(assetFile.getData());
+
+    }
+
+    private AssetFile assertAssetFileFromDatabase(String assetId, String fileName) {
         AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
         Optional<AssetFile> result = repository.findById(key);
         if (result.isEmpty()) {
             throw new NotFoundException("For asset:" + assetId + " no file with name:" + fileName + " exists!");
         }
         AssetFile assetFile = result.get();
-        outputStream.write(assetFile.getData());
-
+        return assetFile;
     }
 
     @UseCaseAdminFetchesAssetIds(@Step(number = 2, name = "Service fetches all asset ids from database"))
@@ -184,6 +225,13 @@ public class AssetService {
         return repository.fetchAllAssetIds();
     }
 
+    /**
+     * Fetches asset details (from database)
+     *
+     * @param assetId asset identifier
+     * @return detail data
+     * @throws NotFoundException when no asset exists for given identifier
+     */
     @UseCaseAdminFetchesAssetDetails(@Step(number = 2, name = "Service fetches asset details for given asset id"))
     public AssetDetailData fetchAssetDetails(String assetId) {
         inputAssertion.assertIsValidAssetId(assetId);

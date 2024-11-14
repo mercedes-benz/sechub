@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
+import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -38,6 +40,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableAutoConfiguration
 @RequestMapping(APIConstants.API_ADMINISTRATION)
 @RolesAllowed({ RoleConstants.ROLE_SUPERADMIN })
+@Profile(Profiles.ADMIN_ACCESS)
 public class AssetRestController {
 
     @Autowired

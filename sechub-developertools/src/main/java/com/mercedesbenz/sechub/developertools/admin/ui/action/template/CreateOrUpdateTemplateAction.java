@@ -38,11 +38,7 @@ public class CreateOrUpdateTemplateAction extends AbstractUIAction {
             if (!templateTypeOpt.isPresent()) {
                 return;
             }
-            templateDefinition = new TemplateDefinition();
-            templateDefinition.setId(templateId);
-            templateDefinition.setType(templateTypeOpt.get());
-
-            templateDefinition.getAssets().add("example-asset-id");
+            templateDefinition = TemplateDefinition.builder().templateId(templateId).templateType(templateTypeOpt.get()).assetId("example-asset-id").build();
             TemplateVariable exampleVariable = new TemplateVariable();
             exampleVariable.setName("example-variable");
             exampleVariable.setOptional(true);

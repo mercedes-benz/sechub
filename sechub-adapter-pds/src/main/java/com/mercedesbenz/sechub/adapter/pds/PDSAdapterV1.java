@@ -565,23 +565,28 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     }
 
     private PDSJobData createJobData(PDSContext context) {
-        PDSAdapterConfig config = context.getConfig();
-        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
-        assertConfigDataNotNull(data);
-        Map<String, String> parameters = data.getJobParameters();
+        PDSAdapterConfig adapterConfig = context.getConfig();
+        PDSAdapterConfigData adapterConfigData = adapterConfig.getPDSAdapterConfigData();
+        assertConfigDataNotNull(adapterConfigData);
+        Map<String, String> adapterConfigDataJobParameters = adapterConfigData.getJobParameters();
 
+        /*
+         * convert adapter configuration to PDS job data that shall be sent to PDS as
+         * key value parameters:
+         */
         PDSJobData jobData = new PDSJobData();
-        for (String key : parameters.keySet()) {
+
+        for (String key : adapterConfigDataJobParameters.keySet()) {
             PDSJobParameterEntry parameter = new PDSJobParameterEntry();
             parameter.key = key;
-            parameter.value = parameters.get(key);
+            parameter.value = adapterConfigDataJobParameters.get(key);
 
             jobData.parameters.add(parameter);
         }
 
-        UUID secHubJobUUID = data.getSecHubJobUUID();
+        UUID secHubJobUUID = adapterConfigData.getSecHubJobUUID();
         jobData.sechubJobUUID = secHubJobUUID.toString();
-        jobData.productId = data.getPdsProductIdentifier();
+        jobData.productId = adapterConfigData.getPdsProductIdentifier();
 
         return jobData;
     }

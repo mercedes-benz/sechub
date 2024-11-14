@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.commons.model.template;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mercedesbenz.sechub.commons.model.JSONable;
@@ -14,15 +15,22 @@ public class TemplateDefinition implements JSONable<TemplateDefinition> {
 
     public static final String PROPERTY_TYPE = "type";
     public static final String PROPERTY_ID = "id";
-    public static final String PROPERTY_ASSETS = "assets";
+    public static final String PROPERTY_ASSET_ID = "assetId";
     public static final String PROPERTY_VARIABLES = "variables";
 
     private TemplateType type;
 
-    private List<String> assets = new ArrayList<>();
+    private String assetId;
     private List<TemplateVariable> variables = new ArrayList<>();
 
     private String id;
+
+    public TemplateDefinition() {
+    }
+
+    public static TemplateDefinitionBuilder builder() {
+        return new TemplateDefinitionBuilder();
+    }
 
     public static TemplateDefinition from(String json) {
         return IMPORTER.fromJSON(json);
@@ -36,8 +44,12 @@ public class TemplateDefinition implements JSONable<TemplateDefinition> {
         return id;
     }
 
-    public List<String> getAssets() {
-        return assets;
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getAssetId() {
+        return assetId;
     }
 
     public List<TemplateVariable> getVariables() {
@@ -50,6 +62,73 @@ public class TemplateDefinition implements JSONable<TemplateDefinition> {
 
     public TemplateType getType() {
         return type;
+    }
+
+    @Override
+    public Class<TemplateDefinition> getJSONTargetClass() {
+        return TemplateDefinition.class;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(assetId, id, type, variables);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TemplateDefinition other = (TemplateDefinition) obj;
+        return Objects.equals(assetId, other.assetId) && Objects.equals(id, other.id) && type == other.type && Objects.equals(variables, other.variables);
+    }
+
+    public static class TemplateDefinitionBuilder {
+
+        private String assetId;
+        private String templateId;
+        private TemplateType templateType;
+
+        private TemplateDefinitionBuilder() {
+
+        }
+
+        public TemplateDefinitionBuilder assetId(String assetId) {
+            this.assetId = assetId;
+            return this;
+        }
+
+        public TemplateDefinitionBuilder templateId(String templateId) {
+            this.templateId = templateId;
+            return this;
+        }
+
+        public TemplateDefinitionBuilder templateType(TemplateType templateType) {
+            this.templateType = templateType;
+            return this;
+        }
+
+        public TemplateDefinition build() {
+            if (assetId == null) {
+                throw new IllegalStateException("assetId not defined");
+            }
+            if (templateId == null) {
+                throw new IllegalStateException("templateId not defined");
+            }
+            if (templateType == null) {
+                throw new IllegalStateException("templateType not defined");
+            }
+            TemplateDefinition def = new TemplateDefinition();
+            def.id = templateId;
+            def.type = templateType;
+            def.assetId = assetId;
+
+            return def;
+        }
+
     }
 
     public static class TemplateVariable {
@@ -83,6 +162,23 @@ public class TemplateDefinition implements JSONable<TemplateDefinition> {
 
         public void setValidation(TemplateVariableValidation validation) {
             this.validation = validation;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, optional, validation);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TemplateVariable other = (TemplateVariable) obj;
+            return Objects.equals(name, other.name) && optional == other.optional && Objects.equals(validation, other.validation);
         }
 
     }
@@ -120,11 +216,24 @@ public class TemplateDefinition implements JSONable<TemplateDefinition> {
         public void setRegularExpression(String regularExpression) {
             this.regularExpression = regularExpression;
         }
-    }
 
-    @Override
-    public Class<TemplateDefinition> getJSONTargetClass() {
-        return TemplateDefinition.class;
+        @Override
+        public int hashCode() {
+            return Objects.hash(maxLength, minLength, regularExpression);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TemplateVariableValidation other = (TemplateVariableValidation) obj;
+            return Objects.equals(maxLength, other.maxLength) && Objects.equals(minLength, other.minLength)
+                    && Objects.equals(regularExpression, other.regularExpression);
+        }
     }
 
 }

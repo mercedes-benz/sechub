@@ -1,11 +1,9 @@
-{
-  "templateMetaData" : [ {
-    "template" : "single-singon",
-    "type" : "webscan-login",
-    "assetData" : [ {
-      "asset" : "custom-webscan-setup",
-      "file" : "WEBSCAN_PRODUCT_ID.zip",
-      "checksum" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b"
-    } ]
-  } ]
-}
+[ {
+  "template" : "single-singon",
+  "type" : "webscan-login",
+  "assetData" : {
+    "asset" : "custom-webscan-setup",
+    "file" : "WEBSCAN_PRODUCT_ID.zip",
+    "checksum" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b"
+  }
+} ]

@@ -55,20 +55,21 @@ A template is defined by following json syntax:
 ----
 include::../snippet/template-definition-syntax.json[]
 ----
-<1> The type of the template. Must be set when a template is created. Will
+<1> The template identifier
+<2> The type of the template. Must be set when a template is created. Will
     be ignored on updates. Possible values are: `webscan-login`
-<2> Array with asset identifiers assigned to the template
-<3> Variable definitions as list of key and value pairs which can be mandatory or optional. 
+<3> Asset identifier for the template
+<4> Variable definitions as list of key and value pairs which can be mandatory or optional. 
 Via the type {sechub} server is able to check if the configuration is valid and give 
 response to users when job starts.
-<4> Name of the variable
-<5> Describes if the variable is optional.  +
+<5> Name of the variable
+<6> Describes if the variable is optional.  +
     When `false` configuration must contain the variable inside template data. When `true`
     the configuration is valid without the variable. The default is `false`.
-<6> Variable content validation definition ((optional)
-<7> Minimum length (optional)
-<8> Maximum length (optional)
-<9> Regular expression (optional). If defined, the content must match the given regular expression
+<7> Variable content validation definition ((optional)
+<8> Minimum length (optional)
+<9> Maximum length (optional)
+<10> Regular expression (optional). If defined, the content must match the given regular expression
     to be valid. 
 
 [CAUTION]
@@ -180,16 +181,11 @@ structure looks like!
 
 Over REST API Administrators will be able to 
 
-- upload asset ZIP files by REST API and create checksum file +
-  `PUT /api/administration/asset/$assetId/file/$filename`
-- download asset files by REST API  +
-  `GET /api/administration/asset/$assetId/file/$filename`
-- list (ZIP) file names +
-  `GET /api/administration/asset/$assetId/list`
-- delete single asset file by REST API  +
-  `DELETE /api/administration/asset/$assetId/file/$filename`
-- delete all asset data by REST API  +
-  `DELETE /api/administration/asset/$assetId`
+- upload asset ZIP files by REST API and create checksum file
+- download asset files by REST API
+- list asset details (filenames and checksums)
+- delete single asset file by REST API
+- delete all asset data by REST API 
 
 The REST API will always create an audit log entry 
 
@@ -242,7 +238,7 @@ further processed.
 ====== Template PDS parameter calculation
 If the job configuration has valid template data and the template 
 is available in storage, {sechub} will calculate the
-{pds} parameter : `pds.template.metadata` with JSON:
+{pds} parameter : `pds.config.template.metadata.list` with JSON:
 
 [[sechub-concept-template-metadata-example]]
 .PDS parameter syntax for template meta data

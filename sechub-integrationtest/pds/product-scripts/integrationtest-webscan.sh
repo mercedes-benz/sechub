@@ -16,6 +16,10 @@ info:PDS_SCAN_CONFIGURATION=$PDS_SCAN_CONFIGURATION
 
 
 dumpPDSVariables
+
+# We added pds.config.templates.metadata.list as optional parameter here for testing
+# So we can dump the variable here - used in scenario12 integration test
+dumpVariable "PDS_CONFIG_TEMPLATE_METADATA_LIST"
     
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "a" ]]; then
      

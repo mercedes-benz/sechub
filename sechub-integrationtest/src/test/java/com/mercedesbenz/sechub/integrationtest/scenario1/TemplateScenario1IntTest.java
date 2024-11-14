@@ -32,10 +32,6 @@ public class TemplateScenario1IntTest {
 
     private TemplateDefinition createDefinition;
 
-    private TemplateVariable usernameVariable;
-
-    private TemplateVariable passwordVariable;
-
     private TemplateDefinition definitionWithId;
     private TemplateDefinition updateDefinition;
 
@@ -44,25 +40,28 @@ public class TemplateScenario1IntTest {
 
         templateId = "template-1_" + System.nanoTime();
 
-        createDefinition = new TemplateDefinition();
-        createDefinition.setId(null); // the creation does not need an id. To test this we explicit set to null...
-        createDefinition.setType(TemplateType.WEBSCAN_LOGIN);
-        createDefinition.getAssets().add("asset1");
-
-        usernameVariable = new TemplateVariable();
+        /* @formatter:off */
+        TemplateDefinition fullTemplateDefinition = TemplateDefinition.builder().
+                templateId(templateId).
+                templateType(TemplateType.WEBSCAN_LOGIN).
+                assetId("asset1").
+                build();
+        /* @formatter:on */
+        TemplateVariable usernameVariable = new TemplateVariable();
         usernameVariable.setName("username");
 
-        passwordVariable = new TemplateVariable();
+        TemplateVariable passwordVariable = new TemplateVariable();
         passwordVariable.setName("password");
 
-        createDefinition.getVariables().add(usernameVariable);
-        createDefinition.getVariables().add(passwordVariable);
+        fullTemplateDefinition.getVariables().add(usernameVariable);
+        fullTemplateDefinition.getVariables().add(passwordVariable);
 
-        definitionWithId = TemplateDefinition.from(createDefinition.toJSON());
-        definitionWithId.setId(templateId);
+        String fullTemplateDefinitionJson = fullTemplateDefinition.toFormattedJSON();
+        createDefinition = TemplateDefinition.from(fullTemplateDefinitionJson.replace(templateId, "does-not-matter-will-be-overriden"));
 
-        updateDefinition = TemplateDefinition.from(createDefinition.toJSON());
-        updateDefinition.setType(null); // the update does not need a type. To test this we explicit set to null..
+        definitionWithId = TemplateDefinition.from(fullTemplateDefinitionJson);
+
+        updateDefinition = TemplateDefinition.from(fullTemplateDefinitionJson.replace(templateId, "will-not-be-changed-by-update"));
     }
 
     @Test
@@ -179,14 +178,14 @@ public class TemplateScenario1IntTest {
 
     private void assertTemplateCanBeUpdated() {
         /* prepare 2 - update */
-        updateDefinition.getAssets().add("asset2");
+        updateDefinition.setAssetId("asset2");
 
         /* execute 2 - update */
         as(SUPER_ADMIN).createOrUpdateTemplate(templateId, updateDefinition);
 
         /* test 2 - update works */
         TemplateDefinition loadedTemplate = as(SUPER_ADMIN).fetchTemplateDefinitionOrNull(templateId);
-        assertThat(loadedTemplate.getAssets()).contains("asset1", "asset2");
+        assertThat(loadedTemplate.getAssetId()).isEqualTo("asset2");
         assertThat(loadedTemplate.getType()).isEqualTo(TemplateType.WEBSCAN_LOGIN);
         assertThat(loadedTemplate.getId()).isEqualTo(templateId);
     }

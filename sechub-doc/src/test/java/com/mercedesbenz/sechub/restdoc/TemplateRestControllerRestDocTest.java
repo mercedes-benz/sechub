@@ -90,7 +90,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
     public void before() {
         definition = new TemplateDefinition();
         definition.setType(TemplateType.WEBSCAN_LOGIN);
-        definition.getAssets().add("asset-id1");
+        definition.setAssetId("asset-id1");
 
         usernameVariable = new TemplateVariable();
         usernameVariable.setName("username");
@@ -138,7 +138,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
                             requestFields(
                                     fieldWithPath(PROPERTY_TYPE).description("The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: "+ TemplateType.values()),
 
-                                    fieldWithPath(PROPERTY_ASSETS).description("An array list containing ids of referenced assets"),
+                                    fieldWithPath(PROPERTY_ASSET_ID).description("The asset id used by the template"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_NAME).description("The variable name"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_OPTIONAL).optional().description("Defines if the variable is optional. The default is false"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_VALIDATION).optional().description("Defines a simple validation segment."),
@@ -212,7 +212,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
                                     fieldWithPath(PROPERTY_TYPE).description("The template type. Currently supported types are: "+ TemplateType.values()),
 
                                     fieldWithPath(PROPERTY_ID).description("The (unique) template id"),
-                                    fieldWithPath(PROPERTY_ASSETS).description("An array list containing ids of referenced assets"),
+                                    fieldWithPath(PROPERTY_ASSET_ID).description("The asset id used by the template"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_NAME).description("The variable name"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_OPTIONAL).optional().description("Defines if the variable is optional. The default is false"),
                                     fieldWithPath(PROPERTY_VARIABLES+"[]."+ TemplateVariable.PROPERTY_VALIDATION).optional().description("Defines a simple validation segment."),

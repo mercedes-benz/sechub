@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.template;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +18,6 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
@@ -28,10 +28,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsTemplateFromProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
-import jakarta.annotation.security.RolesAllowed;
-
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class TemplateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TemplateService.class);
@@ -177,8 +174,14 @@ public class TemplateService {
         LOG.info("unassigned template '{}' from project '{}'", templateId, projectId);
     }
 
-    public List<String> fetchAssignedTemplateIdsForProject(String projectId) {
-        List<String> result = new ArrayList<>();
+    /**
+     * Fetches all template identifiers for given project
+     *
+     * @param projectId project identifier
+     * @return set with identifiers, never <code>null</code>
+     */
+    public Set<String> fetchAssignedTemplateIdsForProject(String projectId) {
+        Set<String> result = new LinkedHashSet<>();
         for (TemplateType type : TemplateType.values()) {
             ScanProjectConfigID configId = resolver.resolve(type);
             ScanProjectConfig config = configService.get(projectId, configId, false);
@@ -187,6 +190,22 @@ public class TemplateService {
             }
             String templateId = config.getData();
             result.add(templateId);
+        }
+        return result;
+    }
+
+    /**
+     * Fetches all template definitions for given project
+     *
+     * @param projectId project identifier
+     * @return list of template definitions, never <code>null</code>
+     */
+    public List<TemplateDefinition> fetchAllTemplateDefinitionsForProject(String projectId) {
+        List<TemplateDefinition> result = new ArrayList<>();
+        Set<String> templateIds = fetchAssignedTemplateIdsForProject(projectId);
+        for (String templateId : templateIds) {
+            TemplateDefinition templateDefinition = fetchTemplateDefinition(templateId);
+            result.add(templateDefinition);
         }
         return result;
     }

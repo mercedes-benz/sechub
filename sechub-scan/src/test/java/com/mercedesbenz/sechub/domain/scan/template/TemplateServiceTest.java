@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.template;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,6 +15,8 @@ import org.mockito.ArgumentCaptor;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -97,7 +100,7 @@ class TemplateServiceTest {
         TemplateDefinition existingTemplateDefinition = new TemplateDefinition();
         existingTemplateDefinition.setId(templateId);
         existingTemplateDefinition.setType(TemplateType.WEBSCAN_LOGIN);
-        existingTemplateDefinition.getAssets().add("asset1");
+        existingTemplateDefinition.setAssetId("asset1");
         existingTemplateDefinition.getVariables().add(variable1);
 
         Template existingTemplate = new Template(templateId);
@@ -164,6 +167,42 @@ class TemplateServiceTest {
         /* test */
         assertThat(result).isNotNull();
         assertThat(result.toFormattedJSON()).isEqualTo(def.toFormattedJSON());
+    }
+
+    @Test
+    void fetchAssignedTemplateIdsForProject() {
+        /* prepare */
+        when(resolver.resolve(TemplateType.WEBSCAN_LOGIN)).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
+        ScanProjectConfig config = mock();
+        when(configService.get("project1",ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
+        when(config.getData()).thenReturn("template-id-1");
+
+        /* execute */
+        Set<String> result = serviceToTest.fetchAssignedTemplateIdsForProject("project1");
+        assertThat(result).contains("template-id-1").hasSize(1);
+    }
+
+    @Test
+    void fetch_template_definitions_for_project() {
+        /* prepare */
+
+        when(resolver.resolve(TemplateType.WEBSCAN_LOGIN)).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
+        ScanProjectConfig config = mock();
+        when(configService.get("project1",ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
+        when(config.getData()).thenReturn("template1");
+
+        Template template1Entity = mock();
+        TemplateDefinition t1 = TemplateDefinition.builder().assetId("asset1").templateId("template1").templateType(TemplateType.WEBSCAN_LOGIN).build();
+        when(template1Entity.getDefinition()).thenReturn(t1.toFormattedJSON());
+
+        when(repository.findById("template1")).thenReturn(Optional.of(template1Entity));
+
+        /* execute */
+        List<TemplateDefinition> templateDefinitions = serviceToTest.fetchAllTemplateDefinitionsForProject("project1");
+
+        /* test */
+        assertThat(templateDefinitions).contains(t1);
+
     }
 
 }

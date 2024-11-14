@@ -1,6 +1,6 @@
 {
   "type" : "webscan-login",
-  "assets" : [ "asset1", "asset2" ],
+  "assetId" : "asset0815",
   "variables" : [ {
     "name" : "variable1",
     "optional" : true,

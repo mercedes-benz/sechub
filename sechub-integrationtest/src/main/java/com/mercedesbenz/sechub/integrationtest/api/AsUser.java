@@ -1431,9 +1431,10 @@ public class AsUser {
         return SecHubEncryptionStatus.fromString(json);
     }
 
-    public void createOrUpdateTemplate(String templateid, TemplateDefinition definition) {
-        String url = getUrlBuilder().buildAdminCreatesOrUpdatesTemplate(templateid);
+    public AsUser createOrUpdateTemplate(String templateId, TemplateDefinition definition) {
+        String url = getUrlBuilder().buildAdminCreatesOrUpdatesTemplate(templateId);
         getRestHelper().postJson(url, definition.toFormattedJSON());
+        return this;
     }
 
     public TemplateDefinition fetchTemplateDefinitionOrNull(String templateId) {
