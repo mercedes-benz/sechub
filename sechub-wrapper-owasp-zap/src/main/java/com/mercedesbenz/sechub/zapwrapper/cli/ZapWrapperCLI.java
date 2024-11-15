@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperCommandLineParser.ZapWrapperCommandLineParserException;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
+import com.mercedesbenz.sechub.zapwrapper.config.ZapScannerFactory;
+import com.mercedesbenz.sechub.zapwrapper.util.TargetConnectionChecker;
 
 public class ZapWrapperCLI {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperCLI.class);
@@ -45,7 +47,7 @@ public class ZapWrapperCLI {
     }
 
     private void startExecution(ZapScanContext scanContext) {
-        ZapScanExecutor scanExecutor = new ZapScanExecutor();
+        ZapScanExecutor scanExecutor = new ZapScanExecutor(new ZapScannerFactory(), new TargetConnectionChecker());
         scanExecutor.execute(scanContext);
     }
 }

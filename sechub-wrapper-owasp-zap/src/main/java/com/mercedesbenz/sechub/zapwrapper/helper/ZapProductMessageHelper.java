@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 public class ZapProductMessageHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ZapProductMessageHelper.class);
 
-    private PDSUserMessageSupport productMessageSupport;
+    private final PDSUserMessageSupport productMessageSupport;
 
     public ZapProductMessageHelper(String userMessagesFolder) {
         productMessageSupport = new PDSUserMessageSupport(userMessagesFolder, new TextFileWriter());

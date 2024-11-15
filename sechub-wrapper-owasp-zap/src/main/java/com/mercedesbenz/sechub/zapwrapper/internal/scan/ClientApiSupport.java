@@ -14,18 +14,18 @@ import org.zaproxy.clientapi.core.ApiResponseSet;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-public class ClientApiFacade {
+public class ClientApiSupport {
 
     private static final String URL_KEY = "url";
     private static final String STATUS_CODE_KEY = "statusCode";
     private static final String STATUS_REASON_KEY = "statusReason";
     private static final String METHOD_KEY = "method";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientApiFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientApiSupport.class);
 
     private ClientApi clientApi;
 
-    public ClientApiFacade(ClientApi clientApi) {
+    public ClientApiSupport(ClientApi clientApi) {
         this.clientApi = clientApi;
     }
 
@@ -88,7 +88,8 @@ public class ClientApiFacade {
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
     public ApiResponse enableAllActiveScannerRulesForPolicy(String policy) throws ClientApiException {
-        return clientApi.ascan.enableAllScanners(null);
+        return clientApi.ascan.enableAllScanners(policy);
+
     }
 
     /**
@@ -98,8 +99,31 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureAjaxSpiderBrowserId(String browserId) throws ClientApiException {
+    public ApiResponse setAjaxSpiderBrowserId(String browserId) throws ClientApiException {
         return clientApi.ajaxSpider.setOptionBrowserId(browserId);
+    }
+
+    /**
+     * Define the max depth of directories after the ajax spider will stop the
+     * recursion.
+     *
+     * @param maxDepth
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse setAjaxSpiderMaxDepth(int maxDepth) throws ClientApiException {
+        return clientApi.spider.setOptionMaxDepth(maxDepth);
+    }
+
+    /**
+     * Define the max depth of directories after the spider will stop the recursion.
+     *
+     * @param maxDepth
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse setSpiderMaxDepth(int maxDepth) throws ClientApiException {
+        return clientApi.spider.setOptionMaxDepth(maxDepth);
     }
 
     /**
@@ -664,6 +688,89 @@ public class ClientApiFacade {
         return clientApi.forcedUser.setForcedUserModeEnabled(enabled);
     }
 
+    /**
+     * Add a new HTTP session token to ZAP with the given token identifier for the
+     * specified URL. The token identifier can be used to access the session later
+     * on.
+     *
+     * @param targetUrl
+     * @param sessionTokenIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse addHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
+        return clientApi.httpSessions.addSessionToken(targetUrl, sessionTokenIdentifier);
+    }
+
+    /**
+     * Add a new HTTP session to ZAP with the given identifier for the specified
+     * URL. The identifier can be used to access the session later on.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse createEmptyHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        return clientApi.httpSessions.createEmptySession(targetUrl, sessionIdentifier);
+
+    }
+
+    /**
+     * Add a new HTTP session token value to ZAP with the given session identifier
+     * using the given name and value for the specified URL.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @param name
+     * @param value
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setHTTPSessionTokenValue(String targetUrl, String sessionIdentifier, String name, String value) throws ClientApiException {
+        return clientApi.httpSessions.setSessionTokenValue(targetUrl, sessionIdentifier, name, value);
+
+    }
+
+    /**
+     * Set the session with the given identifier and the given URL as the active
+     * session the ZAP shall use.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setActiveHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        return clientApi.httpSessions.setActiveSession(targetUrl, sessionIdentifier);
+    }
+
+    /**
+     * Remove the session with the given identifier and the given URL from ZAP.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse removeHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        return clientApi.httpSessions.removeSession(targetUrl, sessionIdentifier);
+    }
+
+    /**
+     * Remove the session token with the given identifier and the given URL from
+     * ZAP.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse removeHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
+        return clientApi.httpSessions.removeSessionToken(targetUrl, sessionTokenIdentifier);
+    }
+
     private String getIdOfApiResponseElement(ApiResponseElement apiResponseElement) {
         return apiResponseElement.getValue();
     }
@@ -689,4 +796,5 @@ public class ClientApiFacade {
 
         return safeMap;
     }
+
 }
