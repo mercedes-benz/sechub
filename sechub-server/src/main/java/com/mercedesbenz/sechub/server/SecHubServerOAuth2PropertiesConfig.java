@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
