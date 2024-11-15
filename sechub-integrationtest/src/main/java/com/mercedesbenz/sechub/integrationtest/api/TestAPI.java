@@ -589,6 +589,17 @@ public class TestAPI {
         return;
     }
 
+    /**
+     * Tries to execute runnable with default maximum time and retry (4 times a 500
+     * milliseconds) Shortcut for
+     * <code>executeRunnableAndAcceptAssertionsMaximumTimes(4,runnable, 500);</code>
+     *
+     * @param runnable
+     */
+    public static void executeResilient(Runnable runnable) {
+        executeRunnableAndAcceptAssertionsMaximumTimes(4, runnable, 500);
+    }
+
     public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
         executeCallableAndAcceptAssertionsMaximumTimes(tries, () -> {
             runnable.run();
