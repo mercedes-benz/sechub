@@ -38,10 +38,10 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfil
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
-import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 
 /**
  * Contains additional rest call functionality for integration tests on scan

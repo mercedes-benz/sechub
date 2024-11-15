@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration;
 
-import static com.mercedesbenz.sechub.sharedkernel.APIConstants.*;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ADMINISTRATION;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ANONYMOUS;
 
 public class AdministrationAPIConstants {
 
@@ -76,6 +77,7 @@ public class AdministrationAPIConstants {
     public static final String API_CREATE_PROJECT = API_ADMINISTRATION + "project";
 
     public static final String API_LIST_ALL_PROJECTS = API_ADMINISTRATION + "projects";
+
     // inspired by
     // https://developer.github.com/v3/orgs/members/#add-or-update-organization-membership
     private static final String COMMON_API_PROJECT_MEMBERSHIPS = API_ADMINISTRATION + "project/{projectId}/membership/{userId}";

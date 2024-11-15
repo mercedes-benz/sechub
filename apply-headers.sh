@@ -97,6 +97,10 @@ applySPDXonSecondLine "sh" "# $SPDX_TEXT"
 applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
 applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
 applySPDXonFirstLine "yml" "# $SPDX_TEXT"
+applySPDXonFirstLine "ts" "// $SPDX_TEXT"
+applySPDXonFirstLine "d.ts" "// $SPDX_TEXT"
+applySPDXonFirstLine "vue" "<!-- $SPDX_TEXT -->"
+
 
 # for plantuml we do no longer apply automatically, because a comment before
 # a @startUml is problematic

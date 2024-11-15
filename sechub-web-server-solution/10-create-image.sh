@@ -4,8 +4,6 @@
 REGISTRY="$1"
 VERSION="$2"
 WEB_SERVER_VERSION="$3"
-BASE_IMAGE="$4"  # optional
-BUILD_TYPE="$5" # optional
 DEFAULT_BASE_IMAGE="debian:12-slim"
 DEFAULT_BUILD_TYPE="download"
 
@@ -14,7 +12,7 @@ cd `dirname $0`
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <web-server version> [<base image> <build type>]
+usage: $0 <docker registry> <version tag> <web-server version>
 
 Builds a docker image of SecHub Web Server <web-server version> for <docker registry>
 with tag <version tag>.

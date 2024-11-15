@@ -13,8 +13,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 
 import jakarta.annotation.security.RolesAllowed;
 

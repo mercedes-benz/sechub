@@ -20,7 +20,7 @@ public class RestDocFactory {
 
     private static Set<String> alreadyCreatedPathes = new HashSet<>();
     private static Pattern P_VARIANT_NAME_TO_ID = Pattern.compile(" ");
-    private static Pattern TAG_PATTERN = Pattern.compile("api/[\\w-_]*/");
+    private static Pattern TAG_PATTERN = Pattern.compile("api/[\\w-_]*/?");
 
     public static String createVariantId(String variantName) {
         return P_VARIANT_NAME_TO_ID.matcher(variantName).replaceAll("-").toLowerCase();

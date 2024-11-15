@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
 
-import com.mercedesbenz.sechub.webserver.YamlPropertyLoaderFactory;
+import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)

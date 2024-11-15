@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: v2
+name: web-server
+description: SecHub Web Server Helm chart for Kubernetes
+home: https://github.com/mercedes-benz/sechub
+type: application
+
+# This is the chart version.
+# This version number should be incremented each time you make changes to the chart and its templates.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.4.0

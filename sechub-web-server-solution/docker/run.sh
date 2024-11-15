@@ -51,7 +51,6 @@ start_server() {
     echo "Starting the SecHub Web Server"
     echo "Web Server Version: $WEB_SERVER_VERSION"
     echo "Web Server Spring Server Profiles: \"$SPRING_PROFILES_ACTIVE\""
-    echo "SecHub Server UserID: $WEB_SERVER_SECHUB_USERID"
     echo "SecHub Server URL:    $WEB_SERVER_SECHUB_SERVER_URL"
     echo "SecHub Server trust all certificates: $WEB_SERVER_SECHUB_TRUST_ALL_CERTIFICATES"
 
@@ -78,10 +77,9 @@ keep_container_alive_or_exit() {
 
 check_setup () {
     # Verify that mandatory vars are set
-    check_variable "$SECHUB_USERID" "SECHUB_USERID"
-    check_variable "$SECHUB_APITOKEN" "SECHUB_APITOKEN"
     check_variable "$SECHUB_SERVER_URL" "SECHUB_SERVER_URL"
     check_variable "$SPRING_PROFILES_ACTIVE" "SPRING_PROFILES_ACTIVE"
+    check_variable "$SECHUB_SECURITY_ENCRYPTION_SECRET_KEY" "SECHUB_SECURITY_ENCRYPTION_SECRET_KEY"
 
     # Set SecHub server properties for Spring Boot as env vars
     # (don't reveal confidential data in process list)

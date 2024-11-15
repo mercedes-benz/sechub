@@ -20,7 +20,9 @@ dependencies {
     implementation library.thymeleaf_extras_springsecurity5
     implementation library.springboot_starter_oauth2_client
     implementation library.springboot_starter_oauth2_resource_server
+    implementation library.springboot_starter_actuator
 
+    testImplementation project(':sechub-testframework-spring')
     testImplementation library.springboot_starter_test
     testImplementation library.springframework_security_test
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.authorization;
 
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 
 /**
  * This enumeration just represents all possible roles and knows the relation to

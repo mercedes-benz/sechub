@@ -22,7 +22,8 @@ dependencies {
 
     implementation library.apache_commons_validator
     implementation library.logstashLogbackEncoder
+    implementation library.springboot_starter_oauth2_resource_server
 
     testImplementation project(':sechub-testframework')
-
+    testImplementation project(':sechub-testframework-spring')
 }

@@ -26,6 +26,11 @@ public class Profiles {
      */
     public static final String POSTGRES = "postgres";
 
+    /**
+     * Security profiles
+     */
+    public static final String OAUTH2 = "oauth2";
+
     public static final String MOCKED_NOTIFICATIONS = "mocked_notifications";
 
     /**

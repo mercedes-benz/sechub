@@ -72,6 +72,7 @@ include 'sechub-cli',
 'sechub-test', /* a special overall test project - has ALL dependencies */
 
 'sechub-testframework',
+'sechub-testframework-spring',
 
 'sechub-scan-testframework',
 'sechub-commons-model-testframework',

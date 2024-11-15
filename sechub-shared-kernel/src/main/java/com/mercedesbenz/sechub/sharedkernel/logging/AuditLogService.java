@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
-import com.mercedesbenz.sechub.sharedkernel.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 
 @Service
 public class AuditLogService {
