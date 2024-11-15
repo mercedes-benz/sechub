@@ -33,8 +33,9 @@ public class ZapScanContextFactory {
     private static final int MINUTES_IN_MS = 60 * SECONDS_IN_MS;
     private static final int HOURS_IN_MS = 60 * MINUTES_IN_MS;
     private static final int DAYS_IN_MS = 24 * HOURS_IN_MS;
-
     private static final int DEFAULT_MAX_SCAN_DURATION = 8 * HOURS_IN_MS;
+
+    private static final String GROOVY_LOGIN_SCRIPTFILE_NAME = "script.groovy";
 
     private final EnvironmentVariableReader environmentVariableReader;
     private final BaseTargetUriFactory targetUriFactory;
@@ -52,9 +53,8 @@ public class ZapScanContextFactory {
         includeExcludeToZapURLHelper = new IncludeExcludeToZapURLHelper();
     }
 
-    ZapScanContextFactory(EnvironmentVariableReader environmentVariableReader, BaseTargetUriFactory targetUriFactory,
-            RuleProvider ruleProvider, ZapWrapperDataSectionFileSupport dataSectionFileSupport,
-            SecHubScanConfigProvider secHubScanConfigProvider,
+    ZapScanContextFactory(EnvironmentVariableReader environmentVariableReader, BaseTargetUriFactory targetUriFactory, RuleProvider ruleProvider,
+            ZapWrapperDataSectionFileSupport dataSectionFileSupport, SecHubScanConfigProvider secHubScanConfigProvider,
             IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper) {
         this.environmentVariableReader = environmentVariableReader;
         this.targetUriFactory = targetUriFactory;
@@ -66,16 +66,13 @@ public class ZapScanContextFactory {
 
     public ZapScanContext create(CommandLineSettings settings) {
         if (settings == null) {
-            throw new ZapWrapperRuntimeException("Command line settings must not be null!",
-                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         /* Zap rule setup */
         ZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
-        DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromSettingsOrEnv(
-                settings);
+        DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromSettingsOrEnv(settings);
 
-        DeactivatedRuleReferences ruleReferencesFromFile = ruleProvider
-                .fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
+        DeactivatedRuleReferences ruleReferencesFromFile = ruleProvider.fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
         for (RuleReference reference : ruleReferencesFromFile.getDeactivatedRuleReferences()) {
             deactivatedRuleReferences.addRuleReference(reference);
         }
@@ -87,8 +84,7 @@ public class ZapScanContextFactory {
         /* SecHub settings */
         URL targetUrl = targetUriFactory.create(settings.getTargetURL());
 
-        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider
-                .getSecHubWebConfiguration(settings.getSecHubConfigFile());
+        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
         SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
         long maxScanDurationInMillis = fetchMaxScanDurationInMillis(sechubWebConfig);
 
@@ -136,7 +132,7 @@ public class ZapScanContextFactory {
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
-												.setGroovyScriptLoginFile(null) // TODO implement 
+												.setGroovyScriptLoginFile(fetchGroovyScriptFile(settings))
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -149,10 +145,8 @@ public class ZapScanContextFactory {
         // if no rules to deactivate were specified via the command line,
         // look for rules specified via the corresponding env variable
         if (deactivatedRuleRefsAsString == null) {
-            LOG.info("Reading rules to deactivate from env variable {} if set.",
-                    EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
-            deactivatedRuleRefsAsString = environmentVariableReader
-                    .readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            LOG.info("Reading rules to deactivate from env variable {} if set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            deactivatedRuleRefsAsString = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
         }
 
         // if no rules to deactivate were set at all, continue without
@@ -186,24 +180,20 @@ public class ZapScanContextFactory {
             zapPort = environmentVariableReader.readAsInt(EnvironmentVariableConstants.ZAP_PORT_ENV_VARIABLE_NAME);
         }
         if (zapApiKey == null) {
-            zapApiKey = environmentVariableReader
-                    .readAsString(EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME);
+            zapApiKey = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME);
         }
 
         if (zapHost == null) {
-            throw new ZapWrapperRuntimeException(
-                    "Zap host is null. Please set the Zap host to the host use by the Zap.",
+            throw new ZapWrapperRuntimeException("Zap host is null. Please set the Zap host to the host use by the Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
 
         if (zapPort <= 0) {
-            throw new ZapWrapperRuntimeException(
-                    "Zap Port was set to " + zapPort + ". Please set the Zap port to the port used by the Zap.",
+            throw new ZapWrapperRuntimeException("Zap Port was set to " + zapPort + ". Please set the Zap port to the port used by the Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (zapApiKey == null) {
-            throw new ZapWrapperRuntimeException(
-                    "Zap API-Key is null. Please set the Zap API-key to the same value set inside your Zap.",
+            throw new ZapWrapperRuntimeException("Zap API-Key is null. Please set the Zap API-key to the same value set inside your Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapServerConfiguration(zapHost, zapPort, zapApiKey);
@@ -214,8 +204,7 @@ public class ZapScanContextFactory {
         int proxyPort = settings.getProxyPort();
 
         if (proxyHost == null) {
-            proxyHost = environmentVariableReader
-                    .readAsString(EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME);
+            proxyHost = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME);
         }
         if (proxyPort <= 0) {
             proxyPort = environmentVariableReader.readAsInt(EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME);
@@ -238,32 +227,28 @@ public class ZapScanContextFactory {
     private List<File> fetchApiDefinitionFiles(SecHubScanConfiguration sechubScanConfig) {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
-        String extractedSourcesFolderPath = environmentVariableReader
-                .readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         return dataSectionFileSupport.fetchApiDefinitionFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private File fetchClientCertificateFile(SecHubScanConfiguration sechubScanConfig) {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
-        String extractedSourcesFolderPath = environmentVariableReader
-                .readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         return dataSectionFileSupport.fetchClientCertificateFile(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private Map<String, File> fetchHeaderValueFiles(SecHubScanConfiguration sechubScanConfig) {
         // use the extracted sources folder path, where all text files are uploaded and
         // extracted
-        String extractedSourcesFolderPath = environmentVariableReader
-                .readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         return dataSectionFileSupport.fetchHeaderValueFiles(extractedSourcesFolderPath, sechubScanConfig);
     }
 
     private Set<String> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {
         Set<String> includeSet = new HashSet<>();
         if (sechubWebConfig.getIncludes().isPresent()) {
-            includeSet.addAll(
-                    includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getIncludes().get()));
+            includeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getIncludes().get()));
         }
         // if no includes are specified everything is included
         if (includeSet.isEmpty()) {
@@ -277,8 +262,7 @@ public class ZapScanContextFactory {
     private Set<String> createUrlsExcludedFromContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig) {
         Set<String> excludeSet = new HashSet<>();
         if (sechubWebConfig.getExcludes().isPresent()) {
-            excludeSet.addAll(
-                    includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getExcludes().get()));
+            excludeSet.addAll(includeExcludeToZapURLHelper.createListOfUrls(targetUrl, sechubWebConfig.getExcludes().get()));
         }
         return excludeSet;
     }
@@ -286,14 +270,11 @@ public class ZapScanContextFactory {
     private ZapProductMessageHelper createZapProductMessageHelper(CommandLineSettings settings) {
         String userMessagesFolder = settings.getPDSUserMessageFolder();
         if (userMessagesFolder == null) {
-            userMessagesFolder = environmentVariableReader
-                    .readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
+            userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         }
         if (userMessagesFolder == null) {
-            throw new ZapWrapperRuntimeException(
-                    "PDS configuration invalid. Cannot send user messages, because environment variable "
-                            + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER + " is not set.",
-                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
+            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send user messages, because environment variable "
+                    + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapProductMessageHelper(userMessagesFolder);
     }
@@ -301,15 +282,12 @@ public class ZapScanContextFactory {
     private ZapPDSEventHandler createZapEventhandler(CommandLineSettings settings) {
         String pdsJobEventsFolder = settings.getPDSEventFolder();
         if (pdsJobEventsFolder == null) {
-            pdsJobEventsFolder = environmentVariableReader
-                    .readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
+            pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
         }
 
         if (pdsJobEventsFolder == null) {
-            throw new ZapWrapperRuntimeException(
-                    "PDS configuration invalid. Cannot send check for job events, because environment variable "
-                            + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.",
-                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
+            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send check for job events, because environment variable "
+                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapPDSEventHandler(pdsJobEventsFolder);
     }
@@ -336,5 +314,16 @@ public class ZapScanContextFactory {
         default:
             return DEFAULT_MAX_SCAN_DURATION;
         }
+    }
+
+    private File fetchGroovyScriptFile(CommandLineSettings settings) {
+        String templateDir = settings.getTemplateFolder();
+        if (templateDir == null) {
+            templateDir = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_TEMPLATE_FOLDER);
+        }
+        if (templateDir == null) {
+            return null;
+        }
+        return new File(templateDir, GROOVY_LOGIN_SCRIPTFILE_NAME);
     }
 }

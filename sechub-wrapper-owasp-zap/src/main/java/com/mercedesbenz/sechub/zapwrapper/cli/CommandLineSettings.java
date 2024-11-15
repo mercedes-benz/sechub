@@ -185,4 +185,14 @@ public class CommandLineSettings {
     public String getPDSEventFolder() {
         return pdsEventFolder;
     }
+
+    @Parameter(names = {
+            "--templateFolder" }, description = "Folder where the ZAP wrapper fetches the logins script from. This is not needed since the PDS provides the env variable: "
+                    + EnvironmentVariableConstants.PDS_TEMPLATE_FOLDER
+                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
+    private String templateFolder;
+
+    public String getTemplateFolder() {
+        return templateFolder;
+    }
 }

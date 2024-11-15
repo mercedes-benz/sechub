@@ -21,4 +21,6 @@ public class EnvironmentVariableConstants {
 
     public static final String PDS_JOB_EVENTS_FOLDER = "PDS_JOB_EVENTS_FOLDER";
 
+    public static final String PDS_TEMPLATE_FOLDER = "PDS_TEMPLATE_FOLDER";
+
 }

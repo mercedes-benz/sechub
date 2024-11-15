@@ -18,6 +18,8 @@ public enum AuthenticationType {
 
     JSON_BASED_AUTHENTICATION("jsonBasedAuthentication"),
 
+    MANUAL_AUTHENTICATION("manualAuthentication"),
+
     ;
 
     private String zapAuthenticationMethod;
