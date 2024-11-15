@@ -105,9 +105,7 @@ ENV HTDOCS_FOLDER="${HTDOCS_FOLDER}"
 # using fixed group and user ids + prepare alive check file
 RUN usermod -u "$UID" "$USER" && \
     groupmod -g "$GID" "$USER" && \
-    NGINX_ALIVE_DIR="$HTDOCS_FOLDER/health" && \
-    mkdir -p "$NGINX_ALIVE_DIR" "$CERTIFICATE_DIRECTORY" && \
-    echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
+    mkdir -p "$$HTDOCS_FOLDER" "$CERTIFICATE_DIRECTORY"
 
 # Copy launcher script into container
 COPY run.sh /run.sh
