@@ -31,7 +31,7 @@ COPY clone.sh "$WEB_UI_BUILD_FOLDER/clone.sh"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --assume-yes --quiet git wget && \
+    apt-get install -y git wget && \
     apt-get clean
 
 RUN cd "${WEB_UI_BUILD_FOLDER}" && \
@@ -66,7 +66,7 @@ ENV WEB_UI_RELEASE_ZIP="sechub-web-ui_htdocs.zip"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --assume-yes --quiet unzip wget && \
+    apt-get install -y unzip wget && \
     apt-get clean
 
 RUN mkdir -p "${WEB_UI_ARTIFACTS}/dist" && \
@@ -76,8 +76,8 @@ RUN mkdir -p "${WEB_UI_ARTIFACTS}/dist" && \
     sha256sum --check "${WEB_UI_RELEASE_ZIP}.sha256sum" && \
     unzip ${WEB_UI_RELEASE_ZIP} && \
     rm -f "${WEB_UI_RELEASE_ZIP}" "${WEB_UI_RELEASE_ZIP}.sha256sum"
-
-
+    
+    
 #-------------------
 # Builder
 #-------------------
@@ -105,21 +105,26 @@ ENV HTDOCS_FOLDER="${HTDOCS_FOLDER}"
 # using fixed group and user ids + prepare alive check file
 RUN usermod -u "$UID" "$USER" && \
     groupmod -g "$GID" "$USER" && \
-    NGINX_ALIVE_DIR="$HTDOCS_FOLDER/health" && \
-    mkdir -p "$NGINX_ALIVE_DIR" && \
-    echo "SecHub Web-UI is alive" > "$NGINX_ALIVE_DIR/alive.html"
+    mkdir -p "$$HTDOCS_FOLDER" "$CERTIFICATE_DIRECTORY"
 
-# Copy run script into container
+# Copy launcher script into container
 COPY run.sh /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install bind9-host curl netcat-openbsd nginx openssl sed vim-tiny && \
-    apt-get --assume-yes clean
+    apt-get -y upgrade && \
+    apt-get -y install bind9-host curl netcat-openbsd nginx openssl sed vim-tiny && \
+    apt-get -y clean && \
+    # Cleanup nginx default files
+    cd /etc/nginx && \
+    rm -rf conf.d fastcgi* koi-* modules-* *_params sites-* snippets win-utf /var/www/html/index.nginx-debian.html
 
-# Copy configuration script
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy Nginx configuration files
+COPY nginx/ /etc/nginx/
+
+# Copy content to web server's document root
+COPY --from=builder "${WEB_UI_ARTIFACTS}/dist" "${HTDOCS_FOLDER}"
+COPY htdocs/ "${HTDOCS_FOLDER}/"
 
 # Create self-signed certificate
 RUN cd /tmp && \
@@ -135,20 +140,16 @@ RUN cd /tmp && \
     2>&1 | sed 's/\.//g'
 
 # Prepare certificates
-RUN mkdir -p "$CERTIFICATE_DIRECTORY" && \
-    mv /tmp/sechub-web-ui.cert "$CERTIFICATE_DIRECTORY"/sechub-web-ui.cert && \
+RUN mv /tmp/sechub-web-ui.cert "$CERTIFICATE_DIRECTORY"/sechub-web-ui.cert && \
     mv /tmp/sechub-web-ui.key "$CERTIFICATE_DIRECTORY"/sechub-web-ui.key && \
     # Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
     # see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
     openssl dhparam -out "$CERTIFICATE_DIRECTORY"/certsdhparam.pem 2048 2>&1 | sed 's/\.//g'
 
-# Copy content to web server's document root
-COPY --from=builder "${WEB_UI_ARTIFACTS}/dist" "${HTDOCS_FOLDER}"
-
 # Create PID file and set permissions
 RUN touch /var/run/nginx.pid && \
     chmod 755 "$HTDOCS_FOLDER" && \
-    chown -R "$USER:$USER" "$CERTIFICATE_DIRECTORY" /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid && \
+    chown -R "$USER:$USER" "$CERTIFICATE_DIRECTORY" /var/log/nginx /var/lib/nginx /var/run/nginx.pid && \
     chmod +x /run.sh
 
 # Switch from root to non-root user
