@@ -4,6 +4,5 @@
 </template>
 
 <script lang="ts" setup>
-  //
-import SecHubDefault from "@/components/SecHubDefault.vue";
+  import SecHubDefault from "@/components/SecHubDefault.vue";
 </script>
