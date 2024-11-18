@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openqa.selenium.Cookie;
@@ -26,24 +25,29 @@ class ZapScriptLoginSessionGrabberTest {
 
     private ZapScriptLoginSessionGrabber sessionGrabberToTest;
 
-    private static final ClientApiSupport CLIENT_API_SUPPORT = mock(ClientApiSupport.class, new Answer<Object>() {
-        @Override
-        public Object answer(InvocationOnMock invocation) throws Throwable {
-            // Return the same response for any method call
-            return ZAP_API_RESPONSE;
-        }
-    });
-    private static final FirefoxDriver FIREFOX = mock();
-    private static final Options WEBDRIVER_OPTIONS = mock();
+    private ClientApiSupport clientApiSupport;
+    private FirefoxDriver firefox;
+    private Options webDriverOptions;
 
-    private static final ApiResponse ZAP_API_RESPONSE = mock();
+    private ApiResponse zapApiResponse;
 
     private static final String TARGET_URL = "http://example.com";
     private static final String FOLLOW_REDIRECTS = "true";
 
     @BeforeEach
     void beforeEach() {
-        Mockito.reset(CLIENT_API_SUPPORT, FIREFOX, WEBDRIVER_OPTIONS);
+        zapApiResponse = mock();
+        firefox = mock();
+        webDriverOptions = mock();
+
+        clientApiSupport = mock(ClientApiSupport.class, new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                // Return the same response for any method call
+                return zapApiResponse;
+            }
+        });
+
         sessionGrabberToTest = new ZapScriptLoginSessionGrabber();
     }
 
@@ -58,62 +62,62 @@ class ZapScriptLoginSessionGrabberTest {
         storage.put("jwt",
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
 
-        when(FIREFOX.manage()).thenReturn(WEBDRIVER_OPTIONS);
+        when(firefox.manage()).thenReturn(webDriverOptions);
 
-        when(WEBDRIVER_OPTIONS.getCookies()).thenReturn(cookies);
-        when(FIREFOX.executeScript(anyString())).thenReturn(storage);
+        when(webDriverOptions.getCookies()).thenReturn(cookies);
+        when(firefox.executeScript(anyString())).thenReturn(storage);
 
         /* execute */
-        sessionGrabberToTest.extractSessionAndPassToZAP(FIREFOX, TARGET_URL, CLIENT_API_SUPPORT);
+        sessionGrabberToTest.extractSessionAndPassToZAP(firefox, TARGET_URL, clientApiSupport);
 
         /* test */
-        verify(FIREFOX, times(1)).manage();
-        verify(WEBDRIVER_OPTIONS, times(1)).getCookies();
-        verify(FIREFOX, times(1)).executeScript(anyString());
+        verify(firefox, times(1)).manage();
+        verify(webDriverOptions, times(1)).getCookies();
+        verify(firefox, times(1)).executeScript(anyString());
 
-        verify(CLIENT_API_SUPPORT, times(1)).removeHTTPSession(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).removeReplacerRule(any());
-        verify(CLIENT_API_SUPPORT, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).setHTTPSessionTokenValue(eq(TARGET_URL), any(), eq(cookie.getName()), eq(cookie.getValue()));
-        verify(CLIENT_API_SUPPORT, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiSupport, times(1)).removeHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).removeReplacerRule(any());
+        verify(clientApiSupport, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).setHTTPSessionTokenValue(eq(TARGET_URL), any(), eq(cookie.getName()), eq(cookie.getValue()));
+        verify(clientApiSupport, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
 
-        verify(CLIENT_API_SUPPORT, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
+        verify(clientApiSupport, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
     }
 
     @Test
     void no_cookie_and_no_jwt_results_clienapisupport_not_adding_replacer_rule() throws ClientApiException {
         /* prepare */
-        when(FIREFOX.manage()).thenReturn(WEBDRIVER_OPTIONS);
+        when(firefox.manage()).thenReturn(webDriverOptions);
 
-        when(WEBDRIVER_OPTIONS.getCookies()).thenReturn(Collections.emptySet());
-        when(FIREFOX.executeScript(anyString())).thenReturn(Collections.emptyMap());
+        when(webDriverOptions.getCookies()).thenReturn(Collections.emptySet());
+        when(firefox.executeScript(anyString())).thenReturn(Collections.emptyMap());
 
         /* execute */
-        sessionGrabberToTest.extractSessionAndPassToZAP(FIREFOX, TARGET_URL, CLIENT_API_SUPPORT);
+        sessionGrabberToTest.extractSessionAndPassToZAP(firefox, TARGET_URL, clientApiSupport);
 
         /* test */
         // both browser storages are checked now without JWT
-        verify(FIREFOX, times(2)).executeScript(anyString());
+        verify(firefox, times(2)).executeScript(anyString());
         // no JWT can be added
-        verify(CLIENT_API_SUPPORT, never()).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiSupport, never()).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
         // no cookie can be added
-        verify(CLIENT_API_SUPPORT, never()).setHTTPSessionTokenValue(eq(TARGET_URL), any(), any(), any());
+        verify(clientApiSupport, never()).setHTTPSessionTokenValue(eq(TARGET_URL), any(), any(), any());
 
         // the other calls must be the same as on every execution without error
-        verify(FIREFOX, times(1)).manage();
-        verify(WEBDRIVER_OPTIONS, times(1)).getCookies();
+        verify(firefox, times(1)).manage();
+        verify(webDriverOptions, times(1)).getCookies();
 
-        verify(CLIENT_API_SUPPORT, times(1)).removeHTTPSession(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).removeReplacerRule(any());
-        verify(CLIENT_API_SUPPORT, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
-        verify(CLIENT_API_SUPPORT, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).removeHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).removeReplacerRule(any());
+        verify(clientApiSupport, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiSupport, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
 
-        verify(CLIENT_API_SUPPORT, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
+        verify(clientApiSupport, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
     }
 
 }

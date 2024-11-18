@@ -15,7 +15,6 @@ import javax.script.ScriptException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.zaproxy.clientapi.core.ClientApiException;
 
@@ -31,17 +30,22 @@ class ZapScriptLoginTest {
 
     private ZapScriptLogin scriptLoginToTest;
 
-    private static final ZapScriptLoginWebDriverFactory WEB_DRIVER_FACTORY = mock();
-    private static final ZapWrapperGroovyScriptExecutor GROOVY_SCRIPT_EXECUTOR = mock();
-    private static final ZapScriptLoginSessionGrabber SESSION_GRABBER = mock();
+    private ZapScriptLoginWebDriverFactory webDriverFactory = mock();
+    private ZapWrapperGroovyScriptExecutor groovyScriptExecutor = mock();
+    private ZapScriptLoginSessionGrabber sessionGrabber = mock();
 
-    private static final ClientApiSupport CLIENT_API_SUPPORT = mock();
-    private static final FirefoxDriver FIREFOX = mock();
+    private ClientApiSupport clientApiSupport = mock();
+    private FirefoxDriver firefox = mock();
 
     @BeforeEach
     void beforeEach() {
-        Mockito.reset(WEB_DRIVER_FACTORY, GROOVY_SCRIPT_EXECUTOR, SESSION_GRABBER, FIREFOX, CLIENT_API_SUPPORT);
-        scriptLoginToTest = new ZapScriptLogin(WEB_DRIVER_FACTORY, GROOVY_SCRIPT_EXECUTOR, SESSION_GRABBER);
+        webDriverFactory = mock();
+        groovyScriptExecutor = mock();
+        sessionGrabber = mock();
+        clientApiSupport = mock();
+        firefox = mock();
+
+        scriptLoginToTest = new ZapScriptLogin(webDriverFactory, groovyScriptExecutor, sessionGrabber);
     }
 
     @Test
@@ -50,18 +54,18 @@ class ZapScriptLoginTest {
 
         ZapScanContext scanContext = createValidZapScanContext();
 
-        when(WEB_DRIVER_FACTORY.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(FIREFOX);
-        doNothing().when(GROOVY_SCRIPT_EXECUTOR).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        when(SESSION_GRABBER.extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT)).thenReturn(AUTH_SESSION);
+        when(webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(firefox);
+        doNothing().when(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        when(sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport)).thenReturn(AUTH_SESSION);
 
         /* execute */
-        scriptLoginToTest.login(scanContext, CLIENT_API_SUPPORT);
+        scriptLoginToTest.login(scanContext, clientApiSupport);
 
         /* test */
-        verify(WEB_DRIVER_FACTORY, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
-        verify(GROOVY_SCRIPT_EXECUTOR, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        verify(SESSION_GRABBER, times(1)).extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT);
-        verify(FIREFOX, times(1)).quit();
+        verify(webDriverFactory, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        verify(sessionGrabber, times(1)).extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
+        verify(firefox, times(1)).quit();
     }
 
     @Test
@@ -69,18 +73,18 @@ class ZapScriptLoginTest {
         /* prepare */
         ZapScanContext scanContext = createValidZapScanContext();
 
-        when(WEB_DRIVER_FACTORY.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(FIREFOX);
-        doThrow(IOException.class).when(GROOVY_SCRIPT_EXECUTOR).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        when(SESSION_GRABBER.extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT)).thenReturn(AUTH_SESSION);
+        when(webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(firefox);
+        doThrow(IOException.class).when(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        when(sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport)).thenReturn(AUTH_SESSION);
 
         /* execute */
-        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, CLIENT_API_SUPPORT));
+        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiSupport));
 
         /* test */
-        verify(WEB_DRIVER_FACTORY, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
-        verify(GROOVY_SCRIPT_EXECUTOR, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        verify(SESSION_GRABBER, never()).extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT);
-        verify(FIREFOX, times(1)).quit();
+        verify(webDriverFactory, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        verify(sessionGrabber, never()).extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
+        verify(firefox, times(1)).quit();
     }
 
     @Test
@@ -88,18 +92,18 @@ class ZapScriptLoginTest {
         /* prepare */
         ZapScanContext scanContext = createValidZapScanContext();
 
-        when(WEB_DRIVER_FACTORY.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(FIREFOX);
-        doThrow(ScriptException.class).when(GROOVY_SCRIPT_EXECUTOR).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        when(SESSION_GRABBER.extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT)).thenReturn(AUTH_SESSION);
+        when(webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(firefox);
+        doThrow(ScriptException.class).when(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        when(sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport)).thenReturn(AUTH_SESSION);
 
         /* execute */
-        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, CLIENT_API_SUPPORT));
+        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiSupport));
 
         /* test */
-        verify(WEB_DRIVER_FACTORY, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
-        verify(GROOVY_SCRIPT_EXECUTOR, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        verify(SESSION_GRABBER, never()).extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT);
-        verify(FIREFOX, times(1)).quit();
+        verify(webDriverFactory, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        verify(sessionGrabber, never()).extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
+        verify(firefox, times(1)).quit();
     }
 
     @Test
@@ -107,18 +111,18 @@ class ZapScriptLoginTest {
         /* prepare */
         ZapScanContext scanContext = createValidZapScanContext();
 
-        when(WEB_DRIVER_FACTORY.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(FIREFOX);
-        doNothing().when(GROOVY_SCRIPT_EXECUTOR).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        doThrow(ClientApiException.class).when(SESSION_GRABBER).extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT);
+        when(webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true)).thenReturn(firefox);
+        doNothing().when(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        doThrow(ClientApiException.class).when(sessionGrabber).extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
 
         /* execute */
-        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, CLIENT_API_SUPPORT));
+        assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiSupport));
 
         /* test */
-        verify(WEB_DRIVER_FACTORY, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
-        verify(GROOVY_SCRIPT_EXECUTOR, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), FIREFOX, scanContext);
-        verify(SESSION_GRABBER, times(1)).extractSessionAndPassToZAP(FIREFOX, scanContext.getTargetUrlAsString(), CLIENT_API_SUPPORT);
-        verify(FIREFOX, times(1)).quit();
+        verify(webDriverFactory, times(1)).createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), firefox, scanContext);
+        verify(sessionGrabber, times(1)).extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
+        verify(firefox, times(1)).quit();
     }
 
     private ZapScanContext createValidZapScanContext() throws MalformedURLException, URISyntaxException {
