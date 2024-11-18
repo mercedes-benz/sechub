@@ -55,8 +55,8 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = { "--ajaxSpiderBrowserId" }, description = "Set the browser id you want to use for the AjaxSpider module. "
-            + "Make sure the browser you want to use is installed on the system the scan is running. "
-            + "Supported browser are: [firefox-headless, firefox, chrome-headless, chrome, htmlunit, safari].", required = false, validateWith = ZAPAcceptedBrowserIdValidator.class)
+            + "Make sure the browser you want to use is installed on the system running the scan. "
+            + "Supported browsers are: [firefox-headless, firefox, chrome-headless, chrome, htmlunit, safari].", required = false, validateWith = ZAPAcceptedBrowserIdValidator.class)
     private String ajaxSpiderBrowserId = ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId();
 
     public String getAjaxSpiderBrowserId() {
@@ -132,7 +132,7 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = { "--deactivateRules" }, description = "Specify references of rules you want to deactivate during the scan inside the Zap. "
-            + "If you specifiy multiple rules use comma separated values like: rule1,rule,rule3", required = false)
+            + "If you specify multiple rules use comma separated values like: rule1,rule,rule3", required = false)
     private String deactivatedRuleReferences;
 
     public String getDeactivatedRuleReferences() {

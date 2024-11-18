@@ -36,7 +36,7 @@ public class TOTPGenerator {
 
     public TOTPGenerator(String seed, int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
         if (seed == null) {
-            throw new IllegalArgumentException("The specified seed must not be null!");
+            throw new IllegalArgumentException("The specified TOTP seed must not be null!");
         }
 
         this.seed = CryptoAccess.CRYPTO_STRING.seal(seed);
@@ -48,13 +48,20 @@ public class TOTPGenerator {
     }
 
     /**
-     * This method generates a TOTP from the seed (must be raw bytes no encoding)
-     * and the current time stamp in milliseconds. Make sure encoded seeds like hex,
-     * base32 or base64 are decoded before passing them to this method.
+     * This method generates a TOTP for the current times stamp in milliseconds.
+     *
+     * @return totp currently valid
+     */
+    public String now() {
+        return generateTOTP(System.currentTimeMillis());
+    }
+
+    /**
+     * This method generates a TOTP for a time stamp in milliseconds.
      *
      * @param seed
      * @param currentTimeMillis
-     * @return
+     * @return totp of give timestamp
      */
     public String generateTOTP(long currentTimeMillis) {
         byte[] hash = computeHash(currentTimeMillis);

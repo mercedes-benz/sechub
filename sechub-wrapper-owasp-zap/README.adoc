@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-== Owasp Zap Wrapper
+== Zap Wrapper
 
-Owasp Zap Wrapper CLI for PDS
+Zap Wrapper CLI for PDS
 
 === Usage
 
@@ -24,33 +24,50 @@ PROXY_PORT=1234
 To use the wrapper see the help below:
 
 ----
-Usage: OwaspZapWrapper [options]
+Usage: ZapWrapper [options]
   Options:
     --activeScan
-      Set this option to enable Owasp Zap active scan.
+      Set this option to enable Zap active scan.
       Default: false
     --ajaxSpider
-      Set this option to enable Owasp Zap ajaxSpider.
+      Set this option to enable Zap ajaxSpider.
       Default: false
+    --ajaxSpiderBrowserId
+      Set the browser id you want to use for the AjaxSpider module. Make sure 
+      the browser you want to use is installed on the system running the scan. 
+      Supported browsers are: [firefox-headless, firefox, chrome-headless, 
+      chrome, htmlunit, safari].
+      Default: firefox-headless
     --connectionCheck
       Set this option to enable an initial connection check performed by this 
       wrapper application.
       Default: false
     --deactivateRules
       Specify references of rules you want to deactivate during the scan 
-      inside the Owasp Zap. If you specifiy multiple rules use comma separated 
-      values like: rule1,rule,rule3
+      inside the Zap. If you specify multiple rules use comma separated values 
+      like: rule1,rule,rule3
   * --fullRulesetfile
-      Specify a file with all rules installed for the Owasp Zap.
+      Specify a file with all rules installed for the Zap.
     --help
       Shows help and provides information on how to use the wrapper.
     --jobUUID
-      The Job-UUID, which will be used as internal identifier for the Owasp 
-      Zap scan context.
+      The Job-UUID, which will be used as internal identifier for the Zap scan 
+      context. 
     --maxNumberOfConnectionRetries
       Maximum number of times the wrapper tries to reach each URL. Including 
       each URL constructed from the sechub includes.
       Default: 3
+    --pdsEventFolder
+      Folder where the ZAP wrapper listens for events of the PDS, like cancel 
+      requests for the current job. When using with SecHub+PDS solution this 
+      is not needed since the PDS provides the env variable: 
+      PDS_JOB_EVENTS_FOLDER. This env variable is automatically used if this 
+      command line parameter is not set.
+    --pdsUserMessageFolder
+      Folder where the user messages are written to. When using with 
+      SecHub+PDS solution this is not needed since the PDS provides the env 
+      variable: PDS_JOB_USER_MESSAGES_FOLDER. This env variable is 
+      automatically used if this command line parameter is not set.
     --proxyHost
       Specify a proxy host. You can also set the environment variable 
       PROXY_HOST, instead of using this parameter.
@@ -65,25 +82,29 @@ Usage: OwaspZapWrapper [options]
       value cannot be less than 1000 milliseconds.
       Default: 1000
     --rulesDeactivationfile
-      Specify a file with rules to deactivate during the scan inside the Owasp 
-      Zap. 
+      Specify a file with rules to deactivate during the scan inside the Zap.
     --sechubConfigfile
       The SecHub config file, containing additonal configurations for the 
       scan. 
   * --targetURL
       Specifies the target url to be scanned.
+    --templateFolder
+      Folder where the ZAP wrapper fetches the logins script from. This is not 
+      needed since the PDS provides the env variable: PDS_TEMPLATE_FOLDER. 
+      This env variable is automatically used if this command line parameter 
+      is not set.
     --verbose
       Set this option to provide additional output while scanning.
       Default: false
     --zapApiKey
-      Specifies the Owasp Zap host api key. You can also set the environment 
+      Specifies the Zap host api key. You can also set the environment 
       variable ZAP_API_KEY, instead of using this parameter.
     --zapHost
-      Specifies the Owasp Zap host address. You can also set the environment 
+      Specifies the Zap host address. You can also set the environment 
       variable ZAP_HOST, instead of using this parameter.
     --zapPort
-      Specifies the Owasp Zap host port. You can also set the environment 
-      variable ZAP_PORT, instead of using this parameter.
+      Specifies the Zap host port. You can also set the environment variable 
+      ZAP_PORT, instead of using this parameter.
       Default: 0
 ----
 
@@ -176,3 +197,52 @@ But if the command line parameter `--deactivateRules` is set, the wrapper ignore
 The rules to deactivate specified via `--rulesDeactivationfile`, will always be added to the list of deactivated rules.
 To set the env variable you can use `zap.deactivation.rule.references=Directory-Browsing-0,Private-IP-Disclosure-2`,
 inside the executor config.
+
+
+==== Groovy Script Login
+To handle more complex authentication scenarios, the wrapper uses pre-defined groovy scripts.
+Rhe groovy authentication scripts have access to certain data the wrapper application passes with the bindings for the script execution, as well as selenium support.
+Some objects are already ready pre-configured and ready to use, like the firefox webdriver. Above you can see all available bindings, even if they are not used in this example script.
+The script can also be created completely without using anything of the pre-defined data.
+
+The `TOTPGenerator` is an easy to use implementation of TOTP for two-factor-authentication if necessary. Using `totpGenerator.now()` returns the currently valid TOTP.
+To make use of the script authentication the wrapper application expects a SecHub configuration json for the scan, which contains a template data definition and optionally a TOTP configuration.
+See web scan example configurations for details.
+The following example contains all available bindings, even if they are unused in the script below:
+
+[source,groovy]
+----
+import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys.*
+
+import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator
+
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.JavascriptExecutor
+
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration
+
+// all available bindings
+final FirefoxDriver firefox = binding.getVariable(FIREFOX_WEBDRIVER_KEY)
+final WebDriverWait webdriverWait = binding.getVariable(FIREFOX_WEBDRIVER_WAIT_KEY)
+final JavascriptExecutor javaScriptExecutor = binding.getVariable(JAVASCRIPTEXECUTOR_KEY)
+final SecHubWebScanConfiguration sechubWebScanConfig = binding.getVariable(SECHUB_WEBSCAN_CONFIG_KEY)
+final TOTPGenerator totpGenerator = binding.getVariable(TOTP_GENERATOR_KEY)
+
+final String user = binding.getVariable(USER_KEY)
+final String password = binding.getVariable(PASSWORD_KEY)
+final String loginUrl = binding.getVariable(LOGIN_URL_KEY)
+final String targetUrl = binding.getVariable(TARGET_URL_KEY)
+
+// example authentication script steps
+firefox.get(loginUrl)
+
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".close-dialog"))).click()
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("email"))).sendKeys(user)
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("password"))).sendKeys(password)
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("loginButton"))).click()
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp"))).sendKeys(totpGenerator.now())
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitOtp"))).click()
+----
