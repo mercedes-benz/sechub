@@ -89,13 +89,13 @@ class PDSTemplateMetaDataServiceTest {
 
         /* test */
         PDSTemplateMetaData expectedTemplateMetaData1 = new PDSTemplateMetaData();
-        expectedTemplateMetaData1.setTemplate(exampleTemplateId1);
-        expectedTemplateMetaData1.setType(exampleTemplateType);
+        expectedTemplateMetaData1.setTemplateId(exampleTemplateId1);
+        expectedTemplateMetaData1.setTemplateType(exampleTemplateType);
 
         PDSAssetData assetData1 = new PDSAssetData();
-        assetData1.setAsset(exampleAssetId1);
+        assetData1.setAssetId(exampleAssetId1);
         assetData1.setChecksum(exampleChecksum1);
-        assetData1.setFile("test_product_id.zip");
+        assetData1.setFileName("test_product_id.zip");
 
         expectedTemplateMetaData1.setAssetData(assetData1);
 
@@ -206,15 +206,15 @@ class PDSTemplateMetaDataServiceTest {
 
         /* prepare */
         PDSAssetData assetData1 = new PDSAssetData();
-        assetData1.setAsset("asset1");
-        assetData1.setFile("file1.txt");
+        assetData1.setAssetId("asset1");
+        assetData1.setFileName("file1.txt");
 
         PDSTemplateMetaData templateMetaData1 = new PDSTemplateMetaData();
         templateMetaData1.setAssetData(assetData1);
 
         PDSAssetData assetData2 = new PDSAssetData();
-        assetData2.setAsset("asset2");
-        assetData2.setFile("file2.txt");
+        assetData2.setAssetId("asset2");
+        assetData2.setFileName("file2.txt");
 
         PDSTemplateMetaData templateMetaData2 = new PDSTemplateMetaData();
         templateMetaData2.setAssetData(assetData2);

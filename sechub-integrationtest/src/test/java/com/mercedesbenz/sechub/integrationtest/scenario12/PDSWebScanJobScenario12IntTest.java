@@ -62,16 +62,19 @@ public class PDSWebScanJobScenario12IntTest {
      *
      * The tests checks following:
      *
-     * - pds_web_scan_has_expected_info_finding_with_given_target_url_and_product2_level_information_and_sechub_web_config_parts
-     * - pds web scan has expected info finding, with
-     *    - given target url
+     * - PDS web scan has expected info finding, with
+     *    - given target URL
      *    - product level information
-     *    - sechub web configuration parts
+     *    - SecHub web configuration parts
      *
      *  - PDS parameter for template meta data configuration is correct and transmitted to PDS
      *    The parameter "pds.config.template.metadata.list" is normally not available inside
      *    the scripts, but for testing we added the parameter inside server configuration so it
      *    will be added to script level and can be checked by TestAPI
+     *
+     *  - PDS will download and extract the uploaded asset file automatically and the
+     *    extracted content is available inside the test bash script (executed by PDS)
+     *
      *
      * @formatter:on
      */
@@ -163,13 +166,13 @@ public class PDSWebScanJobScenario12IntTest {
         assertTrue(includes.contains("/customer/<*>"));
         assertTrue(excludes.contains("<*>/admin/<*>"));
 
-        // config must contain the expected headers
+        // web configuration must contain the expected headers
         assertExpectedHeaders(webConfiguration);
 
-        // config must contain the expected client certificate
+        // web configuration must contain the expected client certificate
         assertExpectedClientCertificate(webConfiguration);
 
-        // config must contain the expected openApi definition
+        // web configuration must contain the expected openApi definition
         assertExpectedOpenApiDefinition(webConfiguration);
 
         /* additional testing : messages*/
@@ -185,9 +188,10 @@ public class PDSWebScanJobScenario12IntTest {
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
 
         String expectedMetaDataListJson = """
-                [{"template":"template-scenario12-1","type":"WEBSCAN_LOGIN","assetData":{"asset":"asset-s12-pds-inttest-webscan","file":"PDS_INTTEST_PRODUCT_WEBSCAN.zip","checksum":"ff06430bfc2d8c698ab8effa41b914525b8cca1c1eecefa76d248b25cc598fba"}}]
+                [{"templateId":"template-scenario12-1","templateType":"WEBSCAN_LOGIN","assetData":{"assetId":"asset-s12-pds-inttest-webscan","fileName":"PDS_INTTEST_PRODUCT_WEBSCAN.zip","checksum":"ff06430bfc2d8c698ab8effa41b914525b8cca1c1eecefa76d248b25cc598fba"}}]
                 """.trim();
         assertThat(variables.get("PDS_CONFIG_TEMPLATE_METADATA_LIST")).isEqualTo(expectedMetaDataListJson);
+        assertThat(variables.get("TEST_CONTENT_FROM_ASSETFILE")).isEqualTo("i am \"testfile1.txt\" for scenario12 integration tests");
         /* @formatter:on */
     }
 

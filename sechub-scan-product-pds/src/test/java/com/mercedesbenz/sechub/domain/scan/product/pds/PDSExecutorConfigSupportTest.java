@@ -469,9 +469,9 @@ public class PDSExecutorConfigSupportTest {
         List<PDSTemplateMetaData> templateMetaDataServiceResult = new ArrayList<>();
         PDSTemplateMetaData pdsTemplateMetaData1 = new PDSTemplateMetaData();
         PDSAssetData assetData1 = new PDSAssetData();
-        assetData1.setAsset("asset-id-1");
+        assetData1.setAssetId("asset-id-1");
         assetData1.setChecksum("checksum1");
-        assetData1.setFile("file1");
+        assetData1.setFileName("file1");
         pdsTemplateMetaData1.setAssetData(assetData1);
         templateMetaDataServiceResult.add(pdsTemplateMetaData1);
         return templateMetaDataServiceResult;

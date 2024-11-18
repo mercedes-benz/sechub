@@ -1,11 +1,11 @@
   [ //<1>
     {
-        "template" : "templateId", //<2>
-        "type": "WEBSCAN_LOGIN", //<3>
+        "templateId" : "templateId", //<2>
+        "tempplateType": "WEBSCAN_LOGIN", //<3>
          
         "assetData" : { //<4>
-                "asset" : "assetId", //<5>
-                "file" : "fileName", //<6>
+                "assetId" : "assetId", //<5>
+                "fileName" : "fileName", //<6>
                 "checksum" : "fileChecksum" //<7>
         }
         

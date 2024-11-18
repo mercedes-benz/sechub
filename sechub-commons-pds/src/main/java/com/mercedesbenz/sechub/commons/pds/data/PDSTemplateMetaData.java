@@ -7,28 +7,28 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 
 public class PDSTemplateMetaData {
 
-    private String template;
-    private TemplateType type;
+    private String templateId;
+    private TemplateType templateType;
     private PDSAssetData assetData;
 
     public PDSAssetData getAssetData() {
         return assetData;
     }
 
-    public String getTemplate() {
-        return template;
+    public String getTemplateId() {
+        return templateId;
     }
 
-    public TemplateType getType() {
-        return type;
+    public TemplateType getTemplateType() {
+        return templateType;
     }
 
-    public void setType(TemplateType type) {
-        this.type = type;
+    public void setTemplateType(TemplateType type) {
+        this.templateType = type;
     }
 
-    public void setTemplate(String templateId) {
-        this.template = templateId;
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
     }
 
     public void setAssetData(PDSAssetData assetData) {
@@ -37,7 +37,7 @@ public class PDSTemplateMetaData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(assetData, template, type);
+        return Objects.hash(assetData, templateId, templateType);
     }
 
     @Override
@@ -49,34 +49,34 @@ public class PDSTemplateMetaData {
         if (getClass() != obj.getClass())
             return false;
         PDSTemplateMetaData other = (PDSTemplateMetaData) obj;
-        return Objects.equals(assetData, other.assetData) && Objects.equals(template, other.template) && type == other.type;
+        return Objects.equals(assetData, other.assetData) && Objects.equals(templateId, other.templateId) && templateType == other.templateType;
     }
 
     @Override
     public String toString() {
-        return "PDSTemplateMetaData [" + (template != null ? "template=" + template + ", " : "") + (type != null ? "type=" + type + ", " : "")
-                + (assetData != null ? "assetData=" + assetData : "") + "]";
+        return "PDSTemplateMetaData [" + (templateId != null ? "template=" + templateId + ", " : "")
+                + (templateType != null ? "type=" + templateType + ", " : "") + (assetData != null ? "assetData=" + assetData : "") + "]";
     }
 
     public static class PDSAssetData {
-        private String asset;
-        private String file;
+        private String assetId;
+        private String fileName;
         private String checksum;
 
-        public String getAsset() {
-            return asset;
+        public String getAssetId() {
+            return assetId;
         }
 
-        public void setAsset(String asset) {
-            this.asset = asset;
+        public void setAssetId(String assetId) {
+            this.assetId = assetId;
         }
 
-        public String getFile() {
-            return file;
+        public String getFileName() {
+            return fileName;
         }
 
-        public void setFile(String file) {
-            this.file = file;
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
         }
 
         public String getChecksum() {
@@ -89,7 +89,7 @@ public class PDSTemplateMetaData {
 
         @Override
         public int hashCode() {
-            return Objects.hash(asset, checksum, file);
+            return Objects.hash(assetId, checksum, fileName);
         }
 
         @Override
@@ -101,12 +101,12 @@ public class PDSTemplateMetaData {
             if (getClass() != obj.getClass())
                 return false;
             PDSAssetData other = (PDSAssetData) obj;
-            return Objects.equals(asset, other.asset) && Objects.equals(checksum, other.checksum) && Objects.equals(file, other.file);
+            return Objects.equals(assetId, other.assetId) && Objects.equals(checksum, other.checksum) && Objects.equals(fileName, other.fileName);
         }
 
         @Override
         public String toString() {
-            return "PDSAssetData [" + (asset != null ? "asset=" + asset + ", " : "") + (file != null ? "file=" + file + ", " : "")
+            return "PDSAssetData [" + (assetId != null ? "assetId=" + assetId + ", " : "") + (fileName != null ? "fileName=" + fileName + ", " : "")
                     + (checksum != null ? "checksum=" + checksum : "") + "]";
         }
 

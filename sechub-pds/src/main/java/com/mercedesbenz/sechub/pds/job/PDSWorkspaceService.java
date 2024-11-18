@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_BINARIES_TAR;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILENAME_SOURCECODE_ZIP;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static java.util.Objects.*;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,10 +35,14 @@ import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.FileSize;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventData;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventDetailIdentifier;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
@@ -47,18 +52,24 @@ import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
+import com.mercedesbenz.sechub.pds.usecase.PDSStep;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesJob;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
+import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
+import com.mercedesbenz.sechub.storage.core.Storage;
 
 @Service
 public class PDSWorkspaceService {
 
     public static final String UPLOAD = "upload";
+    public static final String ASSETS = "assets";
     public static final String EXTRACTED = "extracted";
     public static final String EXTRACTED_SOURCES = EXTRACTED + "/sources";
     public static final String EXTRACTED_BINARIES = EXTRACTED + "/binaries";
+    public static final String EXTRACTED_ASSETS = EXTRACTED + "/assets";
 
     public static final String OUTPUT = "output";
     public static final String MESSAGES = "messages";
@@ -120,6 +131,9 @@ public class PDSWorkspaceService {
     @Autowired
     PDSWorkspacePreparationResultCalculator preparationResultCalculator;
 
+    @Autowired
+    CheckSumSupport checksumSupport;
+
     private static final ArchiveFilter TAR_FILE_FILTER = new TarFileFilter();
 
     private static final ArchiveFilter ZIP_FILE_FILTER = new SourcecodeZipFileFilter();
@@ -151,6 +165,7 @@ public class PDSWorkspaceService {
      * @return {@link PDSWorkspacePreparationResult}, never <code>null</code>
      * @throws IOException
      */
+    @UseCaseSystemExecutesJob(@PDSStep(number = 4, name = "PDS workspace preparation", description = "PDS job workspace is prepared here: Directories are created, files are downloaded and extracted etc."))
     public PDSWorkspacePreparationResult prepare(UUID pdsJobUUID, PDSJobConfiguration config, String metaData) throws IOException {
 
         PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(config);
@@ -161,6 +176,8 @@ public class PDSWorkspaceService {
                 preparationContext.isBinaryAccepted());
 
         writeMetaData(pdsJobUUID, metaData);
+
+        importAndExtractFilesFromAssetStorage(pdsJobUUID, config, configurationSupport, preparationContext);
 
         importWantedFilesFromJobStorage(pdsJobUUID, config, configurationSupport, preparationContext);
 
@@ -188,7 +205,7 @@ public class PDSWorkspaceService {
         PDSResilientRetryExecutor<IOException> resilientStorageReadExecutor = createResilientReadExecutor(preparationContext);
 
         File jobFolder = getUploadFolder(pdsJobUUID);
-        JobStorage storage = fetchStorage(pdsJobUUID, config);
+        JobStorage storage = fetchJobStorage(pdsJobUUID, config);
 
         Set<String> names = resilientStorageReadExecutor.execute(() -> storage.listNames(), "List storage names for job: " + pdsJobUUID.toString());
 
@@ -209,6 +226,79 @@ public class PDSWorkspaceService {
         } finally {
             storage.close();
         }
+
+    }
+
+    private void importAndExtractFilesFromAssetStorage(UUID pdsJobUUID, PDSJobConfiguration config, PDSJobConfigurationSupport configurationSupport,
+            PDSWorkspacePreparationContext preparationContext) throws IOException {
+
+        List<PDSTemplateMetaData> templateMetaDataList = configurationSupport.getTemplateMetaData();
+        if (templateMetaDataList.isEmpty()) {
+            LOG.debug("No template meta data available - will skipp asset data import");
+            return;
+        }
+
+        PDSResilientRetryExecutor<IOException> resilientStorageReadExecutor = createResilientReadExecutor(preparationContext);
+
+        for (PDSTemplateMetaData metaData : templateMetaDataList) {
+            TemplateType templateType = requireNonNull(metaData.getTemplateType(), "Template type may not be null");
+            PDSAssetData assetData = requireNonNull(metaData.getAssetData(), "Asset data may not be null");
+            String fileName = requireNonBlank(assetData.getFileName(), "Filename must be defined");
+            String assetId = requireNonBlank(assetData.getAssetId(), "Asset id must be defined");
+            String checksumFromSecHub = requireNonBlank(assetData.getChecksum(), "Checksum must be defined.");
+
+            File assetDownloadFile = getAssetFileFromUpload(pdsJobUUID, assetId, fileName);
+            String assetFilePath = assetId + "/" + fileName;
+
+            resilientStorageReadExecutor.execute(() -> {
+
+                try (AssetStorage storage = storageService.createAssetStorage(assetId)) {
+                    InputStream storageStream = storage.fetch(fileName);
+                    readAndCopyInputStreamToFileSystem(pdsJobUUID, fileName, assetDownloadFile, storageStream);
+
+                    String checksumAfterDownloadFromStorage = checksumSupport.createSha256Checksum(assetDownloadFile.toPath());
+
+                    if (!checksumAfterDownloadFromStorage.equals(checksumFromSecHub)) {
+                        throw new IOException("Checksum not as expected for asset file:" + assetFilePath + "\nSecHub checksum:" + checksumFromSecHub
+                                + ", Download checksum:" + checksumAfterDownloadFromStorage);
+                    }
+                }
+            }, "Read and copy asset file: " + assetFilePath + " for job: " + pdsJobUUID);
+
+            File extractionFolder = getAssetExtractionFolder(pdsJobUUID, templateType);
+            if (fileName.toLowerCase().endsWith(".zip")) {
+                LOG.info("Start extraction of asset file '{}'", fileName);
+                /* extract ZIP file */
+                ArchiveExtractionConstraints archiveExtractionConstraints = createExtractionContraints();
+                archiveSupportProvider.getArchiveSupport().extractFileAsIsToFolder(ArchiveType.ZIP, assetDownloadFile, extractionFolder,
+                        archiveExtractionConstraints);
+            } else {
+                /*
+                 * This case will only happen in PDS solution development:
+                 *
+                 * At development time, it can happen that there is a need to directly upload
+                 * and change asset files in storage to make things easier/faster turn around
+                 * times.
+                 *
+                 * But SecHub will always use "$pdsProductIdentifier.zip" as the asset file name
+                 * for the product (if there exists one in storage) and send this inside
+                 * parameters!
+                 */
+                LOG.warn(
+                        "Asset file name '{}' does not end with '.zip' - will just copy the file to extraction folder. This may ONLY happen at PDS solution development time, but not in production by SecHub!",
+                        fileName);
+                FileUtils.copyFile(assetDownloadFile, new File(extractionFolder, fileName));
+            }
+
+        }
+
+    }
+
+    private static final String requireNonBlank(String target, String message) {
+        if (requireNonNull(target, message).isBlank()) {
+            throw new IllegalStateException(message);
+        }
+        return target;
     }
 
     private PDSResilientRetryExecutor<IOException> createResilientReadExecutor(PDSWorkspacePreparationContext preparationContext) {
@@ -220,30 +310,34 @@ public class PDSWorkspaceService {
         return resilientExecutor;
     }
 
-    private void readAndCopyStorageToFileSystem(UUID jobUUID, File jobFolder, JobStorage storage, String name) throws IOException {
+    private void readAndCopyStorageToFileSystem(UUID jobUUID, File jobFolder, Storage storage, String fileName) throws IOException {
 
-        File uploadFile = new File(jobFolder, name);
+        File uploadFile = new File(jobFolder, fileName);
 
-        try (InputStream fetchedInputStream = storage.fetch(name)) {
+        try (InputStream fetchedInputStream = storage.fetch(fileName)) {
 
-            try {
-
-                FileUtils.copyInputStreamToFile(fetchedInputStream, uploadFile);
-
-                LOG.debug("Imported '{}' for job {} from storage to {}", name, jobUUID, uploadFile.getAbsolutePath());
-
-            } catch (IOException e) {
-
-                LOG.error("Was not able to copy stream of uploaded file: {} for job {}, reason: ", name, jobUUID, e.getMessage());
-
-                if (uploadFile.exists()) {
-                    boolean deleteSuccessful = uploadFile.delete();
-                    LOG.info("Uploaded file existed. Deleted successfully: {}", deleteSuccessful);
-                }
-                throw e;
-            }
+            readAndCopyInputStreamToFileSystem(jobUUID, fileName, uploadFile, fetchedInputStream);
         }
 
+    }
+
+    private void readAndCopyInputStreamToFileSystem(UUID jobUUID, String fileName, File uploadFile, InputStream fetchedInputStream) throws IOException {
+        try {
+
+            FileUtils.copyInputStreamToFile(fetchedInputStream, uploadFile);
+
+            LOG.debug("Imported '{}' for job {} from storage to {}", fileName, jobUUID, uploadFile.getAbsolutePath());
+
+        } catch (IOException e) {
+
+            LOG.error("Was not able to copy stream of uploaded file: {} for job {}, reason: ", fileName, jobUUID, e.getMessage());
+
+            if (uploadFile.exists()) {
+                boolean deleteSuccessful = uploadFile.delete();
+                LOG.info("Uploaded file existed. Deleted successfully: {}", deleteSuccessful);
+            }
+            throw e;
+        }
     }
 
     void extractZipFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config, PDSWorkspacePreparationContext preparationContext) throws IOException {
@@ -288,7 +382,7 @@ public class PDSWorkspaceService {
         return false;
     }
 
-    private JobStorage fetchStorage(UUID pdsJobUUID, PDSJobConfiguration config) {
+    private JobStorage fetchJobStorage(UUID pdsJobUUID, PDSJobConfiguration config) {
 
         UUID pdsOrSecHubJobUUID;
         String storagePath;
@@ -323,6 +417,41 @@ public class PDSWorkspaceService {
         File file = new File(getWorkspaceFolder(pdsJobUUID), UPLOAD);
         file.mkdirs();
         return file;
+    }
+
+    /**
+     * Resolves assets folder - if not existing it will be created
+     *
+     * @param pdsJobUUID
+     * @return assets folder
+     */
+    private Path getAssetUploadFolder(UUID pdsJobUUID) {
+        File file = new File(getUploadFolder(pdsJobUUID), ASSETS);
+        file.mkdirs();
+        return file.toPath();
+    }
+
+    /**
+     * Resolves asset extraction folder - if not existing it will be created
+     *
+     * @param pdsJobUUID
+     * @param templateType
+     * @return asset extraction folder
+     */
+    public File getAssetExtractionFolder(UUID pdsJobUUID, TemplateType templateType) {
+        Path parent = getUploadFolder(pdsJobUUID).toPath();
+        Path assetsExtractedPath = parent.resolve(EXTRACTED_ASSETS);
+        Path templateTypeExtractedPath = assetsExtractedPath.resolve(templateType.getId());
+        File file = templateTypeExtractedPath.toFile();
+        file.mkdirs();
+        return file;
+    }
+
+    private File getAssetFileFromUpload(UUID pdsJobUUID, String assetId, String fileName) {
+        Path parent = getAssetUploadFolder(pdsJobUUID);
+        Path assetIdDownloadPath = parent.resolve(assetId);
+        assetIdDownloadPath.toFile().mkdirs();
+        return assetIdDownloadPath.resolve(fileName).toFile();
     }
 
     private Path getWorkspaceFolderPath(UUID jobUUID) {
@@ -418,8 +547,7 @@ public class PDSWorkspaceService {
         }
 
         ArchiveSupport archiveSupport = archiveSupportProvider.getArchiveSupport();
-        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(archiveExtractionMaxFileSizeUncompressed,
-                archiveExtractionMaxEntries, archiveExtractionMaxDirectoryDepth, archiveExtractionTimeout);
+        ArchiveExtractionConstraints archiveExtractionConstraints = createExtractionContraints();
 
         for (File archiveFile : archiveFiles) {
             try (FileInputStream archiveFileInputStream = new FileInputStream(archiveFile)) {
@@ -443,6 +571,12 @@ public class PDSWorkspaceService {
         return true;
     }
 
+    private ArchiveExtractionConstraints createExtractionContraints() {
+        ArchiveExtractionConstraints archiveExtractionConstraints = new ArchiveExtractionConstraints(archiveExtractionMaxFileSizeUncompressed,
+                archiveExtractionMaxEntries, archiveExtractionMaxDirectoryDepth, archiveExtractionTimeout);
+        return archiveExtractionConstraints;
+    }
+
     public void cleanup(UUID jobUUID, PDSJobConfiguration config) throws IOException {
         FileUtils.deleteDirectory(getWorkspaceFolder(jobUUID));
         LOG.info("Removed workspace folder for job {}", jobUUID);
@@ -453,7 +587,7 @@ public class PDSWorkspaceService {
             LOG.info("Removed NOT storage for PDS job {} because sechub storage and will be handled by sechub job {}", jobUUID, config.getSechubJobUUID());
 
         } else {
-            JobStorage storage = fetchStorage(jobUUID, config);
+            JobStorage storage = fetchJobStorage(jobUUID, config);
             storage.deleteAll();
             LOG.info("Removed storage for job {}", jobUUID);
             storage.close();
@@ -549,6 +683,7 @@ public class PDSWorkspaceService {
 
         locationData.extractedSourcesLocation = createExtractedSourcesLocation(workspaceFolderPath).toString();
         locationData.extractedBinariesLocation = createExtractedBinariesLocation(workspaceFolderPath).toString();
+        locationData.extractedAssetsLocation = createExtractedAssetsLocation(workspaceFolderPath).toString();
 
         locationData.sourceCodeZipFileLocation = createSourceCodeZipFileLocation(workspaceFolderPath).toString();
         locationData.binariesTarFileLocation = createBinariesTarFileLocation(workspaceFolderPath).toString();
@@ -677,6 +812,10 @@ public class PDSWorkspaceService {
 
     private Path createExtractedSourcesLocation(Path workspaceFolderPath) {
         return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + EXTRACTED_SOURCES);
+    }
+
+    private Path createExtractedAssetsLocation(Path workspaceFolderPath) {
+        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + EXTRACTED_ASSETS);
     }
 
     private Path createWorkspacePathAndEnsureDirectory(Path workspaceLocation, String subPath) {

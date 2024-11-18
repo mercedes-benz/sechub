@@ -58,8 +58,8 @@ public class PDSTemplateMetaDataService {
 
             PDSAssetData assetData = metaData.getAssetData();
 
-            String assetId = assetData.getAsset();
-            String fileName = assetData.getFile();
+            String assetId = assetData.getAssetId();
+            String fileName = assetData.getFileName();
 
             assetService.ensureAssetFileInStorageAvailableAndHasSameChecksumAsInDatabase(fileName, assetId);
 
@@ -93,13 +93,13 @@ public class PDSTemplateMetaDataService {
                 }
                 /* found */
                 PDSAssetData assetData = new PDSAssetData();
-                assetData.setAsset(assetId);
-                assetData.setFile(fileData.getFileName());
+                assetData.setAssetId(assetId);
+                assetData.setFileName(fileData.getFileName());
                 assetData.setChecksum(fileData.getChecksum());
 
                 PDSTemplateMetaData metaData = new PDSTemplateMetaData();
-                metaData.setTemplate(definition.getId());
-                metaData.setType(definition.getType());
+                metaData.setTemplateId(definition.getId());
+                metaData.setTemplateType(definition.getType());
                 metaData.setAssetData(assetData);
 
                 result.add(metaData);
