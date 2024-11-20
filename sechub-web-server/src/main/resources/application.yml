@@ -19,6 +19,8 @@ spring:
       web-server_dev: "ssl-cert-provided,classic-auth-enabled"
       web-server_local: "ssl-cert-provided,classic-auth-enabled,local"
       web-server_test: "test"
+      web-server_h2: "ssl-cert-provided,classic-auth-enabled,h2"
+      web-server_postgres: "ssl-cert-provided,classic-auth-enabled,postgres"
       web-server_integrationtest: "ssl-cert-provided,integrationtest-data"
   web:
     resources:
@@ -44,3 +46,8 @@ management:
     metrics:
       export:
         enabled: true
+
+sechub:
+  security:
+    encryption:
+      secret-key: test-test-test-test-test-test-32
