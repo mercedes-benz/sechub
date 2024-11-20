@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.testframework.spring;
+package com.mercedesbenz.sechub.spring.security;
 
+import static com.mercedesbenz.sechub.spring.security.TestRoles.OWNER;
+import static com.mercedesbenz.sechub.spring.security.TestRoles.SUPERADMIN;
+import static com.mercedesbenz.sechub.spring.security.TestRoles.USER;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -12,31 +17,23 @@ import java.util.UUID;
 import org.opentest4j.TestAbortedException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 
-import com.mercedesbenz.sechub.domain.authorization.AuthUser;
-import com.mercedesbenz.sechub.domain.authorization.AuthUserDetailsService;
-import com.mercedesbenz.sechub.domain.authorization.AuthUserRepository;
-
 /**
  * This configuration class provides the necessary beans to test Springs OAuth2
- * integration with SecHub components.
+ * integration with SecHub components in JWT mode.
  *
  * @author hamidonos
  */
 @Configuration
-@Import({ AuthUserDetailsService.class })
-public class OAuth2SecurityTestConfiguration {
+public class TestOAuth2JwtSecurityConfiguration {
 
     public static final String BEARER_PREFIX = OAuth2AccessToken.TokenType.BEARER.getValue() + " ";
-
-    public static final String ADMIN = "SUPERADMIN";
-    public static final String OWNER = "OWNER";
-    public static final String USER = "USER";
 
     private static final String ADMIN_JWT = "admin-jwt";
     private static final String OWNER_JWT = "owner-jwt";
@@ -78,39 +75,42 @@ public class OAuth2SecurityTestConfiguration {
     }
 
     /**
-     * Here we mock the {@link AuthUserRepository} to return a {@link AuthUser}
-     * object based on the user id (or subject). The subject is determined by the
-     * {@link com.mercedesbenz.sechub.testframework.spring.OAuth2SecurityTestConfiguration#jwtDecoder()}
-     * bean. Depending on the user id, the {@link AuthUser} object will have the
-     * corresponding role enabled.
+     * Here we mock the {@link UserDetailsService} to return a
+     * {@link TestUserDetails} object based on the user id (or subject). The subject
+     * is determined by the {@link TestOAuth2JwtSecurityConfiguration#jwtDecoder()}
+     * bean. Depending on the user id, the {@link TestUserDetails} object will
+     * contain the corresponding authorities.
      */
     @Bean
-    AuthUserRepository authUserRepository() {
-        AuthUserRepository authUserRepository = mock();
-        when(authUserRepository.findByUserId(anyString())).thenAnswer(invocation -> {
-            String userId = invocation.getArgument(0);
-            if (!Set.of(ADMIN_ID, OWNER_ID, USER_ID).contains(userId)) {
+    UserDetailsService userDetailsService() {
+        UserDetailsService userDetailsService = mock();
+        when(userDetailsService.loadUserByUsername(anyString())).thenAnswer(invocation -> {
+            String username = invocation.getArgument(0);
+            if (!Set.of(ADMIN_ID, OWNER_ID, USER_ID).contains(username)) {
                 return Optional.empty();
             }
-            AuthUser authUser = new AuthUser();
-            authUser.setUserId(userId);
-            if (ADMIN_ID.equals(userId)) {
-                authUser.setRoleUser(true);
+
+            Collection<SimpleGrantedAuthority> authorities = new HashSet<>(1);
+
+            if (ADMIN_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(SUPERADMIN));
             }
-            if (OWNER_ID.equals(userId)) {
-                authUser.setRoleOwner(true);
+            if (OWNER_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(OWNER));
             }
-            if (USER_ID.equals(userId)) {
-                authUser.setRoleSuperAdmin(true);
+            if (USER_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(USER));
             }
-            return Optional.of(authUser);
+
+            return new TestUserDetails(authorities, username);
         });
-        return authUserRepository;
+
+        return userDetailsService;
     }
 
     public static String getJwtAuthHeader(String role) {
         return BEARER_PREFIX + switch (role) {
-        case ADMIN -> ADMIN_JWT;
+        case SUPERADMIN -> ADMIN_JWT;
         case OWNER -> OWNER_JWT;
         case USER -> USER_JWT;
         default -> throw new TestAbortedException("Invalid role");

@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 
 @Configuration
-public class JwtMockAuthenticationTestConfiguration {
+public class TestJwtMockAuthenticationConfiguration {
 
     public static final String JWT = "jwt";
     public static final String ENCRYPTED_JWT_B64_ENCODED = "37eb9nQkgX13l41KCOR7nA==";

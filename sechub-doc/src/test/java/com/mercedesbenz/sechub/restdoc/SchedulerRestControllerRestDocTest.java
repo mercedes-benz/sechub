@@ -26,12 +26,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -85,7 +83,6 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
@@ -97,8 +94,9 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
-@WebMvcTest(SchedulerRestController.class)
-@ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { SchedulerRestController.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @WithMockUser
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles(Profiles.TEST)
@@ -1224,12 +1222,5 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         when(mockedProjectRepository.findById(key)).thenReturn(Optional.of(project1));
 
         when(sechubConfigurationValidator.supports(SecHubConfiguration.class)).thenReturn(true);
-    }
-
-    @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 }

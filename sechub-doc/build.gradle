@@ -53,6 +53,7 @@ dependencies {
     for (String wantedProjectName: wanted){
         implementation project(":${wantedProjectName}")
     }
+    implementation project(':sechub-shared-kernel')
     implementation library.apache_commons_io
 
     implementation spring_boot_dependency.jackson_core

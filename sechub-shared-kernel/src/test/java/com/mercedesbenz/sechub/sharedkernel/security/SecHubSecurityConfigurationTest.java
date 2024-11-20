@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.security;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -8,14 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
+
+import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
 
 /**
  * This test class makes sure that the defined API security rules from
- * {@link AbstractSecHubAPISecurityConfiguration} are working properly.
+ * {@link AbstractSecurityConfiguration} are working properly.
  *
  * <p>
  * Using {@link WithMockUser} to set up a mocked
@@ -25,19 +30,22 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  *
  * <p>
  * <b>Note:</b> Here we don't test the integration of OAuth2 or Basic Auth. For
- * that, see {@link OAuth2IntegrationTest}. This test class is only concerned
- * with verifying if the security rules are correctly applied on an abstract
- * level.
+ * that, see
+ * {@link com.mercedesbenz.sechub.spring.security.OAuth2JwtIntegrationTest} or
+ * {@link com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntegrationTest}.
+ * This test class is only concerned with verifying if the security rules are
+ * correctly applied on an abstract level.
  * </p>
  *
  * @see WithMockUser
- * @see OAuth2IntegrationTest
- * @see AbstractSecHubAPISecurityConfiguration
+ * @see OAuth2JwtIntegrationTest
+ * @see AbstractSecurityConfiguration
  *
  * @author hamidonos
  */
+@SuppressWarnings("JavadocReference")
 @WebMvcTest
-class SecHubApiSecurityConfigurationTest {
+class SecHubSecurityConfigurationTest {
 
     private static final String SUPERADMIN = "SUPERADMIN";
     private static final String USER = "USER";
@@ -46,7 +54,7 @@ class SecHubApiSecurityConfigurationTest {
     private final MockMvc mockMvc;
 
     @Autowired
-    SecHubApiSecurityConfigurationTest(MockMvc mockMvc) {
+    SecHubSecurityConfigurationTest(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 
@@ -174,7 +182,13 @@ class SecHubApiSecurityConfigurationTest {
     }
 
     @Configuration
-    static class TestConfig extends AbstractSecHubAPISecurityConfiguration {
+    @Import(SecHubSecurityConfiguration.class)
+    static class TestConfig {
+
+        @Bean
+        RestTemplate restTemplate() {
+            return mock();
+        }
 
         @Bean
         TestSecurityController testSecurityController() {

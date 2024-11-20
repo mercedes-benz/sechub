@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.security;
+package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,12 +16,10 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 
 /**
  * <p>
- * This class integrates authentication and authorization in SecHub by combining
- * OAuth2-based authentication with custom
- * {@link com.mercedesbenz.sechub.domain.authorization.AuthUserDetailsService}
- * for authorization. While OAuth2 manages the authentication process, our
- * system fetches roles and permissions from the database to handle
- * authorization.
+ * This class integrates security in SecHub by combining OAuth2-based
+ * authentication with authorization from the {@link UserDetailsService}. While
+ * OAuth2 manages the authentication process, the user details service is
+ * responsible for providing application specific user details and authorities.
  * </p>
  *
  * <p>
@@ -34,20 +32,18 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
  * which encapsulates information about the authenticated user and their roles.
  * </p>
  *
- * @see com.mercedesbenz.sechub.domain.authorization.AuthUserDetailsService
  * @see org.springframework.security.oauth2.jwt.JwtDecoder
  * @see org.springframework.security.core.userdetails.UserDetailsService
  * @see org.springframework.security.authentication.AuthenticationProvider
  *
  * @author hamidonos
  */
-@SuppressWarnings("JavadocReference")
-class OAuth2AuthenticationProvider implements AuthenticationProvider {
+public class OAuth2JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final JwtDecoder jwtDecoder;
 
-    public OAuth2AuthenticationProvider(UserDetailsService userDetailsService, JwtDecoder jwtDecoder) {
+    public OAuth2JwtAuthenticationProvider(UserDetailsService userDetailsService, JwtDecoder jwtDecoder) {
         this.userDetailsService = requireNonNull(userDetailsService, "Property userDetailsService must not be null");
         this.jwtDecoder = requireNonNull(jwtDecoder, "Property jwtDecoder must not be null");
     }

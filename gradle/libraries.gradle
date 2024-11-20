@@ -97,16 +97,17 @@ ext {
       cycloneDX_core:                          "8.0.0",
       cyclonedx_gradle_plugin:                 "1.7.4",
 
-     /* Prepare wrapper */
-     jgit_core:                                "6.9.0.202403050737-r",
+      /* Prepare wrapper */
+      jgit_core:                                "6.9.0.202403050737-r",
 
-     /* ArchUnit */
-     arch_unit:                                "1.3.0",
+      /* ArchUnit */
+      arch_unit:                                "1.3.0",
 
       /* encryption */
       // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
-      bouncy_castle_bcprov_jdk8:                "1.78.1"
+      bouncy_castle_bcprov_jdk8:                "1.78.1",
 
+      jakarta_servlet_api:                      "6.0.0"
    ]    
    
    library = [
@@ -130,6 +131,8 @@ ext {
         springframework_restdocs:                  "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:             "org.springframework.security:spring-security-test",
         springframework_web:                       "org.springframework:spring-web",
+        springboot_test_autoconfigure:             "org.springframework.boot:spring-boot-test-autoconfigure",
+        springframework_webmvc:                    "org.springframework:spring-webmvc",
 
         micrometer_prometheus:                 "io.micrometer:micrometer-registry-prometheus",
 
@@ -220,6 +223,8 @@ ext {
         javaxAnnotationApi:                     "javax.annotation:javax.annotation-api:${libraryVersion.javaxAnnotationApi}",
         findbugs:                               "com.google.code.findbugs:jsr305:${libraryVersion.findbugs}",
         httpmime:                               "org.apache.httpcomponents:httpmime:${libraryVersion.httpmime}",
+
+        jakarta_servlet_api:                   "jakarta.servlet:jakarta.servlet-api:${libraryVersion.jakarta_servlet_api}",
    ]
    
 

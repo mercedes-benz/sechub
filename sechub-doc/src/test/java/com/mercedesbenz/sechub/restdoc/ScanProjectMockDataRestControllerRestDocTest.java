@@ -14,11 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,7 +32,6 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfigurat
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
@@ -43,8 +41,9 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ScanProjectMockDataRestController.class)
-@ContextConfiguration(classes = { ScanProjectMockDataRestController.class, ScanProjectMockDataRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { ScanProjectMockDataRestController.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 @ActiveProfiles({ Profiles.MOCKED_PRODUCTS, Profiles.TEST })
 public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -138,12 +137,6 @@ public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNeces
                     );
 
         /* @formatter:on */
-    }
-
-    @TestConfiguration
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
     @Before

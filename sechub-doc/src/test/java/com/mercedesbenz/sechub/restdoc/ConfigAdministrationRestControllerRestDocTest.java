@@ -14,11 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,9 +29,7 @@ import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
 import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService;
 import com.mercedesbenz.sechub.domain.administration.config.ConfigAdministrationRestController;
-import com.mercedesbenz.sechub.domain.administration.scheduler.SchedulerAdministrationRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAutoCleanupConfiguration;
@@ -42,8 +39,9 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(SchedulerAdministrationRestController.class)
-@ContextConfiguration(classes = { ConfigAdministrationRestController.class, ConfigAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { ConfigAdministrationRestController.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -120,12 +118,6 @@ public class ConfigAdministrationRestControllerRestDocTest implements TestIsNece
                 		)
         ));
 		/* @formatter:on */
-    }
-
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }

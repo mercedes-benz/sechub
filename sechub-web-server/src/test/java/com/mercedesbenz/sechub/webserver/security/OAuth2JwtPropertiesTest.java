@@ -24,14 +24,14 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 @SpringBootTest
 @ActiveProfiles("oauth2-enabled")
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
-class OAuth2PropertiesTest {
+class OAuth2JwtPropertiesTest {
 
     private static final String ERR_MSG_FORMAT = "The property 'sechub.security.oauth2.%s' must not be null";
 
     private final OAuth2Properties properties;
 
     @Autowired
-    OAuth2PropertiesTest(OAuth2Properties properties) {
+    OAuth2JwtPropertiesTest(OAuth2Properties properties) {
         this.properties = properties;
     }
 
