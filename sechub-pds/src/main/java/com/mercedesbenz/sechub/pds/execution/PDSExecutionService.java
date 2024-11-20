@@ -37,6 +37,7 @@ import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesJob;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemSigTermHandling;
 
@@ -205,6 +206,7 @@ public class PDSExecutionService {
     }
 
     @Async
+    @UseCaseSystemExecutesJob(@PDSStep(number = 2, name = "Add Job to queue", description = "PDS job is added to queue"))
     public void addToExecutionQueueAsynchron(UUID jobUUID) {
         Future<?> former = null;
         synchronized (jobsInQueue) {

@@ -20,4 +20,14 @@ public interface StorageService {
      */
     public JobStorage createJobStorageForPath(String storagePath, UUID jobUUID);
 
+    /**
+     * Creates a new asset storage object. If you no longer need the asset storage
+     * object, you have to close the storage object to save resources.
+     *
+     * @param assetId asset identifier
+     *
+     * @return asset storage object
+     */
+    public AssetStorage createAssetStorage(String assetId);
+
 }

@@ -1,0 +1,13 @@
+  [ //<1>
+    {
+        "templateId" : "templateId", //<2>
+        "tempplateType": "WEBSCAN_LOGIN", //<3>
+         
+        "assetData" : { //<4>
+                "assetId" : "assetId", //<5>
+                "fileName" : "fileName", //<6>
+                "checksum" : "fileChecksum" //<7>
+        }
+        
+    }
+  ]

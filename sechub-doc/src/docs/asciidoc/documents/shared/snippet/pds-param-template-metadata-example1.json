@@ -1,0 +1,9 @@
+[ {
+  "templateId" : "single-singon",
+  "templateType" : "webscan-login",
+  "assetData" : {
+    "assetId" : "custom-webscan-setup",
+    "fileName" : "WEBSCAN_PRODUCT_ID.zip",
+    "checksum" : "434c6c6ec1b0ed9844149069d7d45ac18e72505b"
+  }
+} ]

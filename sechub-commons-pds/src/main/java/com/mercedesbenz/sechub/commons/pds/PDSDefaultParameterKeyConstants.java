@@ -6,7 +6,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 /**
  * All default parameter keys supported by PDS. A PDS can support optional
  * parameters (via its configuration) but these ones are always supported and be
- * available at runtime inside PDS scripts.<br>
+ * available at runtime inside PDS.<br>
  * <br>
  *
  * Wrappers can use these constants as spring boot values.
@@ -77,6 +77,8 @@ public class PDSDefaultParameterKeyConstants {
     public static final String PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX = "pds.config.jobstorage.read.resilience.retries.max";
 
     public static final String PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS = "pds.config.jobstorage.read.resilience.retry.wait.seconds";
+
+    public static final String PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST = "pds.config.template.metadata.list";
 
     /* ---------------------- */
     /* Integration tests only */

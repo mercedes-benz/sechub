@@ -27,6 +27,7 @@ public class PDSLauncherScriptEnvironmentConstants {
     @Deprecated
     public static final String PDS_JOB_SOURCECODE_UNZIPPED_FOLDER = "PDS_JOB_SOURCECODE_UNZIPPED_FOLDER";
 
+    public static final String PDS_JOB_EXTRACTED_ASSETS_FOLDER = "PDS_JOB_EXTRACTED_ASSETS_FOLDER";
     public static final String PDS_JOB_EXTRACTED_SOURCES_FOLDER = "PDS_JOB_EXTRACTED_SOURCES_FOLDER";
     public static final String PDS_JOB_HAS_EXTRACTED_SOURCES = "PDS_JOB_HAS_EXTRACTED_SOURCES";
     public static final String PDS_JOB_SOURCECODE_ZIP_FILE = "PDS_JOB_SOURCECODE_ZIP_FILE";

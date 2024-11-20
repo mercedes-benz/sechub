@@ -47,6 +47,15 @@ public class UserInputAssertion {
     @Autowired
     Sha256ChecksumValidation sha256CheckSumValidation;
 
+    @Autowired
+    TemplateIdValidation templateIdValidation;
+
+    @Autowired
+    AssetIdValidation assetIdValidation;
+
+    @Autowired
+    AssetFileNameValidation assetFilenameValidation;
+
     /**
      * Asserts this is a valid project id. If not, a {@link NotAcceptableException}
      * will be thrown
@@ -109,6 +118,36 @@ public class UserInputAssertion {
      */
     public void assertIsValidSha256Checksum(String sha256) {
         assertValid(sha256, sha256CheckSumValidation, "Sha256 checksum is not valid");
+    }
+
+    /**
+     * Asserts this is a valid template id. If not, a {@link NotAcceptableException}
+     * will be thrown
+     *
+     * @param templateId
+     */
+    public void assertIsValidTemplateId(String templateId) {
+        assertValid(templateId, templateIdValidation, "Template id is not valid");
+    }
+
+    /**
+     * Asserts this is a valid asset id. If not, a {@link NotAcceptableException}
+     * will be thrown
+     *
+     * @param assetId
+     */
+    public void assertIsValidAssetId(String assetId) {
+        assertValid(assetId, assetIdValidation, "Asset id is not valid");
+    }
+
+    /**
+     * Asserts this is an valid asset filename. If not, a
+     * {@link NotAcceptableException} will be thrown
+     *
+     * @param fileName
+     */
+    public void assertIsValidAssetFileName(String fileName) {
+        assertValid(fileName, assetFilenameValidation, "Asset filename is not valid");
     }
 
 }

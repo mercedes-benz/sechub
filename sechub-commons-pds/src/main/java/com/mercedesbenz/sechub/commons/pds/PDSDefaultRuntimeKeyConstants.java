@@ -30,6 +30,8 @@ public class PDSDefaultRuntimeKeyConstants {
 
     public static final String RT_KEY_PDS_JOB_BINARIES_TAR_FILE = "pds.job.binaries.tar.file";
 
+    public static final String RT_KEY_PDS_JOB_EXTRACTED_ASSETS_FOLDER = "pds.job.extracted.assets.folder";
+
     public static final String RT_KEY_PDS_JOB_EXTRACTED_SOURCES_FOLDER = "pds.job.extracted.sources.folder";
 
     public static final String RT_KEY_PDS_JOB_HAS_EXTRACTED_BINARIES = "pds.job.has.extracted.binaries";

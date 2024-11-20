@@ -64,6 +64,10 @@ enum OpenApiSchema {
 
     ENCRYPTION_STATUS("EncryptionStatus"),
 
+    TEMPLATES("Templates"),
+
+    ASSETS("Assets"),
+
     ;
 
     private final Schema schema;
