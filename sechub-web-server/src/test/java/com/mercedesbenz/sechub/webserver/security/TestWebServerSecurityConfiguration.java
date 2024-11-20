@@ -13,7 +13,7 @@ import jakarta.servlet.http.Cookie;
 
 @TestConfiguration
 @Import({ WebServerSecurityConfiguration.class, TestJwtMockAuthenticationConfiguration.class, OAuth2PropertiesConfig.class, AES256Encryption.class })
-public class SecurityTestConfiguration {
+public class TestWebServerSecurityConfiguration {
 
     @Bean
     public RequestPostProcessor requestPostProcessor() {

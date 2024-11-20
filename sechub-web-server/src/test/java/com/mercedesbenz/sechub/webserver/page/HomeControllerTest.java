@@ -15,12 +15,12 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.mercedesbenz.sechub.testframework.spring.WithMockJwtUser;
 import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
-import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
+import com.mercedesbenz.sechub.webserver.security.TestWebServerSecurityConfiguration;
 import com.mercedesbenz.sechub.webserver.server.ServerProperties;
 import com.mercedesbenz.sechub.webserver.server.ServerPropertiesConfiguration;
 
 @WebMvcTest(HomeController.class)
-@Import({ SecurityTestConfiguration.class, ServerPropertiesConfiguration.class })
+@Import({ TestWebServerSecurityConfiguration.class, ServerPropertiesConfiguration.class })
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 @ActiveProfiles("oauth2-enabled")
 class HomeControllerTest {
