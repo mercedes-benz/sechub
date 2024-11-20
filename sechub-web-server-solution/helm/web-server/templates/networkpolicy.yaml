@@ -5,6 +5,9 @@ kind: NetworkPolicy
 metadata:
   name: web-server-policy
 spec:
+  podSelector:
+    matchLabels:
+      name: web-server
   ingress:
   - from:
     - podSelector:
@@ -13,13 +16,3 @@ spec:
     ports:
     - protocol: TCP
       port: 4443
-  - ports:
-{{- if .Values.go_mmproxy.enabled }}
-    - port: 8080
-{{- else }}
-    - port: 4443
-{{- end }}
-      protocol: TCP
-  podSelector:
-    matchLabels:
-      name: web-server

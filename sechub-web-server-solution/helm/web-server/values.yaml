@@ -70,23 +70,6 @@ web_server:
 #  This way, you can force deployments e.g. when only secrets have changed.
 deploymentComment: "my deployment comment"
 
-service:
-  loadbalancer:
-    ip: ""
-    port:
-      name: web-server-https
-      number: 443
-  # optional: Add annotations (goes to metadata.annotations)
-  #           Can contain multiple lines. Example:
-  # annotations: |-
-  #   loadbalancer.openstack.org/keep-floatingip: "true"
-  #   loadbalancer.openstack.org/proxy-protocol: "true"
-  #
-  # optional: Add finalizers (goes to metadata.finalizers)
-  #           Can contain multiple lines. Example:
-  # finalizers: |-
-  #   - service.kubernetes.io/load-balancer-cleanup
-
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:
 # templateMetadataAnnotations: |-
@@ -106,13 +89,3 @@ service:
 #       secretKeyRef:
 #         name: secret-web-server-example
 #         key: password
-
-go_mmproxy:
-  # Log the real client IP addresses via a go-mmproxy sidecar container
-  # Otherwise one sees only the loadbalancer's IP in the logs.
-  # go-mmproxy -> https://github.com/path-network/go-mmproxy
-  # Spoofs the real client address taken from proxy-protocol so the SecHub server will log correctly.
-  # (needs annotation loadbalancer.openstack.org/proxy-protocol: "true" - see above)
-  enabled: false
-  # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
-  image: "example.org/go-mmproxy:2.1.0"

@@ -33,42 +33,7 @@ spec:
           secret:
             secretName: secret-web-ui-ssl
 {{- end }}
-{{- if .Values.go_mmproxy.enabled }}
-      initContainers:
-      - name: setup
-        image: {{ .Values.go_mmproxy.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-        - "/bin/sh"
-        - "-cx"
-        args:
-        - |
-          /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
-          /sbin/ip route add local 0.0.0.0/0 dev lo table 123
-        securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-{{- end }}
       containers:
-{{- if .Values.go_mmproxy.enabled }}
-      # go-mmproxy sidecar container
-      - name: go-mmproxy
-        image: {{ .Values.go_mmproxy.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        ports:
-        - containerPort: 8080
-        securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-        args:
-        - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
-        - "-l"             # listen
-        - "0.0.0.0:8080"   # on port 8080
-        - "-4"             # tcp v4
-        - "127.0.0.1:4443" # forward to SecHub Web Server container (localhost port 4443)
-{{- end }}
       # SecHub web-server container
       - name: web-server
         image: {{ .Values.image }}
@@ -129,9 +94,9 @@ spec:
         - name: DEPLOYMENT_COMMENT
           value: "{{ .Values.deploymentComment }}"
 {{- end }}
-{{- if .Values.web_server.loggingType }}
+{{- if .Values.web_server.logging.type.enabled }}
         - name: LOGGING_TYPE
-          value: "{{ .Values.web_server.loggingType }}"
+          value: "{{ .Values.web_server.logging.type.appenderName }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Connection to SecHub server
