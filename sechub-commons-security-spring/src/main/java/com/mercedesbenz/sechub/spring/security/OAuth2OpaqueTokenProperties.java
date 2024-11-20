@@ -19,12 +19,15 @@ public class OAuth2OpaqueTokenProperties {
     private final String introspectionUri;
     private final SealedObject clientIdSealed;
     private final SealedObject clientSecretSealed;
+    private final Boolean enabled;
 
     /* @formatter:off */
-    OAuth2OpaqueTokenProperties(String introspectionUri,
+    OAuth2OpaqueTokenProperties(Boolean enabled,
+                                String introspectionUri,
                                 String clientId,
                                 String clientSecret) {
         try {
+            this.enabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
             this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
             this.clientIdSealed = CRYPTO_STRING.seal(requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id")));
             this.clientSecretSealed = CRYPTO_STRING.seal(requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret")));
@@ -35,6 +38,10 @@ public class OAuth2OpaqueTokenProperties {
         }
     }
     /* @formatter:on */
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     public String getIntrospectionUri() {
         return introspectionUri;

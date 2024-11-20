@@ -38,7 +38,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     private static final String CLIENT_ID = "example-client-id";
     private static final String CLIENT_SECRET = "example-client-secret";
     private static final UserDetailsService userDetailsService = mock();
-    private static final OpaqueTokenIntrospector introspector = new Base64OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID,
+    private static final OpaqueTokenIntrospector introspectorToTest = new Base64OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID,
             CLIENT_SECRET, userDetailsService);
     private static final String OPAQUE_TOKEN = "opaque-token";
     private static final String SUBJECT = "sub";
@@ -67,7 +67,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_null_opaque_token_fails() {
         /* @formatter:off */
-        assertThatThrownBy(() -> introspector.introspect(null))
+        assertThatThrownBy(() -> introspectorToTest.introspect(null))
                 .isInstanceOf(BadOpaqueTokenException.class)
                 .hasMessageContaining("Token is null");
         /* @formatter:on */
@@ -80,7 +80,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
 
         /* execute & assert */
         /* @formatter:off */
-        assertThatThrownBy(() -> introspector.introspect(OPAQUE_TOKEN))
+        assertThatThrownBy(() -> introspectorToTest.introspect(OPAQUE_TOKEN))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Failed to perform token introspection");
         /* @formatter:on */
@@ -94,7 +94,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
 
         /* execute & assert */
         /* @formatter:off */
-        assertThatThrownBy(() -> introspector.introspect(OPAQUE_TOKEN))
+        assertThatThrownBy(() -> introspectorToTest.introspect(OPAQUE_TOKEN))
                 .isInstanceOf(BadOpaqueTokenException.class)
                 .hasMessageContaining("Token is not active");
         /* @formatter:on */
@@ -110,7 +110,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
         /* execute */
-        OAuth2AuthenticatedPrincipal principal = introspector.introspect(OPAQUE_TOKEN);
+        OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
 
         /* assert */
         assertThat(principal.getName()).isEqualTo(SUBJECT);
@@ -135,7 +135,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
         /* execute */
-        OAuth2AuthenticatedPrincipal principal = introspector.introspect(OPAQUE_TOKEN);
+        OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
 
         /* assert */
         Instant actual = (Instant) principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.EXP);

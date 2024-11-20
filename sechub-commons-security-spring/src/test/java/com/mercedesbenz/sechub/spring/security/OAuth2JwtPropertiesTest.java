@@ -30,6 +30,7 @@ class OAuth2JwtPropertiesTest {
 
     @Test
     void construct_properties_with_jwt_enabled_succeeds() {
+        assertThat(oAuth2JwtProperties.isEnabled()).isTrue();
         assertThat(oAuth2JwtProperties.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
     }
 
@@ -40,8 +41,17 @@ class OAuth2JwtPropertiesTest {
 
     /* @formatter:off */
     @Test
-    void construct_properties_with_null_jwk_set_uri_fails() {
-        assertThatThrownBy(() -> new OAuth2JwtProperties(null))
+    void construct_properties_with_enabled_null_uri_fails() {
+        assertThatThrownBy(() -> new OAuth2JwtProperties(null, "https://example.org/jwk-set-uri"))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("Property 'sechub.security.oauth2.jwt.enabled' must not be null");
+    }
+    /* @formatter:on */
+
+    /* @formatter:off */
+    @Test
+    void construct_properties_with_jwk_set_uri_null_fails() {
+        assertThatThrownBy(() -> new OAuth2JwtProperties(Boolean.TRUE, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("Property 'sechub.security.oauth2.jwt.jwk-set-uri' must not be null");
     }

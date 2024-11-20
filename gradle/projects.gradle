@@ -41,7 +41,7 @@ projectType = [
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
-                    project(':sechub-spring-security'),
+                    project(':sechub-commons-security-spring'),
                     project(':sechub-testframework-spring'),
                     project(':sechub-storage-sharedvolume-spring'),
 

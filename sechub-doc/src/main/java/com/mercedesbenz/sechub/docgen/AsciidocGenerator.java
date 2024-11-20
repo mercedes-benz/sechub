@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
@@ -347,8 +349,32 @@ public class AsciidocGenerator implements Generator {
     }
 
     public void generateSecHubSystemPropertiesDescription(GenContext context) throws IOException {
-        String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts(), context.sechubEnvVariableRegistry);
+        String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts(), context.sechubEnvVariableRegistry, createCustomPropertiesMap());
         writer.writeTextToFile(context.systemProperitesFile, text);
+    }
+
+    /**
+     * Creates a map with custom properties for the system properties documentation
+     * This is a workaround for @ConfigurationProperties classes, since currently
+     * there is no support for auto-doc generation for these classes.
+     *
+     * <p>
+     * TODO: This should be removed in the future
+     * </p>
+     */
+    private Map<String, SortedSet<SystemPropertiesDescriptionGenerator.TableRow>> createCustomPropertiesMap() {
+        /* @formatter:off */
+        return Map.of("oauth2-jwt", new TreeSet<>(
+                Set.of(
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.jwt.enabled", null, "Whether OAuth2 JWT mode is enabled. Either JWT mode or opaque token mode must be enabled", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.jwt.jwk-set-uri", null, "The URI to the JWK set of the identity provider", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.enabled", null, "Whether OAuth2 opaque token mode is enabled. Either JWT mode or opaque token mode must be enabled", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.introspection-uri", null, "Opaque token introspection endpoint of the identity provider", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-id", null, "Client ID to use when authenticating against the identity provider", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-secret", null, "Client secret to use when authenticating against the identity provider", false)
+                ))
+        );
+        /* @formatter:on */
     }
 
     public void generatePDSSystemPropertiesDescription(GenContext context) throws IOException {
