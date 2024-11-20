@@ -10,7 +10,7 @@
       max-width="900"
     >
       <div class="text-center">
-        <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
+        <div class="text-body-2 font-weight-light mb-n1">{{ $t('GREETING') }}</div>
 
         <h1 class="text-h2 font-weight-bold">SecHub!</h1>
       </div>
