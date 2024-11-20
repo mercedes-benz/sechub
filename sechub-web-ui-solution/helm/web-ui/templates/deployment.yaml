@@ -77,23 +77,13 @@ spec:
         ports:
         - name: web-ui-https
           containerPort: 4443
-        startupProbe:
-          httpGet:
-            scheme: HTTPS
-            path: /health/alive.html
-            port: web-ui-https
-          failureThreshold: 24
-          periodSeconds: 2
-          successThreshold: 1
-          timeoutSeconds: 1
-          initialDelaySeconds: 5
         readinessProbe:
           httpGet:
             scheme: HTTPS
-            path: /health/alive.html
+            path: /health
             port: web-ui-https
           failureThreshold: 2
-          periodSeconds: 5
+          periodSeconds: 2
           successThreshold: 1
           timeoutSeconds: 1
         volumeMounts:

@@ -23,3 +23,24 @@ spring:
   web:
     resources:
       static-locations: classpath:/static
+
+# Spring Boot Actuators and Metrics
+management:
+  server:
+    port:
+      10250
+    ssl:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health"
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -24,6 +25,7 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -33,6 +35,8 @@ import org.springframework.web.client.RestTemplate;
 import com.mercedesbenz.sechub.webserver.ApplicationProfiles;
 import com.mercedesbenz.sechub.webserver.RequestConstants;
 import com.mercedesbenz.sechub.webserver.encryption.AES256Encryption;
+import com.mercedesbenz.sechub.webserver.server.ManagementServerProperties;
+import com.mercedesbenz.sechub.webserver.server.ServerProperties;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +44,7 @@ import com.mercedesbenz.sechub.webserver.encryption.AES256Encryption;
 class WebServerSecurityConfiguration {
     static final String ACCESS_TOKEN = "access_token";
 
+    private static final String ACTUATOR_PATH = "/actuator/**";
     /* @formatter:off */
     private static final String[] PUBLIC_PATHS = {
             RequestConstants.LOGIN,
@@ -58,12 +63,14 @@ class WebServerSecurityConfiguration {
     private final OAuth2Properties oAuth2Properties;
     private final AES256Encryption aes256Encryption;
 
-    WebServerSecurityConfiguration(@Autowired Environment environment, @Autowired(required = false) OAuth2Properties oAuth2Properties,
-            @Autowired AES256Encryption aes256Encryption) {
+    /* @formatter:off */
+    WebServerSecurityConfiguration(@Autowired Environment environment,
+                                   @Autowired(required = false) OAuth2Properties oAuth2Properties,
+                                   @Autowired AES256Encryption aes256Encryption) {
+        /* @formatter:on */
         this.environment = environment;
         if (isOAuth2Enabled() && oAuth2Properties == null) {
-            throw new NoSuchBeanDefinitionException(
-                    "No qualifying bean of type 'OAuth2Properties' available: expected at least 1 bean which qualifies as autowire candidate.");
+            throw new NoSuchBeanDefinitionException(OAuth2Properties.class);
         }
         if (!isOAuth2Enabled() && !isClassicAuthEnabled()) {
             throw new IllegalStateException("At least one authentication method must be enabled");
@@ -95,18 +102,38 @@ class WebServerSecurityConfiguration {
     }
 
     @Bean
+    @Order(1)
+    /* @formatter:off */
+    SecurityFilterChain securityFilterChainActuator(HttpSecurity httpSecurity,
+                                                    ManagementServerProperties managementServerProperties) throws Exception {
+        PortAccessGuard portAccessGuard = new PortAccessGuard(managementServerProperties.getPort());
+
+        httpSecurity
+                .securityMatcher(ACTUATOR_PATH)
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(ACTUATOR_PATH)
+                        .permitAll())
+                .addFilterBefore(portAccessGuard, SecurityContextHolderFilter.class);
+        /* @formatter:on */
+        return httpSecurity.build();
+    }
+
+    @Bean
     @Profile(ApplicationProfiles.OAUTH2_ENABLED)
-    SecurityFilterChain securityFilterChainAuthenticated(HttpSecurity httpSecurity, @Autowired(required = false) AuthenticationManager authenticationManager)
-            throws Exception {
+    @Order(2)
+    /* @formatter:off */
+    SecurityFilterChain securityFilterChainProtectedPaths(HttpSecurity httpSecurity,
+                                                          @Autowired(required = false) AuthenticationManager authenticationManager,
+                                                          ServerProperties serverProperties) throws Exception {
         AuthenticationEntryPoint authenticationEntryPoint = new MissingAuthenticationEntryPointHandler();
         BearerTokenResolver bearerTokenResolver = new JwtCookieResolver(aes256Encryption);
-        /* @formatter:off */
         RequestMatcher publicPathsMatcher = new OrRequestMatcher(
                 Arrays.stream(PUBLIC_PATHS)
                         .map(AntPathRequestMatcher::new)
                         .toArray(AntPathRequestMatcher[]::new)
         );
         RequestMatcher protectedPathsMatcher = new NegatedRequestMatcher(publicPathsMatcher);
+        PortAccessGuard portAccessGuard = new PortAccessGuard(serverProperties.getPort());
 
         httpSecurity
                 .securityMatcher(protectedPathsMatcher)
@@ -125,16 +152,20 @@ class WebServerSecurityConfiguration {
             httpSecurity.authenticationManager(authenticationManager);
         }
 
+        httpSecurity.addFilterBefore(portAccessGuard, SecurityContextHolderFilter.class);
+
         return httpSecurity.build();
     }
 
     @Bean
-    SecurityFilterChain securityFilterChainAnonymous(HttpSecurity httpSecurity,
-            @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
-        /* @formatter:off */
+    @Order(3)
+    /* @formatter:on */
+    SecurityFilterChain securityFilterChainPublicPaths(HttpSecurity httpSecurity,
+            @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService, ServerProperties serverProperties) throws Exception {
 
-        httpSecurity
-                .securityMatcher(PUBLIC_PATHS)
+        PortAccessGuard portAccessGuard = new PortAccessGuard(serverProperties.getPort());
+
+        httpSecurity.securityMatcher(PUBLIC_PATHS)
                 /* Disable CSRF */
                 .csrf(AbstractHttpConfigurer::disable)
                 /* Make the application stateless */
@@ -143,33 +174,33 @@ class WebServerSecurityConfiguration {
 
         if (isOAuth2Enabled()) {
             RestTemplate restTemplate = new RestTemplate();
-            Base64EncodedClientIdAndSecretOAuth2AccessTokenClient base64EncodedClientIdAndSecretOAuth2AccessTokenClient = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(restTemplate);
+            Base64EncodedClientIdAndSecretOAuth2AccessTokenClient base64EncodedClientIdAndSecretOAuth2AccessTokenClient = new Base64EncodedClientIdAndSecretOAuth2AccessTokenClient(
+                    restTemplate);
             if (oAuth2AuthorizedClientService == null) {
                 throw new NoSuchBeanDefinitionException(
                         "No qualifying bean of type 'OAuth2AuthorizedClientService' available: expected at least 1 bean which qualifies as autowire candidate.");
             }
-            AuthenticationSuccessHandler authenticationSuccessHandler = new OAuth2LoginSuccessHandler(oAuth2Properties, oAuth2AuthorizedClientService, aes256Encryption);
+            AuthenticationSuccessHandler authenticationSuccessHandler = new OAuth2LoginSuccessHandler(oAuth2Properties, oAuth2AuthorizedClientService,
+                    aes256Encryption);
             /* Enable OAuth2 */
-            httpSecurity.oauth2Login(oauth2 -> oauth2
-                .loginPage(RequestConstants.LOGIN)
-                .tokenEndpoint(token -> token.accessTokenResponseClient(base64EncodedClientIdAndSecretOAuth2AccessTokenClient))
-                .successHandler(authenticationSuccessHandler));
+            httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(RequestConstants.LOGIN)
+                    .tokenEndpoint(token -> token.accessTokenResponseClient(base64EncodedClientIdAndSecretOAuth2AccessTokenClient))
+                    .successHandler(authenticationSuccessHandler));
         }
 
         if (isClassicAuthEnabled()) {
             /*
-                Enable Classic Authentication
-                Note: This must be the last configuration in order to set the default 'loginPage' to oAuth2
-                because spring uses the 'loginPage' from the first authentication method configured
-            */
+             * Enable Classic Authentication Note: This must be the last configuration in
+             * order to set the default 'loginPage' to oAuth2 because spring uses the
+             * 'loginPage' from the first authentication method configured
+             */
             AuthenticationSuccessHandler authenticationSuccessHandler = new ClassicLoginSuccessHandler();
-            httpSecurity
-                .formLogin(form -> form
-                .loginPage(RequestConstants.LOGIN)
-                .successHandler(authenticationSuccessHandler));
+            httpSecurity.formLogin(form -> form.loginPage(RequestConstants.LOGIN).successHandler(authenticationSuccessHandler));
         }
 
         /* @formatter:on */
+
+        httpSecurity.addFilterBefore(portAccessGuard, SecurityContextHolderFilter.class);
 
         return httpSecurity.build();
     }

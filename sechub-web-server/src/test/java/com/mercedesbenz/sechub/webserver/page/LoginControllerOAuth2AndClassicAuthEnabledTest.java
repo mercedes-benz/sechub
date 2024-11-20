@@ -18,27 +18,31 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 import com.mercedesbenz.sechub.webserver.security.OAuth2Properties;
 import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
+import com.mercedesbenz.sechub.webserver.server.ServerProperties;
+import com.mercedesbenz.sechub.webserver.server.ServerPropertiesConfiguration;
 
 @WebMvcTest(LoginController.class)
-@Import(SecurityTestConfiguration.class)
+@Import({ SecurityTestConfiguration.class, ServerPropertiesConfiguration.class })
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 @ActiveProfiles({ "oauth2-enabled", "classic-auth-enabled" })
 class LoginControllerOAuth2AndClassicAuthEnabledTest {
 
     private final MockMvc mockMvc;
     private final OAuth2Properties oAuth2Properties;
+    private final ServerProperties serverProperties;
 
     @Autowired
-    LoginControllerOAuth2AndClassicAuthEnabledTest(MockMvc mockMvc, OAuth2Properties oAuth2Properties) {
+    LoginControllerOAuth2AndClassicAuthEnabledTest(MockMvc mockMvc, OAuth2Properties oAuth2Properties, ServerProperties serverProperties) {
         this.mockMvc = mockMvc;
         this.oAuth2Properties = oAuth2Properties;
+        this.serverProperties = serverProperties;
     }
 
     @Test
     void login_page_is_accessible_anonymously() throws Exception {
         /* @formatter:off */
         mockMvc
-                .perform(get("/login"))
+                .perform(get("http://localhost:%d/login".formatted(serverProperties.getPort())))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("isOAuth2Enabled"))
                 .andExpect(model().attribute("isOAuth2Enabled", true))
