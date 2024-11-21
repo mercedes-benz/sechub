@@ -1,18 +1,20 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <v-app-bar :elevation="2">
+    <v-app-bar>
 
-        <template v-slot:prepend>
-            <v-avatar :tile="true" class="pr-4">
-            <v-img 
-            src="@/assets/sechub-logo.svg"
-            />
-            </v-avatar>
+        <img
+        class="ma-2 pa-1"
+        src="@/assets/sechub-logo.svg"
+        contain
+        height="100%"
+        ></img>
 
-            <v-container fill-height fluid>
+        <v-container fill-height fluid>
             <v-row align:center
                 justify="center">
-                <v-col class="pa-0"><div>Welcome</div></v-col>
+                <v-col class="pa-0">
+                    <div>Welcome</div>
+                </v-col>
             </v-row>
             <v-row align:center
                 justify="center">
@@ -20,13 +22,9 @@
                      <v-app-bar-title> {{ username }}</v-app-bar-title>
                 </v-col>
             </v-row>
-            </v-container>
-            
-            <v-btn icon="mdi-cube-outline"></v-btn>
+        </v-container>
 
-            <v-btn icon="mdi-cube-scan"></v-btn>
-        </template>
-
+        <!-- Search Bar
         <v-spacer></v-spacer>
 
         <v-responsive
@@ -37,11 +35,9 @@
             label="search"
             prepend-inner-icon="mdi-magnify" />
         </v-responsive>
+        -->
 
         <template v-slot:append>
-
-            <v-divider inset vertical></v-divider>
-
             <v-btn icon="mdi-account"></v-btn>
 
             <v-btn icon="mdi-logout-variant"></v-btn>
