@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 spring:
   datasource:
     url: ${POSTGRES_DB_URL}
@@ -7,7 +8,3 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update

@@ -50,4 +50,4 @@ management:
 sechub:
   security:
     encryption:
-      secret-key: test-test-test-test-test-test-32
+      secret-key: ${SECHUB_SECURITY_ENCRYPTION_SECRET_KEY}
