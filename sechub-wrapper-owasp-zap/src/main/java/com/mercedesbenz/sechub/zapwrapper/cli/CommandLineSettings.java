@@ -166,10 +166,8 @@ public class CommandLineSettings {
         return retryWaittimeInMilliseconds;
     }
 
-    @Parameter(names = {
-            "--pdsUserMessageFolder" }, description = "Folder where the user messages are written to. When using with SecHub+PDS solution this is not needed since the PDS provides the env variable: "
-                    + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER
-                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
+    @Parameter(names = { "--pdsUserMessageFolder" }, description = "Folder where the user messages are written to. You can also set the environment variable "
+            + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER + ", instead of using this parameter.", required = false)
     private String pdsUserMessageFolder;
 
     public String getPDSUserMessageFolder() {
@@ -177,9 +175,8 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = {
-            "--pdsEventFolder" }, description = "Folder where the ZAP wrapper listens for events of the PDS, like cancel requests for the current job. When using with SecHub+PDS solution this is not needed since the PDS provides the env variable: "
-                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER
-                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
+            "--pdsEventFolder" }, description = "Folder where the ZAP wrapper listens for events of the PDS, like cancel requests for the current job. You can also set the environment variable "
+                    + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + ", instead of using this parameter.", required = false)
     private String pdsEventFolder;
 
     public String getPDSEventFolder() {
@@ -187,12 +184,11 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = {
-            "--templateFolder" }, description = "Folder where the ZAP wrapper fetches the logins script from. This is not needed since the PDS provides the env variable: "
-                    + EnvironmentVariableConstants.PDS_TEMPLATE_FOLDER
-                    + ". This env variable is automatically used if this command line parameter is not set.", required = false)
-    private String templateFolder;
+            "--groovyLoginScriptFile" }, description = "Groovy script file the ZAP wrapper uses for script based authentication when templates are defined. You can also set the environment variable "
+                    + EnvironmentVariableConstants.ZAP_GROOVY_LOGIN_SCRIPT_FILE + ", instead of using this parameter.", required = false)
+    private String groovyLoginScriptFile;
 
-    public String getTemplateFolder() {
-        return templateFolder;
+    public String getGroovyLoginScriptFile() {
+        return groovyLoginScriptFile;
     }
 }

@@ -14,18 +14,18 @@ import org.zaproxy.clientapi.core.ApiResponseSet;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-public class ClientApiSupport {
+public class ClientApiWrapper {
 
     private static final String URL_KEY = "url";
     private static final String STATUS_CODE_KEY = "statusCode";
     private static final String STATUS_REASON_KEY = "statusReason";
     private static final String METHOD_KEY = "method";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientApiSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientApiWrapper.class);
 
     private ClientApi clientApi;
 
-    public ClientApiSupport(ClientApi clientApi) {
+    public ClientApiWrapper(ClientApi clientApi) {
         this.clientApi = clientApi;
     }
 

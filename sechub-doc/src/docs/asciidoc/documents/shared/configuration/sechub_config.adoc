@@ -329,8 +329,8 @@ The currently available hash algorithms are:
 - `HMAC_SHA256`
 - `HMAC_SHA512`
 <6> The `encodingType` is an __optional__ field, representing the encoding of the __mandatory__ field `seed`.
-Sechub has a default configured if nothing is specified or the encoding type is not known.
-The default value is `AUTODETECT` where SecHub tries to detect the encoding of one of the four other available types.
+{sechub} has a default configured if nothing is specified or the encoding type is not known.
+The default value is `AUTODETECT` where {sechub} tries to detect the encoding of one of the four other available types.
  The currently available encoding types for `seed` are, which are treated case-insensitive:
 - `BASE64`
 - `BASE32`

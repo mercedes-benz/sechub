@@ -6,7 +6,7 @@ package com.mercedesbenz.sechub.zapwrapper.config.auth;
  * the ZAP API easier to use.
  *
  */
-public enum SessionManagementType {
+public enum ZapSessionManagementType {
 
     HTTP_AUTH_SESSION_MANAGEMENT("httpAuthSessionManagement"),
 
@@ -18,7 +18,7 @@ public enum SessionManagementType {
 
     private String zapSessionManagementMethod;
 
-    private SessionManagementType(String zapSessionManagementMethod) {
+    private ZapSessionManagementType(String zapSessionManagementMethod) {
         this.zapSessionManagementMethod = zapSessionManagementMethod;
     }
 

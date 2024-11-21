@@ -29,7 +29,7 @@ public class StringDecoder {
         seed = seed.replaceAll("\\s", "");
 
         EncodingType realEncodingType = encodingType;
-        if (encodingType == EncodingType.AUTODETECT) {
+        if (realEncodingType == null || realEncodingType == EncodingType.AUTODETECT) {
             realEncodingType = detectEncoding(seed);
         }
 

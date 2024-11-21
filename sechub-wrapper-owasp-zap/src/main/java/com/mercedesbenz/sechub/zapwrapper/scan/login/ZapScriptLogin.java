@@ -14,7 +14,7 @@ import org.zaproxy.clientapi.core.ClientApiException;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiSupport;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 
 public class ZapScriptLogin {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScriptLogin.class);
@@ -35,10 +35,10 @@ public class ZapScriptLogin {
      * sessionGrabber will add all necessary session data to ZAP.
      *
      * @param scanContext
-     * @param clientApiSupport
+     * @param clientApiWrapper
      * @return the name/identifier of the authenticated session inside ZAP
      */
-    public String login(ZapScanContext scanContext, ClientApiSupport clientApiSupport) {
+    public String login(ZapScanContext scanContext, ClientApiWrapper clientApiWrapper) {
         File groovyScriptLoginFile = scanContext.getGroovyScriptLoginFile();
         if (groovyScriptLoginFile == null || !groovyScriptLoginFile.isFile()) {
             throw new ZapWrapperRuntimeException(
@@ -53,7 +53,7 @@ public class ZapScriptLogin {
             groovyScriptExecutor.executeScript(groovyScriptLoginFile, firefox, scanContext);
 
             LOG.info("Calling session grabber to read the HTTP session data and pass them to ZAP.");
-            return sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiSupport);
+            return sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiWrapper);
         } catch (IOException e) {
             throw new ZapWrapperRuntimeException(e.getMessage(), e, ZapWrapperExitCode.IO_ERROR);
         } catch (ScriptException e) {
@@ -65,8 +65,8 @@ public class ZapScriptLogin {
         }
     }
 
-    public void cleanUpScriptLoginData(String targetUrl, ClientApiSupport clientApiSupport) {
-        sessionGrabber.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiSupport);
+    public void cleanUpScriptLoginData(String targetUrl, ClientApiWrapper clientApiWrapper) {
+        sessionGrabber.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
 
     }
 

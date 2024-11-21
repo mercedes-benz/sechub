@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.zapwrapper.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.codec.DecoderException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,14 +15,27 @@ import com.mercedesbenz.sechub.commons.model.login.EncodingType;
 
 class StringDecoderTest {
 
-    private StringDecoder supportToTest = new StringDecoder();
+    private StringDecoder decoderToTest = new StringDecoder();
 
     @Test
-    void when_secret_key_is_null_an_exception_is_thrown() {
+    void when_seed_is_null_an_exception_is_thrown() {
         /* execute + test */
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> supportToTest.decodeIfNecessary(null, EncodingType.AUTODETECT));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> decoderToTest.decodeIfNecessary(null, EncodingType.AUTODETECT));
 
         assertEquals("The secret key must not be null!", exception.getMessage());
+    }
+
+    @Test
+    void when_encoding_type_is_null_autodetect_is_performed() {
+        /* prepare */
+        String seed = "dGVzdC1zdHJpbmc=";
+        String expected = "test-string";
+
+        /* execute */
+        byte[] decodedSeed = decoderToTest.decodeIfNecessary(seed, null);
+
+        /* test */
+        assertEquals(expected, new String(decodedSeed, StandardCharsets.UTF_8));
     }
 
     /* @formatter:off */
@@ -39,7 +54,7 @@ class StringDecoderTest {
         String expected = "test-string";
 
         /* execute */
-        byte[] decoded = supportToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
+        byte[] decoded = decoderToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
 
         /* test */
         assertEquals(expected, new String(decoded));
@@ -49,7 +64,7 @@ class StringDecoderTest {
     @ValueSource(strings = { "���", "NotEncoded!", "@:_DASF2daagjtz", "HelloWorld" })
     void not_encoded_values_are_correctly_treated_ignoring_spaces_or_tabs(String value) throws DecoderException {
         /* execute */
-        byte[] decoded = supportToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
+        byte[] decoded = decoderToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
 
         /* test */
         assertEquals(value, new String(decoded));

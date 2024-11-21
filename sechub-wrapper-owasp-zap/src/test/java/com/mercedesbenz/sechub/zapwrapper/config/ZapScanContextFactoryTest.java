@@ -544,14 +544,14 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
-        when(settings.getTemplateFolder()).thenReturn(null);
-        when(envVariableReader.readAsString(PDS_TEMPLATE_FOLDER)).thenReturn(null);
+        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsString(PDS_TEMPLATE_FOLDER);
+        verify(envVariableReader, times(1)).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertNull(result.getGroovyScriptLoginFile());
     }
 
@@ -561,16 +561,16 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
-        String templateDir = "templateDir";
-        when(settings.getTemplateFolder()).thenReturn(templateDir);
-        when(envVariableReader.readAsString(PDS_TEMPLATE_FOLDER)).thenReturn(null);
+        String groovyScriptFile = "script.groovy";
+        when(settings.getGroovyLoginScriptFile()).thenReturn(groovyScriptFile);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, never()).readAsString(PDS_TEMPLATE_FOLDER);
-        assertEquals(templateDir, result.getGroovyScriptLoginFile().getParent());
+        verify(envVariableReader, never()).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
     }
 
     @Test
@@ -579,16 +579,16 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
-        String templateDir = "templateDir";
-        when(settings.getTemplateFolder()).thenReturn(null);
-        when(envVariableReader.readAsString(PDS_TEMPLATE_FOLDER)).thenReturn(templateDir);
+        String groovyScriptFile = "script.groovy";
+        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsString(PDS_TEMPLATE_FOLDER);
-        assertEquals(templateDir, result.getGroovyScriptLoginFile().getParent());
+        verify(envVariableReader, times(1)).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
     }
 
     private CommandLineSettings createSettingsMockWithNecessaryParts() {

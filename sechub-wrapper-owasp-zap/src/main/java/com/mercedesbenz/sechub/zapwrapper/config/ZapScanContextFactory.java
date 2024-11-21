@@ -35,8 +35,6 @@ public class ZapScanContextFactory {
     private static final int DAYS_IN_MS = 24 * HOURS_IN_MS;
     private static final int DEFAULT_MAX_SCAN_DURATION = 8 * HOURS_IN_MS;
 
-    private static final String GROOVY_LOGIN_SCRIPTFILE_NAME = "script.groovy";
-
     private final EnvironmentVariableReader environmentVariableReader;
     private final BaseTargetUriFactory targetUriFactory;
     private final RuleProvider ruleProvider;
@@ -317,13 +315,13 @@ public class ZapScanContextFactory {
     }
 
     private File fetchGroovyScriptFile(CommandLineSettings settings) {
-        String templateDir = settings.getTemplateFolder();
-        if (templateDir == null) {
-            templateDir = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_TEMPLATE_FOLDER);
+        String groovyScriptFile = settings.getGroovyLoginScriptFile();
+        if (groovyScriptFile == null) {
+            groovyScriptFile = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         }
-        if (templateDir == null) {
+        if (groovyScriptFile == null) {
             return null;
         }
-        return new File(templateDir, GROOVY_LOGIN_SCRIPTFILE_NAME);
+        return new File(groovyScriptFile);
     }
 }

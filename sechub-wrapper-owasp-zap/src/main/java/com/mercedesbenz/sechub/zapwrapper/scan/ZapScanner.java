@@ -25,15 +25,15 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.Rule;
 import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ScanDurationHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
-import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiSupport;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptLogin;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptLoginSessionGrabber;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptLoginWebDriverFactory;
@@ -49,7 +49,7 @@ public class ZapScanner implements ZapScan {
     private static final int CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS = 5000;
     private static final int DEFAULT_MAX_DEPTH = 10;
 
-    private final ClientApiSupport clientApiSupport;
+    private final ClientApiWrapper clientApiWrapper;
     private final ZapScanContext scanContext;
 
     private final ZapScriptLogin scriptLogin;
@@ -57,8 +57,8 @@ public class ZapScanner implements ZapScan {
     private final UrlUtil urlUtil;
     private final SystemUtil systemUtil;
 
-    public ZapScanner(ClientApiSupport clientApiSupport, ZapScanContext scanContext) {
-        this.clientApiSupport = clientApiSupport;
+    public ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext) {
+        this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
 
         this.scanDurationHelper = new ScanDurationHelper();
@@ -68,9 +68,9 @@ public class ZapScanner implements ZapScan {
         this.scriptLogin = new ZapScriptLogin(new ZapScriptLoginWebDriverFactory(), new ZapWrapperGroovyScriptExecutor(), new ZapScriptLoginSessionGrabber());
     }
 
-    ZapScanner(ClientApiSupport clientApiSupport, ZapScanContext scanContext, ScanDurationHelper scanDurationHelper, UrlUtil urlUtil, SystemUtil systemUtil,
+    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, ScanDurationHelper scanDurationHelper, UrlUtil urlUtil, SystemUtil systemUtil,
             ZapScriptLogin scriptLogin) {
-        this.clientApiSupport = clientApiSupport;
+        this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
 
         this.scanDurationHelper = scanDurationHelper;
@@ -115,28 +115,28 @@ public class ZapScanner implements ZapScan {
     void setupStandardConfiguration() throws ClientApiException {
         LOG.info("Creating new session inside the Zap");
         // to ensure parts from previous scan are deleted
-        clientApiSupport.createNewSession(scanContext.getContextName(), "true");
+        clientApiWrapper.createNewSession(scanContext.getContextName(), "true");
 
         LOG.info("Setting default maximum number of alerts for each rule.");
         // setting this value to zero means unlimited
-        clientApiSupport.configureMaximumAlertsForEachRule("0");
+        clientApiWrapper.configureMaximumAlertsForEachRule("0");
 
         LOG.info("Enable all passive scan rules before configuration begins.");
         // enable all passive scanner rules by default
-        clientApiSupport.enableAllPassiveScannerRules();
+        clientApiWrapper.enableAllPassiveScannerRules();
 
         LOG.info("Enable all active scan rules before configuration begins.");
         // enable all passive scanner rules by default
         // null specifies the default scan policy
-        clientApiSupport.enableAllActiveScannerRulesForPolicy(null);
+        clientApiWrapper.enableAllActiveScannerRulesForPolicy(null);
 
         LOG.info("Set browser for ajaxSpider.");
         // use firefox in headless mode by default
-        clientApiSupport.setAjaxSpiderBrowserId(scanContext.getAjaxSpiderBrowserId());
+        clientApiWrapper.setAjaxSpiderBrowserId(scanContext.getAjaxSpiderBrowserId());
 
         LOG.info("Set max directory depth of spider and ajaxSpider to: {}", DEFAULT_MAX_DEPTH);
-        clientApiSupport.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH);
-        clientApiSupport.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH);
+        clientApiWrapper.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH);
+        clientApiWrapper.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH);
     }
 
     void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
@@ -152,11 +152,11 @@ public class ZapScanner implements ZapScan {
             Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
             if (isPassiveRule(ruleToDeactivate.getType())) {
                 LOG.info("Deactivate passive scanner rule: {} ", ruleRef.getReference());
-                clientApiSupport.disablePassiveScannerRule(ruleToDeactivate.getId());
+                clientApiWrapper.disablePassiveScannerRule(ruleToDeactivate.getId());
             } else if (isActiveRule(ruleToDeactivate.getType())) {
                 LOG.info("Deactivate active scanner rule: {} ", ruleRef.getReference());
                 // null specifies the default scan policy
-                clientApiSupport.disableActiveScannerRuleForPolicy(ruleToDeactivate.getId(), null);
+                clientApiWrapper.disableActiveScannerRuleForPolicy(ruleToDeactivate.getId(), null);
             }
         }
     }
@@ -166,12 +166,12 @@ public class ZapScanner implements ZapScan {
             String proxyHost = proxyInformation.getHost();
             int proxyPort = proxyInformation.getPort();
             LOG.info("Using proxy {}:{} to reach target.", proxyHost, proxyPort);
-            clientApiSupport.configureHttpProxy(proxyHost, "" + proxyPort, null, null, null);
-            clientApiSupport.setHttpProxyEnabled("true");
-            clientApiSupport.setHttpProxyAuthEnabled("false");
+            clientApiWrapper.configureHttpProxy(proxyHost, "" + proxyPort, null, null, null);
+            clientApiWrapper.setHttpProxyEnabled("true");
+            clientApiWrapper.setHttpProxyAuthEnabled("false");
         } else {
             LOG.info("No proxy was set, continuing without proxy.");
-            clientApiSupport.setHttpProxyEnabled("false");
+            clientApiWrapper.setHttpProxyEnabled("false");
         }
     }
 
@@ -183,7 +183,7 @@ public class ZapScanner implements ZapScan {
      */
     String createContext() throws ClientApiException {
         LOG.info("Creating context: {}", scanContext.getContextName());
-        return clientApiSupport.createNewContext(scanContext.getContextName());
+        return clientApiWrapper.createNewContext(scanContext.getContextName());
     }
 
     void addReplacerRulesForHeaders() throws ClientApiException {
@@ -224,13 +224,13 @@ public class ZapScanner implements ZapScan {
             if (httpHeader.getOnlyForUrls().isEmpty()) {
                 // if there are no onlyForUrl patterns, there is only one rule for each header
                 description = httpHeader.getName();
-                clientApiSupport.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                clientApiWrapper.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
             } else {
                 for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
                     // we need to create a rule for each onlyForUrl pattern on each header
                     description = onlyForUrl;
                     url = urlUtil.replaceWebScanWildCardsWithRegexInString(onlyForUrl);
-                    clientApiSupport.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                    clientApiWrapper.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
                 }
             }
         }
@@ -245,19 +245,19 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Adding include parts.", scanContext.getContextName());
         String followRedirects = "false";
         for (String url : scanContext.getZapURLsIncludeSet()) {
-            clientApiSupport.addIncludeUrlPatternToContext(scanContext.getContextName(), url);
+            clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(), url);
             // Cannot not perform initial connection check to included URL with wildcards
             if (url.contains(".*")) {
                 LOG.info("For scan {}: Cannot not perform initial connection check to included URL: {} because it contains wildcards.",
                         scanContext.getContextName(), url);
             } else {
-                clientApiSupport.accessUrlViaZap(url, followRedirects);
+                clientApiWrapper.accessUrlViaZap(url, followRedirects);
             }
         }
 
         LOG.info("For scan {}: Adding exclude parts.", scanContext.getContextName());
         for (String url : scanContext.getZapURLsExcludeSet()) {
-            clientApiSupport.addExcludeUrlPatternToContext(scanContext.getContextName(), url);
+            clientApiWrapper.addExcludeUrlPatternToContext(scanContext.getContextName(), url);
         }
     }
 
@@ -275,11 +275,11 @@ public class ZapScanner implements ZapScan {
             URL apiDefinitionUrl = secHubWebScanApiConfiguration.getApiDefinitionUrl();
             if (apiDefinitionUrl != null) {
                 LOG.info("For scan {}: Loading openAPI definition from : {}", scanContext.getContextName(), apiDefinitionUrl.toString());
-                clientApiSupport.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), zapContextId);
+                clientApiWrapper.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), zapContextId);
             }
             for (File apiFile : scanContext.getApiDefinitionFiles()) {
                 LOG.info("For scan {}: Loading openAPI file: {}", scanContext.getContextName(), apiFile.toString());
-                clientApiSupport.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);
+                clientApiWrapper.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);
             }
             break;
         default:
@@ -316,8 +316,8 @@ public class ZapScanner implements ZapScan {
             password = new String(clientCertificateConfig.getPassword());
         }
         LOG.info("For scan {}: Loading client certificate file: {}", scanContext.getContextName(), clientCertificateFile.getAbsolutePath());
-        clientApiSupport.importPkcs12ClientCertificate(clientCertificateFile.getAbsolutePath(), password);
-        clientApiSupport.enableClientCertificate();
+        clientApiWrapper.importPkcs12ClientCertificate(clientCertificateFile.getAbsolutePath(), password);
+        clientApiWrapper.enableClientCertificate();
     }
 
     void executeScan(String zapContextId) throws ClientApiException {
@@ -369,7 +369,7 @@ public class ZapScanner implements ZapScan {
             setupAuthenticationAndSessionManagementMethodForScriptLogin(zapContextId);
 
             LOG.info("For scan {}: Performing script authentication.", scanContext.getContextName());
-            String zapAuthSessionName = scriptLogin.login(scanContext, clientApiSupport);
+            String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
 
             // TODO read the username from templateData as soon as it is implemented
             String username = "DUMMY";
@@ -410,7 +410,7 @@ public class ZapScanner implements ZapScan {
         String display = null;
         /* @formatter:off */
         // we use the context name as report title
-        clientApiSupport.generateReport(
+        clientApiWrapper.generateReport(
                                 title,
                                 template,
                                 theme,
@@ -438,7 +438,7 @@ public class ZapScanner implements ZapScan {
         // to ensure parts from previous scan are deleted
         try {
             LOG.info("Cleaning up by starting new and empty session...", scanContext.getContextName());
-            clientApiSupport.createNewSession("Cleaned after scan", "true");
+            clientApiWrapper.createNewSession("Cleaned after scan", "true");
             LOG.info("New and empty session inside Zap created.");
 
             // Replacer rules are persistent even after restarting ZAP
@@ -448,15 +448,15 @@ public class ZapScanner implements ZapScan {
 
             // Remove x-sechub-dast header replacer rule
             LOG.info("Remove '{}' replacer rule.", X_SECHUB_DAST_HEADER_NAME);
-            clientApiSupport.removeReplacerRule(X_SECHUB_DAST_HEADER_NAME);
+            clientApiWrapper.removeReplacerRule(X_SECHUB_DAST_HEADER_NAME);
 
             // disable client certificate here, the imported client certificate will be
             // removed on ZAP shutdown automatically anyway
             LOG.info("Disable client certificate if one was used for the scan.");
-            clientApiSupport.disableClientCertificate();
+            clientApiWrapper.disableClientCertificate();
 
             LOG.info("Cleaning up script login data.");
-            scriptLogin.cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiSupport);
+            scriptLogin.cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
 
             LOG.info("Cleanup successful.");
         } catch (ClientApiException e) {
@@ -473,7 +473,7 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Starting Spider.", contextName);
         /* @formatter:off */
         String scanId =
-                clientApiSupport.startSpiderScan(
+                clientApiWrapper.startSpiderScan(
                                         targetUrlAsString,
                                         maxChildren,
                                         recurse,
@@ -490,7 +490,7 @@ public class ZapScanner implements ZapScan {
         String targetUrlAsString = scanContext.getTargetUrlAsString();
         LOG.info("For scan {}: Starting AjaxSpider.", scanContext.getContextName());
         /* @formatter:off */
-		clientApiSupport.startAjaxSpiderScan(
+		clientApiWrapper.startAjaxSpiderScan(
                                     targetUrlAsString,
                                     inScope,
                                     contextName,
@@ -502,7 +502,7 @@ public class ZapScanner implements ZapScan {
     void runActiveScan(long remainingScanDurationInMillis) throws ClientApiException {
         // Necessary otherwise the active scanner exits with an exception,
         // if no URLs to scan where detected by the spider/ajaxSpider before
-        if (!clientApiSupport.atLeastOneURLDetected()) {
+        if (!clientApiWrapper.atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(
                     new SecHubMessage(SecHubMessageType.WARNING, "Skipped the active scan, because no URLs were detected by the crawler! "
@@ -518,7 +518,7 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Starting ActiveScan.", scanContext.getContextName());
         /* @formatter:off */
 		String scanId =
-		        clientApiSupport.startActiveScan(
+		        clientApiWrapper.startActiveScan(
                                         targetUrlAsString,
                                         recurse,
                                         inScopeOnly,
@@ -537,7 +537,7 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Starting authenticated Spider.", scanContext.getContextName());
         /* @formatter:off */
         String scanId =
-                clientApiSupport.startSpiderScanAsUser(
+                clientApiWrapper.startSpiderScanAsUser(
                                             contextId,
                                             userId,
                                             url,
@@ -554,7 +554,7 @@ public class ZapScanner implements ZapScan {
         String subtreeonly = "true";
         LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanContext.getContextName());
         /* @formatter:off */
-		clientApiSupport.startAjaxSpiderScanAsUser(
+		clientApiWrapper.startAjaxSpiderScanAsUser(
                                             contextname,
                                             username,
                                             url,
@@ -566,7 +566,7 @@ public class ZapScanner implements ZapScan {
     void runActiveScanAsUser(String contextId, String userId, long remainingScanDurationInMillis) throws ClientApiException {
         // Necessary otherwise the active scanner exits with an exception,
         // if no URLs to scan where detected by the spider/ajaxSpider before
-        if (!clientApiSupport.atLeastOneURLDetected()) {
+        if (!clientApiWrapper.atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(
                     new SecHubMessage(SecHubMessageType.WARNING, "Skipped the active scan, because no URLs were detected by the crawler! "
@@ -581,7 +581,7 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Starting authenticated ActiveScan.", scanContext.getContextName());
         /* @formatter:off */
         String scanId =
-                clientApiSupport.startActiveScanAsUser(
+                clientApiWrapper.startActiveScanAsUser(
                                                 url,
                                                 contextId,
                                                 userId,
@@ -613,16 +613,16 @@ public class ZapScanner implements ZapScan {
 
         while (!isAjaxSpiderStopped(ajaxSpiderStatus) && !timeOut) {
             if (zapPDSEventHandler.isScanCancelled()) {
-                clientApiSupport.stopAjaxSpider();
+                clientApiWrapper.stopAjaxSpider();
                 zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
-            ajaxSpiderStatus = clientApiSupport.getAjaxSpiderStatus();
+            ajaxSpiderStatus = clientApiWrapper.getAjaxSpiderStatus();
             LOG.info("For scan {}: AjaxSpider status {}", scanContext.getContextName(), ajaxSpiderStatus);
             timeOut = (systemUtil.getCurrentTimeInMilliseconds() - startTime) > maxDuration;
         }
         /* stop spider - otherwise running in background */
-        clientApiSupport.stopAjaxSpider();
+        clientApiWrapper.stopAjaxSpider();
         LOG.info("For scan {}: AjaxSpider completed.", scanContext.getContextName());
         return remainingScanDurationInMillis - (systemUtil.getCurrentTimeInMilliseconds() - startTime);
     }
@@ -648,18 +648,18 @@ public class ZapScanner implements ZapScan {
 
         while (progressSpider < 100 && !timeOut) {
             if (zapPDSEventHandler.isScanCancelled()) {
-                clientApiSupport.stopSpiderScan(scanId);
+                clientApiWrapper.stopSpiderScan(scanId);
                 zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
-            progressSpider = clientApiSupport.getSpiderStatusForScan(scanId);
+            progressSpider = clientApiWrapper.getSpiderStatusForScan(scanId);
             LOG.info("For scan {}: Spider progress {}%", scanContext.getContextName(), progressSpider);
             timeOut = systemUtil.getCurrentTimeInMilliseconds() - startTime > maxDuration;
         }
         /* stop spider - otherwise running in background */
-        clientApiSupport.stopSpiderScan(scanId);
+        clientApiWrapper.stopSpiderScan(scanId);
 
-        long numberOfSpiderResults = clientApiSupport.logFullSpiderResults(scanId);
+        long numberOfSpiderResults = clientApiWrapper.logFullSpiderResults(scanId);
         scanContext.getZapProductMessageHelper()
                 .writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Scanned %s URLs during the scan.".formatted(numberOfSpiderResults)));
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
@@ -680,7 +680,7 @@ public class ZapScanner implements ZapScan {
         long maxDuration = scanDurationHelper.computePassiveScanMaxScanDuration(scanContext.isActiveScanEnabled(), scanContext.isAjaxSpiderEnabled(),
                 remainingScanDurationInMillis);
 
-        int numberOfRecords = clientApiSupport.getNumberOfPassiveScannerRecordsToScan();
+        int numberOfRecords = clientApiWrapper.getNumberOfPassiveScannerRecordsToScan();
         boolean timeOut = false;
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
 
@@ -689,7 +689,7 @@ public class ZapScanner implements ZapScan {
                 zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
-            numberOfRecords = clientApiSupport.getNumberOfPassiveScannerRecordsToScan();
+            numberOfRecords = clientApiWrapper.getNumberOfPassiveScannerRecordsToScan();
             LOG.info("For scan {}: Passive scan number of records left for scanning: {}", scanContext.getContextName(), numberOfRecords);
             timeOut = systemUtil.getCurrentTimeInMilliseconds() - startTime > maxDuration;
         }
@@ -715,16 +715,16 @@ public class ZapScanner implements ZapScan {
 
         while (progressActive < 100 && !timeOut) {
             if (zapPDSEventHandler.isScanCancelled()) {
-                clientApiSupport.stopActiveScan(scanId);
+                clientApiWrapper.stopActiveScan(scanId);
                 zapPDSEventHandler.cancelScan(scanContext.getContextName());
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
-            progressActive = clientApiSupport.getActiveScannerStatusForScan(scanId);
+            progressActive = clientApiWrapper.getActiveScannerStatusForScan(scanId);
             LOG.info("For scan {}: Active scan progress {}%", scanContext.getContextName(), progressActive);
 
             timeOut = (systemUtil.getCurrentTimeInMilliseconds() - startTime) > remainingScanDurationInMillis;
         }
-        clientApiSupport.stopActiveScan(scanId);
+        clientApiWrapper.stopActiveScan(scanId);
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
     }
 
@@ -749,15 +749,15 @@ public class ZapScanner implements ZapScan {
 							  .append("&port=").append(urlEncodeUTF8(port));
 		/* @formatter:on */
         LOG.info("For scan {}: Setting basic authentication.", scanContext.getContextName());
-        String authMethodName = AuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod();
-        clientApiSupport.configureAuthenticationMethod(zapContextId, authMethodName, authMethodConfigParams.toString());
+        String authMethodName = ZapAuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod();
+        clientApiWrapper.configureAuthenticationMethod(zapContextId, authMethodName, authMethodConfigParams.toString());
 
-        String methodName = SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod();
+        String methodName = ZapSessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod();
 
         // methodconfigparams in case of http basic auth is null, because it is
         // configured automatically
         String methodconfigparams = null;
-        clientApiSupport.setSessionManagementMethod(zapContextId, methodName, methodconfigparams);
+        clientApiWrapper.setSessionManagementMethod(zapContextId, methodName, methodconfigparams);
 
         /* @formatter:off */
         String username = new String(basicLoginConfiguration.getUser());
@@ -771,15 +771,15 @@ public class ZapScanner implements ZapScan {
     }
 
     private UserInformation setupScanUserForZapContext(String zapContextId, String username, String authCredentialsConfigParams) throws ClientApiException {
-        String userId = clientApiSupport.createNewUser(zapContextId, username);
+        String userId = clientApiWrapper.createNewUser(zapContextId, username);
 
         LOG.info("For scan {}: Setting up user.", scanContext.getContextName());
-        clientApiSupport.configureAuthenticationCredentials(zapContextId, userId, authCredentialsConfigParams.toString());
+        clientApiWrapper.configureAuthenticationCredentials(zapContextId, userId, authCredentialsConfigParams.toString());
         String enabled = "true";
-        clientApiSupport.setUserEnabled(zapContextId, userId, enabled);
+        clientApiWrapper.setUserEnabled(zapContextId, userId, enabled);
 
-        clientApiSupport.setForcedUser(zapContextId, userId);
-        clientApiSupport.setForcedUserModeEnabled(true);
+        clientApiWrapper.setForcedUser(zapContextId, userId);
+        clientApiWrapper.setForcedUserModeEnabled(true);
 
         UserInformation userInfo = new UserInformation(username, userId);
         return userInfo;
@@ -790,15 +790,15 @@ public class ZapScanner implements ZapScan {
         // because it is
         // configured automatically
         String authMethodConfigParams = null;
-        String authMethodName = AuthenticationType.MANUAL_AUTHENTICATION.getZapAuthenticationMethod();
-        clientApiSupport.configureAuthenticationMethod(zapContextId, authMethodName, authMethodConfigParams);
+        String authMethodName = ZapAuthenticationType.MANUAL_AUTHENTICATION.getZapAuthenticationMethod();
+        clientApiWrapper.configureAuthenticationMethod(zapContextId, authMethodName, authMethodConfigParams);
 
         // sessionMethodConfigparams in case of cookie based session management is null,
         // because it is
         // configured automatically
         String sessionMethodconfigparams = null;
-        String sessionMethodName = SessionManagementType.COOKIE_BASED_SESSION_MANAGEMENT.getZapSessionManagementMethod();
-        clientApiSupport.setSessionManagementMethod(zapContextId, sessionMethodName, sessionMethodconfigparams);
+        String sessionMethodName = ZapSessionManagementType.COOKIE_BASED_SESSION_MANAGEMENT.getZapSessionManagementMethod();
+        clientApiWrapper.setSessionManagementMethod(zapContextId, sessionMethodName, sessionMethodconfigparams);
     }
 
     private boolean isAjaxSpiderStopped(String status) {
@@ -854,11 +854,11 @@ public class ZapScanner implements ZapScan {
         for (HTTPHeaderConfiguration httpHeader : httpHeaders) {
             if (httpHeader.getOnlyForUrls().isEmpty()) {
                 String description = httpHeader.getName();
-                clientApiSupport.removeReplacerRule(description);
+                clientApiWrapper.removeReplacerRule(description);
             } else {
                 for (String onlyForUrl : httpHeader.getOnlyForUrls().get()) {
                     String description = onlyForUrl;
-                    clientApiSupport.removeReplacerRule(description);
+                    clientApiWrapper.removeReplacerRule(description);
                 }
             }
         }
@@ -909,7 +909,7 @@ public class ZapScanner implements ZapScan {
         String url = null;
 
         LOG.info("Add '{}' replacer rule.", X_SECHUB_DAST_HEADER_NAME);
-        clientApiSupport.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+        clientApiWrapper.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
     }
 
     private boolean isScriptLoginWanted() {

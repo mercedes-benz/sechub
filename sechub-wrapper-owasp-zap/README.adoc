@@ -48,6 +48,10 @@ Usage: ZapWrapper [options]
       like: rule1,rule,rule3
   * --fullRulesetfile
       Specify a file with all rules installed for the Zap.
+    --groovyLoginScriptFile
+      Groovy script file the ZAP wrapper uses for script based authentication 
+      when templates are defined. You can also set the environment variable 
+      ZAP_GROOVY_LOGIN_SCRIPT_FILE, instead of using this parameter.
     --help
       Shows help and provides information on how to use the wrapper.
     --jobUUID
@@ -59,15 +63,12 @@ Usage: ZapWrapper [options]
       Default: 3
     --pdsEventFolder
       Folder where the ZAP wrapper listens for events of the PDS, like cancel 
-      requests for the current job. When using with SecHub+PDS solution this 
-      is not needed since the PDS provides the env variable: 
-      PDS_JOB_EVENTS_FOLDER. This env variable is automatically used if this 
-      command line parameter is not set.
+      requests for the current job. You can also set the environment variable 
+      PDS_JOB_EVENTS_FOLDER, instead of using this parameter.
     --pdsUserMessageFolder
-      Folder where the user messages are written to. When using with 
-      SecHub+PDS solution this is not needed since the PDS provides the env 
-      variable: PDS_JOB_USER_MESSAGES_FOLDER. This env variable is 
-      automatically used if this command line parameter is not set.
+      Folder where the user messages are written to. You can also set the 
+      environment variable PDS_JOB_USER_MESSAGES_FOLDER, instead of using this 
+      parameter. 
     --proxyHost
       Specify a proxy host. You can also set the environment variable 
       PROXY_HOST, instead of using this parameter.
@@ -88,11 +89,6 @@ Usage: ZapWrapper [options]
       scan. 
   * --targetURL
       Specifies the target url to be scanned.
-    --templateFolder
-      Folder where the ZAP wrapper fetches the logins script from. This is not 
-      needed since the PDS provides the env variable: PDS_TEMPLATE_FOLDER. 
-      This env variable is automatically used if this command line parameter 
-      is not set.
     --verbose
       Set this option to provide additional output while scanning.
       Default: false
@@ -201,8 +197,19 @@ inside the executor config.
 
 ==== Groovy Script Login
 To handle more complex authentication scenarios, the wrapper uses pre-defined groovy scripts.
-Rhe groovy authentication scripts have access to certain data the wrapper application passes with the bindings for the script execution, as well as selenium support.
-Some objects are already ready pre-configured and ready to use, like the firefox webdriver. Above you can see all available bindings, even if they are not used in this example script.
+The groovy authentication scripts have access to certain data from the wrapper application:
+
+- An initialized selenium `FirefoxDriver` object that can be used directly
+- An initialized selenium `WebDriverWait` object that can be used directly, implicitly using the firefox web driver
+- An initialized selenium `JavascriptExecutor` object, which on default is the previously introduced `FirefoxDriver` 
+- The `SecHubWebScanConfiguration` that was used to configure the scan
+- The `TOTPGenerator` that can be used for two-factor-authentication
+- The `user` configured for the authentication
+- The `password` of the `user`
+- The `loginUrl` necessary to authenticate.
+- The `targetUrl`, which is the base URL specified for the scan.
+
+The example script below shows how these bindings can be accessed and used. In the example script all bindings are listed, even the ones not used by the script.
 The script can also be created completely without using anything of the pre-defined data.
 
 The `TOTPGenerator` is an easy to use implementation of TOTP for two-factor-authentication if necessary. Using `totpGenerator.now()` returns the currently valid TOTP.

@@ -351,47 +351,47 @@ public class ZapScanContext {
         }
 
         public ZapScanContext build() {
-            ZapScanContext zapScanConfiguration = new ZapScanContext();
-            zapScanConfiguration.serverConfig = this.serverConfig;
-            zapScanConfiguration.verboseOutput = this.verboseOutput;
-            zapScanConfiguration.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
-            zapScanConfiguration.activeScanEnabled = this.activeScanEnabled;
-            zapScanConfiguration.reportFile = this.reportFile;
-            zapScanConfiguration.contextName = this.contextName;
-            zapScanConfiguration.targetUrl = this.targetUrl;
+            ZapScanContext zapScanContext = new ZapScanContext();
+            zapScanContext.serverConfig = this.serverConfig;
+            zapScanContext.verboseOutput = this.verboseOutput;
+            zapScanContext.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
+            zapScanContext.activeScanEnabled = this.activeScanEnabled;
+            zapScanContext.reportFile = this.reportFile;
+            zapScanContext.contextName = this.contextName;
+            zapScanContext.targetUrl = this.targetUrl;
 
-            zapScanConfiguration.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
+            zapScanContext.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
 
-            zapScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
+            zapScanContext.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 
-            zapScanConfiguration.proxyInformation = this.proxyInformation;
+            zapScanContext.proxyInformation = this.proxyInformation;
 
-            zapScanConfiguration.fullRuleset = this.fullRuleset;
-            zapScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
+            zapScanContext.fullRuleset = this.fullRuleset;
+            zapScanContext.deactivatedRuleReferences = this.deactivatedRuleReferences;
 
-            zapScanConfiguration.apiDefinitionFiles = this.apiDefinitionFiles;
+            zapScanContext.apiDefinitionFiles = this.apiDefinitionFiles;
 
-            zapScanConfiguration.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
-            zapScanConfiguration.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
+            zapScanContext.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
+            zapScanContext.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
 
-            zapScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
+            zapScanContext.connectionCheckEnabled = this.connectionCheckEnabled;
 
-            zapScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
-            zapScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
+            zapScanContext.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
+            zapScanContext.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
 
-            zapScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
+            zapScanContext.zapProductMessageHelper = this.zapProductMessageHelper;
 
-            zapScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
+            zapScanContext.zapPDSEventHandler = this.zapPDSEventHandler;
 
-            zapScanConfiguration.clientCertificateFile = this.clientCertificateFile;
+            zapScanContext.clientCertificateFile = this.clientCertificateFile;
 
-            zapScanConfiguration.headerValueFiles = this.headerValueFiles;
+            zapScanContext.headerValueFiles = this.headerValueFiles;
 
-            zapScanConfiguration.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
+            zapScanContext.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
 
-            zapScanConfiguration.groovyScriptLoginFile = this.groovyScriptLoginFile;
+            zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
 
-            return zapScanConfiguration;
+            return zapScanContext;
         }
     }
 }

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiSupport;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 
 public class ZapScriptLoginSessionGrabber {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScriptLoginSessionGrabber.class);
@@ -30,31 +30,31 @@ public class ZapScriptLoginSessionGrabber {
      *
      * @param firefox
      * @param targetUrl
-     * @param clientApiSupport
+     * @param clientApiWrapper
      * @return the name/identifier of the authenticated session inside ZAP
      * @throws ClientApiException
      */
-    public String extractSessionAndPassToZAP(FirefoxDriver firefox, String targetUrl, ClientApiSupport clientApiSupport) throws ClientApiException {
+    public String extractSessionAndPassToZAP(FirefoxDriver firefox, String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
         LOG.info("Removing old session data inside ZAP if necessary.");
-        cleanUpOldSessionDataIfNecessary(targetUrl, clientApiSupport);
+        cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
 
         LOG.info("Add new HTTP session token: {} to ZAP.", SESSION_TOKEN_IDENTIFIER);
-        clientApiSupport.addHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
+        clientApiWrapper.addHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
         LOG.info("Create new empty HTTP session: {} in ZAP.", SESSION_IDENTIFIER);
-        clientApiSupport.createEmptyHTTPSession(targetUrl, SESSION_IDENTIFIER);
+        clientApiWrapper.createEmptyHTTPSession(targetUrl, SESSION_IDENTIFIER);
 
         LOG.info("Adding all cookies to ZAP HTTP session: {}", SESSION_IDENTIFIER);
         for (Cookie cookie : firefox.manage().getCookies()) {
-            clientApiSupport.setHTTPSessionTokenValue(targetUrl, SESSION_IDENTIFIER, cookie.getName(), cookie.getValue());
+            clientApiWrapper.setHTTPSessionTokenValue(targetUrl, SESSION_IDENTIFIER, cookie.getName(), cookie.getValue());
         }
         LOG.info("Set ZAP HTTP session: {} as active session to use.", SESSION_IDENTIFIER);
-        clientApiSupport.setActiveHTTPSession(targetUrl, SESSION_IDENTIFIER);
+        clientApiWrapper.setActiveHTTPSession(targetUrl, SESSION_IDENTIFIER);
 
-        addJwtAsReplacerRuleToZap(firefox, clientApiSupport);
+        addJwtAsReplacerRuleToZap(firefox, clientApiWrapper);
 
         String followRedirects = "true";
         LOG.info("Accessing target URL: {} via ZAP to make sure it is added to the sites tree.", targetUrl);
-        clientApiSupport.accessUrlViaZap(targetUrl, followRedirects);
+        clientApiWrapper.accessUrlViaZap(targetUrl, followRedirects);
 
         return SESSION_IDENTIFIER;
     }
@@ -64,27 +64,27 @@ public class ZapScriptLoginSessionGrabber {
      * a previous run.
      *
      * @param targetUrl
-     * @param clientApiSupport
+     * @param clientApiWrapper
      */
-    public void cleanUpOldSessionDataIfNecessary(String targetUrl, ClientApiSupport clientApiSupport) {
+    public void cleanUpOldSessionDataIfNecessary(String targetUrl, ClientApiWrapper clientApiWrapper) {
         try {
-            clientApiSupport.removeHTTPSession(targetUrl, SESSION_IDENTIFIER);
+            clientApiWrapper.removeHTTPSession(targetUrl, SESSION_IDENTIFIER);
         } catch (ClientApiException e) {
             LOG.info("Could not find old HTTP session, nothing needs to be removed.");
         }
         try {
-            clientApiSupport.removeHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
+            clientApiWrapper.removeHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
         } catch (ClientApiException e) {
             LOG.info("Could not find old HTTP session token, nothing needs to be removed.");
         }
         try {
-            clientApiSupport.removeReplacerRule(JWT_REPLACER_DESCRIPTION);
+            clientApiWrapper.removeReplacerRule(JWT_REPLACER_DESCRIPTION);
         } catch (ClientApiException e) {
             LOG.info("Could not find old JWT repalcer rule, nothing needs to be removed.");
         }
     }
 
-    private void addJwtAsReplacerRuleToZap(FirefoxDriver firefox, ClientApiSupport clientApiSupport) throws ClientApiException {
+    private void addJwtAsReplacerRuleToZap(FirefoxDriver firefox, ClientApiWrapper clientApiWrapper) throws ClientApiException {
         String enabled = "true";
         // "REQ_HEADER" means the header entry will be added to the requests if not
         // existing or replaced if already existing
@@ -109,7 +109,7 @@ public class ZapScriptLoginSessionGrabber {
             String value = localStorage.get(key);
             if (isJWT(value)) {
                 replacement = "Bearer %s".formatted(value);
-                clientApiSupport.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                clientApiWrapper.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
                 return;
             }
         }
@@ -119,7 +119,7 @@ public class ZapScriptLoginSessionGrabber {
             String value = sessionStorage.get(key);
             if (isJWT(value)) {
                 replacement = "Bearer %s".formatted(value);
-                clientApiSupport.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+                clientApiWrapper.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
                 return;
             }
         }
