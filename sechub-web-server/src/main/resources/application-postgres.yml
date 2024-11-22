@@ -7,4 +7,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: classpath:db/migration/common
+  jpa:
+    database:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

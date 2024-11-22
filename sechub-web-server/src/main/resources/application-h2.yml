@@ -8,5 +8,5 @@ spring:
   flyway:
     enabled: true
     locations:
-    - classpath:db/migration
+    - classpath:db/migration/common
     - classpath:db/migration/h2
