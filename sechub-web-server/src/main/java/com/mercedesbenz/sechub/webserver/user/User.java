@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.webserver.user;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 @Entity
 @Table(name = User.TABLE_NAME)
 public class User {
@@ -16,7 +14,6 @@ public class User {
     public static final String COLUMN_USER_ID = "USER_ID";
     public static final String COLUMN_EMAIL_ADDRESS = "USER_EMAIL_ADDRESS";
     public static final String COLUMN_USER_ROLES = "USER_ROLES";
-
 
     @Id
     @Column(name = COLUMN_USER_ID, unique = true, nullable = false)
