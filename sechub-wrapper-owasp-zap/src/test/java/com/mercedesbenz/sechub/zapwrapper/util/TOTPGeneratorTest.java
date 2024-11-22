@@ -24,7 +24,7 @@ class TOTPGeneratorTest {
     @Test
     void secret_key_being_null_throws_exception() {
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null));
+        assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null, 6, TOTPHashAlgorithm.HMAC_SHA1, 30));
     }
 
     @Test
@@ -36,7 +36,7 @@ class TOTPGeneratorTest {
         String expectedToken = "950308";
         String seedDecoded = new String(seedBytes, StandardCharsets.UTF_8);
 
-        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded);
+        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded, 6, TOTPHashAlgorithm.HMAC_SHA1, 30);
 
         /* execute */
         String generatedToken = totpGenerator.generateTOTP(timeMillis);

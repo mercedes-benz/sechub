@@ -13,9 +13,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.login.EncodingType;
 
-class StringDecoderTest {
+class ZapWrapperStringDecoderTest {
 
-    private StringDecoder decoderToTest = new StringDecoder();
+    private ZapWrapperStringDecoder decoderToTest = new ZapWrapperStringDecoder();
 
     @Test
     void when_seed_is_null_an_exception_is_thrown() {
@@ -61,13 +61,26 @@ class StringDecoderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "���", "NotEncoded!", "@:_DASF2daagjtz", "HelloWorld" })
+    @ValueSource(strings = { "���", "NotEncoded!", "@:_DASF2daagjtz", "HelloWorld", })
     void not_encoded_values_are_correctly_treated_ignoring_spaces_or_tabs(String value) throws DecoderException {
         /* execute */
         byte[] decoded = decoderToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
 
         /* test */
         assertEquals(value, new String(decoded));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", "       ", "\n\t\r" })
+    void empty_values_are_correctly_treated_ignoring_spaces_or_tabs(String value) throws DecoderException {
+        /* prepare */
+        String emptyString = "";
+
+        /* execute */
+        byte[] decoded = decoderToTest.decodeIfNecessary(value, EncodingType.AUTODETECT);
+
+        /* test */
+        assertEquals(emptyString, new String(decoded));
     }
 
 }

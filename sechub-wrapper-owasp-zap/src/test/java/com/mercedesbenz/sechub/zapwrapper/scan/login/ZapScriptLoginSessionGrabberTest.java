@@ -28,17 +28,19 @@ class ZapScriptLoginSessionGrabberTest {
     private ClientApiWrapper clientApiWrapper;
     private FirefoxDriver firefox;
     private Options webDriverOptions;
+    private JWTSupport jwtSupport;
 
     private ApiResponse zapApiResponse;
 
     private static final String TARGET_URL = "http://example.com";
-    private static final String FOLLOW_REDIRECTS = "true";
+    private static final boolean FOLLOW_REDIRECTS = true;
 
     @BeforeEach
     void beforeEach() {
         zapApiResponse = mock();
         firefox = mock();
         webDriverOptions = mock();
+        jwtSupport = mock();
 
         clientApiWrapper = mock(ClientApiWrapper.class, new Answer<Object>() {
             @Override
@@ -48,7 +50,7 @@ class ZapScriptLoginSessionGrabberTest {
             }
         });
 
-        sessionGrabberToTest = new ZapScriptLoginSessionGrabber();
+        sessionGrabberToTest = new ZapScriptLoginSessionGrabber(jwtSupport);
     }
 
     @Test
@@ -58,14 +60,13 @@ class ZapScriptLoginSessionGrabberTest {
         Set<Cookie> cookies = Set.of(cookie);
 
         Map<String, String> storage = new HashMap<>();
-        // example from https://jwt.io/
-        storage.put("jwt",
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
+        storage.put("jwt", "1234");
 
         when(firefox.manage()).thenReturn(webDriverOptions);
 
         when(webDriverOptions.getCookies()).thenReturn(cookies);
         when(firefox.executeScript(anyString())).thenReturn(storage);
+        when(jwtSupport.isJWT(storage.get("jwt"))).thenReturn(true);
 
         /* execute */
         sessionGrabberToTest.extractSessionAndPassToZAP(firefox, TARGET_URL, clientApiWrapper);
@@ -82,7 +83,7 @@ class ZapScriptLoginSessionGrabberTest {
         verify(clientApiWrapper, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
         verify(clientApiWrapper, times(1)).setHTTPSessionTokenValue(eq(TARGET_URL), any(), eq(cookie.getName()), eq(cookie.getValue()));
         verify(clientApiWrapper, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper, times(1)).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
 
         verify(clientApiWrapper, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
     }
@@ -94,6 +95,7 @@ class ZapScriptLoginSessionGrabberTest {
 
         when(webDriverOptions.getCookies()).thenReturn(Collections.emptySet());
         when(firefox.executeScript(anyString())).thenReturn(Collections.emptyMap());
+        when(jwtSupport.isJWT(anyString())).thenReturn(false);
 
         /* execute */
         sessionGrabberToTest.extractSessionAndPassToZAP(firefox, TARGET_URL, clientApiWrapper);
@@ -102,7 +104,7 @@ class ZapScriptLoginSessionGrabberTest {
         // both browser storages are checked now without JWT
         verify(firefox, times(2)).executeScript(anyString());
         // no JWT can be added
-        verify(clientApiWrapper, never()).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper, never()).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
         // no cookie can be added
         verify(clientApiWrapper, never()).setHTTPSessionTokenValue(eq(TARGET_URL), any(), any(), any());
 

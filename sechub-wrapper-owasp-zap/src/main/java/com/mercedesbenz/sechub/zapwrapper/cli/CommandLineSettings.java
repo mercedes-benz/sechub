@@ -117,6 +117,30 @@ public class CommandLineSettings {
         return proxyPort;
     }
 
+    @Parameter(names = { "--proxyRealm" }, description = "Specify a proxy realm. You can also set the environment variable "
+            + EnvironmentVariableConstants.PROXY_REALM_ENV_VARIABLE_NAME + ", instead of using this parameter.", required = false)
+    private String proxyRealm;
+
+    public String getProxyRealm() {
+        return proxyRealm;
+    }
+
+    @Parameter(names = { "--proxyUsername" }, description = "Specify a proxy username. You can also set the environment variable "
+            + EnvironmentVariableConstants.PROXY_USERNAME_ENV_VARIABLE_NAME + ", instead of using this parameter.", required = false)
+    private String proxyUsername;
+
+    public String getProxyUsername() {
+        return proxyUsername;
+    }
+
+    @Parameter(names = { "--proxyPassword" }, description = "Specify a proxy password. You can also set the environment variable "
+            + EnvironmentVariableConstants.PROXY_PASSWORD_ENV_VARIABLE_NAME + ", instead of using this parameter.", required = false)
+    private String proxyPassword;
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
     @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Zap.", required = true)
     private String fullRulesetFile;
 

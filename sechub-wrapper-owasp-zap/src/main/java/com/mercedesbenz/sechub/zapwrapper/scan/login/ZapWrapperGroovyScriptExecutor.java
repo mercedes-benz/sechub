@@ -23,8 +23,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.util.StringDecoder;
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator;
+import com.mercedesbenz.sechub.zapwrapper.util.ZapWrapperStringDecoder;
 
 public class ZapWrapperGroovyScriptExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperGroovyScriptExecutor.class);
@@ -44,7 +44,7 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     private Bindings createBindings(ZapScanContext scanContext, ScriptEngine scriptEngine, FirefoxDriver firefox) {
-        // TODO use templates structure from sechub webscan config
+        // TODO 2024-11-21 jan: use templates structure from sechub webscan config
         SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
@@ -52,15 +52,16 @@ public class ZapWrapperGroovyScriptExecutor {
         TOTPGenerator totpGenerator = null;
         if (totp != null) {
             LOG.info("Trying to decode TOTP seed if necessary.");
-            StringDecoder stringDecoder = new StringDecoder();
-            byte[] decodedSeedBytes = stringDecoder.decodeIfNecessary(totp.getSeed(), totp.getEncodingType());
+            ZapWrapperStringDecoder zapWrapperStringDecoder = new ZapWrapperStringDecoder();
+            byte[] decodedSeedBytes = zapWrapperStringDecoder.decodeIfNecessary(totp.getSeed(), totp.getEncodingType());
             String decodedSeed = new String(decodedSeedBytes, StandardCharsets.UTF_8);
 
             LOG.info("Setting up TOTP generator for login.");
             totpGenerator = new TOTPGenerator(decodedSeed, totp.getTokenLength(), totp.getHashAlgorithm(), totp.getValidityInSeconds());
         }
 
-        // TODO read the username and password from templateData as soon as it is
+        // TODO 2024-11-21 jan: read the username and password from templateData as soon
+        // as it is
         // implemented
         String user = "DUMMY";
         String password = "DUMMY";

@@ -3,17 +3,12 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
@@ -28,12 +23,6 @@ import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 public class ZapScanContextFactory {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanContextFactory.class);
-
-    private static final int SECONDS_IN_MS = 1000;
-    private static final int MINUTES_IN_MS = 60 * SECONDS_IN_MS;
-    private static final int HOURS_IN_MS = 60 * MINUTES_IN_MS;
-    private static final int DAYS_IN_MS = 24 * HOURS_IN_MS;
-    private static final int DEFAULT_MAX_SCAN_DURATION = 8 * HOURS_IN_MS;
 
     private final EnvironmentVariableReader environmentVariableReader;
     private final BaseTargetUriFactory targetUriFactory;
@@ -84,7 +73,6 @@ public class ZapScanContextFactory {
 
         SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
         SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
-        long maxScanDurationInMillis = fetchMaxScanDurationInMillis(sechubWebConfig);
 
         List<File> apiDefinitionFiles = fetchApiDefinitionFiles(sechubScanConfig);
 
@@ -115,7 +103,6 @@ public class ZapScanContextFactory {
 												.setAjaxSpiderBrowserId(settings.getAjaxSpiderBrowserId())
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
-												.setMaxScanDurationInMilliSeconds(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
 												.setFullRuleset(fullRuleset)
@@ -200,6 +187,9 @@ public class ZapScanContextFactory {
     private ProxyInformation createProxyInformation(CommandLineSettings settings) {
         String proxyHost = settings.getProxyHost();
         int proxyPort = settings.getProxyPort();
+        String proxyRealm = settings.getProxyRealm();
+        String proxyUsername = settings.getProxyUsername();
+        String proxyPassword = settings.getProxyPassword();
 
         if (proxyHost == null) {
             proxyHost = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME);
@@ -207,12 +197,30 @@ public class ZapScanContextFactory {
         if (proxyPort <= 0) {
             proxyPort = environmentVariableReader.readAsInt(EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME);
         }
+        // optional values
+        if (proxyRealm == null) {
+            proxyRealm = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_REALM_ENV_VARIABLE_NAME);
+        }
+        if (proxyUsername == null) {
+            proxyUsername = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_USERNAME_ENV_VARIABLE_NAME);
+        }
+        if (proxyPassword == null) {
+            proxyPassword = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_PASSWORD_ENV_VARIABLE_NAME);
+        }
 
         if (proxyHost == null || proxyPort <= 0) {
             LOG.info("No proxy settings were provided. Continuing without proxy...");
             return null;
         }
-        return new ProxyInformation(proxyHost, proxyPort);
+        /* @formatter:off */
+        return ProxyInformation.builder()
+                               .setHost(proxyHost)
+                               .setPort(proxyPort)
+                               .setRealm(proxyRealm)
+                               .setUsername(proxyUsername)
+                               .setPassword(proxyPassword)
+                               .build();
+        /* @formatter:on */
     }
 
     private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
@@ -288,30 +296,6 @@ public class ZapScanContextFactory {
                     + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapPDSEventHandler(pdsJobEventsFolder);
-    }
-
-    private long fetchMaxScanDurationInMillis(SecHubWebScanConfiguration sechubWebConfig) {
-        if (sechubWebConfig.getMaxScanDuration().isEmpty()) {
-            return DEFAULT_MAX_SCAN_DURATION;
-        }
-
-        SecHubTimeUnit sechubTimeUnit = sechubWebConfig.getMaxScanDuration().get().getUnit();
-        int maxScanDuration = sechubWebConfig.getMaxScanDuration().get().getDuration();
-
-        switch (sechubTimeUnit) {
-        case DAY:
-            return maxScanDuration * DAYS_IN_MS;
-        case HOUR:
-            return maxScanDuration * HOURS_IN_MS;
-        case MINUTE:
-            return maxScanDuration * MINUTES_IN_MS;
-        case SECOND:
-            return maxScanDuration * SECONDS_IN_MS;
-        case MILLISECOND:
-            return maxScanDuration;
-        default:
-            return DEFAULT_MAX_SCAN_DURATION;
-        }
     }
 
     private File fetchGroovyScriptFile(CommandLineSettings settings) {

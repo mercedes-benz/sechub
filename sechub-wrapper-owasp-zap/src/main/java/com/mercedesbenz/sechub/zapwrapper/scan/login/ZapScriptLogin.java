@@ -23,7 +23,11 @@ public class ZapScriptLogin {
     private ZapWrapperGroovyScriptExecutor groovyScriptExecutor;
     private ZapScriptLoginSessionGrabber sessionGrabber;
 
-    public ZapScriptLogin(ZapScriptLoginWebDriverFactory webDriverFactory, ZapWrapperGroovyScriptExecutor groovyScriptExecutor,
+    public ZapScriptLogin() {
+        this(new ZapScriptLoginWebDriverFactory(), new ZapWrapperGroovyScriptExecutor(), new ZapScriptLoginSessionGrabber());
+    }
+
+    ZapScriptLogin(ZapScriptLoginWebDriverFactory webDriverFactory, ZapWrapperGroovyScriptExecutor groovyScriptExecutor,
             ZapScriptLoginSessionGrabber sessionGrabber) {
         this.webDriverFactory = webDriverFactory;
         this.groovyScriptExecutor = groovyScriptExecutor;
@@ -54,20 +58,17 @@ public class ZapScriptLogin {
 
             LOG.info("Calling session grabber to read the HTTP session data and pass them to ZAP.");
             return sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiWrapper);
-        } catch (IOException e) {
-            throw new ZapWrapperRuntimeException(e.getMessage(), e, ZapWrapperExitCode.IO_ERROR);
-        } catch (ScriptException e) {
-            throw new ZapWrapperRuntimeException(e.getMessage(), e, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
+        } catch (IOException | ScriptException e) {
+            throw new ZapWrapperRuntimeException("An error happened while executing the script file.", e, ZapWrapperExitCode.IO_ERROR);
         } catch (ClientApiException e) {
-            throw new ZapWrapperRuntimeException(e.getMessage(), e, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
+            throw new ZapWrapperRuntimeException("An error happened while grabbing the session data.", e, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         } finally {
             firefox.quit();
         }
     }
 
-    public void cleanUpScriptLoginData(String targetUrl, ClientApiWrapper clientApiWrapper) {
+    public void cleanUpScriptLoginData(String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
         sessionGrabber.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
-
     }
 
 }

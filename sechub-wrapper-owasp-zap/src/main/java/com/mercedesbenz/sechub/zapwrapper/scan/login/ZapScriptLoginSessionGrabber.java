@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.zapwrapper.scan.login;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -23,7 +22,15 @@ public class ZapScriptLoginSessionGrabber {
     private static final String LOCAL_STORAGE = "localStorage";
     private static final String SESSION_STORAGE = "sessionStorage";
 
-    private static final Pattern JWT_PATTERN = Pattern.compile("^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$");
+    private JWTSupport jwtSupport;
+
+    public ZapScriptLoginSessionGrabber() {
+        this(new JWTSupport());
+    }
+
+    ZapScriptLoginSessionGrabber(JWTSupport jwtSupport) {
+        this.jwtSupport = jwtSupport;
+    }
 
     /**
      * The sessionGrabber will add all necessary session data to ZAP.
@@ -35,25 +42,21 @@ public class ZapScriptLoginSessionGrabber {
      * @throws ClientApiException
      */
     public String extractSessionAndPassToZAP(FirefoxDriver firefox, String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
-        LOG.info("Removing old session data inside ZAP if necessary.");
         cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
 
-        LOG.info("Add new HTTP session token: {} to ZAP.", SESSION_TOKEN_IDENTIFIER);
         clientApiWrapper.addHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
-        LOG.info("Create new empty HTTP session: {} in ZAP.", SESSION_IDENTIFIER);
         clientApiWrapper.createEmptyHTTPSession(targetUrl, SESSION_IDENTIFIER);
 
-        LOG.info("Adding all cookies to ZAP HTTP session: {}", SESSION_IDENTIFIER);
         for (Cookie cookie : firefox.manage().getCookies()) {
             clientApiWrapper.setHTTPSessionTokenValue(targetUrl, SESSION_IDENTIFIER, cookie.getName(), cookie.getValue());
         }
-        LOG.info("Set ZAP HTTP session: {} as active session to use.", SESSION_IDENTIFIER);
         clientApiWrapper.setActiveHTTPSession(targetUrl, SESSION_IDENTIFIER);
 
-        addJwtAsReplacerRuleToZap(firefox, clientApiWrapper);
+        if (!addJwtAsReplacerRuleToZap(firefox, clientApiWrapper, LOCAL_STORAGE)) {
+            addJwtAsReplacerRuleToZap(firefox, clientApiWrapper, SESSION_STORAGE);
+        }
 
-        String followRedirects = "true";
-        LOG.info("Accessing target URL: {} via ZAP to make sure it is added to the sites tree.", targetUrl);
+        boolean followRedirects = true;
         clientApiWrapper.accessUrlViaZap(targetUrl, followRedirects);
 
         return SESSION_IDENTIFIER;
@@ -66,30 +69,36 @@ public class ZapScriptLoginSessionGrabber {
      * @param targetUrl
      * @param clientApiWrapper
      */
-    public void cleanUpOldSessionDataIfNecessary(String targetUrl, ClientApiWrapper clientApiWrapper) {
+    public void cleanUpOldSessionDataIfNecessary(String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
         try {
             clientApiWrapper.removeHTTPSession(targetUrl, SESSION_IDENTIFIER);
         } catch (ClientApiException e) {
-            LOG.info("Could not find old HTTP session, nothing needs to be removed.");
+            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+                throw e;
+            }
         }
         try {
             clientApiWrapper.removeHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
         } catch (ClientApiException e) {
-            LOG.info("Could not find old HTTP session token, nothing needs to be removed.");
+            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+                throw e;
+            }
         }
         try {
             clientApiWrapper.removeReplacerRule(JWT_REPLACER_DESCRIPTION);
         } catch (ClientApiException e) {
-            LOG.info("Could not find old JWT repalcer rule, nothing needs to be removed.");
+            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+                throw e;
+            }
         }
     }
 
-    private void addJwtAsReplacerRuleToZap(FirefoxDriver firefox, ClientApiWrapper clientApiWrapper) throws ClientApiException {
-        String enabled = "true";
+    private boolean addJwtAsReplacerRuleToZap(FirefoxDriver firefox, ClientApiWrapper clientApiWrapper, String storageType) throws ClientApiException {
+        boolean enabled = true;
         // "REQ_HEADER" means the header entry will be added to the requests if not
         // existing or replaced if already existing
         String matchtype = "REQ_HEADER";
-        String matchregex = "false";
+        boolean matchregex = false;
 
         // matchstring and replacement will be set to the header name and header value
         String matchstring = "Authorization";
@@ -102,27 +111,18 @@ public class ZapScriptLoginSessionGrabber {
         // any URL
         String url = null;
 
-        LOG.info("Searching: {} for JWT and add JWT as replacer rule.", LOCAL_STORAGE);
-        Map<String, String> localStorage = retrieveStorage(firefox, LOCAL_STORAGE);
+        LOG.info("Searching: {} for JWT and add JWT as replacer rule.", storageType);
+        Map<String, String> localStorage = retrieveStorage(firefox, storageType);
 
         for (String key : localStorage.keySet()) {
             String value = localStorage.get(key);
-            if (isJWT(value)) {
+            if (jwtSupport.isJWT(value)) {
                 replacement = "Bearer %s".formatted(value);
                 clientApiWrapper.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
-                return;
+                return true;
             }
         }
-        LOG.info("Searching: {} for JWT and add JWT as replacer rule.", SESSION_STORAGE);
-        Map<String, String> sessionStorage = retrieveStorage(firefox, SESSION_STORAGE);
-        for (String key : sessionStorage.keySet()) {
-            String value = sessionStorage.get(key);
-            if (isJWT(value)) {
-                replacement = "Bearer %s".formatted(value);
-                clientApiWrapper.addReplacerRule(JWT_REPLACER_DESCRIPTION, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
-                return;
-            }
-        }
+        return false;
     }
 
     private Map<String, String> retrieveStorage(JavascriptExecutor jsExecutor, String storageType) {
@@ -139,16 +139,4 @@ public class ZapScriptLoginSessionGrabber {
         Map<String, String> storage = (Map<String, String>) jsExecutor.executeScript(script);
         return storage;
     }
-
-    private boolean isJWT(String value) {
-        if (value == null) {
-            return false;
-        }
-        if (!JWT_PATTERN.matcher(value).matches()) {
-            return false;
-        }
-        String[] split = value.split("\\.");
-        return split[0].startsWith("eyJ") && split[1].startsWith("eyJ");
-    }
-
 }

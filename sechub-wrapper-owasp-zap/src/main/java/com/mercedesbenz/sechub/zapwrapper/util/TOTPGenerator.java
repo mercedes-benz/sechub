@@ -21,18 +21,11 @@ public class TOTPGenerator {
 
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
 
-    private static final int DEFAULT_TOTP_LENGTH = 6;
-    private static final int DEFAULT_TOKEN_VALIDITY_TIME_IN_SECONDS = 30;
-
     private SealedObject seed;
     private String hashAlgorithmName;
     private int totpLength;
     private int tokenValidityTimeInSeconds;
     private long digitsTruncate;
-
-    public TOTPGenerator(String seed) {
-        this(seed, DEFAULT_TOTP_LENGTH, TOTPHashAlgorithm.HMAC_SHA1, DEFAULT_TOKEN_VALIDITY_TIME_IN_SECONDS);
-    }
 
     public TOTPGenerator(String seed, int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
         if (seed == null) {

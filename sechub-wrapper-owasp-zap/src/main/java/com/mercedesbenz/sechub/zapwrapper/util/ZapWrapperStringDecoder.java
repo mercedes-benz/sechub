@@ -10,7 +10,7 @@ import org.apache.commons.codec.binary.Hex;
 
 import com.mercedesbenz.sechub.commons.model.login.EncodingType;
 
-public class StringDecoder {
+public class ZapWrapperStringDecoder {
 
     private static final String HEX_REGEX = "^(0x|#)?[\\p{XDigit}]+$";
     private static final Pattern HEX_PATTERN = Pattern.compile(HEX_REGEX);
@@ -21,6 +21,15 @@ public class StringDecoder {
     private static final String BASE64_REGEX = "^[-A-Za-z0-9+/]+=*$";
     private static final Pattern BASE64_PATTERN = Pattern.compile(BASE64_REGEX);
 
+    /**
+     * Decode the given string seed, by using the given encoding type.
+     *
+     * @param seed
+     * @param encodingType
+     * @return decoded seed
+     *
+     * @throws IllegalArgumentException if the seed is <code>null</code>
+     */
     public byte[] decodeIfNecessary(String seed, EncodingType encodingType) {
         if (seed == null) {
             throw new IllegalArgumentException("The secret key must not be null!");
@@ -60,7 +69,7 @@ public class StringDecoder {
      * 'example1', which technically would match the condition for BASE64 below.
      *
      * @param string
-     * @return
+     * @return encoding type, never <code>null</code>
      */
     private EncodingType detectEncoding(String string) {
         if (HEX_PATTERN.matcher(string).matches()) {

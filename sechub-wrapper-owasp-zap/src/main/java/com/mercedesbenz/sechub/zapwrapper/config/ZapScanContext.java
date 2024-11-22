@@ -32,8 +32,6 @@ public class ZapScanContext {
 
     private URL targetUrl;
 
-    private long maxScanDurationInMilliSeconds;
-
     private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
     private ProxyInformation proxyInformation;
@@ -94,10 +92,6 @@ public class ZapScanContext {
 
     public URL getTargetUrl() {
         return targetUrl;
-    }
-
-    public long getMaxScanDurationInMilliSeconds() {
-        return maxScanDurationInMilliSeconds;
     }
 
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
@@ -197,8 +191,6 @@ public class ZapScanContext {
 
         private URL targetUrl;
 
-        private long maxScanDurationInMilliSeconds;
-
         private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
         private ProxyInformation proxyInformation;
@@ -262,11 +254,6 @@ public class ZapScanContext {
 
         public ZapScanContextBuilder setTargetUrl(URL targetUrl) {
             this.targetUrl = targetUrl;
-            return this;
-        }
-
-        public ZapScanContextBuilder setMaxScanDurationInMilliSeconds(long maxScanDurationInMilliSeconds) {
-            this.maxScanDurationInMilliSeconds = maxScanDurationInMilliSeconds;
             return this;
         }
 
@@ -359,8 +346,6 @@ public class ZapScanContext {
             zapScanContext.reportFile = this.reportFile;
             zapScanContext.contextName = this.contextName;
             zapScanContext.targetUrl = this.targetUrl;
-
-            zapScanContext.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
 
             zapScanContext.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 

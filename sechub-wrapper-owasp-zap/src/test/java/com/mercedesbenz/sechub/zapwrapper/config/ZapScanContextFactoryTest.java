@@ -108,6 +108,9 @@ class ZapScanContextFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
         when(settings.getProxyHost()).thenReturn(proxy);
         when(settings.getProxyPort()).thenReturn(proxyPort);
+        when(settings.getProxyRealm()).thenReturn("realm");
+        when(settings.getProxyUsername()).thenReturn("user");
+        when(settings.getProxyPassword()).thenReturn("password");
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
@@ -124,11 +127,14 @@ class ZapScanContextFactoryTest {
         assertEquals(proxyPort, result.getProxyInformation().getPort());
 
         verify(envVariableReader, never()).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
-        verify(envVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
-
         verify(envVariableReader, never()).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
         verify(envVariableReader, never()).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
+
         verify(envVariableReader, never()).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
     }
 
     @ParameterizedTest
@@ -145,11 +151,24 @@ class ZapScanContextFactoryTest {
 
         when(envVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(proxy);
         when(envVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(proxyPort);
+        when(envVariableReader.readAsString(PROXY_REALM_ENV_VARIABLE_NAME)).thenReturn("realm");
+        when(envVariableReader.readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME)).thenReturn("username");
+        when(envVariableReader.readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME)).thenReturn("password");
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
+        verify(envVariableReader, times(1)).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
+
+        verify(envVariableReader, times(1)).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
+        verify(envVariableReader, times(1)).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
+
         ZapServerConfiguration serverConfig = result.getServerConfig();
         assertNotNull(serverConfig);
         assertEquals(host, serverConfig.getZaproxyHost());
@@ -157,6 +176,9 @@ class ZapScanContextFactoryTest {
         assertEquals(apiKey, serverConfig.getZaproxyApiKey());
         assertEquals(proxy, result.getProxyInformation().getHost());
         assertEquals(proxyPort, result.getProxyInformation().getPort());
+        assertEquals("realm", result.getProxyInformation().getRealm());
+        assertEquals("username", result.getProxyInformation().getUsername());
+        assertEquals("password", result.getProxyInformation().getPassword());
     }
 
     @Test
