@@ -72,10 +72,19 @@ Usage: ZapWrapper [options]
     --proxyHost
       Specify a proxy host. You can also set the environment variable 
       PROXY_HOST, instead of using this parameter.
+    --proxyPassword
+      Specify a proxy password. You can also set the environment variable 
+      PROXY_PASSWORD, instead of using this parameter.
     --proxyPort
       Specify a proxy port. You can also set the environment variable 
       PROXY_PORT, instead of using this parameter.
       Default: 0
+    --proxyRealm
+      Specify a proxy realm. You can also set the environment variable 
+      PROXY_REALM, instead of using this parameter.
+    --proxyUsername
+      Specify a proxy username. You can also set the environment variable 
+      PROXY_USERNAME, instead of using this parameter.
   * --report
       The output file, where the report will be written to.
     --retryWaittimeInMilliseconds

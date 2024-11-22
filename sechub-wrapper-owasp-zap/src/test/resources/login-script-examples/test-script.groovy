@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 
 import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys.*
 
