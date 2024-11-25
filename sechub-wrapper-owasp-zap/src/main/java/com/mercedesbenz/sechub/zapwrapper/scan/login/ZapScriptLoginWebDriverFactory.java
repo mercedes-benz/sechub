@@ -25,17 +25,8 @@ public class ZapScriptLoginWebDriverFactory {
 
         if (proxyInformation != null) {
             LOG.info("Adding proxy to firefox browser options.");
-            String username = proxyInformation.getUsername();
-            String password = proxyInformation.getPassword();
-            String host = proxyInformation.getHost();
-            int port = proxyInformation.getPort();
-            // Realm seems to be not supported by default
-            String proxyString = null;
-            if (username != null && password != null) {
-                proxyString = "%s:%s@%s:%s".formatted(username, password, host, port);
-            } else {
-                proxyString = "%s:%s".formatted(host, port);
-            }
+            // TODO 2024-11-25 jan: add additional proxy data like credentials
+            String proxyString = "%s:%s".formatted(proxyInformation.getHost(), proxyInformation.getPort());
             Proxy proxy = new Proxy();
             proxy.setHttpProxy(proxyString);
             proxy.setSslProxy(proxyString);
