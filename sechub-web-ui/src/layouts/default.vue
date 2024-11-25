@@ -3,7 +3,9 @@
   <v-app>
     <AppHeader />
     <v-main>
-      <router-view />
+      <div class="ma-10">
+        <router-view />
+      </div>
     </v-main>
   </v-app>
 </template>

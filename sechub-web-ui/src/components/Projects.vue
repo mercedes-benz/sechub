@@ -1,27 +1,39 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+    <v-card 
+  class="mr-auto"
+  color="background_default"
+  width="70%"
+    >
+  <v-toolbar 
+  color="background_default" 
+  width="70%" >
+    <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
+  </v-toolbar>
+
+
     <v-list
-    lines="two" 
-    max-width="90%"
-    class="ma-auto"
+    lines="two"
+    bg-color="background_default"
     >
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
         :value="item"
         rounded="xl"
-        class="ma-1 pa-5"
-      >
+        class="my-3"
+        >
 
-            <template v-slot:prepend>
-                <v-icon :icon="item.icon" :class="getIconClass(item)"></v-icon>
-            </template>
-            <template v-slot:title>
-                <span>{{ item.text }}</span>
-            </template>
+        <template v-slot:prepend>
+            <v-icon :icon="item.icon" :class="getIconClass(item)"></v-icon>
+        </template>
+        <template v-slot:title>
+            <span>{{ item.text }}</span>
+        </template>
 
       </v-list-item>
     </v-list>
+  </v-card>
 </template>
 
 <script>
@@ -35,17 +47,14 @@
     }),
     methods: {
     getIconClass(item) {
-      return item.owned ? 'text-primary' : 'text-secondary';
+      return item.owned ? 'text-primary' : '';
     },
   },
   }
 </script>
 
 <style scoped>
-    .text-secondary {
-    color: "secondary" !important;
-    }
-    .text-primary {
+  .text-primary {
     color: "primary" !important;
-    }
+  }
 </style>
