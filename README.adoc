@@ -13,7 +13,8 @@ toc::[]
 
 image::sechub-doc/src/docs/asciidoc/images/sechub-logo.png["Eugen" - the SecHub mascot]
 
-The free and open-source security platform SecHub, provides a central API to test software with different security tools. Many free and open-source as well proprietary security tools are supported by SecHub.
+The free and open-source security platform SecHub, provides a central API to test software with different security tools.
+SecHub supports many free and open-source as well as proprietary security tools.
 
 SecHub features:
 
