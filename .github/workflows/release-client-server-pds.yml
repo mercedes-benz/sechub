@@ -519,6 +519,7 @@ jobs:
         shell: bash
         run: |
           set -x
+          sudo apt-get -y install hub
           cd sechub-cli/build/
           assets=()
           # Add Client binaries + checksum
