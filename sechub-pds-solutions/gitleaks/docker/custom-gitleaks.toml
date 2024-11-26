@@ -37,11 +37,6 @@ id = "vehicle-identification-number"
 description = "Detected vehicle identification number."
 regex = '''\b(?:[^A-HJ-NPR-Z0-9]*|^)([A-HJ-NPR-Z0-9]{17})(?:[^A-HJ-NPR-Z0-9]*|$)\b'''
 
-[[rules]]
-id = "vehicle-identification-number"
-description = "Detected vehicle identification number."
-regex = '''\b(?:[^A-HJ-NPR-Z0-9]*|^)([A-HJ-NPR-Z0-9]{17})(?:[^A-HJ-NPR-Z0-9]*|$)\b'''
-
 # The conditions below require the VINs to be a combination of digits and letters, which cannot be guaranteed with the initial pattern
 [[rules.allowlists]]
 # note: |regexes| defaults to check the _Secret_ in the finding.
