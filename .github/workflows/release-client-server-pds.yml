@@ -524,11 +524,15 @@ jobs:
           assets+=("-a" "go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
           assets+=("-a" "go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
           for asset in deb-build/*.deb ; do
-            filename=`basename "$i"`
+            filename=`basename "$asset"`
             assets+=("-a" "${asset}#${filename}")
           done
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
+          multiline_string="This is line 1.
+
+          This is line 3."
+          echo "$multiline_string"
           cat - <<EOF > release_message.txt
           $release_title
 
