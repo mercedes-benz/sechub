@@ -521,8 +521,10 @@ jobs:
           set -x
           cd sechub-cli/build/
           assets=()
+          # Add Client binaries + checksum
           assets+=("-a" "go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
           assets+=("-a" "go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
+          # Add Debian packages
           for asset in deb-build/*.deb ; do
             filename=`basename "$asset"`
             assets+=("-a" "${asset}#${filename}")
@@ -532,7 +534,8 @@ jobs:
           release_message="Changes in this Release
           - Some minor changes on client implementation"
           release_footer="For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)"
-          echo hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
+          # Create draft release on github
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
