@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.codehaus.groovy.jsr223.GroovyScriptEngineFactory;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -29,21 +31,57 @@ import com.mercedesbenz.sechub.zapwrapper.util.ZapWrapperStringDecoder;
 public class ZapWrapperGroovyScriptExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperGroovyScriptExecutor.class);
 
-    private static final long WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS = 30;
+    private static final int WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS = 30;
 
-    public void executeScript(File scriptFile, FirefoxDriver firefox, ZapScanContext scanContext) throws IOException, ScriptException {
+    private static final String LOCAL_STORAGE = "localStorage";
+    private static final String SESSION_STORAGE = "sessionStorage";
 
-        String script = Files.readString(scriptFile.toPath());
+    private ZapScriptLoginWebDriverFactory webDriverFactory;
+
+    private int webdriverTimeoutInSeconds;
+
+    public ZapWrapperGroovyScriptExecutor() {
+        this(new ZapScriptLoginWebDriverFactory(), WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS);
+    }
+
+    ZapWrapperGroovyScriptExecutor(ZapScriptLoginWebDriverFactory webDriverFactory, int webdriverTimeoutInSeconds) {
+        this.webDriverFactory = webDriverFactory;
+        this.webdriverTimeoutInSeconds = webdriverTimeoutInSeconds;
+    }
+
+    public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
+
+        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
+
         ScriptEngine scriptEngine = new GroovyScriptEngineFactory().getScriptEngine();
 
         LOG.info("Create bindings for groovy script.");
-        Bindings bindings = createBindings(scanContext, scriptEngine, firefox);
+        Bindings bindings = createBindings(scanContext, scriptEngine, firefox, wait);
 
-        LOG.info("Execute groovy login script.");
-        scriptEngine.eval(script, bindings);
+        ScriptLoginResult loginResult = new ScriptLoginResult();
+        try {
+            String script = Files.readString(scriptFile.toPath());
+            LOG.info("Execute groovy login script.");
+            scriptEngine.eval(script, bindings);
+
+            // load target URL to ensure the correct page is loaded in the browser
+            firefox.get(scanContext.getTargetUrlAsString());
+
+            LOG.info("Execution successful, perparing login result with session data.");
+            loginResult.setSessionCookies(firefox.manage().getCookies());
+            loginResult.setSessionStorage(retrieveStorage(firefox, SESSION_STORAGE));
+            loginResult.setLocalStorage(retrieveStorage(firefox, LOCAL_STORAGE));
+        } catch (IOException | ScriptException e) {
+            LOG.error("An error happened while executing the script file.", e);
+            loginResult.setLoginFailed(true);
+        } finally {
+            firefox.quit();
+        }
+        return loginResult;
     }
 
-    private Bindings createBindings(ZapScanContext scanContext, ScriptEngine scriptEngine, FirefoxDriver firefox) {
+    private Bindings createBindings(ZapScanContext scanContext, ScriptEngine scriptEngine, FirefoxDriver firefox, WebDriverWait wait) {
         // TODO 2024-11-21 jan: use templates structure from sechub webscan config
         SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
@@ -66,8 +104,6 @@ public class ZapWrapperGroovyScriptExecutor {
         String user = "DUMMY";
         String password = "DUMMY";
 
-        WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS));
-
         Bindings bindings = scriptEngine.createBindings();
         bindings.put(FIREFOX_WEBDRIVER_KEY, firefox);
         bindings.put(FIREFOX_WEBDRIVER_WAIT_KEY, wait);
@@ -81,5 +117,20 @@ public class ZapWrapperGroovyScriptExecutor {
         bindings.put(TARGET_URL_KEY, scanContext.getTargetUrlAsString());
 
         return bindings;
+    }
+
+    private Map<String, String> retrieveStorage(JavascriptExecutor jsExecutor, String storageType) {
+        String script = """
+                let items = {};
+                for (let i = 0; i < %s.length; i++) {
+                  let key = %s.key(i);
+                  items[key] = %s.getItem(key);
+                }
+                return items;
+                """.formatted(storageType, storageType, storageType);
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> storage = (Map<String, String>) jsExecutor.executeScript(script);
+        return storage;
     }
 }

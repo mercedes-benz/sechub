@@ -16,6 +16,7 @@ public class ZapScriptLoginWebDriverFactory {
     private static final Dimension DEFAULT_WEBDRIVER_RESOLUTION = new Dimension(1920, 1080);
 
     public FirefoxDriver createFirefoxWebdriver(ProxyInformation proxyInformation, boolean headless) {
+
         FirefoxOptions options = new FirefoxOptions();
         if (headless) {
             LOG.info("Using firefox in headless mode.");
@@ -32,6 +33,7 @@ public class ZapScriptLoginWebDriverFactory {
             proxy.setSslProxy(proxyString);
             options.setProxy(proxy);
         }
+        LOG.info("Creating selenium firefox driver.");
         FirefoxDriver firefox = new FirefoxDriver(options);
         // Set the window size, some application need a windows size to render correctly
         // even in headless mode

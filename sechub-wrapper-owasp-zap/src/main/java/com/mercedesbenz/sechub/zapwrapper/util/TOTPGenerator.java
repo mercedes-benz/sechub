@@ -41,7 +41,7 @@ public class TOTPGenerator {
     }
 
     /**
-     * This method generates a TOTP for the current times stamp in milliseconds.
+     * This method generates a TOTP for the current timestamp in milliseconds.
      *
      * @return totp currently valid
      */
@@ -50,7 +50,7 @@ public class TOTPGenerator {
     }
 
     /**
-     * This method generates a TOTP for a time stamp in milliseconds.
+     * This method generates a TOTP for a timestamp in milliseconds.
      *
      * @param seed
      * @param currentTimeMillis

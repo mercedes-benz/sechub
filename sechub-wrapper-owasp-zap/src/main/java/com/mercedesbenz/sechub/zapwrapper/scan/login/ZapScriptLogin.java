@@ -2,11 +2,7 @@
 package com.mercedesbenz.sechub.zapwrapper.scan.login;
 
 import java.io.File;
-import java.io.IOException;
 
-import javax.script.ScriptException;
-
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
@@ -19,19 +15,16 @@ import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 public class ZapScriptLogin {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScriptLogin.class);
 
-    private ZapScriptLoginWebDriverFactory webDriverFactory;
     private ZapWrapperGroovyScriptExecutor groovyScriptExecutor;
-    private ZapScriptLoginSessionGrabber sessionGrabber;
+    private ZapScriptLoginSessionConfigurator sessionConfigurator;
 
     public ZapScriptLogin() {
-        this(new ZapScriptLoginWebDriverFactory(), new ZapWrapperGroovyScriptExecutor(), new ZapScriptLoginSessionGrabber());
+        this(new ZapWrapperGroovyScriptExecutor(), new ZapScriptLoginSessionConfigurator());
     }
 
-    ZapScriptLogin(ZapScriptLoginWebDriverFactory webDriverFactory, ZapWrapperGroovyScriptExecutor groovyScriptExecutor,
-            ZapScriptLoginSessionGrabber sessionGrabber) {
-        this.webDriverFactory = webDriverFactory;
+    ZapScriptLogin(ZapWrapperGroovyScriptExecutor groovyScriptExecutor, ZapScriptLoginSessionConfigurator sessionConfigurator) {
         this.groovyScriptExecutor = groovyScriptExecutor;
-        this.sessionGrabber = sessionGrabber;
+        this.sessionConfigurator = sessionConfigurator;
     }
 
     /**
@@ -49,26 +42,22 @@ public class ZapScriptLogin {
                     "Expected a groovy script file to perform login, but no script was found. Cannot perform script login without the script file.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
-        LOG.info("Creating selenium web driver.");
-        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true);
 
+        LOG.info("Calling groovy script executor to execute login script.");
+        ScriptLoginResult loginResult = groovyScriptExecutor.executeScript(groovyScriptLoginFile, scanContext);
+        if (loginResult.isLoginFailed()) {
+            throw new ZapWrapperRuntimeException("An error happened during script login.", ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
+        }
         try {
-            LOG.info("Calling groovy script executor to execute login script.");
-            groovyScriptExecutor.executeScript(groovyScriptLoginFile, firefox, scanContext);
-
             LOG.info("Calling session grabber to read the HTTP session data and pass them to ZAP.");
-            return sessionGrabber.extractSessionAndPassToZAP(firefox, scanContext.getTargetUrlAsString(), clientApiWrapper);
-        } catch (IOException | ScriptException e) {
-            throw new ZapWrapperRuntimeException("An error happened while executing the script file.", e, ZapWrapperExitCode.IO_ERROR);
+            return sessionConfigurator.passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
         } catch (ClientApiException e) {
             throw new ZapWrapperRuntimeException("An error happened while grabbing the session data.", e, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
-        } finally {
-            firefox.quit();
         }
     }
 
     public void cleanUpScriptLoginData(String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
-        sessionGrabber.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
+        sessionConfigurator.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
     }
 
 }
