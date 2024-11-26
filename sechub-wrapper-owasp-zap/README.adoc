@@ -224,6 +224,9 @@ The script can also be created completely without using anything of the pre-defi
 The `TOTPGenerator` is an easy to use implementation of TOTP for two-factor-authentication if necessary. Using `totpGenerator.now()` returns the currently valid TOTP.
 To make use of the script authentication the wrapper application expects a SecHub configuration json for the scan, which contains a template data definition and optionally a TOTP configuration.
 See web scan example configurations for details.
+
+WARNING: **The script should always ensure that the target URL is loaded in the browser at the end after the authentication because the caller needs to access the session data.**
+
 The following example contains all available bindings, even if they are unused in the script below:
 
 [source,groovy]

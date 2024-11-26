@@ -65,9 +65,6 @@ public class ZapWrapperGroovyScriptExecutor {
             LOG.info("Execute groovy login script.");
             scriptEngine.eval(script, bindings);
 
-            // load target URL to ensure the correct page is loaded in the browser
-            firefox.get(scanContext.getTargetUrlAsString());
-
             LOG.info("Execution successful, perparing login result with session data.");
             loginResult.setSessionCookies(firefox.manage().getCookies());
             loginResult.setSessionStorage(retrieveStorage(firefox, SESSION_STORAGE));
