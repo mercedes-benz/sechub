@@ -529,20 +529,10 @@ jobs:
           done
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
-          multiline_string="This is line 1.
-
-          This is line 3."
-          echo "$multiline_string"
-          cat - <<EOF > release_message.txt
-          $release_title
-
-          Changes in this Release
-          - Some minor changes on client implementation
-
-          For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)
-          EOF
-          cat release_message.txt
-          echo hub release create --draft "${assets[@]}" -F release_message.txt "$tag_name"
+          release_message="Changes in this Release
+          - Some minor changes on client implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)"
+          echo hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
