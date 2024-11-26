@@ -5,7 +5,7 @@ BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 
 # The gitleaks version to use
 # See: https://github.com/gitleaks/gitleaks/releases
-GITLEAKS_VERSION="8.20.0"
+GITLEAKS_VERSION="8.21.2"
 
 # The build type of the Secret-Validation-Wrapper
 # Possible values are:
