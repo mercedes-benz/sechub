@@ -66,6 +66,9 @@ jobs:
           echo "For PDS release, pds-milestone-number must be provided!"
           exit 1
 
+      - name: Install required packages
+        run: sudo apt-get -y install build-essential dpkg-dev fakeroot graphviz hub
+
       - name: Checkout master
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -247,9 +250,6 @@ jobs:
       #     name: sechub-client
       #     path: sechub-cli/build/go
       #     retention-days: 14
-
-      # - name: Install graphviz (asciidoc diagrams)
-      #   run: sudo apt-get --assume-yes install graphviz
 
       # # -----------------------------------------
       # # Build Documentation
@@ -507,90 +507,39 @@ jobs:
         shell: bash
         run: |
           # sechub-cli/script/build-debian-packages.sh ${{ inputs.client-version }}
-          mkdir -p sechub-cli/build/deb-build
+          mkdir -p sechub-cli/build/deb-build sechub-doc/build/docs/asciidoc/
+          echo "SecHub client doc" > sechub-doc/build/docs/asciidoc/sechub-client.pdf
           cd sechub-cli/build/deb-build
           # fake generation of .deb files
           for i in sechub-client_${{ inputs.client-version }}_amd64.deb sechub-client_${{ inputs.client-version }}_arm64.deb sechub-client_${{ inputs.client-version }}_arm.deb sechub-client_${{ inputs.client-version }}_i386.deb ; do
             echo "Hello world" > "$i"
           done
 
-      - name: Create client release ${{ inputs.client-version }}
+      - name: Create client ${{ inputs.client-version }} release draft
         if: inputs.client-version != ''
         shell: bash
         run: |
-          set -x
-          sudo apt-get -y install hub
           cd sechub-cli/build/
           assets=()
-          # Add Client binaries + checksum
-          assets+=("-a" "go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
-          assets+=("-a" "go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
-          # Add Debian packages
-          for asset in deb-build/*.deb ; do
+          echo "# Add Client binaries sechub-cli-${{ inputs.client-version }}.zip + checksum"
+          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
+          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
+          echo "# Add Debian packages"
+          for asset in sechub-cli/build/deb-build/*.deb ; do
             filename=`basename "$asset"`
             assets+=("-a" "${asset}#${filename}")
           done
+          echo "# Add Client documentation sechub-client-${{ inputs.client-version }}.pdf"
+          assets+=("-a" "sechub-doc/build/docs/asciidoc/sechub-client.pdf#sechub-client-${{ inputs.client-version }}.pdf")
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
           release_message="Changes in this Release
           - Some minor changes on client implementation"
           release_footer="For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)"
-          # Create draft release on github
+          echo "# Create release draft \"$release_title\" on github"
           hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create client release ${{ inputs.client-version }}
-      #   id: create_client_release
-      #   if: inputs.client-version != ''
-      #   uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: v${{ inputs.client-version }}-client
-      #     commitish: master
-      #     release_name: Client Version ${{ inputs.client-version }}
-      #     body: |
-      #       Changes in this Release
-      #       - Some minor changes on client implementation
-
-      #       For more details please look at [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1)
-      #     draft: true
-      #     prerelease: false
-
-      # - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip
-      #   if: inputs.client-version != ''
-      #   uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_client_release.outputs.upload_url }}
-      #     asset_path: ./sechub-cli/build/go/sechub-cli.zip
-      #     asset_name: sechub-cli-${{ inputs.client-version }}.zip
-      #     asset_content_type: application/zip
-
-      # - name: Upload Client release asset sechub-cli-${{ inputs.client-version }}.zip.sha256
-      #   if: inputs.client-version != ''
-      #   uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_client_release.outputs.upload_url }}
-      #     asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
-      #     asset_name: sechub-cli-${{ inputs.client-version }}.zip.sha256
-      #     asset_content_type: text/plain
-
-      # - name: Upload sechub-client.pdf release asset
-      #   id: upload-sechub-doc-client-release-asset
-      #   if: inputs.client-version != ''
-      #   uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_client_release.outputs.upload_url }}
-      #     asset_path: ./sechub-doc/build/docs/asciidoc/sechub-client.pdf
-      #     asset_name: sechub-client-${{ inputs.client-version }}.pdf
-      #     asset_content_type: application/pdf
 
       # - name: Create Client ${{ inputs.client-version }} release issue
       #   if: inputs.client-version != ''
