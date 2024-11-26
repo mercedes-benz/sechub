@@ -519,7 +519,6 @@ jobs:
         if: inputs.client-version != ''
         shell: bash
         run: |
-          cd sechub-cli/build/
           assets=()
           echo "# Add Client binaries sechub-cli-${{ inputs.client-version }}.zip + checksum"
           assets+=("-a" "sechub-cli/build/go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
