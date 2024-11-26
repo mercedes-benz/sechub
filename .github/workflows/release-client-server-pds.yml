@@ -511,7 +511,7 @@ jobs:
           cd sechub-cli/build/deb-build
           # fake generation of .deb files
           for i in sechub-client_${{ inputs.client-version }}_amd64.deb sechub-client_${{ inputs.client-version }}_arm64.deb sechub-client_${{ inputs.client-version }}_arm.deb sechub-client_${{ inputs.client-version }}_i386.deb ; do
-            touch $i
+            echo "Hello world" > "$i"
           done
 
       - name: Create client release ${{ inputs.client-version }}
