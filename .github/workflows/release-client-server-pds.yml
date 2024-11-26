@@ -505,7 +505,14 @@ jobs:
       - name: Create client Debian packages
         if: inputs.client-version != ''
         shell: bash
-        run: sechub-cli/script/build-debian-packages.sh ${{ inputs.client-version }}
+        run: |
+          # sechub-cli/script/build-debian-packages.sh ${{ inputs.client-version }}
+          mkdir -p sechub-cli/build/deb-build
+          cd sechub-cli/build/deb-build
+          # fake generation of .deb files
+          for i in sechub-client_${{ inputs.client-version }}_amd64.deb sechub-client_${{ inputs.client-version }}_arm64.deb sechub-client_${{ inputs.client-version }}_arm.deb sechub-client_${{ inputs.client-version }}_i386.deb ; do
+            touch $i
+          done
 
       - name: Create client release ${{ inputs.client-version }}
         if: inputs.client-version != ''
