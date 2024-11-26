@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-  <SecHubDefault />
+  <Projects />
 </template>
 
 <script lang="ts" setup>
-  import SecHubDefault from "@/components/SecHubDefault.vue";
+  import Projects from "@/components/Projects.vue";
 </script>

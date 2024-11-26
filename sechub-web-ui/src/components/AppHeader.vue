@@ -1,13 +1,14 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <v-app-bar>
-
-        <img
-        class="ma-2 pa-1"
-        src="@/assets/sechub-logo.svg"
-        contain
-        height="100%"
-        ></img>
+    <v-app-bar
+    color="background_paper">
+            <router-link to="/" tag="div">
+                <img
+                class="logo ma-2 pa-1"
+                src="@/assets/sechub-logo.svg"
+                alt="Logo"
+                />
+            </router-link>
 
         <v-container fill-height fluid>
             <v-row align:center
@@ -50,3 +51,11 @@
 <script setup lang="ts">
     const username="Erika Mustermann"
 </script>
+
+<style scoped>
+.logo {
+  height: 90%;
+  max-height: 64px;
+  width: auto;
+}
+</style>

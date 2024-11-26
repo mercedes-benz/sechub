@@ -2,12 +2,17 @@
 <template>
   <v-app>
     <AppHeader />
-    <v-main>
-      <router-view />
+    <v-main class="background-default">
+      <div class="pa-10">
+        <router-view />
+      </div>
     </v-main>
   </v-app>
 </template>
 
-<script lang="ts" setup>
-  //
-</script>
+<style scoped>
+.background-default{
+  color: rgb(var(--v-theme-background_default)) !important;
+  background-color: rgb(var(--v-theme-background_default)) !important;
+}
+</style>
