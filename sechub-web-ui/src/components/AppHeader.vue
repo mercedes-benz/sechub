@@ -1,6 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <v-app-bar>
+    <v-app-bar
+    color="background_paper">
             <router-link to="/" tag="div">
                 <img
                 class="logo ma-2 pa-1"
@@ -54,7 +55,7 @@
 <style scoped>
 .logo {
   height: 90%;
-  max-height: 64px; /* Standardhöhe der v-app-bar */
+  max-height: 64px;
   width: auto;
 }
 </style>
