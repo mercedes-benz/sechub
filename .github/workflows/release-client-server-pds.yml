@@ -169,156 +169,156 @@ jobs:
       - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
-      # # ----------------------
-      # # Build SecHub Server + PDS
-      # # ----------------------
-      # - name: Build Server and PDS artifacts
-      #   run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+      # ----------------------
+      # Build SecHub Server + PDS
+      # ----------------------
+      - name: Build Server and PDS artifacts
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
 
-      # # ----------------------
-      # # Build API Java publish
-      # # ----------------------
-      # - name: Generate and build Java projects related to SecHub Java API
-      #   run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      # ----------------------
+      # Build API Java publish
+      # ----------------------
+      - name: Generate and build Java projects related to SecHub Java API
+        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
-      # # ----------------------
-      # # Integration test
-      # # ----------------------
-      # - name: Integration test
-      #   run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all
+      # ----------------------
+      # Integration test
+      # ----------------------
+      - name: Integration test
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all
 
-      # - name: Create combined test report
-      #   if: always()
-      #   run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
+      - name: Create combined test report
+        if: always()
+        run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
 
-      # # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
-      # - name: Collect GIT status
-      #   if: always()
-      #   run: |
-      #     # restore reduced-openapi3.json
-      #     git restore sechub-api-java/src/main/resources/reduced-openapi3.json
-      #     git status > build/reports/git-status.txt
+      # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
+      - name: Collect GIT status
+        if: always()
+        run: |
+          # restore reduced-openapi3.json
+          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
+          git status > build/reports/git-status.txt
 
-      # # -----------------------------------------
-      # # Upload Build Artifacts
-      # # -----------------------------------------
-      # - name: Archive combined test report
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: combined-sechub-testreport
-      #     path: build/reports/combined-report
-      #     retention-days: 14
+      # -----------------------------------------
+      # Upload Build Artifacts
+      # -----------------------------------------
+      - name: Archive combined test report
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: combined-sechub-testreport
+          path: build/reports/combined-report
+          retention-days: 14
 
-      # - name: Archive GIT status
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: git-status.txt
-      #     path: build/reports/git-status.txt
-      #     retention-days: 14
+      - name: Archive GIT status
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: git-status.txt
+          path: build/reports/git-status.txt
+          retention-days: 14
 
-      # - name: Archive sechub server artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-server
-      #     path: sechub-server/build/libs
-      #     retention-days: 14
+      - name: Archive sechub server artifacts
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-server
+          path: sechub-server/build/libs
+          retention-days: 14
 
-      # - name: Archive pds server artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-pds
-      #     path: sechub-pds/build/libs
+      - name: Archive pds server artifacts
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-pds
+          path: sechub-pds/build/libs
 
-      # - name: Archive developer tools artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-developertools
-      #     path: sechub-developertools/build/libs
-      #     retention-days: 14
+      - name: Archive developer tools artifacts
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-developertools
+          path: sechub-developertools/build/libs
+          retention-days: 14
 
-      # - name: Archive sechub client artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-client
-      #     path: sechub-cli/build/go
-      #     retention-days: 14
+      - name: Archive sechub client artifacts
+        if: always()
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-client
+          path: sechub-cli/build/go
+          retention-days: 14
 
-      # # -----------------------------------------
-      # # Build Documentation
-      # # -----------------------------------------
-      # - name: Create documentation
-      #   run: ./gradlew documentation-with-pages
+      # -----------------------------------------
+      # Build Documentation
+      # -----------------------------------------
+      - name: Create documentation
+        run: ./gradlew documentation-with-pages
 
-      # # -----------------------------------------
-      # # Upload documentation
-      # # -----------------------------------------
-      # - name: Archive documentation HTML
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-docs-html
-      #     path: sechub-doc/build/docs/final-html/
-      #     retention-days: 14
+      # -----------------------------------------
+      # Upload documentation
+      # -----------------------------------------
+      - name: Archive documentation HTML
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-docs-html
+          path: sechub-doc/build/docs/final-html/
+          retention-days: 14
 
-      # - name: Archive documentation PDF
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-docs-pdf
-      #     path: sechub-doc/build/docs/asciidoc/*.pdf
-      #     retention-days: 14
+      - name: Archive documentation PDF
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-docs-pdf
+          path: sechub-doc/build/docs/asciidoc/*.pdf
+          retention-days: 14
 
-      # - name: Archive openAPI3 JSON files
-      #   uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
-      #   with:
-      #     name: sechub-api-spec
-      #     path: sechub-doc/build/api-spec/
-      #     retention-days: 14
+      - name: Archive openAPI3 JSON files
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        with:
+          name: sechub-api-spec
+          path: sechub-doc/build/api-spec/
+          retention-days: 14
 
-      # # -----------------------------------------
-      # # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
-      # # -----------------------------------------
-      # - name: Update release documentation
-      #   run: |
-      #     git reset --hard
-      #     sechub-doc/helperscripts/publish+git-add-releasedocs.sh
-      #     git commit -m "docs update by SecHub release job @github-actions"
+      # -----------------------------------------
+      # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
+      # -----------------------------------------
+      - name: Update release documentation
+        run: |
+          git reset --hard
+          sechub-doc/helperscripts/publish+git-add-releasedocs.sh
+          git commit -m "docs update by SecHub release job @github-actions"
 
-      # # -----------------------------------------
-      # # Create pull request for release documentation
-      # # -----------------------------------------
-      # - name: Create pull request for release documentation
-      #   id: pr_release_documentation
-      #   uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
-      #   with:
-      #     branch: release-documentation
-      #     branch-suffix: short-commit-hash
-      #     delete-branch: true
-      #     title: '1 - Release documentation [auto-generated]'
-      #     body: |
-      #       Release of SecHub documentation
+      # -----------------------------------------
+      # Create pull request for release documentation
+      # -----------------------------------------
+      - name: Create pull request for release documentation
+        id: pr_release_documentation
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
+        with:
+          branch: release-documentation
+          branch-suffix: short-commit-hash
+          delete-branch: true
+          title: '1 - Release documentation [auto-generated]'
+          body: |
+            Release of SecHub documentation
 
-      #       -> Please review and merge **before** publishing the release.
+            -> Please review and merge **before** publishing the release.
 
-      # - name: Print PR infos
-      #   run: |
-      #     echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
-      #     echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
+      - name: Print PR infos
+        run: |
+          echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
 
-      # # -----------------------------------------
-      # # Assert releaseable, so no dirty flags on releases
-      # # even when all artifact creation parts are done!
-      # # -----------------------------------------
-      # - name: Assert releasable
-      #   run: |
-      #     git status
-      #     ./gradlew assertReleaseable
+      # -----------------------------------------
+      # Assert releaseable, so no dirty flags on releases
+      # even when all artifact creation parts are done!
+      # -----------------------------------------
+      - name: Assert releasable
+        run: |
+          git status
+          ./gradlew assertReleaseable
 
       # ******************************************
       # S E R V E R  release
@@ -505,15 +505,7 @@ jobs:
       - name: Create client Debian packages
         if: inputs.client-version != ''
         shell: bash
-        run: |
-          # sechub-cli/script/build-debian-packages.sh ${{ inputs.client-version }}
-          mkdir -p sechub-cli/build/deb-build sechub-doc/build/docs/asciidoc/
-          echo "SecHub client doc" > sechub-doc/build/docs/asciidoc/sechub-client.pdf
-          cd sechub-cli/build/deb-build
-          # fake generation of .deb files
-          for i in sechub-client_${{ inputs.client-version }}_amd64.deb sechub-client_${{ inputs.client-version }}_arm64.deb sechub-client_${{ inputs.client-version }}_arm.deb sechub-client_${{ inputs.client-version }}_i386.deb ; do
-            echo "Hello world" > "$i"
-          done
+        run: sechub-cli/script/build-debian-packages.sh ${{ inputs.client-version }}
 
       - name: Create client ${{ inputs.client-version }} release draft
         if: inputs.client-version != ''
@@ -530,6 +522,7 @@ jobs:
           done
           echo "# Add Client documentation sechub-client-${{ inputs.client-version }}.pdf"
           assets+=("-a" "sechub-doc/build/docs/asciidoc/sechub-client.pdf#sechub-client-${{ inputs.client-version }}.pdf")
+          # Define release data
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
           release_message="Changes in this Release
@@ -540,17 +533,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Create Client ${{ inputs.client-version }} release issue
-      #   if: inputs.client-version != ''
-      #   uses: dacbd/create-issue-action@main
-      #   with:
-      #     token: ${{ github.token }}
-      #     title: Release Client ${{ inputs.client-version }}
-      #     body: |
-      #       See [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1) for details.
+      - name: Create Client ${{ inputs.client-version }} release issue
+        if: inputs.client-version != ''
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release Client ${{ inputs.client-version }}
+          body: |
+            See [Milestone ${{inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.client-milestone-number}}?closed=1) for details.
 
-      #       Please close this issue after the release.
-      #     milestone: ${{ inputs.client-milestone-number }}
+            Please close this issue after the release.
+          milestone: ${{ inputs.client-milestone-number }}
 
 
       # ******************************************
@@ -642,39 +635,39 @@ jobs:
           ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
 
 
-      # # -----------------------------------------
-      # # Create a pull request for merging back `master` into `develop`
-      # # -----------------------------------------
-      # - name: pull-request master to develop
-      #   id: pr_master_to_develop
-      #   continue-on-error: true
-      #   uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     source_branch: "master"
-      #     destination_branch: "develop"
-      #     pr_allow_empty: true  # should allow an empty PR, but seems not to work
-      #     pr_title: '2 - After release: Merge master back into develop [auto-generated]'
-      #     pr_body: |
-      #       After SecHub release
-      #       - Client '${{ inputs.client-version }}'
-      #       - Server '${{ inputs.server-version }}'
-      #       - PDS '${{ inputs.pds-version }}'
+      # -----------------------------------------
+      # Create a pull request for merging back `master` into `develop`
+      # -----------------------------------------
+      - name: pull-request master to develop
+        id: pr_master_to_develop
+        continue-on-error: true
+        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: "master"
+          destination_branch: "develop"
+          pr_allow_empty: true  # should allow an empty PR, but seems not to work
+          pr_title: '2 - After release: Merge master back into develop [auto-generated]'
+          pr_body: |
+            After SecHub release
+            - Client '${{ inputs.client-version }}'
+            - Server '${{ inputs.server-version }}'
+            - PDS '${{ inputs.pds-version }}'
 
-      #       Merge master branch back into develop
+            Merge master branch back into develop
 
-      #       -> Please merge **after** the release has been published.
+            -> Please merge **after** the release has been published.
 
-      # - name: Print PR infos if PR was created
-      #   if: steps.pr_master_to_develop.outcome == 'success'
-      #   run: |
-      #     echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
-      #     echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+      - name: Print PR infos if PR was created
+        if: steps.pr_master_to_develop.outcome == 'success'
+        run: |
+          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
+          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
-      # - name: Print info if no PR was created
-      #   if: steps.pr_master_to_develop.outcome != 'success'
-      #   run: |
-      #     echo "Nothing to merge - no pull request necessary."
+      - name: Print info if no PR was created
+        if: steps.pr_master_to_develop.outcome != 'success'
+        run: |
+          echo "Nothing to merge - no pull request necessary."
 
 
   build-pds-solutions:
