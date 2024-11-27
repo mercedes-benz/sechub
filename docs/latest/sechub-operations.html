@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.3.1</span>
+<span id="revnumber"> Server 2.3.1 modified (commit 7de5e5c)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -791,7 +791,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.3.1 - Build date: 20241021165905</code></p>
+<p>Documentation version: <code>Server 2.3.1 modified (commit 7de5e5c) - Build date: 2024-11-27 09:48 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1233,8 +1233,35 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'p'</caption>
+<table id="section-gen-configuration-scope-pdsinstall" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Scope 'pdsinstall'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-pdsresilience" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. Scope 'pdsresilience'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1269,16 +1296,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a PDS encryption out of sync problem happens</p></td>
@@ -1287,48 +1304,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.wait</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a PDS encryption out of sync problem happens</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 's'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
 </tr>
 </tbody>
 </table>
@@ -1570,8 +1545,50 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tr>
 </tbody>
 </table>
+<table id="section-gen-configuration-scope-smtpserver" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 19. Scope 'smtpserver'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'storage'</caption>
+<caption class="title">Table 20. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1658,7 +1675,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'system'</caption>
+<caption class="title">Table 21. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1690,7 +1707,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'target'</caption>
+<caption class="title">Table 22. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1722,7 +1739,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'administration'</caption>
+<caption class="title">Table 23. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1744,7 +1761,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'scan'</caption>
+<caption class="title">Table 24. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1766,7 +1783,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Scope 'schedule'</caption>
+<caption class="title">Table 25. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1939,9 +1956,9 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.initialadmin.userid=value
 -Dsechub.notification.email.administrators=value
 -Dsechub.notification.email.from=value
--Dsechub.notification.smtp.hostname=value
 -Dsechub.server.baseurl=value
--Dsechub.security.diffiehellman.length=value</pre>
+-Dsechub.security.diffiehellman.length=value
+-Dsechub.notification.smtp.hostname=value</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1964,9 +1981,9 @@ export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
 export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
-export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
 export SECHUB_SERVER_BASEURL=value
-export SECHUB_SECURITY_DIFFIEHELLMAN_LENGTH=value</pre>
+export SECHUB_SECURITY_DIFFIEHELLMAN_LENGTH=value
+export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value</pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -2413,7 +2430,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. PDS executor configuration parameters</caption>
+<caption class="title">Table 26. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3692,7 +3709,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.3.1<br>
+ Server 2.3.1 modified (commit 7de5e5c)<br>
 </div>
 </div>
 </body>

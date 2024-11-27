@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 2.3.1</span>
+<span id="revnumber"> Server 2.3.1 modified (commit 7de5e5c)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -735,6 +735,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_078">7.5.79. UC_078-User unmarks existing false positive project data definitons</a></li>
 <li><a href="#section-usecase-UC_079">7.5.80. UC_079-System suspends running jobs on SIGTERM</a></li>
 <li><a href="#section-usecase-UC_080">7.5.81. UC_080-System resumes suspended jobs</a></li>
+<li><a href="#section-usecase-UC_081">7.5.82. UC_081-get assigned project data</a></li>
 </ul>
 </li>
 <li><a href="#section-ucrestdoc">7.6. Rest API documentation</a>
@@ -781,72 +782,73 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#update-project-metadata">7.6.21. Update project metadata</a></li>
 <li><a href="#admin-changes-project-description">7.6.22. Admin changes project description</a></li>
 <li><a href="#admin-changes-project-access-level">7.6.23. Admin changes project access level</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">7.6.24. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">7.6.25. User creates a new sechub job</a>
+<li><a href="#get-assigned-project-data">7.6.24. get assigned project data</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">7.6.25. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">7.6.26. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.25.1. Code Scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.25.2. Code Scan using data section variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-secret-scan">7.6.25.3. Secret scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-license-scan">7.6.25.4. License scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.25.5. Infrastructure scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.25.6. Web scan anonymous variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.25.7. Web scan with api definition variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.25.8. Web scan with client certificate definition variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.25.9. Web Scan login basic variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.25.10. Web Scan login form scripted variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">7.6.25.11. Web Scan headers variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.26.1. Code Scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.26.2. Code Scan using data section variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-secret-scan">7.6.26.3. Secret scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-license-scan">7.6.26.4. License scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.26.5. Infrastructure scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.26.6. Web scan anonymous variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.26.7. Web scan with api definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.26.8. Web scan with client certificate definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.26.9. Web Scan login basic variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.26.10. Web Scan login form scripted variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">7.6.26.11. Web Scan headers variant</a></li>
 </ul>
 </li>
-<li><a href="#user-uploads-source-code">7.6.26. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">7.6.27. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">7.6.28. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">7.6.29. User downloads sechub job report</a>
+<li><a href="#user-uploads-source-code">7.6.27. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">7.6.28. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">7.6.29. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">7.6.30. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-json">7.6.29.1. JSON variant</a></li>
-<li><a href="#section-ucrestdoc-UC_010-html">7.6.29.2. HTML variant</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">7.6.30.1. JSON variant</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">7.6.30.2. HTML variant</a></li>
 </ul>
 </li>
-<li><a href="#user-marks-false-positives">7.6.30. User marks false positives</a></li>
-<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.31. User unmarks existing false positive definitons</a></li>
-<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.32. User fetches false positive configuration of project</a></li>
-<li><a href="#user-uploads-binaries">7.6.33. User uploads binaries</a></li>
-<li><a href="#user-downloads-job-report-in-spdx-format">7.6.34. User downloads job report in SPDX format</a></li>
-<li><a href="#user-unmarks-existing-false-positive-project-data-definitons">7.6.35. User unmarks existing false positive project data definitons</a></li>
-<li><a href="#user-self-registration">7.6.36. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">7.6.37. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">7.6.38. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">7.6.39. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">7.6.40. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">7.6.41. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">7.6.42. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">7.6.43. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">7.6.44. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">7.6.45. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.46. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">7.6.47. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">7.6.48. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">7.6.49. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">7.6.50. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">7.6.51. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">7.6.52. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">7.6.53. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">7.6.54. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">7.6.55. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">7.6.56. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">7.6.57. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">7.6.58. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">7.6.59. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">7.6.60. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.61. Admin fetches auto cleanup configuration</a></li>
-<li><a href="#admin-updates-auto-cleanup-configuration">7.6.62. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-starts-encryption-rotation">7.6.63. Admin starts encryption rotation</a></li>
-<li><a href="#admin-fetches-encryption-status">7.6.64. Admin fetches encryption status</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">7.6.65. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">7.6.66. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">7.6.67. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">7.6.68. Admin lists status information</a></li>
-<li><a href="#admin-fetches-server-runtime-data">7.6.69. Admin fetches server runtime data</a></li>
-<li><a href="#user-lists-jobs-for-project">7.6.70. User lists jobs for project</a></li>
+<li><a href="#user-marks-false-positives">7.6.31. User marks false positives</a></li>
+<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.32. User unmarks existing false positive definitons</a></li>
+<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.33. User fetches false positive configuration of project</a></li>
+<li><a href="#user-uploads-binaries">7.6.34. User uploads binaries</a></li>
+<li><a href="#user-downloads-job-report-in-spdx-format">7.6.35. User downloads job report in SPDX format</a></li>
+<li><a href="#user-unmarks-existing-false-positive-project-data-definitons">7.6.36. User unmarks existing false positive project data definitons</a></li>
+<li><a href="#user-self-registration">7.6.37. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">7.6.38. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">7.6.39. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">7.6.40. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">7.6.41. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">7.6.42. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">7.6.43. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">7.6.44. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">7.6.45. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">7.6.46. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.47. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">7.6.48. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">7.6.49. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">7.6.50. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">7.6.51. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">7.6.52. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">7.6.53. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">7.6.54. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">7.6.55. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">7.6.56. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">7.6.57. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">7.6.58. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">7.6.59. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">7.6.60. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">7.6.61. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.62. Admin fetches auto cleanup configuration</a></li>
+<li><a href="#admin-updates-auto-cleanup-configuration">7.6.63. Admin updates auto cleanup configuration</a></li>
+<li><a href="#admin-starts-encryption-rotation">7.6.64. Admin starts encryption rotation</a></li>
+<li><a href="#admin-fetches-encryption-status">7.6.65. Admin fetches encryption status</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">7.6.66. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">7.6.67. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">7.6.68. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">7.6.69. Admin lists status information</a></li>
+<li><a href="#admin-fetches-server-runtime-data">7.6.70. Admin fetches server runtime data</a></li>
+<li><a href="#user-lists-jobs-for-project">7.6.71. User lists jobs for project</a></li>
 </ul>
 </li>
 <li><a href="#domain-driven-design">7.7. Domain Driven Design</a>
@@ -1302,7 +1304,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.3.1 - Build date: 20241021165905</code></p>
+<p>Documentation version: <code>Server 2.3.1 modified (commit 7de5e5c) - Build date: 2024-11-27 09:48 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -2125,6 +2127,9 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 </li>
 <li>
 <p><a href="#section-usecase-UC_062">UC_062-Admin changes project access level</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_081">UC_081-get assigned project data</a></p>
 </li>
 </ul>
 </div>
@@ -7230,6 +7235,66 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-UC_081">7.5.82. UC_081-get assigned project data</h4>
+<div class="paragraph">
+<p>User, Owner or Admin fetches a list containing information about assigned and/ or owned projects.</p>
+</div>
+<div class="paragraph">
+<p>The Project data contains the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Project ID</p>
+</li>
+<li>
+<p>Owner</p>
+</li>
+<li>
+<p>is owned</p>
+</li>
+<li>
+<p>assigned users (can only be viewed by owner or admin)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A project user can see only projects he is assigned to.
+A project owner can see all projects he owns and the assigned users.
+A project admin can see assigned or owned projects and all assigned users.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest API call to get Projects with information</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWNER, SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest api call to get projects with details</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="section-ucrestdoc">7.6. Rest API documentation</h3>
@@ -7330,6 +7395,9 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_062">REST API for UC_062-Admin changes project access level </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_081">REST API for UC_081-get assigned project data </a></p>
 </li>
 </ul>
 </div>
@@ -8364,7 +8432,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/b3d0fadc-5631-48fe-ad3b-d1d2856e4158' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/d997d479-f12b-4b26-9005-beb905c60f86' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9529,7 +9597,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">236cbc48-7499-4aed-9de2-8646de4bf48d</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-20T16:59:24.353716812</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:59:24.353740156</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b2a0f621-cbed-431f-816d-f8f5a655e8bc</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-26T09:48:46.447108027</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:48:46.447126853</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -9906,7 +9974,133 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">7.6.24. User clicks link to get new api token</h4>
+<h4 id="get-assigned-project-data">7.6.24. get assigned project data</h4>
+<div id="section-ucrestdoc-uc-UC_081" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_081">UC_081-get assigned project data </a></p>
+</div>
+<div id="section-ucrestdoc-UC_081-" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 41. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/projects</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 42. https://localhost:8081/api/projects</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].owner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of owner of the Project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].isOwned</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If caller is owner of the project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].assignedUsers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional: Assigned users (only viewable by owner or admin)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/projects' -i -u 'user:secret' -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">assignedUsers</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">user2</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">isOwned</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-clicks-link-to-get-new-api-token">7.6.25. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
@@ -9914,7 +10108,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. General request information</caption>
+<caption class="title">Table 43. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -9944,7 +10138,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
+<caption class="title">Table 44. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9980,17 +10174,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">7.6.25. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">7.6.26. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.25.1. Code Scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.26.1. Code Scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. General request information</caption>
+<caption class="title">Table 45. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10020,7 +10214,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 46. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10139,17 +10333,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e985a705-ffb7-49b1-99e6-1407d27226e4</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7786c4a7-042f-4d2b-8bcf-6c23aabf6e7b</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.25.2. Code Scan using data section variant</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.26.2. Code Scan using data section variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. General request information</caption>
+<caption class="title">Table 47. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10179,7 +10373,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 48. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10318,17 +10512,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2210eb32-7fd0-4299-b75b-0d87a5db26a0</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">35ea98be-9e36-4cc6-8c8a-3a157d24ead7</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-secret-scan">7.6.25.3. Secret scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-secret-scan">7.6.26.3. Secret scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. General request information</caption>
+<caption class="title">Table 49. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10358,7 +10552,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 50. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10477,17 +10671,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a0e2dc56-54fa-4b25-b1e6-688dd47baaf4</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">dc364126-fdc7-40a8-b8e7-ff087eb22bf2</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-license-scan">7.6.25.4. License scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-license-scan">7.6.26.4. License scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. General request information</caption>
+<caption class="title">Table 51. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10517,7 +10711,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 52. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10636,17 +10830,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e7c1d895-bc81-4c70-92ad-7ca117bab44a</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7ff1f27b-bae9-4593-b4ee-5a5df3e52604</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.25.5. Infrastructure scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.26.5. Infrastructure scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. General request information</caption>
+<caption class="title">Table 53. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10676,7 +10870,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 54. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10790,17 +10984,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">953dff35-71f1-4983-b360-0762a95ca7c0</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">fcf8cb7f-4f7c-413a-9978-ce8a085fbc7f</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.25.6. Web scan anonymous variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.26.6. Web scan anonymous variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. General request information</caption>
+<caption class="title">Table 55. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10830,7 +11024,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 56. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10959,17 +11153,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9bb88784-b24d-436e-898a-40e9e9c9d42b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">42566c19-7464-4f4a-95e6-79e722ae39b7</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.25.7. Web scan with api definition variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.26.7. Web scan with api definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. General request information</caption>
+<caption class="title">Table 57. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10999,7 +11193,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 58. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11123,17 +11317,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">39b31e69-97ca-4543-99a6-50c4f6cc075b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1ad5cd3b-5a1e-4a7e-8b07-8d5bd87dd515</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.25.8. Web scan with client certificate definition variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.26.8. Web scan with client certificate definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. General request information</caption>
+<caption class="title">Table 59. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11163,7 +11357,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 58. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 60. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11282,17 +11476,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">df9ee013-ee60-45bb-929a-1f2bb410f153</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">019ef25e-a21a-4c9e-9412-2ec55887f291</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.25.9. Web Scan login basic variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.26.9. Web Scan login basic variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 59. General request information</caption>
+<caption class="title">Table 61. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11322,7 +11516,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 60. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 62. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11456,17 +11650,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">57628d15-8dd2-4b28-b9fa-42e0c6037c43</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b7960f36-3dcd-4030-a4d1-fa8ba4f99462</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.25.10. Web Scan login form scripted variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.26.10. Web Scan login form scripted variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 61. General request information</caption>
+<caption class="title">Table 63. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11496,7 +11690,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 62. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 64. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11675,17 +11869,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d47f3a92-0951-4447-8300-fad04567f65b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d70e8d78-f3c9-4d16-a57f-9f4957e4723a</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-headers">7.6.25.11. Web Scan headers variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-headers">7.6.26.11. Web Scan headers variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 63. General request information</caption>
+<caption class="title">Table 65. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11715,7 +11909,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 64. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 66. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11839,13 +12033,13 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">37527d26-9792-44ae-a2c8-36dfb67fe36c</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">67515a5b-1f33-4d6b-b432-1ed5ba525ee0</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">7.6.26. User uploads source code</h4>
+<h4 id="user-uploads-source-code">7.6.27. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -11853,7 +12047,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 65. General request information</caption>
+<caption class="title">Table 67. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11883,7 +12077,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 66. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 68. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11902,6 +12096,27 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The SecHub jobUUID. During the job creation this unique job identifier is automatically generated by SecHub.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Query parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkSum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A sha256 checksum for file upload validation</p></td>
 </tr>
 </tbody>
 </table>
@@ -11928,7 +12143,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/dc48eaff-3a7d-414f-82f6-f242dcd9bf74/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/24722135-2100-465e-bcef-4b1dfdae5ffd/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -11942,7 +12157,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">7.6.27. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">7.6.28. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -11950,7 +12165,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 67. General request information</caption>
+<caption class="title">Table 69. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11980,7 +12195,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 68. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12025,7 +12240,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/bb20198d-8bb8-4ff5-961c-4fc6ecddd80d/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/64b78b45-b45e-4c2c-8719-bd74688a0e63/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12035,7 +12250,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">7.6.28. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">7.6.29. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -12043,7 +12258,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. General request information</caption>
+<caption class="title">Table 71. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12073,7 +12288,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12177,7 +12392,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/abb3751f-2ca5-4f0c-bae1-04a0e1788550' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/92179639-e089-4894-a4df-14f1e40e453d' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12186,89 +12401,17 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">abb3751f-2ca5-4f0c-bae1-04a0e1788550</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:44:22.764797265</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:59:22.764824576</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">92179639-e089-4894-a4df-14f1e40e453d</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:33:44.986322732</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:48:44.986349833</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">7.6.29. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">7.6.30. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-json">7.6.29.1. JSON variant</h5>
-<div class="paragraph">
-<p><strong class="big">Definition</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. General request information</caption>
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 85.7143%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/report/{jobUUID}</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Path parameters</strong> <br></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project Id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job UUID</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong class="big">Example</strong></p>
-</div>
-<div class="paragraph">
-<p><strong>Curl request</strong> <br></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/7a8b89cc-f4dd-44ac-bae6-212bc2dd01d0' -i -u 'user:secret' -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Accept: application/json'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-html">7.6.29.2. HTML variant</h5>
+<h5 id="section-ucrestdoc-UC_010-json">7.6.30.1. JSON variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
@@ -12333,7 +12476,79 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/6f4f16d2-8e58-4ed3-b41c-110b74370d7c' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/9df5834d-4dc1-4a96-8995-926fcae88f9d' -i -u 'user:secret' -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_010-html">7.6.30.2. HTML variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 75. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/report/{jobUUID}</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 76. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project Id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/72362f49-ecbd-4ad6-9961-cacc3a8e11fa' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -12341,7 +12556,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-marks-false-positives">7.6.30. User marks false positives</h4>
+<h4 id="user-marks-false-positives">7.6.31. User marks false positives</h4>
 <div id="section-ucrestdoc-uc-UC_044" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives </a></p>
 </div>
@@ -12349,7 +12564,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. General request information</caption>
+<caption class="title">Table 77. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12379,7 +12594,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 78. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12515,7 +12730,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-definitons">7.6.31. User unmarks existing false positive definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-definitons">7.6.32. User unmarks existing false positive definitons</h4>
 <div id="section-ucrestdoc-uc-UC_045" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons </a></p>
 </div>
@@ -12523,7 +12738,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. General request information</caption>
+<caption class="title">Table 79. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12553,7 +12768,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 80. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12611,7 +12826,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-fetches-false-positive-configuration-of-project">7.6.32. User fetches false positive configuration of project</h4>
+<h4 id="user-fetches-false-positive-configuration-of-project">7.6.33. User fetches false positive configuration of project</h4>
 <div id="section-ucrestdoc-uc-UC_046" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_046">UC_046-User fetches false positive configuration of project </a></p>
 </div>
@@ -12619,7 +12834,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. General request information</caption>
+<caption class="title">Table 81. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12649,7 +12864,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 82. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12872,7 +13087,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-binaries">7.6.33. User uploads binaries</h4>
+<h4 id="user-uploads-binaries">7.6.34. User uploads binaries</h4>
 <div id="section-ucrestdoc-uc-UC_069" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_069">UC_069-User uploads binaries </a></p>
 </div>
@@ -12880,7 +13095,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. General request information</caption>
+<caption class="title">Table 83. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12910,7 +13125,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
+<caption class="title">Table 84. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12961,7 +13176,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b8b8b952-dadf-44b7-9480-c0276657f991/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0fd0197f-f865-4068-90ac-fb4a8db4aa30/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -12974,7 +13189,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-job-report-in-spdx-format">7.6.34. User downloads job report in SPDX format</h4>
+<h4 id="user-downloads-job-report-in-spdx-format">7.6.35. User downloads job report in SPDX format</h4>
 <div id="section-ucrestdoc-uc-UC_070" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format </a></p>
 </div>
@@ -12982,7 +13197,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. General request information</caption>
+<caption class="title">Table 85. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13012,7 +13227,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<caption class="title">Table 86. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13042,14 +13257,14 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/4f730441-ec48-4a4f-ad1d-e57932c4d802' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/4500d9f1-4df9-413b-bf2f-dd2bc8c9ee09' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-project-data-definitons">7.6.35. User unmarks existing false positive project data definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-project-data-definitons">7.6.36. User unmarks existing false positive project data definitons</h4>
 <div id="section-ucrestdoc-uc-UC_078" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_078">UC_078-User unmarks existing false positive project data definitons </a></p>
 </div>
@@ -13057,7 +13272,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. General request information</caption>
+<caption class="title">Table 87. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13087,7 +13302,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. https://localhost:8081/api/project/{projectId}/false-positive/project-data/{id}</caption>
+<caption class="title">Table 88. https://localhost:8081/api/project/{projectId}/false-positive/project-data/{id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13141,7 +13356,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">7.6.36. User self registration</h4>
+<h4 id="user-self-registration">7.6.37. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -13149,7 +13364,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. General request information</caption>
+<caption class="title">Table 89. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13228,7 +13443,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">7.6.37. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">7.6.38. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -13236,7 +13451,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. General request information</caption>
+<caption class="title">Table 90. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13332,7 +13547,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">7.6.38. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">7.6.39. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -13340,7 +13555,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. General request information</caption>
+<caption class="title">Table 91. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13370,7 +13585,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 92. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13420,7 +13635,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">7.6.39. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">7.6.40. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -13428,7 +13643,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. General request information</caption>
+<caption class="title">Table 93. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13458,7 +13673,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 94. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13508,7 +13723,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">7.6.40. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">7.6.41. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -13516,7 +13731,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. General request information</caption>
+<caption class="title">Table 95. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13546,7 +13761,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 96. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13582,7 +13797,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">7.6.41. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">7.6.42. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -13590,7 +13805,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. General request information</caption>
+<caption class="title">Table 97. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13692,12 +13907,12 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">aa8cee6d-756f-414d-8134-3159bdd75f44</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:59:27.703658282</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a8503241-c02c-4722-afce-7a54eb0e7ea0</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:48:49.769371918</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">7.6.42. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">7.6.43. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -13705,7 +13920,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. General request information</caption>
+<caption class="title">Table 98. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13735,7 +13950,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 99. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13776,7 +13991,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/92f9bfd4-051b-455b-b7b8-ffc1f6db45f6' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/e520e1f5-60b5-45d0-abeb-d9267c54474b' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13786,7 +14001,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">7.6.43. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">7.6.44. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -13794,7 +14009,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 100. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13824,7 +14039,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 101. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13865,7 +14080,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/be57747a-0731-4a35-ab3a-722e4f454077' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/3c1f4235-016f-4246-bcfd-21531b315fe6' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13875,7 +14090,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">7.6.44. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">7.6.45. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -13883,7 +14098,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 102. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13913,7 +14128,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 103. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13954,7 +14169,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/c9aea17c-1fe0-4c11-b1c5-fe21aa3ec9bb' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/e2e059a8-c340-4c1d-b68e-921fc0bd5c9c' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13964,7 +14179,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">7.6.45. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">7.6.46. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -13972,7 +14187,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 104. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14033,7 +14248,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.46. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.47. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -14041,7 +14256,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. General request information</caption>
+<caption class="title">Table 105. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14105,7 +14320,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">7.6.47. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">7.6.48. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -14113,7 +14328,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 106. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14143,7 +14358,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 107. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14229,7 +14444,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">7.6.48. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">7.6.49. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -14237,7 +14452,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 108. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14267,7 +14482,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 109. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14356,7 +14571,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">7.6.49. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">7.6.50. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -14364,7 +14579,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. General request information</caption>
+<caption class="title">Table 110. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14487,12 +14702,12 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="plain">85aa1ed2-4c62-41e0-90b8-5aaccda85f11</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="plain">b922b3e7-3416-4d74-8b1a-81fbe61a3f63</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">7.6.50. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">7.6.51. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -14500,7 +14715,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. General request information</caption>
+<caption class="title">Table 111. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14530,7 +14745,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 112. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14571,7 +14786,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/01252350-78be-4eed-8103-d4c8dadcb1d5' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4cfe54a8-c2ce-4bef-b96b-a047a5c4c38f' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14581,7 +14796,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">7.6.51. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">7.6.52. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -14589,7 +14804,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14686,12 +14901,12 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">decbe618-fb22-42fd-ad28-9a98d629f981</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">fd85ad57-94c1-4671-a1ea-100fcb679201</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">7.6.52. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">7.6.53. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -14699,7 +14914,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14729,7 +14944,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 115. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14839,7 +15054,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/d3da4fff-26ac-424d-a207-4653dbff9ca8' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/cf306d66-846b-4bc2-a66e-5b60055aaa70' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14848,12 +15063,12 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d3da4fff-26ac-424d-a207-4653dbff9ca8</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cf306d66-846b-4bc2-a66e-5b60055aaa70</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">7.6.53. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">7.6.54. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -14861,7 +15076,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. General request information</caption>
+<caption class="title">Table 116. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14891,7 +15106,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 117. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14996,7 +15211,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/150289d5-3831-4eac-80ed-337c2ff30949' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/35803fed-b7b0-4bd8-9387-4773ab128a43' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -15007,7 +15222,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">7.6.54. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">7.6.55. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -15015,7 +15230,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. General request information</caption>
+<caption class="title">Table 118. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15045,7 +15260,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 119. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15136,7 +15351,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">7.6.55. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">7.6.56. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -15144,7 +15359,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. General request information</caption>
+<caption class="title">Table 120. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15174,7 +15389,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 121. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15225,7 +15440,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">7.6.56. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">7.6.57. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -15233,7 +15448,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. General request information</caption>
+<caption class="title">Table 122. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15263,7 +15478,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 123. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15340,7 +15555,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;c0948480-f711-4330-93c3-8167dc71b564&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;5a8e548a-169d-4642-8d2d-00bed1357847&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -15349,7 +15564,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">7.6.57. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">7.6.58. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -15357,7 +15572,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. General request information</caption>
+<caption class="title">Table 124. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15387,7 +15602,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 125. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15496,12 +15711,12 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f8dd3854-ae30-450a-828a-1b715bcd57d3</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">006a3f33-85f6-4586-a509-5ef17c40004b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">7.6.58. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">7.6.59. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -15509,7 +15724,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 124. General request information</caption>
+<caption class="title">Table 126. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15611,7 +15826,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">7.6.59. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">7.6.60. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -15619,7 +15834,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 125. General request information</caption>
+<caption class="title">Table 127. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15649,7 +15864,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 126. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 128. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15704,7 +15919,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">7.6.60. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">7.6.61. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -15712,7 +15927,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 127. General request information</caption>
+<caption class="title">Table 129. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15742,7 +15957,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 128. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 130. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15797,7 +16012,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-auto-cleanup-configuration">7.6.61. Admin fetches auto cleanup configuration</h4>
+<h4 id="admin-fetches-auto-cleanup-configuration">7.6.62. Admin fetches auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_064" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_064">UC_064-Admin fetches auto cleanup configuration </a></p>
 </div>
@@ -15805,7 +16020,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 129. General request information</caption>
+<caption class="title">Table 131. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15868,7 +16083,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-auto-cleanup-configuration">7.6.62. Admin updates auto cleanup configuration</h4>
+<h4 id="admin-updates-auto-cleanup-configuration">7.6.63. Admin updates auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_065" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_065">UC_065-Admin updates auto cleanup configuration </a></p>
 </div>
@@ -15876,7 +16091,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 130. General request information</caption>
+<caption class="title">Table 132. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15936,7 +16151,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-starts-encryption-rotation">7.6.63. Admin starts encryption rotation</h4>
+<h4 id="admin-starts-encryption-rotation">7.6.64. Admin starts encryption rotation</h4>
 <div id="section-ucrestdoc-uc-UC_073" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_073">UC_073-Admin starts encryption rotation </a></p>
 </div>
@@ -15944,7 +16159,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 131. General request information</caption>
+<caption class="title">Table 133. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16008,7 +16223,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-encryption-status">7.6.64. Admin fetches encryption status</h4>
+<h4 id="admin-fetches-encryption-status">7.6.65. Admin fetches encryption status</h4>
 <div id="section-ucrestdoc-uc-UC_076" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_076">UC_076-Admin fetches encryption status </a></p>
 </div>
@@ -16016,7 +16231,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 132. General request information</caption>
+<caption class="title">Table 134. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16148,7 +16363,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">7.6.65. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">7.6.66. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -16156,7 +16371,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 133. General request information</caption>
+<caption class="title">Table 135. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16215,7 +16430,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">7.6.66. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">7.6.67. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -16223,7 +16438,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 134. General request information</caption>
+<caption class="title">Table 136. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16282,7 +16497,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">7.6.67. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">7.6.68. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -16290,7 +16505,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 135. General request information</caption>
+<caption class="title">Table 137. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16349,7 +16564,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">7.6.68. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">7.6.69. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -16357,7 +16572,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 136. General request information</caption>
+<caption class="title">Table 138. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16449,7 +16664,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-server-runtime-data">7.6.69. Admin fetches server runtime data</h4>
+<h4 id="admin-fetches-server-runtime-data">7.6.70. Admin fetches server runtime data</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data </a></p>
 </div>
@@ -16457,7 +16672,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 137. General request information</caption>
+<caption class="title">Table 139. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16529,7 +16744,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-lists-jobs-for-project">7.6.70. User lists jobs for project</h4>
+<h4 id="user-lists-jobs-for-project">7.6.71. User lists jobs for project</h4>
 <div id="section-ucrestdoc-uc-UC_071" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_071">UC_071-User lists jobs for project </a></p>
 </div>
@@ -16537,7 +16752,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 138. General request information</caption>
+<caption class="title">Table 140. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16567,7 +16782,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 139. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 141. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16582,6 +16797,41 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project where job information shall be fetched for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Query parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The wanted (maximum) size for the result set. When not defined, the default will be 1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The wanted page number. When not defined, the default will be 0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metadata.labels.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional dynamic query parameter to filter jobs by labels. The syntax is 'metadata.labels.${labelKey}=${labelValue}'.</p>
+<p class="tableblock">It is possible to query for multiple labels (up to 10 ).
+The filter works as an AND combination: Only jobs having all wanted label key value combinations are returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>withMetaData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional parameter to define if meta data shall be fetched as well. When not defined, the default will be false.</p></td>
 </tr>
 </tbody>
 </table>
@@ -16691,7 +16941,7 @@ and the event is not triggered from <code>administration</code> but <code>schedu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">4fc54538-9eab-4eb5-9da4-9d1cc0897760</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:42:22.956477277</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:44:22.956508736</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-10-21T16:59:22.956525658</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">8d080df1-24cd-470f-b8bd-845baf4b7d60</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:31:45.196835109</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:33:45.196866799</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-11-27T09:48:45.19687809</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 </div>
@@ -18220,7 +18470,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <p>The next text blocks describe the keys available on SecHub:</p>
 </div>
 <table id="section-gen-configuration-scope-administration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 140. Scope 'administration'</caption>
+<caption class="title">Table 142. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18248,7 +18498,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-anonymous" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 141. Scope 'anonymous'</caption>
+<caption class="title">Table 143. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18270,7 +18520,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 142. Scope 'checkmarx'</caption>
+<caption class="title">Table 144. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18302,7 +18552,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 143. Scope 'initial'</caption>
+<caption class="title">Table 145. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18334,7 +18584,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 144. Scope 'migration'</caption>
+<caption class="title">Table 146. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18356,7 +18606,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 145. Scope 'mock'</caption>
+<caption class="title">Table 147. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18378,7 +18628,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 146. Scope 'nessus'</caption>
+<caption class="title">Table 148. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18455,7 +18705,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 147. Scope 'netsparker'</caption>
+<caption class="title">Table 149. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18527,7 +18777,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-new" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 148. Scope 'new'</caption>
+<caption class="title">Table 150. Scope 'new'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18549,7 +18799,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 149. Scope 'notification'</caption>
+<caption class="title">Table 151. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18580,8 +18830,35 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 150. Scope 'p'</caption>
+<table id="section-gen-configuration-scope-pdsinstall" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 152. Scope 'pdsinstall'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-pdsresilience" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 153. Scope 'pdsresilience'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18616,16 +18893,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a PDS encryption out of sync problem happens</p></td>
@@ -18637,50 +18904,8 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 151. Scope 's'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 152. Scope 'scan'</caption>
+<caption class="title">Table 154. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18717,7 +18942,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-schedule" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 153. Scope 'schedule'</caption>
+<caption class="title">Table 155. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18745,7 +18970,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 154. Scope 'scheduler'</caption>
+<caption class="title">Table 156. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18807,7 +19032,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 155. Scope 'sec'</caption>
+<caption class="title">Table 157. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18874,7 +19099,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 156. Scope 'security'</caption>
+<caption class="title">Table 158. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18896,7 +19121,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 157. Scope 'server'</caption>
+<caption class="title">Table 159. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -18917,8 +19142,50 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tr>
 </tbody>
 </table>
+<table id="section-gen-configuration-scope-smtpserver" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 160. Scope 'smtpserver'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 158. Scope 'storage'</caption>
+<caption class="title">Table 161. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -19005,7 +19272,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 159. Scope 'system'</caption>
+<caption class="title">Table 162. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -19037,7 +19304,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 160. Scope 'target'</caption>
+<caption class="title">Table 163. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -19069,7 +19336,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">8.2.4. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 161. Scope 'administration'</caption>
+<caption class="title">Table 164. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -19091,7 +19358,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 162. Scope 'scan'</caption>
+<caption class="title">Table 165. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -19113,7 +19380,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 163. Scope 'schedule'</caption>
+<caption class="title">Table 166. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -19148,7 +19415,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="sechub-mock-options">8.2.5. Configuration properties for mocked adapters</h4>
 <table id="section-gen-configuration-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 164. Scope 'abstract'</caption>
+<caption class="title">Table 167. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -19170,7 +19437,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 165. Scope 'mocked'</caption>
+<caption class="title">Table 168. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21821,7 +22088,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.3.1<br>
+ Server 2.3.1 modified (commit 7de5e5c)<br>
 </div>
 </div>
 </body>
