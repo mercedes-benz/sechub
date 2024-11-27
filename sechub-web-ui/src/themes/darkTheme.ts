@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 export default {
     dark: true,
     colors: {

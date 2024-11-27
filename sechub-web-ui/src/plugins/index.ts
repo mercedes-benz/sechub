@@ -9,7 +9,6 @@
 import vuetify from './vuetify'
 import router from '../router'
 import i18n from '@/i18n';
-import apiClientPlugin from './openApiClient';
 
 
 // Types
@@ -20,5 +19,4 @@ export function registerPlugins (app: App) {
     .use(vuetify)
     .use(router)
     .use (i18n)
-    .use(apiClientPlugin)
 }
