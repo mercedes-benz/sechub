@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,6 +62,13 @@ class OpaqueTokenResponseTest {
     }
 
     @ParameterizedTest
+    @ArgumentsSource(ValidOpaqueTokenResponseProvider.class)
+    void construct_opaque_token_response_from_valid_json_with_nullable_properties_is_successful(String validOpaqueTokenResponseJson) {
+        /* execute & test */
+        assertDoesNotThrow(() -> objectMapper.readValue(validOpaqueTokenResponseJson, OpaqueTokenResponse.class));
+    }
+
+    @ParameterizedTest
     @ArgumentsSource(InvalidOpaqueTokenResponseProvider.class)
     void construct_opaque_token_response_from_invalid_json_fails(String invalidOpaqueTokenResponseJson, String errMsg) throws JsonProcessingException {
         /* execute & test */
@@ -83,6 +91,23 @@ class OpaqueTokenResponseTest {
         }
 
         return objectMapper.writeValueAsString(rootNode);
+    }
+
+    /* @formatter:off */
+    private static class ValidOpaqueTokenResponseProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    Arguments.of(removeJsonKeyAndValue("scope")),
+                    Arguments.of(removeJsonKeyAndValue("client_id")),
+                    Arguments.of(removeJsonKeyAndValue("client_type")),
+                    Arguments.of(removeJsonKeyAndValue("username")),
+                    Arguments.of(removeJsonKeyAndValue("token_type")),
+                    Arguments.of(removeJsonKeyAndValue("exp")),
+                    Arguments.of(removeJsonKeyAndValue("aud")),
+                    Arguments.of(removeJsonKeyAndValue("group_type"))
+            );
+        }
     }
 
     /* @formatter:off */

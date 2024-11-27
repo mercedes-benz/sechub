@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -81,7 +83,20 @@ class OAuth2JwtIntegrationTest {
     @Test
     void api_user_is_accessible_as_superadmin() throws Exception {
         /* prepare */
-        String authHeader = TestOAuth2JwtSecurityConfiguration.getJwtAuthHeader(TestRoles.SUPERADMIN);
+        String authHeader = TestOAuth2JwtSecurityConfiguration.createJwtAuthHeader(Set.of(TestRoles.SUPERADMIN));
+
+        /* execute & test */
+        /* @formatter:off */
+        mockMvc
+                .perform(MockMvcRequestBuilders.get(API_USER).header(HttpHeaders.AUTHORIZATION, authHeader))
+                .andExpect(status().isOk());
+        /* @formatter:on */
+    }
+
+    @Test
+    void api_user_is_accessible_as_superadmin_owner() throws Exception {
+        /* prepare */
+        String authHeader = TestOAuth2JwtSecurityConfiguration.createJwtAuthHeader(Set.of(TestRoles.SUPERADMIN, TestRoles.OWNER));
 
         /* execute & test */
         /* @formatter:off */
@@ -94,7 +109,7 @@ class OAuth2JwtIntegrationTest {
     @Test
     void api_user_is_not_accessible_as_owner() throws Exception {
         /* prepare */
-        String authHeader = TestOAuth2JwtSecurityConfiguration.getJwtAuthHeader(TestRoles.OWNER);
+        String authHeader = TestOAuth2JwtSecurityConfiguration.createJwtAuthHeader(Set.of(TestRoles.OWNER));
 
         /* execute & test */
         /* @formatter:off */
@@ -107,7 +122,7 @@ class OAuth2JwtIntegrationTest {
     @Test
     void api_user_is_accessible_as_user() throws Exception {
         /* prepare */
-        String authHeader = TestOAuth2JwtSecurityConfiguration.getJwtAuthHeader(TestRoles.USER);
+        String authHeader = TestOAuth2JwtSecurityConfiguration.createJwtAuthHeader(Set.of(TestRoles.USER));
 
         /* execute & test */
         /* @formatter:off */

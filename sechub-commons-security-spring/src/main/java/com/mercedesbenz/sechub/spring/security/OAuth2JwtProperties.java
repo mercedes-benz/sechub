@@ -9,16 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class OAuth2JwtProperties {
 
     static final String PREFIX = "sechub.security.oauth2.jwt";
-    private final Boolean enabled;
     private final String jwkSetUri;
 
-    OAuth2JwtProperties(Boolean enabled, String jwkSetUri) {
-        this.enabled = requireNonNull(enabled, "Property '%s.%s' must not be null".formatted(PREFIX, "enabled"));
+    OAuth2JwtProperties(String jwkSetUri) {
         this.jwkSetUri = requireNonNull(jwkSetUri, "Property '%s.%s' must not be null".formatted(PREFIX, "jwk-set-uri"));
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
     public String getJwkSetUri() {

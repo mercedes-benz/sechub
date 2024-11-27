@@ -85,18 +85,18 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                                         String clientId,
                                         String clientSecret,
                                         UserDetailsService userDetailsService) {
-        this.restTemplate = requireNonNull(restTemplate, "Property restTemplate must not be null");
-        this.introspectionUri = requireNonNull(introspectionUri, "Property introspectionUri must not be null");
-        this.clientIdSealed = CRYPTO_STRING.seal(requireNonNull(clientId, "Property clientId must not be null"));
-        this.clientSecretSealed = CRYPTO_STRING.seal(requireNonNull(clientSecret, "Property clientSecret must not be null"));
-        this.userDetailsService = requireNonNull(userDetailsService, "Property userDetailsService must not be null");
+        this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
+        this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
+        this.clientIdSealed = CRYPTO_STRING.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
+        this.clientSecretSealed = CRYPTO_STRING.seal(requireNonNull(clientSecret, "Parameter clientSecret must not be null"));
+        this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
     }
     /* @formatter:on */
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String opaqueToken) throws OAuth2AuthenticationException {
-        if (opaqueToken == null) {
-            throw new BadOpaqueTokenException("Token is null");
+        if (opaqueToken == null || opaqueToken.isEmpty()) {
+            throw new BadOpaqueTokenException("Token is null or empty");
         }
 
         HttpHeaders headers = new HttpHeaders();
@@ -124,6 +124,11 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         }
 
         String subject = opaqueTokenResponse.getSubject();
+
+        if (subject == null || subject.isEmpty()) {
+            throw new BadOpaqueTokenException("Subject is null");
+        }
+
         Map<String, Object> introspectionClaims = getIntrospectionClaims(now, opaqueTokenResponse);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());

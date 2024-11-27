@@ -44,8 +44,8 @@ public class OAuth2JwtAuthenticationProvider implements AuthenticationProvider {
     private final JwtDecoder jwtDecoder;
 
     public OAuth2JwtAuthenticationProvider(UserDetailsService userDetailsService, JwtDecoder jwtDecoder) {
-        this.userDetailsService = requireNonNull(userDetailsService, "Property userDetailsService must not be null");
-        this.jwtDecoder = requireNonNull(jwtDecoder, "Property jwtDecoder must not be null");
+        this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
+        this.jwtDecoder = requireNonNull(jwtDecoder, "Parameter jwtDecoder must not be null");
     }
 
     @Override

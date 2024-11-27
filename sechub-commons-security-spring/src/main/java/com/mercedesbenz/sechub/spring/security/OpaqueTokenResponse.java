@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * username, token type, expiration time, subject, audience, and group type.
  *
  * <p>
- * The <code>active</code>> property is required and indicates whether the token
+ * The <code>active</code> property is required and indicates whether the token
  * is active or not. An inactive token should be treated as
  * <code>401 Unauthorized</code>. For active tokens the <code>sub</code>
  * property is also required. It represents the subject of the authentication

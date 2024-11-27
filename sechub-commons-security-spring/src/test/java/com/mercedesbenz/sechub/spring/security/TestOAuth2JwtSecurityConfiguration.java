@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -35,13 +35,20 @@ public class TestOAuth2JwtSecurityConfiguration {
 
     public static final String BEARER_PREFIX = OAuth2AccessToken.TokenType.BEARER.getValue() + " ";
 
-    private static final String ADMIN_JWT = "admin-jwt";
-    private static final String OWNER_JWT = "owner-jwt";
-    private static final String USER_JWT = "user-jwt";
+    private static final String ADMIN_JWT = "admin-jwt-token";
+    private static final String ADMIN_OWNER_JWT = "admin-owner-jwt-token";
+    private static final String ADMIN_USER_JWT = "admin-user-jwt-token";
+    private static final String OWNER_JWT = "owner-jwt-token";
+    private static final String OWNER_USER_JWT = "owner-user-jwt-token";
+    private static final String USER_JWT = "user-jwt-token";
 
     private static final String ADMIN_ID = UUID.randomUUID().toString();
+    private static final String ADMIN_OWNER_ID = UUID.randomUUID().toString();
+    private static final String ADMIN_USER_ID = UUID.randomUUID().toString();
     private static final String OWNER_ID = UUID.randomUUID().toString();
+    private static final String OWNER_USER_ID = UUID.randomUUID().toString();
     private static final String USER_ID = UUID.randomUUID().toString();
+
     private static final String ALGORITHM = "alg";
     private static final String ALGORITHM_NONE = "none";
 
@@ -62,8 +69,17 @@ public class TestOAuth2JwtSecurityConfiguration {
             if (ADMIN_JWT.equals(jwtTokenValue)) {
                 return builder.subject(ADMIN_ID).build();
             }
+            if (ADMIN_OWNER_JWT.equals(jwtTokenValue)) {
+                return builder.subject(ADMIN_OWNER_ID).build();
+            }
+            if (ADMIN_USER_JWT.equals(jwtTokenValue)) {
+                return builder.subject(ADMIN_USER_ID).build();
+            }
             if (OWNER_JWT.equals(jwtTokenValue)) {
                 return builder.subject(OWNER_ID).build();
+            }
+            if (OWNER_USER_JWT.equals(jwtTokenValue)) {
+                return builder.subject(OWNER_USER_ID).build();
             }
             if (USER_JWT.equals(jwtTokenValue)) {
                 return builder.subject(USER_ID).build();
@@ -86,17 +102,29 @@ public class TestOAuth2JwtSecurityConfiguration {
         UserDetailsService userDetailsService = mock();
         when(userDetailsService.loadUserByUsername(anyString())).thenAnswer(invocation -> {
             String username = invocation.getArgument(0);
-            if (!Set.of(ADMIN_ID, OWNER_ID, USER_ID).contains(username)) {
-                return Optional.empty();
+            if (!Set.of(ADMIN_ID, ADMIN_OWNER_ID, ADMIN_USER_ID, OWNER_ID, OWNER_USER_ID, USER_ID).contains(username)) {
+                throw new UsernameNotFoundException("User %s not found".formatted(username));
             }
 
-            Collection<SimpleGrantedAuthority> authorities = new HashSet<>(1);
+            Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
 
             if (ADMIN_ID.equals(username)) {
                 authorities.add(new SimpleGrantedAuthority(SUPERADMIN));
             }
+            if (ADMIN_OWNER_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(SUPERADMIN));
+                authorities.add(new SimpleGrantedAuthority(OWNER));
+            }
+            if (ADMIN_USER_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(SUPERADMIN));
+                authorities.add(new SimpleGrantedAuthority(USER));
+            }
             if (OWNER_ID.equals(username)) {
                 authorities.add(new SimpleGrantedAuthority(OWNER));
+            }
+            if (OWNER_USER_ID.equals(username)) {
+                authorities.add(new SimpleGrantedAuthority(OWNER));
+                authorities.add(new SimpleGrantedAuthority(USER));
             }
             if (USER_ID.equals(username)) {
                 authorities.add(new SimpleGrantedAuthority(USER));
@@ -108,13 +136,36 @@ public class TestOAuth2JwtSecurityConfiguration {
         return userDetailsService;
     }
 
-    public static String getJwtAuthHeader(String role) {
-        return BEARER_PREFIX + switch (role) {
-        case SUPERADMIN -> ADMIN_JWT;
-        case OWNER -> OWNER_JWT;
-        case USER -> USER_JWT;
-        default -> throw new TestAbortedException("Invalid role");
-        };
+    public static String createJwtAuthHeader(Set<String> roles) {
+        if (roles.isEmpty()) {
+            throw new TestAbortedException("Roles cannot be empty");
+        }
+
+        if (roles.equals(Set.of(SUPERADMIN))) {
+            return BEARER_PREFIX + ADMIN_JWT;
+        }
+
+        if (roles.equals(Set.of(SUPERADMIN, OWNER))) {
+            return BEARER_PREFIX + ADMIN_OWNER_JWT;
+        }
+
+        if (roles.equals(Set.of(SUPERADMIN, USER))) {
+            return BEARER_PREFIX + ADMIN_USER_JWT;
+        }
+
+        if (roles.equals(Set.of(OWNER))) {
+            return BEARER_PREFIX + OWNER_JWT;
+        }
+
+        if (roles.equals(Set.of(OWNER, USER))) {
+            return BEARER_PREFIX + OWNER_USER_JWT;
+        }
+
+        if (roles.equals(Set.of(USER))) {
+            return BEARER_PREFIX + USER_JWT;
+        }
+
+        throw new TestAbortedException("Invalid roles");
     }
 
 }

@@ -366,12 +366,11 @@ public class AsciidocGenerator implements Generator {
         /* @formatter:off */
         return Map.of("oauth2-jwt", new TreeSet<>(
                 Set.of(
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.jwt.enabled", null, "Whether OAuth2 JWT mode is enabled. Either JWT mode or opaque token mode must be enabled", false),
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.jwt.jwk-set-uri", null, "The URI to the JWK set of the identity provider", false),
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.enabled", null, "Whether OAuth2 opaque token mode is enabled. Either JWT mode or opaque token mode must be enabled", false),
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.introspection-uri", null, "Opaque token introspection endpoint of the identity provider", false),
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-id", null, "Client ID to use when authenticating against the identity provider", false),
-                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-secret", null, "Client secret to use when authenticating against the identity provider", false)
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.mode", null, "The OAuth2 mode to use for authentication. Must be either 'JWT' or 'OPAQUE_TOKEN'.", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.jwt.jwk-set-uri", null, "The URI to the JWK set of the identity provider. Required in 'JWT' mode.", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.introspection-uri", null, "Opaque token introspection endpoint of the identity provider. Required in 'OPAQUE_TOKEN' mode.", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-id", null, "Client ID to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.", false),
+                        new SystemPropertiesDescriptionGenerator.TableRow("sechub.security.oauth2.opaque-token.client-secret", null, "Client secret to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.", false)
                 ))
         );
         /* @formatter:on */

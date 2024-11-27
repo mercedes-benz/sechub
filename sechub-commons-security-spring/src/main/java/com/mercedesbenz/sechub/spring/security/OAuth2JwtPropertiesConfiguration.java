@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(OAuth2JwtProperties.class)
-@ConditionalOnProperty(prefix = OAuth2JwtProperties.PREFIX, name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = AbstractSecurityConfiguration.OAUTH2_PROPERTIES_PREFIX, name = AbstractSecurityConfiguration.OAUTH2_PROPERTIES_MODE, havingValue = OAuth2JwtPropertiesConfiguration.MODE)
 class OAuth2JwtPropertiesConfiguration {
+    static final String MODE = "JWT";
 }

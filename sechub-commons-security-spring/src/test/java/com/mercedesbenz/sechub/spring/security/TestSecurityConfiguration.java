@@ -11,6 +11,27 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.web.client.RestTemplate;
 
+/* @formatter:off */
+/**
+ * The <code>TestSecurityConfiguration</code> class extends the {@link AbstractSecurityConfiguration} and provides
+ * security configuration for testing purposes. It defines security rules for different test API paths.
+ *
+ * <p>
+ * The following API paths are configured:
+ * </p>
+ * <ul>
+ *   <li><code>/api/admin/**</code> - Accessible only to users having the <code>SUPERADMIN</code> authority.</li>
+ *   <li><code>/api/user/**</code> - Accessible to users having the <code>USER</code> or <code>SUPERADMIN</code> authority.</li>
+ *   <li><code>/api/owner/**</code> - Accessible to users with having the <code>OWNER</code> or <code>SUPERADMIN</code> authority.</li>
+ *   <li><code>/api/anonymous/**</code> - Accessible to all users without authentication.</li>
+ *   <li><code>/</code> - All other paths are denied access.</li>
+ * </ul>
+ *
+ * @see AbstractSecurityConfiguration
+ *
+ * @author hamidonos
+ */
+/* @formatter:on */
 @Configuration
 class TestSecurityConfiguration extends AbstractSecurityConfiguration {
 

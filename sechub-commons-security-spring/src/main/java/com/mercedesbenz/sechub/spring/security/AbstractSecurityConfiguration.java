@@ -59,6 +59,9 @@ import org.springframework.web.client.RestTemplate;
  */
 public abstract class AbstractSecurityConfiguration {
 
+    static final String OAUTH2_PROPERTIES_PREFIX = "sechub.security.oauth2";;
+    static final String OAUTH2_PROPERTIES_MODE = "mode";
+
     /* @formatter:off */
     @Bean
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity,
@@ -81,7 +84,14 @@ public abstract class AbstractSecurityConfiguration {
 			}
 
 			if ((oAuth2JwtProperties == null && oAuth2OpaqueTokenProperties == null) || (oAuth2JwtProperties != null && oAuth2OpaqueTokenProperties != null)) {
-				throw new BeanInstantiationException(SecurityFilterChain.class, "Either jwt or opaque token mode must be enabled");
+				String exMsg = "Either JWT or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
+						OAUTH2_PROPERTIES_PREFIX,
+						OAUTH2_PROPERTIES_MODE,
+						OAuth2JwtPropertiesConfiguration.MODE,
+						OAuth2OpaqueTokenPropertiesConfiguration.MODE
+				);
+
+				throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
 			}
 
 			if (oAuth2JwtProperties != null) {

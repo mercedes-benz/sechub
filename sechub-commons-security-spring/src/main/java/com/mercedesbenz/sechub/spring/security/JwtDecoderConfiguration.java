@@ -13,6 +13,14 @@ class JwtDecoderConfiguration {
 
     @Bean
     JwtDecoder jwtDecoder(OAuth2JwtProperties oAuth2JwtProperties) {
-        return NimbusJwtDecoder.withJwkSetUri(oAuth2JwtProperties.getJwkSetUri()).build();
+        /*
+         * @formatter:off
+         * The `NimbusJwtDecoder` is a `JwtDecoder` implementation that utilizes the Nimbus JOSE + JWT library to decode JSON Web Tokens (JWTs).
+         * It requires a JWK Set URI to fetch the public keys from the Identity Provider (IDP) to verify the JWT's signature.
+         */
+        return NimbusJwtDecoder
+                .withJwkSetUri(oAuth2JwtProperties.getJwkSetUri())
+                .build();
+        /* @formatter:on */
     }
 }

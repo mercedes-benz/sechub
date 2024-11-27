@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -21,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,7 +53,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
 
     /* @formatter:off */
     @ParameterizedTest
-    @ArgumentsSource(Base64OAuth2OpaqueTokenIntrospectorArgumentsProvider.class)
+    @ArgumentsSource(Base64OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider.class)
     void construct_base64_o_auth_2_opaque_token_introspector_with_null_argument_fails(RestTemplate restTemplate,
                                                                                       String introspectionUri,
                                                                                       String clientId,
@@ -64,12 +66,13 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     }
     /* @formatter:on */
 
-    @Test
-    void introspect_with_null_opaque_token_fails() {
+    @ParameterizedTest
+    @NullAndEmptySource
+    void introspect_with_null_or_empty_opaque_token_fails(String opaqueToken) {
         /* @formatter:off */
-        assertThatThrownBy(() -> introspectorToTest.introspect(null))
+        assertThatThrownBy(() -> introspectorToTest.introspect(opaqueToken))
                 .isInstanceOf(BadOpaqueTokenException.class)
-                .hasMessageContaining("Token is null");
+                .hasMessageContaining("Token is null or empty");
         /* @formatter:on */
     }
 
@@ -89,7 +92,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_inactive_token_fails() {
         /* prepare */
-        OpaqueTokenResponse opaqueTokenResponse = getOpaqueTokenResponse(Boolean.FALSE, null);
+        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.FALSE, null);
         when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
 
         /* execute & assert */
@@ -104,7 +107,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     void introspect_with_valid_token_succeeds() {
         /* prepare */
         long expiresAt = 3600L;
-        OpaqueTokenResponse opaqueTokenResponse = getOpaqueTokenResponse(Boolean.TRUE, expiresAt);
+        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt);
         when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
@@ -114,22 +117,23 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
 
         /* assert */
         assertThat(principal.getName()).isEqualTo(SUBJECT);
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(opaqueTokenResponse.isActive());
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(opaqueTokenResponse.getScope());
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(opaqueTokenResponse.getClientId());
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(opaqueTokenResponse.getUsername());
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(opaqueTokenResponse.getTokenType());
-        assertThat((Instant) principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.IAT)).isAfter(Instant.EPOCH);
-        assertThat((Instant) principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.EXP)).isEqualTo(Instant.ofEpochSecond(expiresAt));
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(opaqueTokenResponse.getSubject());
-        assertThat(principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(opaqueTokenResponse.getAudience());
+        Map<String, Object> attributes = principal.getAttributes();
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(opaqueTokenResponse.isActive());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(opaqueTokenResponse.getScope());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(opaqueTokenResponse.getClientId());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(opaqueTokenResponse.getUsername());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(opaqueTokenResponse.getTokenType());
+        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.IAT)).isAfter(Instant.EPOCH);
+        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP)).isEqualTo(Instant.ofEpochSecond(expiresAt));
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(opaqueTokenResponse.getSubject());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(opaqueTokenResponse.getAudience());
     }
 
     @Test
     void introspect_with_null_expires_at_constructs_principal_with_default_expires_at() {
         /* prepare */
         Instant now = Instant.now();
-        OpaqueTokenResponse opaqueTokenResponse = getOpaqueTokenResponse(Boolean.TRUE, null);
+        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
         when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
@@ -144,7 +148,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     }
 
     /* @formatter:off */
-    private static OpaqueTokenResponse getOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
+    private static OpaqueTokenResponse createOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
         return new OpaqueTokenResponse(
                 isActive,
                 "scope",
@@ -160,14 +164,14 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     }
     /* @formatter:on */
 
-    private static class Base64OAuth2OpaqueTokenIntrospectorArgumentsProvider implements ArgumentsProvider {
+    private static class Base64OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(Arguments.of(null, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Property restTemplate must not be null"),
-                    Arguments.of(restTemplate, null, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Property introspectionUri must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, null, CLIENT_SECRET, userDetailsService, "Property clientId must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, null, userDetailsService, "Property clientSecret must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, null, "Property userDetailsService must not be null"));
+            return Stream.of(Arguments.of(null, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Parameter restTemplate must not be null"),
+                    Arguments.of(restTemplate, null, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Parameter introspectionUri must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, null, CLIENT_SECRET, userDetailsService, "Parameter clientId must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, null, userDetailsService, "Parameter clientSecret must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, null, "Parameter userDetailsService must not be null"));
         }
     }
 }
