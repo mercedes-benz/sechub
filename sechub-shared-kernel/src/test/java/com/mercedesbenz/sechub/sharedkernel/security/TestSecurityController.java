@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller spins up a mock API for testing the
- * {@link AbstractSecHubAPISecurityConfiguration} of the SecHub application.
+ * {@link SecHubSecurityConfiguration} of the SecHub application.
  *
  * <p>
  * <b>Note:</b> The <i>sechub-shared-kernel</i> module is a library that does

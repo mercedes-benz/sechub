@@ -25,14 +25,14 @@ import com.mercedesbenz.sechub.webserver.server.ServerPropertiesConfiguration;
 @WebMvcTest
 @ActiveProfiles("classic-auth-enabled")
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
-class SecurityConfigurationTest {
+class WebServerSecurityConfigurationTest {
 
     private final MockMvc mockMvc;
     private final ServerProperties serverProperties;
     private final ManagementServerProperties managementServerProperties;
 
     @Autowired
-    SecurityConfigurationTest(MockMvc mockMvc, ServerProperties serverProperties, ManagementServerProperties managementServerProperties) {
+    WebServerSecurityConfigurationTest(MockMvc mockMvc, ServerProperties serverProperties, ManagementServerProperties managementServerProperties) {
         this.mockMvc = mockMvc;
         this.serverProperties = serverProperties;
         this.managementServerProperties = managementServerProperties;
@@ -83,7 +83,7 @@ class SecurityConfigurationTest {
     }
 
     @Configuration
-    @Import({ SecurityConfiguration.class, ServerPropertiesConfiguration.class })
+    @Import({ WebServerSecurityConfiguration.class, ServerPropertiesConfiguration.class })
     static class TestConfig {
 
         @Bean

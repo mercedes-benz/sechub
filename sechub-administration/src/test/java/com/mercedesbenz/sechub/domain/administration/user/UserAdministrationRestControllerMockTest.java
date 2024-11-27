@@ -22,30 +22,29 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupCreateService;
 import com.mercedesbenz.sechub.domain.administration.signup.Signup;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(UserAdministrationRestController.class)
-@ContextConfiguration(classes = { UserAdministrationRestController.class, UserAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { UserAdministrationRestController.class })
 @WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
+@Import(TestAdministrationSecurityConfiguration.class)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class UserAdministrationRestControllerMockTest {
 
@@ -192,13 +191,6 @@ public class UserAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-    }
-
-    @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }

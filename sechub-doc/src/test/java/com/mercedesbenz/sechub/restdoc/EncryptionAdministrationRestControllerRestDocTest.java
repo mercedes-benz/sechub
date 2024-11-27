@@ -22,6 +22,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,7 +44,6 @@ import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionDataValidator;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubPasswordSource;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseAdminFetchesEncryptionStatus;
@@ -54,10 +54,11 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(JobAdministrationRestController.class)
-@ContextConfiguration(classes = { EncryptionAdministrationRestController.class, SecHubEncryptionDataValidator.class,
-        EncryptionAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { EncryptionAdministrationRestController.class, SecHubEncryptionDataValidator.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@EnableAutoConfiguration
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class EncryptionAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
@@ -94,22 +95,22 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
         /* execute + test @formatter:off */
 
         this.mockMvc.perform(
-                    post(apiEndpoint).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    content(data.toFormattedJSON()).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                        post(apiEndpoint).
+                                contentType(MediaType.APPLICATION_JSON_VALUE).
+                                content(data.toFormattedJSON()).
+                                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
-        andExpect(status().isOk()).
-        andDo(defineRestService().
-                with().
-                    useCaseData(useCase).
-                    tag(extractTag(apiEndpoint)).
-                and().
-                document(
-                    requestHeaders(
+                andExpect(status().isOk()).
+                andDo(defineRestService().
+                        with().
+                        useCaseData(useCase).
+                        tag(extractTag(apiEndpoint)).
+                        and().
+                        document(
+                                requestHeaders(
 
-                    )
-                ));
+                                )
+                        ));
 
         /* @formatter:on */
     }
@@ -131,37 +132,37 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
         String domains = SecHubEncryptionStatus.PROPERTY_DOMAINS+"[].";
         String domainData = domains+SecHubDomainEncryptionStatus.PROPERTY_DATA+"[].";
 
-		this.mockMvc.perform(
-					get(apiEndpoint).
-					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
-				).
-		andExpect(status().isOk()).
-		andDo(defineRestService().
-                with().
-                    useCaseData(useCase).
-                    tag(extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.ENCRYPTION_STATUS.getSchema()).
-                and().
-                document(
-            		requestHeaders(
+        this.mockMvc.perform(
+                        get(apiEndpoint).
+                                contentType(MediaType.APPLICATION_JSON_VALUE).
+                                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+                andExpect(status().isOk()).
+                andDo(defineRestService().
+                        with().
+                        useCaseData(useCase).
+                        tag(extractTag(apiEndpoint)).
+                        responseSchema(OpenApiSchema.ENCRYPTION_STATUS.getSchema()).
+                        and().
+                        document(
+                                requestHeaders(
 
-            		),
-                    responseFields(
-                        fieldWithPath(SecHubEncryptionStatus.PROPERTY_TYPE).description("The type description of the json content"),
-                        fieldWithPath(domains+SecHubDomainEncryptionStatus.PROPERTY_NAME).description("Name of the domain which will provide this encryption data elements"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ID).description("Unique identifier"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ALGORITHM).description("Algorithm used for encryption"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_TYPE).description("Type of password source. Can be "+List.of(SecHubCipherPasswordSourceType.values())),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_DATA).description("Data for password source. If type is "+SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE+" then it is the the name of the environment variable."),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE).description("Map containing information about usage of this encryption"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE+".*").description("Key value data"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_CREATED).description("Creation timestamp"),
-                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_CREATED_FROM).description("User id of admin who created the encryption entry")
-                     )
-				));
+                                ),
+                                responseFields(
+                                        fieldWithPath(SecHubEncryptionStatus.PROPERTY_TYPE).description("The type description of the json content"),
+                                        fieldWithPath(domains+SecHubDomainEncryptionStatus.PROPERTY_NAME).description("Name of the domain which will provide this encryption data elements"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ID).description("Unique identifier"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_ALGORITHM).description("Algorithm used for encryption"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_TYPE).description("Type of password source. Can be "+List.of(SecHubCipherPasswordSourceType.values())),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_PASSWORDSOURCE+"."+ SecHubPasswordSource.PROPERTY_DATA).description("Data for password source. If type is "+SecHubCipherPasswordSourceType.ENVIRONMENT_VARIABLE+" then it is the the name of the environment variable."),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE).description("Map containing information about usage of this encryption"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_USAGE+".*").description("Key value data"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_CREATED).description("Creation timestamp"),
+                                        fieldWithPath(domainData+SecHubDomainEncryptionData.PROPERTY_CREATED_FROM).description("User id of admin who created the encryption entry")
+                                )
+                        ));
 
-		/* @formatter:on */
+        /* @formatter:on */
     }
 
     private SecHubEncryptionStatus createEncryptionStatusExample() {
@@ -186,11 +187,6 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
         scheduleDomainEncryptionStatus.getData().add(scheduleDomainEncryptionData);
         status.getDomains().add(scheduleDomainEncryptionStatus);
         return status;
-    }
-
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }

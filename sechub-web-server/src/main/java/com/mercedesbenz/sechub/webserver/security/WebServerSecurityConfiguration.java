@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.webserver.server.ServerProperties;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfiguration {
+class WebServerSecurityConfiguration {
     static final String ACCESS_TOKEN = "access_token";
 
     private static final String ACTUATOR_PATH = "/actuator/**";
@@ -64,9 +64,9 @@ class SecurityConfiguration {
     private final AES256Encryption aes256Encryption;
 
     /* @formatter:off */
-    SecurityConfiguration(Environment environment,
-                          @Autowired(required = false) OAuth2Properties oAuth2Properties,
-                          AES256Encryption aes256Encryption) {
+    WebServerSecurityConfiguration(@Autowired Environment environment,
+                                   @Autowired(required = false) OAuth2Properties oAuth2Properties,
+                                   @Autowired AES256Encryption aes256Encryption) {
         /* @formatter:on */
         this.environment = environment;
         if (isOAuth2Enabled() && oAuth2Properties == null) {

@@ -12,12 +12,10 @@ import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,7 +28,6 @@ import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupCreat
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupRestController;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupJsonInputValidator;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
@@ -41,9 +38,10 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(AnonymousSignupRestController.class)
+@WebMvcTest
 @ContextConfiguration(classes = { AnonymousSignupRestController.class, SignupJsonInputValidator.class, UserIdValidationImpl.class,
-        ApiVersionValidationFactory.class, EmailValidationImpl.class, AnonymousSignupRestControllerRestDocTest.SimpleTestConfiguration.class })
+        ApiVersionValidationFactory.class, EmailValidationImpl.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -91,13 +89,6 @@ public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessary
         			);
 
         /* @formatter:on */
-    }
-
-    @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }
