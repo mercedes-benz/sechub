@@ -53,8 +53,8 @@ class ZapScriptLoginTest {
         scriptLoginToTest.login(scanContext, clientApiWrapper);
 
         /* test */
-        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
-        verify(sessionConfigurator, times(1)).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
+        verify(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
+        verify(sessionConfigurator).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @Test
@@ -71,7 +71,7 @@ class ZapScriptLoginTest {
         assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiWrapper));
 
         /* test */
-        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
+        verify(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
         verify(sessionConfigurator, never()).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
@@ -89,7 +89,7 @@ class ZapScriptLoginTest {
         assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiWrapper));
 
         /* test */
-        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
+        verify(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
         verify(sessionConfigurator, never()).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
@@ -106,8 +106,8 @@ class ZapScriptLoginTest {
         assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiWrapper));
 
         /* test */
-        verify(groovyScriptExecutor, times(1)).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
-        verify(sessionConfigurator, times(1)).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
+        verify(groovyScriptExecutor).executeScript(scanContext.getGroovyScriptLoginFile(), scanContext);
+        verify(sessionConfigurator).passSessionDataToZAP(loginResult, scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     private ZapScanContext createValidZapScanContext() throws MalformedURLException, URISyntaxException {

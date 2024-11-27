@@ -159,15 +159,15 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
 
-        verify(envVariableReader, times(1)).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
-        verify(envVariableReader, times(1)).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
 
         ZapServerConfiguration serverConfig = result.getServerConfig();
         assertNotNull(serverConfig);
@@ -330,7 +330,7 @@ class ZapScanContextFactoryTest {
         ZapFullRuleset fullRuleset = result.getFullRuleset();
 
         /* test */
-        verify(ruleProvider, times(1)).fetchFullRuleset(any());
+        verify(ruleProvider).fetchFullRuleset(any());
         assertNotNull(fullRuleset);
         assertNotNull(fullRuleset.getRules());
         assertEquals("https://www.zaproxy.org/docs/alerts/", fullRuleset.getOrigin());
@@ -349,7 +349,7 @@ class ZapScanContextFactoryTest {
         DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
 
         /* test */
-        verify(ruleProvider, times(1)).fetchDeactivatedRuleReferences(any());
+        verify(ruleProvider).fetchDeactivatedRuleReferences(any());
         assertNotNull(deactivatedRuleReferences);
         assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
         assertEquals(2, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
@@ -419,7 +419,7 @@ class ZapScanContextFactoryTest {
         factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
+        verify(envVariableReader).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
     }
 
     @Test
@@ -573,7 +573,7 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertNull(result.getGroovyScriptLoginFile());
     }
 
@@ -609,7 +609,7 @@ class ZapScanContextFactoryTest {
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(envVariableReader, times(1)).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
     }
 

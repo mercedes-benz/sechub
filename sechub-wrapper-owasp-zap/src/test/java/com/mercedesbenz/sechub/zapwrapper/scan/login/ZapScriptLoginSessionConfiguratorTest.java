@@ -66,16 +66,16 @@ class ZapScriptLoginSessionConfiguratorTest {
         sessionConfiguratorToTest.passSessionDataToZAP(loginResult, TARGET_URL, clientApiWrapper);
 
         /* test */
-        verify(clientApiWrapper, times(1)).removeHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).removeReplacerRule(any());
-        verify(clientApiWrapper, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).setHTTPSessionTokenValue(eq(TARGET_URL), any(), eq(cookie.getName()), eq(cookie.getValue()));
-        verify(clientApiWrapper, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
+        verify(clientApiWrapper).removeHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).removeHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiWrapper).removeReplacerRule(any());
+        verify(clientApiWrapper).addHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiWrapper).createEmptyHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).setHTTPSessionTokenValue(eq(TARGET_URL), any(), eq(cookie.getName()), eq(cookie.getValue()));
+        verify(clientApiWrapper).setActiveHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
 
-        verify(clientApiWrapper, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
+        verify(clientApiWrapper).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
     }
 
     @Test
@@ -97,14 +97,14 @@ class ZapScriptLoginSessionConfiguratorTest {
         // no cookie can be added
         verify(clientApiWrapper, never()).setHTTPSessionTokenValue(eq(TARGET_URL), any(), any(), any());
 
-        verify(clientApiWrapper, times(1)).removeHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).removeHTTPSessionToken(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).removeReplacerRule(any());
-        verify(clientApiWrapper, times(1)).addHTTPSessionToken(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).createEmptyHTTPSession(eq(TARGET_URL), any());
-        verify(clientApiWrapper, times(1)).setActiveHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).removeHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).removeHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiWrapper).removeReplacerRule(any());
+        verify(clientApiWrapper).addHTTPSessionToken(eq(TARGET_URL), any());
+        verify(clientApiWrapper).createEmptyHTTPSession(eq(TARGET_URL), any());
+        verify(clientApiWrapper).setActiveHTTPSession(eq(TARGET_URL), any());
 
-        verify(clientApiWrapper, times(1)).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
+        verify(clientApiWrapper).accessUrlViaZap(TARGET_URL, FOLLOW_REDIRECTS);
     }
 
     @Test

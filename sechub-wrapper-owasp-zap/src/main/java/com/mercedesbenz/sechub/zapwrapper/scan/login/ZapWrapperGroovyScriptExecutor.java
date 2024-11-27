@@ -65,7 +65,7 @@ public class ZapWrapperGroovyScriptExecutor {
             LOG.info("Execute groovy login script.");
             scriptEngine.eval(script, bindings);
 
-            LOG.info("Execution successful, perparing login result with session data.");
+            LOG.info("Execution successful, preparing login result with session data.");
             loginResult.setSessionCookies(firefox.manage().getCookies());
             loginResult.setSessionStorage(retrieveStorage(firefox, SESSION_STORAGE));
             loginResult.setLocalStorage(retrieveStorage(firefox, LOCAL_STORAGE));

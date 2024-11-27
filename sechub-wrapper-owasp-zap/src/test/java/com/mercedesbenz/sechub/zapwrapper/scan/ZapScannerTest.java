@@ -117,11 +117,11 @@ class ZapScannerTest {
         scannerToTest.setupStandardConfiguration();
 
         /* test */
-        verify(clientApiWrapper, times(1)).createNewSession(scanContext.getContextName(), true);
-        verify(clientApiWrapper, times(1)).setMaximumAlertsForEachRuleToUnlimited();
-        verify(clientApiWrapper, times(1)).enableAllPassiveScannerRules();
-        verify(clientApiWrapper, times(1)).enableAllActiveScannerRulesForDefaultPolicy();
-        verify(clientApiWrapper, times(1)).setAjaxSpiderBrowserId(BROWSER_ID);
+        verify(clientApiWrapper).createNewSession(scanContext.getContextName(), true);
+        verify(clientApiWrapper).setMaximumAlertsForEachRuleToUnlimited();
+        verify(clientApiWrapper).enableAllPassiveScannerRules();
+        verify(clientApiWrapper).enableAllActiveScannerRulesForDefaultPolicy();
+        verify(clientApiWrapper).setAjaxSpiderBrowserId(BROWSER_ID);
     }
 
     @Test
@@ -161,7 +161,7 @@ class ZapScannerTest {
         scannerToTest.deactivateRules(ruleSet, deactivatedReferences);
 
         /* test */
-        verify(clientApiWrapper, times(1)).disablePassiveScannerRule(any());
+        verify(clientApiWrapper).disablePassiveScannerRule(any());
         verify(clientApiWrapper, times(2)).disableActiveScannerRuleForDefaultPolicy(any());
     }
 
@@ -175,7 +175,7 @@ class ZapScannerTest {
         scannerToTest.setupAdditonalProxyConfiguration(null);
 
         /* test */
-        verify(clientApiWrapper, times(1)).setHttpProxyEnabled(false);
+        verify(clientApiWrapper).setHttpProxyEnabled(false);
     }
 
     @Test
@@ -193,9 +193,9 @@ class ZapScannerTest {
         scannerToTest.setupAdditonalProxyConfiguration(proxyInformation);
 
         /* test */
-        verify(clientApiWrapper, times(1)).configureHttpProxy(proxyInformation);
-        verify(clientApiWrapper, times(1)).setHttpProxyEnabled(true);
-        verify(clientApiWrapper, times(1)).setHttpProxyAuthEnabled(false);
+        verify(clientApiWrapper).configureHttpProxy(proxyInformation);
+        verify(clientApiWrapper).setHttpProxyEnabled(true);
+        verify(clientApiWrapper).setHttpProxyAuthEnabled(false);
     }
 
     @Test
@@ -210,7 +210,7 @@ class ZapScannerTest {
         /* test */
         assertEquals(expectedContextId, contextId);
         verify(scanContext, times(2)).getContextName();
-        verify(clientApiWrapper, times(1)).createNewContext(CONTEXT_NAME);
+        verify(clientApiWrapper).createNewContext(CONTEXT_NAME);
     }
 
     @Test
@@ -318,8 +318,8 @@ class ZapScannerTest {
         scannerToTest.addReplacerRulesForHeaders();
 
         /* test */
-        verify(clientApiWrapper, times(1)).addReplacerRule("Key", true, "REQ_HEADER", false, "Key", "header-token", null, null);
-        verify(clientApiWrapper, times(1)).addReplacerRule("Other", true, "REQ_HEADER", false, "Other", "token", null, null);
+        verify(clientApiWrapper).addReplacerRule("Key", true, "REQ_HEADER", false, "Key", "header-token", null, null);
+        verify(clientApiWrapper).addReplacerRule("Other", true, "REQ_HEADER", false, "Other", "token", null, null);
     }
 
     @ParameterizedTest
@@ -397,7 +397,7 @@ class ZapScannerTest {
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiWrapper, times(1)).importOpenApiFile(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiFile(any(), any(), anyInt());
     }
 
     @ParameterizedTest
@@ -417,7 +417,7 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiWrapper, never()).importOpenApiFile(any(), any(), anyInt());
-        verify(clientApiWrapper, times(1)).importOpenApiDefintionFromUrl(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiDefintionFromUrl(any(), any(), anyInt());
     }
 
     @ParameterizedTest
@@ -440,8 +440,8 @@ class ZapScannerTest {
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiWrapper, times(1)).importOpenApiFile(any(), any(), anyInt());
-        verify(clientApiWrapper, times(1)).importOpenApiDefintionFromUrl(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiFile(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiDefintionFromUrl(any(), any(), anyInt());
     }
 
     @Test
@@ -516,7 +516,7 @@ class ZapScannerTest {
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiWrapper, times(1)).importPkcs12ClientCertificate(any(), any());
+        verify(clientApiWrapper).importPkcs12ClientCertificate(any(), any());
     }
 
     @Test
@@ -549,7 +549,7 @@ class ZapScannerTest {
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiWrapper, times(1)).importPkcs12ClientCertificate(any(), any());
+        verify(clientApiWrapper).importPkcs12ClientCertificate(any(), any());
     }
 
     @ParameterizedTest
@@ -603,12 +603,12 @@ class ZapScannerTest {
 
         verify(scanContext, times(2)).getTargetUrl();
 
-        verify(clientApiWrapper, times(1)).setAuthenticationMethod(eq(contextId), eq(zapAuthenticationMethod), any());
-        verify(clientApiWrapper, times(1)).setSessionManagementMethod(eq(contextId), eq(zapSessionManagementMethod), any());
-        verify(clientApiWrapper, times(1)).createNewUser(contextId, userName);
-        verify(clientApiWrapper, times(1)).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
-        verify(clientApiWrapper, times(1)).setForcedUser(contextId, userId);
-        verify(clientApiWrapper, times(1)).setForcedUserModeEnabled(true);
+        verify(clientApiWrapper).setAuthenticationMethod(eq(contextId), eq(zapAuthenticationMethod), any());
+        verify(clientApiWrapper).setSessionManagementMethod(eq(contextId), eq(zapSessionManagementMethod), any());
+        verify(clientApiWrapper).createNewUser(contextId, userName);
+        verify(clientApiWrapper).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
+        verify(clientApiWrapper).setForcedUser(contextId, userId);
+        verify(clientApiWrapper).setForcedUserModeEnabled(true);
     }
 
     @Test
@@ -645,7 +645,7 @@ class ZapScannerTest {
         /* test */
         assertNull(userInformation);
         verify(scriptLogin, never()).login(scanContext, clientApiWrapper);
-        verify(scanContext, times(1)).getGroovyScriptLoginFile();
+        verify(scanContext).getGroovyScriptLoginFile();
     }
 
     @Test
@@ -682,15 +682,15 @@ class ZapScannerTest {
         assertEquals(userName, userInformation.userName());
         assertEquals(userId, userInformation.zapuserId());
 
-        verify(scriptLogin, times(1)).login(scanContext, clientApiWrapper);
-        verify(scanContext, times(1)).getGroovyScriptLoginFile();
+        verify(scriptLogin).login(scanContext, clientApiWrapper);
+        verify(scanContext).getGroovyScriptLoginFile();
 
-        verify(clientApiWrapper, times(1)).setManualAuthenticationMethod(contextId);
-        verify(clientApiWrapper, times(1)).setCookieBasedSessionManagementMethod(contextId);
-        verify(clientApiWrapper, times(1)).createNewUser(contextId, userName);
-        verify(clientApiWrapper, times(1)).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
-        verify(clientApiWrapper, times(1)).setForcedUser(contextId, userId);
-        verify(clientApiWrapper, times(1)).setForcedUserModeEnabled(true);
+        verify(clientApiWrapper).setManualAuthenticationMethod(contextId);
+        verify(clientApiWrapper).setCookieBasedSessionManagementMethod(contextId);
+        verify(clientApiWrapper).createNewUser(contextId, userName);
+        verify(clientApiWrapper).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
+        verify(clientApiWrapper).setForcedUser(contextId, userId);
+        verify(clientApiWrapper).setForcedUserModeEnabled(true);
     }
 
     @Test
@@ -706,7 +706,7 @@ class ZapScannerTest {
         scannerToTest.generateZapReport();
 
         /* test */
-        verify(clientApiWrapper, times(1)).generateReport(any(), any(), any(), any(), any(), any(), any(), any(),
+        verify(clientApiWrapper).generateReport(any(), any(), any(), any(), any(), any(), any(), any(),
                 any(), any(), any(), any(), any());
     }
 
@@ -721,8 +721,8 @@ class ZapScannerTest {
         scannerToTest.cleanUp();
 
         /* test */
-        verify(clientApiWrapper, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
-        verify(scriptLogin, times(1)).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @ParameterizedTest
@@ -739,9 +739,9 @@ class ZapScannerTest {
 
         /* test */
         int times = sechubWebScanConfig.getHeaders().get().size();
-        verify(clientApiWrapper, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
         verify(clientApiWrapper, times(times + 1)).removeReplacerRule(any());
-        verify(scriptLogin, times(1)).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @ParameterizedTest
@@ -764,9 +764,9 @@ class ZapScannerTest {
                 times += header.getOnlyForUrls().get().size() - 1;
             }
         }
-        verify(clientApiWrapper, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
         verify(clientApiWrapper, times(times + 1)).removeReplacerRule(any());
-        verify(scriptLogin, times(1)).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @Test
@@ -786,7 +786,7 @@ class ZapScannerTest {
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(clientApiWrapper, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
@@ -802,7 +802,7 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiWrapper, times(2)).getAjaxSpiderStatus();
-        verify(clientApiWrapper, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
@@ -822,7 +822,7 @@ class ZapScannerTest {
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(clientApiWrapper, times(1)).stopSpiderScan(scanId);
+        verify(clientApiWrapper).stopSpiderScan(scanId);
     }
 
     @Test
@@ -858,7 +858,7 @@ class ZapScannerTest {
         scannerToTest.runAndWaitForPassiveScan();
 
         /* test */
-        verify(clientApiWrapper, times(1)).getNumberOfPassiveScannerRecordsToScan();
+        verify(clientApiWrapper).getNumberOfPassiveScannerRecordsToScan();
     }
 
     @Test
@@ -880,7 +880,7 @@ class ZapScannerTest {
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
         verify(clientApiWrapper, never()).getActiveScannerStatusForScan(scanId);
-        verify(clientApiWrapper, times(1)).stopActiveScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
     }
 
     @Test
@@ -897,7 +897,7 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiWrapper, atLeast(1)).getActiveScannerStatusForScan(scanId);
-        verify(clientApiWrapper, times(1)).stopActiveScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
     }
 
     @Test
@@ -913,7 +913,7 @@ class ZapScannerTest {
 
         /* test */
         verify(clientApiWrapper, times(2)).getAjaxSpiderStatus();
-        verify(clientApiWrapper, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
@@ -934,11 +934,11 @@ class ZapScannerTest {
         scannerToTest.runAndWaitForSpider();
 
         /* test */
-        verify(scanContext, times(1)).getZapProductMessageHelper();
+        verify(scanContext).getZapProductMessageHelper();
         verify(clientApiWrapper, times(2)).getSpiderStatusForScan(scanId);
-        verify(clientApiWrapper, times(1)).stopSpiderScan(scanId);
-        verify(clientApiWrapper, times(1)).logFullSpiderResults(scanId);
-        verify(clientApiWrapper, times(1)).startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean());
+        verify(clientApiWrapper).stopSpiderScan(scanId);
+        verify(clientApiWrapper).logFullSpiderResults(scanId);
+        verify(clientApiWrapper).startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean());
     }
 
     @Test
@@ -956,9 +956,9 @@ class ZapScannerTest {
         scannerToTest.runAndWaitActiveScan(scanId);
 
         /* test */
-        verify(clientApiWrapper, times(1)).getActiveScannerStatusForScan(scanId);
-        verify(clientApiWrapper, times(1)).stopActiveScan(scanId);
-        verify(clientApiWrapper, times(1)).startActiveScan(any(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt());
+        verify(clientApiWrapper).getActiveScannerStatusForScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
+        verify(clientApiWrapper).startActiveScan(any(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt());
     }
 
     static Stream<Arguments> headerPartWithoutOnlyForUrlsTestNamedArguments() {
