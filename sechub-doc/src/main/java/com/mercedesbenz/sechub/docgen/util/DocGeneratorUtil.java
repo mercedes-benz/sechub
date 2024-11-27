@@ -84,21 +84,28 @@ public class DocGeneratorUtil {
 
     /**
      * Reduces string to second upper cased char - e.g. "NetsparkerInstallSetupImpl"
-     * would be replaced to "Netsparker"
+     * would be replaced to "Netsparker". Having multiple upper case letters at the
+     * beginning will keep all upper cased parts. E.g. "SMTPServerConfiguration"
+     * will become "SMTPServer"
      *
      * @param clazz
-     * @return
+     * @return string, never <code>null</code>
      */
     public static String toCamelOne(Class<?> clazz) {
         StringBuilder sb = new StringBuilder();
 
         String clazzName = clazz.getSimpleName();
         boolean first = true;
+        boolean atLeastOneLowerCaseFound = false;
         for (char c : clazzName.toCharArray()) {
             if (first) {
                 first = false;
             } else {
-                if (Character.isUpperCase(c)) {
+                boolean upperCase = Character.isUpperCase(c);
+                if (!atLeastOneLowerCaseFound) {
+                    atLeastOneLowerCaseFound = !upperCase;
+                }
+                if (upperCase && atLeastOneLowerCaseFound) {
                     break;
                 }
             }
