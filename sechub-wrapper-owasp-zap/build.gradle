@@ -14,6 +14,9 @@ dependencies {
     implementation library.owaspzap_client_api
     implementation library.jcommander
     implementation library.commons_codec
+    implementation library.selenium_firefox_driver
+    implementation library.selenium_support
+    implementation library.groovy_jsr223
 
     implementation spring_boot_dependency.slf4j_api
     implementation spring_boot_dependency.logback_classic

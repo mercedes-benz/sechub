@@ -10,12 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,82 +27,101 @@ import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.SessionManagementType;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
-import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
+import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptLogin;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
+import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 class ZapScannerTest {
 
     private ZapScanner scannerToTest;
 
-    private ClientApiFacade clientApiFacade;
+    private ClientApiWrapper clientApiWrapper;
     private ZapScanContext scanContext;
     private ZapPDSEventHandler zapPDSEventHandler;
     private SystemUtil systemUtil;
+    private ZapScriptLogin scriptLogin;
+    private ZapProductMessageHelper messageHelper;
 
-    private ZapProductMessageHelper helper;
-    private String contextName = "context-name";
+    private ApiResponse apiResponse;
+
+    private static final String BROWSER_ID = ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId();
+    private static final String CONTEXT_NAME = "context-name";
 
     @BeforeEach
-    void beforeEach() {
-        // create mocks
-        clientApiFacade = mock(ClientApiFacade.class);
-        scanContext = mock(ZapScanContext.class);
-        systemUtil = mock(SystemUtil.class);
-        helper = mock(ZapProductMessageHelper.class);
+    void beforeEach() throws ClientApiException {
+        clientApiWrapper = mock();
+        scanContext = mock();
+        zapPDSEventHandler = mock();
+        systemUtil = mock();
+        scriptLogin = mock();
+        messageHelper = mock();
 
-        zapPDSEventHandler = mock(ZapPDSEventHandler.class);
+        apiResponse = mock();
 
-        // assign mocks
-        scannerToTest = ZapScanner.from(clientApiFacade, scanContext);
-        scannerToTest.systemUtil = systemUtil;
+        // create scanner to test
+        /* @formatter:off */
+        scannerToTest = new ZapScanner(clientApiWrapper,
+                                       scanContext,
+                                       new UrlUtil(),
+                                       systemUtil,
+                                       scriptLogin);
+        /* @formatter:on */
 
         // set global behavior
-        when(scanContext.getContextName()).thenReturn(contextName);
-        when(scanContext.getZapProductMessageHelper()).thenReturn(helper);
+        when(scanContext.getContextName()).thenReturn(CONTEXT_NAME);
+        when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
         when(scanContext.getZapPDSEventHandler()).thenReturn(zapPDSEventHandler);
-        when(scanContext.getAjaxSpiderBrowserId()).thenReturn(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId());
+        when(scanContext.getAjaxSpiderBrowserId()).thenReturn(BROWSER_ID);
 
-        doNothing().when(helper).writeProductError(any());
-        doNothing().when(helper).writeProductMessages(any());
-        doNothing().when(helper).writeSingleProductMessage(any());
+        when(scriptLogin.login(scanContext, clientApiWrapper)).thenReturn("authSessionId");
+        doNothing().when(scriptLogin).cleanUpScriptLoginData(anyString(), eq(clientApiWrapper));
 
-        doNothing().when(systemUtil).waitForMilliseconds(ZapScanner.CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
+        doNothing().when(messageHelper).writeProductError(any());
+        doNothing().when(messageHelper).writeProductMessages(any());
+        doNothing().when(messageHelper).writeSingleProductMessage(any());
+
+        doNothing().when(systemUtil).waitForMilliseconds(anyInt());
         when(systemUtil.getCurrentTimeInMilliseconds()).thenCallRealMethod();
+
+        doNothing().when(scriptLogin).cleanUpScriptLoginData(any(), eq(clientApiWrapper));
     }
 
     @Test
     void setup_standard_configuration_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        when(clientApiFacade.createNewSession(scanContext.getContextName(), "true")).thenReturn(null);
-        when(clientApiFacade.configureMaximumAlertsForEachRule("0")).thenReturn(null);
-        when(clientApiFacade.enableAllPassiveScannerRules()).thenReturn(null);
-        when(clientApiFacade.enableAllActiveScannerRulesForPolicy(null)).thenReturn(null);
-        when(clientApiFacade.configureAjaxSpiderBrowserId(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId())).thenReturn(null);
+        when(clientApiWrapper.createNewSession(scanContext.getContextName(), true)).thenReturn(null);
+        when(clientApiWrapper.setMaximumAlertsForEachRuleToUnlimited()).thenReturn(null);
+        when(clientApiWrapper.enableAllPassiveScannerRules()).thenReturn(null);
+        when(clientApiWrapper.enableAllActiveScannerRulesForDefaultPolicy()).thenReturn(null);
+        when(clientApiWrapper.setAjaxSpiderBrowserId(BROWSER_ID))
+                .thenReturn(null);
 
         /* execute */
         scannerToTest.setupStandardConfiguration();
 
         /* test */
-        verify(clientApiFacade, times(1)).createNewSession(scanContext.getContextName(), "true");
-        verify(clientApiFacade, times(1)).configureMaximumAlertsForEachRule("0");
-        verify(clientApiFacade, times(1)).enableAllPassiveScannerRules();
-        verify(clientApiFacade, times(1)).enableAllActiveScannerRulesForPolicy(null);
-        verify(clientApiFacade, times(1)).configureAjaxSpiderBrowserId(ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId());
+        verify(clientApiWrapper).createNewSession(scanContext.getContextName(), true);
+        verify(clientApiWrapper).setMaximumAlertsForEachRuleToUnlimited();
+        verify(clientApiWrapper).enableAllPassiveScannerRules();
+        verify(clientApiWrapper).enableAllActiveScannerRulesForDefaultPolicy();
+        verify(clientApiWrapper).setAjaxSpiderBrowserId(BROWSER_ID);
     }
 
     @Test
@@ -123,8 +137,8 @@ class ZapScannerTest {
         scannerToTest.deactivateRules(new ZapFullRuleset(), deactivatedReferences);
 
         /* test */
-        verify(clientApiFacade, never()).disablePassiveScannerRule(any());
-        verify(clientApiFacade, never()).disableActiveScannerRuleForPolicy(any(), any());
+        verify(clientApiWrapper, never()).disablePassiveScannerRule(any());
+        verify(clientApiWrapper, never()).disableActiveScannerRuleForDefaultPolicy(any());
     }
 
     @Test
@@ -140,28 +154,28 @@ class ZapScannerTest {
         String json = TestFileReader.readTextFromFile("src/test/resources/zap-available-rules/zap-full-ruleset.json");
         ZapFullRuleset ruleSet = new ZapFullRuleset().fromJSON(json);
 
-        when(clientApiFacade.disablePassiveScannerRule(any())).thenReturn(null);
-        when(clientApiFacade.disableActiveScannerRuleForPolicy(any(), any())).thenReturn(null);
+        when(clientApiWrapper.disablePassiveScannerRule(any())).thenReturn(null);
+        when(clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(any())).thenReturn(null);
 
         /* execute */
         scannerToTest.deactivateRules(ruleSet, deactivatedReferences);
 
         /* test */
-        verify(clientApiFacade, times(1)).disablePassiveScannerRule(any());
-        verify(clientApiFacade, times(2)).disableActiveScannerRuleForPolicy(any(), any());
+        verify(clientApiWrapper).disablePassiveScannerRule(any());
+        verify(clientApiWrapper, times(2)).disableActiveScannerRuleForDefaultPolicy(any());
     }
 
     @Test
     void setup_addtional_proxy_information_with_proxy_information_null_results_in_proxy_disabled()
             throws ClientApiException {
         /* prepare */
-        when(clientApiFacade.setHttpProxyEnabled("false")).thenReturn(null);
+        when(clientApiWrapper.setHttpProxyEnabled(false)).thenReturn(null);
 
         /* execute */
         scannerToTest.setupAdditonalProxyConfiguration(null);
 
         /* test */
-        verify(clientApiFacade, times(1)).setHttpProxyEnabled("false");
+        verify(clientApiWrapper).setHttpProxyEnabled(false);
     }
 
     @Test
@@ -169,35 +183,34 @@ class ZapScannerTest {
         /* prepare */
         String host = "127.0.0.1";
         int port = 8000;
-        var portAsString = String.valueOf(port);
-        ProxyInformation proxyInformation = new ProxyInformation(host, port);
+        ProxyInformation proxyInformation = ProxyInformation.builder().setHost(host).setPort(port).build();
 
-        when(clientApiFacade.configureHttpProxy(host, portAsString, null, null, null)).thenReturn(null);
-        when(clientApiFacade.setHttpProxyEnabled("true")).thenReturn(null);
-        when(clientApiFacade.setHttpProxyAuthEnabled("false")).thenReturn(null);
+        when(clientApiWrapper.configureHttpProxy(proxyInformation)).thenReturn(null);
+        when(clientApiWrapper.setHttpProxyEnabled(true)).thenReturn(null);
+        when(clientApiWrapper.setHttpProxyAuthEnabled(false)).thenReturn(null);
 
         /* execute */
         scannerToTest.setupAdditonalProxyConfiguration(proxyInformation);
 
         /* test */
-        verify(clientApiFacade, times(1)).configureHttpProxy(host, portAsString, null, null, null);
-        verify(clientApiFacade, times(1)).setHttpProxyEnabled("true");
-        verify(clientApiFacade, times(1)).setHttpProxyAuthEnabled("false");
+        verify(clientApiWrapper).configureHttpProxy(proxyInformation);
+        verify(clientApiWrapper).setHttpProxyEnabled(true);
+        verify(clientApiWrapper).setHttpProxyAuthEnabled(false);
     }
 
     @Test
     void create_context_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        String expectedContextId = "random-id";
-        when(clientApiFacade.createNewContext(contextName)).thenReturn(expectedContextId);
+        int expectedContextId = 12345;
+        when(clientApiWrapper.createNewContext(CONTEXT_NAME)).thenReturn(expectedContextId);
 
         /* execute */
-        String contextId = scannerToTest.createContext();
+        int contextId = scannerToTest.createContext();
 
         /* test */
         assertEquals(expectedContextId, contextId);
         verify(scanContext, times(2)).getContextName();
-        verify(clientApiFacade, times(1)).createNewContext(contextName);
+        verify(clientApiWrapper).createNewContext(CONTEXT_NAME);
     }
 
     @Test
@@ -206,14 +219,13 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubwebScanConfig = new SecHubWebScanConfiguration();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubwebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.addReplacerRulesForHeaders();
 
         /* test */
-        verify(clientApiFacade, never()).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper, never()).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
     }
 
     @ParameterizedTest
@@ -224,15 +236,14 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.addReplacerRulesForHeaders();
 
         /* test */
         int times = sechubWebScanConfig.getHeaders().get().size();
-        verify(clientApiFacade, times(times)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper, times(times)).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
     }
 
     @ParameterizedTest
@@ -243,8 +254,7 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.addReplacerRulesForHeaders();
@@ -257,7 +267,7 @@ class ZapScannerTest {
                 times += header.getOnlyForUrls().get().size() - 1;
             }
         }
-        verify(clientApiFacade, times(times)).addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper, times(times)).addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any());
     }
 
     @Test
@@ -302,20 +312,19 @@ class ZapScannerTest {
         headerFiles.put("Other", new File("src/test/resources/header-value-files/token.txt"));
         when(scanContext.getHeaderValueFiles()).thenReturn(headerFiles);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.addReplacerRule(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.addReplacerRule(any(), anyBoolean(), any(), anyBoolean(), any(), any(), any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.addReplacerRulesForHeaders();
 
         /* test */
-        verify(clientApiFacade, times(1)).addReplacerRule("Key", "true", "REQ_HEADER", "false", "Key", "header-token", null, null);
-        verify(clientApiFacade, times(1)).addReplacerRule("Other", "true", "REQ_HEADER", "false", "Other", "token", null, null);
+        verify(clientApiWrapper).addReplacerRule("Key", true, "REQ_HEADER", false, "Key", "header-token", null, null);
+        verify(clientApiWrapper).addReplacerRule("Other", true, "REQ_HEADER", false, "Other", "token", null, null);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-include-exclude.json" })
-    void set_includes_and_excludes_api_facade_is_called_once_for_each_include_and_once_for_exclude(String sechubConfigFile)
+    void set_includes_and_excludes_api_support_is_called_once_for_each_include_and_once_for_exclude(String sechubConfigFile)
             throws ClientApiException, MalformedURLException {
         /* prepare */
         String json = TestFileReader.readTextFromFile(sechubConfigFile);
@@ -332,10 +341,9 @@ class ZapScannerTest {
         Set<String> excludes = new HashSet<>(helper.createListOfUrls(targetUrl, excludesList));
         when(scanContext.getZapURLsExcludeSet()).thenReturn(excludes);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.addIncludeUrlPatternToContext(any(), any())).thenReturn(response);
-        when(clientApiFacade.accessUrlViaZap(any(), any())).thenReturn(response);
-        when(clientApiFacade.addExcludeUrlPatternToContext(any(), any())).thenReturn(response);
+        when(clientApiWrapper.addIncludeUrlPatternToContext(any(), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.accessUrlViaZap(any(), anyBoolean())).thenReturn(apiResponse);
+        when(clientApiWrapper.addExcludeUrlPatternToContext(any(), any())).thenReturn(apiResponse);
 
         /* @formatter:off */
         int includesWithoutWildcards = (int) includes.stream()
@@ -347,35 +355,33 @@ class ZapScannerTest {
         scannerToTest.addIncludedAndExcludedUrlsToContext();
 
         /* test */
-        verify(clientApiFacade, times(includes.size())).addIncludeUrlPatternToContext(any(), any());
+        verify(clientApiWrapper, times(includes.size())).addIncludeUrlPatternToContext(any(), any());
         // make sure this method is only called for includes without wildcards
-        verify(clientApiFacade, times(includesWithoutWildcards)).accessUrlViaZap(any(), any());
-        verify(clientApiFacade, times(excludes.size())).addExcludeUrlPatternToContext(any(), any());
+        verify(clientApiWrapper, times(includesWithoutWildcards)).accessUrlViaZap(any(), anyBoolean());
+        verify(clientApiWrapper, times(excludes.size())).addExcludeUrlPatternToContext(any(), any());
     }
 
     @Test
-    void import_openapi_file_but_api_file_is_null_api_facade_is_never_called() throws ClientApiException {
+    void import_openapi_file_but_api_file_is_null_api_support_is_never_called() throws ClientApiException {
         /* prepare */
-        String contextId = "context-id";
-
-        ApiResponse response = mock(ApiResponse.class);
+        int contextId = 12345;
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(new SecHubWebScanConfiguration());
-        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
-        when(clientApiFacade.importOpenApiDefintionFromUrl(any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.importOpenApiFile(any(), any(), anyInt())).thenReturn(apiResponse);
+        when(clientApiWrapper.importOpenApiDefintionFromUrl(any(), any(), anyInt())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
-        verify(clientApiFacade, never()).importOpenApiDefintionFromUrl(any(), any(), any());
+        verify(clientApiWrapper, never()).importOpenApiFile(any(), any(), anyInt());
+        verify(clientApiWrapper, never()).importOpenApiDefintionFromUrl(any(), any(), anyInt());
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json" })
-    void import_openapi_file_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
+    void import_openapi_file_api_support_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
-        String contextId = "context-id";
+        int contextId = 12345;
         String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
@@ -385,42 +391,40 @@ class ZapScannerTest {
         when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.importOpenApiFile(any(), any(), anyInt())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
+        verify(clientApiWrapper).importOpenApiFile(any(), any(), anyInt());
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-from-url.json" })
-    void import_openapi_defintion_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
+    void import_openapi_defintion_from_url_api_support_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
-        String contextId = "context-id";
+        int contextId = 12345;
         String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
-        when(clientApiFacade.importOpenApiDefintionFromUrl(any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.importOpenApiFile(any(), any(), anyInt())).thenReturn(apiResponse);
+        when(clientApiWrapper.importOpenApiDefintionFromUrl(any(), any(), anyInt())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
-        verify(clientApiFacade, times(1)).importOpenApiDefintionFromUrl(any(), any(), any());
+        verify(clientApiWrapper, never()).importOpenApiFile(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiDefintionFromUrl(any(), any(), anyInt());
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "src/test/resources/sechub-config-examples/no-auth-with-openapi-from-file-and-url.json" })
-    void import_openapi_from_file_and_from_url_api_facade_is_called_once(String sechubConfigFile) throws ClientApiException {
+    void import_openapi_from_file_and_from_url_api_support_is_called_once(String sechubConfigFile) throws ClientApiException {
         /* prepare */
-        String contextId = "context-id";
+        int contextId = 12345;
         String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
@@ -430,32 +434,30 @@ class ZapScannerTest {
         when(scanContext.getApiDefinitionFiles()).thenReturn(apiFiles);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importOpenApiFile(any(), any(), any())).thenReturn(response);
+        when(clientApiWrapper.importOpenApiFile(any(), any(), anyInt())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.loadApiDefinitions(contextId);
 
         /* test */
-        verify(clientApiFacade, times(1)).importOpenApiFile(any(), any(), any());
-        verify(clientApiFacade, times(1)).importOpenApiDefintionFromUrl(any(), any(), any());
+        verify(clientApiWrapper).importOpenApiFile(any(), any(), anyInt());
+        verify(clientApiWrapper).importOpenApiDefintionFromUrl(any(), any(), anyInt());
     }
 
     @Test
-    void import_client_certificate_file_but_client_certificate_file_is_null_api_facade_is_never_called() throws ClientApiException {
+    void import_client_certificate_file_but_client_certificate_file_is_null_api_support_is_never_called() throws ClientApiException {
         /* prepare */
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+        when(clientApiWrapper.importPkcs12ClientCertificate(any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiFacade, never()).importOpenApiFile(any(), any(), any());
+        verify(clientApiWrapper, never()).importOpenApiFile(any(), any(), anyInt());
     }
 
     @Test
-    void try_import_without_client_certificate_file_api_facade_is_never_called() throws ClientApiException {
+    void try_import_without_client_certificate_file_api_support_is_never_called() throws ClientApiException {
         /* prepare */
         String jsonWithClientCertConfig = """
                 {
@@ -473,18 +475,17 @@ class ZapScannerTest {
         when(scanContext.getClientCertificateFile()).thenReturn(clientCertificateFile);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+        when(clientApiWrapper.importPkcs12ClientCertificate(any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiFacade, never()).importPkcs12ClientCertificate(any(), any());
+        verify(clientApiWrapper, never()).importPkcs12ClientCertificate(any(), any());
     }
 
     @Test
-    void import_client_certificate_file_api_facade_is_called_once() throws ClientApiException {
+    void import_client_certificate_file_api_support_is_called_once() throws ClientApiException {
         /* prepare */
         String jsonWithCertPassword = """
                 {
@@ -509,18 +510,17 @@ class ZapScannerTest {
 
         when(clientCertificateFile.exists()).thenReturn(true);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+        when(clientApiWrapper.importPkcs12ClientCertificate(any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
+        verify(clientApiWrapper).importPkcs12ClientCertificate(any(), any());
     }
 
     @Test
-    void import_client_certificate_file_but_without_password_api_facade_is_called_once() throws ClientApiException {
+    void import_client_certificate_file_but_without_password_api_support_is_called_once() throws ClientApiException {
         /* prepare */
         String jsonWithoutCertPassword = """
                 {
@@ -543,14 +543,13 @@ class ZapScannerTest {
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
         when(clientCertificateFile.exists()).thenReturn(true);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.importPkcs12ClientCertificate(any(), any())).thenReturn(response);
+        when(clientApiWrapper.importPkcs12ClientCertificate(any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.importClientCertificate();
 
         /* test */
-        verify(clientApiFacade, times(1)).importPkcs12ClientCertificate(any(), any());
+        verify(clientApiWrapper).importPkcs12ClientCertificate(any(), any());
     }
 
     @ParameterizedTest
@@ -558,14 +557,14 @@ class ZapScannerTest {
             "src/test/resources/sechub-config-examples/form-based-auth.json" })
     void configure_login_inside_zap_using_no_auth_and_unsupported_auth_return_null(String sechubConfigFile) throws ClientApiException {
         /* prepare */
-        String contextId = "context-id";
+        int contextId = 12345;
         String json = TestFileReader.readTextFromFile(sechubConfigFile);
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
 
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
         /* execute */
-        UserInformation userInformation = scannerToTest.configureLoginInsideZapContext(contextId);
+        UserInformation userInformation = scannerToTest.setupLoginInsideZapContext(contextId);
 
         /* test */
         assertEquals(null, userInformation);
@@ -574,64 +573,141 @@ class ZapScannerTest {
     @Test
     void configure_login_inside_zap_using_basic_auth_results_in_expected_calls() throws ClientApiException, MalformedURLException {
         /* prepare */
-        String contextId = "context-id";
-        String userId = "user-id";
-        URL targetUrl = URI.create("https:127.0.0.1:8000").toURL();
+        int userId = 123;
+        int contextId = 12345;
+        URL targetUrl = URI.create("https://127.0.0.1:8000").toURL();
         String json = TestFileReader.readTextFromFile("src/test/resources/sechub-config-examples/basic-auth.json");
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
         BasicLoginConfiguration basicLoginConfiguration = sechubWebScanConfig.getLogin().get().getBasic().get();
         String userName = new String(basicLoginConfiguration.getUser());
 
-        ApiResponse response = mock(ApiResponse.class);
+        String zapAuthenticationMethod = ZapAuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod();
+        String zapSessionManagementMethod = ZapSessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod();
 
         when(scanContext.getTargetUrl()).thenReturn(targetUrl);
-        when(scanContext.getAuthenticationType()).thenReturn(AuthenticationType.HTTP_BASIC_AUTHENTICATION);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        when(clientApiFacade.configureAuthenticationMethod(eq(contextId), eq(AuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod()), any()))
-                .thenReturn(response);
-        when(clientApiFacade.setSessionManagementMethod(eq(contextId), eq(SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod()),
-                any())).thenReturn(response);
-        when(clientApiFacade.createNewUser(contextId, userName)).thenReturn(userId);
-        when(clientApiFacade.configureAuthenticationCredentials(eq(contextId), eq(userId), any())).thenReturn(response);
-        when(clientApiFacade.setForcedUser(contextId, userId)).thenReturn(response);
-        when(clientApiFacade.setForcedUserModeEnabled(true)).thenReturn(response);
+        when(clientApiWrapper.setAuthenticationMethod(eq(contextId), eq(zapAuthenticationMethod), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.setSessionManagementMethod(eq(contextId), eq(zapSessionManagementMethod), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.createNewUser(contextId, userName)).thenReturn(userId);
+        when(clientApiWrapper.configureAuthenticationCredentials(eq(contextId), eq(userId), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUser(contextId, userId)).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUserModeEnabled(true)).thenReturn(apiResponse);
 
         /* execute */
-        UserInformation userInformation = scannerToTest.configureLoginInsideZapContext(contextId);
+        UserInformation userInformation = scannerToTest.setupLoginInsideZapContext(contextId);
 
         /* test */
         assertEquals(userName, userInformation.userName());
         assertEquals(userId, userInformation.zapuserId());
 
         verify(scanContext, times(2)).getTargetUrl();
-        verify(scanContext, times(1)).getAuthenticationType();
 
-        verify(clientApiFacade, times(1)).configureAuthenticationMethod(eq(contextId),
-                eq(AuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod()), any());
-        verify(clientApiFacade, times(1)).setSessionManagementMethod(eq(contextId),
-                eq(SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod()), any());
-        verify(clientApiFacade, times(1)).createNewUser(contextId, userName);
-        verify(clientApiFacade, times(1)).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
-        verify(clientApiFacade, times(1)).setForcedUser(contextId, userId);
-        verify(clientApiFacade, times(1)).setForcedUserModeEnabled(true);
+        verify(clientApiWrapper).setAuthenticationMethod(eq(contextId), eq(zapAuthenticationMethod), any());
+        verify(clientApiWrapper).setSessionManagementMethod(eq(contextId), eq(zapSessionManagementMethod), any());
+        verify(clientApiWrapper).createNewUser(contextId, userName);
+        verify(clientApiWrapper).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
+        verify(clientApiWrapper).setForcedUser(contextId, userId);
+        verify(clientApiWrapper).setForcedUserModeEnabled(true);
     }
 
     @Test
-    void generate_report_calls_api_facade_once() throws ClientApiException {
+    void configure_login_inside_zap_using_script_auth_without_script_file_results_in_script_login_not_being_called() throws Exception {
+        /* prepare */
+        int userId = 123;
+        int contextId = 12345;
+        String userName = "user";
+        URL targetUrl = URI.create("https://127.0.0.1:8000").toURL();
+        SecHubWebScanConfiguration sechubWebScanConfig = new SecHubWebScanConfiguration();
+        sechubWebScanConfig.setUrl(targetUrl.toURI());
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        sechubWebScanConfig.setLogin(Optional.of(login));
+
+        String zapAuthenticationMethod = ZapAuthenticationType.MANUAL_AUTHENTICATION.getZapAuthenticationMethod();
+        String zapSessionManagementMethod = ZapSessionManagementType.COOKIE_BASED_SESSION_MANAGEMENT.getZapSessionManagementMethod();
+
+        when(scriptLogin.login(scanContext, clientApiWrapper)).thenReturn("zap-auth-session");
+
+        when(scanContext.getTargetUrl()).thenReturn(targetUrl);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(scanContext.getGroovyScriptLoginFile()).thenReturn(null);
+
+        when(clientApiWrapper.setAuthenticationMethod(eq(contextId), eq(zapAuthenticationMethod), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.setSessionManagementMethod(eq(contextId), eq(zapSessionManagementMethod), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.createNewUser(contextId, userName)).thenReturn(userId);
+        when(clientApiWrapper.configureAuthenticationCredentials(eq(contextId), eq(userId), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUser(contextId, userId)).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUserModeEnabled(true)).thenReturn(apiResponse);
+
+        /* execute */
+        UserInformation userInformation = scannerToTest.setupLoginInsideZapContext(contextId);
+
+        /* test */
+        assertNull(userInformation);
+        verify(scriptLogin, never()).login(scanContext, clientApiWrapper);
+        verify(scanContext).getGroovyScriptLoginFile();
+    }
+
+    @Test
+    void configure_login_inside_zap_using_script_auth_with_existing_script_file_results_in_script_login_being_called() throws Exception {
+        /* prepare */
+        int userId = 123;
+        int contextId = 12345;
+        String userName = "DUMMY";
+        URL targetUrl = URI.create("https://127.0.0.1:8000").toURL();
+        SecHubWebScanConfiguration sechubWebScanConfig = new SecHubWebScanConfiguration();
+        sechubWebScanConfig.setUrl(targetUrl.toURI());
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        sechubWebScanConfig.setLogin(Optional.of(login));
+
+        File scriptFile = new File("src/test/resources/login-script-examples/test-script.groovy");
+
+        when(scriptLogin.login(scanContext, clientApiWrapper)).thenReturn("zap-auth-session");
+
+        when(scanContext.getTargetUrl()).thenReturn(targetUrl);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(scanContext.getGroovyScriptLoginFile()).thenReturn(scriptFile);
+
+        when(clientApiWrapper.setManualAuthenticationMethod(contextId)).thenReturn(apiResponse);
+        when(clientApiWrapper.setCookieBasedSessionManagementMethod(contextId)).thenReturn(apiResponse);
+        when(clientApiWrapper.createNewUser(contextId, userName)).thenReturn(userId);
+        when(clientApiWrapper.configureAuthenticationCredentials(eq(contextId), eq(userId), any())).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUser(contextId, userId)).thenReturn(apiResponse);
+        when(clientApiWrapper.setForcedUserModeEnabled(true)).thenReturn(apiResponse);
+
+        /* execute */
+        UserInformation userInformation = scannerToTest.setupLoginInsideZapContext(contextId);
+
+        /* test */
+        assertEquals(userName, userInformation.userName());
+        assertEquals(userId, userInformation.zapuserId());
+
+        verify(scriptLogin).login(scanContext, clientApiWrapper);
+        verify(scanContext).getGroovyScriptLoginFile();
+
+        verify(clientApiWrapper).setManualAuthenticationMethod(contextId);
+        verify(clientApiWrapper).setCookieBasedSessionManagementMethod(contextId);
+        verify(clientApiWrapper).createNewUser(contextId, userName);
+        verify(clientApiWrapper).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
+        verify(clientApiWrapper).setForcedUser(contextId, userId);
+        verify(clientApiWrapper).setForcedUserModeEnabled(true);
+    }
+
+    @Test
+    void generate_report_calls_api_support_once() throws ClientApiException {
         /* prepare */
         when(scanContext.getReportFile())
                 .thenReturn(Paths.get("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json"));
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.generateReport(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any())).thenReturn(response);
+
+        when(clientApiWrapper.generateReport(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.generateZapReport();
 
         /* test */
-        verify(clientApiFacade, times(1)).generateReport(any(), any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any());
+        verify(clientApiWrapper).generateReport(any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any());
     }
 
     @Test
@@ -639,15 +715,14 @@ class ZapScannerTest {
         /* prepare */
         SecHubWebScanConfiguration sechubwebScanConfig = new SecHubWebScanConfiguration();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubwebScanConfig);
-
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.removeReplacerRule(any())).thenReturn(response);
+        when(clientApiWrapper.removeReplacerRule(any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.cleanUp();
 
         /* test */
-        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @ParameterizedTest
@@ -657,16 +732,16 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.removeReplacerRule(any())).thenReturn(response);
+        when(clientApiWrapper.removeReplacerRule(any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.cleanUp();
 
         /* test */
         int times = sechubWebScanConfig.getHeaders().get().size();
-        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
-        verify(clientApiFacade, times(times + 1)).removeReplacerRule(any());
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiWrapper, times(times + 1)).removeReplacerRule(any());
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @ParameterizedTest
@@ -676,8 +751,7 @@ class ZapScannerTest {
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON).getWebScan().get();
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
 
-        ApiResponse response = mock(ApiResponse.class);
-        when(clientApiFacade.removeReplacerRule(any())).thenReturn(response);
+        when(clientApiWrapper.removeReplacerRule(any())).thenReturn(apiResponse);
 
         /* execute */
         scannerToTest.cleanUp();
@@ -690,20 +764,19 @@ class ZapScannerTest {
                 times += header.getOnlyForUrls().get().size() - 1;
             }
         }
-        verify(clientApiFacade, times(1)).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
-        verify(clientApiFacade, times(times + 1)).removeReplacerRule(any());
+        verify(clientApiWrapper).removeReplacerRule(ZapScanner.X_SECHUB_DAST_HEADER_NAME);
+        verify(clientApiWrapper, times(times + 1)).removeReplacerRule(any());
+        verify(scriptLogin).cleanUpScriptLoginData(scanContext.getTargetUrlAsString(), clientApiWrapper);
     }
 
     @Test
-    void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
+    void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code()
+            throws ClientApiException {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
-
-        when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
+        when(clientApiWrapper.stopAjaxSpider()).thenReturn(null);
 
         /* execute */
         ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> {
@@ -713,9 +786,7 @@ class ZapScannerTest {
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(clientApiFacade, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
@@ -723,34 +794,25 @@ class ZapScannerTest {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
-
-        when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
-        when(clientApiFacade.getAjaxSpiderStatus()).thenReturn("stopped");
+        when(clientApiWrapper.stopAjaxSpider()).thenReturn(null);
+        when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
 
         /* execute */
         scannerToTest.waitForAjaxSpiderResults();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(clientApiFacade, atLeast(1)).getAjaxSpiderStatus();
-        verify(clientApiFacade, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper, times(2)).getAjaxSpiderStatus();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
     void wait_for_spider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        String scanId = "12345";
-
+        int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
-
-        when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
+        when(clientApiWrapper.stopSpiderScan(scanId)).thenReturn(null);
 
         /* execute */
         ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> {
@@ -760,63 +822,28 @@ class ZapScannerTest {
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
+        verify(clientApiWrapper).stopSpiderScan(scanId);
     }
 
     @Test
-    void wait_for_spider_scan_ended_results_in_expected_calls() throws ClientApiException {
-        /* prepare */
-        String scanId = "12345";
-
-        when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
-
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
-        ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
-        when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
-
-        when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
-        when(clientApiFacade.getSpiderStatusForScan(scanId)).thenReturn(42);
-        when(clientApiFacade.logFullSpiderResults(scanId)).thenReturn(0L);
-
-        /* execute */
-        scannerToTest.waitForSpiderResults(scanId);
-
-        /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(scanContext, times(1)).getZapProductMessageHelper();
-        verify(clientApiFacade, atLeast(1)).getSpiderStatusForScan(scanId);
-        verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
-        verify(clientApiFacade, times(1)).logFullSpiderResults(scanId);
-    }
-
-    @Test
-    void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
+    void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code()
+            throws ClientApiException {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(false);
-        when(scanContext.isAjaxSpiderEnabled()).thenReturn(false);
 
-        when(clientApiFacade.getNumberOfPassiveScannerRecordsToScan()).thenReturn(12);
+        when(clientApiWrapper.getNumberOfPassiveScannerRecordsToScan()).thenReturn(12);
 
         /* execute */
         ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> {
-            scannerToTest.passiveScan();
+            scannerToTest.runAndWaitForPassiveScan();
         });
 
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(scanContext, times(1)).isAjaxSpiderEnabled();
-        verify(clientApiFacade, atLeast(1)).getNumberOfPassiveScannerRecordsToScan();
+        verify(clientApiWrapper, atLeast(1)).getNumberOfPassiveScannerRecordsToScan();
     }
 
     @Test
@@ -824,32 +851,25 @@ class ZapScannerTest {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(20000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(false);
-        when(scanContext.isAjaxSpiderEnabled()).thenReturn(false);
 
-        when(clientApiFacade.getNumberOfPassiveScannerRecordsToScan()).thenReturn(0);
+        when(clientApiWrapper.getNumberOfPassiveScannerRecordsToScan()).thenReturn(0);
 
         /* execute */
-        scannerToTest.passiveScan();
+        scannerToTest.runAndWaitForPassiveScan();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(scanContext, times(1)).isAjaxSpiderEnabled();
-        verify(clientApiFacade, times(1)).getNumberOfPassiveScannerRecordsToScan();
+        verify(clientApiWrapper).getNumberOfPassiveScannerRecordsToScan();
     }
 
     @Test
     void wait_for_activeScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
-        String scanId = "12345";
-
+        int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
-        doCallRealMethod().when(zapPDSEventHandler).cancelScan(contextName);
+        doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
 
-        when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(42);
-        when(clientApiFacade.stopActiveScan(scanId)).thenReturn(null);
+        when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(42);
+        when(clientApiWrapper.stopActiveScan(scanId)).thenReturn(null);
 
         /* execute */
         ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> {
@@ -859,26 +879,25 @@ class ZapScannerTest {
         /* test */
         assertEquals(ZapWrapperExitCode.SCAN_JOB_CANCELLED, exception.getExitCode());
         verify(zapPDSEventHandler, times(2)).isScanCancelled();
-        verify(clientApiFacade, never()).getActiveScannerStatusForScan(scanId);
-        verify(clientApiFacade, times(1)).stopActiveScan(scanId);
+        verify(clientApiWrapper, never()).getActiveScannerStatusForScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
     }
 
     @Test
     void wait_for_activeScan_scan_is_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        String scanId = "12345";
-
+        int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(100);
-        when(clientApiFacade.stopActiveScan(scanId)).thenReturn(null);
+        when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(100);
+        when(clientApiWrapper.stopActiveScan(scanId)).thenReturn(null);
 
         /* execute */
         scannerToTest.waitForActiveScanResults(scanId);
 
         /* test */
-        verify(clientApiFacade, atLeast(1)).getActiveScannerStatusForScan(scanId);
-        verify(clientApiFacade, times(1)).stopActiveScan(scanId);
+        verify(clientApiWrapper, atLeast(1)).getActiveScannerStatusForScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
     }
 
     @Test
@@ -886,73 +905,60 @@ class ZapScannerTest {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
-
-        when(clientApiFacade.stopAjaxSpider()).thenReturn(null);
-        when(clientApiFacade.getAjaxSpiderStatus()).thenReturn("stopped");
+        when(clientApiWrapper.stopAjaxSpider()).thenReturn(null);
+        when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
 
         /* execute */
-        scannerToTest.runAjaxSpider();
+        scannerToTest.runAndWaitAjaxSpider();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(clientApiFacade, atLeast(1)).getAjaxSpiderStatus();
-        verify(clientApiFacade, times(1)).stopAjaxSpider();
+        verify(clientApiWrapper, times(2)).getAjaxSpiderStatus();
+        verify(clientApiWrapper).stopAjaxSpider();
     }
 
     @Test
     void run_spider_scan_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        String scanId = "12345";
-
+        int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        when(scanContext.getMaxScanDurationInMilliSeconds()).thenReturn(1000L);
-        when(scanContext.isActiveScanEnabled()).thenReturn(true);
         ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
         when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
 
-        when(clientApiFacade.stopSpiderScan(scanId)).thenReturn(null);
-        when(clientApiFacade.getSpiderStatusForScan(scanId)).thenReturn(42);
-        when(clientApiFacade.logFullSpiderResults(scanId)).thenReturn(0L);
-        when(clientApiFacade.startSpiderScan(any(), any(), any(), any(), any())).thenReturn(scanId);
+        when(clientApiWrapper.stopSpiderScan(scanId)).thenReturn(null);
+        when(clientApiWrapper.getSpiderStatusForScan(scanId)).thenReturn(42).thenReturn(100);
+        when(clientApiWrapper.logFullSpiderResults(scanId)).thenReturn(0L);
+        when(clientApiWrapper.startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean())).thenReturn(scanId);
 
         /* execute */
-        scannerToTest.runSpider();
+        scannerToTest.runAndWaitForSpider();
 
         /* test */
-        verify(scanContext, times(1)).getMaxScanDurationInMilliSeconds();
-        verify(scanContext, times(1)).isActiveScanEnabled();
-        verify(scanContext, times(1)).getZapProductMessageHelper();
-        verify(clientApiFacade, atLeast(1)).getSpiderStatusForScan(scanId);
-        verify(clientApiFacade, times(1)).stopSpiderScan(scanId);
-        verify(clientApiFacade, times(1)).logFullSpiderResults(scanId);
-        verify(clientApiFacade, times(1)).startSpiderScan(any(), any(), any(), any(), any());
+        verify(scanContext).getZapProductMessageHelper();
+        verify(clientApiWrapper, times(2)).getSpiderStatusForScan(scanId);
+        verify(clientApiWrapper).stopSpiderScan(scanId);
+        verify(clientApiWrapper).logFullSpiderResults(scanId);
+        verify(clientApiWrapper).startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean());
     }
 
     @Test
     void run_activeScan_scan_is_ended_results_in_expected_calls() throws ClientApiException {
         /* prepare */
-        String scanId = "12345";
-
+        int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        scannerToTest.remainingScanTime = 100L;
-
-        when(clientApiFacade.getActiveScannerStatusForScan(scanId)).thenReturn(100);
-        when(clientApiFacade.stopActiveScan(scanId)).thenReturn(null);
-        when(clientApiFacade.startActiveScan(any(), any(), any(), any(), any(), any())).thenReturn(scanId);
-        when(clientApiFacade.atLeastOneURLDetected()).thenReturn(true);
+        when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(100);
+        when(clientApiWrapper.stopActiveScan(scanId)).thenReturn(null);
+        when(clientApiWrapper.startActiveScan(any(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt())).thenReturn(scanId);
+        when(clientApiWrapper.atLeastOneURLDetected()).thenReturn(true);
 
         /* execute */
-        scannerToTest.runActiveScan();
+        scannerToTest.runAndWaitActiveScan(scanId);
 
         /* test */
-        verify(clientApiFacade, atLeast(1)).getActiveScannerStatusForScan(scanId);
-        verify(clientApiFacade, times(1)).stopActiveScan(scanId);
-        verify(clientApiFacade, times(1)).startActiveScan(any(), any(), any(), any(), any(), any());
+        verify(clientApiWrapper).getActiveScannerStatusForScan(scanId);
+        verify(clientApiWrapper).stopActiveScan(scanId);
+        verify(clientApiWrapper).startActiveScan(any(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt());
     }
 
     static Stream<Arguments> headerPartWithoutOnlyForUrlsTestNamedArguments() {

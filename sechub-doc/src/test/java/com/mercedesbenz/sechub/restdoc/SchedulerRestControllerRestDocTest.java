@@ -3,17 +3,17 @@ package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
-import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
@@ -42,57 +42,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
-import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
-import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
-import com.mercedesbenz.sechub.commons.model.login.ActionType;
-import com.mercedesbenz.sechub.commons.model.login.FormLoginConfiguration;
-import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
-import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
-import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.*;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.docgen.util.RestDocTestFileSupport;
-import com.mercedesbenz.sechub.domain.schedule.ScheduleJobStatus;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerApproveJobService;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerBinariesUploadService;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerCreateJobService;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerGetJobStatusService;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerResult;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerSourcecodeUploadService;
+import com.mercedesbenz.sechub.domain.schedule.*;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
-import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
+import com.mercedesbenz.sechub.domain.schedule.job.*;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.*;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -755,7 +722,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    					webConfig().
 	    						addURI("https://localhost/mywebapp").
 	    						login("https://localhost/mywebapp/login").
-	    						  totp("example-seed", 30, TOTPHashAlgorithm.HMAC_SHA1, 6).
+	    						  totp("example-seed", 30, TOTPHashAlgorithm.HMAC_SHA1, 6, EncodingType.BASE32).
 	    						  formScripted("username1","password1").
 	    						    createPage().
     	    						    createAction().
@@ -817,6 +784,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_VALIDITY_IN_SECONDS).description("The time in seconds the generated TOTP is valid. In most cases nothing is specified and the default of '"+WebLoginTOTPConfiguration.DEFAULT_VALIDITY_IN_SECONDS+"' seconds is used.").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_TOKEN_LENGTH).description("The length of the generated TOTP. In most cases nothing is specified and the default length '"+WebLoginTOTPConfiguration.DEFAULT_TOKEN_LENGTH+"' is used.").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_HASH_ALGORITHM).description("The hash algorithm to generate the TOTP. In most cases nothing is specified and the  default hash algorithm '"+WebLoginTOTPConfiguration.DEFAULT_HASH_ALGORITHM+"' is used. Currently available values are: 'HMAC_SHA1', 'HMAC_SHA256', 'HMAC_SHA512'").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_TOTP+"."+WebLoginTOTPConfiguration.PROPERTY_ENCODING_TYPE).description("The encoding type of the 'seed'. The default value is '"+WebLoginTOTPConfiguration.DEFAULT_ENCODING_TYPE+"'. Currently available values are: 'BASE64', 'BASE32', 'HEX', 'PLAIN', 'AUTODETECT'").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT).description("script").optional(),

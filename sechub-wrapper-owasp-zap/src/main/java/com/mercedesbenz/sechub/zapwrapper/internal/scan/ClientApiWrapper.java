@@ -1,31 +1,31 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 
+import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zaproxy.clientapi.core.ApiResponse;
-import org.zaproxy.clientapi.core.ApiResponseElement;
-import org.zaproxy.clientapi.core.ApiResponseList;
-import org.zaproxy.clientapi.core.ApiResponseSet;
-import org.zaproxy.clientapi.core.ClientApi;
-import org.zaproxy.clientapi.core.ClientApiException;
+import org.zaproxy.clientapi.core.*;
 
-public class ClientApiFacade {
+import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
+import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
+
+public class ClientApiWrapper {
 
     private static final String URL_KEY = "url";
     private static final String STATUS_CODE_KEY = "statusCode";
     private static final String STATUS_REASON_KEY = "statusReason";
     private static final String METHOD_KEY = "method";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientApiFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientApiWrapper.class);
 
     private ClientApi clientApi;
 
-    public ClientApiFacade(ClientApi clientApi) {
+    public ClientApiWrapper(ClientApi clientApi) {
         this.clientApi = clientApi;
     }
 
@@ -34,13 +34,13 @@ public class ClientApiFacade {
      *
      * @param contextName context name that will be created inside the current ZAP
      *                    session
-     * @return api response of ZAP contextId returned by ZAP
+     * @return contextId returned by ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      *                            when anything goes wrong communicating with ZAP
      */
-    public String createNewContext(String contextName) throws ClientApiException {
+    public int createNewContext(String contextName) throws ClientApiException {
         ApiResponseElement createContextResponse = ((ApiResponseElement) clientApi.context.newContext(contextName));
-        return getIdOfApiResponseElement(createContextResponse);
+        return Integer.parseInt(getIdOfApiResponseElement(createContextResponse));
     }
 
     /**
@@ -53,20 +53,22 @@ public class ClientApiFacade {
      *
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse createNewSession(String contextName, String overwrite) throws ClientApiException {
-        return clientApi.core.newSession(contextName, overwrite);
+    public ApiResponse createNewSession(String contextName, boolean overwrite) throws ClientApiException {
+        LOG.info("Creating new session: {} inside the Zap", contextName);
+        // to ensure parts from previous scan are deleted
+        return clientApi.core.newSession(contextName, Boolean.toString(overwrite));
     }
 
     /**
-     * Set maximum alerts a rule can raise.
+     * Set maximum alerts a rule can raise to unlimited.
      *
-     * @param maximum specifies the maximum number of alerts each rule can raise.
-     *                Setting "0" means unlimited amount of alerts for each rule.
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureMaximumAlertsForEachRule(String maximum) throws ClientApiException {
-        return clientApi.core.setOptionMaximumAlertInstances(maximum);
+    public ApiResponse setMaximumAlertsForEachRuleToUnlimited() throws ClientApiException {
+        LOG.info("Setting default maximum number of alerts for each rule.");
+        // setting this value to zero means unlimited
+        return clientApi.core.setOptionMaximumAlertInstances("0");
     }
 
     /**
@@ -76,19 +78,23 @@ public class ClientApiFacade {
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
     public ApiResponse enableAllPassiveScannerRules() throws ClientApiException {
+        LOG.info("Enable all passive scan rules before configuration begins.");
+        // enable all passive scanner rules by default
         return clientApi.pscan.enableAllScanners();
     }
 
     /**
-     * Enable all active rules for the given policy.
+     * Enable all active rules for the default policy.
      *
-     * @param policy specifies the policy that will be configured. Configuring
-     *               <code>null</code> configures the default policy.
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse enableAllActiveScannerRulesForPolicy(String policy) throws ClientApiException {
+    public ApiResponse enableAllActiveScannerRulesForDefaultPolicy() throws ClientApiException {
+        LOG.info("Enable all active scan rules for default policy before configuration begins.");
+        // enable all passive scanner rules by default
+        // null specifies the default scan policy
         return clientApi.ascan.enableAllScanners(null);
+
     }
 
     /**
@@ -98,8 +104,34 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureAjaxSpiderBrowserId(String browserId) throws ClientApiException {
+    public ApiResponse setAjaxSpiderBrowserId(String browserId) throws ClientApiException {
+        LOG.info("Set browser for ajaxSpider: {}.", browserId);
         return clientApi.ajaxSpider.setOptionBrowserId(browserId);
+    }
+
+    /**
+     * Define the max depth of directories after the ajax spider will stop the
+     * recursion.
+     *
+     * @param maxDepth
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse setAjaxSpiderMaxDepth(int maxDepth) throws ClientApiException {
+        LOG.info("Set max directory depth of ajaxSpider to: {}", maxDepth);
+        return clientApi.spider.setOptionMaxDepth(maxDepth);
+    }
+
+    /**
+     * Define the max depth of directories after the spider will stop the recursion.
+     *
+     * @param maxDepth
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse setSpiderMaxDepth(int maxDepth) throws ClientApiException {
+        LOG.info("Set max directory depth of spider to: {}", maxDepth);
+        return clientApi.spider.setOptionMaxDepth(maxDepth);
     }
 
     /**
@@ -110,6 +142,7 @@ public class ClientApiFacade {
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
     public ApiResponse disablePassiveScannerRule(String ruleId) throws ClientApiException {
+        LOG.info("Deactivate passive scanner rule: {} ", ruleId);
         return clientApi.pscan.disableScanners(ruleId);
     }
 
@@ -122,23 +155,22 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse disableActiveScannerRuleForPolicy(String ruleId, String policy) throws ClientApiException {
+    public ApiResponse disableActiveScannerRuleForDefaultPolicy(String ruleId) throws ClientApiException {
+        LOG.info("Deactivate active scanner rule: {} ", ruleId);
+        // null specifies the default scan policy
         return clientApi.ascan.disableScanners(ruleId, null);
     }
 
     /**
-     * Set HTTP proxy with the given parameters.
+     * Configure http proxy inside ZAP.
      *
-     * @param host     hostname of the proxy
-     * @param port     port of the proxy
-     * @param realm    realm of the proxy
-     * @param username username to access the proxy
-     * @param password password to access the proxy
+     * @param proxyInformation
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureHttpProxy(String host, String port, String realm, String username, String password) throws ClientApiException {
-        return clientApi.network.setHttpProxy(host, port, realm, username, password);
+    public ApiResponse configureHttpProxy(ProxyInformation proxyInformation) throws ClientApiException {
+        return clientApi.network.setHttpProxy(proxyInformation.getHost(), Integer.toString(proxyInformation.getPort()), proxyInformation.getRealm(),
+                proxyInformation.getUsername(), proxyInformation.getPassword());
     }
 
     /**
@@ -149,8 +181,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse setHttpProxyEnabled(String enabled) throws ClientApiException {
-        return clientApi.network.setHttpProxyEnabled(enabled);
+    public ApiResponse setHttpProxyEnabled(boolean enabled) throws ClientApiException {
+        return clientApi.network.setHttpProxyEnabled(Boolean.toString(enabled));
     }
 
     /**
@@ -161,8 +193,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse setHttpProxyAuthEnabled(String enabled) throws ClientApiException {
-        return clientApi.network.setHttpProxyAuthEnabled(enabled);
+    public ApiResponse setHttpProxyAuthEnabled(boolean enabled) throws ClientApiException {
+        return clientApi.network.setHttpProxyAuthEnabled(Boolean.toString(enabled));
     }
 
     /**
@@ -185,16 +217,18 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse addReplacerRule(String description, String enabled, String matchtype, String matchregex, String matchstring, String replacement,
+    public ApiResponse addReplacerRule(String description, boolean enabled, String matchtype, boolean matchregex, String matchstring, String replacement,
             String initiators, String url) throws ClientApiException {
         try {
-            return clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+            return clientApi.replacer.addRule(description, Boolean.toString(enabled), matchtype, Boolean.toString(matchregex), matchstring, replacement,
+                    initiators, url);
         } catch (ClientApiException e) {
             String message = e.getMessage();
             if ("already exists".equalsIgnoreCase(message)) {
                 clientApi.replacer.removeRule(description);
             }
-            return clientApi.replacer.addRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
+            return clientApi.replacer.addRule(description, Boolean.toString(enabled), matchtype, Boolean.toString(matchregex), matchstring, replacement,
+                    initiators, url);
         }
     }
 
@@ -234,10 +268,11 @@ public class ClientApiFacade {
      * @return api response of ZAP ApiResponse of ZAP or <code>null</code> when URL
      *         was not accessible.
      */
-    public ApiResponse accessUrlViaZap(String url, String followRedirects) {
+    public ApiResponse accessUrlViaZap(String url, boolean followRedirects) {
         ApiResponse response = null;
         try {
-            response = clientApi.core.accessUrl(url, followRedirects);
+            LOG.info("Trying to access URL: {} via ZAP to make sure it is added to the sites tree with following redirects set to: {}.", url, followRedirects);
+            response = clientApi.core.accessUrl(url, Boolean.toString(followRedirects));
         } catch (ClientApiException e) {
             LOG.error("While trying to access URL {} got the error: {}", url, e.getMessage());
         }
@@ -255,8 +290,9 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse importOpenApiFile(String openApiFile, String url, String contextId) throws ClientApiException {
-        return clientApi.openapi.importFile(openApiFile, url, contextId);
+    public ApiResponse importOpenApiFile(String openApiFile, String url, int contextId) throws ClientApiException {
+        LOG.info("Loading openAPI file: {}", openApiFile.toString());
+        return clientApi.openapi.importFile(openApiFile, url, Integer.toString(contextId));
     }
 
     /**
@@ -272,8 +308,9 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse importOpenApiDefintionFromUrl(URL apiDefinitionUrl, String targetUrl, String contextId) throws ClientApiException {
-        return clientApi.openapi.importUrl(apiDefinitionUrl.toString(), targetUrl, contextId);
+    public ApiResponse importOpenApiDefintionFromUrl(URL apiDefinitionUrl, String targetUrl, int contextId) throws ClientApiException {
+        LOG.info("Loading openAPI definition from : {}", apiDefinitionUrl.toString());
+        return clientApi.openapi.importUrl(apiDefinitionUrl.toString(), targetUrl, Integer.toString(contextId));
     }
 
     /**
@@ -289,6 +326,7 @@ public class ClientApiFacade {
         // add the client certificate to the list ZAP keeps inside the network add-on
         // the third parameter here always "0" is the index where to import inside the
         // ZAP internal list
+        LOG.info("Loading client certificate file: {}", filepath);
         return clientApi.network.addPkcs12ClientCertificate(filepath, password, "0");
     }
 
@@ -299,10 +337,14 @@ public class ClientApiFacade {
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
     public ApiResponse enableClientCertificate() throws ClientApiException {
+        LOG.info("Enable client certificate.");
         return clientApi.network.setUseClientCertificate("true");
     }
 
     public ApiResponse disableClientCertificate() throws ClientApiException {
+        // disable client certificate here, the imported client certificate will be
+        // removed on ZAP shutdown automatically anyway
+        LOG.info("Disable client certificate if one was used for the scan.");
         return clientApi.network.setUseClientCertificate("false");
     }
 
@@ -333,12 +375,15 @@ public class ClientApiFacade {
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
     public ApiResponse removeReplacerRule(String description) throws ClientApiException {
+        LOG.info("Remove replacer rule: {} if it exists.", description);
         return clientApi.replacer.removeRule(description);
     }
 
     public ApiResponse generateReport(String title, String template, String theme, String description, String contexts, String sites, String sections,
             String includedconfidences, String includedrisks, String reportfilename, String reportfilenamepattern, String reportdir, String display)
             throws ClientApiException {
+        File reportFile = new File(reportdir, reportfilename);
+        LOG.info("Writing scan report to: {}", reportFile.getAbsolutePath());
         return clientApi.reports.generate(title, template, theme, description, contexts, sites, sections, includedconfidences, includedrisks, reportfilename,
                 reportfilenamepattern, reportdir, display);
     }
@@ -371,8 +416,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse stopSpiderScan(String scanId) throws ClientApiException {
-        return clientApi.spider.stop(scanId);
+    public ApiResponse stopSpiderScan(int scanId) throws ClientApiException {
+        return clientApi.spider.stop(Integer.toString(scanId));
     }
 
     /**
@@ -383,9 +428,9 @@ public class ClientApiFacade {
      * @return the amount of spider results logged
      * @throws ClientApiException
      */
-    public long logFullSpiderResults(String scanId) throws ClientApiException {
+    public long logFullSpiderResults(int scanId) throws ClientApiException {
         int numberOfSpiderResults = 0;
-        ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(scanId);
+        ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(Integer.toString(scanId));
         for (ApiResponse resultItem : results.getItems()) {
             ApiResponseList elementList = (ApiResponseList) resultItem;
 
@@ -423,8 +468,8 @@ public class ClientApiFacade {
      *         (percentage of scan completion)
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public int getSpiderStatusForScan(String scanId) throws ClientApiException {
-        ApiResponseElement status = (ApiResponseElement) clientApi.spider.status(scanId);
+    public int getSpiderStatusForScan(int scanId) throws ClientApiException {
+        ApiResponseElement status = (ApiResponseElement) clientApi.spider.status(Integer.toString(scanId));
         return Integer.parseInt(status.getValue());
     }
 
@@ -447,8 +492,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse stopActiveScan(String scanId) throws ClientApiException {
-        return clientApi.ascan.stop(scanId);
+    public ApiResponse stopActiveScan(int scanId) throws ClientApiException {
+        return clientApi.ascan.stop(Integer.toString(scanId));
     }
 
     /**
@@ -459,8 +504,8 @@ public class ClientApiFacade {
      *         (percentage of scan completion)
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public int getActiveScannerStatusForScan(String scanId) throws ClientApiException {
-        ApiResponseElement status = (ApiResponseElement) clientApi.ascan.status(scanId);
+    public int getActiveScannerStatusForScan(int scanId) throws ClientApiException {
+        ApiResponseElement status = (ApiResponseElement) clientApi.ascan.status(Integer.toString(scanId));
         return Integer.parseInt(status.getValue());
     }
 
@@ -476,10 +521,10 @@ public class ClientApiFacade {
      * @return api response of ZAP the ID of the started spider scan
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public String startSpiderScan(String targetUrlAsString, String maxChildren, String recurse, String contextName, String subTreeOnly)
+    public int startSpiderScan(String targetUrlAsString, String maxChildren, boolean recurse, String contextName, boolean subTreeOnly)
             throws ClientApiException {
-        ApiResponse response = clientApi.spider.scan(targetUrlAsString, maxChildren, recurse, contextName, subTreeOnly);
-        return getIdOfApiResponseElement((ApiResponseElement) response);
+        ApiResponse response = clientApi.spider.scan(targetUrlAsString, maxChildren, Boolean.toString(recurse), contextName, Boolean.toString(subTreeOnly));
+        return Integer.parseInt(getIdOfApiResponseElement((ApiResponseElement) response));
     }
 
     /**
@@ -493,8 +538,8 @@ public class ClientApiFacade {
      * @return api response of ZAP the response of the ZAP API call
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse startAjaxSpiderScan(String targetUrlAsString, String inScope, String contextName, String subTreeOnly) throws ClientApiException {
-        return clientApi.ajaxSpider.scan(targetUrlAsString, inScope, contextName, subTreeOnly);
+    public ApiResponse startAjaxSpiderScan(String targetUrlAsString, boolean inScope, String contextName, boolean subTreeOnly) throws ClientApiException {
+        return clientApi.ajaxSpider.scan(targetUrlAsString, Boolean.toString(inScope), contextName, Boolean.toString(subTreeOnly));
     }
 
     /**
@@ -509,13 +554,15 @@ public class ClientApiFacade {
      *                          <code>null</code> means default
      * @param method            method to use
      * @param postData          explicit post data
+     * @param contextId         the contextId of the context to use for the scan
      * @return api response of ZAP the ID of the started active scan
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public String startActiveScan(String targetUrlAsString, String recurse, String inScopeOnly, String scanPolicyName, String method, String postData)
-            throws ClientApiException {
-        ApiResponse response = clientApi.ascan.scan(targetUrlAsString, recurse, inScopeOnly, scanPolicyName, method, postData);
-        return getIdOfApiResponseElement((ApiResponseElement) response);
+    public int startActiveScan(String targetUrlAsString, boolean recurse, boolean inScopeOnly, String scanPolicyName, String method, String postData,
+            int contextId) throws ClientApiException {
+        ApiResponse response = clientApi.ascan.scan(targetUrlAsString, Boolean.toString(recurse), Boolean.toString(inScopeOnly), scanPolicyName, method,
+                postData, contextId);
+        return Integer.parseInt(getIdOfApiResponseElement((ApiResponseElement) response));
     }
 
     /**
@@ -527,14 +574,15 @@ public class ClientApiFacade {
      * @param maxchildren limit the number of children scanned
      * @param recurse     "true"/"false" to prevent the spider from seeding
      *                    recursively
-     * @param subtreeonly restrict the spider under a site's subtree
+     * @param subtreeOnly restrict the spider under a site's subtree
      * @return api response of ZAP the ID of the started spider scan
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public String startSpiderScanAsUser(String contextId, String userId, String url, String maxchildren, String recurse, String subtreeonly)
+    public int startSpiderScanAsUser(int contextId, int userId, String url, String maxchildren, boolean recurse, boolean subtreeOnly)
             throws ClientApiException {
-        ApiResponse response = clientApi.spider.scanAsUser(contextId, userId, url, maxchildren, recurse, subtreeonly);
-        return getIdOfApiResponseElement((ApiResponseElement) response);
+        ApiResponse response = clientApi.spider.scanAsUser(Integer.toString(contextId), Integer.toString(userId), url, maxchildren, Boolean.toString(recurse),
+                Boolean.toString(subtreeOnly));
+        return Integer.parseInt(getIdOfApiResponseElement((ApiResponseElement) response));
     }
 
     /**
@@ -547,8 +595,8 @@ public class ClientApiFacade {
      * @return api response of ZAP the response of the ZAP API call
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse startAjaxSpiderScanAsUser(String contextname, String username, String url, String subtreeonly) throws ClientApiException {
-        return clientApi.ajaxSpider.scanAsUser(contextname, username, url, subtreeonly);
+    public ApiResponse startAjaxSpiderScanAsUser(String contextname, String username, String url, boolean subtreeonly) throws ClientApiException {
+        return clientApi.ajaxSpider.scanAsUser(contextname, username, url, Boolean.toString(subtreeonly));
     }
 
     /**
@@ -566,10 +614,11 @@ public class ClientApiFacade {
      * @return api response of ZAP the ID of the started active scan
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public String startActiveScanAsUser(String url, String contextId, String userId, String recurse, String scanpolicyname, String method, String postdata)
+    public int startActiveScanAsUser(String url, int contextId, int userId, boolean recurse, String scanpolicyname, String method, String postdata)
             throws ClientApiException {
-        ApiResponse response = clientApi.ascan.scanAsUser(url, contextId, userId, recurse, scanpolicyname, method, postdata);
-        return getIdOfApiResponseElement((ApiResponseElement) response);
+        ApiResponse response = clientApi.ascan.scanAsUser(url, Integer.toString(contextId), Integer.toString(userId), Boolean.toString(recurse), scanpolicyname,
+                method, postdata);
+        return Integer.parseInt(getIdOfApiResponseElement((ApiResponseElement) response));
     }
 
     /**
@@ -582,8 +631,21 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureAuthenticationMethod(String contextId, String authMethodName, String authMethodConfigParams) throws ClientApiException {
-        return clientApi.authentication.setAuthenticationMethod(contextId, authMethodName, authMethodConfigParams);
+    public ApiResponse setAuthenticationMethod(int contextId, String authMethodName, String authMethodConfigParams) throws ClientApiException {
+        return clientApi.authentication.setAuthenticationMethod(Integer.toString(contextId), authMethodName, authMethodConfigParams);
+    }
+
+    /**
+     * Configure manual authentication method for the given context.
+     *
+     * @param contextId Id of the context to use
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setManualAuthenticationMethod(int contextId) throws ClientApiException {
+        String authMethodConfigParams = null;
+        String authMethodName = ZapAuthenticationType.MANUAL_AUTHENTICATION.getZapAuthenticationMethod();
+        return clientApi.authentication.setAuthenticationMethod(Integer.toString(contextId), authMethodName, authMethodConfigParams);
     }
 
     /**
@@ -596,8 +658,21 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse setSessionManagementMethod(String contextId, String methodName, String methodconfigparams) throws ClientApiException {
-        return clientApi.sessionManagement.setSessionManagementMethod(contextId, methodName, methodconfigparams);
+    public ApiResponse setSessionManagementMethod(int contextId, String methodName, String methodconfigparams) throws ClientApiException {
+        return clientApi.sessionManagement.setSessionManagementMethod(Integer.toString(contextId), methodName, methodconfigparams);
+    }
+
+    /**
+     * Set cookie based session management method for the given context.
+     *
+     * @param contextId Id of the context to use
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setCookieBasedSessionManagementMethod(int contextId) throws ClientApiException {
+        String sessionMethodconfigparams = null;
+        String sessionMethodName = ZapSessionManagementType.COOKIE_BASED_SESSION_MANAGEMENT.getZapSessionManagementMethod();
+        return setSessionManagementMethod(contextId, sessionMethodName, sessionMethodconfigparams);
     }
 
     /**
@@ -608,9 +683,9 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public String createNewUser(String contextId, String username) throws ClientApiException {
-        ApiResponseElement creatUserResponse = ((ApiResponseElement) clientApi.users.newUser(contextId, username));
-        return getIdOfApiResponseElement(creatUserResponse);
+    public int createNewUser(int contextId, String username) throws ClientApiException {
+        ApiResponseElement creatUserResponse = ((ApiResponseElement) clientApi.users.newUser(Integer.toString(contextId), username));
+        return Integer.parseInt(getIdOfApiResponseElement(creatUserResponse));
     }
 
     /**
@@ -624,8 +699,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse configureAuthenticationCredentials(String contextId, String userId, String authCredentialsConfigParams) throws ClientApiException {
-        return clientApi.users.setAuthenticationCredentials(contextId, userId, authCredentialsConfigParams);
+    public ApiResponse configureAuthenticationCredentials(int contextId, int userId, String authCredentialsConfigParams) throws ClientApiException {
+        return clientApi.users.setAuthenticationCredentials(Integer.toString(contextId), Integer.toString(userId), authCredentialsConfigParams);
     }
 
     /**
@@ -637,8 +712,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse setUserEnabled(String contextId, String userId, String enabled) throws ClientApiException {
-        return clientApi.users.setUserEnabled(contextId, userId, enabled);
+    public ApiResponse setUserEnabled(int contextId, int userId, boolean enabled) throws ClientApiException {
+        return clientApi.users.setUserEnabled(Integer.toString(contextId), Integer.toString(userId), Boolean.toString(enabled));
     }
 
     /**
@@ -649,8 +724,8 @@ public class ClientApiFacade {
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse setForcedUser(String contextId, String userId) throws ClientApiException {
-        return clientApi.forcedUser.setForcedUser(contextId, userId);
+    public ApiResponse setForcedUser(int contextId, int userId) throws ClientApiException {
+        return clientApi.forcedUser.setForcedUser(Integer.toString(contextId), Integer.toString(userId));
     }
 
     /**
@@ -662,6 +737,94 @@ public class ClientApiFacade {
      */
     public ApiResponse setForcedUserModeEnabled(boolean enabled) throws ClientApiException {
         return clientApi.forcedUser.setForcedUserModeEnabled(enabled);
+    }
+
+    /**
+     * Add a new HTTP session token to ZAP with the given token identifier for the
+     * specified URL. The token identifier can be used to access the session later
+     * on.
+     *
+     * @param targetUrl
+     * @param sessionTokenIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse addHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
+        LOG.info("Add new HTTP session token: {} to ZAP for URL: {}.", sessionTokenIdentifier, targetUrl);
+        return clientApi.httpSessions.addSessionToken(targetUrl, sessionTokenIdentifier);
+    }
+
+    /**
+     * Add a new HTTP session to ZAP with the given identifier for the specified
+     * URL. The identifier can be used to access the session later on.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse createEmptyHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        LOG.info("Create new empty HTTP session: {} in ZAP for URL: {}.", sessionIdentifier, targetUrl);
+        return clientApi.httpSessions.createEmptySession(targetUrl, sessionIdentifier);
+
+    }
+
+    /**
+     * Add a new HTTP session token value to ZAP with the given session identifier
+     * using the given name and value for the specified URL.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @param name
+     * @param value
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setHTTPSessionTokenValue(String targetUrl, String sessionIdentifier, String name, String value) throws ClientApiException {
+        LOG.info("Adding session token value to ZAP HTTP session: {} for URL: {}", sessionIdentifier, targetUrl);
+        return clientApi.httpSessions.setSessionTokenValue(targetUrl, sessionIdentifier, name, value);
+
+    }
+
+    /**
+     * Set the session with the given identifier and the given URL as the active
+     * session the ZAP shall use.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse setActiveHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        LOG.info("Set ZAP HTTP session: {} with URL: {} as active session to use.", sessionIdentifier, targetUrl);
+        return clientApi.httpSessions.setActiveSession(targetUrl, sessionIdentifier);
+    }
+
+    /**
+     * Remove the session with the given identifier and the given URL from ZAP.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse removeHTTPSession(String targetUrl, String sessionIdentifier) throws ClientApiException {
+        LOG.info("Remove session: {} for url: {} if it exists.", sessionIdentifier, targetUrl);
+        return clientApi.httpSessions.removeSession(targetUrl, sessionIdentifier);
+    }
+
+    /**
+     * Remove the session token with the given identifier and the given URL from
+     * ZAP.
+     *
+     * @param targetUrl
+     * @param sessionIdentifier
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse removeHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
+        LOG.info("Remove session token: {} for url: {} if it exists.", sessionTokenIdentifier, targetUrl);
+        return clientApi.httpSessions.removeSessionToken(targetUrl, sessionTokenIdentifier);
     }
 
     private String getIdOfApiResponseElement(ApiResponseElement apiResponseElement) {
@@ -689,4 +852,5 @@ public class ClientApiFacade {
 
         return safeMap;
     }
+
 }

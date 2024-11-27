@@ -87,6 +87,9 @@ ext {
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.14.0",
       jcommander:                              "1.82",
+      selenium_firefox_driver:                 "4.26.0",
+      selenium_support:                        "4.26.0",
+      groovy_jsr223:                           "4.0.24",
       
       thymeleaf_extras_springsecurity5:        "3.1.2.RELEASE",
       
@@ -194,6 +197,11 @@ ext {
         owaspzap_client_api:                   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
          
         jcommander:                            "com.beust:jcommander:${libraryVersion.jcommander}",
+        
+        selenium_firefox_driver:               "org.seleniumhq.selenium:selenium-firefox-driver:${libraryVersion.selenium_firefox_driver}",
+        selenium_support:                      "org.seleniumhq.selenium:selenium-support:${libraryVersion.selenium_support}",
+        
+        groovy_jsr223:                         "org.apache.groovy:groovy-jsr223:${libraryVersion.groovy_jsr223}",
         
         /*
          * Needed for Spring Boot WebFlux CSRF protection - see: https://stackoverflow.com/a/53305169

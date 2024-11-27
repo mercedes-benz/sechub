@@ -307,6 +307,7 @@ class ExampleFilesValidTest {
         assertEquals(60, totp.getValidityInSeconds());
         assertEquals(8, totp.getTokenLength());
         assertEquals(TOTPHashAlgorithm.HMAC_SHA256, totp.getHashAlgorithm());
+        assertEquals(EncodingType.BASE64, totp.getEncodingType());
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {

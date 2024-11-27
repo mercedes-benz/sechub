@@ -673,6 +673,8 @@ components:
           format: int32
         hashAlgorithm:
           $ref: '#/components/schemas/TOTPHashAlgorithm'
+        encodingType:
+          $ref: '#/components/schemas/EncodingType'
       required:
         - seed
           
@@ -684,6 +686,16 @@ components:
         - HmacSHA512
       description: Representing the TOTP hash algorithms.
       default: HmacSHA1
+      
+    EncodingType:
+      enum:
+        - AUTODETECT
+        - HEX
+        - BASE32
+        - BASE64
+        - PLAIN
+      description: Representing the encoding of the TOTP seed.
+      default: AUTODETECT
 
     WebLoginConfiguration:
       title: WebLoginConfiguration

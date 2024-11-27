@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model.login;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +19,7 @@ class WebLoginTOTPConfigurationTest {
         assertEquals(WebLoginTOTPConfiguration.DEFAULT_VALIDITY_IN_SECONDS, defaultConfig.getValidityInSeconds());
         assertEquals(WebLoginTOTPConfiguration.DEFAULT_TOKEN_LENGTH, defaultConfig.getTokenLength());
         assertEquals(WebLoginTOTPConfiguration.DEFAULT_HASH_ALGORITHM, defaultConfig.getHashAlgorithm());
+        assertEquals(WebLoginTOTPConfiguration.DEFAULT_ENCODING_TYPE, defaultConfig.getEncodingType());
     }
 
     @Test
@@ -35,6 +36,7 @@ class WebLoginTOTPConfigurationTest {
         assertEquals(config.getValidityInSeconds(), expectedConfig.getValidityInSeconds());
         assertEquals(config.getTokenLength(), expectedConfig.getTokenLength());
         assertEquals(config.getHashAlgorithm(), expectedConfig.getHashAlgorithm());
+        assertEquals(config.getEncodingType(), expectedConfig.getEncodingType());
     }
 
     @Test
@@ -45,6 +47,7 @@ class WebLoginTOTPConfigurationTest {
         expectedConfig.setValidityInSeconds(45);
         expectedConfig.setTokenLength(9);
         expectedConfig.setHashAlgorithm(TOTPHashAlgorithm.HMAC_SHA512);
+        expectedConfig.setEncodingType(EncodingType.BASE64);
 
         /* execute */
         String json = JSONConverter.get().toJSON(expectedConfig);
@@ -55,6 +58,7 @@ class WebLoginTOTPConfigurationTest {
         assertEquals(config.getValidityInSeconds(), expectedConfig.getValidityInSeconds());
         assertEquals(config.getTokenLength(), expectedConfig.getTokenLength());
         assertEquals(config.getHashAlgorithm(), expectedConfig.getHashAlgorithm());
+        assertEquals(config.getEncodingType(), expectedConfig.getEncodingType());
     }
 
 }

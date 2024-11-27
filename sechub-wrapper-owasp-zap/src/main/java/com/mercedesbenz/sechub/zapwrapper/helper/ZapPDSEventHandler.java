@@ -7,14 +7,14 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 
 public class ZapPDSEventHandler {
-    File cancelEventFile;
+    private final File cancelEventFile;
 
     public ZapPDSEventHandler(String pdsJobEventsFolder) {
         this.cancelEventFile = new File(pdsJobEventsFolder, "cancel_requested.json");
     }
 
     public boolean isScanCancelled() {
-        return cancelEventFile.exists();
+        return cancelEventFile.isFile();
     }
 
     public void cancelScan(String scanContextName) {

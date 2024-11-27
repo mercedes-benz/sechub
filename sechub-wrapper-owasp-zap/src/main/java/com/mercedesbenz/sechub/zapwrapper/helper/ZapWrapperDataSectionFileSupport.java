@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.zapwrapper.config;
+package com.mercedesbenz.sechub.zapwrapper.helper;
 
 import java.io.File;
 import java.util.Collections;

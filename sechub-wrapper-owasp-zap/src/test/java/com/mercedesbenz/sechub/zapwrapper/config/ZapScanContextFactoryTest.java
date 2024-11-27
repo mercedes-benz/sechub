@@ -1,27 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.config;
 
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_HOST_ENV_VARIABLE_NAME;
-import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.ZAP_PORT_ENV_VARIABLE_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.URI;
@@ -38,19 +21,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
-import com.mercedesbenz.sechub.zapwrapper.helper.SecHubWebScanConfigurationHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.BaseTargetUriFactory;
+import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapWrapperDataSectionFileSupport;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
 
 class ZapScanContextFactoryTest {
 
     private ZapScanContextFactory factoryToTest;
 
-    private SecHubWebScanConfigurationHelper sechubWebConfigHelper;
-    private EnvironmentVariableReader environmentVariableReader;
-
+    private EnvironmentVariableReader envVariableReader;
     private RuleProvider ruleProvider;
 
     private File fullRulesetFile;
@@ -61,48 +43,25 @@ class ZapScanContextFactoryTest {
 
     @BeforeEach
     void beforeEach() {
+        envVariableReader = mock();
+        ruleProvider = mock();
 
         // create object to test
-        factoryToTest = new ZapScanContextFactory();
-
-        // create mocks
-        sechubWebConfigHelper = mock(SecHubWebScanConfigurationHelper.class);
-        environmentVariableReader = mock(EnvironmentVariableReader.class);
-        ruleProvider = mock(RuleProvider.class);
-
-        // connect mocks with test object
-        factoryToTest.sechubWebConfigHelper = sechubWebConfigHelper;
-        factoryToTest.environmentVariableReader = environmentVariableReader;
-        factoryToTest.ruleProvider = ruleProvider;
+        factoryToTest = new ZapScanContextFactory(envVariableReader, new BaseTargetUriFactory(), ruleProvider, new ZapWrapperDataSectionFileSupport(),
+                new SecHubScanConfigProvider(), new IncludeExcludeToZapURLHelper());
 
         // create test data
         fullRulesetFile = new File("src/test/resources/zap-available-rules/zap-full-ruleset.json");
         deactivationFile = new File("src/test/resources/wrapper-deactivated-rule-examples/zap-rules-to-deactivate.json");
 
-        when(environmentVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
-        when(environmentVariableReader.readAsString(PDS_JOB_EVENTS_FOLDER)).thenReturn("");
+        when(envVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
+        when(envVariableReader.readAsString(PDS_JOB_EVENTS_FOLDER)).thenReturn("");
     }
 
     @Test
     void commandLineSettings_object_is_null_results_in_mustexitruntimeexception() {
         /* execute + test */
         assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
-    }
-
-    @Test
-    void created_configuration_has_max_scan_duration_from_sechub_webconfig() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        long maxScanDuration = 4711L;
-        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(any())).thenReturn(maxScanDuration);
-        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
-
-        /* execute */
-        ZapScanContext result = factoryToTest.create(settings);
-
-        /* test */
-        assertEquals(result.getMaxScanDurationInMilliSeconds(), maxScanDuration);
-
     }
 
     @Test
@@ -149,6 +108,9 @@ class ZapScanContextFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
         when(settings.getProxyHost()).thenReturn(proxy);
         when(settings.getProxyPort()).thenReturn(proxyPort);
+        when(settings.getProxyRealm()).thenReturn("realm");
+        when(settings.getProxyUsername()).thenReturn("user");
+        when(settings.getProxyPassword()).thenReturn("password");
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
@@ -164,12 +126,15 @@ class ZapScanContextFactoryTest {
         assertEquals(proxy, result.getProxyInformation().getHost());
         assertEquals(proxyPort, result.getProxyInformation().getPort());
 
-        verify(environmentVariableReader, never()).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
-        verify(environmentVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
 
-        verify(environmentVariableReader, never()).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
-        verify(environmentVariableReader, never()).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
-        verify(environmentVariableReader, never()).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
+        verify(envVariableReader, never()).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
     }
 
     @ParameterizedTest
@@ -180,17 +145,30 @@ class ZapScanContextFactoryTest {
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
-        when(environmentVariableReader.readAsString(ZAP_HOST_ENV_VARIABLE_NAME)).thenReturn(host);
-        when(environmentVariableReader.readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME)).thenReturn(apiKey);
-        when(environmentVariableReader.readAsInt(ZAP_PORT_ENV_VARIABLE_NAME)).thenReturn(port);
+        when(envVariableReader.readAsString(ZAP_HOST_ENV_VARIABLE_NAME)).thenReturn(host);
+        when(envVariableReader.readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME)).thenReturn(apiKey);
+        when(envVariableReader.readAsInt(ZAP_PORT_ENV_VARIABLE_NAME)).thenReturn(port);
 
-        when(environmentVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(proxy);
-        when(environmentVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(proxyPort);
+        when(envVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(proxy);
+        when(envVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(proxyPort);
+        when(envVariableReader.readAsString(PROXY_REALM_ENV_VARIABLE_NAME)).thenReturn("realm");
+        when(envVariableReader.readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME)).thenReturn("username");
+        when(envVariableReader.readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME)).thenReturn("password");
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
+        verify(envVariableReader).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
+
+        verify(envVariableReader).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_REALM_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_USERNAME_ENV_VARIABLE_NAME);
+        verify(envVariableReader).readAsString(PROXY_PASSWORD_ENV_VARIABLE_NAME);
+
         ZapServerConfiguration serverConfig = result.getServerConfig();
         assertNotNull(serverConfig);
         assertEquals(host, serverConfig.getZaproxyHost());
@@ -198,6 +176,9 @@ class ZapScanContextFactoryTest {
         assertEquals(apiKey, serverConfig.getZaproxyApiKey());
         assertEquals(proxy, result.getProxyInformation().getHost());
         assertEquals(proxyPort, result.getProxyInformation().getPort());
+        assertEquals("realm", result.getProxyInformation().getRealm());
+        assertEquals("username", result.getProxyInformation().getUsername());
+        assertEquals("password", result.getProxyInformation().getPassword());
     }
 
     @Test
@@ -208,8 +189,8 @@ class ZapScanContextFactoryTest {
         when(settings.getProxyPort()).thenReturn(0);
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
-        when(environmentVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(null);
-        when(environmentVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(0);
+        when(envVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(null);
+        when(envVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(0);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -241,22 +222,6 @@ class ZapScanContextFactoryTest {
 
         /* execute + test */
         assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
-
-    }
-
-    @Test
-    void authentication_type_from_config_is_in_result() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        AuthenticationType type = AuthenticationType.FORM_BASED_AUTHENTICATION;
-        when(sechubWebConfigHelper.determineAuthenticationType(any())).thenReturn(type);
-        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
-
-        /* execute */
-        ZapScanContext result = factoryToTest.create(settings);
-
-        /* test */
-        assertEquals(result.getAuthenticationType(), type);
 
     }
 
@@ -365,7 +330,7 @@ class ZapScanContextFactoryTest {
         ZapFullRuleset fullRuleset = result.getFullRuleset();
 
         /* test */
-        verify(ruleProvider, times(1)).fetchFullRuleset(any());
+        verify(ruleProvider).fetchFullRuleset(any());
         assertNotNull(fullRuleset);
         assertNotNull(fullRuleset.getRules());
         assertEquals("https://www.zaproxy.org/docs/alerts/", fullRuleset.getOrigin());
@@ -384,7 +349,7 @@ class ZapScanContextFactoryTest {
         DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
 
         /* test */
-        verify(ruleProvider, times(1)).fetchDeactivatedRuleReferences(any());
+        verify(ruleProvider).fetchDeactivatedRuleReferences(any());
         assertNotNull(deactivatedRuleReferences);
         assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
         assertEquals(2, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
@@ -398,7 +363,7 @@ class ZapScanContextFactoryTest {
     void rules_to_deactivate_returned_by_env_variable_is_inside_result(String value) {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
-        when(environmentVariableReader.readAsString(ZAP_DEACTIVATED_RULE_REFERENCES)).thenReturn(value);
+        when(envVariableReader.readAsString(ZAP_DEACTIVATED_RULE_REFERENCES)).thenReturn(value);
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         String[] arrayToTestExpectedLength = {};
@@ -439,7 +404,7 @@ class ZapScanContextFactoryTest {
         assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
         assertEquals(arrayToTestExpectedLength.length, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
 
-        verify(environmentVariableReader, never()).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
+        verify(envVariableReader, never()).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
     }
 
     @ParameterizedTest
@@ -454,7 +419,7 @@ class ZapScanContextFactoryTest {
         factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, times(1)).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
+        verify(envVariableReader).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
     }
 
     @Test
@@ -463,16 +428,18 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
 
-        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json");
+        File sechubScanConfigFile = new File(
+                "src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json");
         String extractedSourcesPath = "path/to/extracted/sources";
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
-        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+        when(envVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER))
+                .thenReturn(extractedSourcesPath);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(envVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertEquals(1, result.getApiDefinitionFiles().size());
     }
 
@@ -485,13 +452,14 @@ class ZapScanContextFactoryTest {
         File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/client-certificate-auth.json");
         String extractedSourcesPath = "path/to/extracted/sources";
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
-        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+        when(envVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER))
+                .thenReturn(extractedSourcesPath);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(envVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertNotNull(result.getClientCertificateFile());
     }
 
@@ -519,7 +487,8 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
 
-        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-without-includes-or-excludes.json");
+        File sechubScanConfigFile = new File(
+                "src/test/resources/sechub-config-examples/no-auth-without-includes-or-excludes.json");
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
 
         /* execute */
@@ -557,16 +526,17 @@ class ZapScanContextFactoryTest {
         File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/header-config.json");
         String extractedSourcesPath = "path/to/extracted/sources";
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
-        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+        when(envVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER))
+                .thenReturn(extractedSourcesPath);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(envVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertEquals(2, result.getHeaderValueFiles().size());
-        assertEquals(extractedSourcesPath+"/header-token.txt", result.getHeaderValueFiles().get("Key").toString());
-        assertEquals(extractedSourcesPath+"/token.txt", result.getHeaderValueFiles().get("Other").toString());
+        assertEquals(extractedSourcesPath + "/header-token.txt", result.getHeaderValueFiles().get("Key").toString());
+        assertEquals(extractedSourcesPath + "/token.txt", result.getHeaderValueFiles().get("Other").toString());
     }
 
     @Test
@@ -575,17 +545,72 @@ class ZapScanContextFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
 
-        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/header-config-without-data-section.json");
+        File sechubScanConfigFile = new File(
+                "src/test/resources/sechub-config-examples/header-config-without-data-section.json");
         String extractedSourcesPath = "path/to/extracted/sources";
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
-        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+        when(envVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER))
+                .thenReturn(extractedSourcesPath);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        verify(environmentVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        verify(envVariableReader, atLeast(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         assertEquals(0, result.getHeaderValueFiles().size());
+    }
+
+    @Test
+    void no_template_data_results_in_no_template_data_set() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        assertNull(result.getGroovyScriptLoginFile());
+    }
+
+    @Test
+    void cmd_param_set_results_in_environment_variable_reader_not_being_called() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        String groovyScriptFile = "script.groovy";
+        when(settings.getGroovyLoginScriptFile()).thenReturn(groovyScriptFile);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(envVariableReader, never()).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
+    }
+
+    @Test
+    void cmd_param_not_set_results_in_environment_variable_reader_being_called_as_fallback() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        String groovyScriptFile = "script.groovy";
+        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
     }
 
     private CommandLineSettings createSettingsMockWithNecessaryParts() {

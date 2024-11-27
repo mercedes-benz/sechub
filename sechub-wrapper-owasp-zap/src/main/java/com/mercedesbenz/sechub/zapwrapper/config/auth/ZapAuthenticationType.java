@@ -6,7 +6,7 @@ package com.mercedesbenz.sechub.zapwrapper.config.auth;
  * Zap API easier to use.
  *
  */
-public enum AuthenticationType {
+public enum ZapAuthenticationType {
 
     UNAUTHENTICATED(null),
 
@@ -18,11 +18,13 @@ public enum AuthenticationType {
 
     JSON_BASED_AUTHENTICATION("jsonBasedAuthentication"),
 
+    MANUAL_AUTHENTICATION("manualAuthentication"),
+
     ;
 
     private String zapAuthenticationMethod;
 
-    private AuthenticationType(String methodName) {
+    private ZapAuthenticationType(String methodName) {
         this.zapAuthenticationMethod = methodName;
     }
 

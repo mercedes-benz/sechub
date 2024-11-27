@@ -3,11 +3,7 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +13,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
-import com.mercedesbenz.sechub.zapwrapper.helper.BaseTargetUriFactory;
-import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.SecHubWebScanConfigurationHelper;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
-import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.*;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
@@ -33,22 +24,31 @@ import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 public class ZapScanContextFactory {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanContextFactory.class);
 
-    SecHubWebScanConfigurationHelper sechubWebConfigHelper;
-    EnvironmentVariableReader environmentVariableReader;
-    BaseTargetUriFactory targetUriFactory;
-    RuleProvider ruleProvider;
-    ZapWrapperDataSectionFileSupport dataSectionFileSupport;
-    SecHubScanConfigProvider secHubScanConfigProvider;
-    IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper;
+    private final EnvironmentVariableReader environmentVariableReader;
+    private final BaseTargetUriFactory targetUriFactory;
+    private final RuleProvider ruleProvider;
+    private final ZapWrapperDataSectionFileSupport dataSectionFileSupport;
+    private final SecHubScanConfigProvider secHubScanConfigProvider;
+    private final IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper;
 
     public ZapScanContextFactory() {
-        sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
         ruleProvider = new RuleProvider();
         dataSectionFileSupport = new ZapWrapperDataSectionFileSupport();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
         includeExcludeToZapURLHelper = new IncludeExcludeToZapURLHelper();
+    }
+
+    ZapScanContextFactory(EnvironmentVariableReader environmentVariableReader, BaseTargetUriFactory targetUriFactory, RuleProvider ruleProvider,
+            ZapWrapperDataSectionFileSupport dataSectionFileSupport, SecHubScanConfigProvider secHubScanConfigProvider,
+            IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper) {
+        this.environmentVariableReader = environmentVariableReader;
+        this.targetUriFactory = targetUriFactory;
+        this.ruleProvider = ruleProvider;
+        this.dataSectionFileSupport = dataSectionFileSupport;
+        this.secHubScanConfigProvider = secHubScanConfigProvider;
+        this.includeExcludeToZapURLHelper = includeExcludeToZapURLHelper;
     }
 
     public ZapScanContext create(CommandLineSettings settings) {
@@ -73,9 +73,6 @@ public class ZapScanContextFactory {
 
         SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
         SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
-        long maxScanDurationInMillis = sechubWebConfigHelper.fetchMaxScanDurationInMillis(sechubWebConfig);
-
-        AuthenticationType authType = sechubWebConfigHelper.determineAuthenticationType(sechubWebConfig);
 
         List<File> apiDefinitionFiles = fetchApiDefinitionFiles(sechubScanConfig);
 
@@ -106,8 +103,6 @@ public class ZapScanContextFactory {
 												.setAjaxSpiderBrowserId(settings.getAjaxSpiderBrowserId())
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
-												.setAuthenticationType(authType)
-												.setMaxScanDurationInMilliSeconds(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
 												.setFullRuleset(fullRuleset)
@@ -122,6 +117,7 @@ public class ZapScanContextFactory {
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
+												.setGroovyScriptLoginFile(fetchGroovyScriptFile(settings))
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -191,6 +187,9 @@ public class ZapScanContextFactory {
     private ProxyInformation createProxyInformation(CommandLineSettings settings) {
         String proxyHost = settings.getProxyHost();
         int proxyPort = settings.getProxyPort();
+        String proxyRealm = settings.getProxyRealm();
+        String proxyUsername = settings.getProxyUsername();
+        String proxyPassword = settings.getProxyPassword();
 
         if (proxyHost == null) {
             proxyHost = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME);
@@ -198,12 +197,30 @@ public class ZapScanContextFactory {
         if (proxyPort <= 0) {
             proxyPort = environmentVariableReader.readAsInt(EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME);
         }
+        // optional values
+        if (proxyRealm == null) {
+            proxyRealm = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_REALM_ENV_VARIABLE_NAME);
+        }
+        if (proxyUsername == null) {
+            proxyUsername = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_USERNAME_ENV_VARIABLE_NAME);
+        }
+        if (proxyPassword == null) {
+            proxyPassword = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_PASSWORD_ENV_VARIABLE_NAME);
+        }
 
         if (proxyHost == null || proxyPort <= 0) {
             LOG.info("No proxy settings were provided. Continuing without proxy...");
             return null;
         }
-        return new ProxyInformation(proxyHost, proxyPort);
+        /* @formatter:off */
+        return ProxyInformation.builder()
+                               .setHost(proxyHost)
+                               .setPort(proxyPort)
+                               .setRealm(proxyRealm)
+                               .setUsername(proxyUsername)
+                               .setPassword(proxyPassword)
+                               .build();
+        /* @formatter:on */
     }
 
     private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
@@ -279,5 +296,16 @@ public class ZapScanContextFactory {
                     + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapPDSEventHandler(pdsJobEventsFolder);
+    }
+
+    private File fetchGroovyScriptFile(CommandLineSettings settings) {
+        String groovyScriptFile = settings.getGroovyLoginScriptFile();
+        if (groovyScriptFile == null) {
+            groovyScriptFile = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_GROOVY_LOGIN_SCRIPT_FILE);
+        }
+        if (groovyScriptFile == null) {
+            return null;
+        }
+        return new File(groovyScriptFile);
     }
 }

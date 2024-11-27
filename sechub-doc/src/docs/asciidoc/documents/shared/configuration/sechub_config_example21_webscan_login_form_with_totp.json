@@ -27,7 +27,8 @@
         "seed" : "example-seed", //<2>
         "validityInSeconds" : 60, //<3>
         "tokenLength" : 8, //<4>
-        "hashAlgorithm" : "HMAC_SHA256" //<5>
+        "hashAlgorithm" : "HMAC_SHA256", //<5>
+        "encodingType" : "base64" //<6>
       }
     }
   }
