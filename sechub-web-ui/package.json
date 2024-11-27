@@ -12,10 +12,12 @@
     "core-js": "^3.37.1",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
+    "vue-i18n": "^10.0.4",
     "vuetify": "^3.6.11"
   },
   "devDependencies": {
     "@babel/types": "^7.24.7",
+    "@intlify/unplugin-vue-i18n": "^6.0.0",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/eslint-config-typescript": "^13.0.0",

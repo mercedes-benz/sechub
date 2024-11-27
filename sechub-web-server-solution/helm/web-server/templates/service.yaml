@@ -1,30 +1,15 @@
 # SPDX-License-Identifier: MIT
 
+# Internal access via cluster IP (maybe obsolete when an api-gateway is in place)
 apiVersion: v1
 kind: Service
 metadata:
   name: web-server
-  labels:
-    name: web-server
-{{- if .Values.service.annotations }}
-  annotations:
-    {{ .Values.service.annotations | indent 4 | trim }}
-{{- end }}
-{{- if .Values.service.finalizers }}
-  finalizers:
-    {{ .Values.service.finalizers | indent 4 | trim }}
-{{- end }}
 spec:
-  type: LoadBalancer
-  loadBalancerIP: {{ .Values.service.loadbalancer.ip }}
   selector:
     name: web-server
   ports:
-    - name: {{ .Values.service.loadbalancer.port.name }}
-      port: {{ .Values.service.loadbalancer.port.number }}
-      protocol: TCP
-{{- if .Values.go_mmproxy.enabled }}
-      targetPort: 8080
-{{- else }}
+    - protocol: TCP
+      port: 4443
       targetPort: 4443
-{{- end }}
+  type: ClusterIP

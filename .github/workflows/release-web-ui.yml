@@ -112,7 +112,7 @@ jobs:
           npm run build && \
           cd dist && \
           echo '${{ inputs.web-ui-version }}' > sechub-web-ui_version.txt && \
-          zip -r ../../../$WEB_UI_RELEASE_ZIPFILE *
+          zip -r ../../$WEB_UI_RELEASE_ZIPFILE *
 
       - name: Collect GIT status
         if: always()

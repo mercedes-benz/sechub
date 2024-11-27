@@ -64,7 +64,8 @@ init_go_modules
 cd "$SRC_PATH/main"
 
 export CGO_ENABLED=0  # This forces statically linked binaries
-GO_LD_FLAGS="-s -w"   # strip (reduce size): disable debug symbol table / disable DWARF generation
+GO_LD_FLAGS="-s -w -buildid=" # strip (reduce size): disable debug symbol table / disable DWARF generation
+GO_COMPILE_FLAGS="-trimpath"  # Aim to make builds reproducible
 
 for platform in "${platforms[@]}" ; do
     platform_split=(${platform//\// })
@@ -82,7 +83,7 @@ for platform in "${platforms[@]}" ; do
     fi
 
     echo "> building $targetSubFolder"
-    go build -ldflags="$GO_LD_FLAGS" -o "$buildDir/$output_name" .
+    go build $GO_COMPILE_FLAGS -ldflags="$GO_LD_FLAGS" -o "$buildDir/$output_name" .
     if [ $? -ne 0 ]; then
         echo 'Go build failed because of an error'
         exit 1

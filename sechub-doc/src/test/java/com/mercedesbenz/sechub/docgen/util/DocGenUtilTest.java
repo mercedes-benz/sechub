@@ -11,6 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.docgen.spring.SpringValueFilter;
+import com.mercedesbenz.sechub.domain.notification.email.SMTPServerConfiguration;
+import com.mercedesbenz.sechub.domain.scan.product.checkmarx.SecHubDirectCheckmarxResilienceConfiguration;
+import com.mercedesbenz.sechub.domain.scan.product.pds.PDSResilienceConsultant;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 public class DocGenUtilTest {
@@ -39,6 +42,11 @@ public class DocGenUtilTest {
         assertEquals("Spring", DocGeneratorUtil.toCamelOne(SpringValueFilter.class));
         assertEquals("String", DocGeneratorUtil.toCamelOne(String.class));
         assertEquals("Class", DocGeneratorUtil.toCamelOne(Class.class));
+
+        assertEquals("Sec", DocGeneratorUtil.toCamelOne(SecHubDirectCheckmarxResilienceConfiguration.class));
+
+        assertEquals("SMTPServer", DocGeneratorUtil.toCamelOne(SMTPServerConfiguration.class));
+        assertEquals("PDSResilience", DocGeneratorUtil.toCamelOne(PDSResilienceConsultant.class));
 
     }
 

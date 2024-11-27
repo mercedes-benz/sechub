@@ -6,7 +6,7 @@ BASE_IMAGE=debian:12-slim
 # build - clones and build SecHub
 # copy - copies jar into container
 # download - downloads the SecHub jar
-BUILD_TYPE=build
+BUILD_TYPE=download
 
 # The SecHub web-server version used if the BUILD_TYPE is set to `download`
 WEB_SERVER_VERSION="0.1.0"
