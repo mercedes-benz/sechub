@@ -48,6 +48,9 @@ jobs:
       # ----------------------
       # Setup + Caching
       # ----------------------
+      - name: Install required packages
+        run: sudo apt-get -y install hub
+
       - name: Use Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
