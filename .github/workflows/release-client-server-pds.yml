@@ -499,8 +499,8 @@ jobs:
         if: inputs.client-version != ''
         run: |
           cd sechub-cli/build/go
-          zip -r sechub-cli.zip platform
-          sha256sum sechub-cli.zip > sechub-cli.zip.sha256
+          zip -r sechub-cli-${{ inputs.client-version }}.zip platform
+          sha256sum sechub-cli-${{ inputs.client-version }}.zip > sechub-cli-${{ inputs.client-version }}.zip.sha256
 
       - name: Create client Debian packages
         if: inputs.client-version != ''
@@ -512,16 +512,13 @@ jobs:
         shell: bash
         run: |
           assets=()
-          echo "# Add Client binaries sechub-cli-${{ inputs.client-version }}.zip + checksum"
-          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
-          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
-          echo "# Add Debian packages"
-          for asset in sechub-cli/build/deb-build/*.deb ; do
+          cp "sechub-doc/build/docs/asciidoc/sechub-client.pdf" sechub-client-${{ inputs.client-version }}.pdf
+          echo "# Adding Client binaries, docs and Debian packages"
+          for asset in sechub-cli/build/go/sechub-cli-${{ inputs.client-version }}.zip* sechub-client-${{ inputs.client-version }}.pdf sechub-cli/build/deb-build/*.deb ; do
             filename=`basename "$asset"`
+            echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")
           done
-          echo "# Add Client documentation sechub-client-${{ inputs.client-version }}.pdf"
-          assets+=("-a" "sechub-doc/build/docs/asciidoc/sechub-client.pdf#sechub-client-${{ inputs.client-version }}.pdf")
           # Define release data
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
