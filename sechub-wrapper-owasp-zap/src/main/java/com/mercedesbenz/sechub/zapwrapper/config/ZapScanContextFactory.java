@@ -71,8 +71,9 @@ public class ZapScanContextFactory {
         /* SecHub settings */
         URL targetUrl = targetUriFactory.create(settings.getTargetURL());
 
-        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
-        SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
+        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.fetchSecHubScanConfiguration(settings.getSecHubConfigFile(),
+                environmentVariableReader);
+        SecHubWebScanConfiguration sechubWebConfig = resolveSecHubWebConfiguration(sechubScanConfig);
 
         List<File> apiDefinitionFiles = fetchApiDefinitionFiles(sechubScanConfig);
 
@@ -223,7 +224,7 @@ public class ZapScanContextFactory {
         /* @formatter:on */
     }
 
-    private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
+    private SecHubWebScanConfiguration resolveSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
         if (!sechubConfig.getWebScan().isPresent()) {
             return new SecHubWebScanConfiguration();
         }
