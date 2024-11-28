@@ -512,15 +512,13 @@ jobs:
         shell: bash
         run: |
           assets=()
-          echo "# Adding Client binaries and Debian packages"
-          for asset in sechub-cli/build/go/sechub-cli-${{ inputs.client-version }}.zip* sechub-cli/build/deb-build/*.deb ; do
+          cp "sechub-doc/build/docs/asciidoc/sechub-client.pdf" sechub-client-${{ inputs.client-version }}.pdf
+          echo "# Adding Client binaries, docs and Debian packages"
+          for asset in sechub-cli/build/go/sechub-cli-${{ inputs.client-version }}.zip* sechub-client-${{ inputs.client-version }}.pdf sechub-cli/build/deb-build/*.deb ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")
           done
-          echo "# Adding Client documentation sechub-client-${{ inputs.client-version }}.pdf"
-          cp "sechub-doc/build/docs/asciidoc/sechub-client.pdf" sechub-client-${{ inputs.client-version }}.pdf
-          assets+=("-a" "sechub-client-${{ inputs.client-version }}.pdf")
           # Define release data
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
