@@ -28403,6 +28403,7 @@ function getReport(jobUUID, reportFormat, context) {
 }
 
 ;// CONCATENATED MODULE: ./src/json-helper.ts
+// SPDX-License-Identifier: MIT
 
 /**
  * Reads the given field from JSON.
@@ -28702,6 +28703,7 @@ function projectname_resolver_asJsonObject(text) {
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
+// SPDX-License-Identifier: MIT
 
 function getPlatform() {
     return external_os_.platform();
@@ -46017,6 +46019,7 @@ const { parseHTML: esm_parseHTML } = static_namespaceObject;
 const { root: esm_root } = static_namespaceObject;
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./src/client-version-helper.ts
+// SPDX-License-Identifier: MIT
 
 
 
