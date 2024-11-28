@@ -153,22 +153,19 @@ jobs:
       # -----------------------------------------
       # Create draft release
       # -----------------------------------------
-      - name: Create Github Action release
-        id: create_ghaction_release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
+      - name: Create Github Action ${{ inputs.ghaction-version }} release draft
+        shell: bash
+        run: |
+          # Define release data
+          tag_name="v${{ inputs.ghaction-version }}-gha"
+          release_title="Github Action Version ${{ inputs.ghaction-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on Github Action implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.ghaction-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.ghaction-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.ghaction-version }}-gha
-          commitish: master
-          release_name: Github Action Version ${{ inputs.ghaction-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on Github Action implementation
-
-            For more details please look at [Milestone ${{inputs.ghaction-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.ghaction-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`

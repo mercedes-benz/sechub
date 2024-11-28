@@ -1,4 +1,10 @@
 # SPDX-License-Identifier: MIT
+
+###############################
+#  D E P R E C A T E D  ! !
+#
+# last use was back in 2021
+###############################
 name: Publish libraries
 
 on:
