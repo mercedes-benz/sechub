@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: MIT
 name: Release Web Server
 
+###############################
+#  D E P R E C A T E D  ! !
+#
+# web-server functionality will be integrated into SecHub server
+###############################
 on:
   workflow_dispatch:
     inputs:
