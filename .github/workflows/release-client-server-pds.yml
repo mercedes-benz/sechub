@@ -323,7 +323,7 @@ jobs:
       # ******************************************
       # S E R V E R  release
       # ******************************************
-      - name: Create sha256 checksum file for SecHub server jar
+      - name: Prepare server ${{ inputs.server-version }} release artifacts
         if: inputs.server-version != ''
         shell: bash
         run: |
@@ -348,7 +348,7 @@ jobs:
             sha256sum "$i" > "$i.sha256sum"
           done
 
-      - name: Create server release ${{ inputs.server-version }} draft
+      - name: Create server ${{ inputs.server-version }} release draft
         if: inputs.server-version != ''
         shell: bash
         run: |
@@ -464,63 +464,44 @@ jobs:
       # ******************************************
       # P D S  release
       # ******************************************
-      - name: Create PDS release ${{ inputs.pds-version }}
-        id: create_pds_release
+      - name: Prepare PDS ${{ inputs.pds-version }} release artifacts
         if: inputs.pds-version != ''
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.pds-version }}-pds
-          commitish: master
-          release_name: PDS Version ${{ inputs.pds-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on PDS server implementation
-
-            For more details please look at [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      - name: Create sha256 checksum file for PDS jar
-        if: inputs.pds-version != ''
+        shell: bash
         run: |
-          cd sechub-pds/build/libs/
-          sha256sum sechub-pds-${{ inputs.pds-version }}.jar > sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
+          mkdir pds-release-artifacts
+          # Collect release artifacts
+          cp sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar \
+             pds-release-artifacts/
+          cp sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf \
+             pds-release-artifacts/sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
+          # Compute sha256 checksums for .jar files
+          cd pds-release-artifacts
+          for i in *.jar ; do
+            sha256sum "$i" > "$i.sha256sum"
+          done
 
-      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar
+      - name: Create PDS ${{ inputs.pds-version }} release draft
         if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        shell: bash
+        run: |
+          assets=()
+          echo "# Adding PDS binaries and docs"
+          cd pds-release-artifacts/
+          for asset in * ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.pds-version }}-pds"
+          release_title="PDS Version ${{ inputs.pds-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on PDS server implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar
-          asset_name: sechub-pds-${{ inputs.pds-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-        if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-          asset_name: sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      # sechub-product-delegation-server.pdf
-      - name: Upload PDS release asset sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
-        if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
-          asset_name: /sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
-          asset_content_type: application/pdf
 
       - name: Create PDS ${{ inputs.pds-version }} release issue
         if: inputs.pds-version != ''
@@ -534,62 +515,62 @@ jobs:
             Please close this issue after the release.
           milestone: ${{ inputs.pds-milestone-number }}
 
-      # Build pds-base container image + push to ghcr
-      - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
-        if: inputs.pds-version != ''
-        run: |
-          PDS_VERSION="${{ inputs.pds-version }}"
-          DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
-          VERSION_TAG="${PDS_VERSION}"
-          cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
-          cd sechub-pds-solutions/pds-base
-          echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
-          echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
-          ./10-create-image.sh $DOCKER_REGISTRY $VERSION_TAG $PDS_VERSION $ACTIONS_BASE_IMAGE_DEBIAN copy
-          echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
-          ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
+  #     # Build pds-base container image + push to ghcr
+  #     - name: Build pds-base ${{ inputs.server-version }} container image + push to ghcr
+  #       if: inputs.pds-version != ''
+  #       run: |
+  #         PDS_VERSION="${{ inputs.pds-version }}"
+  #         DOCKER_REGISTRY="$ACTIONS_SECHUB_REGISTRY/pds-base"
+  #         VERSION_TAG="${PDS_VERSION}"
+  #         cp sechub-pds/build/libs/sechub-pds-${PDS_VERSION}.jar sechub-pds-solutions/pds-base/docker/copy/
+  #         cd sechub-pds-solutions/pds-base
+  #         echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
+  #         echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
+  #         ./10-create-image.sh $DOCKER_REGISTRY $VERSION_TAG $PDS_VERSION $ACTIONS_BASE_IMAGE_DEBIAN copy
+  #         echo "# Pushing image $DOCKER_REGISTRY:$VERSION_TAG (latest)"
+  #         ./20-push-image.sh $DOCKER_REGISTRY $VERSION_TAG yes
 
 
-      # -----------------------------------------
-      # Create a pull request for merging back `master` into `develop`
-      # -----------------------------------------
-      - name: pull-request master to develop
-        id: pr_master_to_develop
-        continue-on-error: true
-        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: "master"
-          destination_branch: "develop"
-          pr_allow_empty: true  # should allow an empty PR, but seems not to work
-          pr_title: '2 - After release: Merge master back into develop [auto-generated]'
-          pr_body: |
-            After SecHub release
-            - Client '${{ inputs.client-version }}'
-            - Server '${{ inputs.server-version }}'
-            - PDS '${{ inputs.pds-version }}'
+  #     # -----------------------------------------
+  #     # Create a pull request for merging back `master` into `develop`
+  #     # -----------------------------------------
+  #     - name: pull-request master to develop
+  #       id: pr_master_to_develop
+  #       continue-on-error: true
+  #       uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         source_branch: "master"
+  #         destination_branch: "develop"
+  #         pr_allow_empty: true  # should allow an empty PR, but seems not to work
+  #         pr_title: '2 - After release: Merge master back into develop [auto-generated]'
+  #         pr_body: |
+  #           After SecHub release
+  #           - Client '${{ inputs.client-version }}'
+  #           - Server '${{ inputs.server-version }}'
+  #           - PDS '${{ inputs.pds-version }}'
 
-            Merge master branch back into develop
+  #           Merge master branch back into develop
 
-            -> Please merge **after** the release has been published.
+  #           -> Please merge **after** the release has been published.
 
-      - name: Print PR infos if PR was created
-        if: steps.pr_master_to_develop.outcome == 'success'
-        run: |
-          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
-          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+  #     - name: Print PR infos if PR was created
+  #       if: steps.pr_master_to_develop.outcome == 'success'
+  #       run: |
+  #         echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
+  #         echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
-      - name: Print info if no PR was created
-        if: steps.pr_master_to_develop.outcome != 'success'
-        run: |
-          echo "Nothing to merge - no pull request necessary."
+  #     - name: Print info if no PR was created
+  #       if: steps.pr_master_to_develop.outcome != 'success'
+  #       run: |
+  #         echo "Nothing to merge - no pull request necessary."
 
 
-  build-pds-solutions:
-    if: inputs.pds-version != ''
-    needs: release-version
-    # Build all PDS solutions based on above released pds-base image
-    name: Build all PDS solutions
-    uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@develop
-    with:
-      pds-version: ${{ inputs.pds-version }}
+  # build-pds-solutions:
+  #   if: inputs.pds-version != ''
+  #   needs: release-version
+  #   # Build all PDS solutions based on above released pds-base image
+  #   name: Build all PDS solutions
+  #   uses: mercedes-benz/sechub/.github/workflows/build+publish-all-pds-solutions.yml@develop
+  #   with:
+  #     pds-version: ${{ inputs.pds-version }}
