@@ -37,13 +37,6 @@ jobs:
           echo "actor-email: '${{ inputs.actor-email }}'"
           echo "Web-UI '${{ inputs.web-ui-version }}' - Milestone '${{ inputs.web-ui-milestone-number }}'"
 
-      # Check inputs:
-      - name: "Verify Input for Web-UI release"
-        if: (inputs.web-ui-version == '') || (inputs.web-ui-milestone-number == '')
-        run: |
-          echo "For Web-UI release, web-ui-version and web-ui-milestone-number must be provided!"
-          exit 1
-
       - name: Checkout master
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
