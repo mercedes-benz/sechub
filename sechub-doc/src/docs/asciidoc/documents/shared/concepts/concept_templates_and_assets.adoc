@@ -7,36 +7,28 @@ and - depending on the product - very hard to provide a complete generic approac
 only. 
 
 ===== Example situation
-To clarify this abstract situation here an example: +
+To clarify this abstract situation here an example: Think about a wide range of applications inside 
+a corporation which want to use a common single sign on with multi factor authentication and some 
+other specific parts. The login configuration in {sechub} configuration file by defining explicit steps, pages etc.
+would become complex and error prone because :
 
-Think about a wide range of applications inside a corporation which want to use a common 
-single sign on with multi factor authentication and some other specific parts.
-
-The login configuration would become complex and error prone because not every user would
-understand exactly what to do. If the single-signon mechanism would change, every project/user
-would need to change their {sechub} configuration files! When talking about hundreds of projects
-this would be a great effort - for users and for support!
+- not every user would understand exactly what to do
+- if the single signon mechanism ever changes, every project/user would need to change their {sechub} configuration files!
+  When talking about hundreds of projects this would be a great effort - for users and for support!
 
 And let us assume the used product has hundreds of options which cannot be configured
 by a generic approach easily (e.g. form login definition in configuration): How could this product
-be provided in a desired way then?
- 
-And what if there are some specific parts which are not 100% same in every of these projects? 
+be provided in a desired way then? And what if there are some specific parts which are not 100% same
+in every of these projects? 
  
 This is the reason for the "templates and assets" concept which is described below.
 
+===== Big picture
+plantuml::./diagrams/diagram_templates-and-assets-big-picture.puml[format=svg, title="Big picture of templates and assets"]
+
 ===== Templates
-{sechub} can have multiple templates . Every template has a type and can contains a set of 
-assets and also a variable definition. It can be administrated via
-REST end points:
-
-```
-PUT    /api/admin/template/$template-id
-GET    /api/admin/template/$template-id
-DELETE /api/admin/template/$template-id
-```
-
-PUT will contain a body with the template data:
+{sechub} can have multiple templates. Every template has a type and can contains a set of 
+assets and also a variable definition. It can be administrated via REST end points.
 
 ====== Template id format
 A template id
@@ -44,7 +36,6 @@ A template id
 - has a minimum length of 3
 - has a maximum length of 40
 - can contain only `a-z` `A-Z`, `0-9` or  `-` or `_`
-
 
 ====== Template definition
 The template definitions are hold inside {sechub} database.
@@ -84,7 +75,6 @@ stop before any {pds} job is created.
 
 plantuml::./diagrams/diagram_templates-mapping-to-projects.puml[format=svg, title="Mapping of templates and projects"]
 
-
 As shown in the figure above, the template data is hold inside domain "scan". The reason is, that
 template details are necessary inside the scan operation and no where else.
 
@@ -103,13 +93,6 @@ After this is done as a syncron result the scan domain will return all assigned
 templates, as shown in next figure:
 
 plantuml::./diagrams/diagram_templates-mapping-to-projects-events.puml[format=svg, title="Mapping of templates and projects (Events)"]
-
-
-```
-PUT     /api/admin/project/$projectId/template/$templateId
-DELETE  /api/admin/project/$projectId/template/$templateId
-GET     /api/admin/project/$projectId/templates
-```
 
 [NOTE]
 ====
@@ -137,9 +120,8 @@ dedicated error message must be returned to the user and the {sechub} job will a
 
 [IMPORTANT]
 ====
-For templates and assets we must use shared storage between {sechub} and {pds} .
-{pds} solutions may not to provide own storage for {pds} - different storages 
-are not supported here.
+For templates and assets we must use shared storage between {sechub} and {pds}. {pds} solutions may 
+not to provide own storage for {pds} - different storages are not supported here.
 ====
 
 ===== Assets
@@ -152,7 +134,7 @@ An asset id
 
 ====== {sechub} server uses product identifiers for asset ids
 The {sechub} server will use the product identifiers from {pds} executor configurations
-as filenames when storing asset data inside database and storage. The product identifiers
+as file names when storing asset data inside database and storage. The product identifiers
 are also defined inside the {pds} server configuration files.
 
 Here an example for storage paths:
@@ -164,11 +146,12 @@ Here an example for storage paths:
       OTHER_PRODUCT_X.zip
       OTHER_PRODUCT_X.zip.sha256
 ```
-[TIP]
+[IMPORTANT]
 ====
-The content and the structure inside the ZIP files is absolute solution specific :
-The PDS solution defines which kind of template data is necessary and how the 
-structure looks like!
+The content and the structure inside the ZIP files is absolute solution specific:
+Means the {pds} solution defines which kind of template data is necessary and how the 
+structure looks like. Because of this necessary template variables, file structure for 
+asset zip files etc. must be documented inside the {pds} solution!
 ====
 
 ====== Asset operations
@@ -282,7 +265,7 @@ The `WEBSCAN_PRODUCT_ID.zip` file contains
 
 [source,text]
 ----
-/script.js
+/script.groovy
 /development/
              debug-settings.json
 ----
@@ -295,7 +278,8 @@ include::../snippet/pds-param-template-metadata-example1.json[]
 ----
 
 The extraction is done into folder:
-`$workspaceFolder/assets/$type/`
+`$workspaceFolder/assets/$templateType/` which will be made available to launcher scripts (and wrapper
+applications) by environmnet variable `PDS_JOB_EXTRACTED_ASSETS_FOLDER`.
 
 For the former example `WEBSCAN_PRODUCT_ID.zip` will be extracted the following way:
 
@@ -304,38 +288,47 @@ For the former example `WEBSCAN_PRODUCT_ID.zip` will be extracted the following 
 `$workspaceFolder/
      assets/
         webscan-login/
-                    script.js
+                    script.groovy
                     development/
                               debug-settings.json
    
 ----
 
-====== Pseudo code for usage inside PDS solutions/wrappers
+====== Example code for usage inside PDS solutions/wrappers
 
-Here an example (but pseudo code) how a product could use the assets inside 
+Here an example how a product could use the assets inside 
 a wrapper application for a PDS solution:
 
 [source,java]
 ----
-
+import java.nio.file.*;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.template.*;
+// ...
 
-WebScanTemplateData templateData = util.fetchWebScanTemplateData(sechubConfig);
+String sechubConfigAsJson = System.getenv("PDS_SCAN_CONFIGURATION");
+SecHubConfigurationModel sechubConfig = JSONConverter.get().fromJSON(SecHubConfigurationModel.class,sechubConfigAsJson);
+
+TemplateDataResolver resolver = new TemplateDataResolver();
+
+TemplateData templateData = resolver.resolveTemplateData(TemplateType.WEBSCAN_LOGIN, sechubConfig);
 if (templateData!=null){
 
-    // folder=/$workspaceFolder/assets
-    File folder = util.getAssetFolder();
+    Map<String, String> variables = templateData.getVariables();
+
+    // read template script file from extracted folder
+    String assetExtractionFolder = System.getenv("PDS_JOB_EXTRACTED_ASSETS_FOLDER");
+    Path path = Paths.get(assetExtractionFolder, TemplateType.WEBSCAN_LOGIN.getId(), "script.groovy");
+    String scriptTemplate = Files.readString(path);
     
-    // fetch file: in example it is a web scan login template
-    File scriptFile = folder.getChild(ID_WEBSCAN_LOGIN+"/script.js");
+    // replace variable parts inside template
+    String script = scriptTemplate ;
+    script = script.replaceAll("#user", variales.get("user");
+    script = script.replaceAll("#pwd", variales.get("password");
     
-    // process
-    String script = readTextFile(scriptFile);
-    script = replaceVariableInScript(templateData.getVariable("username"), script);
-    script = replaceVariableInScript(templateData.getVariable("password"), script);
-    
-    // use script
+    // execute script
     // ...
+    
 }
 
 ----

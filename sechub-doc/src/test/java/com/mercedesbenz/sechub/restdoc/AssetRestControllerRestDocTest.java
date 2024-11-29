@@ -84,7 +84,7 @@ public class AssetRestControllerRestDocTest implements TestIsNecessaryForDocumen
     LogSanitizer logSanitizer;
 
     private static final String TEST_ASSET_ID1 = "asset-1";
-    private static final String TEST_ASSET_ID2 = "asset-2s";
+    private static final String TEST_ASSET_ID2 = "asset-2";
 
     private static final String TEST_FILENAME1 = "PRODUCT1.zip";
 
