@@ -3,6 +3,6 @@ declare module 'insane';
 
 interface ImportMeta {
   env: {
-    SECHUB_API_HOST: string
+    SECHUB_HOST: string
   }
 }
