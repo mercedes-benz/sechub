@@ -36,6 +36,9 @@ jobs:
       # ----------------------
       # Setup + Caching
       # ----------------------
+      - name: Install required packages
+        run: sudo apt-get -y install hub
+
       - name: Set up JDK 17
         uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
         with:
@@ -124,50 +127,36 @@ jobs:
       - name: Assert releasable
         run: ./gradlew assertReleaseable
 
-      - name: Create Checkmarx Wrapper release
-        id: create_checkmarx-wrapper_release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.checkmarx-wrapper-version }}-checkmarx-wrapper
-          commitish: master
-          release_name: Checkmarx Wrapper Version ${{ inputs.checkmarx-wrapper-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on Checkmarx Wrapper implementation
-
-            For more details please look at [Milestone ${{inputs.checkmarx-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.checkmarx-wrapper-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      # -----------------------------------------
-      # Upload release artifacts
-      # -----------------------------------------
-      - name: Create files and sha256 checksum for Checkmarx Wrapper jar
+      # ******************************************
+      # Checkmarx Wrapper release
+      # ******************************************
+      - name: Prepare Checkmarx Wrapper ${{ inputs.checkmarx-wrapper-version }} release artifacts
+        shell: bash
         run: |
           cd sechub-wrapper-checkmarx/build/libs/
           sha256sum sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar > sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar.sha256sum
 
-      - name: Upload asset sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+      - name: Create Checkmarx Wrapper ${{ inputs.checkmarx-wrapper-version }} release draft
+        shell: bash
+        run: |
+          assets=()
+          echo "# Adding release artifacts"
+          cd sechub-wrapper-checkmarx/build/libs/
+          for asset in sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar* ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.checkmarx-wrapper-version }}-checkmarx-wrapper"
+          release_title="Checkmarx Wrapper Version ${{ inputs.checkmarx-wrapper-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on Checkmarx Wrapper implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.checkmarx-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.checkmarx-wrapper-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_checkmarx-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-checkmarx/build/libs/sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar
-          asset_name: sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload asset sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar.sha256sum
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_checkmarx-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-checkmarx/build/libs/sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar.sha256sum
-          asset_name: sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar.sha256sum
-          asset_content_type: text/plain
 
       # -----------------------------------------
       # Create release issue
