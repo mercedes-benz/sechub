@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
-import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
@@ -36,9 +34,7 @@ public class ZapScanContext {
 
     private ProxyInformation proxyInformation;
 
-    private ZapFullRuleset fullRuleset;
-
-    private DeactivatedRuleReferences deactivatedRuleReferences;
+    private List<String> zapRuleIDsToDeactivate = new ArrayList<>();
 
     private List<File> apiDefinitionFiles = new ArrayList<>();
 
@@ -108,12 +104,8 @@ public class ZapScanContext {
         return proxyInformation;
     }
 
-    public ZapFullRuleset getFullRuleset() {
-        return fullRuleset;
-    }
-
-    public DeactivatedRuleReferences getDeactivatedRuleReferences() {
-        return deactivatedRuleReferences;
+    public List<String> getZapRuleIDsToDeactivate() {
+        return Collections.unmodifiableList(zapRuleIDsToDeactivate);
     }
 
     public List<File> getApiDefinitionFiles() {
@@ -195,10 +187,6 @@ public class ZapScanContext {
 
         private ProxyInformation proxyInformation;
 
-        private ZapFullRuleset fullRuleset;
-
-        private DeactivatedRuleReferences deactivatedRuleReferences;
-
         private List<File> apiDefinitionFiles = new LinkedList<>();
 
         // Using Set here to avoid duplicates
@@ -221,6 +209,8 @@ public class ZapScanContext {
         private String ajaxSpiderBrowserId;
 
         private File groovyScriptLoginFile;
+
+        private List<String> zapRuleIDsToDeactivate;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -267,13 +257,8 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setFullRuleset(ZapFullRuleset fullRuleset) {
-            this.fullRuleset = fullRuleset;
-            return this;
-        }
-
-        public ZapScanContextBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
-            this.deactivatedRuleReferences = deactivatedRuleReferences;
+        public ZapScanContextBuilder setZapRuleIDsToDeactivate(List<String> zapRuleIDsToDeactivate) {
+            this.zapRuleIDsToDeactivate = zapRuleIDsToDeactivate;
             return this;
         }
 
@@ -351,8 +336,7 @@ public class ZapScanContext {
 
             zapScanContext.proxyInformation = this.proxyInformation;
 
-            zapScanContext.fullRuleset = this.fullRuleset;
-            zapScanContext.deactivatedRuleReferences = this.deactivatedRuleReferences;
+            zapScanContext.zapRuleIDsToDeactivate = this.zapRuleIDsToDeactivate;
 
             zapScanContext.apiDefinitionFiles = this.apiDefinitionFiles;
 

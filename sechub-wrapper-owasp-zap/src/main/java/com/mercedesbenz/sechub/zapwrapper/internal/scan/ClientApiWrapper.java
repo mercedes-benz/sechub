@@ -138,27 +138,49 @@ public class ClientApiWrapper {
      * Disable passive rule by given ruleId.
      *
      * @param ruleId id of the rule that will be disabled
-     * @return api response of ZAP
+     * @return <code>true</code> if the rule was a passive rule and was deactivated,
+     *         <code>false</code> if the rule was not a passive rule and was not
+     *         deactivated
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse disablePassiveScannerRule(String ruleId) throws ClientApiException {
-        LOG.info("Deactivate passive scanner rule: {} ", ruleId);
-        return clientApi.pscan.disableScanners(ruleId);
+    public boolean disablePassiveScannerRule(String ruleId) throws ClientApiException {
+        try {
+            clientApi.pscan.disableScanners(ruleId);
+            LOG.info("Passive scanner rule: {}, was deactivated", ruleId);
+            return true;
+        } catch (ClientApiException e) {
+            if (e.getMessage().equalsIgnoreCase("Provided parameter has illegal or unrecognized value")) {
+                LOG.info("Rule with id: {} was not a passive scanner rule.", ruleId);
+                return false;
+            }
+            throw e;
+        }
     }
 
     /**
-     * Disable the given rule by ID inside the given policy.
+     * Disable the given rule by ID inside the default policy.
      *
      * @param ruleId id of the rule that will be disabled
      * @param policy specifies the policy that will be configured. Configuring
      *               <code>null</code> configures the default policy.
-     * @return api response of ZAP
+     * @return <code>true</code> if the rule was a passive rule and was deactivated,
+     *         <code>false</code> if the rule was not a passive rule and was not
+     *         deactivated
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public ApiResponse disableActiveScannerRuleForDefaultPolicy(String ruleId) throws ClientApiException {
-        LOG.info("Deactivate active scanner rule: {} ", ruleId);
-        // null specifies the default scan policy
-        return clientApi.ascan.disableScanners(ruleId, null);
+    public boolean disableActiveScannerRuleForDefaultPolicy(String ruleId) throws ClientApiException {
+        try {
+            // null specifies the default scan policy
+            clientApi.ascan.disableScanners(ruleId, null);
+            LOG.info("Active scanner rule: {}, was deactivated", ruleId);
+            return true;
+        } catch (ClientApiException e) {
+            if (e.getMessage().equalsIgnoreCase("Provided parameter has illegal or unrecognized value")) {
+                LOG.info("Rule with id: {} was not a passive scanner rule.", ruleId);
+                return false;
+            }
+            throw e;
+        }
     }
 
     /**

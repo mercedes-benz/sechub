@@ -4,8 +4,11 @@ package com.mercedesbenz.sechub.zapwrapper.cli;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.converters.CommaParameterSplitter;
 import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.FileUtilities;
@@ -141,26 +144,13 @@ public class CommandLineSettings {
         return proxyPassword;
     }
 
-    @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Zap.", required = true)
-    private String fullRulesetFile;
+    @Parameter(names = {
+            "--deactivateRules" }, splitter = CommaParameterSplitter.class, variableArity = true, description = "Specify ZAP rule IDs you want to deactivate during the scan. "
+                    + "If you specify multiple rule IDs use comma separated values like: 123,456,789", required = false)
+    private List<String> deactivateRules = new ArrayList<>();
 
-    public File getFullRulesetFile() {
-        return FileUtilities.stringToFile(fullRulesetFile);
-    }
-
-    @Parameter(names = { "--rulesDeactivationfile" }, description = "Specify a file with rules to deactivate during the scan inside the Zap.", required = false)
-    private String rulesDeactvationFile;
-
-    public File getRulesDeactvationFile() {
-        return FileUtilities.stringToFile(rulesDeactvationFile);
-    }
-
-    @Parameter(names = { "--deactivateRules" }, description = "Specify references of rules you want to deactivate during the scan inside the Zap. "
-            + "If you specify multiple rules use comma separated values like: rule1,rule,rule3", required = false)
-    private String deactivatedRuleReferences;
-
-    public String getDeactivatedRuleReferences() {
-        return deactivatedRuleReferences;
+    public List<String> getDeactivateRules() {
+        return deactivateRules;
     }
 
     @Parameter(names = {

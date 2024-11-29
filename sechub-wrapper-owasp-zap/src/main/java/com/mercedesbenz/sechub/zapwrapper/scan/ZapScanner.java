@@ -27,10 +27,6 @@ import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
-import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
-import com.mercedesbenz.sechub.zapwrapper.config.data.Rule;
-import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
-import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.*;
@@ -79,7 +75,7 @@ public class ZapScanner implements ZapScan {
         try {
             /* ZAP setup on local machine */
             setupStandardConfiguration();
-            deactivateRules(scanContext.getFullRuleset(), scanContext.getDeactivatedRuleReferences());
+            deactivateRules();
             setupAdditonalProxyConfiguration(scanContext.getProxyInformation());
             int zapContextId = createContext();
             addXSecHubDASTHeader();
@@ -116,21 +112,14 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH_AJAX_SPIDER);
     }
 
-    void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
-        if (fullRuleset == null || deactivatedRuleReferences == null) {
-            return;
-        }
-        List<RuleReference> rulesReferences = deactivatedRuleReferences.getDeactivatedRuleReferences();
-        if (rulesReferences == null) {
-            return;
-        }
-
-        for (RuleReference ruleRef : rulesReferences) {
-            Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
-            if (isPassiveRule(ruleToDeactivate.getType())) {
-                clientApiWrapper.disablePassiveScannerRule(ruleToDeactivate.getId());
-            } else if (isActiveRule(ruleToDeactivate.getType())) {
-                clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(ruleToDeactivate.getId());
+    void deactivateRules() throws ClientApiException {
+        for (String ruleId : scanContext.getZapRuleIDsToDeactivate()) {
+            boolean wasDeactivated = clientApiWrapper.disablePassiveScannerRule(ruleId);
+            if (!wasDeactivated) {
+                wasDeactivated = clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(ruleId);
+            }
+            if (!wasDeactivated) {
+                LOG.warn("Was not able to deactivate ruleId: {}, because it is not a passive nor an active scanner rule!", ruleId);
             }
         }
     }
@@ -680,14 +669,6 @@ public class ZapScanner implements ZapScan {
         }
         clientApiWrapper.stopActiveScan(scanId);
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
-    }
-
-    private boolean isPassiveRule(String type) {
-        return "passive".equals(type.toLowerCase());
-    }
-
-    private boolean isActiveRule(String type) {
-        return "active".equals(type.toLowerCase());
     }
 
     private UserInformation initBasicAuthentication(int zapContextId, BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {

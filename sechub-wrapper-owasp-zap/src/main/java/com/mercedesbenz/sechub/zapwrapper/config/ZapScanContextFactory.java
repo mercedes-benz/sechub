@@ -13,9 +13,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
-import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
-import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.*;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
@@ -26,7 +23,6 @@ public class ZapScanContextFactory {
 
     private final EnvironmentVariableReader environmentVariableReader;
     private final BaseTargetUriFactory targetUriFactory;
-    private final RuleProvider ruleProvider;
     private final ZapWrapperDataSectionFileSupport dataSectionFileSupport;
     private final SecHubScanConfigProvider secHubScanConfigProvider;
     private final IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper;
@@ -34,18 +30,16 @@ public class ZapScanContextFactory {
     public ZapScanContextFactory() {
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
-        ruleProvider = new RuleProvider();
         dataSectionFileSupport = new ZapWrapperDataSectionFileSupport();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
         includeExcludeToZapURLHelper = new IncludeExcludeToZapURLHelper();
     }
 
-    ZapScanContextFactory(EnvironmentVariableReader environmentVariableReader, BaseTargetUriFactory targetUriFactory, RuleProvider ruleProvider,
+    ZapScanContextFactory(EnvironmentVariableReader environmentVariableReader, BaseTargetUriFactory targetUriFactory,
             ZapWrapperDataSectionFileSupport dataSectionFileSupport, SecHubScanConfigProvider secHubScanConfigProvider,
             IncludeExcludeToZapURLHelper includeExcludeToZapURLHelper) {
         this.environmentVariableReader = environmentVariableReader;
         this.targetUriFactory = targetUriFactory;
-        this.ruleProvider = ruleProvider;
         this.dataSectionFileSupport = dataSectionFileSupport;
         this.secHubScanConfigProvider = secHubScanConfigProvider;
         this.includeExcludeToZapURLHelper = includeExcludeToZapURLHelper;
@@ -55,15 +49,6 @@ public class ZapScanContextFactory {
         if (settings == null) {
             throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
-        /* Zap rule setup */
-        ZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
-        DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromSettingsOrEnv(settings);
-
-        DeactivatedRuleReferences ruleReferencesFromFile = ruleProvider.fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
-        for (RuleReference reference : ruleReferencesFromFile.getDeactivatedRuleReferences()) {
-            deactivatedRuleReferences.addRuleReference(reference);
-        }
-
         /* Wrapper settings */
         ZapServerConfiguration serverConfig = createZapServerConfig(settings);
         ProxyInformation proxyInformation = createProxyInformation(settings);
@@ -106,8 +91,7 @@ public class ZapScanContextFactory {
 												.setServerConfig(serverConfig)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
-												.setFullRuleset(fullRuleset)
-												.setDeactivatedRuleReferences(deactivatedRuleReferences)
+												.setZapRuleIDsToDeactivate(fetchZapRuleIDsToDeactivate(settings))
 												.addApiDefinitionFiles(apiDefinitionFiles)
 												.setClientCertificateFile(clientCertificateFile)
 												.addHeaderValueFiles(headerValueFiles)
@@ -124,34 +108,17 @@ public class ZapScanContextFactory {
         return scanContext;
     }
 
-    private DeactivatedRuleReferences createDeactivatedRuleReferencesFromSettingsOrEnv(CommandLineSettings settings) {
-        LOG.info("Reading rules to deactivate from command line if set.");
-        String deactivatedRuleRefsAsString = settings.getDeactivatedRuleReferences();
+    private List<String> fetchZapRuleIDsToDeactivate(CommandLineSettings settings) {
+        List<String> deactivateRules = settings.getDeactivateRules();
 
-        // if no rules to deactivate were specified via the command line,
-        // look for rules specified via the corresponding env variable
-        if (deactivatedRuleRefsAsString == null) {
-            LOG.info("Reading rules to deactivate from env variable {} if set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
-            deactivatedRuleRefsAsString = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+        if (!deactivateRules.isEmpty()) {
+            return deactivateRules;
         }
-
-        // if no rules to deactivate were set at all, continue without
-        if (deactivatedRuleRefsAsString == null) {
-            LOG.info("Env variable {} was not set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
-            return new DeactivatedRuleReferences();
+        String zapRuleIDsToDeactivate = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+        if (zapRuleIDsToDeactivate == null) {
+            return Collections.emptyList();
         }
-
-        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
-        String[] deactivatedRuleRefs = deactivatedRuleRefsAsString.split(",");
-        for (String ruleRef : deactivatedRuleRefs) {
-            // The info is not needed here, it is only for the JSON file and meant to be
-            // used as an additional description for the user
-            String info = "";
-            RuleReference ref = new RuleReference(ruleRef, info);
-            deactivatedRuleReferences.addRuleReference(ref);
-        }
-
-        return deactivatedRuleReferences;
+        return Arrays.asList(zapRuleIDsToDeactivate.split(","));
     }
 
     private ZapServerConfiguration createZapServerConfig(CommandLineSettings settings) {

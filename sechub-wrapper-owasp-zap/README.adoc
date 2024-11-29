@@ -43,11 +43,9 @@ Usage: ZapWrapper [options]
       wrapper application.
       Default: false
     --deactivateRules
-      Specify references of rules you want to deactivate during the scan 
-      inside the Zap. If you specify multiple rules use comma separated values 
-      like: rule1,rule,rule3
-  * --fullRulesetfile
-      Specify a file with all rules installed for the Zap.
+      Specify ZAP rule IDs you want to deactivate during the scan. If you 
+      specify multiple rule IDs use comma separated values like: 123,456,789
+      Default: []
     --groovyLoginScriptFile
       Groovy script file the ZAP wrapper uses for script based authentication 
       when templates are defined. You can also set the environment variable 
@@ -91,8 +89,6 @@ Usage: ZapWrapper [options]
       Specify the time to wait between connection retries in milliseconds. The 
       value cannot be less than 1000 milliseconds.
       Default: 1000
-    --rulesDeactivationfile
-      Specify a file with rules to deactivate during the scan inside the Zap.
     --sechubConfigfile
       The SecHub config file, containing additonal configurations for the 
       scan. 
@@ -114,95 +110,18 @@ Usage: ZapWrapper [options]
 ----
 
 ==== Deactivate scan rules
-
-To deactivate scan rules you need to specify 2 files using 2 command line arguments.
-
-===== Full ruleset file
-The first file specified using `--fullRulesetfile`, 
-represents the full ruleset of all installed rules inside the Owasp Zap. 
-The default file contains all rules of all release status (alpha, beta, release).
-The following snippet is an example of the file structure:
-
-[source,json]
+Additionally the rules to deactivate can be specified via command line using `--deactivateRules` or via the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
+A comma separated list can be used to deactivate rules by ID.
+Please use comma separated values like:
 ----
-{
-  "timestamp" : "2022-05-13 14:44:00.635104",
-  "origin" : "https://www.zaproxy.org/docs/alerts/",
-  "rules" : {
-    "Directory-Browsing-0" : {
-      "id" : "0",
-      "name" : "Directory Browsing",
-      "type" : "active",
-      "link" : "https://www.zaproxy.org/docs/alerts/0"
-    },
-    "Private-IP-Disclosure-2" : {
-      "id" : "2",
-      "name" : "Private IP Disclosure",
-      "type" : "passive",
-      "link" : "https://www.zaproxy.org/docs/alerts/2"
-    }
-  }
-}
+$ java -jar sechub-pds-wrapperowaspzap-0.0.0.jar --deactivateRules 0,2
 ----
-
-The file above can be generated using the helper Python script link:src/main/resources/owaspzap-ruleset-helper/owaspzap_ruleset_helper.py[owaspzap_ruleset_helper.py].
-Before using this script make sure to install the dependencies using link:src/main/resources/owaspzap-ruleset-helper/requirements.txt[requirements.txt].
-
-If you do not wish to install this on your system, you can use a Python virtual environment.
-Please refer to the official https://docs.python.org/3.10/tutorial/venv.html[*documentation*].
-Depending on your default Python installation you might need to use `pip3`:
-
-* `pip install -r requirements.txt`
-
-The `owaspzap_ruleset_helper.py` has the following command line options:
+Another possibility to deactivate certain rules by ID is the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
 ----
- -h, --help            show this help message and exit
-  --output-file OUTPUT_FILE
-  --rule-release-status [{release,beta,alpha} ...]
-                        Specify values separated by spaces like: release beta alpha
-----
-
-The parameter `--output-file` is required. Make sure the directory exists, since only the file is created if it does not exist.
-
-With `--rule-release-status` you can specify which rules you want to include in the result.
-If you do not specify any restrictions, rules of all release status are included.
-This means `alpha`, `beta` and `release`. Please specify this values separated by spaces as shown above.
-
-
-===== Deactivation file
-
-Additionally you need to specify a file with `--rulesDeactivationfile`,
-which represents the rule by using the `ref` part of the file above.
-For this feature to work, make sure all of the specified rules are installed on your ZAP installation 
-and set a file with `--fullRulesetfile` which contains all installed rules. 
-The following snippet is an example of the file structure:
-
-[source,json]
-----
-{
-  "deactivatedRuleReferences" : [{
-    "ref" : "Directory-Browsing-0",
-    "info" : "Rule was deactivated because of ..."
-  }, {
-    "ref" : "Private-IP-Disclosure-2",
-    "info" : "Rule was deactivated for testing reasons."
-  }]
-}
-----
-
-Additionally the rules to deactivate can be specified via command line using `--deactivateRules`. Please use comma separated values like:
-----
-$ java -jar sechub-pds-wrapperowaspzap-0.30.0.jar --deactivateRules Directory-Browsing-0,Private-IP-Disclosure-2
-----
-Another possibility to deactivate certain rules is the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
-----
-ZAP_DEACTIVATED_RULE_REFERENCES=Directory-Browsing-0,Private-IP-Disclosure-2
+ZAP_DEACTIVATED_RULE_REFERENCES="0,2"
 ----
 But if the command line parameter `--deactivateRules` is set, the wrapper ignores this environment variable.
-The rules to deactivate specified via `--rulesDeactivationfile`, will always be added to the list of deactivated rules.
-To set the env variable you can use `zap.deactivation.rule.references=Directory-Browsing-0,Private-IP-Disclosure-2`,
-inside the executor config.
-
+To set the environment variable the entry `zap.deactivation.rule.references=0,2`, can be used inside the executor config.
 
 ==== Groovy Script Login
 To handle more complex authentication scenarios, the wrapper uses pre-defined groovy scripts.
