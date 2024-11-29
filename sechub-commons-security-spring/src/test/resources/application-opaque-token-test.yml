@@ -2,9 +2,10 @@
 
 sechub:
   security:
-    oauth2:
-      mode: OPAQUE_TOKEN
-      opaque-token:
-        introspection-uri: https://example.org/introspection-uri
-        client-id: example-client-id
-        client-secret: example-client-secret
+    server:
+      oauth2:
+        mode: OPAQUE_TOKEN
+        opaque-token:
+          introspection-uri: https://example.org/introspection-uri
+          client-id: example-client-id
+          client-secret: example-client-secret

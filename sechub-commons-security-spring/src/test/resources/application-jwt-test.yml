@@ -2,7 +2,8 @@
 
 sechub:
   security:
-    oauth2:
-      mode: JWT
-      jwt:
-        jwk-set-uri: https://example.org/jwk-set-uri
+    server:
+      oauth2:
+        mode: JWT
+        jwt:
+          jwk-set-uri: https://example.org/jwk-set-uri

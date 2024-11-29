@@ -32,10 +32,12 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * <p>
  * In a typical setup, the
- * {@link org.springframework.security.oauth2.jwt.JwtDecoder} decodes JWT tokens
- * by integrating with a identity provider. With this configuration, however, we
- * mock the identity provider to avoid external dependencies. Additionally, we
- * mock the user's roles, which are otherwise fetched from the database.
+ * {@link org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector}
+ * introspects the opaque token by calling the introspection endpoint of the
+ * identity provider. With this configuration, however, we mock the identity
+ * provider to avoid external dependencies
+ * {@link TestOAuth2OpaqueTokenSecurityConfiguration}. Additionally, we mock the
+ * user's roles, which are otherwise fetched from the database.
  * </p>
  *
  * <p>
@@ -46,8 +48,7 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * @see AbstractSecurityConfiguration
  * @see com.mercedesbenz.sechub.domain.authorization.AuthUserDetailsService
- * @see OAuth2JwtAuthenticationProvider
- * @see org.springframework.security.oauth2.jwt.JwtDecoder
+ * @see org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
  * @see SecurityConfigurationTest
  *
  * @author hamidonos

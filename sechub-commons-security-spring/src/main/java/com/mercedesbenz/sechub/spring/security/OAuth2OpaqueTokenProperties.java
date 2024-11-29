@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 @ConfigurationProperties(OAuth2OpaqueTokenProperties.PREFIX)
 public class OAuth2OpaqueTokenProperties {
 
-    static final String PREFIX = "sechub.security.oauth2.opaque-token";
+    static final String PREFIX = "sechub.security.server.oauth2.opaque-token";
     private static final String ERR_MSG_FORMAT = "Property '%s.%s' must not be null";
     private static final CryptoAccess<String> CRYPTO_STRING = CryptoAccess.CRYPTO_STRING;
 

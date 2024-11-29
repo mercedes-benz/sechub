@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(OAuth2JwtProperties.PREFIX)
 public class OAuth2JwtProperties {
 
-    static final String PREFIX = "sechub.security.oauth2.jwt";
+    static final String PREFIX = "sechub.security.server.oauth2.jwt";
     private final String jwkSetUri;
 
     OAuth2JwtProperties(String jwkSetUri) {

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(OAuth2OpaqueTokenProperties.class)
-@ConditionalOnProperty(prefix = AbstractSecurityConfiguration.OAUTH2_PROPERTIES_PREFIX, name = AbstractSecurityConfiguration.OAUTH2_PROPERTIES_MODE, havingValue = OAuth2OpaqueTokenPropertiesConfiguration.MODE)
+@ConditionalOnProperty(prefix = AbstractSecurityConfiguration.SERVER_OAUTH2_PROPERTIES_PREFIX, name = AbstractSecurityConfiguration.MODE, havingValue = OAuth2OpaqueTokenPropertiesConfiguration.MODE)
 class OAuth2OpaqueTokenPropertiesConfiguration {
     static final String MODE = "OPAQUE_TOKEN";
 }

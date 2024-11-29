@@ -26,17 +26,17 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 @TestPropertySource(locations = "classpath:application-opaque-token-test.yml", factory = YamlPropertyLoaderFactory.class)
 class OAuth2OpaqueTokenPropertiesTest {
 
-    private final OAuth2OpaqueTokenProperties oAuth2OpaqueTokenProperties;
+    private final OAuth2OpaqueTokenProperties properties;
 
-    OAuth2OpaqueTokenPropertiesTest(@Autowired OAuth2OpaqueTokenProperties oAuth2OpaqueTokenProperties) {
-        this.oAuth2OpaqueTokenProperties = oAuth2OpaqueTokenProperties;
+    OAuth2OpaqueTokenPropertiesTest(@Autowired OAuth2OpaqueTokenProperties properties) {
+        this.properties = properties;
     }
 
     @Test
     void construct_properties_with_opaque_token_enabled_succeeds() {
-        assertThat(oAuth2OpaqueTokenProperties.getIntrospectionUri()).isEqualTo("https://example.org/introspection-uri");
-        assertThat(oAuth2OpaqueTokenProperties.getClientId()).isEqualTo("example-client-id");
-        assertThat(oAuth2OpaqueTokenProperties.getClientSecret()).isEqualTo("example-client-secret");
+        assertThat(properties.getIntrospectionUri()).isEqualTo("https://example.org/introspection-uri");
+        assertThat(properties.getClientId()).isEqualTo("example-client-id");
+        assertThat(properties.getClientSecret()).isEqualTo("example-client-secret");
     }
 
     /* @formatter:off */
@@ -53,7 +53,7 @@ class OAuth2OpaqueTokenPropertiesTest {
     /* @formatter:on */
 
     @Configuration
-    @Import({ OAuth2OpaqueTokenPropertiesConfiguration.class, OAuth2JwtPropertiesConfiguration.class })
+    @Import({ OAuth2OpaqueTokenPropertiesConfiguration.class, OAuth2OpaqueTokenPropertiesConfiguration.class })
     static class TestConfig {
     }
 
@@ -62,9 +62,9 @@ class OAuth2OpaqueTokenPropertiesTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             /* @formatter:off */
             return Stream.of(
-                    Arguments.of(null, "example-client-id", "example-client-secret", "Property 'sechub.security.oauth2.opaque-token.introspection-uri' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", "Property 'sechub.security.oauth2.opaque-token.client-id' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, "Property 'sechub.security.oauth2.opaque-token.client-secret' must not be null")
+                    Arguments.of(null, "example-client-id", "example-client-secret", "Property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", "Property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, "Property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null")
             );
             /* @formatter:on */
         }

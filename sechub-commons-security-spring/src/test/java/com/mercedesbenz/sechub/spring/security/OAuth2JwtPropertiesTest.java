@@ -19,15 +19,15 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 @TestPropertySource(locations = "classpath:application-jwt-test.yml", factory = YamlPropertyLoaderFactory.class)
 class OAuth2JwtPropertiesTest {
 
-    private final OAuth2JwtProperties oAuth2JwtProperties;
+    private final OAuth2JwtProperties properties;
 
-    OAuth2JwtPropertiesTest(@Autowired OAuth2JwtProperties oAuth2JwtProperties) {
-        this.oAuth2JwtProperties = oAuth2JwtProperties;
+    OAuth2JwtPropertiesTest(@Autowired OAuth2JwtProperties properties) {
+        this.properties = properties;
     }
 
     @Test
     void construct_properties_with_jwt_enabled_succeeds() {
-        assertThat(oAuth2JwtProperties.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
+        assertThat(properties.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
     }
 
     /* @formatter:off */
@@ -35,12 +35,12 @@ class OAuth2JwtPropertiesTest {
     void construct_properties_with_jwk_set_uri_null_fails() {
         assertThatThrownBy(() -> new OAuth2JwtProperties(null))
                 .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("Property 'sechub.security.oauth2.jwt.jwk-set-uri' must not be null");
+                .hasMessageContaining("Property 'sechub.security.server.oauth2.jwt.jwk-set-uri' must not be null");
     }
     /* @formatter:on */
 
     @Configuration
-    @Import({ OAuth2JwtPropertiesConfiguration.class, OAuth2OpaqueTokenPropertiesConfiguration.class })
+    @Import(OAuth2JwtPropertiesConfiguration.class)
     static class TestConfig {
     }
 }

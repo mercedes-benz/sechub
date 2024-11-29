@@ -60,7 +60,7 @@ public class TestOAuth2OpaqueTokenSecurityConfiguration {
     TestOAuth2OpaqueTokenSecurityConfiguration(RestTemplate restTemplate,
                                                OAuth2OpaqueTokenProperties oAuth2OpaqueTokenProperties) {
 
-        when(restTemplate.postForObject(eq(oAuth2OpaqueTokenProperties.getIntrospectionUri()), any(), eq(OpaqueTokenResponse.class))).thenAnswer(invocation -> {
+        when(restTemplate.postForObject(eq(oAuth2OpaqueTokenProperties.getIntrospectionUri()), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenAnswer(invocation -> {
             HttpEntity<MultiValueMap<String, String>> request = invocation.getArgument(1);
             String token = requireNonNull(request.getBody()).getFirst(TOKEN);
             boolean isActive = false;
@@ -91,7 +91,7 @@ public class TestOAuth2OpaqueTokenSecurityConfiguration {
                 subject = USER_ID;
             }
 
-            return new OpaqueTokenResponse(isActive,
+            return new OAuth2OpaqueTokenIntrospectionResponse(isActive,
                     "scope",
                     "client-id",
                     "client-type",
@@ -108,9 +108,9 @@ public class TestOAuth2OpaqueTokenSecurityConfiguration {
     /**
      * Here we mock the {@link UserDetailsService} to return a
      * {@link TestUserDetails} object based on the user id (or subject). The subject
-     * is determined by the {@link Base64OAuth2OpaqueTokenIntrospector} component.
-     * Depending on the user id, the {@link TestUserDetails} object will contain the
-     * corresponding authorities.
+     * is determined by the {@link OAuth2OpaqueTokenIntrospector}
+     * component. Depending on the user id, the {@link TestUserDetails} object will
+     * contain the corresponding authorities.
      */
     @Bean
     UserDetailsService userDetailsService() {

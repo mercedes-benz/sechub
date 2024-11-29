@@ -59,15 +59,17 @@ import org.springframework.web.client.RestTemplate;
  */
 public abstract class AbstractSecurityConfiguration {
 
-    static final String OAUTH2_PROPERTIES_PREFIX = "sechub.security.oauth2";;
-    static final String OAUTH2_PROPERTIES_MODE = "mode";
+	static final String ACCESS_TOKEN = "access_token";
+	static final String LOGIN_PROPERTIES_PREFIX = "sechub.security.login";
+    static final String SERVER_OAUTH2_PROPERTIES_PREFIX = "sechub.security.server.oauth2";;
+    static final String MODE = "mode";
 
     /* @formatter:off */
     @Bean
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity,
 									@Autowired(required = false) UserDetailsService userDetailsService,
 									RestTemplate restTemplate,
-									@Autowired(required = false) OAuth2JwtProperties oAuth2JwtProperties,
+									@Autowired(required = false) OAuth2JwtProperties OAuth2JwtProperties,
 									@Autowired(required = false) OAuth2OpaqueTokenProperties oAuth2OpaqueTokenProperties,
 									@Autowired(required = false) JwtDecoder jwtDecoder) throws Exception {
 
@@ -83,10 +85,10 @@ public abstract class AbstractSecurityConfiguration {
 				throw new NoSuchBeanDefinitionException(UserDetailsService.class);
 			}
 
-			if ((oAuth2JwtProperties == null && oAuth2OpaqueTokenProperties == null) || (oAuth2JwtProperties != null && oAuth2OpaqueTokenProperties != null)) {
+			if ((OAuth2JwtProperties == null && oAuth2OpaqueTokenProperties == null) || (OAuth2JwtProperties != null && oAuth2OpaqueTokenProperties != null)) {
 				String exMsg = "Either JWT or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
-						OAUTH2_PROPERTIES_PREFIX,
-						OAUTH2_PROPERTIES_MODE,
+						SERVER_OAUTH2_PROPERTIES_PREFIX,
+						MODE,
 						OAuth2JwtPropertiesConfiguration.MODE,
 						OAuth2OpaqueTokenPropertiesConfiguration.MODE
 				);
@@ -94,7 +96,7 @@ public abstract class AbstractSecurityConfiguration {
 				throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
 			}
 
-			if (oAuth2JwtProperties != null) {
+			if (OAuth2JwtProperties != null) {
 				if (jwtDecoder == null) {
 					throw new NoSuchBeanDefinitionException(JwtDecoder.class);
 				}
@@ -109,7 +111,7 @@ public abstract class AbstractSecurityConfiguration {
 			}
 
 			if (oAuth2OpaqueTokenProperties != null) {
-				OpaqueTokenIntrospector opaqueTokenIntrospector = new Base64OAuth2OpaqueTokenIntrospector(
+				OpaqueTokenIntrospector opaqueTokenIntrospector = new OAuth2OpaqueTokenIntrospector(
 						restTemplate,
 						oAuth2OpaqueTokenProperties.getIntrospectionUri(),
 						oAuth2OpaqueTokenProperties.getClientId(),

@@ -1,0 +1,4 @@
+sechub:
+  security:
+    encryption:
+      secret-key: test-test-test-test-test-test-32

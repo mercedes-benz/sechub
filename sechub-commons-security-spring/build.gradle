@@ -10,7 +10,9 @@ dependencies {
     implementation project(':sechub-commons-core')
     implementation project(':sechub-testframework-spring')
     implementation library.springboot_starter_security
+    implementation library.springboot_starter_oauth2_client
     implementation library.springboot_starter_oauth2_resource_server
+    implementation library.jakarta_servlet_api
 
     testImplementation library.springframework_web
     testImplementation library.springframework_webmvc

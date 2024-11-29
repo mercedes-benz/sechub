@@ -42,6 +42,7 @@ projectType = [
                     project(':sechub-developertools'),
                     project(':sechub-test'),
                     project(':sechub-commons-security-spring'),
+                    project(':sechub-commons-security-login-spring'),
                     project(':sechub-testframework-spring'),
                     project(':sechub-storage-sharedvolume-spring'),
 
@@ -85,6 +86,7 @@ projectType = [
                     project(':sechub-notification'),
                     project(':sechub-sereco'),
                     project(':sechub-shared-kernel'),
+                    project(':sechub-web'),
 
                     project(':sechub-scan'),
                     project(':sechub-scan-product-pds'),

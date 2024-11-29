@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+
+sechub:
+  security:
+    login:
+      enabled: true
+      redirect-uri: example.org/redirect-uri
+      modes:
+        - oauth2
+      oauth2:
+        client-id: client-id
+        client-secret: client-secret
+        provider: provider
+        redirect-uri: redirect-uri
+        issuer-uri: issuer-uri
+        authorization-uri: authorization-uri
+        token-uri: token-uri
+        user-info-uri: user-info-uri

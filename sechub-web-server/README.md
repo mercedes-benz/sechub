@@ -23,13 +23,13 @@ This will enable configurations suitable for local development and testing.
 
 ## Running the application in OAuth2 Mode
 
-To run the application in OAuth2 mode, include the `oauth2-enabled` profile.
+To run the application in OAuth2 mode, include the `oauth2` profile.
 
-Note: The `web-server_prod` profile includes the `oauth2-enabled` profile.
+Note: The `web-server_prod` profile includes the `oauth2` profile.
 
-Make sure that you either provide a valid `application-oauth2-enabled.yml` file in the `src/main/resources` directory or set the required environment variables.
+Make sure that you either provide a valid `application-oauth2.yml` file in the `src/main/resources` directory or set the required environment variables.
 
-Example `application-oauth2-enabled.yml`:
+Example `application-oauth2.yml`:
 
 ```yaml
 sechub:

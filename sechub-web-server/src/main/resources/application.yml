@@ -14,8 +14,8 @@ spring:
     basename: "i18n/messages"
   profiles:
     group:
-      web-server_prod: "ssl-cert-required,oauth2-enabled"
-      web-server_int: "ssl-cert-required,oauth2-enabled,classic-auth-enabled"
+      web-server_prod: "ssl-cert-required,oauth2"
+      web-server_int: "ssl-cert-required,oauth2,classic-auth-enabled"
       web-server_dev: "ssl-cert-provided,classic-auth-enabled"
       web-server_local: "ssl-cert-provided,classic-auth-enabled,local"
       web-server_test: "test"
