@@ -134,7 +134,7 @@ jobs:
         shell: bash
         run: |
           cd sechub-wrapper-xray/build/libs/
-          sha256sum sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar > sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
+          sha256sum sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar > sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
 
       - name: Create Xray Wrapper ${{ inputs.xray-wrapper-version }} release draft
         shell: bash
@@ -142,7 +142,7 @@ jobs:
           assets=()
           echo "# Adding release artifacts"
           cd sechub-wrapper-xray/build/libs/
-          for asset in sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum ; do
+          for asset in sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar* ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")

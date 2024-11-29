@@ -135,7 +135,7 @@ jobs:
         shell: bash
         run: |
           cd sechub-wrapper-owasp-zap/build/libs/
-          sha256sum sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar > sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
+          sha256sum sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar > sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum
 
       - name: Create OWASP-ZAP Wrapper ${{ inputs.owaspzap-wrapper-version }} release draft
         shell: bash
@@ -143,7 +143,7 @@ jobs:
           assets=()
           echo "# Adding release artifacts"
           cd sechub-wrapper-owasp-zap/build/libs/
-          for asset in sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum ; do
+          for asset in sechub-pds-wrapperowaspzap-${{ inputs.owaspzap-wrapper-version }}.jar* ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")

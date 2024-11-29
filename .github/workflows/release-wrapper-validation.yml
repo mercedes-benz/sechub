@@ -142,7 +142,7 @@ jobs:
           assets=()
           echo "# Adding release artifacts"
           cd sechub-wrapper-secretvalidation/build/libs/
-          for asset in sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar.sha256sum ; do
+          for asset in sechub-wrapper-secretvalidation-${{ inputs.secretvalidation-wrapper-version }}.jar* ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")
