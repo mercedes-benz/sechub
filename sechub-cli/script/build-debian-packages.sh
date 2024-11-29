@@ -5,7 +5,7 @@ set -e
 # Debian packaging data
 DEB_PACKAGE_NAME="sechub-client"
 DEB_SECTION="misc"
-DEB_MAINTAINER="SecHub FOSS team <sechub@example.org>"
+DEB_MAINTAINER="SecHub FOSS team <sechub-foss@mercedes-benz.com>"
 DEB_HOMEPAGE="https://github.com/mercedes-benz/sechub"
 DEB_DESCRIPTION="The SecHub command line client. See $DEB_HOMEPAGE"
 DEB_BIN_PATH="usr/bin" # Where to place the SecHub client executable on install
