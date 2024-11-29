@@ -130,7 +130,7 @@ jobs:
       # ******************************************
       # Checkmarx Wrapper release
       # ******************************************
-      - name: Prepare Checkmarx Wrapper ${{ inputs.pds-tools-version }} release artifacts
+      - name: Prepare Checkmarx Wrapper ${{ inputs.checkmarx-wrapper-version }} release artifacts
         shell: bash
         run: |
           cd sechub-wrapper-checkmarx/build/libs/
