@@ -1,39 +1,39 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <v-card 
-  class="mr-auto"
-  color="background_paper"
-  width="70%"
+  <v-card
+    class="mr-auto"
+    color="background_paper"
+    width="70%"
+  >
+    <v-toolbar
+      color="background_paper"
+      width="70%"
     >
-  <v-toolbar 
-  color="background_paper" 
-  width="70%" >
-    <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
-  </v-toolbar>
-
+      <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
+    </v-toolbar>
 
     <v-list
-    lines="two"
-    bg-color="background_paper"
+      bg-color="background_paper"
+      lines="two"
     >
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
-        :value="item"
-        rounded="lg"
-        class="ma-5"
         background="red"
-        >
-          <template v-slot:prepend>
-              <v-icon :icon="item.icon" :class="getIconClass(item)"></v-icon>
-          </template>
-          <template v-slot:title>
-              <span>{{ item.text }}</span>
-          </template>
-          <template v-slot:subtitle>
-            <span  v-if="item.owned">({{ $t('OWNED') }})</span>
-            <span v-else>({{ $t('MEMBER') }})</span>
-          </template>
+        class="ma-5"
+        rounded="lg"
+        :value="item"
+      >
+        <template #prepend>
+          <v-icon :class="getIconClass(item)" :icon="item.icon" />
+        </template>
+        <template #title>
+          <span>{{ item.text }}</span>
+        </template>
+        <template #subtitle>
+          <span v-if="item.owned">({{ $t('OWNED') }})</span>
+          <span v-else>({{ $t('MEMBER') }})</span>
+        </template>
       </v-list-item>
     </v-list>
   </v-card>
@@ -49,10 +49,10 @@
       ],
     }),
     methods: {
-    getIconClass(item) {
-      return item.owned ? 'project-owned' : '';
+      getIconClass (item) {
+        return item.owned ? 'project-owned' : ''
+      },
     },
-  },
   }
 </script>
 
