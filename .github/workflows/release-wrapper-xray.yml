@@ -36,6 +36,9 @@ jobs:
       # ----------------------
       # Setup + Caching
       # ----------------------
+      - name: Install required packages
+        run: sudo apt-get -y install hub
+
       - name: Set up JDK 17
         uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
         with:
@@ -124,50 +127,36 @@ jobs:
       - name: Assert releasable
         run: ./gradlew assertReleaseable
 
-      - name: Create Xray Wrapper release
-        id: create_xray-wrapper_release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.xray-wrapper-version }}-xray-wrapper
-          commitish: master
-          release_name: Xray Wrapper Version ${{ inputs.xray-wrapper-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on Xray Wrapper implementation
-
-            For more details please look at [Milestone ${{inputs.xray-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.xray-wrapper-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      # -----------------------------------------
-      # Upload release artifacts
-      # -----------------------------------------
-      - name: Create files and sha256 checksum for Xray Wrapper jar
+      # ******************************************
+      # Xray Wrapper release
+      # ******************************************
+      - name: Prepare Xray Wrapper ${{ inputs.xray-wrapper-version }} release artifacts
+        shell: bash
         run: |
           cd sechub-wrapper-xray/build/libs/
-          sha256sum sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar > sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
+          sha256sum sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar > sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
 
-      - name: Upload asset sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+      - name: Create Xray Wrapper ${{ inputs.xray-wrapper-version }} release draft
+        shell: bash
+        run: |
+          assets=()
+          echo "# Adding release artifacts"
+          cd sechub-wrapper-xray/build/libs/
+          for asset in sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar sechub-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.xray-wrapper-version }}-xray-wrapper"
+          release_title="Xray Wrapper Version ${{ inputs.xray-wrapper-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on Xray Wrapper implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.xray-wrapper-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.xray-wrapper-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_xray-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-xray/build/libs/sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar
-          asset_name: sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload asset sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_xray-wrapper_release.outputs.upload_url }}
-          asset_path: sechub-wrapper-xray/build/libs/sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
-          asset_name: sechub-pds-wrapper-xray-${{ inputs.xray-wrapper-version }}.jar.sha256sum
-          asset_content_type: text/plain
 
       # -----------------------------------------
       # Create release issue
