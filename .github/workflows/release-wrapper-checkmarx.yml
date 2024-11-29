@@ -142,7 +142,7 @@ jobs:
           assets=()
           echo "# Adding release artifacts"
           cd sechub-wrapper-checkmarx/build/libs/
-          for asset in * ; do
+          for asset in sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar sechub-wrapper-checkmarx-${{ inputs.checkmarx-wrapper-version }}.jar.sha256sum ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")

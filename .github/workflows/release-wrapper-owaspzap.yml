@@ -131,7 +131,7 @@ jobs:
       # ******************************************
       # OWASP-ZAP Wrapper release
       # ******************************************
-      - name: Prepare OWASP-ZAP Wrapper ${{ inputs.pds-tools-version }} release artifacts
+      - name: Prepare OWASP-ZAP Wrapper ${{ inputs.owaspzap-wrapper-version }} release artifacts
         shell: bash
         run: |
           cd sechub-wrapper-owasp-zap/build/libs/
@@ -143,7 +143,7 @@ jobs:
           assets=()
           echo "# Adding release artifacts"
           cd sechub-wrapper-owasp-zap/build/libs/
-          for asset in * ; do
+          for asset in sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar sechub-wrapper-owasp-zap-${{ inputs.owaspzap-wrapper-version }}.jar.sha256sum ; do
             filename=`basename "$asset"`
             echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")
