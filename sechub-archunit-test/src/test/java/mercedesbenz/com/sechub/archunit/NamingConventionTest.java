@@ -19,6 +19,7 @@ public class NamingConventionTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
@@ -46,6 +47,7 @@ public class NamingConventionTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreJarFiles)
