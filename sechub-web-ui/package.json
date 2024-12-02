@@ -14,7 +14,7 @@
     "core-js": "^3.37.1",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
-    "vue-i18n": "^10.0.4",
+    "vue-i18n": "^10.0.5",
     "vuetify": "^3.6.11"
   },
   "devDependencies": {
