@@ -119,7 +119,7 @@ public class ZapScanner implements ZapScan {
                 wasDeactivated = clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(ruleId);
             }
             if (!wasDeactivated) {
-                LOG.warn("Was not able to deactivate ruleId: {}, because it is not a passive nor an active scanner rule!", ruleId);
+                LOG.warn("Unable to deactivate ruleId: {}, as it is neither a passive nor an active scanner rule!", ruleId);
             }
         }
     }

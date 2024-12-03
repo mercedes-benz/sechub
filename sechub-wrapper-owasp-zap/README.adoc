@@ -110,8 +110,8 @@ Usage: ZapWrapper [options]
 ----
 
 ==== Deactivate scan rules
-Additionally the rules to deactivate can be specified via command line using `--deactivateRules` or via the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
-A comma separated list can be used to deactivate rules by ID.
+The rules to deactivate can be specified via command line using `--deactivateRules` or via the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
+A comma separated list must be used to deactivate rules by ID. The IDs can be found in the ID column https://www.zaproxy.org/docs/alerts/.
 Please use comma separated values like:
 ----
 $ java -jar sechub-pds-wrapperowaspzap-0.0.0.jar --deactivateRules 0,2
