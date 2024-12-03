@@ -115,11 +115,7 @@ include 'sechub-cli',
 'sechub-examples:example-sechub-api-java',
 
 /* SecHub Web UI */
-'sechub-web',
-'sechub-web-server',
 'sechub-web-server-solution'
-
-
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

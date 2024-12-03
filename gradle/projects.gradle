@@ -86,7 +86,6 @@ projectType = [
                     project(':sechub-notification'),
                     project(':sechub-sereco'),
                     project(':sechub-shared-kernel'),
-                    project(':sechub-web'),
 
                     project(':sechub-scan'),
                     project(':sechub-scan-product-pds'),
@@ -105,12 +104,10 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-web-server'),
                    project(':sechub-wrapper-secretvalidation'),
             ],
 
             springBootWebApplicationProjects:[
-                    project('sechub-web-server')
             ],
 
             /* documentation projects */
