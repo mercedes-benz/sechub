@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -35,20 +34,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 class TestSecurityConfiguration extends AbstractSecurityConfiguration {
 
-    private final Environment environment;
-
-    TestSecurityConfiguration(Environment environment) {
-        this.environment = environment;
-    }
-
     @Bean
     RestTemplate restTemplate() {
         return mock();
-    }
-
-    @Override
-    protected boolean isOAuth2Enabled() {
-        return environment.matchesProfiles("oauth2");
     }
 
     @Override

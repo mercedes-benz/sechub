@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -56,7 +55,6 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 @SuppressWarnings("JavadocReference")
 @WebMvcTest
 @TestPropertySource(locations = "classpath:application-opaque-token-test.yml", factory = YamlPropertyLoaderFactory.class)
-@ActiveProfiles("oauth2")
 class OAuth2OpaqueTokenIntegrationTest {
 
     /**
@@ -135,7 +133,7 @@ class OAuth2OpaqueTokenIntegrationTest {
     }
 
     @Configuration
-    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, OAuth2OpaqueTokenPropertiesConfiguration.class })
+    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, AES256Encryption.class })
     static class TestConfig {
 
         @Bean

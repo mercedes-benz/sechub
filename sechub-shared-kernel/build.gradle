@@ -12,7 +12,6 @@ plugins {
 dependencies {
 
     implementation project(':sechub-commons-security-spring')
-
     api project(':sechub-commons-model')
     api project(':sechub-commons-archive')
     api project(':sechub-storage-core')

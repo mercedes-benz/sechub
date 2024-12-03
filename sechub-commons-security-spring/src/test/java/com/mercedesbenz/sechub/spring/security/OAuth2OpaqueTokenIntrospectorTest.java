@@ -93,7 +93,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     void introspect_with_inactive_token_fails() {
         /* prepare */
         OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.FALSE, null);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
 
         /* execute & assert */
         /* @formatter:off */
@@ -108,7 +109,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
         /* prepare */
         long expiresAt = 3600L;
         OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
@@ -134,7 +136,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
         /* prepare */
         Instant now = Instant.now();
         OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 

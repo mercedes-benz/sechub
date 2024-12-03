@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * successful authentication. This handler redirects the user to the specified
  * <code>redirectUri</code>.
  *
- * @see LoginSecurityConfiguration
+ * @see AbstractSecurityConfiguration
  *
  * @author hamidonos
  */

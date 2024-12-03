@@ -9,10 +9,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * <code>OAuth2OpaqueTokenIntrospectionResponse</code> represents the response from the OAuth2
- * opaque token introspection endpoint. It contains various properties related
- * to the token, such as its active status, scope, client ID, client type,
- * username, token type, expiration time, subject, audience, and group type.
+ * <code>OAuth2OpaqueTokenIntrospectionResponse</code> represents the response
+ * from the OAuth2 opaque token introspection endpoint. It contains various
+ * properties related to the token, such as its active status, scope, client ID,
+ * client type, username, token type, expiration time, subject, audience, and
+ * group type.
  *
  * <p>
  * The <code>active</code> property is required and indicates whether the token

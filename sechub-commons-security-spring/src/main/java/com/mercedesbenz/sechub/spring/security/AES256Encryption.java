@@ -10,14 +10,11 @@ import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
-// TODO: move to a central place
 @Component
-@EnableConfigurationProperties(AES256EncryptionProperties.class)
 public class AES256Encryption {
 
     private static final String TRANSFORMATION = "AES";
@@ -27,8 +24,8 @@ public class AES256Encryption {
     private final Cipher decrypt;
     private final SealedObject sealedSecretKey;
 
-    AES256Encryption(AES256EncryptionProperties properties) throws GeneralSecurityException {
-        SecretKey secretKey = new SecretKeySpec(properties.getSecretKeyBytes(), TRANSFORMATION);
+    AES256Encryption(SecurityProperties securityProperties) throws GeneralSecurityException {
+        SecretKey secretKey = new SecretKeySpec(securityProperties.getEncryption().getSecretKey().getBytes(StandardCharsets.UTF_8), TRANSFORMATION);
         this.sealedSecretKey = secretKeyCryptoAccess.seal(secretKey);
 
         this.encrypt = Cipher.getInstance(TRANSFORMATION);

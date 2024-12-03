@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * {@code MissingAuthenticationEntryPointHandler} implements
  * {@link AuthenticationEntryPoint} to provide custom behavior upon missing or
  * invalid authentication. This class is used by Spring's
- * <i>oauth2ResourceServer</i> configuration to redirect the user to the login
- * page if the user is not authenticated.
+ * <i>oauth2ResourceServer</i> configuration to redirect the user to the
+ * specified location if the user is not authenticated.
  *
  * @author hamidonos
  */

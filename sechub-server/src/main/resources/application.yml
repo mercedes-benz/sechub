@@ -8,7 +8,48 @@ sechub:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
-    
+
+    # TODO: Albert: Move this into separate properties files
+
+    # This will configure the SecHub Server to function as a 'resource server'.
+    # In resource server mode the SecHub Server will only validate tokens and not issue them.
+    # Validation can be done in two modes: 'jwt' or 'opaque'.
+    # In jwt mode the SecHub Server will validate the tokens using public keys from the issuer.
+    # In opaque token mode the SecHub Server will call an introspection uri to validate the token for every request.
+    #
+    # For classic mode the server will accept basic auth credentials.
+    server:
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/certs
+
+    # Here the SecHub Server can be configured to offer a login page.
+    # With this the SecHub Server will become an authentication issuer providing the client with tokens that he can
+    # use to authenticate against the SecHub Server for subsequent requests.
+    login:
+      enabled: true
+      login-page: /login
+      redirect-uri: https://www.google.com
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        client-id: web-ui-server-local
+        client-secret: n8Ka5Wnkl9tv3rbPzeHt8KQ7CsEy7o5x
+        provider: keycloak
+        redirect-uri: https://localhost:8443/login/oauth2/code/keycloak
+        issuer-uri: http://localhost:8080/realms/local-realm
+        authorization-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/auth
+        token-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/token
+        user-info-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/userinfo
+        jwk-set-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/certs
+    encryption:
+      secret-key: aB3xYz8KpL9mQw2VcT1sNj7FuW4vEp0Z
+
 spring:
   profiles:
     group:
@@ -58,6 +99,10 @@ spring:
       max-request-size: 5MB
       resolve-lazily: true
       enabled: true
+  web:
+    resources:
+      static-locations: classpath:/static
+
 # --------------------------------------
 # - Security
 # --------------------------------------

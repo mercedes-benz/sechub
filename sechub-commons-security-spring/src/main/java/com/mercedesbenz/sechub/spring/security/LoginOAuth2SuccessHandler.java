@@ -35,8 +35,6 @@ import jakarta.servlet.http.HttpServletResponse;
  * and encoded using {@link Base64}.
  * </p>
  *
- * @see LoginSecurityConfiguration
- * @see LoginOAuth2Properties
  * @see OAuth2AuthorizedClientService
  *
  * @author hamidonos
@@ -48,17 +46,17 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private static final int DEFAULT_EXPIRY_SECONDS = 3600;
     private static final String BASE_PATH = "/";
 
-    private final LoginOAuth2Properties loginOAuth2Properties;
+    private final String provider;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final AES256Encryption aes256Encryption;
     private final String redirectUri;
 
     /* @formatter:off */
-    public LoginOAuth2SuccessHandler(LoginOAuth2Properties loginOAuth2Properties,
+    public LoginOAuth2SuccessHandler(String provider,
                                      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
                                      AES256Encryption aes256Encryption,
                                      String redirectUri) {
-        this.loginOAuth2Properties = requireNonNull(loginOAuth2Properties, "Property loginOAuth2Properties must not be null");
+        this.provider = requireNonNull(provider, "Property provider must not be null");
         this.oAuth2AuthorizedClientService = requireNonNull(oAuth2AuthorizedClientService, "Property oAuth2AuthorizedClientService must not be null");
         this.aes256Encryption = requireNonNull(aes256Encryption, "Property aes256Encryption must not be null");
         this.redirectUri = requireNonNull(redirectUri, "Property redirectUri must not be null");
@@ -81,8 +79,7 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private OAuth2AccessToken getAccessTokenFromAuthentication(Authentication authentication) {
-        OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient(loginOAuth2Properties.getProvider(),
-                authentication.getName());
+        OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient(provider, authentication.getName());
         return oAuth2AuthorizedClient.getAccessToken();
     }
 

@@ -24,10 +24,9 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
  *
  * <p>
  * The {@link org.springframework.security.oauth2.jwt.JwtDecoder} is employed to
- * decode the JWT token, extracting the username by interacting with the
- * identity provider. This username is then utilized to retrieve user details
- * from the user details service. These details are subsequently used to create
- * a
+ * decode the JWT token, extracting the username by decoding the JWT. This
+ * username is then utilized to retrieve user details from the user details
+ * service. These details are subsequently used to create a
  * {@link org.springframework.security.authentication.UsernamePasswordAuthenticationToken},
  * which encapsulates information about the authenticated user and their roles.
  * </p>

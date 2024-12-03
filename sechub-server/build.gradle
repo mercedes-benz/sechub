@@ -14,7 +14,7 @@ dependencies {
 
     api project(':sechub-server-core')
     implementation project(':sechub-adapter') // necessary because of adapter mocking factory methods
-    
+
     implementation(library.flyway)
     implementation(library.apache_commons_fileupload2_core)
     implementation(library.apache_commons_fileupload2_jakarta)

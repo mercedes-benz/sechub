@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 import java.security.GeneralSecurityException;
 import java.util.Base64;
@@ -13,13 +14,14 @@ import org.opentest4j.TestAbortedException;
 class AES256EncryptionTest {
 
     private static final String VALID_AES_256_TEST_SECRET_KEY = "test-test-test-test-test-test-32";
-    private static final AES256EncryptionProperties aes256EncryptionProperties = new AES256EncryptionProperties(VALID_AES_256_TEST_SECRET_KEY);
+    private static final SecurityProperties securityProperties = new SecurityProperties(mock(), mock(),
+            new SecurityProperties.Encryption(VALID_AES_256_TEST_SECRET_KEY));
     private static final AES256Encryption aes256Encryption;
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
 
     static {
         try {
-            aes256Encryption = new AES256Encryption(aes256EncryptionProperties);
+            aes256Encryption = new AES256Encryption(securityProperties);
         } catch (GeneralSecurityException e) {
             throw new TestAbortedException("Failed to prepare AES256EncryptionTest", e);
         }
