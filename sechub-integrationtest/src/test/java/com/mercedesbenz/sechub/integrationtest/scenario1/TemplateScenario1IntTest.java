@@ -136,7 +136,7 @@ public class TemplateScenario1IntTest {
         as(SUPER_ADMIN).deleteTemplate(templateId);
 
         /* test 5.1 check delete unassigns template */
-        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplates()).contains(templateId));
+        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplateIds()).contains(templateId));
 
         /* test 5.2 check template no longer exists */
         executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchTemplateDefinitionOrNull(templateId)).isNull());
@@ -147,7 +147,7 @@ public class TemplateScenario1IntTest {
         as(SUPER_ADMIN).unassignTemplateFromProject(templateId, Scenario1.PROJECT_1);
 
         /* test 4 - check assignment */
-        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplates()).isEmpty());
+        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplateIds()).isEmpty());
         executeResilient(() -> assertThat(fetchScanProjectConfigurations(Scenario1.PROJECT_1)).isEmpty());
     }
 
@@ -157,7 +157,7 @@ public class TemplateScenario1IntTest {
         as(SUPER_ADMIN).assignTemplateToProject(templateId, Scenario1.PROJECT_1);
 
         /* test 3.1 - check assignment by project details in domain administration */
-        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplates()).contains(templateId));
+        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplateIds()).contains(templateId));
 
         /* test 3.2 - check project scan configuration in domain scan */
         executeResilient(() -> {

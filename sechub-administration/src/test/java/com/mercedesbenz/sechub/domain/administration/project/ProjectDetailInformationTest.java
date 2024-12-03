@@ -38,7 +38,7 @@ class ProjectDetailInformationTest {
         when(project.getOwner()).thenReturn(owner);
         when(project.getMetaData()).thenReturn(Set.of(metaDataEntity));
         when(project.getUsers()).thenReturn(Set.of(user1, user2));
-        when(project.getTemplates()).thenReturn(Set.of("template1", "template2"));
+        when(project.getTemplateIds()).thenReturn(Set.of("template1", "template2"));
 
         /* execute */
         ProjectDetailInformation toTest = new ProjectDetailInformation(project);
@@ -49,7 +49,7 @@ class ProjectDetailInformationTest {
         assertThat(toTest.getOwner()).isEqualTo("owner1");
         assertThat(toTest.getUsers()).contains("user1", "user2");
         assertThat(toTest.getWhiteList()).contains("https://example.com");
-        assertThat(toTest.getTemplates()).contains("template1", "template2");
+        assertThat(toTest.getTemplateIds()).contains("template1", "template2");
         assertThat(toTest.getMetaData()).containsEntry("key1", "value1");
 
     }

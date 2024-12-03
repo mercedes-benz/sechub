@@ -44,7 +44,7 @@ public class Project {
     public static final String COLUMN_METADATA = "METADATA_KEY";
 
     public static final String COLUMN_PROJECT_ACCESS_LEVEL = "PROJECT_ACCESS_LEVEL";
-    public static final String COLUMN_TEMPLATES = "PROJECT_TEMPLATES";
+    public static final String COLUMN_TEMPLATE_ID = "PROJECT_TEMPLATE_ID";
 
     public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
     public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
@@ -91,10 +91,10 @@ public class Project {
     @OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = ProjectMetaDataEntity.PROPERTY_PROJECT_ID)
     Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 
-    @Column(name = COLUMN_TEMPLATES, nullable = false)
+    @Column(name = COLUMN_TEMPLATE_ID, nullable = false)
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @CollectionTable(name = TABLE_NAME_PROJECT_TEMPLATES)
-    Set<String> templates = new HashSet<>();
+    Set<String> templateIds = new HashSet<>();
 
     @Version
     @Column(name = "VERSION")
@@ -135,8 +135,8 @@ public class Project {
         return accessLevel;
     }
 
-    public Set<String> getTemplates() {
-        return templates;
+    public Set<String> getTemplateIds() {
+        return templateIds;
     }
 
     @Override

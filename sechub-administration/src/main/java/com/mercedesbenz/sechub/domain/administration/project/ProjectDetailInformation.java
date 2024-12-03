@@ -23,7 +23,7 @@ public class ProjectDetailInformation {
 
     private List<String> users = new ArrayList<>();
     private List<String> whitelist = new ArrayList<>();
-    private List<String> templates = new ArrayList<>();
+    private List<String> templateIds = new ArrayList<>();
     private Map<String, String> metaData = new HashMap<>();
     private String owner;
     private String description;
@@ -44,7 +44,7 @@ public class ProjectDetailInformation {
 
         project.getMetaData().forEach(entry -> this.metaData.put(entry.key, entry.value));
 
-        project.getTemplates().forEach(templateid -> this.templates.add(templateid));
+        project.getTemplateIds().forEach(templateid -> this.templateIds.add(templateid));
 
         this.owner = project.getOwner().getName();
 
@@ -81,7 +81,7 @@ public class ProjectDetailInformation {
         return accessLevel;
     }
 
-    public List<String> getTemplates() {
-        return templates;
+    public List<String> getTemplateIds() {
+        return templateIds;
     }
 }

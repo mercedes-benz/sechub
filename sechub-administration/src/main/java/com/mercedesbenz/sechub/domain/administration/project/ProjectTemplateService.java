@@ -56,18 +56,18 @@ public class ProjectTemplateService {
         assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
-        Set<String> templates = project.getTemplates();
-        LOG.debug("Start assigning template '{}' to project '{}'. Formerly assgined templates : {}", templateId, projectId, templates);
+        Set<String> templateIds = project.getTemplateIds();
+        LOG.debug("Start assigning template '{}' to project '{}'. Formerly assgined templates : {}", templateId, projectId, templateIds);
 
         SecHubProjectTemplates result = sendAssignRequestAndFetchResult(templateId, projectId);
-        List<String> newTemplates = result.getTemplateIds();
-        templates.clear();
-        templates.addAll(newTemplates);
+        List<String> newTemplateIds = result.getTemplateIds();
+        templateIds.clear();
+        templateIds.addAll(newTemplateIds);
 
         projectTansactionService.saveInOwnTransaction(project);
         LOG.info("Assigned template '{}' to project '{}'", templateId, projectId);
 
-        LOG.debug("Project '{}' has now following templates: {}", templateId, projectId, templates);
+        LOG.debug("Project '{}' has now following templates: {}", projectId, templateIds);
 
     }
 
@@ -83,18 +83,18 @@ public class ProjectTemplateService {
         assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
-        Set<String> templates = project.getTemplates();
-        LOG.debug("Start unassigning template '{}' from project '{}'. Formerly assgined templates : {}", templateId, projectId, templates);
+        Set<String> templateIds = project.getTemplateIds();
+        LOG.debug("Start unassigning template '{}' from project '{}'. Formerly assgined templates : {}", templateId, projectId, templateIds);
 
         SecHubProjectTemplates result = sendUnassignRequestAndFetchResult(templateId, projectId);
-        List<String> newTemplates = result.getTemplateIds();
-        templates.clear();
-        templates.addAll(newTemplates);
+        List<String> newTemplateIds = result.getTemplateIds();
+        templateIds.clear();
+        templateIds.addAll(newTemplateIds);
 
         projectTansactionService.saveInOwnTransaction(project);
         LOG.info("Unassigned template '{}' from project '{}'", templateId, projectId);
 
-        LOG.debug("Project '{}' has now following templates: {}", templateId, projectId, templates);
+        LOG.debug("Project '{}' has now following templates: {}", projectId, templateIds);
 
     }
 
