@@ -2,5 +2,6 @@
     "GREETING": "Welcome",
     "PROJECTS": "Projects",
     "OWNED": "owned",
-    "MEMBER": "member"
+    "MEMBER": "member",
+    "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects."
 }
