@@ -8,13 +8,13 @@ import { PlayIcon } from '@heroicons/vue/20/solid';
     <div class="container">
       <div class="lg:grid lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
         <div class="relative z-10 mx-auto max-w-2xl lg:col-span-7 lg:max-w-none lg:pt-6 xl:col-span-6">
-          <h1 class="text-4xl font-medium tracking-tight text-gray-900">SecHub Tool</h1>
+          <h1 class="text-4xl font-medium tracking-tight text-gray-900">SecHub - One API to secure them all</h1>
           <p class="mt-6 text-lg text-gray-600">
             The free and open-source security platform SecHub, provides a central API to test software with different
             security tools. SecHub supports many free and open-source as well as proprietary security tools.
           </p>
           <div class="mt-8 flex flex-wrap gap-x-6 gap-y-4">
-            <NuxtLink class="button is-outlined !w-auto" to="https://www.youtube.com/">
+            <NuxtLink class="button is-outlined !w-auto" to="https://www.youtube.com/watch?v=W0IRX4glrT0">
               <PlayIcon class="size-4 flex-none" />
               <span class="ml-2">See in action</span>
             </NuxtLink>
