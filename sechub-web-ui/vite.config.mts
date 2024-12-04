@@ -76,6 +76,15 @@ export default defineConfig({
     ],
   },
   server: {
+    // configuration for local dev server
     port: 3000,
+    // configuration to avoid CORS errors (as long as not impl. in server backend)
+    proxy: {
+      '/api': {
+        target: 'https://localhost:8443',
+        changeOrigin: true,
+        secure: false,
+      }
+    },
   },
 })
