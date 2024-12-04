@@ -102,29 +102,40 @@ spec:
           limits:
             memory: "{{ .Values.memory.container }}"
         ports:
-        - name: sechub-https
-          containerPort: 8443
-        - name: debug
-          containerPort: 5005
+          - name: health-port
+            containerPort: 10250
+          - name: https-port
+            containerPort: 8443
         startupProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: sechub-https
-          failureThreshold: 24
-          periodSeconds: 5
+            port: https-port
+          initialDelaySeconds: 10
+          periodSeconds: 1
+          # probe every 1s x 600 = 10 mins before restart of container
+          failureThreshold: 600
           successThreshold: 1
           timeoutSeconds: 1
-          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /actuator/health/readiness
+            port: health-port
+          periodSeconds: 2
+          failureThreshold: 2
+          successThreshold: 1
+          timeoutSeconds: 1
         livenessProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: sechub-https
+            port: https-port
+          periodSeconds: 20
+          # probe every 20s x 3 = 60s before restart of container
           failureThreshold: 3
-          periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 3
+          timeoutSeconds: 10
         volumeMounts:
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub/secrets/secret-ssl
