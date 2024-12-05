@@ -19,7 +19,7 @@ const items = [
   {
     title: 'Easy to use Client',
     description:
-      'The SecHub client written in Go and is easy to use on your system of choice.',
+      'The SecHub client is written in Go and easy to use on your system of choice.',
     icon: PuzzlePieceIcon
   },
   {
