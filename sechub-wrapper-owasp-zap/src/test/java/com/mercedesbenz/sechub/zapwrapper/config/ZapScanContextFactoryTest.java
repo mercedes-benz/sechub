@@ -348,8 +348,7 @@ class ZapScanContextFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "", "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096",
-            "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096,Cross-Domain-Misconfiguration-10098" })
+    @ValueSource(strings = { "", "40026,10096", "40026,10096,10098" })
     void rules_to_deactivate_returned_by_command_line_parameter_is_inside_result(String value) {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();

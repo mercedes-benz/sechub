@@ -8,6 +8,10 @@ import java.io.File;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
@@ -30,18 +34,25 @@ class SecHubScanConfigProviderTest {
         environmentVariableReader = mock();
     }
 
-    @Test
-    void fetch_sechub_web_config_when_file_and_env_variable_are_not_set_results_in_empty_sechub_config() {
+    @ParameterizedTest
+    @NullSource
+    @EmptySource
+    @ValueSource(strings = {"     ", "\n", "\r"})
+    void fetch_sechub_web_config_when_file_and_env_variable_are_not_set_results_in_empty_sechub_config(String json) {
+        /* prepare */
+        when(environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_SCAN_CONFIGURATION)).thenReturn(json);
+
         /* execute */
-        SecHubScanConfiguration sechubScanConfig = providerToTest.fetchSecHubScanConfiguration(null, null);
+        SecHubScanConfiguration sechubScanConfig = providerToTest.fetchSecHubScanConfiguration(null, environmentVariableReader);
 
         /* test */
         assertTrue(sechubScanConfig.getWebScan().isEmpty());
-        verify(environmentVariableReader, never()).readAsString(EnvironmentVariableConstants.PDS_SCAN_CONFIGURATION);
+        verify(environmentVariableReader).readAsString(EnvironmentVariableConstants.PDS_SCAN_CONFIGURATION);
     }
 
     @Test
-    void fetch_sechub_web_config_when_file_is_not_set_butenv_variable_is_set_results_in_config_from_env_variable() {
+    void fetch_sechub_web_config_when_file_is_not_set_but_env_variable_is_set_results_in_config_from_env_variable() {
+        /* prepare */
         String json = """
                 {
                   "apiVersion" : "1.0",
@@ -90,7 +101,7 @@ class SecHubScanConfigProviderTest {
         File testFile = new File("src/test/resources/sechub-config-examples/basic-auth.json");
 
         /* execute */
-        SecHubWebScanConfiguration sechubWebConfig = providerToTest.fetchSecHubScanConfiguration(testFile, null).getWebScan().get();
+        SecHubWebScanConfiguration sechubWebConfig = providerToTest.fetchSecHubScanConfiguration(testFile, environmentVariableReader).getWebScan().get();
 
         /* test */
         assertEquals(sechubWebConfig.getUrl().toString(), "https://127.0.0.1:8080");

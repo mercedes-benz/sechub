@@ -11,8 +11,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openqa.selenium.Cookie;
 import org.zaproxy.clientapi.core.ClientApiException;
 
@@ -32,13 +30,7 @@ class ZapScriptLoginSessionConfiguratorTest {
     void beforeEach() {
         jwtSupport = mock();
 
-        clientApiWrapper = mock(ClientApiWrapper.class, new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                // Return the same response for any method call
-                return null;
-            }
-        });
+        clientApiWrapper = mock();
 
         sessionConfiguratorToTest = new ZapScriptLoginSessionConfigurator(jwtSupport);
     }
