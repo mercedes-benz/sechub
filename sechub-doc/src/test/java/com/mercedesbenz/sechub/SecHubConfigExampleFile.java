@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub;
 
-public enum ExampleFile {
+public enum SecHubConfigExampleFile {
 
     DATA_SECTION_EXAMPLE_1("src/docs/asciidoc/documents/shared/configuration/sechub_config_data_section_general_example1.json"),
 
@@ -41,12 +41,11 @@ public enum ExampleFile {
 
     WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP("src/docs/asciidoc/documents/shared/configuration/sechub_config_example21_webscan_login_form_with_totp.json"),
 
-    PDS_PARAM_TEMPLATE_META_DATA_SYNTAX("src/docs/asciidoc/documents/shared/snippet/pds-param-template-metadata-syntax.json");
     ;
 
     private String path;
 
-    private ExampleFile(String path) {
+    private SecHubConfigExampleFile(String path) {
         this.path = path;
     }
 
