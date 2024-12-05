@@ -121,7 +121,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-			post(apiEndpoint, TEST_TEMPLATE_ID1).
+			put(apiEndpoint, TEST_TEMPLATE_ID1).
 			contentType(MediaType.APPLICATION_JSON_VALUE).
 	        content(content).
 	        header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())

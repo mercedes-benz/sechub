@@ -3918,7 +3918,7 @@ paths:
         - Other
         
   /api/admin/template/{templateId}:
-    post:
+    put:
       summary: Admin creates or updates a template
       description: An administrator wants to create a new template or to update a template definition
       operationId: adminCreateOrUpdateTemplate

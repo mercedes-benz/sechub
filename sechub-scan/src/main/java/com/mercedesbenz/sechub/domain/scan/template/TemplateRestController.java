@@ -45,7 +45,7 @@ public class TemplateRestController {
     LogSanitizer logSanitizer;
 
     @UseCaseAdminCreatesOrUpdatesTemplate(@Step(number = 1, next = 2, name = "REST API call to create or update template", needsRestDoc = true))
-    @RequestMapping(path = "/template/{templateId}", method = RequestMethod.POST)
+    @RequestMapping(path = "/template/{templateId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public void createOrUpdate(@RequestBody TemplateDefinition templateDefinition, @PathVariable("templateId") String templateId) {
 

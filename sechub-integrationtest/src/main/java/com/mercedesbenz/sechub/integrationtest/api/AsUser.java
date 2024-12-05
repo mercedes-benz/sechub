@@ -1433,7 +1433,7 @@ public class AsUser {
 
     public AsUser createOrUpdateTemplate(String templateId, TemplateDefinition definition) {
         String url = getUrlBuilder().buildAdminCreatesOrUpdatesTemplate(templateId);
-        getRestHelper().postJson(url, definition.toFormattedJSON());
+        getRestHelper().putJSON(url, definition.toFormattedJSON());
         return this;
     }
 
