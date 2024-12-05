@@ -13,12 +13,13 @@ import { PlayIcon } from '@heroicons/vue/20/solid';
             The free and open-source security platform SecHub, provides a central API to test software with different
             security tools. SecHub supports many free and open-source as well as proprietary security tools.
           </p>
-          <div class="mt-8 flex flex-wrap gap-x-6 gap-y-4">
+          <!-- Activate next block after Video has been updated -->
+          <!--div class="mt-8 flex flex-wrap gap-x-6 gap-y-4">
             <NuxtLink class="button is-outlined !w-auto" to="https://www.youtube.com/watch?v=W0IRX4glrT0">
               <PlayIcon class="size-4 flex-none" />
               <span class="ml-2">See in action</span>
             </NuxtLink>
-          </div>
+          </div-->
         </div>
         <div class="relative mt-10 sm:mt-20 lg:col-span-5 lg:row-span-2 lg:mt-0 xl:col-span-6">
           <AbstractDoubleCircularAnimation />
