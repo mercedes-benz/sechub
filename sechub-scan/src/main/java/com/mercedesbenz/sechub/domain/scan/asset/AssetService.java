@@ -66,30 +66,34 @@ public class AssetService {
     }
     /* @formatter:on */
 
-    @UseCaseAdminUploadsAssetFile(@Step(number = 2, name = "Service tries to upload file for asset", description = "Uploaded file will be stored in database and in storage"))
-    public void uploadAssetFile(String assetId, MultipartFile multipartFile, String checkSum) {
+    @UseCaseAdminDeletesAssetCompletely(@Step(number = 2, name = "Services deletes all asset parts"))
+    @Transactional
+    public void deleteAsset(String assetId) throws IOException {
         inputAssertion.assertIsValidAssetId(assetId);
 
-        inputAssertion.assertIsValidSha256Checksum(checkSum);
+        repository.deleteAssetFilesHavingAssetId(assetId);
+        storageService.createAssetStorage(assetId).deleteAll();
+    }
 
-        String fileName = assertAssetFile(multipartFile);
+    @UseCaseAdminDeletesOneFileFromAsset(@Step(number = 2, name = "Services deletes file from asset"))
+    public void deleteAssetFile(String assetId, String fileName) throws IOException {
+        inputAssertion.assertIsValidAssetId(assetId);
+        inputAssertion.assertIsValidAssetFileName(fileName);
 
-        handleChecksumValidation(fileName, multipartFile, checkSum, assetId);
+        repository.deleteById(AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build());
+        storageService.createAssetStorage(assetId).delete(fileName);
+    }
 
-        try {
-            /* now store */
-            byte[] bytes = multipartFile.getBytes();
-            persistFileAndChecksumInDatabase(fileName, bytes, checkSum, assetId);
+    @UseCaseAdminDownloadsAssetFile(@Step(number = 2, name = "Service downloads asset file from database"))
+    public void downloadAssetFile(String assetId, String fileName, ServletOutputStream outputStream) throws IOException {
+        inputAssertion.assertIsValidAssetId(assetId);
+        inputAssertion.assertIsValidAssetFileName(fileName);
 
-            ensureAssetFileInStorageAvailableAndHasSameChecksumAsInDatabase(fileName, assetId);
+        notNull(outputStream, "output stream may not be null!");
 
-            LOG.info("Successfully uploaded file '{}' for asset '{}'", fileName, assetId);
+        AssetFile assetFile = assertAssetFileFromDatabase(assetId, fileName);
+        outputStream.write(assetFile.getData());
 
-        } catch (IOException e) {
-            throw new SecHubRuntimeException("Was not able to upload file '" + fileName + "' for asset '" + assetId + "'", e);
-        } catch (ConfigurationFailureException e) {
-            throw new IllegalStateException("A configuration failure should not happen at this point!", e);
-        }
     }
 
     /**
@@ -143,83 +147,6 @@ public class AssetService {
 
     }
 
-    private void persistFileAndChecksumInDatabase(String fileName, byte[] bytes, String checkSum, String assetId) throws IOException {
-        /* delete if exists */
-        AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
-        repository.deleteById(key);
-
-        AssetFile assetFile = new AssetFile(key);
-        assetFile.setChecksum(checkSum);
-        assetFile.setData(bytes);
-
-        repository.save(assetFile);
-    }
-
-    private String assertAssetFile(MultipartFile file) {
-        notNull(file, "file may not be null!");
-        String fileName = file.getOriginalFilename();
-
-        inputAssertion.assertIsValidAssetFileName(fileName);
-
-        long fileSize = file.getSize();
-
-        if (fileSize <= 0) {
-            throw new BadRequestException("Uploaded asset file may not be empty!");
-        }
-        return fileName;
-    }
-
-    private void handleChecksumValidation(String fileName, MultipartFile file, String checkSum, String assetid) {
-        try (InputStream inputStream = file.getInputStream()) {
-            /* validate */
-            assertCheckSumCorrect(checkSum, inputStream);
-
-        } catch (IOException e) {
-            LOG.error("Was not able to validate uploaded file checksum for file '{}' in asset '{}'", fileName, assetid, e);
-            throw new SecHubRuntimeException("Was not able to validate uploaded asset checksum");
-        }
-    }
-
-    private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
-        if (!checkSumSupport.hasCorrectSha256Checksum(checkSum, inputStream)) {
-            LOG.error("Uploaded file has incorrect sha256 checksum! Something must have happened during the upload.");
-            throw new NotAcceptableException("Sourcecode checksum check failed");
-        }
-    }
-
-    private void storeStream(String fileName, String checkSum, AssetStorage assetStorage, long fileSize, InputStream inputStream) throws IOException {
-        assetStorage.store(fileName, inputStream, fileSize);
-
-        long checksumSizeInBytes = checkSum.getBytes().length;
-        assetStorage.store(createFileNameForChecksum(fileName), new StringInputStream(checkSum), checksumSizeInBytes);
-    }
-
-    private String createFileNameForChecksum(String fileName) {
-        return fileName + DOT_CHECKSUM;
-    }
-
-    @UseCaseAdminDownloadsAssetFile(@Step(number = 2, name = "Service downloads asset file from database"))
-    public void downloadAssetFile(String assetId, String fileName, ServletOutputStream outputStream) throws IOException {
-        inputAssertion.assertIsValidAssetId(assetId);
-        inputAssertion.assertIsValidAssetFileName(fileName);
-
-        notNull(outputStream, "output stream may not be null!");
-
-        AssetFile assetFile = assertAssetFileFromDatabase(assetId, fileName);
-        outputStream.write(assetFile.getData());
-
-    }
-
-    private AssetFile assertAssetFileFromDatabase(String assetId, String fileName) {
-        AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
-        Optional<AssetFile> result = repository.findById(key);
-        if (result.isEmpty()) {
-            throw new NotFoundException("For asset:" + assetId + " no file with name:" + fileName + " exists!");
-        }
-        AssetFile assetFile = result.get();
-        return assetFile;
-    }
-
     @UseCaseAdminFetchesAssetIds(@Step(number = 2, name = "Service fetches all asset ids from database"))
     public List<String> fetchAllAssetIds() {
         return repository.fetchAllAssetIds();
@@ -253,22 +180,95 @@ public class AssetService {
         return data;
     }
 
-    @UseCaseAdminDeletesOneFileFromAsset(@Step(number = 2, name = "Services deletes file from asset"))
-    public void deleteAssetFile(String assetId, String fileName) throws IOException {
+    @UseCaseAdminUploadsAssetFile(@Step(number = 2, name = "Service tries to upload file for asset", description = "Uploaded file will be stored in database and in storage"))
+    public void uploadAssetFile(String assetId, MultipartFile multipartFile, String checkSum) {
         inputAssertion.assertIsValidAssetId(assetId);
-        inputAssertion.assertIsValidAssetFileName(fileName);
 
-        repository.deleteById(AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build());
-        storageService.createAssetStorage(assetId).delete(fileName);
+        inputAssertion.assertIsValidSha256Checksum(checkSum);
+
+        String fileName = assertAssetFile(multipartFile);
+
+        handleChecksumValidation(fileName, multipartFile, checkSum, assetId);
+
+        try {
+            /* now store */
+            byte[] bytes = multipartFile.getBytes();
+            persistFileAndChecksumInDatabase(fileName, bytes, checkSum, assetId);
+
+            ensureAssetFileInStorageAvailableAndHasSameChecksumAsInDatabase(fileName, assetId);
+
+            LOG.info("Successfully uploaded file '{}' for asset '{}'", fileName, assetId);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to upload file '" + fileName + "' for asset '" + assetId + "'", e);
+        } catch (ConfigurationFailureException e) {
+            throw new IllegalStateException("A configuration failure should not happen at this point!", e);
+        }
     }
 
-    @UseCaseAdminDeletesAssetCompletely(@Step(number = 2, name = "Services deletes all asset parts"))
-    @Transactional
-    public void deleteAsset(String assetId) throws IOException {
-        inputAssertion.assertIsValidAssetId(assetId);
+    private String assertAssetFile(MultipartFile file) {
+        notNull(file, "file may not be null!");
+        String fileName = file.getOriginalFilename();
 
-        repository.deleteAssetFilesHavingAssetId(assetId);
-        storageService.createAssetStorage(assetId).deleteAll();
+        inputAssertion.assertIsValidAssetFileName(fileName);
+
+        long fileSize = file.getSize();
+
+        if (fileSize <= 0) {
+            throw new BadRequestException("Uploaded asset file may not be empty!");
+        }
+        return fileName;
+    }
+
+    private AssetFile assertAssetFileFromDatabase(String assetId, String fileName) {
+        AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
+        Optional<AssetFile> result = repository.findById(key);
+        if (result.isEmpty()) {
+            throw new NotFoundException("For asset:" + assetId + " no file with name:" + fileName + " exists!");
+        }
+        AssetFile assetFile = result.get();
+        return assetFile;
+    }
+
+    private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
+        if (!checkSumSupport.hasCorrectSha256Checksum(checkSum, inputStream)) {
+            LOG.error("Uploaded file has incorrect sha256 checksum! Something must have happened during the upload.");
+            throw new NotAcceptableException("Sourcecode checksum check failed");
+        }
+    }
+
+    private String createFileNameForChecksum(String fileName) {
+        return fileName + DOT_CHECKSUM;
+    }
+
+    private void handleChecksumValidation(String fileName, MultipartFile file, String checkSum, String assetid) {
+        try (InputStream inputStream = file.getInputStream()) {
+            /* validate */
+            assertCheckSumCorrect(checkSum, inputStream);
+
+        } catch (IOException e) {
+            LOG.error("Was not able to validate uploaded file checksum for file '{}' in asset '{}'", fileName, assetid, e);
+            throw new SecHubRuntimeException("Was not able to validate uploaded asset checksum");
+        }
+    }
+
+    private void persistFileAndChecksumInDatabase(String fileName, byte[] bytes, String checkSum, String assetId) throws IOException {
+        /* delete if exists */
+        AssetFileCompositeKey key = AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build();
+        repository.deleteById(key);
+
+        AssetFile assetFile = new AssetFile(key);
+        assetFile.setChecksum(checkSum);
+        assetFile.setData(bytes);
+
+        repository.save(assetFile);
+    }
+
+    private void storeStream(String fileName, String checkSum, AssetStorage assetStorage, long fileSize, InputStream inputStream) throws IOException {
+        assetStorage.store(fileName, inputStream, fileSize);
+
+        long checksumSizeInBytes = checkSum.getBytes().length;
+        assetStorage.store(createFileNameForChecksum(fileName), new StringInputStream(checkSum), checksumSizeInBytes);
     }
 
 }

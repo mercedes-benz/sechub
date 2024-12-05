@@ -41,6 +41,7 @@ public enum ExampleFile {
 
     WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP("src/docs/asciidoc/documents/shared/configuration/sechub_config_example21_webscan_login_form_with_totp.json"),
 
+    PDS_PARAM_TEMPLATE_META_DATA_SYNTAX("src/docs/asciidoc/documents/shared/snippet/pds-param-template-metadata-syntax.json");
     ;
 
     private String path;

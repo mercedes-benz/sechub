@@ -1,7 +1,7 @@
   [ //<1>
     {
         "templateId" : "templateId", //<2>
-        "tempplateType": "WEBSCAN_LOGIN", //<3>
+        "templateType": "WEBSCAN_LOGIN", //<3>
          
         "assetData" : { //<4>
                 "assetId" : "assetId", //<5>

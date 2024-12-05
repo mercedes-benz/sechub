@@ -59,7 +59,7 @@ class AssetFileInformationTest {
         info1.setFileName(sameFileName);
 
         AssetFileData info2 = new AssetFileData();
-        info1.setChecksum("cecksum-2");
+        info2.setChecksum("checksum-2");
         info2.setFileName(sameFileName);
 
         /* execute + test */
@@ -76,7 +76,7 @@ class AssetFileInformationTest {
         info1.setFileName("file-1");
 
         AssetFileData info2 = new AssetFileData();
-        info1.setChecksum("cecksum-2");
+        info2.setChecksum("checksum-2");
         info2.setFileName("file-2");
 
         /* execute + test */

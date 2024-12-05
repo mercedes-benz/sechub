@@ -52,7 +52,7 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
         }
         this.relativePath = volumePath.relativize(rootLocation).toAbsolutePath().normalize();
 
-        LOG.debug("Created {} with releative path:{}, volumePath: {}", getClass().getSimpleName(), relativePath, volumePath);
+        LOG.debug("Created {} with relative path:{}, volumePath: {}", getClass().getSimpleName(), relativePath, volumePath);
     }
 
     @Override
@@ -114,7 +114,7 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
 
         Path path = getPathToFile(name);
         if (!Files.exists(path)) {
-            LOG.debug("File '{}' did not exis in volumePatht: {}, skip deletion", name, volumePath);
+            LOG.debug("File '{}' did not exist in volumePath: {}, skip deletion", name, volumePath);
             return;
         }
         Files.delete(path);

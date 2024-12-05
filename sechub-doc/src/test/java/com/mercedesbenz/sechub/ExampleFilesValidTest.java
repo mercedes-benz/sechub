@@ -13,7 +13,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.commons.model.login.*;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -308,6 +311,28 @@ class ExampleFilesValidTest {
         assertEquals(8, totp.getTokenLength());
         assertEquals(TOTPHashAlgorithm.HMAC_SHA256, totp.getHashAlgorithm());
         assertEquals(EncodingType.BASE64, totp.getEncodingType());
+    }
+
+    @Test
+    void pds_param_template_metadata_array_syntax_example_is_valid() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(ExampleFile.PDS_PARAM_TEMPLATE_META_DATA_SYNTAX.getPath());
+
+        /* execute */
+        List<PDSTemplateMetaData> result = JSONConverter.get().fromJSONtoListOf(PDSTemplateMetaData.class, json);
+
+        /* test */
+        assertEquals(1, result.size());
+        PDSTemplateMetaData data = result.iterator().next();
+        assertEquals("templateId", data.getTemplateId());
+        assertEquals(TemplateType.WEBSCAN_LOGIN, data.getTemplateType());
+
+        PDSAssetData assetData = data.getAssetData();
+        assertNotNull(assetData);
+        assertEquals("assetId", assetData.getAssetId());
+        assertEquals("fileChecksum", assetData.getChecksum());
+        assertEquals("fileName", assetData.getFileName());
+
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {
