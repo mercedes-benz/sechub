@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectTemplateData;
 
-public class SecHubProjectTemplatesMessageDataProvider implements MessageDataProvider<SecHubProjectTemplates> {
+public class SecHubProjectTemplatesMessageDataProvider implements MessageDataProvider<SecHubProjectTemplateData> {
 
     @Override
-    public SecHubProjectTemplates get(String json) {
+    public SecHubProjectTemplateData get(String json) {
         if (json == null) {
             return null;
         }
-        return SecHubProjectTemplates.fromString(json);
+        return SecHubProjectTemplateData.fromString(json);
     }
 
     @Override
-    public String getString(SecHubProjectTemplates data) {
+    public String getString(SecHubProjectTemplateData data) {
         if (data == null) {
             return null;
         }

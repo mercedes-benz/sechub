@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 
 public class SecHubProjectToTemplateMessageDataProvider implements MessageDataProvider<SecHubProjectToTemplate> {
 

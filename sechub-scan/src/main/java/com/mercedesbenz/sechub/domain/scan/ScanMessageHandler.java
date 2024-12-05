@@ -19,8 +19,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -37,6 +35,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectTemplateData;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectAccessLevel;
 
@@ -192,7 +192,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     @IsSendingSyncMessageAnswer(value = MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT, answeringTo = MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT, branchName = "success")
     private DomainMessageSynchronousResult templateAssignmentDone(String projectId, Set<String> assignedTemplates) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT);
-        SecHubProjectTemplates templates = new SecHubProjectTemplates();
+        SecHubProjectTemplateData templates = new SecHubProjectTemplateData();
         templates.setProjectId(projectId);
         templates.getTemplateIds().addAll(assignedTemplates);
 
@@ -209,7 +209,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     @IsSendingSyncMessageAnswer(value = MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT, answeringTo = MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT, branchName = "success")
     private DomainMessageSynchronousResult templateUnassignmentDone(String projectId, Set<String> assignedTemplates) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT);
-        SecHubProjectTemplates templates = new SecHubProjectTemplates();
+        SecHubProjectTemplateData templates = new SecHubProjectTemplateData();
         templates.setProjectId(projectId);
         templates.getTemplateIds().addAll(assignedTemplates);
 

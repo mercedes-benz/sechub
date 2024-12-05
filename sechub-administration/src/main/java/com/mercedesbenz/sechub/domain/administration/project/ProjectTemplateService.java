@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -20,6 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectTemplateData;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsTemplateFromProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -52,23 +52,7 @@ public class ProjectTemplateService {
 					description = "The service will request the template assignment in domain 'scan' via synchronous event and updates mapping in domain 'administration' afterwards"))
 	/* @formatter:on */
     public void assignTemplateToProject(String templateId, String projectId) {
-        assertion.assertIsValidTemplateId(templateId);
-        assertion.assertIsValidProjectId(projectId);
-
-        Project project = projectRepository.findOrFailProject(projectId);
-        Set<String> templateIds = project.getTemplateIds();
-        LOG.debug("Start assigning template '{}' to project '{}'. Formerly assgined templates : {}", templateId, projectId, templateIds);
-
-        SecHubProjectTemplates result = sendAssignRequestAndFetchResult(templateId, projectId);
-        List<String> newTemplateIds = result.getTemplateIds();
-        templateIds.clear();
-        templateIds.addAll(newTemplateIds);
-
-        projectTansactionService.saveInOwnTransaction(project);
-        LOG.info("Assigned template '{}' to project '{}'", templateId, projectId);
-
-        LOG.debug("Project '{}' has now following templates: {}", projectId, templateIds);
-
+        changeTemplateAssignment(templateId, projectId, (t, p) -> fetchAssignRequestResult(t, p), "assigned to");
     }
 
     /* @formatter:off */
@@ -79,69 +63,71 @@ public class ProjectTemplateService {
                     description = "The service will request the template unassignment in domain 'scan' via synchronous event and updates mapping in domain 'administration' afterwards"))
     /* @formatter:on */
     public void unassignTemplateFromProject(String templateId, String projectId) {
+        changeTemplateAssignment(templateId, projectId, (t, p) -> fetchUnassignmentRequestResult(t, p), "unassigned from");
+    }
+
+    private void changeTemplateAssignment(String templateId, String projectId, TemplateChangeResultFetcher fetcher, String assignOrUnassignInfo) {
         assertion.assertIsValidTemplateId(templateId);
         assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
         Set<String> templateIds = project.getTemplateIds();
-        LOG.debug("Start unassigning template '{}' from project '{}'. Formerly assgined templates : {}", templateId, projectId, templateIds);
+        LOG.debug("Project '{}' has following template ids: {}", projectId, templateIds);
 
-        SecHubProjectTemplates result = sendUnassignRequestAndFetchResult(templateId, projectId);
+        SecHubProjectTemplateData result = fetcher.fetchTemplateAssignmentChangeResult(templateId, projectId);
         List<String> newTemplateIds = result.getTemplateIds();
         templateIds.clear();
         templateIds.addAll(newTemplateIds);
 
         projectTansactionService.saveInOwnTransaction(project);
-        LOG.info("Unassigned template '{}' from project '{}'", templateId, projectId);
+        LOG.info("Template '{}' has been {} project '{}'", templateId, assignOrUnassignInfo, projectId);
 
-        LOG.debug("Project '{}' has now following templates: {}", projectId, templateIds);
-
+        LOG.debug("Project '{}' has following template ids: {}", projectId, templateIds);
     }
 
     @IsSendingSyncMessage(MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT)
-    private SecHubProjectTemplates sendAssignRequestAndFetchResult(String templateId, String projectId) {
-
-        DomainMessage message = new DomainMessage(MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT);
-        SecHubProjectToTemplate mapping = new SecHubProjectToTemplate();
-        mapping.setProjectId(projectId);
-        mapping.setTemplateId(templateId);
-        message.set(MessageDataKeys.PROJECT_TO_TEMPLATE, mapping);
-
-        DomainMessageSynchronousResult result = eventBus.sendSynchron(message);
-        if (result.hasFailed()) {
-            throw new NotAcceptableException("Was not able to assign template to project.\nReason:" + result.getErrorMessage());
-        }
-
-        MessageID messageID = result.getMessageId();
-        if (!(MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT.equals(messageID))) {
-            throw new IllegalStateException("Result message id not supported: " + messageID);
-        }
-
-        return result.get(MessageDataKeys.PROJECT_TEMPLATES);
+    private SecHubProjectTemplateData fetchAssignRequestResult(String templateId, String projectId) {
+        return sendSynchronousProjectTemplateChangeEvent(templateId, projectId, MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT,
+                MessageID.RESULT_ASSIGN_TEMPLATE_TO_PROJECT);
 
     }
 
     @IsSendingSyncMessage(MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT)
-    private SecHubProjectTemplates sendUnassignRequestAndFetchResult(String templateId, String projectId) {
+    private SecHubProjectTemplateData fetchUnassignmentRequestResult(String templateId, String projectId) {
+        return sendSynchronousProjectTemplateChangeEvent(templateId, projectId, MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT,
+                MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT);
+    }
 
-        DomainMessage message = new DomainMessage(MessageID.REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT);
+    /*
+     * This method sends a synchronous event to event bus and waits that the
+     * assignment is done inside other domain (in this case we know it is inside the
+     * scan domain). When this is done, the change event was successful and the
+     * event result contains SecHubProjectTemplateData which can be used inside
+     * administration domain further.
+     */
+    private SecHubProjectTemplateData sendSynchronousProjectTemplateChangeEvent(String templateId, String projectId, MessageID requestMessageId,
+            MessageID acceptedResultMessageId) {
+
+        DomainMessage message = new DomainMessage(requestMessageId);
+
         SecHubProjectToTemplate mapping = new SecHubProjectToTemplate();
         mapping.setProjectId(projectId);
         mapping.setTemplateId(templateId);
         message.set(MessageDataKeys.PROJECT_TO_TEMPLATE, mapping);
 
         DomainMessageSynchronousResult result = eventBus.sendSynchron(message);
-        if (result.hasFailed()) {
-            throw new NotAcceptableException("Was not able to assign template to project.\nReason:" + result.getErrorMessage());
-        }
 
+        if (result.hasFailed()) {
+            throw new NotAcceptableException("Was not able to change template to project assignment.\nReason: " + result.getErrorMessage());
+        }
         MessageID messageID = result.getMessageId();
-        if (!(MessageID.RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT.equals(messageID))) {
+        if (!(acceptedResultMessageId.equals(messageID))) {
             throw new IllegalStateException("Result message id not supported: " + messageID);
         }
-
         return result.get(MessageDataKeys.PROJECT_TEMPLATES);
-
     }
 
+    private interface TemplateChangeResultFetcher {
+        public SecHubProjectTemplateData fetchTemplateAssignmentChangeResult(String templateId, String projectId);
+    }
 }

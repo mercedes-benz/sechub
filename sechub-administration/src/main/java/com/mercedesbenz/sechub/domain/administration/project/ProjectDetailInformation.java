@@ -17,7 +17,7 @@ public class ProjectDetailInformation {
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_ACCESSLEVEL = "accessLevel";
     public static final String PROPERTY_DESCRIPTION = "description";
-    public static final String PROPERTY_TEMPLATES = "templates";
+    public static final String PROPERTY_TEMPLATE_IDS = "templateIds";
 
     private String projectId;
 

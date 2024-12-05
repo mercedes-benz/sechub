@@ -8,8 +8,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubDomainEncryptionStatus;
 import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubEncryptionData;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectTemplates;
-import com.mercedesbenz.sechub.sharedkernel.encryption.SecHubProjectToTemplate;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectTemplateData;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 
 /**
  *
@@ -70,7 +70,7 @@ public class MessageDataKeys {
     public static final MessageDataKey<SecHubProjectToTemplate> PROJECT_TO_TEMPLATE = createKey("sechub.project2template.data",
             SECHUB_PROJECT_TO_TEMPLATE_MESSAGE_DATA_PROVIDER);
 
-    public static final MessageDataKey<SecHubProjectTemplates> PROJECT_TEMPLATES = createKey("sechub.project.templates.data",
+    public static final MessageDataKey<SecHubProjectTemplateData> PROJECT_TEMPLATES = createKey("sechub.project.templates.data",
             SECHUB_PROJECT_TEMPLATES_MESSAGE_DATA_PROVIDER);
 
     /**

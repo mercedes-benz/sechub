@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.encryption;
+package com.mercedesbenz.sechub.sharedkernel.template;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;
 
-public class SecHubProjectTemplates implements JSONable<SecHubProjectTemplates> {
+public class SecHubProjectTemplateData implements JSONable<SecHubProjectTemplateData> {
 
-    private static final SecHubProjectTemplates CONVERTER = new SecHubProjectTemplates();
+    private static final SecHubProjectTemplateData CONVERTER = new SecHubProjectTemplateData();
 
     private String projectId;
 
@@ -26,13 +26,13 @@ public class SecHubProjectTemplates implements JSONable<SecHubProjectTemplates> 
         return templateIds;
     }
 
-    public static SecHubProjectTemplates fromString(String json) {
+    public static SecHubProjectTemplateData fromString(String json) {
         return CONVERTER.fromJSON(json);
     }
 
     @Override
-    public Class<SecHubProjectTemplates> getJSONTargetClass() {
-        return SecHubProjectTemplates.class;
+    public Class<SecHubProjectTemplateData> getJSONTargetClass() {
+        return SecHubProjectTemplateData.class;
     }
 
 }
