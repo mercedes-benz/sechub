@@ -12,6 +12,6 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: true },
-
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-security']
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-security'],
+  compatibilityDate: '2024-12-05'
 });
