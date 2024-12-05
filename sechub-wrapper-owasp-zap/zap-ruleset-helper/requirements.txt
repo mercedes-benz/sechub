@@ -1,3 +1,0 @@
-bs4==0.0.1
-beautifulsoup4==4.11.1
-requests==2.32.0

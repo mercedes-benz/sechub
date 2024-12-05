@@ -62,9 +62,6 @@ RUN cd "$TOOL_FOLDER" && \
     sha256sum --check sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum && \
     ln -s sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar wrapperowaspzap.jar
 
-# Copy default full ruleset file
-COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-full-ruleset-all-release-status.json
-
 # Copy zap addon download urls into container
 COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
