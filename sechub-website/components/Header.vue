@@ -9,32 +9,32 @@ const documentationItems = [
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-getting-started.html'
   },
   {
-    title: 'Architecture',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-architecture.html'
-  },
-  {
-    title: 'Technical',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html'
+    title: 'Client',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-client.html'
   },
   {
     title: 'Rest API',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html'
   },
   {
-    title: 'Client',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-client.html'
+    title: 'Product Delegation Server (PDS)',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html'
   },
   {
     title: 'Operations',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-operations.html'
   },
   {
-    title: 'Product Delegation Server (PDS)',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html'
-  },
-  {
     title: 'Developer - Quickstart Guide',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html'
+  },
+  {
+    title: 'Developer - Architecture',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-architecture.html'
+  },
+  {
+    title: 'Developer - Technical',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html'
   }
 ];
 

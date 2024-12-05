@@ -15,6 +15,10 @@ const links = [
   {
     name: 'Product Delegation Server',
     href: 'https://mercedes-benz.github.io/sechub/latest/pds-download.html'
+  },
+  {
+    name: 'Kubernetes Images and Charts',
+    href: 'https://github.com/mercedes-benz/sechub/packages'
   }
 ];
 </script>
@@ -27,7 +31,7 @@ const links = [
       <div class="mx-auto max-w-md sm:text-center">
         <h2 class="text-3xl font-medium tracking-tight text-gray-900 sm:text-4xl">Start Using Today!</h2>
         <p class="mt-4 text-lg text-gray-700">
-          Download SecHub for seamless security integration.<br>Orchestrates tools through a unified API.<br>MIT License.
+          Download SecHub for seamless security integration.<br>Orchestrates security tools through an unified API.<br>MIT License.
         </p>
 
         <Menu as="div" class="relative mt-8 inline-block text-left">

@@ -17,9 +17,9 @@ const items = [
     icon: ServerStackIcon
   },
   {
-    title: 'Build Pipeline Integration',
+    title: 'Easy to use Client',
     description:
-      'The SecHub client written in Go handles the server communication. It easily integrates into any build system for robust security.',
+      'The SecHub client written in Go and is easy to use on your system of choice.',
     icon: PuzzlePieceIcon
   },
   {
@@ -35,7 +35,7 @@ const items = [
     icon: BookOpenIcon
   },
   {
-    title: 'Integration with Build Systems',
+    title: 'Integration with Build Systems and IDEs',
     description:
       'Seamless integration with every build system and multiple developer IDEs adds security to your code without additional complexity.',
     icon: WrenchScrewdriverIcon
@@ -55,7 +55,7 @@ const items = [
       <div class="mx-auto max-w-2xl sm:text-center">
         <h2 class="text-3xl font-medium tracking-tight text-white">Your Security Guardian.</h2>
         <p class="mt-2 text-lg text-white">
-          SecHub server orchestrates different security tools by one API layer.
+          SecHub orchestrates different security tools by one API layer.
           <br />
           Users interact with the SecHub Server, eliminating the need for projects to integrate
           vendor plugins for each security tool.
