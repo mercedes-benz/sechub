@@ -44,7 +44,6 @@ public abstract class AbstractSharedVolumeStorage implements Storage {
         if (additionalStoragePathParts != null) {
             for (Object additionalStoragePathPart : additionalStoragePathParts) {
                 if (additionalStoragePathPart == null) {
-                    LOG.warn("Additional part was null at position: ");
                     continue;
                 }
                 this.volumePath = volumePath.resolve(additionalStoragePathPart.toString());

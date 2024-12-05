@@ -41,8 +41,8 @@ class AssetFileInformationTest {
         info1.setFileName("filename1");
 
         AssetFileData info2 = new AssetFileData();
-        info1.setChecksum(sameChecksum);
-        info2.setFileName("filename1");
+        info2.setChecksum(sameChecksum);
+        info2.setFileName("filename2");
 
         /* execute + test */
         assertThat(info1).isNotEqualTo(info2);

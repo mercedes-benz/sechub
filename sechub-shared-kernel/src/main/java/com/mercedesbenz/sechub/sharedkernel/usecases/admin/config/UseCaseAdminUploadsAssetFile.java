@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.CONFIGURATION,
 		apiName="adminUploadsAssetFile",
 		title="Admin uploads an asset file",
-		description="An administrator uploads a file for an asset. If the file already exits, it will be overriden.")
+		description="An administrator uploads a file for an asset. If the file already exists, it will be overriden.")
 public @interface UseCaseAdminUploadsAssetFile {
 
 	Step value();

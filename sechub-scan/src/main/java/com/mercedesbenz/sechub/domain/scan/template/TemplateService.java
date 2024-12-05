@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
@@ -33,26 +32,21 @@ public class TemplateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TemplateService.class);
 
-    private TemplateRepository repository;
+    private final TemplateRepository repository;
 
-    private ScanProjectConfigService configService;
+    private final ScanProjectConfigService configService;
 
-    private TemplateTypeScanConfigIdResolver resolver;
+    private final TemplateTypeScanConfigIdResolver resolver;
 
-    private UserInputAssertion inputAssertion;
+    private final UserInputAssertion inputAssertion;
 
-/* @formatter:off */
-    TemplateService(
-            @Autowired TemplateRepository repository,
-            @Autowired ScanProjectConfigService configService,
-            @Autowired UserInputAssertion inputAssertion,
-            @Autowired TemplateTypeScanConfigIdResolver resolver) {
-        this.repository=repository;
-        this.configService=configService;
-        this.resolver=resolver;
-        this.inputAssertion=inputAssertion;
+    TemplateService(TemplateRepository repository, ScanProjectConfigService configService, UserInputAssertion inputAssertion,
+            TemplateTypeScanConfigIdResolver resolver) {
+        this.repository = repository;
+        this.configService = configService;
+        this.resolver = resolver;
+        this.inputAssertion = inputAssertion;
     }
-    /* @formatter:on */
 
     @UseCaseAdminCreatesOrUpdatesTemplate(@Step(number = 2, name = "Service creates or updates template"))
     public void createOrUpdateTemplate(String templateId, TemplateDefinition newTemplateDefinition) {
@@ -69,9 +63,9 @@ public class TemplateService {
 
         Optional<Template> templateOpt = repository.findById(templateId);
         Template template = null;
-        ;
+
         if (templateOpt.isEmpty()) {
-            // we found an existing template
+            // we did not find an existing template, so we create one
             template = new Template(templateId);
         } else {
             template = templateOpt.get();

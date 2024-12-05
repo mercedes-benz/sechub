@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,27 +43,20 @@ public class AssetService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetService.class);
 
-    private AssetFileRepository repository;
+    private final AssetFileRepository repository;
 
-    private UserInputAssertion inputAssertion;
+    private final UserInputAssertion inputAssertion;
 
-    private CheckSumSupport checkSumSupport;
+    private final CheckSumSupport checkSumSupport;
 
-    private StorageService storageService;
+    private final StorageService storageService;
 
-    /* @formatter:off */
-    AssetService(
-            @Autowired AssetFileRepository repository,
-            @Autowired UserInputAssertion inputAssertion,
-            @Autowired CheckSumSupport checkSumSupport,
-            @Autowired StorageService storageService
-            ) {
-        this.repository=repository;
-        this.inputAssertion=inputAssertion;
-        this.checkSumSupport=checkSumSupport;
-        this.storageService=storageService;
+    AssetService(AssetFileRepository repository, UserInputAssertion inputAssertion, CheckSumSupport checkSumSupport, StorageService storageService) {
+        this.repository = repository;
+        this.inputAssertion = inputAssertion;
+        this.checkSumSupport = checkSumSupport;
+        this.storageService = storageService;
     }
-    /* @formatter:on */
 
     @UseCaseAdminDeletesAssetCompletely(@Step(number = 2, name = "Services deletes all asset parts"))
     @Transactional
