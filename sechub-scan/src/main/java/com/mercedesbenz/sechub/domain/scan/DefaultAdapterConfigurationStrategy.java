@@ -5,6 +5,7 @@ import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 
@@ -46,7 +47,7 @@ public class DefaultAdapterConfigurationStrategy implements AdapterConfiguration
     }
 
     @Override
-    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
+    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) throws ConfigurationFailureException {
         /* @formatter:off */
         SecHubExecutionContext context = data.getSechubExecutionContext();
         String projectId = context.getConfiguration().getProjectId();

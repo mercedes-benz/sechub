@@ -2,9 +2,11 @@
 package com.mercedesbenz.sechub.domain.scan.project;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig.ScanProjectConfigCompositeKey;
@@ -74,10 +76,21 @@ public class ScanProjectConfigService {
     }
 
     /**
-     * Set configuration for project (means will persist given change to config)
+     * Removes project configuration entry
      *
-     * @param projectId
-     * @param configId
+     * @param projectId project identifier
+     * @param configId  configuration identifier
+     */
+    public void unset(String projectId, ScanProjectConfigID configId) {
+        set(projectId, configId, null);
+    }
+
+    /**
+     * Set configuration for project (means will persist given change to
+     * configuration)
+     *
+     * @param projectId project identifier
+     * @param configId  configuration identifier
      * @param data      when <code>null</code> existing entry will be deleted on
      *                  database
      */
@@ -105,6 +118,11 @@ public class ScanProjectConfigService {
             repository.save(config);
         }
 
+    }
+
+    @Transactional
+    public void deleteAllConfigurationsOfGivenConfigIdsAndValue(Set<String> configIds, String value) {
+        repository.deleteAllConfigurationsOfGivenConfigIdsAndValue(configIds, value);
     }
 
 }

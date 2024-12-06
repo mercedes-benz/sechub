@@ -75,8 +75,7 @@ public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor
         LOG.debug("Trigger PDS adapter execution for scan type: {} by: {}", getScanType(), getClass().getSimpleName());
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                serviceCollection);
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext, serviceCollection);
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 

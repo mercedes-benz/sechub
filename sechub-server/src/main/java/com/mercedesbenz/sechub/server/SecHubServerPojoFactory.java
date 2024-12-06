@@ -12,6 +12,7 @@ import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
 
 /**
  * This factory creates some "plain old java" objects and inject them into
@@ -57,5 +58,10 @@ public class SecHubServerPojoFactory {
     @Bean
     SecHubConfigurationModelValidator createSecHubConfigurationValidator() {
         return new SecHubConfigurationModelValidator();
+    }
+
+    @Bean
+    TemplateDataResolver createTemplateDataResolver() {
+        return new TemplateDataResolver();
     }
 }

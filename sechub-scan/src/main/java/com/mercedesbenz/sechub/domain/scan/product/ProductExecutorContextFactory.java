@@ -15,12 +15,12 @@ public class ProductExecutorContextFactory {
     @Autowired
     ProductResultTransactionService transactionService;
 
-    public ProductExecutorContext create(List<ProductResult> formerResults, SecHubExecutionContext executionContext, ProductExecutor productExecutor,
+    public ProductExecutorContext create(List<ProductResult> formerResults, SecHubExecutionContext sechubExecutionContext, ProductExecutor productExecutor,
             ProductExecutorConfig config) {
 
         ProductExecutorContext productExecutorContext = new ProductExecutorContext(config, formerResults);
 
-        ProductExecutorCallbackImpl callback = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
+        ProductExecutorCallbackImpl callback = new ProductExecutorCallbackImpl(sechubExecutionContext, productExecutorContext, transactionService);
         productExecutorContext.callback = callback;
         productExecutorContext.useFirstFormerResult();
 

@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariabl
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
@@ -41,12 +42,13 @@ public class DefaultExecutorConfigSupport {
 
     NamePatternIdProviderFactory providerFactory;
 
-    public DefaultExecutorConfigSupport(ProductExecutorConfig config, SystemEnvironmentVariableSupport variableSupport,
+    public DefaultExecutorConfigSupport(ProductExecutorContext context, SystemEnvironmentVariableSupport variableSupport,
             Validation<ProductExecutorConfig> validation) {
-        notNull(config, "config may not be null!");
+        notNull(context, "context may not be null!");
+        notNull(context.getExecutorConfig(), "executor config may not be null!");
         notNull(variableSupport, "variableSupport may not be null!");
 
-        this.config = config;
+        this.config = context.getExecutorConfig();
         this.variableSupport = variableSupport;
 
         providerFactory = new NamePatternIdProviderFactory();

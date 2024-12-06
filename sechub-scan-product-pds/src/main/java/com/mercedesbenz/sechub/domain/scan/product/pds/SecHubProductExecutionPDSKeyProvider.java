@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 /**
- * These providers/keys are used by sechub PDS product executors at runtime
+ * These providers/keys are used by SecHub PDS product executors at runtime
  * while communicating with PDS servers.
  *
  * @author Albert Tregnaghi

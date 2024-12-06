@@ -16,11 +16,18 @@ public class PDSExecutorConfigSuppportServiceCollection {
     @Autowired
     ScanMappingRepository scanMappingRepository;
 
+    @Autowired
+    PDSTemplateMetaDataService templateMetaDataService;
+
     public SystemEnvironmentVariableSupport getSystemEnvironmentVariableSupport() {
         return systemEnvironment;
     }
 
     public ScanMappingRepository getScanMappingRepository() {
         return scanMappingRepository;
+    }
+
+    public PDSTemplateMetaDataService getTemplateMetaDataService() {
+        return templateMetaDataService;
     }
 }

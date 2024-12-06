@@ -188,7 +188,13 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
             "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markSendToPDS()
-            .markDefaultRecommended().withDefault(true));
+            .markDefaultRecommended().withDefault(true)),
+
+    PDS_CONFIG_TEMPLATE_META_DATA_LIST(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST, """
+            Contains a list of template meta data entries (json).
+            """).markGenerated()),
+
+    ;
 
     private ExecutionPDSKey key;
 

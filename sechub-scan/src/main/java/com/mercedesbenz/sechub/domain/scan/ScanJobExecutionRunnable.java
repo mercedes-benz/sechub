@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionSer
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 /**
@@ -36,6 +37,13 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
     }
 
     @Override
+    @UseCaseSchedulerStartsJob(@Step(number = 3, name = "Runnable calls execution services",
+
+            description = """
+                    The job execution runnable creates the execution context and calls dedicated execution services
+                    (preparation, analytics, product execution, storage and reporting) synchronously for the job.
+                    It is also responsible for cancelation and supsension of jobs.
+                    """))
     public void run() {
         /* runs in own thread so we set job uuid to MDC here ! */
         try {

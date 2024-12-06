@@ -192,8 +192,8 @@ public class UseCaseRestDocModelDataCollector {
                  Maybe you
                     - forgot to implement the RESTDOC test for the usecase or for one of its variants
                     - used two differet names for the variant inside your test (annotation + code in test method)
-                    - forgot to add the documentation calls inside a RESTDOC test, or
-                    - you accidently used another class when calling UseCaseRestDoc.Factory.createPath(...) or
+                    - forgot to add the documentation calls inside a RESTDOC test
+                    - accidently used another class when calling UseCaseRestDoc.Factory.createPath(...)
                     - executed not `gradlew sechub-doc:test` before
 
                 Details:

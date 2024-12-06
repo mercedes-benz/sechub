@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
+
 /**
  * A configuration strategy is used to configure a given config adapter builder
  *
@@ -16,6 +18,6 @@ public interface AdapterConfigurationStrategy {
      *
      * @param configBuilder
      */
-    <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder);
+    <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) throws ConfigurationFailureException;
 
 }

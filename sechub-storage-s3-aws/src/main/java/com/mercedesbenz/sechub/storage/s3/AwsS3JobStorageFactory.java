@@ -12,11 +12,13 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.mercedesbenz.sechub.storage.core.AssetStorage;
+import com.mercedesbenz.sechub.storage.core.AssetStorageFactory;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 
-public class AwsS3JobStorageFactory implements JobStorageFactory {
+public class AwsS3JobStorageFactory implements JobStorageFactory, AssetStorageFactory {
 
     private AmazonS3 s3Client;
     private String bucketName;
@@ -53,6 +55,11 @@ public class AwsS3JobStorageFactory implements JobStorageFactory {
     @Override
     public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
         return new AwsS3JobStorage(s3Client, bucketName, storagePath, jobUUID);
+    }
+
+    @Override
+    public AssetStorage createAssetStorage(String assetId) {
+        return new AwsS3AssetStorage(s3Client, bucketName, assetId);
     }
 
 }

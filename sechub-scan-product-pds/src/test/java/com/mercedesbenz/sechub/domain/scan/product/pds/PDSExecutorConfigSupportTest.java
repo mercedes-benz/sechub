@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,16 +27,25 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariabl
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingRepository;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.test.TestCanaryException;
 
 public class PDSExecutorConfigSupportTest {
 
@@ -59,11 +71,27 @@ public class PDSExecutorConfigSupportTest {
     private List<ProductExecutorConfigSetupJobParameter> jobParameters;
     private ScanMappingRepository repository;
     private SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
+    private ProductExecutorContext context;
+    private SecHubExecutionContext sechubExecutionContext;
+    private SecHubConfiguration sechubConfiguration;
+    private PDSTemplateMetaDataService templateMetaDataService;
 
     @BeforeEach
     public void before() throws Exception {
-        config = mock(ProductExecutorConfig.class);
-        executorConfigSetup = mock(ProductExecutorConfigSetup.class);
+        sechubConfiguration = mock();
+        sechubExecutionContext = mock();
+        config = mock();
+        context = mock();
+        executorConfigSetup = mock();
+        serviceCollection = mock();
+        repository = mock();
+        templateMetaDataService = mock();
+
+        when(sechubExecutionContext.getTemplateDefinitions()).thenReturn(Collections.emptyList());
+        when(sechubExecutionContext.getConfiguration()).thenReturn(sechubConfiguration);
+
+        when(config.getProductIdentifier()).thenReturn(ProductIdentifier.UNKNOWN);// the scan type unknown is used, because not really relevant
+        when(context.getExecutorConfig()).thenReturn(config);
 
         jobParameters = new ArrayList<>();
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER.getKey().getId(),
@@ -82,16 +110,14 @@ public class PDSExecutorConfigSupportTest {
 
         when(executorConfigSetup.getJobParameters()).thenReturn(jobParameters);
 
-        serviceCollection = mock(PDSExecutorConfigSuppportServiceCollection.class);
-
         Answer<String> defaultAnswerWithNoConversion = createAnswerWhichReturnsAlwaysJustTheOriginValue();
         systemEnvironmentVariableSupport = mock(SystemEnvironmentVariableSupport.class, defaultAnswerWithNoConversion);
 
-        repository = mock(ScanMappingRepository.class);
-
         when(serviceCollection.getScanMappingRepository()).thenReturn(repository);
         when(serviceCollection.getSystemEnvironmentVariableSupport()).thenReturn(systemEnvironmentVariableSupport);
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        when(serviceCollection.getTemplateMetaDataService()).thenReturn(templateMetaDataService);
+
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
     }
 
     @EnumSource(SecHubDataConfigurationType.class)
@@ -107,7 +133,7 @@ public class PDSExecutorConfigSupportTest {
                 .add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), type.toString()));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -143,7 +169,7 @@ public class PDSExecutorConfigSupportTest {
                 SecHubDataConfigurationType.BINARY.toString()));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -164,7 +190,7 @@ public class PDSExecutorConfigSupportTest {
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -185,7 +211,7 @@ public class PDSExecutorConfigSupportTest {
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -206,7 +232,7 @@ public class PDSExecutorConfigSupportTest {
                 SecHubDataConfigurationType.SOURCE.toString()));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -227,7 +253,7 @@ public class PDSExecutorConfigSupportTest {
                 SecHubDataConfigurationType.NONE.toString()));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -249,7 +275,7 @@ public class PDSExecutorConfigSupportTest {
                 .add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), type.toString()));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -272,7 +298,7 @@ public class PDSExecutorConfigSupportTest {
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES.getKey().getId(), typesAsString));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         /* execute */
         boolean result = supportToTest.isGivenStorageSupportedByPDSProduct(contentProvider);
@@ -297,7 +323,25 @@ public class PDSExecutorConfigSupportTest {
     }
 
     @Test
-    void createJobParametersToSendToPDS_environmentVariablesEntriesAreReplacedWithTheirContent() {
+    void createJobParametersToSendToPDS_null_list_of_template_meta_data_throws_illegal_argument_exception() {
+        assertThatThrownBy(() -> supportToTest.createJobParametersToSendToPDS(null)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void createJobParametersToSendToPDS_empty_template_list_is_accepted() throws Exception {
+        /* prepare */
+        when(sechubExecutionContext.getTemplateDefinitions()).thenReturn(Collections.emptyList());
+
+        /* execute */
+        Map<String, String> result = supportToTest.createJobParametersToSendToPDS(sechubExecutionContext);
+
+        /* test */
+        String data = result.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST);
+        assertThat(data).isEqualTo("[]");
+    }
+
+    @Test
+    void createJobParametersToSendToPDS_environmentVariablesEntriesAreReplacedWithTheirContent() throws Exception {
         /* prepare */
         String parameterKey1 = "test.key1";
         String parameterKey2 = "test.key2";
@@ -308,15 +352,13 @@ public class PDSExecutorConfigSupportTest {
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(parameterKey3, "just-a-key-not-converted"));
 
         // create support again (necessary to have new job parameters included)
-        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(context, serviceCollection);
 
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("env:A_TESTVARIABLE")).thenReturn("resolved-value");
         when(systemEnvironmentVariableSupport.getValueOrVariableContent("env:A_NOT_EXISTING_VARIABLE")).thenReturn(null);
 
-        SecHubConfiguration sechubConfiguration = mock(SecHubConfiguration.class);
-
         /* execute */
-        Map<String, String> parameterMap = supportToTest.createJobParametersToSendToPDS(sechubConfiguration);
+        Map<String, String> parameterMap = supportToTest.createJobParametersToSendToPDS(sechubExecutionContext);
 
         /* test */
         assertEquals("resolved-value", parameterMap.get(parameterKey1));
@@ -326,15 +368,13 @@ public class PDSExecutorConfigSupportTest {
     }
 
     @Test
-    void createJobParametersToSendToPDS_mapping_is_resolved() {
+    void createJobParametersToSendToPDS_mapping_is_resolved() throws Exception {
         /* prepare */
         mockSecHubMappingInDatabase();
         mockSecHubMappingId2InDatabase();
 
-        SecHubConfiguration sechubConfiguration = new SecHubConfiguration();
-
         /* execute */
-        Map<String, String> parameters = supportToTest.createJobParametersToSendToPDS(sechubConfiguration);
+        Map<String, String> parameters = supportToTest.createJobParametersToSendToPDS(sechubExecutionContext);
 
         /* test 1 */
         String p1 = parameters.get(SECHUB_MAPPING_ID_1);
@@ -383,6 +423,58 @@ public class PDSExecutorConfigSupportTest {
          */
         verify(systemEnvironmentVariableSupport, times(1)).getValueOrVariableContent(COMBINED_MAPPING_VALUE_DATA);
         verify(systemEnvironmentVariableSupport, times(1)).getValueOrVariableContent(any());
+    }
+
+    @Test
+    void createJobParametersToSendToPDS_pds_template_meta_data_is_created_by_result_from_template_metadata_service() throws Exception {
+        /* prepare */
+        List<TemplateDefinition> templateDefinitions = mock();
+        when(sechubExecutionContext.getTemplateDefinitions()).thenReturn(templateDefinitions);
+
+        List<PDSTemplateMetaData> templateMetaDataServiceResult = createTemplateMetaDataServiceExampleResult();
+
+        when(templateMetaDataService.createTemplateMetaData(eq(templateDefinitions), anyString(), any(ScanType.class), eq(sechubConfiguration)))
+                .thenReturn(templateMetaDataServiceResult);
+        /* execute */
+        Map<String, String> parameterMap = supportToTest.createJobParametersToSendToPDS(sechubExecutionContext);
+
+        /* test */
+        String expectedJson = JSONConverter.get().toJSON(templateMetaDataServiceResult, false);
+        String jsonFromConfigSupport = parameterMap.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST);
+
+        assertThat(jsonFromConfigSupport).isNotNull().isEqualTo(expectedJson).hasSizeGreaterThan(10);
+
+    }
+
+    @Test
+    void createJobParametersToSendToPDS_templateDataService_is_called_twice_in_correct_order_and_arguments() throws Exception {
+        /* prepare */
+        List<TemplateDefinition> templateDefinitions = mock();
+        when(sechubExecutionContext.getTemplateDefinitions()).thenReturn(templateDefinitions);
+
+        List<PDSTemplateMetaData> templateMetaDataServiceResult = createTemplateMetaDataServiceExampleResult();
+
+        when(templateMetaDataService.createTemplateMetaData(eq(templateDefinitions), anyString(), any(ScanType.class), eq(sechubConfiguration)))
+                .thenReturn(templateMetaDataServiceResult);
+        // next line does ensure that it is called with the former result. It also
+        // breaks further processing
+        doThrow(new TestCanaryException()).when(templateMetaDataService).ensureTemplateAssetFilesAreAvailableInStorage(templateMetaDataServiceResult);
+
+        /* execute + test */
+        assertThatThrownBy(() -> supportToTest.createJobParametersToSendToPDS(sechubExecutionContext)).isInstanceOf(TestCanaryException.class);
+
+    }
+
+    private List<PDSTemplateMetaData> createTemplateMetaDataServiceExampleResult() {
+        List<PDSTemplateMetaData> templateMetaDataServiceResult = new ArrayList<>();
+        PDSTemplateMetaData pdsTemplateMetaData1 = new PDSTemplateMetaData();
+        PDSAssetData assetData1 = new PDSAssetData();
+        assetData1.setAssetId("asset-id-1");
+        assetData1.setChecksum("checksum1");
+        assetData1.setFileName("file1");
+        pdsTemplateMetaData1.setAssetData(assetData1);
+        templateMetaDataServiceResult.add(pdsTemplateMetaData1);
+        return templateMetaDataServiceResult;
     }
 
     private void mockSecHubMappingId2InDatabase() {

@@ -1,0 +1,1 @@
+I am text file "asset2.txt" - but from folder example-2

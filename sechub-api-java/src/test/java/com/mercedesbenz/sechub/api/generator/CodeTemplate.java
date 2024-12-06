@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.generator;
 
-class Template {
+class CodeTemplate {
     StringBuilder sb = new StringBuilder();
 
     String getCode() {

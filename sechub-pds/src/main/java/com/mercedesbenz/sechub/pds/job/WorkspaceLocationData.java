@@ -11,6 +11,7 @@ public class WorkspaceLocationData {
     String userMessagesLocation;
     String metaDataFileLocation;
     String eventsLocation;
+    String extractedAssetsLocation;
 
     public String getWorkspaceLocation() {
         return workspaceLocation;
@@ -46,5 +47,9 @@ public class WorkspaceLocationData {
 
     public String getEventsLocation() {
         return eventsLocation;
+    }
+
+    public String getExtractedAssetsLocation() {
+        return extractedAssetsLocation;
     }
 }
