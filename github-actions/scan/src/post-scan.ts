@@ -2,7 +2,6 @@
 
 import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
-import * as fs from 'fs';
 import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
@@ -10,6 +9,8 @@ import { getReport } from './sechub-cli';
 import { getFieldFromJson } from './json-helper';
 import { execFileSync } from "child_process";
 import { sanitize } from "./shell-arg-sanitizer";
+import { readFileSync, appendFileSync} from "fs-extra";
+import * as os from "node:os";
 
 const NEW_LINE_SEPARATOR = '\n';
 
@@ -33,7 +34,7 @@ function collectJsonReportData(context: LaunchContext) {
     let text = '';
     try {
         core.info('Get Report as json');
-        text = fs.readFileSync(filePath, 'utf8');
+        text = readFileSync(filePath, 'utf8');
     } catch (error) {
         core.warning(`Error reading JSON file: ${error}`);
         return undefined;
@@ -276,9 +277,17 @@ function buildSummary(trafficLight: string, totalFindings: number, findings: { m
  * @param {string} dataFormat - The desired data format ('string' or 'number').
  */
 function setOutput(field: string, value: any, dataFormat: string) {
-
     value = value ?? (dataFormat === 'number' ? 0 : 'FAILURE');
 
     core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    /*
+     * Disabling this until GitHub releases a fix for this. See: https://github.com/actions/toolkit/issues/1218
+     * core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+     */
+
+    /* Temporary hack until core actions output is fixed */
+    const output = process.env['GITHUB_OUTPUT']
+    if (output) {
+        appendFileSync(output, `${field}=${value}${os.EOL}`)
+    }
 }

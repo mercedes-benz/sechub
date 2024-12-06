@@ -4,12 +4,24 @@ import * as core from '@actions/core';
 import { collectReportData, reportOutputs } from '../src/post-scan';
 import { getReport } from '../src/sechub-cli';
 import { LAUNCHER_CONTEXT_DEFAULTS } from '../src/launcher';
+import { readFileSync, appendFileSync } from 'fs-extra';
+import * as os from "node:os";
 
 jest.mock('@actions/core');
 const mockedCore = core as jest.Mocked<typeof core>;
 
 jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
+
+jest.mock('fs-extra', () => ({
+    writeFile: jest.fn(),
+    readFileSync: jest.fn(),
+    appendFileSync: jest.fn()
+}));
+
+const mockedReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
+const mockedAppendFileSync = appendFileSync as jest.MockedFunction<typeof appendFileSync>;
+process.env['GITHUB_OUTPUT'] = 'dummy-file';
 
 describe('collectReportData', function () {
     afterEach(() => {
@@ -74,14 +86,12 @@ describe('collectReportData', function () {
 
     it('calls getReport with parameters (except json) and report json object is as expected', function () {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const fsMock = require('fs');
-
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
         testContext.reportFormats= ['json','html','xyz','bla'];
         testContext.jobUUID=1234; // necessary for download
         
-        fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
+        mockedReadFileSync.mockReturnValue('{"test": "test"}')
         const sampleJson = {'test': 'test'};
 
         /* execute */
@@ -136,6 +146,16 @@ describe('reportOutputs', function () {
 
         /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
+        expect(mockedAppendFileSync).toHaveBeenCalledTimes(6);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-trafficlight=RED${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-count=2${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-high=1${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-medium=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-low=1${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-readable-summary=SecHub reported traffic light color RED with 2 findings, categorized as follows: HIGH (1), LOW (1)${os.EOL}`);
+
+        /* Disabled until GitHub Action setOutput is fixed
+
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'RED');
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-count', '2');
@@ -143,6 +163,8 @@ describe('reportOutputs', function () {
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '1');
         expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color RED with 2 findings, categorized as follows: HIGH (1), LOW (1)');
+
+         */
     });
 
     it('calls set github output with correct values when JSON report did not exist', function () {
@@ -150,7 +172,19 @@ describe('reportOutputs', function () {
         reportOutputs(undefined);
 
         /* test */
+
         expect(mockedCore.debug).toHaveBeenCalledTimes(7);
+        expect(mockedAppendFileSync).toHaveBeenCalledTimes(6);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-trafficlight=FAILURE${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-count=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-high=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-medium=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-low=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-readable-summary=SecHub scan could not be executed.${os.EOL}`);
+
+
+        /* Disabled until GitHub Action setOutput is fixed
+
         expect(mockedCore.debug).toBeCalledWith('No findings reported to be categorized.');
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'FAILURE');
@@ -159,6 +193,8 @@ describe('reportOutputs', function () {
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '0');
         expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub scan could not be executed.');
+
+         */
     });
 
     it('calls set github output with correct values when traffic light is green without findings.', function () {
@@ -180,6 +216,17 @@ describe('reportOutputs', function () {
 
         /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
+        expect(mockedAppendFileSync).toHaveBeenCalledTimes(6);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-trafficlight=GREEN${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-count=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-high=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-medium=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-findings-low=0${os.EOL}`);
+        expect(mockedAppendFileSync).toBeCalledWith(expect.any(String), `scan-readable-summary=SecHub reported traffic light color GREEN without findings${os.EOL}`);
+
+
+        /* Disabled until GitHub Action setOutput is fixed
+
         expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
         expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'GREEN');
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-count', '0');
@@ -187,6 +234,8 @@ describe('reportOutputs', function () {
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
         expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '0');
         expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color GREEN without findings');
+
+         */
     });
 });
 
