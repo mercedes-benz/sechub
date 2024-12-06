@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
 
-public class CheckmarxV1XMLImporterTaster {
+public class CheckmarxV1XMLImporterTest {
 
     private CheckmarxV1XMLImporter importerToTest;
 

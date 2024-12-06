@@ -10,7 +10,8 @@ import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
     public static Path SECHUB_ROOT_PATH = resolveRoothPath();
-    private static Path  resolveRoothPath(){
+
+    private static Path resolveRoothPath() {
         try {
             return Paths.get("./../").toRealPath();
         } catch (IOException e) {
