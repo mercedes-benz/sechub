@@ -102,7 +102,7 @@ jobs:
       # -----------------------------------------
       # Create pull request for documentation update
       # -----------------------------------------
-      - name: Update documentation - Create pull request
+      - name: Update website and documentation - Create pull request
         if: (inputs.publish-documentation != '') && (github.ref_name == env.ACTIONS_SECHUB_DOC_RELEASE_BRANCH)
         id: pr_release_documentation
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
@@ -110,9 +110,9 @@ jobs:
           branch: release-documentation
           branch-suffix: short-commit-hash
           delete-branch: true
-          title: '1 - Release documentation [auto-generated]'
+          title: '1 - Release website and documentation [auto-generated]'
           body: |
-            Release of SecHub documentation
+            Release of SecHub website and documentation
 
             -> Please review before merge.
 
