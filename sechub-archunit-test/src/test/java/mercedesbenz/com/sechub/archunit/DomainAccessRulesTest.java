@@ -46,6 +46,8 @@ public class DomainAccessRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ignoreAllTests)
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreJarFiles)
                 .importPath(SECHUB_ROOT_PATH);
