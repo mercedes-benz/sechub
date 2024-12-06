@@ -282,9 +282,9 @@ jobs:
           retention-days: 14
 
       # -----------------------------------------
-      # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
+      # Update and commit website and release documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
-      - name: Update release documentation
+      - name: Update website and release documentation
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
@@ -293,16 +293,16 @@ jobs:
       # -----------------------------------------
       # Create pull request for release documentation
       # -----------------------------------------
-      - name: Create pull request for release documentation
+      - name: Create pull request for website and release documentation
         id: pr_release_documentation
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
           delete-branch: true
-          title: '1 - Release documentation [auto-generated]'
+          title: '1 - Release website and documentation [auto-generated]'
           body: |
-            Release of SecHub documentation
+            Release of SecHub website and documentation
 
             -> Please review and merge **before** publishing the release.
 
