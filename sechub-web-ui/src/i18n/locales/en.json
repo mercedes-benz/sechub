@@ -3,5 +3,6 @@
     "PROJECTS": "Projects",
     "OWNED": "owned",
     "MEMBER": "member",
-    "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects."
+    "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects.",
+    "ERROR_FETCHING_DATA": "Could not load data from Server."
 }

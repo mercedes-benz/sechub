@@ -33,7 +33,7 @@ npm run dev
 
 1. Start SecHub Integration Test Server (or Docker Server)
 2. Start the SPA in Development mode (npm run dev)
-4. Configure .env variables:
+4. Configure .env file with variables (see env-template)
 Set VITE_API_LOCAL_DEV=true
 Set VITE_API_USER to your SecHub user
 Set VITE_API_PASSWORD to your SecHub Api Token

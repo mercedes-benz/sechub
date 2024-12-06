@@ -8,7 +8,8 @@
     <!-- Case when the user is not assigned to any project -->
     <div v-if="projects.length === 0 && !loading">
       <v-list bg-color="background_paper" lines="two">
-        <v-list-item class="ma-5" rounded="lg">{{ $t('NO_PROJECTS_ASSIGNED') }}</v-list-item>
+        <v-list-item v-if="error" class="ma-5" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
+        <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_PROJECTS_ASSIGNED') }}</v-list-item>
       </v-list>
     </div>
 
@@ -50,19 +51,17 @@
 
       onMounted(async () => {
         try {
-          const response = await defaultClient.withProjectApi.getAssignedProjectDataList();
-          projects.value = response;
+          projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
         } catch (err) {
           error.value = 'ProjectAPI error fetching assigned projects.'
           console.error('ProjectAPI error fetching assigned projects:', err)
         } finally {
           loading.value = false
-           console.log("SEND HELPM:", projects.value)
         }
       })
 
       return {
-        ownedClass:{
+        ownedClass: {
           'project-owned': true,
         },
         projects,
@@ -71,7 +70,6 @@
       }
     },
   }
-
 </script>
 
 <style scoped>
