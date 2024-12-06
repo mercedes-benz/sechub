@@ -1,13 +1,22 @@
 // SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
-
-    public static String SECHUB_ROOT_PATH = "../";
+    public static Path SECHUB_ROOT_PATH = resolveRoothPath();
+    private static Path  resolveRoothPath(){
+        try {
+            return Paths.get("./../").toRealPath();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     /* Ignore specific directories */
     static ImportOption ignoreAllTests = location -> {

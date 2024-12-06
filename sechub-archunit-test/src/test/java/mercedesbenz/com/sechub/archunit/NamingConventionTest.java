@@ -4,12 +4,18 @@ package mercedesbenz.com.sechub.archunit;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.junit.AnalyzeClasses;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AnalyzeClasses
 public class NamingConventionTest {
@@ -28,17 +34,20 @@ public class NamingConventionTest {
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
-        classes()
+        ArchRule rule = ArchRuleDefinition.classes()
                 .that()
                 .resideInAPackage("..test..")
                 .should()
                 .haveSimpleNameContaining("Test")
                 .orShould()
+                .haveSimpleNameContaining("Assert")
+                .orShould()
                 .haveNameMatching(".*\\.Assert.*") // including inner classes
                 .orShould()
                 .haveNameMatching(".*Test\\$.*") // including inner classes
-                .because("Tests classes should contain 'Test' or 'Assert' in their name.")
-                .check(importedClasses);
+                .because("Tests classes should contain 'Test' or 'Assert' in their name.");
+
+        rule.check(importedClasses);
         /* @formatter:on */
     }
 

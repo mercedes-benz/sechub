@@ -16,6 +16,7 @@ class ArchUnitRuntimeSupport {
             return importOptions;
         }
 
+        folderToIgnore = folderToIgnore.trim();
         String[] folders = folderToIgnore.split(",");
         for (String folder : folders) {
             importOptions.add(location -> !location.contains(folder));
