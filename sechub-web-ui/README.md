@@ -43,11 +43,16 @@ Happy Testing!
 
 ### Building for Production
 
+Set Environment Variables:
+Be aware that npm run build sets directly the environment variables.
+
 To build your project for production, use:
 
 ```bash
 npm run build
 ```
+
+
 
 ### Building openAPI SecHub Client
 

@@ -1,25 +1,25 @@
 // SPDX-License-Identifier: MIT
-import { CONFIG } from '@/config'
+import { useConfig } from '@/config'
 import { Configuration } from '@/generated-sources/openapi'
 
 let apiConfig: Configuration
+const config = useConfig()
 
-if (CONFIG.LOCAL_DEV) {
+if (config.value.LOCAL_DEV) {
   // api configuration for local development with basic auth
   apiConfig = new Configuration({
-    basePath: CONFIG.HOST,
-    username: CONFIG.USERNAME,
-    password: CONFIG.PASSWORD,
+    basePath: config.value.HOST,
+    username: config.value.USERNAME,
+    password: config.value.PASSWORD,
     headers: {
       'Content-Type': 'application/json',
     },
   })
 } else {
   apiConfig = new Configuration({
-    basePath: CONFIG.HOST,
+    basePath: config.value.HOST,
     headers: {
       // todo: check if cookie set by server is sent back (for auth reasons)
-      // todo: check if env work without vite server (PROD mode)
       'Content-Type': 'application/json',
     },
   })
