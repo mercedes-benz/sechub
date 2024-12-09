@@ -1,16 +1,30 @@
 // SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
+    public static Path SECHUB_ROOT_PATH = resolveRoothPath();
 
-    public static String SECHUB_ROOT_PATH = "../";
+    private static Path resolveRoothPath() {
+        try {
+            return Paths.get("./../").toRealPath();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     /* Ignore specific directories */
     static ImportOption ignoreAllTests = location -> {
         return !location.contains("/test/"); // ignore any URI to sources that contains '/test/'
     };
+
+    static List<ImportOption> ignoreFolders = new ArchUnitRuntimeSupport().createImportOptionsIgnoreFolder(); // ignore specific folders e.g. build folders
 
     static ImportOption ignoreSechubOpenAPIJava = location -> {
         return !location.contains("/sechub-openapi-java/"); // ignore any URI to sources that contains '/sechub-openapi-java/'
