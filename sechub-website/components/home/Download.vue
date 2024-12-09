@@ -24,7 +24,7 @@ const links = [
 </script>
 
 <template>
-  <section aria-label="Download Sechub" id="download" class="relative overflow-hidden py-32">
+  <section aria-label="Download Sechub" id="download" class="relative bg-gray-100 py-32">
     <AbstractCircularAnimation />
 
     <div class="container">
@@ -57,7 +57,7 @@ const links = [
                 <NuxtLink
                   :to="link.href"
                   target="_blank"
-                  class="group flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-700 transition-colors duration-300 hover:bg-fern-500 hover:text-white"
+                  class="group flex w-full rounded-md px-2 py-2 text-sm text-gray-700 transition-colors duration-300 hover:bg-fern-500 hover:text-white"
                 >
                   {{ link.name }}
                 </NuxtLink>
