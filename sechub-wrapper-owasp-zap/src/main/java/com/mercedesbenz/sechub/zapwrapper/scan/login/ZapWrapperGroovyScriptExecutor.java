@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
+import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator;
 import com.mercedesbenz.sechub.zapwrapper.util.ZapWrapperStringDecoder;
 
@@ -79,7 +80,6 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     private Bindings createBindings(ZapScanContext scanContext, ScriptEngine scriptEngine, FirefoxDriver firefox, WebDriverWait wait) {
-        // TODO 2024-11-21 jan: use templates structure from sechub webscan config
         SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
@@ -95,11 +95,7 @@ public class ZapWrapperGroovyScriptExecutor {
             totpGenerator = new TOTPGenerator(decodedSeed, totp.getTokenLength(), totp.getHashAlgorithm(), totp.getValidityInSeconds());
         }
 
-        // TODO 2024-11-21 jan: read the username and password from templateData as soon
-        // as it is
-        // implemented
-        String user = "DUMMY";
-        String password = "DUMMY";
+        Map<String, String> templateVariables = scanContext.getTemplateVariables();
 
         Bindings bindings = scriptEngine.createBindings();
         bindings.put(FIREFOX_WEBDRIVER_KEY, firefox);
@@ -108,9 +104,14 @@ public class ZapWrapperGroovyScriptExecutor {
         bindings.put(SECHUB_WEBSCAN_CONFIG_KEY, secHubWebScanConfiguration);
         bindings.put(TOTP_GENERATOR_KEY, totpGenerator);
 
-        bindings.put(USER_KEY, user);
-        bindings.put(PASSWORD_KEY, password);
-        bindings.put(LOGIN_URL_KEY, webLoginConfiguration.getUrl().toString());
+        bindings.put(USER_KEY, templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY));
+        bindings.put(PASSWORD_KEY, templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY));
+        if (webLoginConfiguration.getUrl() != null) {
+            bindings.put(LOGIN_URL_KEY, webLoginConfiguration.getUrl().toString());
+        } else {
+            // if no dedicated login URL is set we assume an automated redirect
+            bindings.put(LOGIN_URL_KEY, scanContext.getTargetUrlAsString());
+        }
         bindings.put(TARGET_URL_KEY, scanContext.getTargetUrlAsString());
 
         return bindings;

@@ -8,10 +8,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +32,9 @@ class ZapScanContextFactoryTest {
 
     @TempDir
     private File tempDir;
+
+    private static final File VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/template-example.json");
+    private static final File INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/invalid-template-example.json");
 
     @BeforeEach
     void beforeEach() {
@@ -74,7 +74,6 @@ class ZapScanContextFactoryTest {
     void context_name_is_created_as_UUID_when_not_defined() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
-        when(settings.getJobUUID()).thenReturn(null);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -171,11 +170,6 @@ class ZapScanContextFactoryTest {
     void proxy_set_or_not_is_valid_result_returned_contains_null_as_proxyinformation() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
-        when(settings.getProxyHost()).thenReturn(null);
-        when(settings.getProxyPort()).thenReturn(0);
-
-        when(envVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(null);
-        when(envVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(0);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -317,7 +311,6 @@ class ZapScanContextFactoryTest {
     void no_rules_to_deactivate_results_in_empty_list() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
-        when(envVariableReader.readAsString(ZAP_DEACTIVATED_RULE_REFERENCES)).thenReturn(null);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -494,8 +487,6 @@ class ZapScanContextFactoryTest {
     void no_template_data_results_in_no_template_data_set() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
-        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
-        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -503,15 +494,16 @@ class ZapScanContextFactoryTest {
         /* test */
         verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertNull(result.getGroovyScriptLoginFile());
+        assertTrue(result.getTemplateVariables().isEmpty());
     }
 
     @Test
-    void cmd_param_set_results_in_environment_variable_reader_not_being_called() {
+    void script_login_cmd_param_set_with_valid_sechub_json_results_in_environment_variable_reader_not_being_called_and_template_variables_set() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         String groovyScriptFile = "script.groovy";
         when(settings.getGroovyLoginScriptFile()).thenReturn(groovyScriptFile);
-        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(null);
+        when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
 
         /* execute */
         ZapScanContext result = factoryToTest.create(settings);
@@ -519,14 +511,18 @@ class ZapScanContextFactoryTest {
         /* test */
         verify(envVariableReader, never()).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
+        Map<String, String> templateVariables = result.getTemplateVariables();
+        assertEquals(2, templateVariables.size());
+        assertEquals("the-user", templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY));
+        assertEquals("the-password", templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY));
     }
 
     @Test
-    void cmd_param_not_set_results_in_environment_variable_reader_being_called_as_fallback() {
+    void script_login_cmd_param_not_set_with_valid_sechub_json_results_in_environment_variable_reader_being_called_as_fallback_and_template_variables_set() {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
+        when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
         String groovyScriptFile = "script.groovy";
-        when(settings.getGroovyLoginScriptFile()).thenReturn(null);
         when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
 
         /* execute */
@@ -535,6 +531,57 @@ class ZapScanContextFactoryTest {
         /* test */
         verify(envVariableReader).readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         assertEquals(groovyScriptFile, result.getGroovyScriptLoginFile().getName());
+        Map<String, String> templateVariables = result.getTemplateVariables();
+        assertEquals(2, templateVariables.size());
+        assertEquals("the-user", templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY));
+        assertEquals("the-password", templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY));
+    }
+
+    @Test
+    void script_login_file_set_without_template_definition_in_sechub_config_throws_exception() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        String groovyScriptFile = "script.groovy";
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
+        String expectedErrorMessage = "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
+                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
+
+        /* execute */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
+
+        /* test */
+        assertEquals(expectedErrorMessage, exception.getMessage());
+    }
+
+    @Test
+    void script_login_file_not_set_but_template_definition_in_sechub_config_is_set_throws_exception() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
+        String expectedErrorMessage = "When no groovy login script is defined, no template data variables must be defined!";
+
+        /* execute */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
+
+        /* test */
+        assertEquals(expectedErrorMessage, exception.getMessage());
+    }
+
+    @Test
+    void script_login_file_and_template_definition_in_sechub_config_set_but_with_wrong_variables_throws_exception() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(settings.getSecHubConfigFile()).thenReturn(INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
+        String groovyScriptFile = "script.groovy";
+        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
+        String expectedErrorMessage = "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY
+                + "' and '" + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
+
+        /* execute */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
+
+        /* test */
+        assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     private CommandLineSettings createSettingsMock() {

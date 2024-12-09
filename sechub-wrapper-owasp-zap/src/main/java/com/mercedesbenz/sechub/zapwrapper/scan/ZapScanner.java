@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
+import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
@@ -95,7 +96,7 @@ public class ZapScanner implements ZapScan {
             /* After scan */
             generateZapReport();
             cleanUp();
-        } catch (ClientApiException e) {
+        } catch (ClientApiException | ZapWrapperRuntimeException e) {
             cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
@@ -322,16 +323,14 @@ public class ZapScanner implements ZapScan {
             return initBasicAuthentication(zapContextId, webLoginConfiguration.getBasic().get());
         }
 
-        if (scriptLoginWanted()) {
+        if (scriptLoginConfigured()) {
             LOG.info("For scan {}: Setting up authentcation and session management method for script authentication.", scanContext.getContextName());
             setupAuthenticationAndSessionManagementMethodForScriptLogin(zapContextId);
 
             LOG.info("For scan {}: Performing script authentication.", scanContext.getContextName());
             String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
 
-            // TODO 2024-11-21 jan: read the username from templateData as soon as it is
-            // implemented
-            String username = "DUMMY";
+            String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
             /* @formatter:off */
             LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.", scanContext.getContextName());
             StringBuilder authCredentialsConfigParams = new StringBuilder();
@@ -839,8 +838,8 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
     }
 
-    private boolean scriptLoginWanted() {
-        return scanContext.getGroovyScriptLoginFile() != null;
+    private boolean scriptLoginConfigured() {
+        return scanContext.getGroovyScriptLoginFile() != null && !scanContext.getTemplateVariables().isEmpty();
     }
 
     record UserInformation(String userName, int zapuserId) {
