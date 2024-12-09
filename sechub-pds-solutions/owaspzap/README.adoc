@@ -10,10 +10,10 @@ Furthermore, the combination of OWASP ZAP and PDS make it possible to run both i
 
 This folder contains the necessary scripts to run OWASP ZAP+PDS inside a container locally. Additionally, it contains scripts to build and push the OWASP ZAP+PDS container to your container registry and a Helm chart to install and run OWASP ZAP+PDS in a Kubernetes cluster.
 
-== Script login using templates and assets
+== Script authentication using templates and assets
 
 To start a scan this pds-solution executes the script link:docker/scripts/owasp-zap.sh[owasp-zap.sh].
-The script login mechanism using the SecHub templates and assets feature requires the following file to be present at execution time of the script to work:
+The script authentication mechanism using the SecHub templates and assets feature requires the following file to be present at execution time of the script to work:
 ----
 $PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy
 ----
@@ -22,14 +22,14 @@ When setting a template with assets for webscan authentication, ensure that the 
 if the PDS extracts the assets that `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy` exists by the time the script `owasp-zap.sh` is executed.
 The configuration of the wrapper application that is used to configure the ZAP, can be found at link:https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc[https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc].
 
-=== Script login template data variables
+=== Script authentication template data variables
 For a webscan script authentication with this pds-solution, template data with the following variables are required:
 
 * `username`
 * `password`
 
 These variables are used for the credential data of the scan user. The `username` can be used for any type of user identification like email address, user ID, user name etc.
-If TOTP is required make sure to use the dedicated entry inside the webscan login section of the sechub configuration JSON.
+If TOTP is required make sure to use the dedicated entry inside the webscan authentication section of the sechub configuration JSON.
 
 == Run Locally
 
