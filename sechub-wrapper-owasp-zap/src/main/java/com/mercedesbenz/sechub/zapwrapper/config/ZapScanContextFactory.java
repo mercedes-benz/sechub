@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
@@ -66,6 +69,10 @@ public class ZapScanContextFactory {
 
         Map<String, File> headerValueFiles = fetchHeaderValueFiles(sechubScanConfig);
 
+        File groovyScriptFile = fetchGroovyScriptFile(settings);
+        Map<String, String> templateVariables = fetchTemplateVariables(sechubScanConfig);
+        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables);
+
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = settings.getJobUUID();
         if (contextName == null) {
@@ -80,7 +87,7 @@ public class ZapScanContextFactory {
         ZapPDSEventHandler zapEventHandler = createZapEventhandler(settings);
 
         /* @formatter:off */
-		ZapScanContext scanContext = ZapScanContext.builder()
+        ZapScanContext scanContext = ZapScanContext.builder()
 												.setTargetUrl(targetUrl)
 												.setVerboseOutput(settings.isVerboseEnabled())
 												.setReportFile(settings.getReportFile())
@@ -102,7 +109,8 @@ public class ZapScanContextFactory {
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
-												.setGroovyScriptLoginFile(fetchGroovyScriptFile(settings))
+												.setGroovyScriptLoginFile(groovyScriptFile)
+												.setTemplateVariables(templateVariables)
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -275,5 +283,53 @@ public class ZapScanContextFactory {
             return null;
         }
         return new File(groovyScriptFile);
+    }
+
+    private Map<String, String> fetchTemplateVariables(SecHubScanConfiguration sechubScanConfig) {
+        TemplateDataResolver templateDataResolver = new TemplateDataResolver();
+        TemplateData templateData = templateDataResolver.resolveTemplateData(TemplateType.WEBSCAN_LOGIN, sechubScanConfig);
+        if (templateData == null) {
+            return new LinkedHashMap<>();
+        }
+        return templateData.getVariables();
+    }
+
+    /**
+     * This method verifies that the script login configuration is valid. No script
+     * login configured is a valid configuration as well.
+     *
+     * @param groovyScriptFile
+     * @param templateVariables
+     *
+     * @throws ZapWrapperRuntimeException
+     */
+    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables) {
+        // no script login was defined
+        if (groovyScriptFile == null && templateVariables.isEmpty()) {
+            return;
+        }
+        // A script was defined, but no template data where defined
+        if (groovyScriptFile != null && templateVariables.isEmpty()) {
+            throw new ZapWrapperRuntimeException(
+                    "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
+                            + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        // No script was defined, but template data where defined
+        if (groovyScriptFile == null && !templateVariables.isEmpty()) {
+            throw new ZapWrapperRuntimeException("When no groovy login script is defined, no template data variables must be defined!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        // if a script and the template data are defined, the mandatory variables must
+        // be present
+        if (groovyScriptFile != null && !templateVariables.isEmpty()) {
+            if (templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY) == null
+                    || templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY) == null) {
+                throw new ZapWrapperRuntimeException(
+                        "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
+                                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
+                        ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            }
+        }
     }
 }

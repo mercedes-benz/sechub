@@ -121,6 +121,13 @@ else
     echo "Use default value of wrapper for WRAPPER_RETRY_WAITTIME_MILLISECONDS"
 fi
 
+if [ -f "$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy" ] ; then
+    export ZAP_GROOVY_LOGIN_SCRIPT_FILE="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy"
+    echo "Use script login file: $ZAP_GROOVY_LOGIN_SCRIPT_FILE"
+else
+    echo "No script login file was found"
+fi
+
 echo ""
 echo "Start scanning"
 echo ""
