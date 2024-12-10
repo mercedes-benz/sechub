@@ -1,4 +1,4 @@
 {
-  "HOST": "https://api.example.com",
+  "HOST": "https://web-server:4443",
   "LOCAL_DEV": false
 }
