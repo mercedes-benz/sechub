@@ -1,4 +1,5 @@
 {
-  "HOST": "https://web-server:4443",
+  // HOST is the URL of the API client, here it should be the URL of the SPA since we rpoxy api requests to the backend
+  "HOST": "https://localhost",
   "LOCAL_DEV": false
 }

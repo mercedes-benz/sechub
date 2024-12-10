@@ -7,7 +7,12 @@ This project is a web application that provides a user interface for the SecHub 
 
 ### Installation
 
-Install the node version manager (nvm) and use it to install the correct version of Node.js:
+Install the node version manager (nvm) and use it to install and use the correct version of Node.js:
+You can skip the installation processes if you already have nvm installed and the node version in nvm.
+
+```bash
+nvm install
+```
 
 ```bash
 nvm use
@@ -18,6 +23,14 @@ Install the project dependencies:
 ```bash
 npm install
 ```
+
+### Building openAPI SecHub Client
+
+To generate the SecHub openAPI Client use:
+
+```bash
+ npm run generate-api-client
+ ```
 
 ### Starting the Development Server
 
@@ -32,12 +45,12 @@ npm run dev
 #### Running in Development mode with sechub for testing
 
 1. Start SecHub Integration Test Server (or Docker Server)
-2. Start the SPA in Development mode (npm run dev)
-4. Configure .env file with variables (see env-template)
-Set VITE_API_LOCAL_DEV=true
-Set VITE_API_USER to your SecHub user
-Set VITE_API_PASSWORD to your SecHub Api Token
-5. Set VITE_API_HOST the URL of your application http://localhost:3000 - this is because of the proxy defined in the dev server to avoid CORS Issues
+2. Configure .env.local file, copy .env. to env.local and adjust variables 
+Set `VITE_API_LOCAL_DEV=true`
+Set `VITE_API_USER` to your SecHub user
+Set `VITE_API_PASSWORD` to your SecHub Api Token
+3. Set `VITE_API_HOST` the URL of your application http://localhost:3000 - this is because of the proxy defined in the dev server to avoid CORS Issues
+4. Start the SPA in Development mode (npm run dev)
 
 Happy Testing!
 
@@ -45,21 +58,10 @@ Happy Testing!
 
 Set Environment Variables:
 Be aware that npm run build sets the environment variables at build time.
-For Deployment life ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE envs. Be aware that the config.json will be servred by the nginx.
+For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE envs. Be aware that the config.json will be servred by the nginx.
 
 To build your project for production, use:
 
 ```bash
 npm run build
 ```
-
-
-
-### Building openAPI SecHub Client
-
-To generate the SecHub openAPI Client use:
-
-```bash
- npm run codegen
- ```
-
