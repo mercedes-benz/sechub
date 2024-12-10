@@ -44,7 +44,8 @@ Happy Testing!
 ### Building for Production
 
 Set Environment Variables:
-Be aware that npm run build sets directly the environment variables.
+Be aware that npm run build sets the environment variables at build time.
+For Deployment life ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE envs. Be aware that the config.json will be servred by the nginx.
 
 To build your project for production, use:
 

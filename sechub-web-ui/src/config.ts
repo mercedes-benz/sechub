@@ -3,6 +3,7 @@
 import { ref } from 'vue'
 
 const config = ref({
+  // New ENV must be defined in global.d.ts
   HOST: String(import.meta.env.VITE_API_HOST) || '',
   USERNAME: String(import.meta.env.VITE_API_USER) || '',
   PASSWORD: String(import.meta.env.VITE_API_PASSWORD) || '',
