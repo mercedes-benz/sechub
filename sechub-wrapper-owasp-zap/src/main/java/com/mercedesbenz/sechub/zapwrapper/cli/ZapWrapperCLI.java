@@ -32,7 +32,9 @@ public class ZapWrapperCLI {
 
         } catch (ZapWrapperRuntimeException e) {
             LOG.error("An error occurred during the scan: {}.", e.getMessage(), e);
-            scanContext.getZapProductMessageHelper().writeProductError(e);
+            if (scanContext != null) {
+                scanContext.getZapProductMessageHelper().writeProductError(e);
+            }
             System.exit(e.getExitCode().getExitCode());
 
         } catch (ZapWrapperCommandLineParserException e) {
