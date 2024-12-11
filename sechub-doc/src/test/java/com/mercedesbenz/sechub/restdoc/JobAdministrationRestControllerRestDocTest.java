@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,7 +40,6 @@ import com.mercedesbenz.sechub.domain.administration.job.JobInformationListServi
 import com.mercedesbenz.sechub.domain.administration.job.JobRestartRequestService;
 import com.mercedesbenz.sechub.domain.administration.job.JobStatus;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
@@ -52,8 +51,9 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(JobAdministrationRestController.class)
-@ContextConfiguration(classes = { JobAdministrationRestController.class, JobAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { JobAdministrationRestController.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -228,11 +228,6 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
     // https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#documenting-your-api-request-response-payloads-fields-json
     private static String inArray(String field) {
         return "[]." + field;
-    }
-
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }

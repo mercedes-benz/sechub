@@ -25,8 +25,8 @@
   },
   "webScan" : {
     "url" : "https://demo.example.org/myapp",
-    "includes": [ "/portal/admin", "/abc.html", "/hidden", "/customer/<*>" ],
-    "excludes": [ "/public/media", "/contact.html", "/static", "<*>/admin/<*>" ],
+    "includes" : [ "/portal/admin", "/abc.html", "/hidden", "/customer/<*>" ],
+    "excludes" : [ "/public/media", "/contact.html", "/static", "<*>/admin/<*>" ],
     "maxScanDuration" : {
       "duration" : 35,
       "unit" : "minutes"
@@ -39,7 +39,7 @@
       "password" : "secret-password",
       "use" : [ "client-cert-api-file-reference" ]
     },
-    "headers" : [{
+    "headers" : [ {
       "name" : "Authorization",
       "use" : [ "header-file-ref-for-big-token" ]
     }, {
@@ -50,9 +50,13 @@
     }, {
       "name" : "Key",
       "use" : [ "another-header-file-ref-for-big-token" ]
-    }],
+    } ],
     "login" : {
       "url" : "https://demo.example.org/myapp/login",
+      "templateData" : {
+        "username" : "testuser",
+        "password" : "testpwd"
+      },
       "basic" : {
         "realm" : "realm0",
         "user" : "user0",

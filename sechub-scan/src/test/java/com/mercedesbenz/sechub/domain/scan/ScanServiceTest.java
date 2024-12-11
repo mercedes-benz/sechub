@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.core.task.TaskExecutor;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
@@ -31,6 +32,7 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.ProgressState;
 import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -71,41 +73,41 @@ public class ScanServiceTest {
     private PrepareProductExecutionService prepareProductExecutionService;
     private SecretScanProductExecutionService secretScanProductExecutionService;
     private ProgressState progressState;
+    private TemplateService templateService;
 
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
-    @Before
-    public void before() throws Exception {
-        storageService = mock(SecHubStorageService.class);
-        jobStorage = mock(JobStorage.class);
-        scanProjectConfigService = mock(ScanProjectConfigService.class);
-        scanJobListener = mock(ScanJobListener.class);
-        stateFetcherFactory = mock(ScanProgressStateFetcherFactory.class);
-        ProgressStateFetcher progressStateFetcher = mock(ProgressStateFetcher.class);
-        progressState = mock(ProgressState.class);
+    @BeforeEach
+    void before() throws Exception {
+        storageService = mock();
+        jobStorage = mock();
+        scanProjectConfigService = mock();
+        scanJobListener = mock();
+        stateFetcherFactory = mock();
+        ProgressStateFetcher progressStateFetcher = mock();
+        progressState = mock();
+        templateService = mock();
 
         when(storageService.createJobStorageForProject(any(), any())).thenReturn(jobStorage);
         when(stateFetcherFactory.createProgressStateFetcher(any())).thenReturn(progressStateFetcher);
         when(progressStateFetcher.fetchProgressState()).thenReturn(progressState);
 
-        webScanProductExecutionService = mock(WebScanProductExecutionService.class);
-        codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
-        infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
-        licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
-        analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
-        prepareProductExecutionService = mock(PrepareProductExecutionService.class);
-        secretScanProductExecutionService = mock(SecretScanProductExecutionService.class);
+        webScanProductExecutionService = mock();
+        codeScanProductExecutionService = mock();
+        infrastructureScanProductExecutionService = mock();
+        licenseScanProductExecutionService = mock();
+        analyticsProductExecutionService = mock();
+        prepareProductExecutionService = mock();
+        secretScanProductExecutionService = mock();
+        scanLogService = mock();
+        reportService = mock();
+        report = mock();
+        productExecutionServiceContainer = mock();
 
-        scanLogService = mock(ProjectScanLogService.class);
-
-        reportService = mock(CreateScanReportService.class);
-        report = mock(ScanReport.class);
         when(report.getTrafficLightAsString()).thenReturn(TRAFFIC_LIGHT);
         when(reportService.createReport(any())).thenReturn(report);
 
         serviceToTest = new ScanService();
-        productExecutionServiceContainer = mock(ProductExecutionServiceContainer.class);
-        serviceToTest.productExecutionServiceContainer = productExecutionServiceContainer;
 
         when(productExecutionServiceContainer.getWebScanProductExecutionService()).thenReturn(webScanProductExecutionService);
         when(productExecutionServiceContainer.getInfraScanProductExecutionService()).thenReturn(infrastructureScanProductExecutionService);
@@ -121,20 +123,22 @@ public class ScanServiceTest {
         serviceToTest.scanProjectConfigService = scanProjectConfigService;
         serviceToTest.scanJobListener = scanJobListener;
         serviceToTest.monitorFactory = stateFetcherFactory;
+        serviceToTest.productExecutionServiceContainer = productExecutionServiceContainer;
+        serviceToTest.templateService = templateService;
     }
 
     @Test
-    public void when_no_exception_is_thrown_result_has_not_failed() throws Exception {
+    void when_no_exception_is_thrown_result_has_not_failed() throws Exception {
 
         /* execute */
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(prepareValidRequest());
 
         /* test */
-        assertFalse(result.hasFailed());
+        assertThat(result.hasFailed()).isFalse();
     }
 
     @Test
-    public void scanservice_does_execute_webscan_execution_service() throws Exception {
+    void scanservice_does_execute_webscan_execution_service() throws Exception {
 
         /* execute */
         serviceToTest.receiveSynchronMessage(prepareValidRequest());
@@ -144,7 +148,7 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scanservice_does_execute_infrascan_execution_service() throws Exception {
+    void scanservice_does_execute_infrascan_execution_service() throws Exception {
 
         /* execute */
         serviceToTest.receiveSynchronMessage(prepareValidRequest());
@@ -154,7 +158,7 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scanservice_does_execute_codescan_execution_service() throws Exception {
+    void scanservice_does_execute_codescan_execution_service() throws Exception {
 
         /* execute */
         serviceToTest.receiveSynchronMessage(prepareValidRequest());
@@ -164,7 +168,7 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scanservice_does_execute_prepare_execution_service() throws Exception {
+    void scanservice_does_execute_prepare_execution_service() throws Exception {
 
         /* execute */
         serviceToTest.receiveSynchronMessage(prepareValidRequest());
@@ -174,27 +178,25 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scanservice_does_cleanup_storage_of_job__when_not_failed() throws Exception {
+    void scanservice_does_cleanup_storage_of_job__when_not_failed() throws Exception {
 
         /* execute */
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(prepareValidRequest());
 
         /* test */
         verify(jobStorage).deleteAll();
-        assertFalse(result.hasFailed());
+        assertThat(result.hasFailed()).isFalse();
     }
 
-    /**
+    /*
      * Here we test that on failure the storage is ALSO cleaned. Why? Because in
-     * future there should be the possiblity for a retry mechanism, but currently
+     * future there should be the possibility for a retry mechanism, but currently
      * there is none. When this is implemented we must change the test so it will
      * check there is NO cleaning. But having no retry mechanism implemented, we
      * expect the cleanup process done even when failing.
-     *
-     * @throws Exception
      */
     @Test
-    public void scanservice_does_cleanup_storage_of_job__when_HAS_failed() throws Exception {
+    void scanservice_does_cleanup_storage_of_job__when_HAS_failed() throws Exception {
 
         /* prepare */
         DomainMessage request = prepareValidRequest();
@@ -205,13 +207,13 @@ public class ScanServiceTest {
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
 
         /* test */
-        assertTrue(result.hasFailed());
+        assertThat(result.hasFailed()).isTrue();
         verify(jobStorage/* when retry implemented:,never() */).deleteAll();
 
     }
 
     @Test
-    public void scanservice_does_execute_report_service() throws Exception {
+    void scanservice_does_execute_report_service() throws Exception {
 
         /* execute */
         serviceToTest.receiveSynchronMessage(prepareValidRequest());
@@ -221,17 +223,17 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scanservice_set_result_traficlight_as_from_report() throws Exception {
+    void scanservice_set_result_traficlight_as_from_report() throws Exception {
 
         /* execute */
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(prepareValidRequest());
 
         /* test */
-        assertEquals(TRAFFIC_LIGHT, result.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT));
+        assertThat(result.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT)).isEqualTo(TRAFFIC_LIGHT);
     }
 
     @Test
-    public void scanservice_does_NOT_execute_reportservice_when_webscan_throws_sechubexception() throws Exception {
+    void scanservice_does_NOT_execute_reportservice_when_webscan_throws_sechubexception() throws Exception {
 
         /* prepare */
         DomainMessage request = prepareValidRequest();
@@ -242,7 +244,7 @@ public class ScanServiceTest {
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
 
         /* test */
-        assertTrue(result.hasFailed());
+        assertThat(result.hasFailed()).isTrue();
 
         verify(webScanProductExecutionService).executeProductsAndStoreResults(any());
         verify(reportService, never()).createReport(any());
@@ -250,7 +252,7 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void event_handling_works_as_expected_and_SCAN_DONE_is_returned_as_resulting_message_id() {
+    void event_handling_works_as_expected_and_SCAN_DONE_is_returned_as_resulting_message_id() {
         /* prepare */
         DomainMessage request = prepareValidRequest();
 
@@ -258,11 +260,11 @@ public class ScanServiceTest {
         DomainMessageSynchronousResult result = simulateEventSend(request, serviceToTest);
 
         /* test */
-        assertEquals(MessageID.SCAN_DONE, result.getMessageId());
+        assertThat(result.getMessageId()).isEqualTo(MessageID.SCAN_DONE);
     }
 
     @Test
-    public void event_handling_FAILED_when_configuration_is_not_set() {
+    void event_handling_FAILED_when_configuration_is_not_set() {
         /* prepare */
         DomainMessage request = prepareValidRequest();
         request.set(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG, null);
@@ -271,11 +273,11 @@ public class ScanServiceTest {
         DomainMessageSynchronousResult result = simulateEventSend(request, serviceToTest);
 
         /* test */
-        assertEquals(MessageID.SCAN_FAILED, result.getMessageId());
+        assertThat(result.getMessageId()).isEqualTo(MessageID.SCAN_FAILED);
     }
 
     @Test
-    public void event_handling_FAILED_when_configuration_is_set_but_contains_no_projectId() {
+    void event_handling_FAILED_when_configuration_is_set_but_contains_no_projectId() {
         /* prepare */
         SecHubConfiguration configNoProjectId = prepareValidConfiguration();
         configNoProjectId.setProjectId(null);
@@ -285,11 +287,11 @@ public class ScanServiceTest {
         DomainMessageSynchronousResult result = simulateEventSend(request, serviceToTest);
 
         /* test */
-        assertEquals(MessageID.SCAN_FAILED, result.getMessageId());
+        assertThat(result.getMessageId()).isEqualTo(MessageID.SCAN_FAILED);
     }
 
     @Test
-    public void scan_service_fetches_configuration_without_accesscheck() throws Exception {
+    void scan_service_fetches_configuration_without_accesscheck() throws Exception {
         /* prepare */
         SecHubConfiguration configNoProjectId = prepareValidConfiguration();
         DomainMessage request = prepareRequest(configNoProjectId);
@@ -302,7 +304,7 @@ public class ScanServiceTest {
     }
 
     @Test
-    public void scan_service_fetches_mock_configuration_and_puts_mock_project_configuration_complete_in_execution_context() throws Exception {
+    void scan_service_fetches_mock_configuration_and_puts_mock_project_configuration_complete_in_execution_context() throws Exception {
         /* prepare */
         SecHubConfiguration configNoProjectId = prepareValidConfiguration();
         DomainMessage request = prepareRequest(configNoProjectId);
@@ -322,7 +324,27 @@ public class ScanServiceTest {
         ArgumentCaptor<SecHubExecutionContext> contextCaptor = ArgumentCaptor.forClass(SecHubExecutionContext.class);
         verify(codeScanProductExecutionService).executeProductsAndStoreResults(contextCaptor.capture());
         SecHubExecutionContext context = contextCaptor.getValue();
-        assertEquals(projectMockDataConfig, context.getData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION));
+        assertThat(context.getData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION)).isEqualTo(projectMockDataConfig);
+    }
+
+    @Test
+    void created_sechub_execution_context_for_scan_has_template_ids_for_project_inside() {
+        /* prepare */
+        DomainMessage message = mock();
+        SecHubConfiguration sechubConfiguration = mock();
+        when(sechubConfiguration.getProjectId()).thenReturn("project1");
+        when(message.get(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG)).thenReturn(sechubConfiguration);
+
+        List<TemplateDefinition> definitionList = new ArrayList<>();
+        TemplateDefinition definition1 = mock();
+        definitionList.add(definition1);
+        when(templateService.fetchAllTemplateDefinitionsForProject("project1")).thenReturn(definitionList);
+
+        /* execute */
+        SecHubExecutionContext result = serviceToTest.createExecutionContext(message);
+
+        /* test */
+        assertThat(result.getTemplateDefinitions()).contains(definition1).hasSize(1);
     }
 
     private DomainMessage prepareValidRequest() {

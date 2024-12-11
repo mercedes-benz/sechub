@@ -15,11 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,7 +30,6 @@ import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserGetAPITokenByOneTimeTokenService;
 import com.mercedesbenz.sechub.domain.administration.user.AnonymousUserGetApiTokenByOneTimeTokenRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetNewAPIToken;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -39,9 +37,9 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(AnonymousUserGetApiTokenByOneTimeTokenRestController.class)
-@ContextConfiguration(classes = { AnonymousUserGetApiTokenByOneTimeTokenRestController.class,
-        AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { AnonymousUserGetApiTokenByOneTimeTokenRestController.class })
+@Import(TestRestDocSecurityConfiguration.class)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
@@ -84,12 +82,6 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest imp
 				));
 
 		/* @formatter:on */
-    }
-
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
 }

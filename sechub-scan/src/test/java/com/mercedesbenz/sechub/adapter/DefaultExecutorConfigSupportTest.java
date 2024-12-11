@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
@@ -23,10 +24,13 @@ public class DefaultExecutorConfigSupportTest {
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
     private SystemEnvironmentVariableSupport environmentVariableSupport;
     private List<ProductExecutorConfigSetupJobParameter> jobParameters;
+    private ProductExecutorContext context;
 
     @Before
     public void before() throws Exception {
         config = mock(ProductExecutorConfig.class);
+        context = mock();
+        when(context.getExecutorConfig()).thenReturn(config);
         setup = mock(ProductExecutorConfigSetup.class);
 
         jobParameters = new ArrayList<>();
@@ -44,7 +48,7 @@ public class DefaultExecutorConfigSupportTest {
         when(setup.getJobParameters()).thenReturn(jobParameters);
 
         environmentVariableSupport = mock(SystemEnvironmentVariableSupport.class);
-        supportToTest = new DefaultExecutorConfigSupport(config, environmentVariableSupport, null);
+        supportToTest = new DefaultExecutorConfigSupport(context, environmentVariableSupport, null);
     }
 
     @Test

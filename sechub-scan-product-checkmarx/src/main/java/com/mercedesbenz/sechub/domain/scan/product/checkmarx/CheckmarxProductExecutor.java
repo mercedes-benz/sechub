@@ -109,8 +109,8 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
         JobStorage storage = storageService.createJobStorageForProject(projectId, jobUUID);
 
-        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
-                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
+        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(data.getProductExecutorContext(),
+                systemEnvironmentVariableSupport);
 
         AdapterMetaDataCallback metaDataCallback = data.getProductExecutorContext().getCallback();
 

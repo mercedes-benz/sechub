@@ -16,6 +16,15 @@ info:PDS_SCAN_CONFIGURATION=$PDS_SCAN_CONFIGURATION
 
 
 dumpPDSVariables
+
+# We added pds.config.templates.metadata.list as optional parameter here for testing
+# So we can dump the variable here - used in scenario12 integration test
+dumpVariable "PDS_CONFIG_TEMPLATE_METADATA_LIST"
+
+ASSET_FILE1="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/testfile1.txt"
+TEST_CONTENT_FROM_ASSETFILE=$(cat $ASSET_FILE1) 
+# Afterwards TEST_CONTENT_FROM_ASSETFILE=i am "testfile1.txt" for scenario12 integration tests
+dumpVariable "TEST_CONTENT_FROM_ASSETFILE"
     
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "a" ]]; then
      

@@ -4,5 +4,5 @@
 </template>
 
 <script lang="ts" setup>
-  import Projects from "@/components/Projects.vue";
+  import Projects from '@/components/Projects.vue'
 </script>

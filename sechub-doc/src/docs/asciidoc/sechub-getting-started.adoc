@@ -186,9 +186,10 @@ Setup of GoSec complete:
 
 Now you are ready to do scans!
 
-== Scan using SecHub client
-=== Install SecHub client
-The SecHub client is needed to scan. In later sections of this guide, the client is used to scan an example. The command below, will download the latest version and put it in your `/usr/local/bin` folder.
+== Scan using SecHub Client
+=== Install SecHub Client
+The SecHub Client is needed to scan. In later sections of this guide, the client is used to scan an example.
+The command below, will download the latest version and put it in your `/usr/local/bin` folder.
 
 [source, bash]
 --
@@ -196,24 +197,21 @@ The SecHub client is needed to scan. In later sections of this guide, the client
 CLIENT_VERSION=`curl -s https://mercedes-benz.github.io/sechub/latest/client-download.html | grep https://github.com/mercedes-benz/sechub/ | awk -F '-' '{print $NF}' | sed 's/.zip">//'`
 
 # Download the zipped binary
-curl -L -o sechub-cli.zip https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
+wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
 
 # Verify the binary
-curl -L -o sechub-cli.zip.sha256 https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
-sha256sum --check sechub-cli.zip.sha256
+wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
+sha256sum --check sechub-cli-$CLIENT_VERSION.zip.sha256
 
 # Extract 
-unzip sechub-cli.zip
+unzip sechub-cli-$CLIENT_VERSION.zip
 
 # Depending on your architecture and OS, you will have to copy a different binary file:
-# For linux x86-64
+# Example for Linux x86-64
 sudo cp platform/linux-amd64/sechub /usr/local/bin
 
-# For linux arm-64
-sudo cp platform/linux-arm64/sechub /usr/local/bin
-
 # Cleanup
-rm -rf sechub-cli.zip.sha256 sechub-cli.zip platform/
+rm -rf sechub-cli-$CLIENT_VERSION.zip sechub-cli-$CLIENT_VERSION.zip.sha256 platform/
 --
 
 === Scan
@@ -249,10 +247,19 @@ Now you can do a scan, type `sechub scan`, this will create a file which contain
 If you want the report in HTML format instead, add `-reportformat html` as an option: `sechub -reportformat html scan`
 
 == Optional
-=== Install SecHub's VSCodium Plugin (OPTIONAL)
-SecHub's VSCodium Plugin helps you to work faster with the SecHub report.
-You can go to the exact code line and fix the problem.
+=== SecHub's IDE plugins
+SecHub's IDE plugins help you to work faster with the SecHub report.
+You can jump to the exact code lines and fix the problem.
 
-You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
+==== Eclipse Plugin
+You can get the SecHub plugin the usual way from the https://marketplace.eclipse.org/content/sechub[Eclipse Marketplace].
 
-And to install it, open VSCodium and in the `Command Palette` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
+==== IntelliJ Plugin
+You can get the SecHub plugin the usual way from the https://plugins.jetbrains.com/plugin/23379-sechub[IntelliJ Marketplace].
+
+==== VS-Codium / Visual Studio Code Plugin
+You can get the plugin from the https://open-vsx.org/extension/mercedes-benz/sechub[OpenVSX Registry].
+
+To install it, search for `sechub` in the Extensions manager and choose the one from "mercedes-benz".
+
+For Visual Studio Code users: Download the Plugin and install it manually from file.

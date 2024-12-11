@@ -67,5 +67,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockJwtSecurityContextFactory.class)
 public @interface WithMockJwtUser {
-    String jwt() default JwtMockAuthenticationTestConfiguration.JWT;
+    String jwt() default TestJwtMockAuthenticationConfiguration.JWT;
 }

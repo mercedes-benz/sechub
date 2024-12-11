@@ -18,12 +18,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.adapter.AdapterException;
@@ -49,11 +50,10 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
-import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.SecHubSecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.storage.SecHubStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
@@ -61,6 +61,7 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { CheckmarxProductExecutor.class, CheckmarxResilienceConsultant.class,
         CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class, DefaultMetaDataInspector.class })
+@Import(SecHubSecurityConfiguration.class)
 public class CheckmarxProductExecutorMockTest {
 
     private static final String PROJECT_EXAMPLE = "projectIdxyz";
@@ -215,10 +216,12 @@ public class CheckmarxProductExecutorMockTest {
     }
 
     @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
+    static class SimpleTestConfiguration {
 
+        @Bean
+        RestTemplate restTemplate() {
+            return new RestTemplate();
+        }
     }
 
 }

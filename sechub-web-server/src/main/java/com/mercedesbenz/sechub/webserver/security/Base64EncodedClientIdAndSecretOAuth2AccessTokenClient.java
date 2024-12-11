@@ -44,7 +44,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @see OAuth2AccessTokenResponseClient
  * @see OAuth2AuthorizationCodeGrantRequest
  * @see OAuth2AccessTokenResponse
- * @see SecurityConfiguration
+ * @see WebServerSecurityConfiguration
  * @see JwtResponse
  *
  * @author hamidonos

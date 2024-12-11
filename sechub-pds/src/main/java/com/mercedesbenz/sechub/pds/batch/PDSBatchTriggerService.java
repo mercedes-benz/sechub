@@ -16,6 +16,8 @@ import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.usecase.PDSStep;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemExecutesJob;
 
 import jakarta.annotation.PostConstruct;
 
@@ -59,6 +61,7 @@ public class PDSBatchTriggerService {
     // default 10 seconds delay and 5 seconds initial
     @Scheduled(initialDelayString = "${pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @UseCaseSystemExecutesJob(@PDSStep(number = 1, name = "PDS trigger service fills queue", description = "Trigger service adds jobs to queue (when queue not full)"))
     public void triggerExecutionOfNextJob() {
         if (!schedulingEnabled) {
             LOG.trace("Trigger execution of next job canceled, because scheduling disabled.");
@@ -86,8 +89,7 @@ public class PDSBatchTriggerService {
             } catch (ObjectOptimisticLockingFailureException e) {
                 /*
                  * This can happen when PDS instances are started at same time, so the check for
-                 * next jobs can lead to race condiitons - and optmistic locks will occurre
-                 * here.
+                 * next jobs can lead to race conditions - and optimistic locks will occur here.
                  *
                  * To avoid this to happen again, we wait a random time here. So next call on
                  * this machine should normally not collide again.

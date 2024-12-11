@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.zapwrapper.config.auth.AuthenticationType;
-import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
-import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
@@ -33,17 +30,11 @@ public class ZapScanContext {
 
     private URL targetUrl;
 
-    private AuthenticationType authenticationType;
-
-    private long maxScanDurationInMilliSeconds;
-
     private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
     private ProxyInformation proxyInformation;
 
-    private ZapFullRuleset fullRuleset;
-
-    private DeactivatedRuleReferences deactivatedRuleReferences;
+    private List<String> zapRuleIDsToDeactivate = new ArrayList<>();
 
     private List<File> apiDefinitionFiles = new ArrayList<>();
 
@@ -62,6 +53,7 @@ public class ZapScanContext {
     private File clientCertificateFile;
     private Map<String, File> headerValueFiles;
     private String ajaxSpiderBrowserId;
+    private File groovyScriptLoginFile;
 
     private ZapScanContext() {
     }
@@ -98,14 +90,6 @@ public class ZapScanContext {
         return targetUrl;
     }
 
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
-    }
-
-    public long getMaxScanDurationInMilliSeconds() {
-        return maxScanDurationInMilliSeconds;
-    }
-
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
         return secHubWebScanConfiguration;
     }
@@ -120,12 +104,8 @@ public class ZapScanContext {
         return proxyInformation;
     }
 
-    public ZapFullRuleset getFullRuleset() {
-        return fullRuleset;
-    }
-
-    public DeactivatedRuleReferences getDeactivatedRuleReferences() {
-        return deactivatedRuleReferences;
+    public List<String> getZapRuleIDsToDeactivate() {
+        return Collections.unmodifiableList(zapRuleIDsToDeactivate);
     }
 
     public List<File> getApiDefinitionFiles() {
@@ -181,6 +161,10 @@ public class ZapScanContext {
         return ajaxSpiderBrowserId;
     }
 
+    public File getGroovyScriptLoginFile() {
+        return groovyScriptLoginFile;
+    }
+
     public static ZapScanContextBuilder builder() {
         return new ZapScanContextBuilder();
     }
@@ -199,17 +183,9 @@ public class ZapScanContext {
 
         private URL targetUrl;
 
-        private AuthenticationType authenticationType;
-
-        private long maxScanDurationInMilliSeconds;
-
         private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
         private ProxyInformation proxyInformation;
-
-        private ZapFullRuleset fullRuleset;
-
-        private DeactivatedRuleReferences deactivatedRuleReferences;
 
         private List<File> apiDefinitionFiles = new LinkedList<>();
 
@@ -231,6 +207,10 @@ public class ZapScanContext {
         private Map<String, File> headerValueFiles = new HashMap<>();
 
         private String ajaxSpiderBrowserId;
+
+        private File groovyScriptLoginFile;
+
+        private List<String> zapRuleIDsToDeactivate;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -267,16 +247,6 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setAuthenticationType(AuthenticationType authenticationType) {
-            this.authenticationType = authenticationType;
-            return this;
-        }
-
-        public ZapScanContextBuilder setMaxScanDurationInMilliSeconds(long maxScanDurationInMilliSeconds) {
-            this.maxScanDurationInMilliSeconds = maxScanDurationInMilliSeconds;
-            return this;
-        }
-
         public ZapScanContextBuilder setSecHubWebScanConfiguration(SecHubWebScanConfiguration secHubWebScanConfiguration) {
             this.secHubWebScanConfiguration = secHubWebScanConfiguration;
             return this;
@@ -287,13 +257,8 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setFullRuleset(ZapFullRuleset fullRuleset) {
-            this.fullRuleset = fullRuleset;
-            return this;
-        }
-
-        public ZapScanContextBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
-            this.deactivatedRuleReferences = deactivatedRuleReferences;
+        public ZapScanContextBuilder setZapRuleIDsToDeactivate(List<String> zapRuleIDsToDeactivate) {
+            this.zapRuleIDsToDeactivate = zapRuleIDsToDeactivate;
             return this;
         }
 
@@ -352,47 +317,50 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder setGroovyScriptLoginFile(File groovyScriptLoginFile) {
+            this.groovyScriptLoginFile = groovyScriptLoginFile;
+            return this;
+        }
+
         public ZapScanContext build() {
-            ZapScanContext zapScanConfiguration = new ZapScanContext();
-            zapScanConfiguration.serverConfig = this.serverConfig;
-            zapScanConfiguration.verboseOutput = this.verboseOutput;
-            zapScanConfiguration.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
-            zapScanConfiguration.activeScanEnabled = this.activeScanEnabled;
-            zapScanConfiguration.reportFile = this.reportFile;
-            zapScanConfiguration.contextName = this.contextName;
-            zapScanConfiguration.targetUrl = this.targetUrl;
-            zapScanConfiguration.authenticationType = this.authenticationType;
+            ZapScanContext zapScanContext = new ZapScanContext();
+            zapScanContext.serverConfig = this.serverConfig;
+            zapScanContext.verboseOutput = this.verboseOutput;
+            zapScanContext.ajaxSpiderEnabled = this.ajaxSpiderEnabled;
+            zapScanContext.activeScanEnabled = this.activeScanEnabled;
+            zapScanContext.reportFile = this.reportFile;
+            zapScanContext.contextName = this.contextName;
+            zapScanContext.targetUrl = this.targetUrl;
 
-            zapScanConfiguration.maxScanDurationInMilliSeconds = this.maxScanDurationInMilliSeconds;
+            zapScanContext.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 
-            zapScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
+            zapScanContext.proxyInformation = this.proxyInformation;
 
-            zapScanConfiguration.proxyInformation = this.proxyInformation;
+            zapScanContext.zapRuleIDsToDeactivate = this.zapRuleIDsToDeactivate;
 
-            zapScanConfiguration.fullRuleset = this.fullRuleset;
-            zapScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
+            zapScanContext.apiDefinitionFiles = this.apiDefinitionFiles;
 
-            zapScanConfiguration.apiDefinitionFiles = this.apiDefinitionFiles;
+            zapScanContext.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
+            zapScanContext.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
 
-            zapScanConfiguration.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
-            zapScanConfiguration.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
+            zapScanContext.connectionCheckEnabled = this.connectionCheckEnabled;
 
-            zapScanConfiguration.connectionCheckEnabled = this.connectionCheckEnabled;
+            zapScanContext.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
+            zapScanContext.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
 
-            zapScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
-            zapScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
+            zapScanContext.zapProductMessageHelper = this.zapProductMessageHelper;
 
-            zapScanConfiguration.zapProductMessageHelper = this.zapProductMessageHelper;
+            zapScanContext.zapPDSEventHandler = this.zapPDSEventHandler;
 
-            zapScanConfiguration.zapPDSEventHandler = this.zapPDSEventHandler;
+            zapScanContext.clientCertificateFile = this.clientCertificateFile;
 
-            zapScanConfiguration.clientCertificateFile = this.clientCertificateFile;
+            zapScanContext.headerValueFiles = this.headerValueFiles;
 
-            zapScanConfiguration.headerValueFiles = this.headerValueFiles;
+            zapScanContext.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
 
-            zapScanConfiguration.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
+            zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
 
-            return zapScanConfiguration;
+            return zapScanContext;
         }
     }
 }

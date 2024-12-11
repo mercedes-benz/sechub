@@ -10,11 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.mercedesbenz.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidationImpl;
@@ -38,9 +36,9 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
         SignupJsonInputValidator.class,
         UserIdValidationImpl.class,
         EmailValidationImpl.class,
-		ApiVersionValidationFactory.class,
-		AnonymousSignupRestControllerMockTest.SimpleTestConfiguration.class })
+		ApiVersionValidationFactory.class })
 /* @formatter:on */
+@Import(TestAdministrationSecurityConfiguration.class)
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 public class AnonymousSignupRestControllerMockTest {
@@ -150,13 +148,6 @@ public class AnonymousSignupRestControllerMockTest {
         		);
 
         /* @formatter:on */
-    }
-
-    @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 
     private SignupJsonInput createUserSelfRegistration(String api, String email, String name) {

@@ -13,20 +13,24 @@ public class WebLoginTOTPConfiguration {
     public static final String PROPERTY_VALIDITY_IN_SECONDS = "validityInSeconds";
     public static final String PROPERTY_TOKEN_LENGTH = "tokenLength";
     public static final String PROPERTY_HASH_ALGORITHM = "hashAlgorithm";
+    public static final String PROPERTY_ENCODING_TYPE = "encodingType";
 
     public static final int DEFAULT_VALIDITY_IN_SECONDS = 30;
     public static final int DEFAULT_TOKEN_LENGTH = 6;
     public static final TOTPHashAlgorithm DEFAULT_HASH_ALGORITHM = TOTPHashAlgorithm.HMAC_SHA1;
+    public static final EncodingType DEFAULT_ENCODING_TYPE = EncodingType.AUTODETECT;
 
     private SealedObject seed;
     private int validityInSeconds;
     private int tokenLength;
     private TOTPHashAlgorithm hashAlgorithm;
+    private EncodingType encodingType;
 
     public WebLoginTOTPConfiguration() {
         this.validityInSeconds = DEFAULT_VALIDITY_IN_SECONDS;
         this.tokenLength = DEFAULT_TOKEN_LENGTH;
         this.hashAlgorithm = DEFAULT_HASH_ALGORITHM;
+        this.encodingType = DEFAULT_ENCODING_TYPE;
     }
 
     public String getSeed() {
@@ -59,6 +63,14 @@ public class WebLoginTOTPConfiguration {
 
     public void setHashAlgorithm(TOTPHashAlgorithm hashAlgorithm) {
         this.hashAlgorithm = hashAlgorithm;
+    }
+
+    public EncodingType getEncodingType() {
+        return encodingType;
+    }
+
+    public void setEncodingType(EncodingType encodingType) {
+        this.encodingType = encodingType;
     }
 
 }

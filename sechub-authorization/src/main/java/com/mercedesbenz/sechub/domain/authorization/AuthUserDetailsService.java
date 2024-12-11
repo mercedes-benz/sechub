@@ -52,7 +52,7 @@ public class AuthUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         /* @formatter:off */
         return repository
-                .findByUserId(username)
+                .findByUserId(username.toLowerCase())
                 .map(AuthUserDetailsService::adoptUser)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         /* @formatter:on */

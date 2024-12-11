@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * successful authentication. This handler redirects the user to the /home page
  * specified in {@link RequestConstants}.
  *
- * @see SecurityConfiguration
+ * @see WebServerSecurityConfiguration
  * @see RequestConstants
  *
  * @author hamidonos

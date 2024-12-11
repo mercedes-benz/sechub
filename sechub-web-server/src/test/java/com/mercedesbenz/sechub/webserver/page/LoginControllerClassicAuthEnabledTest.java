@@ -17,12 +17,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
-import com.mercedesbenz.sechub.webserver.security.SecurityTestConfiguration;
+import com.mercedesbenz.sechub.webserver.security.TestWebServerSecurityConfiguration;
 import com.mercedesbenz.sechub.webserver.server.ServerProperties;
 import com.mercedesbenz.sechub.webserver.server.ServerPropertiesConfiguration;
 
 @WebMvcTest(LoginController.class)
-@Import({ SecurityTestConfiguration.class, ServerPropertiesConfiguration.class })
+@Import({ TestWebServerSecurityConfiguration.class, ServerPropertiesConfiguration.class })
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertyLoaderFactory.class)
 @ActiveProfiles("classic-auth-enabled")
 class LoginControllerClassicAuthEnabledTest {

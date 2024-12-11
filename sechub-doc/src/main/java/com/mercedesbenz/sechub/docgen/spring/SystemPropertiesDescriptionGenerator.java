@@ -25,16 +25,27 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
     }
 
     public String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry) {
-        return generate(list, registry, AcceptAllSpringValueFilter.INSTANCE);
+        return generate(list, registry, AcceptAllSpringValueFilter.INSTANCE, null);
     }
 
-    protected String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry, SpringValueFilter filter) {
+    public String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry,
+            Map<String, SortedSet<TableRow>> customPropertiesMap) {
+        return generate(list, registry, AcceptAllSpringValueFilter.INSTANCE, customPropertiesMap);
+    }
+
+    protected String generate(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry, SpringValueFilter filter,
+            Map<String, SortedSet<TableRow>> customPropertiesMap) {
         if (list == null || list.isEmpty()) {
             return "";
         }
 
         StringBuilder sb = new StringBuilder();
         Map<String, SortedSet<TableRow>> rowMap = new TreeMap<>();
+
+        if (customPropertiesMap != null) {
+            rowMap.putAll(customPropertiesMap);
+        }
+
         for (DocAnnotationData data : list) {
             if (SimpleStringUtils.isEmpty(data.springValue)) {
                 continue;
@@ -94,11 +105,21 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
         return "Scope '" + key + "'";
     }
 
-    class TableRow implements Comparable<TableRow> {
+    public static class TableRow implements Comparable<TableRow> {
         String propertyKey;
         String defaultValue;
         String description;
         boolean hasDefaultValue;
+
+        public TableRow() {
+        }
+
+        public TableRow(String propertyKey, String defaultValue, String description, boolean hasDefaultValue) {
+            this.propertyKey = propertyKey;
+            this.defaultValue = defaultValue;
+            this.description = description;
+            this.hasDefaultValue = hasDefaultValue;
+        }
 
         @Override
         public int compareTo(TableRow o) {
@@ -116,7 +137,6 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + getOuterType().hashCode();
             result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
             result = prime * result + ((description == null) ? 0 : description.hashCode());
             result = prime * result + ((propertyKey == null) ? 0 : propertyKey.hashCode());
@@ -132,8 +152,6 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
             if (getClass() != obj.getClass())
                 return false;
             TableRow other = (TableRow) obj;
-            if (!getOuterType().equals(other.getOuterType()))
-                return false;
             if (defaultValue == null) {
                 if (other.defaultValue != null)
                     return false;
@@ -150,10 +168,6 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
             } else if (!propertyKey.equals(other.propertyKey))
                 return false;
             return true;
-        }
-
-        private SystemPropertiesDescriptionGenerator getOuterType() {
-            return SystemPropertiesDescriptionGenerator.this;
         }
     }
 }

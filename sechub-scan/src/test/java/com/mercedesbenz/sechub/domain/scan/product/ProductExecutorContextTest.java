@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -22,7 +22,8 @@ public class ProductExecutorContextTest {
 
     @Before
     public void before() {
-        formerResults = new ArrayList<ProductResult>();
+        formerResults = new ArrayList<>();
+
         callback = mock(ProductExecutorCallback.class);
         config = mock(ProductExecutorConfig.class);
         when(callback.getMetaDataConverter()).thenReturn(converter);
@@ -69,7 +70,7 @@ public class ProductExecutorContextTest {
 
         /* test */
         verify(callback).getMetaDataOrNull();
-        assertEquals(result, metaData);
+        assertThat(result).isEqualTo(metaData);
     }
 
     @Test

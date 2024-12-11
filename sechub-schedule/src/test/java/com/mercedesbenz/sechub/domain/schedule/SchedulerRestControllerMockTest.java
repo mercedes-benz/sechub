@@ -24,17 +24,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
@@ -48,13 +49,14 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.SecHubSecurityConfiguration;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 import jakarta.validation.ValidationException;
 
-@WebMvcTest(SchedulerRestController.class)
+@WebMvcTest
 @ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerMockTest.SimpleTestConfiguration.class })
+@Import(SecHubSecurityConfiguration.class)
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 public class SchedulerRestControllerMockTest {
@@ -246,9 +248,11 @@ public class SchedulerRestControllerMockTest {
     }
 
     @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
+    static class SimpleTestConfiguration {
 
+        @Bean
+        RestTemplate restTemplate() {
+            return mock(RestTemplate.class);
+        }
     }
 }

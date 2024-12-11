@@ -42,6 +42,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
+import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -586,6 +587,17 @@ public class TestAPI {
         /* was not possible to execute succesful in given time range */
         fail("Timeout of waiting for successful execution - waited " + testExecutable.getTimeoutInSeconds() + " seconds");
         return;
+    }
+
+    /**
+     * Tries to execute runnable with default maximum time and retry (4 times a 500
+     * milliseconds) Shortcut for
+     * <code>executeRunnableAndAcceptAssertionsMaximumTimes(4,runnable, 500);</code>
+     *
+     * @param runnable
+     */
+    public static void executeResilient(Runnable runnable) {
+        executeRunnableAndAcceptAssertionsMaximumTimes(4, runnable, 500);
     }
 
     public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
@@ -1694,4 +1706,10 @@ public class TestAPI {
         return getSuperAdminRestHelper().getBooleanFromURL(url);
     }
 
+    public static List<ScanProjectConfig> fetchScanProjectConfigurations(TestProject project) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanProjectConfigurations(project.getProjectId());
+        String json = getSuperAdminRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(ScanProjectConfig.class, json);
+
+    }
 }

@@ -44,11 +44,12 @@ task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Developer Admin tool as standalone executable jar. Use launch-developer-admin-ui script to execute'
     archiveBaseName = 'sechub-developer-admin-ui'
-    
+    /* TODO: This is a 'dirty' fix for the standard archive entries limit of 64K. We should refactor this module to make it leaner */
+    zip64 = true
+
     manifest {
         attributes 'Main-Class': 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
     }
-    
     
     from { 
         configurations.runtimeClasspath.collect { 

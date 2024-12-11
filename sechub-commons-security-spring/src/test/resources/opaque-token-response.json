@@ -1,0 +1,12 @@
+{
+  "active": true,
+  "scope": "scope",
+  "client_id": "client_id",
+  "client_type": "client_type",
+  "username": "username",
+  "token_type": "token_type",
+  "exp": 1,
+  "sub": "sub",
+  "aud": "aud",
+  "group_type": "group_type"
+}

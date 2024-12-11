@@ -5,14 +5,16 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "generate-api-client": "rm -rf src/generated-sources/openapi; openapi-generator-cli generate -i ../sechub-openapi-java/src/main/resources/openapi.yaml -o src/generated-sources/openapi -g typescript-fetch --additional-properties=supportsES6=true,npmVersion=10.8.3"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
+    "@openapitools/openapi-generator-cli": "^2.15.3",
     "core-js": "^3.37.1",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
-    "vue-i18n": "^10.0.4",
+    "vue-i18n": "^10.0.5",
     "vuetify": "^3.6.11"
   },
   "devDependencies": {

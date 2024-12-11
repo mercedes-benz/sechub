@@ -37,3 +37,11 @@ To build your project for production, use:
 npm run build
 ```
 
+### Building openAPI SecHub Client
+
+To generate the SecHub openAPI Client use:
+
+```bash
+ npm run codegen
+ ```
+

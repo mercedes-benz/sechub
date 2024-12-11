@@ -217,6 +217,14 @@ public class SecHubJobRepositoryDBTest {
         assertEquals(2, list.size());
     }
 
+    /*
+     * This test checks that nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan
+     * does really fetch jobs in a random way. To check this, different jobs are
+     * created and fetched multiple times.
+     *
+     * When at least one job has been fetched two times and another one one time
+     * this is enough here to check for randomness.
+     */
     @Test
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_randomization_works() {
         /* prepare */
@@ -235,37 +243,84 @@ public class SecHubJobRepositoryDBTest {
         assertEquals(0, newJob5.getEncryptionCipherPoolId());
         assertEquals(0, newJob6.getEncryptionCipherPoolId());
 
-        Map<UUID, AtomicInteger> map = new LinkedHashMap<>();
+        Map<UUID, AtomicInteger> randomCheckInfoMap = new LinkedHashMap<>();
 
         /* execute */
-        for (int i = 0; i < 30; i++) {
+        int amountOfTries = 0;
+        while (amountOfTries < 1000) {
+            amountOfTries++;
+
             List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 1);
             for (ScheduleSecHubJob job : list) {
-                AtomicInteger atomic = map.computeIfAbsent(job.getUUID(), (uuid) -> new AtomicInteger(0));
+                AtomicInteger atomic = randomCheckInfoMap.computeIfAbsent(job.getUUID(), (uuid) -> new AtomicInteger(0));
                 atomic.incrementAndGet();
+            }
+            if (isRandomEnough(randomCheckInfoMap)) {
+                break;
             }
         }
 
         /* test */
-        assertEquals(6, map.size()); // when calling n times, we expect every entry is contained
-        System.out.println("map:" + map);
+
+        // dump info
+        System.out.println("amount of tries:" + amountOfTries + " random checks were done this way:" + randomCheckInfoMap);
+
+        // when calling n times, we expect every entry is contained
+        assertTrue(isRandomEnough(randomCheckInfoMap), "Even after " + amountOfTries + " tries, random check returned false!");
 
     }
 
-    @Test
-    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_2_entries_always_returned() {
+    @ParameterizedTest
+    @ValueSource(longs = { 0L, 1L, 100L })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_lower_encryption_entries_are_returned(long encryptionPoolId) {
         /* prepare */
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId).create();
+
+        long newerEncryptionIdOnQuery = encryptionPoolId + 1;
 
         /* execute */
-        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(1L, 10);
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(newerEncryptionIdOnQuery, 10);
 
         /* test */
         assertFalse(list.isEmpty());
         assertTrue(list.contains(newJob4));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = { 0L, 1L, 100L })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_no_entries_returned_when_same_encryption_id_already_set(long encryptionPoolId) {
+        /* prepare */
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId).create();
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(encryptionPoolId, 10);
+
+        /* test */
+        assertTrue(list.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = { 0L, 1L, 100L })
+    void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_no_entries_returned_when_newer_encryption_id_already_set(long encryptionPoolId) {
+        /* prepare */
+        long newerEncryptionPoolId = encryptionPoolId + 1;
+
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(newerEncryptionPoolId).create();
+        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(newerEncryptionPoolId).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(newerEncryptionPoolId).create();
+        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(newerEncryptionPoolId).create();
+
+        /* execute */
+        List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(encryptionPoolId, 10);
+
+        /* test */
+        assertTrue(list.isEmpty());
     }
 
     @Test
@@ -1444,6 +1499,31 @@ public class SecHubJobRepositoryDBTest {
             assertTrue(allJobsNow.contains(job3_1_day_before_created));
             assertTrue(allJobsNow.contains(job4_now_created));
         }
+    }
+
+    private boolean isRandomEnough(Map<UUID, AtomicInteger> map) {
+        // If at least one is fetched twice and at least one is fetched one time ->
+        // enough for
+        // randomness check (means not serial).
+        boolean foundAtLeastOneWithOneFetch = false;
+        boolean foundAtLeastOneWithTwoFetches = false;
+
+        boolean randomEnough = false;
+        for (AtomicInteger ai : map.values()) {
+            if (ai.intValue() == 1) {
+                foundAtLeastOneWithOneFetch = true;
+            }
+            if (ai.intValue() == 2) {
+                foundAtLeastOneWithTwoFetches = true;
+            }
+            randomEnough = foundAtLeastOneWithOneFetch && foundAtLeastOneWithTwoFetches;
+
+            if (randomEnough) {
+                break;
+            }
+        }
+
+        return randomEnough;
     }
 
     @TestConfiguration

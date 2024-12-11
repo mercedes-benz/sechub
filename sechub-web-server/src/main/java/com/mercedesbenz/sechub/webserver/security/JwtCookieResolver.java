@@ -57,7 +57,7 @@ class JwtCookieResolver implements BearerTokenResolver {
         /* @formatter:off */
         String jwt = Arrays
                 .stream(cookies)
-                .filter(cookie -> SecurityConfiguration.ACCESS_TOKEN.equals(cookie.getName()))
+                .filter(cookie -> WebServerSecurityConfiguration.ACCESS_TOKEN.equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);

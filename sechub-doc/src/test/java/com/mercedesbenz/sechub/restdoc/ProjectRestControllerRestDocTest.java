@@ -43,7 +43,7 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ProjectRestController.class)
+@WebMvcTest
 @ContextConfiguration(classes = { ProjectRestController.class })
 @WithMockUser(roles = RoleConstants.ROLE_USER)
 @ExtendWith(RestDocumentationExtension.class)

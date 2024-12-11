@@ -13,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfigurationSupport {
@@ -198,6 +200,15 @@ public class PDSJobConfigurationSupport {
             return MINIMUM_WAIT_SECONDS;
         }
         return result;
+    }
+
+    public List<PDSTemplateMetaData> getTemplateMetaData() {
+
+        String json = getStringParameterOrNull(PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST);
+        if (json == null || json.isBlank()) {
+            return Collections.emptyList();
+        }
+        return JSONConverter.get().fromJSONtoListOf(PDSTemplateMetaData.class, json);
     }
 
 }

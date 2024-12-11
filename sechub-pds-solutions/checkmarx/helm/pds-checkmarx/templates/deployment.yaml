@@ -124,6 +124,8 @@ spec:
               value: "{{ .Values.storage.sharedVolume.upload.dir }}"
 {{- end}}
           ports:
+            - name: pds-health-port
+              containerPort: 10251
             - name: pds-https-port
               containerPort: 8444
           startupProbe:
@@ -131,9 +133,19 @@ spec:
               scheme: HTTPS
               path: /api/anonymous/check/alive
               port: pds-https-port
+            initialDelaySeconds: 5
             periodSeconds: 1
-            failureThreshold: 300
-            # probe every 1s x 300 = 5 mins before restart of container
+            # probe every 1s x 600 = 10 mins before restart of container (some PDS download huge files before startup)
+            failureThreshold: 600
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health/readiness
+              port: pds-health-port
+            periodSeconds: 2
+            failureThreshold: 2
             successThreshold: 1
             timeoutSeconds: 1
           livenessProbe:
@@ -144,7 +156,7 @@ spec:
             periodSeconds: 5
             failureThreshold: 3
             successThreshold: 1
-            timeoutSeconds: 3
+            timeoutSeconds: 5
           volumeMounts:
             - mountPath: "/workspace"
               name: pds-workspace

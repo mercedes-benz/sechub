@@ -47,6 +47,8 @@ public enum PDSUseCaseIdentifier {
 
     UC_SYSTEM_SIGTERM_HANDLING(19, false),
 
+    UC_SYSTEM_JOB_EXECUTION(20, false),
+
     ;
 
     /* +---------------------------------------------------------------------+ */

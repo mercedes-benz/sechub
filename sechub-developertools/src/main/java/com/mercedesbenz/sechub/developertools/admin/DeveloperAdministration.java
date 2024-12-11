@@ -22,9 +22,11 @@ import org.springframework.web.client.ResponseErrorHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
+import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants;
 import com.mercedesbenz.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
 import com.mercedesbenz.sechub.integrationtest.api.AsPDSUser;
@@ -809,6 +811,51 @@ public class DeveloperAdministration {
 
     public SecHubEncryptionStatus fetchEncryptionStatus() {
         return asTestUser().fetchEncryptionStatus();
+    }
+
+    public TemplateDefinition fetchTemplateOrNull(String templateId) {
+        return asTestUser().fetchTemplateDefinitionOrNull(templateId);
+
+    }
+
+    public void createOrUpdateTemplate(String templateId, TemplateDefinition templateDefinition) {
+        asTestUser().createOrUpdateTemplate(templateId, templateDefinition);
+    }
+
+    public void assignTemplateToProject(String templateId, String projectId) {
+        asTestUser().assignTemplateToProject(templateId, new FixedTestProject(projectId));
+    }
+
+    public void unassignTemplateFromProject(String templateId, String projectId) {
+        asTestUser().unassignTemplateFromProject(templateId, new FixedTestProject(projectId));
+    }
+
+    public List<String> fetchAllTemplateIdentifiers() {
+        return asTestUser().fetchTemplateList();
+    }
+
+    public List<String> fetchAllAssetIdentifiers() {
+        return asTestUser().fetchAllAssetIds();
+    }
+
+    public void uploadAssetFile(String assetId, File file) {
+        asTestUser().uploadAssetFile(assetId, file);
+    }
+
+    public AssetDetailData fetchAssetDetails(String assetId) {
+        return asTestUser().fetchAssetDetails(assetId);
+    }
+
+    public void deleteAsset(String assetId) {
+        asTestUser().deleteAsset(assetId);
+    }
+
+    public void deleteAssetFile(String assetId, String fileName) {
+        asTestUser().deleteAssetFile(assetId, fileName);
+    }
+
+    public File downloadAssetFile(String assetId, String fileName) {
+        return asTestUser().downloadAssetFile(assetId, fileName);
     }
 
 }
