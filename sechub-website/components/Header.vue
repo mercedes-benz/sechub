@@ -3,6 +3,8 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/vue/20/solid';
 
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
+
 const documentationItems = [
   {
     title: 'Getting Started',
@@ -55,7 +57,7 @@ const items = [
     <nav>
       <div class="relative z-50 mx-auto flex max-w-7xl justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div class="relative z-10 flex items-center gap-16">
-          <NuxtLink aria-label="Home" to="/">
+          <NuxtLink aria-label="Home" :to="`${baseURL}/`">
             <img src="/logo.svg" class="h-12 w-10 object-contain" alt="SecHub Logo" />
           </NuxtLink>
 
