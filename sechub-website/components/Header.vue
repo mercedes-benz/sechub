@@ -42,6 +42,10 @@ const documentationItems = [
 
 const items = [
   {
+    title: 'Documentation',
+    href: 'https://mercedes-benz.github.io/sechub/index-old.html'
+  },
+  {
     title: 'Downloads',
     href: '#download'
   },
@@ -62,6 +66,7 @@ const items = [
           </NuxtLink>
 
           <div class="hidden items-center lg:flex lg:gap-10">
+            <!-- Unfortunately this currently only works in dev mode.
             <Menu as="div" class="relative inline-block">
               <div>
                 <MenuButton class="menu-item"> Documentation </MenuButton>
@@ -90,6 +95,7 @@ const items = [
                 </MenuItems>
               </transition>
             </Menu>
+            -->
             <NuxtLink
               v-for="item in items"
               :key="item.title"
