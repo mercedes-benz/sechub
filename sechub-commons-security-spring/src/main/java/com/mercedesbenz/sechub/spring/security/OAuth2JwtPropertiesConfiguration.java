@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
