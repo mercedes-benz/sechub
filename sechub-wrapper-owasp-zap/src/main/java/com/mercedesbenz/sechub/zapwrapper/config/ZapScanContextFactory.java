@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
@@ -45,9 +48,9 @@ public class ZapScanContextFactory {
         this.includeExcludeToZapURLHelper = includeExcludeToZapURLHelper;
     }
 
-    public ZapScanContext create(CommandLineSettings settings) {
+    public ZapScanContext create(CommandLineSettings settings) throws ZapWrapperWrongConfigurationException {
         if (settings == null) {
-            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            throw new ZapWrapperWrongConfigurationException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         /* Wrapper settings */
         ZapServerConfiguration serverConfig = createZapServerConfig(settings);
@@ -66,6 +69,10 @@ public class ZapScanContextFactory {
 
         Map<String, File> headerValueFiles = fetchHeaderValueFiles(sechubScanConfig);
 
+        File groovyScriptFile = fetchGroovyScriptFile(settings);
+        Map<String, String> templateVariables = fetchTemplateVariables(sechubScanConfig);
+        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables);
+
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = settings.getJobUUID();
         if (contextName == null) {
@@ -80,7 +87,7 @@ public class ZapScanContextFactory {
         ZapPDSEventHandler zapEventHandler = createZapEventhandler(settings);
 
         /* @formatter:off */
-		ZapScanContext scanContext = ZapScanContext.builder()
+        ZapScanContext scanContext = ZapScanContext.builder()
 												.setTargetUrl(targetUrl)
 												.setVerboseOutput(settings.isVerboseEnabled())
 												.setReportFile(settings.getReportFile())
@@ -102,7 +109,8 @@ public class ZapScanContextFactory {
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
-												.setGroovyScriptLoginFile(fetchGroovyScriptFile(settings))
+												.setGroovyScriptLoginFile(groovyScriptFile)
+												.setTemplateVariables(templateVariables)
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -121,7 +129,7 @@ public class ZapScanContextFactory {
         return Arrays.asList(zapRuleIDsToDeactivate.split(","));
     }
 
-    private ZapServerConfiguration createZapServerConfig(CommandLineSettings settings) {
+    private ZapServerConfiguration createZapServerConfig(CommandLineSettings settings) throws ZapWrapperWrongConfigurationException {
         String zapHost = settings.getZapHost();
         int zapPort = settings.getZapPort();
         String zapApiKey = settings.getZapApiKey();
@@ -137,16 +145,16 @@ public class ZapScanContextFactory {
         }
 
         if (zapHost == null) {
-            throw new ZapWrapperRuntimeException("Zap host is null. Please set the Zap host to the host use by the Zap.",
+            throw new ZapWrapperWrongConfigurationException("Zap host is null. Please set the Zap host to the host use by the Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
 
         if (zapPort <= 0) {
-            throw new ZapWrapperRuntimeException("Zap Port was set to " + zapPort + ". Please set the Zap port to the port used by the Zap.",
+            throw new ZapWrapperWrongConfigurationException("Zap Port was set to " + zapPort + ". Please set the Zap port to the port used by the Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (zapApiKey == null) {
-            throw new ZapWrapperRuntimeException("Zap API-Key is null. Please set the Zap API-key to the same value set inside your Zap.",
+            throw new ZapWrapperWrongConfigurationException("Zap API-Key is null. Please set the Zap API-key to the same value set inside your Zap.",
                     ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapServerConfiguration(zapHost, zapPort, zapApiKey);
@@ -241,26 +249,26 @@ public class ZapScanContextFactory {
         return excludeSet;
     }
 
-    private ZapProductMessageHelper createZapProductMessageHelper(CommandLineSettings settings) {
+    private ZapProductMessageHelper createZapProductMessageHelper(CommandLineSettings settings) throws ZapWrapperWrongConfigurationException {
         String userMessagesFolder = settings.getPDSUserMessageFolder();
         if (userMessagesFolder == null) {
             userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         }
         if (userMessagesFolder == null) {
-            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send user messages, because environment variable "
+            throw new ZapWrapperWrongConfigurationException("PDS configuration invalid. Cannot send user messages, because environment variable "
                     + EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapProductMessageHelper(userMessagesFolder);
     }
 
-    private ZapPDSEventHandler createZapEventhandler(CommandLineSettings settings) {
+    private ZapPDSEventHandler createZapEventhandler(CommandLineSettings settings) throws ZapWrapperWrongConfigurationException {
         String pdsJobEventsFolder = settings.getPDSEventFolder();
         if (pdsJobEventsFolder == null) {
             pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
         }
 
         if (pdsJobEventsFolder == null) {
-            throw new ZapWrapperRuntimeException("PDS configuration invalid. Cannot send check for job events, because environment variable "
+            throw new ZapWrapperWrongConfigurationException("PDS configuration invalid. Cannot send check for job events, because environment variable "
                     + EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER + " is not set.", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new ZapPDSEventHandler(pdsJobEventsFolder);
@@ -275,5 +283,55 @@ public class ZapScanContextFactory {
             return null;
         }
         return new File(groovyScriptFile);
+    }
+
+    private Map<String, String> fetchTemplateVariables(SecHubScanConfiguration sechubScanConfig) {
+        TemplateDataResolver templateDataResolver = new TemplateDataResolver();
+        TemplateData templateData = templateDataResolver.resolveTemplateData(TemplateType.WEBSCAN_LOGIN, sechubScanConfig);
+        if (templateData == null) {
+            return new LinkedHashMap<>();
+        }
+        return templateData.getVariables();
+    }
+
+    /**
+     * This method verifies that the script login configuration is valid. No script
+     * login configured is a valid configuration as well.
+     *
+     * @param groovyScriptFile
+     * @param templateVariables
+     * @throws ZapWrapperWrongConfigurationException
+     *
+     * @throws ZapWrapperRuntimeException
+     */
+    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables)
+            throws ZapWrapperWrongConfigurationException {
+        // no script login was defined
+        if (groovyScriptFile == null && templateVariables.isEmpty()) {
+            return;
+        }
+        // A script was defined, but no template data where defined
+        if (groovyScriptFile != null && templateVariables.isEmpty()) {
+            throw new ZapWrapperWrongConfigurationException(
+                    "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
+                            + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        // No script was defined, but template data where defined
+        if (groovyScriptFile == null && !templateVariables.isEmpty()) {
+            throw new ZapWrapperWrongConfigurationException("When no groovy login script is defined, no template data variables must be defined!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        // if a script and the template data are defined, the mandatory variables must
+        // be present
+        if (groovyScriptFile != null && !templateVariables.isEmpty()) {
+            if (templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY) == null
+                    || templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY) == null) {
+                throw new ZapWrapperWrongConfigurationException(
+                        "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
+                                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
+                        ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            }
+        }
     }
 }

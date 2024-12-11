@@ -1,0 +1,17 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://example.org",
+    "login" : {
+      "templateData" : {
+        "variables" : {
+          "invalid1" : "value1",
+          "invalid2" : "value2"
+        }
+      },
+      "totp" : {
+        "seed" : "example-seed"
+      }
+    }
+  }
+}

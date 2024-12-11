@@ -29,6 +29,8 @@ public enum ZapWrapperExitCode {
 
     CLIENT_CERTIFICATE_CONFIG_INVALID(10),
 
+    UNSUPPORTED_COMMANDLINE_CONFIGURATION(11),
+
     ;
 
     private int exitCode;
