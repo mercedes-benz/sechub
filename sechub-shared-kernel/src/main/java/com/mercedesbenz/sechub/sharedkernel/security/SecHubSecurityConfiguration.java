@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.security;
 
 import org.springframework.context.annotation.Configuration;

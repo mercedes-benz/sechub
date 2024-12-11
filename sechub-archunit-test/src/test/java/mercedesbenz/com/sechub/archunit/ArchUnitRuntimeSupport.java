@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
 import java.util.*;
