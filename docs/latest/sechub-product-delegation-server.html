@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 2.0.0 modified (commit 7de5e5c)</span>
+<span id="revnumber"> PDS 2.0.0 modified (commit a0f5a82)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -715,6 +715,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-PDS_UC_017">4.7.18. PDS_UC_017-Admin fetches job meta data</a></li>
 <li><a href="#section-usecase-PDS_UC_018">4.7.19. PDS_UC_018-System handles job cancellation requests</a></li>
 <li><a href="#section-usecase-PDS_UC_019">4.7.20. PDS_UC_019-System handles SIGTERM</a></li>
+<li><a href="#section-usecase-PDS_UC_020">4.7.21. PDS_UC_020-System executes job</a></li>
 </ul>
 </li>
 <li><a href="#rest-api">4.8. REST API</a>
@@ -815,7 +816,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 2.0.0 modified (commit 7de5e5c) - Build date: 2024-11-27 09:48 (UTCZ)</code></p>
+<p>Documentation version: <code>PDS 2.0.0 modified (commit a0f5a82) - Build date: 2024-12-11 15:01 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -3110,7 +3111,7 @@ pds.techuser.apitoken</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>or env entries</p>
+<p>or environment variables</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3415,6 +3416,15 @@ how the data is gathered.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_EXTRACTED_BINARIES_FOLDER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When auto extracting is enabled (default) the uploaded binaries are extracted to this folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_EXTRACTED_ASSETS_FOLDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the extracted assets.<br>
+<br>
+                                      Files for template types are located in dedicated sub folders which are named by the id of the template type. +<br>
+<br>
+                                      For example: WEBSCAN_LOGIN template type has id: <code>webscan-login</code>. To access the file <code>custom-login.groovy</code> a script
+                                      or a wrapper application can simply fetch the file via <code>$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/custom-login.groovy</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS_SCAN_TARGET_URL</p></td>
@@ -3884,6 +3894,21 @@ When 'true' any PDS adapter call will use real PDS adapter and not a mocked vari
 </ul>
 </div></div></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.template.metadata.list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains a list of template meta data entries (json).</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -3892,11 +3917,17 @@ When 'true' any PDS adapter call will use real PDS adapter and not a mocked vari
 <div class="sect4">
 <h5 id="upload">4.6.3.1. Upload</h5>
 <div class="paragraph">
-<p><code>$PDS_JOB_WORKSPACE_LOCATION/upload/</code></p>
+<p>Content from uploaded user archives is extracted to:</p>
 </div>
 <div class="paragraph">
-<p>Automatically unzipped content is available inside<br>
-<code>$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped</code></p>
+<p><code>PDS_JOB_EXTRACTED_SOURCES_FOLDER</code>,</p>
+</div>
+<div class="paragraph">
+<p><code>PDS_JOB_EXTRACTED_BINARIES_FOLDER</code></p>
+</div>
+<div class="paragraph">
+<p>Content from uploaded asset files is extracted to:
+ <code>PDS_JOB_EXTRACTED_ASSETS_FOLDER</code>,</p>
 </div>
 </div>
 <div class="sect4">
@@ -4130,6 +4161,9 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 </li>
 <li>
 <p><a href="#section-usecase-PDS_UC_018">PDS_UC_018-System handles job cancellation requests</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-PDS_UC_020">PDS_UC_020-System executes job</a></p>
 </li>
 </ul>
 </div>
@@ -5061,6 +5095,70 @@ instead of result - but it&#8217;s no JSON!</p>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_020">4.7.21. PDS_UC_020-System executes job</h4>
+<div class="paragraph">
+<p>The PDS does execute a PDS job.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS trigger service fills queue</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Trigger service adds jobs to queue (when queue not full)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add Job to queue</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS job is added to queue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS execution call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Central point of PDS job execution.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS execution call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Central point of PDS job execution.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS workspace preparation</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS job workspace is prepared here: Directories are created, files are downloaded and extracted etc.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="rest-api">4.8. REST API</h3>
@@ -5250,7 +5348,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 2.0.0 modified (commit 7de5e5c)<br>
+ PDS 2.0.0 modified (commit a0f5a82)<br>
 </div>
 </div>
 </body>
