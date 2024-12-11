@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.zapwrapper.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContextFactory;
 
 public class ZapWrapperCommandLineParser {
 
@@ -19,23 +17,19 @@ public class ZapWrapperCommandLineParser {
     }
 
     /**
-     * Parses given arguments
+     * Parses given command line arguments
      *
      * @param args
-     * @return configuration or <code>null</code> when only help wanted
+     * @return command line settings, never <code>null</code>
      * @throws ZapWrapperCommandLineParserException
      */
-    public ZapScanContext parse(String... args) throws ZapWrapperCommandLineParserException {
+    public CommandLineSettings parse(String... args) throws ZapWrapperCommandLineParserException {
         CommandLineSettings settings = parseCommandLineParameters(args);
 
         if (settings.isHelpRequired()) {
             showHelp();
-            return null;
         }
-
-        ZapScanContextFactory configFactory = new ZapScanContextFactory();
-        return configFactory.create(settings);
-
+        return settings;
     }
 
     private CommandLineSettings parseCommandLineParameters(String... args) throws ZapWrapperCommandLineParserException {
