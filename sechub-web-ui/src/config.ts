@@ -10,8 +10,8 @@ const config = ref({
   LOCAL_DEV: String(import.meta.env.VITE_API_LOCAL_DEV) || '',
 })
 
-// Ovverrides local environment variables when project is compiled
-// Takes variables from config.json if available
+// Overrides local environment variables after project compilation
+// Utilizes variables from config.json if available
 export async function loadConfig () {
   try {
     const response = await fetch('/config.json')

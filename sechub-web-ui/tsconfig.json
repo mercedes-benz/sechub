@@ -18,7 +18,7 @@
     "allowJs": true,
     "strict": true,
     "strictNullChecks": true,
-    // so to false to enable build with unused imports from the generated openapi client
+    // Set to false to enable build with unused imports from the generated OpenAPI client
     "noUnusedLocals": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -45,11 +45,11 @@ npm run dev
 #### Running in Development mode with sechub for testing
 
 1. Start SecHub Integration Test Server (or Docker Server)
-2. Configure .env.local file, copy .env. to env.local and adjust variables 
+2. Configure your `.env.local` file by copying `.env` to `.env.local` and adjusting the variables as needed.
 Set `VITE_API_LOCAL_DEV=true`
 Set `VITE_API_USER` to your SecHub user
 Set `VITE_API_PASSWORD` to your SecHub Api Token
-3. Set `VITE_API_HOST` the URL of your application http://localhost:3000 - this is because of the proxy defined in the dev server to avoid CORS Issues
+3. Set `VITE_API_HOST` to the URL of your application http://localhost:3000 - this is because of the proxy defined in the Vite dev server to avoid CORS Issues
 4. Start the SPA in Development mode (npm run dev)
 
 Happy Testing!
@@ -57,8 +57,8 @@ Happy Testing!
 ### Building for Production
 
 Set Environment Variables:
-Be aware that npm run build sets the environment variables at build time.
-For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE envs. Be aware that the config.json will be servred by the nginx.
+Be aware that `npm run build` sets the environment variables at build time.
+For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
 
 To build your project for production, use:
 
