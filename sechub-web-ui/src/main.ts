@@ -7,6 +7,7 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+import { loadConfig } from './config'
 
 // Components
 import App from './App.vue'
@@ -14,8 +15,10 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 
-const app = createApp(App)
+loadConfig().then(() => {
+  const app = createApp(App)
 
-registerPlugins(app)
+  registerPlugins(app)
 
-app.mount('#app')
+  app.mount('#app')
+})
