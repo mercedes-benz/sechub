@@ -176,7 +176,7 @@ public class ClientApiWrapper {
             return true;
         } catch (ClientApiException e) {
             if (e.getMessage().equalsIgnoreCase("Provided parameter has illegal or unrecognized value")) {
-                LOG.info("Rule with id: {} was not a passive scanner rule.", ruleId);
+                LOG.info("Rule with id: {} was not an active scanner rule.", ruleId);
                 return false;
             }
             throw e;
