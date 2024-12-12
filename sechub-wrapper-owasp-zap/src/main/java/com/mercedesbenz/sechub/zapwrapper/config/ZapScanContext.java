@@ -250,26 +250,30 @@ public class ZapScanContext {
         }
 
         public ZapScanContextBuilder setZapRuleIDsToDeactivate(List<String> zapRuleIDsToDeactivate) {
-            this.zapRuleIDsToDeactivate.clear();
-            this.zapRuleIDsToDeactivate = zapRuleIDsToDeactivate;
+            if (zapRuleIDsToDeactivate != null) {
+                this.zapRuleIDsToDeactivate = new LinkedList<>(zapRuleIDsToDeactivate);
+            }
             return this;
         }
 
         public ZapScanContextBuilder setApiDefinitionFiles(List<File> apiDefinitionFiles) {
-            this.apiDefinitionFiles.clear();
-            this.apiDefinitionFiles.addAll(apiDefinitionFiles);
+            if (apiDefinitionFiles != null) {
+                this.apiDefinitionFiles = new LinkedList<>(apiDefinitionFiles);
+            }
             return this;
         }
 
-        public ZapScanContextBuilder setZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
-            this.zapURLsExcludeSet.clear();
-            this.zapURLsIncludeSet.addAll(zapURLsIncludeList);
+        public ZapScanContextBuilder setZapURLsIncludeSet(Set<String> zapURLsIncludeSet) {
+            if (zapURLsIncludeSet != null) {
+                this.zapURLsIncludeSet = new HashSet<>(zapURLsIncludeSet);
+            }
             return this;
         }
 
-        public ZapScanContextBuilder setZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
-            this.zapURLsExcludeSet.clear();
-            this.zapURLsExcludeSet.addAll(zapURLsExcludeList);
+        public ZapScanContextBuilder setZapURLsExcludeSet(Set<String> zapURLsExcludeSet) {
+            if (zapURLsExcludeSet != null) {
+                this.zapURLsExcludeSet = new HashSet<>(zapURLsExcludeSet);
+            }
             return this;
         }
 
@@ -304,8 +308,9 @@ public class ZapScanContext {
         }
 
         public ZapScanContextBuilder setHeaderValueFiles(Map<String, File> headerValueFiles) {
-            this.headerValueFiles.clear();
-            this.headerValueFiles.putAll(headerValueFiles);
+            if (headerValueFiles != null) {
+                this.headerValueFiles = new HashMap<>(headerValueFiles);
+            }
             return this;
         }
 
@@ -320,8 +325,9 @@ public class ZapScanContext {
         }
 
         public ZapScanContextBuilder setTemplateVariables(Map<String, String> templateVariables) {
-            this.templateVariables.clear();
-            this.templateVariables.putAll(templateVariables);
+            if (templateVariables != null) {
+                this.templateVariables = new LinkedHashMap<>(templateVariables);
+            }
             return this;
         }
 
