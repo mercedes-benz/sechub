@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperCommandLineParser.ZapWra
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContextFactory;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScannerFactory;
-import com.mercedesbenz.sechub.zapwrapper.config.ZapWrapperWrongConfigurationException;
+import com.mercedesbenz.sechub.zapwrapper.config.ZapWrapperContextCreationException;
 import com.mercedesbenz.sechub.zapwrapper.util.TargetConnectionChecker;
 
 public class ZapWrapperCLI {
@@ -24,7 +24,7 @@ public class ZapWrapperCLI {
         ZapScanContext scanContext = null;
         try {
             LOG.info("Parsing command line parameters.");
-            CommandLineSettings cmdSettings = resolveScanContext(args);
+            CommandLineSettings cmdSettings = parseCommandLineArguments(args);
             if (cmdSettings.isHelpRequired()) {
                 System.exit(0);
             }
@@ -35,7 +35,7 @@ public class ZapWrapperCLI {
         } catch (ZapWrapperCommandLineParserException e) {
             LOG.error("An error occurred while parsing the command line arguments: {}", e.getMessage(), e);
             System.exit(ZapWrapperExitCode.UNSUPPORTED_COMMANDLINE_CONFIGURATION.getExitCode());
-        } catch (ZapWrapperWrongConfigurationException e) {
+        } catch (ZapWrapperContextCreationException e) {
             LOG.error("An error occurred while creating ZAP scan context: {}", e.getMessage(), e);
             System.exit(e.getZapWrapperExitCode().getExitCode());
         } catch (ZapWrapperRuntimeException e) {
@@ -49,12 +49,12 @@ public class ZapWrapperCLI {
         }
     }
 
-    private CommandLineSettings resolveScanContext(String[] args) throws ZapWrapperCommandLineParserException {
+    private CommandLineSettings parseCommandLineArguments(String[] args) throws ZapWrapperCommandLineParserException {
         ZapWrapperCommandLineParser parser = new ZapWrapperCommandLineParser();
         return parser.parse(args);
     }
 
-    private ZapScanContext createZapScanContext(CommandLineSettings cmdSettings) throws ZapWrapperWrongConfigurationException {
+    private ZapScanContext createZapScanContext(CommandLineSettings cmdSettings) throws ZapWrapperContextCreationException {
         ZapScanContext scanContext;
         ZapScanContextFactory contextFactory = new ZapScanContextFactory();
         scanContext = contextFactory.create(cmdSettings);

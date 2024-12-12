@@ -11,22 +11,28 @@ Furthermore, the combination of OWASP ZAP and PDS make it possible to run both i
 This folder contains the necessary scripts to run OWASP ZAP+PDS inside a container locally. Additionally, it contains scripts to build and push the OWASP ZAP+PDS container to your container registry and a Helm chart to install and run OWASP ZAP+PDS in a Kubernetes cluster.
 
 == Script authentication using templates and assets
+This PDS solution supports templates for web scan login.
+
+With templates it is very easy to handle complex authentication scenarios (e.g. a corporate MFA login). Please read the [technical documentation](https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html) for details about templates and assets.
+
+TIP: Templates are not mandatory. If you only need Basic Auth or custom headers template definitions and usage are not necessary.
 
 To start a scan this pds-solution executes the script link:docker/scripts/owasp-zap.sh[owasp-zap.sh].
-The script authentication mechanism using the SecHub templates and assets feature requires the following file to be present at execution time of the script to work:
-----
-$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy
-----
-SecHub will automatically create the directory `$PDS_JOB_EXTRACTED_ASSETS_FOLDER`. The shell script requires a file called `script.groovy` inside the directory to work, which does the authentication steps necessary for the targeted application.
-When setting a template with assets for webscan authentication, ensure that the authentication script file at the proposed location exists. For webscan authentication, the templates and assets are setup correctly,
-if the PDS extracts the assets that `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy` exists by the time the script `owasp-zap.sh` is executed.
-The configuration of the wrapper application that is used to configure the ZAP, can be found at link:https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc[https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc].
+SecHub will automatically create the directory `$PDS_JOB_EXTRACTED_ASSETS_FOLDER`. The shell script requires a file called `script.groovy` inside the directory for script authentication with templates and assets to work. This script performs the authentication steps necessary for the targeted application.
+When creating a template with an asset for webscan authentication and assigning it to a SecHub project, ensure that 
+
+- `PDS_OWASP_ZAP.zip` is available as asset file inside the used asset
+- `PDS_OWASP_ZAP.zip` contains `script.groovy` at root level
+
+The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy`.
+If the extracted file exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
+Details about the configuration of the wrapper application that is used to configure the ZAP, can be found at link:https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc[https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc].
 
 === Script authentication template data variables
 For a webscan script authentication with this pds-solution, template data with the following variables are required:
 
-* `username`
-* `password`
+- `username`
+- `password`
 
 These variables are used for the credential data of the scan user. The `username` can be used for any type of user identification like email address, user ID, user name etc.
 If TOTP is required make sure to use the dedicated entry inside the webscan authentication section of the sechub configuration JSON.

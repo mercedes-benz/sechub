@@ -50,11 +50,11 @@ class ZapScanContextFactoryTest {
     @Test
     void commandLineSettings_object_is_null_results_in_mustexitruntimeexception() {
         /* execute + test */
-        assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(null));
     }
 
     @Test
-    void context_name_is_used_from_settings_when_defined() throws ZapWrapperWrongConfigurationException {
+    void context_name_is_used_from_settings_when_defined() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -70,7 +70,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void context_name_is_created_as_UUID_when_not_defined() throws ZapWrapperWrongConfigurationException {
+    void context_name_is_created_as_UUID_when_not_defined() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -86,7 +86,7 @@ class ZapScanContextFactoryTest {
     @ParameterizedTest
     @CsvSource({ "https://zaproxy.example.com,8080,api-key,https://proxy.example.com,3333", "host,4711,secret,proxy,5312" })
     void result_contains_server_config_with_arguments_from_command_line_settings_no_env_variables(String host, int port, String apiKey, String proxy,
-            int proxyPort) throws ZapWrapperWrongConfigurationException {
+            int proxyPort) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.getZapHost()).thenReturn(host);
@@ -125,7 +125,7 @@ class ZapScanContextFactoryTest {
     @ParameterizedTest
     @CsvSource({ "https://zaproxy.example.com,8080,api-key,https://proxy.example.com,3333", "host,4711,secret,proxy,5312" })
     void result_contains_server_config_with_arguments_from_environment_when_command_line_settings_not_set(String host, int port, String apiKey, String proxy,
-            int proxyPort) throws ZapWrapperWrongConfigurationException {
+            int proxyPort) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
@@ -166,7 +166,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void proxy_set_or_not_is_valid_result_returned_contains_null_as_proxyinformation() throws ZapWrapperWrongConfigurationException {
+    void proxy_set_or_not_is_valid_result_returned_contains_null_as_proxyinformation() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -198,12 +198,12 @@ class ZapScanContextFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
 
         /* execute + test */
-        assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(settings));
+        assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
     }
 
     @Test
-    void targetURI_calculated_by_factory_is_in_result() throws ZapWrapperWrongConfigurationException {
+    void targetURI_calculated_by_factory_is_in_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
@@ -225,7 +225,7 @@ class ZapScanContextFactoryTest {
 
     @ParameterizedTest
     @CsvSource({ "true", "false" })
-    void verbose_from_settings_is_in_result(boolean verboseEnabled) throws ZapWrapperWrongConfigurationException {
+    void verbose_from_settings_is_in_result(boolean verboseEnabled) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.isVerboseEnabled()).thenReturn(verboseEnabled);
@@ -240,7 +240,7 @@ class ZapScanContextFactoryTest {
 
     @ParameterizedTest
     @CsvSource({ "true", "false" })
-    void ajaxspider_enabled_from_settings_is_in_result(boolean enabled) throws ZapWrapperWrongConfigurationException {
+    void ajaxspider_enabled_from_settings_is_in_result(boolean enabled) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.isAjaxSpiderEnabled()).thenReturn(enabled);
@@ -255,7 +255,7 @@ class ZapScanContextFactoryTest {
 
     @ParameterizedTest
     @CsvSource({ "true", "false" })
-    void active_scan_enabled_from_settings_is_in_result(boolean enabled) throws ZapWrapperWrongConfigurationException {
+    void active_scan_enabled_from_settings_is_in_result(boolean enabled) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.isActiveScanEnabled()).thenReturn(enabled);
@@ -269,7 +269,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void report_file_from_setting_is_used_in_result() throws ZapWrapperWrongConfigurationException {
+    void report_file_from_setting_is_used_in_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         Path path = new File("not-existing").toPath();
@@ -286,11 +286,11 @@ class ZapScanContextFactoryTest {
     @Test
     void commandline_settings_null_throws_zap_wrapper_runtime_exception() {
         /* execute + test */
-        assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(null));
     }
 
     @Test
-    void rules_to_deactivate_returned_by_settings_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void rules_to_deactivate_returned_by_settings_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -307,7 +307,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void no_rules_to_deactivate_results_in_empty_list() throws ZapWrapperWrongConfigurationException {
+    void no_rules_to_deactivate_results_in_empty_list() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -321,7 +321,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void rules_to_deactivate_returned_by_env_variable_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void rules_to_deactivate_returned_by_env_variable_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.getDeactivateRules()).thenReturn(Collections.emptyList());
@@ -341,7 +341,7 @@ class ZapScanContextFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "", "40026,10096", "40026,10096,10098" })
-    void rules_to_deactivate_returned_by_command_line_parameter_is_inside_result(String value) throws ZapWrapperWrongConfigurationException {
+    void rules_to_deactivate_returned_by_command_line_parameter_is_inside_result(String value) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         List<String> arrayToTestExpectedLength = Arrays.asList(value.split(","));
@@ -359,7 +359,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void api_definition_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void api_definition_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -377,7 +377,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void client_certificate_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void client_certificate_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -395,7 +395,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void includes_and_excludes_from_sechub_json_are_inside_result() throws ZapWrapperWrongConfigurationException {
+    void includes_and_excludes_from_sechub_json_are_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -412,7 +412,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void includes_and_excludes_empty_from_sechub_json_result_in_empty_exclude_and_target_url_as_single_include() throws ZapWrapperWrongConfigurationException {
+    void includes_and_excludes_empty_from_sechub_json_result_in_empty_exclude_and_target_url_as_single_include() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -431,7 +431,7 @@ class ZapScanContextFactoryTest {
 
     @ParameterizedTest
     @CsvSource({ "true", "false" })
-    void connection_check_from_settings_is_in_result(boolean enabled) throws ZapWrapperWrongConfigurationException {
+    void connection_check_from_settings_is_in_result(boolean enabled) throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.isConnectionCheckEnabled()).thenReturn(enabled);
@@ -445,7 +445,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void header_config_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void header_config_file_from_sechub_scan_config_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -465,7 +465,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void header_config_without_data_section_no_file_is_inside_result() throws ZapWrapperWrongConfigurationException {
+    void header_config_without_data_section_no_file_is_inside_result() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -483,7 +483,7 @@ class ZapScanContextFactoryTest {
     }
 
     @Test
-    void no_template_data_results_in_no_template_data_set() throws ZapWrapperWrongConfigurationException {
+    void no_template_data_results_in_no_template_data_set() throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
 
@@ -498,7 +498,7 @@ class ZapScanContextFactoryTest {
 
     @Test
     void script_login_cmd_param_set_with_valid_sechub_json_results_in_environment_variable_reader_not_being_called_and_template_variables_set()
-            throws ZapWrapperWrongConfigurationException {
+            throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         String groovyScriptFile = "script.groovy";
@@ -519,7 +519,7 @@ class ZapScanContextFactoryTest {
 
     @Test
     void script_login_cmd_param_not_set_with_valid_sechub_json_results_in_environment_variable_reader_being_called_as_fallback_and_template_variables_set()
-            throws ZapWrapperWrongConfigurationException {
+            throws ZapWrapperContextCreationException {
         /* prepare */
         CommandLineSettings settings = createSettingsMock();
         when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
@@ -548,7 +548,7 @@ class ZapScanContextFactoryTest {
                 + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
 
         /* execute */
-        ZapWrapperWrongConfigurationException exception = assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(settings));
+        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
         /* test */
         assertEquals(expectedErrorMessage, exception.getMessage());
@@ -562,7 +562,7 @@ class ZapScanContextFactoryTest {
         String expectedErrorMessage = "When no groovy login script is defined, no template data variables must be defined!";
 
         /* execute */
-        ZapWrapperWrongConfigurationException exception = assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(settings));
+        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
         /* test */
         assertEquals(expectedErrorMessage, exception.getMessage());
@@ -579,7 +579,7 @@ class ZapScanContextFactoryTest {
                 + "' and '" + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
 
         /* execute */
-        ZapWrapperWrongConfigurationException exception = assertThrows(ZapWrapperWrongConfigurationException.class, () -> factoryToTest.create(settings));
+        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
         /* test */
         assertEquals(expectedErrorMessage, exception.getMessage());

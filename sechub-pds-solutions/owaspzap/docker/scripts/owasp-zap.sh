@@ -1,6 +1,8 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
+target_script_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy"
+
 shutdownZAP() {
 	# --full: to specify the process by looking at full command line including the parameters
 	pkill -9 --full "/pds/tools/ZAP_"
@@ -121,8 +123,8 @@ else
     echo "Use default value of wrapper for WRAPPER_RETRY_WAITTIME_MILLISECONDS"
 fi
 
-if [ -f "$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy" ] ; then
-    export ZAP_GROOVY_LOGIN_SCRIPT_FILE="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/script.groovy"
+if [ -f "$target_script_file" ] ; then
+    export ZAP_GROOVY_LOGIN_SCRIPT_FILE="$target_script_file"
     echo "Use script login file: $ZAP_GROOVY_LOGIN_SCRIPT_FILE"
 else
     echo "No script login file was found"

@@ -255,19 +255,19 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder addApiDefinitionFiles(List<File> apiDefinitionFiles) {
+        public ZapScanContextBuilder setApiDefinitionFiles(List<File> apiDefinitionFiles) {
             this.apiDefinitionFiles.clear();
             this.apiDefinitionFiles.addAll(apiDefinitionFiles);
             return this;
         }
 
-        public ZapScanContextBuilder addZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
+        public ZapScanContextBuilder setZapURLsIncludeSet(Set<String> zapURLsIncludeList) {
             this.zapURLsExcludeSet.clear();
             this.zapURLsIncludeSet.addAll(zapURLsIncludeList);
             return this;
         }
 
-        public ZapScanContextBuilder addZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
+        public ZapScanContextBuilder setZapURLsExcludeSet(Set<String> zapURLsExcludeList) {
             this.zapURLsExcludeSet.clear();
             this.zapURLsExcludeSet.addAll(zapURLsExcludeList);
             return this;
@@ -303,7 +303,7 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder addHeaderValueFiles(Map<String, File> headerValueFiles) {
+        public ZapScanContextBuilder setHeaderValueFiles(Map<String, File> headerValueFiles) {
             this.headerValueFiles.clear();
             this.headerValueFiles.putAll(headerValueFiles);
             return this;
@@ -343,8 +343,8 @@ public class ZapScanContext {
 
             zapScanContext.apiDefinitionFiles = this.apiDefinitionFiles;
 
-            zapScanContext.zapURLsIncludeSet.addAll(this.zapURLsIncludeSet);
-            zapScanContext.zapURLsExcludeSet.addAll(this.zapURLsExcludeSet);
+            zapScanContext.zapURLsIncludeSet = this.zapURLsIncludeSet;
+            zapScanContext.zapURLsExcludeSet = this.zapURLsExcludeSet;
 
             zapScanContext.connectionCheckEnabled = this.connectionCheckEnabled;
 
