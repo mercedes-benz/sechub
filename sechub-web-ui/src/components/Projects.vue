@@ -21,6 +21,7 @@
         class="ma-5"
         rounded="lg"
         :value="project"
+        @click="openProjectPage(project)"
       >
         <template #prepend>
           <v-icon v-if="project.isOwned" :class="ownedClass" icon="mdi-cube" />
@@ -69,6 +70,13 @@
         error,
       }
     },
+    methods: {
+    openProjectPage(project){
+      this.$router.push({
+        path: `/${project.projectId}`
+      })
+    }
+  }
   }
 </script>
 
