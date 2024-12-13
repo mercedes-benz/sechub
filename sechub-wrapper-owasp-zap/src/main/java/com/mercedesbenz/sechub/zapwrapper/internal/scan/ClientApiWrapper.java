@@ -16,6 +16,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 
 public class ClientApiWrapper {
 
+    public static final String ZAP_CONNECTION_REFUSED = "Connection refused";
     private static final String URL_KEY = "url";
     private static final String STATUS_CODE_KEY = "statusCode";
     private static final String STATUS_REASON_KEY = "statusReason";
@@ -141,7 +142,7 @@ public class ClientApiWrapper {
      * @return <code>true</code> if the rule was a passive rule and was deactivated,
      *         <code>false</code> if the rule was not a passive rule and was not
      *         deactivated
-     * @throws ClientApiException when anything goes wrong communicating with ZAP
+     * @throws ClientApiException when communication with ZAP is not possible
      */
     public boolean disablePassiveScannerRule(String ruleId) throws ClientApiException {
         try {
@@ -149,11 +150,11 @@ public class ClientApiWrapper {
             LOG.info("Passive scanner rule: {}, was deactivated", ruleId);
             return true;
         } catch (ClientApiException e) {
-            if (e.getMessage().equalsIgnoreCase("Provided parameter has illegal or unrecognized value")) {
-                LOG.info("Rule with id: {} was not a passive scanner rule.", ruleId);
-                return false;
+            if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
+                throw e;
             }
-            throw e;
+            LOG.warn("Rule with id: {} was not a passive scanner rule.", ruleId);
+            return false;
         }
     }
 
@@ -166,7 +167,7 @@ public class ClientApiWrapper {
      * @return <code>true</code> if the rule was a passive rule and was deactivated,
      *         <code>false</code> if the rule was not a passive rule and was not
      *         deactivated
-     * @throws ClientApiException when anything goes wrong communicating with ZAP
+     * @throws ClientApiException when communication with ZAP is not possible
      */
     public boolean disableActiveScannerRuleForDefaultPolicy(String ruleId) throws ClientApiException {
         try {
@@ -175,11 +176,11 @@ public class ClientApiWrapper {
             LOG.info("Active scanner rule: {}, was deactivated", ruleId);
             return true;
         } catch (ClientApiException e) {
-            if (e.getMessage().equalsIgnoreCase("Provided parameter has illegal or unrecognized value")) {
-                LOG.info("Rule with id: {} was not an active scanner rule.", ruleId);
-                return false;
+            if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
+                throw e;
             }
-            throw e;
+            LOG.warn("Rule with id: {} was not an active scanner rule.", ruleId);
+            return false;
         }
     }
 
