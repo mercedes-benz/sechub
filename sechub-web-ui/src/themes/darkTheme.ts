@@ -8,6 +8,6 @@ export default {
     layer_01: '#262626',
     warning: '#FACC00',
     error: '#FF4A4A',
-    success: '#21A330'
-    },
+    success: '#21A330',
+  },
 }

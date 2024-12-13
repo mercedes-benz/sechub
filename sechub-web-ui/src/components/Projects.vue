@@ -41,6 +41,8 @@
 
 <script>
   import defaultClient from '@/services/defaultClient'
+  import { useRouter } from 'vue-router';
+  import { ref } from 'vue'
 
   export default {
     name: 'ProjectsComponent',
@@ -49,6 +51,7 @@
       const projects = ref([])
       const loading = ref(true)
       const error = ref(null)
+      const router = useRouter()
 
       onMounted(async () => {
         try {
@@ -61,6 +64,12 @@
         }
       })
 
+      const openProjectPage = (project) => {
+        router.push({
+          path: `/${project.projectId}`,
+        })
+      };
+
       return {
         ownedClass: {
           'project-owned': true,
@@ -68,15 +77,12 @@
         projects,
         loading,
         error,
+        openProjectPage,
       }
     },
     methods: {
-    openProjectPage(project){
-      this.$router.push({
-        path: `/${project.projectId}`
-      })
-    }
-  }
+      
+    },
   }
 </script>
 
