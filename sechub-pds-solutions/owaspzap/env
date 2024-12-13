@@ -4,7 +4,7 @@
 BASE_IMAGE="ghcr.io/mercedes-benz/sechub/pds-base"
 
 # See: https://github.com/mercedes-benz/sechub/releases/
-OWASPZAP_WRAPPER_VERSION="1.6.0"
+OWASPZAP_WRAPPER_VERSION="1.7.0"
 # See: https://github.com/zaproxy/zaproxy/releases/latest
 OWASPZAP_VERSION="2.15.0"
 OWASPZAP_SHA256SUM="6410e196baab458a9204e29aafb5745fca003a2a6c0386f2c6e5c04b67621fa7"
