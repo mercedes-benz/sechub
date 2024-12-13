@@ -15,3 +15,5 @@ WEB_UI_VERSION="0.2.0"
 GIT_TAG=""
 GIT_BRANCH=""
 WEB_UI_SSL_KEYSTORE_ALIAS="undefined"
+
+# Please see docker/nignx/config.json for ENV variables for the SPA itself

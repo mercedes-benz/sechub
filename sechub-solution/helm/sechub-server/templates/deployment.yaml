@@ -473,6 +473,22 @@ spec:
         - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
           value: "{{ .Values.server.spring.embeddedTomcat.logging.accessLogFormat }}"
 {{- end }}
+{{- if .Values.oauth2.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Oauth2
+# --------------------------------------------------------------------------------------------- #
+        # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
+        - name: SECHUB_SECURITY_OAUTH2_MODE
+          value: "{{ .Values.oauth2.mode }}"
+        - name: SECHUB_SECURITY_OAUTH2_JWK_SET_URI
+          value: "{{ .Values.oauth2.jwt.uri }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_ID
+          value: "{{ .Values.oauth2.opaque_token.client_id }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_SECRET
+          value: "{{ .Values.oauth2.opaque_token.client_secret }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_INTROSPECTION_URI
+          value: "{{ .Values.oauth2.opaque_token.introspection_uri }}"
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage
 # --------------------------------------------------------------------------------------------- #

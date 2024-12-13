@@ -36,6 +36,7 @@ public class SecHubSecurityConfiguration extends AbstractSecurityConfiguration {
                 .requestMatchers(APIConstants.API_USER + "**").hasAnyRole(RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN)
                 .requestMatchers(APIConstants.API_PROJECT + "**").hasAnyRole(RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN)
                 .requestMatchers(APIConstants.API_OWNER + "**").hasAnyRole(RoleConstants.ROLE_OWNER, RoleConstants.ROLE_SUPERADMIN)
+                .requestMatchers(APIConstants.API_PROJECTS).hasAnyRole(RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER)
                 .requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll()
                 .requestMatchers(APIConstants.ERROR_PAGE).permitAll()
                 .requestMatchers(APIConstants.ACTUATOR + "**").permitAll()
