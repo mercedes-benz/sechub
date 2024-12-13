@@ -6,5 +6,8 @@ export default {
     background_default: '#0D0D0D',
     background_paper: '#1A1A1A',
     layer_01: '#262626',
-  },
+    warning: '#FACC00',
+    error: '#FF4A4A',
+    success: '#21A330'
+    },
 }
