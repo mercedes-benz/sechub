@@ -28403,6 +28403,7 @@ function getReport(jobUUID, reportFormat, context) {
 }
 
 ;// CONCATENATED MODULE: ./src/json-helper.ts
+// SPDX-License-Identifier: MIT
 
 /**
  * Reads the given field from JSON.
@@ -28428,6 +28429,27 @@ function getFieldFromJson(field, jsonData) {
     return currentKey;
 }
 
+;// CONCATENATED MODULE: ./src/github-output.ts
+// SPDX-License-Identifier: MIT
+
+const NEW_LINE_SEPARATOR = '\n';
+/**
+ * Sets the value of an output variable for the GitHub Action.
+ * This method is a replacement of usage of core.setOutput(..) method.
+ * There were problems with core.setOutput(...), see
+ *  - https://github.com/mercedes-benz/sechub/issues/3481#issuecomment-2539015176 and
+ *  - https://github.com/actions/toolkit/issues/1218
+ *
+ */
+function storeOutput(field, value) {
+    const filePath = process.env['GITHUB_OUTPUT'] || '';
+    if (filePath) {
+    }
+    else {
+        core.setOutput(field, value);
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/post-scan.ts
 // SPDX-License-Identifier: MIT
 
@@ -28439,7 +28461,8 @@ function getFieldFromJson(field, jsonData) {
 
 
 
-const NEW_LINE_SEPARATOR = '\n';
+
+const post_scan_NEW_LINE_SEPARATOR = '\n';
 /**
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
@@ -28513,7 +28536,7 @@ async function uploadArtifact(context, name, files) {
         if (core.isDebug()) {
             const filesInWorkspace = (0,external_child_process_.execFileSync)('ls', [rootDirectory], {
                 encoding: 'utf-8'
-            }).split(NEW_LINE_SEPARATOR);
+            }).split(post_scan_NEW_LINE_SEPARATOR);
             for (const fileName of filesInWorkspace) {
                 core.debug(fileName);
             }
@@ -28536,7 +28559,7 @@ function resolveReportNameForScanJob(context) {
     const workspaceDir = sanitize(getWorkspaceDir());
     const filesInWorkspace = (0,external_child_process_.execFileSync)('ls', [workspaceDir], {
         encoding: 'utf-8'
-    }).split(NEW_LINE_SEPARATOR);
+    }).split(post_scan_NEW_LINE_SEPARATOR);
     if (!context.jobUUID) {
         core.error('Illegal state: No job uuid resolved - not allowed at this point');
         return '';
@@ -28662,7 +28685,7 @@ function buildSummary(trafficLight, totalFindings, findings) {
 function setOutput(field, value, dataFormat) {
     value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
     core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    storeOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
 ;// CONCATENATED MODULE: ./src/projectname-resolver.ts
@@ -28702,6 +28725,7 @@ function projectname_resolver_asJsonObject(text) {
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
+// SPDX-License-Identifier: MIT
 
 function getPlatform() {
     return external_os_.platform();
@@ -46017,6 +46041,7 @@ const { parseHTML: esm_parseHTML } = static_namespaceObject;
 const { root: esm_root } = static_namespaceObject;
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./src/client-version-helper.ts
+// SPDX-License-Identifier: MIT
 
 
 

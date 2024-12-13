@@ -142,10 +142,19 @@ npm run test
 
 ==== Integration-Test
 As a precondition to run the integration tests locally you have to
+execute `01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortN`
+inside the integration test folder.
 
-- execute `__test__/01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortNr`
+An example:
 
-TIP: You can also start a SecHub server and a PDS (both in integration test mode) instead of using the `01-start` script.
+[source,bash]
+----
+# Next lines will start a SecHub server of version 2.4.0 and a PDS with version 2.1.0
+cd ./github-actions/scan/__test__/integrationtest
+./01-start.sh 2.4.0 8443 2.1.0 8444
+----
+
+TIP: You can also start a SecHub server and a PDS from IDE (both in integration test mode) instead of using the `01-start` script.
 
 After the script has been executed, you can execute integration tests multiple times via following command:
 
@@ -176,7 +185,9 @@ In this setup the tests can be executed from sidebar and from links created insi
 
 [TIP]
 ====
-Unfortunately, the Jest UI integration works only for npm script "test". But to handle integration tests different (the tests shall only be executed when all is build and servers are started) they are not executed by "test" script.
+Unfortunately, the Jest UI integration works only for npm script "test". 
+But to handle integration tests different (the tests shall only be executed 
+when all is build and servers are started) they are not executed by "test" script.
 
 If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
 
