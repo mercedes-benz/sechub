@@ -1,46 +1,18 @@
 // SPDX-License-Identifier: MIT
 import * as outputHelper from '../src/output-helper';
+import * as core from '@actions/core';
 
-import * as fs from 'fs';
-import * as path from 'path';
+jest.mock('@actions/core');
 
 describe('storeOutput', () => {
-    const outputPath = path.join(__dirname, 'test_output.txt');
+    const mockedCore = core as jest.Mocked<typeof core>;
 
-    beforeAll(() => {
-        process.env.GITHUB_OUTPUT = outputPath;
-    });
-
-    afterEach(() => {
-        if (fs.existsSync(outputPath)) {
-            fs.unlinkSync(outputPath);
-        }
-    });
-
-    it('should append a line with key=value to the file', () => {
+    it('test-key shall set SECHUB_OUTPUT_TEST_KEY', () => {
         /* execute */
-        outputHelper.storeOutput('TEST_KEY', 'TEST_VALUE');
+        outputHelper.storeOutput('test-key', 'test value1');
         
         /* test */
-        const content = fs.readFileSync(outputPath, 'utf8');
-        expect(content).toBe('TEST_KEY=TEST_VALUE\n');
+        expect(mockedCore.exportVariable).toBeCalledWith('SECHUB_OUTPUT_TEST_KEY', 'test value1');
     });
 
-    it('should append multiple lines correctly', () => {
-        /* execute */
-        outputHelper.storeOutput('KEY1', 'VALUE1');
-        outputHelper.storeOutput('KEY2', 'VALUE2');
-
-        /* test */
-        const content = fs.readFileSync(outputPath, 'utf8');
-        expect(content).toBe('KEY1=VALUE1\nKEY2=VALUE2\n');
-    });
-
-    it('should throw an error if GITHUB_OUTPUT is not set', () => {
-        /* prepare */
-        delete process.env.GITHUB_OUTPUT;
-        
-        /* execute + test */
-        expect(() => outputHelper.storeOutput('KEY', 'VALUE')).toThrow('GITHUB_OUTPUT environment variable is not set');
-    });
 });

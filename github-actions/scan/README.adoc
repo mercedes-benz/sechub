@@ -96,18 +96,22 @@ If no custom `sechub.json` is provided, it will be generated from the remaining 
 
 === Outputs
 
-The following table lists the output variables available after this SecHub GitHub Action has completed:
+==== Output
+Because of problems with GitHub action and outputs (see https://github.com/mercedes-benz/sechub/issues/3481 ) SecHub no longer supports outputs but provides environment variables instead.
+
+==== Environment variables for output
+The following table lists the environment variables available after this SecHub GitHub Action has completed:
 
 [cols="20%,40%,40%"]
 |===
-| Output Name          | Description                                           | Expected Values
+| Environment variable               | Description                                           | Expected Values
 
-| scan-trafficlight    | The color of the traffic light reported by SecHub if the scan ran successfully, otherwise `FAILURE`. | One of `GREEN`, `YELLOW`, `RED`, or `FAILURE`.
-| scan-findings-count  | The total number of findings reported by SecHub. Returns 0 if the scan didn't complete.         | 0
-| scan-findings-high   | The number of high-level findings reported by SecHub.         | 0
-| scan-findings-medium | The number of medium-level findings reported by SecHub.         | 0
-| scan-findings-low    | The number of low-level findings reported by SecHub.         | 0
-| scan-readable-summary| A human-readable summary of the scan outcome, including the traffic light color, findings count, and their distribution.         | For example, `SecHub scan could not be executed` if an error occurred. Otherwise, i.e. `SecHub reported traffic light color YELLOW with 15 findings, categorized as follows: MEDIUM (8), LOW (7)`
+| SECHUB_OUTPUT_SCAN_TRAFFICLIGHT    | The color of the traffic light reported by SecHub if the scan ran successfully, otherwise `FAILURE`. | One of `GREEN`, `YELLOW`, `RED`, or `FAILURE`.
+| SECHUB_OUTPUT_SCAN_FINDINGS_COUNT  | The total number of findings reported by SecHub. Returns 0 if the scan didn't complete.         | 0
+| SECHUB_OUTPUT_SCAN_FINDINGS_HIGH   | The number of high-level findings reported by SecHub.         | 0
+| SECHUB_OUTPUT_SCAN_FINDINGS_MEDIUM | The number of medium-level findings reported by SecHub.         | 0
+| SECHUB_OUTPUT_SCAN_FINDINGS_LOW    | The number of low-level findings reported by SecHub.         | 0
+| SECHUB_OUTPUT_SCAN_READABLE_SUMMARY| A human-readable summary of the scan outcome, including the traffic light color, findings count, and their distribution.         | For example, `SecHub scan could not be executed` if an error occurred. Otherwise, i.e. `SecHub reported traffic light color YELLOW with 15 findings, categorized as follows: MEDIUM (8), LOW (7)`
 
 |===
 
