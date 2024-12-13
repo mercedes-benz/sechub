@@ -1,4 +1,4 @@
 flawfinder==2.0.19
 bandit==1.7.5
-njsscan==0.3.4
-mobsfscan==0.2.0
+njsscan==0.4.3
+mobsfscan==0.4.5
