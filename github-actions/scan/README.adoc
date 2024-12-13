@@ -129,6 +129,27 @@ npm run build
 
 This runs the ncc compiler and transpiles the files from the src folder into the `dist/` folder.
 
+=== Deployment
+A GitHub action needs a transpiled `index.js` to be used as an action from workflows.
+
+As long as we do not provide a new index.js the old action is still in usage, even when the source code has 
+changed. If we do not build the file and commit and push it to git repository, the action will not 
+be available!
+
+Of course the steps can be done manual, but for convenience a script is avialable:
+
+[source,bash]
+----
+./deploy.sh
+----
+
+This will
+- setup (npm install)
+- build (npm run build)
+- test (npm run test)
+- verify (only index.js is changed now)
+- deploy - when no error happened - deploy the new `index.js` file by doing a commit and a push to the remote repository
+
 === Test
 
 ==== Unit tests
