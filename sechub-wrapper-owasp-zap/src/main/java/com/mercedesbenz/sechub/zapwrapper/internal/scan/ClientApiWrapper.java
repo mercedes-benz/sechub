@@ -153,6 +153,7 @@ public class ClientApiWrapper {
             if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
+            LOG.warn("ZAP backend error: {}", e.getMessage());
             LOG.warn("Rule with id: {} was not a passive scanner rule.", ruleId);
             return false;
         }
@@ -179,6 +180,7 @@ public class ClientApiWrapper {
             if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
+            LOG.warn("ZAP backend error: {}", e.getMessage());
             LOG.warn("Rule with id: {} was not an active scanner rule.", ruleId);
             return false;
         }
