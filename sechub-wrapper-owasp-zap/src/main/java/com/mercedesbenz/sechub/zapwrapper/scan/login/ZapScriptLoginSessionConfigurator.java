@@ -69,21 +69,21 @@ public class ZapScriptLoginSessionConfigurator {
         try {
             clientApiWrapper.removeHTTPSession(targetUrl, SESSION_IDENTIFIER);
         } catch (ClientApiException e) {
-            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+            if (e.getMessage().equalsIgnoreCase(ClientApiWrapper.ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
         }
         try {
             clientApiWrapper.removeHTTPSessionToken(targetUrl, SESSION_TOKEN_IDENTIFIER);
         } catch (ClientApiException e) {
-            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+            if (e.getMessage().equalsIgnoreCase(ClientApiWrapper.ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
         }
         try {
             clientApiWrapper.removeReplacerRule(JWT_REPLACER_DESCRIPTION);
         } catch (ClientApiException e) {
-            if (e.getMessage().equalsIgnoreCase("Connection refused")) {
+            if (e.getMessage().equalsIgnoreCase(ClientApiWrapper.ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
         }
