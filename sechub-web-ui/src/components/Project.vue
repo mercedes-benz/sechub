@@ -12,8 +12,8 @@
       </v-list>
     </div>
 
+    <div v-else>
     <v-table
-      v-else
       class="background-color"
       fixed-header
       height="300px"
@@ -42,11 +42,12 @@
         </tr>
       </tbody>
     </v-table>
+  </div>
   </v-card>
 </template>
 
   <script>
-  import { onMounted, ref, inject } from 'vue'
+  import { onMounted, ref } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
@@ -54,7 +55,7 @@
   export default {
     name: 'ProjectComponent',
 
-    setup (props) {
+    setup () {
       // loads projectId from route
       const route = useRoute()
       const projectId = route.params.id
@@ -90,6 +91,7 @@
       }
     },
 
+  
     methods: {
       getHeaders () {
         const { t } = useI18n()

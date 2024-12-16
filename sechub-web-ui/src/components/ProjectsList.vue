@@ -45,7 +45,7 @@
   import { ref } from 'vue'
 
   export default {
-    name: 'ProjectsComponent',
+    name: 'ProjectListComponent',
 
     setup () {
       const projects = ref([])
@@ -66,7 +66,10 @@
 
       const openProjectPage = (project) => {
         router.push({
-          path: `/${project.projectId}`,
+          name: `/[id]`,
+          params: {
+            id: project.projectId,
+          },
         })
       };
 
@@ -79,9 +82,6 @@
         error,
         openProjectPage,
       }
-    },
-    methods: {
-      
     },
   }
 </script>
