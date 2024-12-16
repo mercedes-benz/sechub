@@ -43,7 +43,7 @@ const links = [
             </MenuButton>
           </div>
         </Menu>
-        <!-- Re-enable this block once issue #
+        <!-- Re-enable this block once issue #3744 is solved
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
             <MenuButton class="button">
