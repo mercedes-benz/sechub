@@ -43,6 +43,7 @@
   import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router';
   import { ref } from 'vue'
+  import { useProjectStore } from '@/stores/projectStore';
 
   export default {
     name: 'ProjectListComponent',
@@ -52,10 +53,12 @@
       const loading = ref(true)
       const error = ref(null)
       const router = useRouter()
+      const store = useProjectStore();
 
       onMounted(async () => {
         try {
           projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
+          store.storeProjects(projects)
         } catch (err) {
           error.value = 'ProjectAPI error fetching assigned projects.'
           console.error('ProjectAPI error fetching assigned projects:', err)

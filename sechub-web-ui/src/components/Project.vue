@@ -51,6 +51,8 @@
   import defaultClient from '@/services/defaultClient'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
+  import { useProjectStore } from '@/stores/projectStore';
+
 
   export default {
     name: 'ProjectComponent',
@@ -90,7 +92,6 @@
         error,
       }
     },
-
   
     methods: {
       getHeaders () {
