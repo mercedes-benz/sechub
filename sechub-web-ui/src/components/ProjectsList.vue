@@ -41,9 +41,9 @@
 
 <script>
   import defaultClient from '@/services/defaultClient'
-  import { useRouter } from 'vue-router';
+  import { useRouter } from 'vue-router'
   import { ref } from 'vue'
-  import { useProjectStore } from '@/stores/projectStore';
+  import { useProjectStore } from '@/stores/projectStore'
 
   export default {
     name: 'ProjectListComponent',
@@ -53,7 +53,7 @@
       const loading = ref(true)
       const error = ref(null)
       const router = useRouter()
-      const store = useProjectStore();
+      const store = useProjectStore()
 
       onMounted(async () => {
         try {
@@ -67,14 +67,14 @@
         }
       })
 
-      const openProjectPage = (project) => {
+      const openProjectPage = project => {
         router.push({
           name: `/[id]`,
           params: {
             id: project.projectId,
           },
         })
-      };
+      }
 
       return {
         ownedClass: {
