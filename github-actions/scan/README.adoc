@@ -94,13 +94,13 @@ The following variables take priority over the configuration file:
 If no custom `sechub.json` is provided, it will be generated from the remaining specified variables and used. However, if a custom `sechub.json` is provided, no separate configuration will be created, meaning the remaining set variables will essentially be ignored.
 ====
 
-=== Outputs
+=== Use SecHub results in GitHub workflows
 
-==== Output
-Because of problems with GitHub action and outputs (see https://github.com/mercedes-benz/sechub/issues/3481 ) SecHub no longer supports outputs but provides environment variables instead.
+==== GitHub Output
+Because of problems with GitHub outputs (see https://github.com/mercedes-benz/sechub/issues/3481 ) SecHub no longer supports outputs but provides environment variables instead.
 
-==== Environment variables for output
-The following table lists the environment variables available after this SecHub GitHub Action has completed:
+==== Environment variables
+The following table lists the environment variables containing result data after this SecHub GitHub Action has completed:
 
 [cols="20%,40%,40%"]
 |===
@@ -116,7 +116,7 @@ The following table lists the environment variables available after this SecHub 
 |===
 
 
-You can access them after the action has run with `${{ steps.<step-id>.outputs.<output-name> }}`
+You can access them after the action has run with `${{ env.<environment-variable-name> }}`
 
 === Build
 
@@ -140,19 +140,8 @@ As long as we do not provide a new index.js the old action is still in usage, ev
 changed. If we do not build the file and commit and push it to git repository, the action will not 
 be available!
 
-Of course the steps can be done manual, but for convenience a script is avialable:
-
-[source,bash]
-----
-./deploy.sh
-----
-
-This will
-- setup (npm install)
-- build (npm run build)
-- test (npm run test)
-- verify (only index.js is changed now)
-- deploy - when no error happened - deploy the new `index.js` file by doing a commit and a push to the remote repository
+The complete deployment process is automated by `.github/workflows/release-github-action.yml` which will create a
+PR which will do all necessary steps.
 
 === Test
 
@@ -212,7 +201,7 @@ In this setup the tests can be executed from sidebar and from links created insi
 ====
 Unfortunately, the Jest UI integration works only for npm script "test". 
 But to handle integration tests different (the tests shall only be executed 
-when all is build and servers are started) they are not executed by "test" script.
+when all is built and servers are started) they are not executed by "test" script.
 
 If you want to **debug an integration test**, there is a temporary workaround necessary while you debug the test:
 
