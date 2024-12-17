@@ -6,7 +6,12 @@ import { SecHubConfigurationModelBuilderData } from '../src/configuration-builde
 
 jest.mock('@actions/core');
 
-function dumpModel(model: SecHubConfigurationModel){
+const debugEnabled = false;
+
+function logDebug(model: SecHubConfigurationModel){
+    if (! debugEnabled){
+        return;
+    }
     const json = JSON.stringify(model, null, 2); // pretty printed output
 
     console.log('json='+json);
@@ -34,7 +39,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -66,7 +71,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -101,7 +106,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -138,7 +143,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -172,7 +177,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -206,7 +211,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         
@@ -241,7 +246,7 @@ describe('configuration-builder', function() {
         const model= configBuilder.createSecHubConfigurationModel(builderData);
 
         /* test */
-        dumpModel(model);
+        logDebug(model);
 
         expect(model.apiVersion).toEqual('1.0');
         

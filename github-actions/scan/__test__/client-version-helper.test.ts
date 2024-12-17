@@ -3,6 +3,22 @@
 import { getClientVersion } from '../src/client-version-helper';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import * as core from '@actions/core';
+
+jest.mock('@actions/core');
+
+const mockDebug = core.debug as jest.MockedFunction<typeof core.debug>;
+
+const debugEnabled = false;
+
+beforeEach(() => {
+    mockDebug.mockImplementation((message: string | Error) => {
+        if (debugEnabled) {
+            console.log(`Debug: ${message}`);
+        }
+    });
+    mockDebug.mockClear();
+});
 
 describe('getClientVersion', function () {
 
