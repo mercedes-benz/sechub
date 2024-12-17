@@ -173,7 +173,7 @@ jobs:
       # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
 
       # ----------------------
       # Build API Java publish
