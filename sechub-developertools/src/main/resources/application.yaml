@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 spring:
   main:
     web-application-type: none # we do not want to start tomcat by DAUI
