@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# This the base template suitable for having a standalone running integrationtest admin ui.
-# Howto use when manually created:
-# - copy this script to a dedicated folder (X)
-# - define system properties and/or environment entries as necessary
-# - call ./gradlew buildDeveloperAdminUI
-# - copy build/libs/sechub-developer-admin-ui-0.0.0.jar to the folder (X)
-# - ensure script is executable and you have a java >=8 available on your system
-# - call the script and you are done
-# 
-#  
-
-DAUI_VERSION="0.0.0"
+# This the base template suitable for having a standalone running SecHub admin ui.
+# The sechub-developertools-x.y.z.jar can be downloaded
+# from the latest SecHub server release on github.com.
+# Alternatively the jar file can be created manually:
+# - call ./gradlew :sechub-developertools:bootJar
+# - the created file is: build/libs/sechub-developertools-0.0.0.jar
+#
+# Use:
+# - copy this script to a dedicated folder and make it executable: chmod a+x
+# - edit the copied script and define your system properties below
+# - copy sechub-developertools-x.y.z.jar to the folder
+# - call the script and the SecHub Developer Admin UI will open
 
 export SECHUB_ADMIN_USERID=int-test_superadmin # your admin user id
 export SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd
@@ -26,26 +26,17 @@ export SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU=true
 export SECHUB_DISABLE_CONFIRMATIONS=true
 export SECHUB_CHECK_STATUS_ON_STARTUP=false
 
-export SECHUB_ADMIN_ENVIRONMENT=localhost #Use : localhost, no color. Dedicated menu colors for: PROD, INT or TESTxyz
+export SECHUB_ADMIN_ENVIRONMENT="localhost" # Use : "localhost", no color. Dedicated menu colors for: "PROD", "INT" or "TESTxyz"
 
-export SECHUB_MASS_OPERATION_PARENTDIRECTORY=/home/$UID/.sechub/inttest/mass-operations #mass operation directory (containign csv files )
-export SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN="/home/$USER/.sechub/test-targetfolder1"
+export SECHUB_MASS_OPERATION_PARENTDIRECTORY="$HOME/.sechub/inttest/mass-operations" # mass operation directory (containign csv files )
+export SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN="$HOME/.sechub/test-targetfolder1"
 
-export SECHUB_PATH_TO_SECHUB_CLIENT_BINARY="/home/$USER/.local/bin/sechub"
+export SECHUB_PATH_TO_SECHUB_CLIENT_BINARY="/usr/local/bin/sechub"
 export SECHUB_TRUSTALL_DENIED=false; # change this for other environments!
 
-# when next entry is set to true TRUSTALL is denied (currently only at go client)
 echo "-------------------------------------------------------------"
-echo "Starting DAUI $DAUI_VERSION (Developer Admin UI)"
+echo "Starting SecHub Developer Admin UI"
 echo "-------------------------------------------------------------"
 echo "- SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN:$SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN"
 echo "- SECHUB_PATH_TO_SECHUB_CLIENT_BINARY:       $SECHUB_PATH_TO_SECHUB_CLIENT_BINARY"
-java -jar sechub-developer-admin-ui-$DAUI_VERSION.jar
-
-echo "Press any key to continue"
-while [ true ] ; do
-read -t 3 -n 1
-if [ $? = 0 ] ; then
-exit ;
-fi
-done
+java -jar sechub-developertools-*.jar

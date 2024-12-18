@@ -345,7 +345,7 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew spotlessCheck :sechub-cli:buildGo :sechub-cli:testGo
     
     step "Build Server, DAUI and generate OpenAPI file"
-    ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+    ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
     
     step "Generate and build Java projects related to SecHub Java API"
     ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI :sechub-web-server:build -Dsechub.build.stage=api-necessary

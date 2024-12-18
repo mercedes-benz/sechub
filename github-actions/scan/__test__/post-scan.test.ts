@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
+import * as outputHelper from '../src/output-helper';
 import { collectReportData, reportOutputs } from '../src/post-scan';
 import { getReport } from '../src/sechub-cli';
 import { LAUNCHER_CONTEXT_DEFAULTS } from '../src/launcher';
 
 jest.mock('@actions/core');
+jest.mock('../src/output-helper');
 const mockedCore = core as jest.Mocked<typeof core>;
+const mockedOutputHelper = outputHelper as jest.Mocked<typeof outputHelper>;
 
 jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
@@ -20,7 +23,7 @@ describe('collectReportData', function () {
 
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
-        testContext.reportFormats= [];
+        testContext.reportFormats = [];
 
         /* execute */
         collectReportData(testContext);
@@ -33,7 +36,7 @@ describe('collectReportData', function () {
     it('format "json" - logs called 1 time , getReport never called', function () {
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
-        testContext.reportFormats= ['json'];
+        testContext.reportFormats = ['json'];
 
         /* execute */
         collectReportData(testContext);
@@ -47,8 +50,8 @@ describe('collectReportData', function () {
 
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
-        testContext.reportFormats= ['json','html'];
-        testContext.jobUUID=1234; // necessary for download
+        testContext.reportFormats = ['json', 'html'];
+        testContext.jobUUID = 1234; // necessary for download
 
         collectReportData(testContext);
 
@@ -61,8 +64,8 @@ describe('collectReportData', function () {
 
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
-        testContext.reportFormats= ['json','html'];
-        testContext.jobUUID=1234; // necessary for download
+        testContext.reportFormats = ['json', 'html'];
+        testContext.jobUUID = 1234; // necessary for download
 
         /* execute */
         collectReportData(testContext);
@@ -78,11 +81,11 @@ describe('collectReportData', function () {
 
         /* prepare */
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
-        testContext.reportFormats= ['json','html','xyz','bla'];
-        testContext.jobUUID=1234; // necessary for download
-        
+        testContext.reportFormats = ['json', 'html', 'xyz', 'bla'];
+        testContext.jobUUID = 1234; // necessary for download
+
         fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
-        const sampleJson = {'test': 'test'};
+        const sampleJson = { 'test': 'test' };
 
         /* execute */
         collectReportData(testContext);
@@ -90,7 +93,7 @@ describe('collectReportData', function () {
         /* test */
         expect(mockedCore.info).toHaveBeenCalledTimes(4); // "json, html, xyz, bla" - 4 times logged (valid format check is not done here)
         expect(mockedGetReport).toHaveBeenCalledTimes(3); // we fetch not json via getReport again (already done before), so only "html, xyz, bla" used
-        
+
         expect(testContext.secHubReportJsonObject).toEqual(sampleJson); // json object is available
 
     });
@@ -136,13 +139,13 @@ describe('reportOutputs', function () {
 
         /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
-        expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
-        expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'RED');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-count', '2');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-high', '1');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '1');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color RED with 2 findings, categorized as follows: HIGH (1), LOW (1)');
+        expect(mockedOutputHelper.storeOutput).toHaveBeenCalledTimes(6);
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-trafficlight', 'RED');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-count', '2');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-high', '1');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-medium', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-low', '1');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color RED with 2 findings, categorized as follows: HIGH (1), LOW (1)');
     });
 
     it('calls set github output with correct values when JSON report did not exist', function () {
@@ -152,13 +155,13 @@ describe('reportOutputs', function () {
         /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(7);
         expect(mockedCore.debug).toBeCalledWith('No findings reported to be categorized.');
-        expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
-        expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'FAILURE');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-count', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-high', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub scan could not be executed.');
+        expect(mockedOutputHelper.storeOutput).toHaveBeenCalledTimes(6);
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-trafficlight', 'FAILURE');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-count', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-high', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-medium', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-low', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-readable-summary', 'SecHub scan could not be executed.');
     });
 
     it('calls set github output with correct values when traffic light is green without findings.', function () {
@@ -180,13 +183,13 @@ describe('reportOutputs', function () {
 
         /* test */
         expect(mockedCore.debug).toHaveBeenCalledTimes(6);
-        expect(mockedCore.setOutput).toHaveBeenCalledTimes(6);
-        expect(mockedCore.setOutput).toBeCalledWith('scan-trafficlight', 'GREEN');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-count', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-high', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-medium', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-findings-low', '0');
-        expect(mockedCore.setOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color GREEN without findings');
+        expect(mockedOutputHelper.storeOutput).toHaveBeenCalledTimes(6);
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-trafficlight', 'GREEN');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-count', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-high', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-medium', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-findings-low', '0');
+        expect(mockedOutputHelper.storeOutput).toBeCalledWith('scan-readable-summary', 'SecHub reported traffic light color GREEN without findings');
     });
 });
 
