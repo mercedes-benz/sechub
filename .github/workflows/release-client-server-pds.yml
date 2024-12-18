@@ -330,7 +330,7 @@ jobs:
           mkdir server-release-artifacts
           # Collect release artifacts
           cp sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar \
-             sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar \
+             sechub-developertools/build/libs/sechub-developertools-${{ inputs.server-version }}.jar \
              server-release-artifacts/
           cp sechub-doc/build/docs/asciidoc/sechub-architecture.pdf \
              server-release-artifacts/sechub-architecture-${{ inputs.server-version }}.pdf
