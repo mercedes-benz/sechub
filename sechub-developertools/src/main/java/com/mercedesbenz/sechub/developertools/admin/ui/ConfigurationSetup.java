@@ -15,88 +15,94 @@ package com.mercedesbenz.sechub.developertools.admin.ui;
  */
 public enum ConfigurationSetup {
 
-    SECHUB_ADMIN_USERID(false),
+    SECHUB_ADMIN_USERID(false, true),
 
-    SECHUB_ADMIN_APITOKEN(false),
+    SECHUB_ADMIN_APITOKEN(false, true),
 
-    SECHUB_ADMIN_SERVER("sechub.developertools.admin.server", false),
+    SECHUB_ADMIN_SERVER("sechub.developertools.admin.server", false, false),
 
-    SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport", true),
+    SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport", true, false),
 
-    SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol", true),
+    SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol", true, false),
 
-    SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver", true),
+    SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver", true, false),
 
-    SECHUB_DISABLE_CONFIRMATIONS("sechub.developertools.admin.disable.confim", true, "When set to true, no confirmation dialogs will appear"),
+    SECHUB_DISABLE_CONFIRMATIONS("sechub.developertools.admin.disable.confim", true, "When set to true, no confirmation dialogs will appear", false),
 
-    SECHUB_CHECK_STATUS_ON_STARTUP("sechub.developertools.admin.statuscheck.onstartup", true),
+    SECHUB_CHECK_STATUS_ON_STARTUP("sechub.developertools.admin.statuscheck.onstartup", true, false),
     /**
      * Here you can set environment information. See description for details
      */
     SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment", false,
-            "Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors"),
+            "Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors", false),
 
-    SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true),
+    SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true, false),
 
-    PDS_SOLUTION_GENERATOR_SECHUB_CONFIGURATION_DIRECTORY("pds.solution.generator.config.sechub.parentdirectory", true),
+    PDS_SOLUTION_GENERATOR_SECHUB_CONFIGURATION_DIRECTORY("pds.solution.generator.config.sechub.parentdirectory", true, false),
 
     /**
      * Usage: for example -Dsechub.developertools.output.font.settings="courier 18"
      */
-    SECHUB_OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
+    SECHUB_OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true, false),
 
-    SECHUB_LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
+    SECHUB_LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true, false),
 
     SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN("sechub.developertools.admin.launch.scan.targetfolder", true,
-            "Default path to parent folder of configuration file and sources to scan"),
+            "Default path to parent folder of configuration file and sources to scan", false),
 
     /**
      * When defined we use this path instead IDE relative one
      */
-    SECHUB_PATH_TO_SECHUB_CLIENT_BINARY("sechub.developertools.admin.launch.clientbinary.path", true),
+    SECHUB_PATH_TO_SECHUB_CLIENT_BINARY("sechub.developertools.admin.launch.clientbinary.path", true, false),
 
-    SECHUB_TRUSTALL_DENIED("sechub.developertools.trustall.denied", true);
+    SECHUB_TRUSTALL_DENIED("sechub.developertools.trustall.denied", true, false);
     ;
 
-    private String systemPropertyid;
+    private String systemPropertyId;
     private String environmentEntryId;
 
     private boolean optional;
     private String description;
+    private boolean sensitiveInformation;
 
-    private ConfigurationSetup(boolean optional) {
-        this(null, optional);
+    private ConfigurationSetup(boolean optional, boolean sensitiveInformation) {
+        this(null, optional, null, sensitiveInformation);
     }
 
-    private ConfigurationSetup(String systemPropertyid, boolean optional) {
-        this(systemPropertyid, optional, null);
+    private ConfigurationSetup(String systemPropertyid, boolean optional, boolean sensitiveInformation) {
+        this(systemPropertyid, optional, null, sensitiveInformation);
     }
 
-    private ConfigurationSetup(String systemPropertyid, boolean optional, String description) {
+    private ConfigurationSetup(String systemPropertyid, boolean optional, String description, boolean sensitiveInformation) {
         this.optional = optional;
-        this.systemPropertyid = systemPropertyid;
+        this.systemPropertyId = systemPropertyid;
         this.environmentEntryId = name();
         this.description = description;
+        this.sensitiveInformation = sensitiveInformation;
+    }
+
+    public boolean isSensitiveInformation() {
+        return sensitiveInformation;
     }
 
     public String getEnvironmentEntryId() {
         return environmentEntryId;
     }
 
-    public String getSystemPropertyid() {
-        return systemPropertyid;
+    public String getSystemPropertyId() {
+        return systemPropertyId;
     }
 
     public static boolean isIntegrationTestServerMenuEnabled() {
-        return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyId());
     }
 
     public static boolean isConfirmationDisabled() {
-        return Boolean.getBoolean(ConfigurationSetup.SECHUB_DISABLE_CONFIRMATIONS.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_DISABLE_CONFIRMATIONS.getSystemPropertyId());
     }
 
     public static boolean isCheckOnStartupEnabled() {
-        return Boolean.getBoolean(ConfigurationSetup.SECHUB_CHECK_STATUS_ON_STARTUP.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_CHECK_STATUS_ON_STARTUP.getSystemPropertyId());
     }
 
     public static String getOutputFontSettings(String defaultSetting) {
@@ -114,11 +120,11 @@ public enum ConfigurationSetup {
      *         GTK
      */
     public static boolean isNimbusLookAndFeelEnabled() {
-        return Boolean.getBoolean(ConfigurationSetup.SECHUB_LOOK_AND_FEEL.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_LOOK_AND_FEEL.getSystemPropertyId());
     }
 
     public static boolean isTrustAllDenied() {
-        return Boolean.getBoolean(ConfigurationSetup.SECHUB_TRUSTALL_DENIED.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_TRUSTALL_DENIED.getSystemPropertyId());
     }
 
     /**
@@ -161,8 +167,8 @@ public enum ConfigurationSetup {
         }
         /* then try system property - if not already set */
         if (value == null) {
-            if (systemPropertyid != null) {
-                value = System.getProperty(systemPropertyid, defaultValue);
+            if (systemPropertyId != null) {
+                value = System.getProperty(systemPropertyId, defaultValue);
             }
         }
         /* then use default value - if not already set */
@@ -185,15 +191,56 @@ public enum ConfigurationSetup {
 
     private static String description() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Use following system properties:\n");
+        sb.append("\nMandatory settings:\n------------------------------\nAs environment variables):\n");
+        appendEnvironmentVariables(sb, false);
+        sb.append("Or by system properties:\n");
+        appendSystemProperties(sb, false);
+
+        sb.append("\nOptional settings:\n------------------------------\nAs environment variables):\n");
+        appendEnvironmentVariables(sb, true);
+        appendSystemProperties(sb, true);
+
+        return sb.toString();
+    }
+
+    private static void appendEnvironmentVariables(StringBuilder sb, boolean expectedToBeOptional) {
         for (ConfigurationSetup setup : values()) {
-            if (setup.systemPropertyid == null) {
+            if (expectedToBeOptional != setup.optional) {
+                continue;
+            }
+            if (setup.environmentEntryId == null) {
+                continue;
+            }
+            sb.append("  ");
+            sb.append(setup.environmentEntryId);
+            sb.append("=some-value");
+            if (setup.optional) {
+                sb.append(" (optional)");
+            }
+            if (setup.isSensitiveInformation()) {
+                sb.append(" (sensitive information)");
+            }
+            if (setup.description != null) {
+                sb.append(" [");
+                sb.append(setup.description);
+                sb.append("]");
+            }
+            sb.append("\n");
+        }
+    }
+
+    private static void appendSystemProperties(StringBuilder sb, boolean expectedToBeOptional) {
+        for (ConfigurationSetup setup : values()) {
+            if (setup.optional != expectedToBeOptional) {
+                continue;
+            }
+            if (setup.systemPropertyId == null || setup.isSensitiveInformation()) {
                 continue;
             }
             sb.append("-D");
-            sb.append(setup.systemPropertyid);
+            sb.append(setup.systemPropertyId);
             sb.append("=");
-            String val = System.getProperty(setup.systemPropertyid);
+            String val = System.getProperty(setup.systemPropertyId);
             if (val != null && !val.isEmpty()) {
                 val = "**** (already set)";
             }
@@ -208,16 +255,6 @@ public enum ConfigurationSetup {
             }
             sb.append("\n");
         }
-        sb.append("\nFor security reasons next parts must be set as environment variables (so not visible in process view):\n");
-        for (ConfigurationSetup setup : values()) {
-            if (setup.environmentEntryId == null) {
-                continue;
-            }
-            sb.append("  ");
-            sb.append(setup.environmentEntryId);
-            sb.append("'\n");
-        }
-        return sb.toString();
     }
 
 }

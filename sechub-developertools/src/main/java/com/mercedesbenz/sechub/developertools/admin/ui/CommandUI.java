@@ -460,7 +460,7 @@ public class CommandUI {
 
         if (!ConfigurationSetup.isIntegrationTestServerMenuEnabled()) {
             menu.setEnabled(false);
-            menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()
+            menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyId()
                     + "=true\" to enable it and run an integration test server!");
             return;
         }

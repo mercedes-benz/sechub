@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: MIT
+:toc:
+
+== About
+`sechub-developertools` is a gradle subprojects
+only containing tools for SecHub development. It is not intended to be used in production.
+
+WARNING: No other gradle submodule shall have this project as a dependency!
+
+
+== Content
+
+=== DAUI
+The Developer Administration UI (DAUI) is a simple quick and dirty administration client which will reuse parts
+from `sechub-integration--test` (for example REST api access, URL building).
+
+Every single feature we implement, is available at this simple UI from the beginning.
+It is extreme simple to extend.
+
+[TIP]
+====
+Look into 
+`/sechub-developertools/src/main/java/com/mercedesbenz/sechub/developertools/admin/ui/action/job/GetJobStatusAction.java`
+for an example how you can simply implement a feature.
+====
+
+===== Build
+Inside sechub root folder execute:
+
+[source, bash]
+----
+./gradlew :sechub-developertools:bootJar
+----
+
+This will build
+`/sechub-developertools/build/libs/sechub-developertools-0.0.0.jar`
+
+
+===== Start
+[source, bash]
+----
+export SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd
+export SECHUB_ADMIN_ENVIRONMENT=localhost
+export SECHUB_ADMIN_USERID=int-test_superadmin
+export SECHUB_ADMIN_SERVER=localhost
+export SECHUB_ADMIN_SERVER_PORT=8443
+
+java -jar ./sechub-developertools/build/libs/sechub-developertools-0.0.0.jar
+----
+
