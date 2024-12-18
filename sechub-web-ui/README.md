@@ -40,6 +40,8 @@ To start the development server with hot-reload, run the following command. The 
 npm run dev
 ```
 
+> If you receive an empty page, do a reload (sometimes it needs a little bit of time until everything is setup correctly)
+
 > Add NODE_OPTIONS='--no-warnings' to suppress the JSON import warnings that happen as part of the Vuetify import mapping. If you are on Node [v21.3.0](https://nodejs.org/en/blog/release/v21.3.0) or higher, you can change this to NODE_OPTIONS='--disable-warning=5401'. If you don't mind the warning, you can remove this from your package.json dev script.
 
 #### Running in Development mode with sechub for testing

@@ -21,6 +21,7 @@
         class="ma-5"
         rounded="lg"
         :value="project"
+        @click="openProjectPage(project)"
       >
         <template #prepend>
           <v-icon v-if="project.isOwned" :class="ownedClass" icon="mdi-cube" />
@@ -40,18 +41,24 @@
 
 <script>
   import defaultClient from '@/services/defaultClient'
+  import { useRouter } from 'vue-router'
+  import { ref } from 'vue'
+  import { useProjectStore } from '@/stores/projectStore'
 
   export default {
-    name: 'ProjectsComponent',
+    name: 'ProjectListComponent',
 
     setup () {
       const projects = ref([])
       const loading = ref(true)
       const error = ref(null)
+      const router = useRouter()
+      const store = useProjectStore()
 
       onMounted(async () => {
         try {
           projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
+          store.storeProjects(projects)
         } catch (err) {
           error.value = 'ProjectAPI error fetching assigned projects.'
           console.error('ProjectAPI error fetching assigned projects:', err)
@@ -60,6 +67,15 @@
         }
       })
 
+      const openProjectPage = project => {
+        router.push({
+          name: `/[id]`,
+          params: {
+            id: project.projectId,
+          },
+        })
+      }
+
       return {
         ownedClass: {
           'project-owned': true,
@@ -67,6 +83,7 @@
         projects,
         loading,
         error,
+        openProjectPage,
       }
     },
   }

@@ -12,6 +12,7 @@
     "@mdi/font": "7.4.47",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "core-js": "^3.37.1",
+    "pinia": "^2.3.0",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue-i18n": "^10.0.5",

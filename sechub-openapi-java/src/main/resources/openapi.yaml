@@ -2019,13 +2019,17 @@ components:
       title: SecHubJobInfoForUserListPage
       type: object
       properties:
-        jobs:
+        content:
           type: array
           items:
             $ref: '#/components/schemas/SecHubJobInfoForUser'
         projectId:
           type: string
-    
+        page:
+          type: int
+        totalPages:
+          type: int
+
     TemplateType:
       title: TemplateType
       type: string

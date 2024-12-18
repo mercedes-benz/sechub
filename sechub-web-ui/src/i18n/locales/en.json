@@ -4,5 +4,13 @@
     "OWNED": "owned",
     "MEMBER": "member",
     "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects.",
-    "ERROR_FETCHING_DATA": "Could not load data from Server."
+    "NO_JOBS_RUNNED": "No jobs were started for this project.",
+    "ERROR_FETCHING_DATA": "Could not load data from Server.",
+    "HEADER_JOB_TABLE_STATUS": "State",
+    "HEADER_JOB_TABLE_RESULT": "Result",
+    "HEADER_JOB_TABLE_CREATED": "Created",
+    "HEADER_JOB_TABLE_TRAFFIC_LIGHT": "Traffic Light",
+    "HEADER_JOB_TABLE_REPORT": "Report",
+    "JOB_TABLE_DOWNLOAD_REPORT": "Download",
+    "JOB_TABLE_DOWNLOAD_JOBUUID": "Job UUID"
 }
