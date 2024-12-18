@@ -12,6 +12,7 @@ declare module 'vue' {
     Pagination: typeof import('./components/Pagination.vue')['default']
     Project: typeof import('./components/Project.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
+    ProjectDetailsFab: typeof import('./components/ProjectDetailsFab.vue')['default']
     ProjectsList: typeof import('./components/ProjectsList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-import Project from '@/components/Project.vue'
 import { ProjectData } from '@/generated-sources/openapi'
 import { defineStore } from 'pinia'
 
@@ -12,7 +11,7 @@ const getProjects = () => {
 
 export const useProjectStore = defineStore(STORE_NAME, {
   state: () => ({
-    projects : getProjects() as ProjectData[]
+    projects: getProjects() as ProjectData[],
   }),
   actions: {
     storeProjects (projects: ProjectData[]) {
@@ -23,6 +22,6 @@ export const useProjectStore = defineStore(STORE_NAME, {
   getters: {
     getProjectById: state => {
       return (id: string) => state.projects.find(project => project.projectId === id) || undefined
-    }
-  }
+    },
+  },
 })

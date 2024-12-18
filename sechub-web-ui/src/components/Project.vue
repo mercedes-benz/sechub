@@ -1,11 +1,18 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+  <ProjectDetailsFab
+    :show-projects-details="showProjectsDetails"
+    @on-toggle-details="toggleProjectDetails"
+  />
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="8">
+      <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
         <v-card class="mr-auto" color="background_paper">
-          <v-toolbar color="background_paper" >
+          <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectId }}</v-toolbar-title>
+            <!-- alternative to floating button ProjectDetailsFab
+            <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
+            -->
             <v-btn icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
           </v-toolbar>
 
@@ -60,9 +67,10 @@
           />
         </v-card>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col v-if="showProjectsDetails" cols="12" md="4">
         <ProjectDetails
-        :project-id="projectId" />
+          :project-id="projectId"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -92,6 +100,7 @@
       const jobs = ref([])
       const loading = ref(true)
       const error = ref(null)
+      const showProjectsDetails = ref(true)
 
       async function fetchProjectJobs (requestParameters) {
         try {
@@ -122,6 +131,7 @@
         loading,
         error,
         currentRequestParameters,
+        showProjectsDetails,
         fetchProjectJobs,
         onPageChange,
       }
@@ -130,6 +140,9 @@
     methods: {
       formatDate,
       getTrafficLightClass,
+      toggleProjectDetails () {
+        this.showProjectsDetails = !this.showProjectsDetails
+      },
     },
   }
   </script>

@@ -16,5 +16,7 @@
     "PROJECT_DETAILS_TITLE": "Project",
     "PROJECT_DETAILS_OWNER": "Owner",
     "PROJECT_DETAILS_MEMBERS": "Members",
-    "PROJECT_DETAILS_NOT_OWNED": "You are not the owner or an admin and not allowed to view project members."
+    "PROJECT_DETAILS_NOT_OWNED": "You are not the owner or an admin and not allowed to view project members.",
+    "PROJECT_DETAILS_TOOLTIP_OPEN": "Open project details",
+    "PROJECT_DETAILS_TOOLTIP_CLOSE": "Close project details"
 }
