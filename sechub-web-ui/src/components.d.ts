@@ -17,5 +17,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
+    ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
+    ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
   }
 }
