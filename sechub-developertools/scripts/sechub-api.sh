@@ -26,6 +26,12 @@ List of actions and mandatory parameters:
 ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
+asset_file_create <asset id> <file> - Upload <file> for <asset id>. Asset will be created if not existing.
+asset_file_delete <asset id> <file> - Delete uploaded <file> for <asset id>
+asset_file_download <asset id> <file> - Download <file> from <asset id>
+asset_list - List all existing assets
+asset_details <asset id> - Show details of <asset id>
+asset_delete <asset id> - Delete <asset id> and all its assigned files
 autocleanup_get - Get autocleanup setting
 autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
@@ -51,7 +57,8 @@ profile_list - List all existing execution profiles (json format)
 profile_update <profile-id> <executor1 uuid or name>[,<executor2 uuid or name>...] [<description>]
                Update execution profile <profile-id> with named executors assigned; description optional
 project_assign_profile <project-id> <profile-id> - Assign execution profile <profile-id> to project <project-id>
-project_assign_user <project-id> <user-id> - Assign user to project (allow scanning)
+project_assign_template <project-id> <template-id> - Assign <template-id> to project <project-id>
+project_assign_user <project-id> <user-id> - Assign <user-id> to project (allow scanning)
 project_create <project-id> <owner> ["<project short description>"] - Create a new project. The short description is optional.
 project_delete <project-id> - Delete project <project-id>
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
@@ -67,7 +74,8 @@ project_set_accesslevel <project-id> <accesslevel> - Set access level of project
 project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
 project_set_whitelist_uris <project-id> <uri1>[,<uri2>...] - Set whitelist uris for project <project-id>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
-project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
+project_unassign_template <project-id> <template-id> - Unassign <template-id> from project <project-id>
+project_unassign_user <project-id> <user-id> - Unassign <user-id> from project (revoke scanning)
 scheduler_disable - Stop SecHub job scheduler
 scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
@@ -75,11 +83,15 @@ server_encryption_status - Get current status of encryption (json format)
 server_info - Print infos about SecHub server (json format)
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
 server_version - Print version of SecHub server
-superadmin_grant <user-id> - Grant superadmin role to user <user-id>
+superadmin_grant <user-id> - Grant superadmin role to <user-id>
 superadmin_list - List all superadmin users (json format)
-superadmin_revoke <user-id> - Revoke superadmin role from user <user-id>
-user_change_email <user-id> <new email address> - Update the email of user <user-id>
-user_delete <user-id> - Delete user <user-id>
+superadmin_revoke <user-id> - Revoke superadmin role from <user-id>
+template_create <template-id> <json file> - Create or update <template-id> with <json file>
+template_delete <template-id> - Delete <template-id>
+template_details <template-id> - Show details of <template-id>
+template_list - List all existing templates
+user_change_email <user-id> <new email address> - Update the email of <user-id>
+user_delete <user-id> - Delete <user-id>
 user_details <user-id or email> - List details of user <user-id or email> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
@@ -91,13 +103,25 @@ user_signup_decline <new user-id> - Decline registration of <new user-id>
 EOF
 }
 
+
 #################################
 # Generic helper functions
+
+function check_executable_is_installed(){
+    executable="$1"
+    exe_path=`which $executable`
+    if [ ! -x "$exe_path" ] ; then
+        echo "FATAL: Mandatory executable \"$executable\" not found in PATH. Please install."
+        exit 1
+    fi
+}
+
 
 function curl_with_sechub_auth {
   # Don't reveal secrets in the curl process
   printf "user = $SECHUB_USERID:$SECHUB_APITOKEN\n" | curl --config - $CURL_PARAMS "$@"
 }
+
 
 function are_you_sure {
   local INPUT
@@ -240,7 +264,8 @@ function is_uuid {
 
 function get_executor_uuid_from_name {
   local uuid
-  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | jq -r --arg executorname "$1" '.executorConfigurations | map(select(.name == $executorname)) | .[].uuid'
+  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" \
+    | jq -r --arg executorname "$1" '.executorConfigurations | map(select(.name == $executorname)) | .[].uuid'
 }
 
 
@@ -268,6 +293,57 @@ function sechub_alive_check {
 }
 
 
+function sechub_asset_file_create {
+  local asset_id="$1"
+  local asset_file="$2"
+  local asset_file_sha256=`sha256sum "$asset_file" | cut -d ' ' -f 1`
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: multipart/form-data' \
+    --form "file=@$asset_file" \
+    "$SECHUB_SERVER/api/admin/asset/$asset_id/file?checkSum=$asset_file_sha256" | $CURL_FILTER
+}
+
+
+function sechub_asset_file_delete {
+  local asset_id="$1"
+  local asset_file="$2"
+  echo "File \"$asset_file\" will be deleted from asset \"$asset_id\". This cannot be undone."
+  are_you_sure
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/asset/$asset_id/file/$asset_file" | $CURL_FILTER
+}
+
+
+function sechub_asset_file_download {
+  local asset_id="$1"
+  local asset_file="$2"
+  if [ -f "$asset_file" ] ; then
+    echo "Your local file \"$asset_file\" will be overridden."
+    are_you_sure
+  fi
+  curl_with_sechub_auth -X GET -H 'Content-Type: application/json' \
+    "$SECHUB_SERVER/api/admin/asset/$asset_id/file/$asset_file" \
+    --output "$asset_file" \
+    --dump-header - | $CURL_FILTER
+}
+
+
+function sechub_asset_delete {
+  local asset_id="$1"
+  echo "Asset \"$asset_id\" will be deleted including its files. This cannot be undone."
+  are_you_sure
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/asset/$asset_id" | $CURL_FILTER
+}
+
+
+function sechub_asset_details {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/asset/$1/details" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function sechub_asset_list {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/asset/ids" | $RESULT_FILTER | $JSON_FORMAT_SORT
+}
+
+
 function sechub_autocleanup_get {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -286,12 +362,14 @@ function generate_autocleanup_data {
 EOF
 }
 
+
 function sechub_autocleanup_set {
   local JSON_DATA="$(generate_autocleanup_data $1 $2)"
   echo "Going to change autocleanup values. This may delete product results and scan reports."
   are_you_sure
   curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
 }
+
 
 function sechub_executor_create {
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
@@ -338,19 +416,16 @@ function sechub_job_cancel {
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1" | $CURL_FILTER
 }
 
-function sechub_job_create {
-  local PROJECT_ID="$1"
-  local JSON_FILE="$2"
 
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
+function sechub_job_create {
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' --data "@$2" "$SECHUB_SERVER/api/project/$1/job" | $RESULT_FILTER | $JSON_FORMATTER
 }
+
 
 function sechub_job_approve {
-  local PROJECT_ID="$1"
-  local JOB_UUID="$2"
-
-  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2/approve" | $CURL_FILTER
 }
+
 
 function sechub_job_restart {
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1" | $CURL_FILTER
@@ -361,12 +436,14 @@ function sechub_job_restart_hard {
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1" | $CURL_FILTER
 }
 
+
 function sechub_job_get_report_spdx_json {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
 
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID"
 }
+
 
 function sechub_job_list_running {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/running" | $RESULT_FILTER | $JSON_FORMATTER
@@ -377,56 +454,47 @@ function sechub_job_status {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
-function sechub_job_upload_sourcecode {
-  local PROJECT_ID="$1"
-  local JOB_UUID="$2"
-  local ZIP_FILE="$3"
 
-  if [[ ! -f "$ZIP_FILE" ]] ; then
-    echo "File \"$ZIP_FILE\" does not exist."
+function sechub_job_upload_sourcecode {
+  local project_id="$1"
+  local job_uuid="$2"
+  local zip_file="$3"
+
+  if [[ ! -f "$zip_file" ]] ; then
+    echo "File \"$zip_file\" does not exist."
     exit 1
   fi
 
-  local checkSum=$(sha256sum $ZIP_FILE | cut --delimiter=' ' --fields=1)
+  local checkSum=$(sha256sum $zip_file | cut --delimiter=' ' --fields=1)
 
   curl_with_sechub_auth -i -X POST --header "Content-Type: multipart/form-data" \
-    --form "file=@$ZIP_FILE" \
+    --form "file=@$zip_file" \
     --form "checkSum=$checkSum" \
-    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/sourcecode" | $RESULT_FILTER
-
-  if [[ "$?" == "0" ]] ; then
-    echo "File \"$ZIP_FILE\" uploaded."
-  else
-    echo "Upload failed."
-  fi
+    "$SECHUB_SERVER/api/project/$project_id/job/$job_uuid/sourcecode" | $CURL_FILTER
 }
 
-function sechub_job_upload_binaries {
-  local PROJECT_ID="$1"
-  local JOB_UUID="$2"
-  local TAR_FILE="$3"
 
-  if [[ ! -f "$TAR_FILE" ]] ; then
-    echo "File \"$TAR_FILE\" does not exist."
+function sechub_job_upload_binaries {
+  local project_id="$1"
+  local job_uuid="$2"
+  local tar_file="$3"
+
+  if [[ ! -f "$tar_file" ]] ; then
+    echo "File \"$tar_file\" does not exist."
     exit 1
   fi
 
-  local checkSum=$(sha256sum $TAR_FILE | cut --delimiter=' ' --fields=1)
-  local fileSize=$(ls -l "$TAR_FILE" | cut --delimiter=' ' --fields 5)
+  local checkSum=$(sha256sum $tar_file | cut --delimiter=' ' --fields=1)
+  local fileSize=$(ls -l "$tar_file" | cut --delimiter=' ' --fields 5)
 
   curl_with_sechub_auth -i -X POST \
     --header "Content-Type: multipart/form-data" \
     --header "x-file-size: $fileSize" \
-    --form "file=@$TAR_FILE" \
+    --form "file=@$tar_file" \
     --form "checkSum=$checkSum" \
-    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/binaries" | $RESULT_FILTER
-
-  if [[ "$?" == "0" ]] ; then
-    echo "File \"$TAR_FILE\" uploaded."
-  else
-    echo "Upload failed."
-  fi
+    "$SECHUB_SERVER/api/project/$project_id/job/$job_uuid/binaries" | $CURL_FILTER
 }
+
 
 function generate_sechub_profile_data {
   local failed=false
@@ -461,6 +529,7 @@ function generate_sechub_profile_data {
 }
 EOF
 }
+
 
 function sechub_profile_create {
   local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
@@ -527,12 +596,17 @@ function profile_short_description {
 
 
 function sechub_project_assign_profile {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $CURL_FILTER
+}
+
+
+function sechub_project_assign_template {
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/template/$2" | $CURL_FILTER
 }
 
 
 function sechub_project_assign_user {
-  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $CURL_FILTER
 }
 
 
@@ -551,6 +625,7 @@ function generate_sechub_project_create_data {
 }
 EOF
 }
+
 
 function sechub_project_create {
   local JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
@@ -597,9 +672,11 @@ function sechub_project_falsepositives_list {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/false-positives" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
+
 function sechub_project_joblist {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/jobs?size=$JOBLIST_SIZE&page=$JOBLIST_PAGE" | $RESULT_FILTER | $JSON_FORMATTER
 }
+
 
 function sechub_project_list {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
@@ -648,6 +725,7 @@ function generate_sechub_project_mockdata {
 EOF
 }
 
+
 function sechub_project_mockdata_set {
   local JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
@@ -694,12 +772,17 @@ function sechub_project_set_whitelist_uris {
 
 
 function sechub_project_unassign_profile {
-  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $CURL_FILTER
+}
+
+
+function sechub_project_unassign_template {
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/template/$2" | $CURL_FILTER
 }
 
 
 function sechub_project_unassign_user {
-  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $CURL_FILTER
 }
 
 
@@ -777,6 +860,28 @@ function sechub_superadmin_revoke {
 }
 
 
+function sechub_template_create {
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/template/$1" | $CURL_FILTER
+}
+
+
+function sechub_template_delete {
+  echo "Template \"$1\" will be deleted. This cannot be undone."
+  are_you_sure
+  curl_with_sechub_auth -i -X DELETE "$SECHUB_SERVER/api/admin/template/$1" | $CURL_FILTER
+}
+
+
+function sechub_template_details {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/template/$1" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function sechub_template_list {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/templates" | $RESULT_FILTER | $JSON_FORMAT_SORT
+}
+
+
 function sechub_user_change_email {
   curl_with_sechub_auth -i -X PUT "$SECHUB_SERVER/api/admin/user/$1/email/$2" | $CURL_FILTER
 }
@@ -824,6 +929,7 @@ function generate_sechub_user_signup_data {
 EOF
 }
 
+
 function sechub_user_signup {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
     -d "$(generate_sechub_user_signup_data $1 $2)" \
@@ -840,8 +946,15 @@ function sechub_user_signup_decline {
   curl_with_sechub_auth -i -X DELETE "$SECHUB_SERVER/api/admin/signup/$1" | $CURL_FILTER
 }
 
+
 # -----------------------------
 # main
+MANDATORY_EXECUTABLES="awk curl cut sha256sum"   # space separated list
+# Check prepreqs
+for i in $MANDATORY_EXECUTABLES ; do
+    check_executable_is_installed $i
+done
+
 failed=false
 YES=false
 SECHUB_API_VERSION="1.0"
@@ -927,6 +1040,32 @@ case "$action" in
     failed=false
     check_parameter "SECHUB_SERVER" "\$SECHUB_SERVER"
     $failed || sechub_alive_check
+    ;;
+  asset_file_create)
+    ASSET_ID="$1" ; check_parameter ASSET_ID '<asset id>'
+    ASSET_FILE="$2" ; check_file "$ASSET_FILE" '<file>'
+    $failed || sechub_asset_file_create "$ASSET_ID" "$ASSET_FILE"
+    ;;
+  asset_file_delete)
+    ASSET_ID="$1" ; check_parameter ASSET_ID '<asset id>'
+    ASSET_FILE="$2" ; check_parameter ASSET_FILE '<file>'
+    $failed || sechub_asset_file_delete "$ASSET_ID" "$ASSET_FILE"
+    ;;
+  asset_file_download)
+    ASSET_ID="$1" ; check_parameter ASSET_ID '<asset id>'
+    ASSET_FILE="$2" ; check_parameter ASSET_FILE '<file>'
+    $failed || sechub_asset_file_download "$ASSET_ID" "$ASSET_FILE"
+    ;;
+  asset_delete)
+    ASSET_ID="$1" ; check_parameter ASSET_ID '<asset id>'
+    $failed || sechub_asset_delete "$ASSET_ID"
+    ;;
+  asset_details)
+    ASSET_ID="$1" ; check_parameter ASSET_ID '<asset id>'
+    $failed || sechub_asset_details "$ASSET_ID"
+    ;;
+  asset_list)
+    $failed || sechub_asset_list
     ;;
   autocleanup_get)
     $failed || sechub_autocleanup_get
@@ -1033,6 +1172,11 @@ case "$action" in
     PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
     $failed || sechub_project_assign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
+  project_assign_template)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    TEMPLATE_ID="$2" ; check_parameter TEMPLATE_ID '<template-id>'
+    $failed || sechub_project_assign_template "$PROJECT_ID" "$TEMPLATE_ID"
+    ;;
   project_assign_user)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
@@ -1114,6 +1258,11 @@ case "$action" in
     PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
     $failed || sechub_project_unassign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
+  project_unassign_template)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    TEMPLATE_ID="$2" ; check_parameter TEMPLATE_ID '<template-id>'
+    $failed || sechub_project_unassign_template "$PROJECT_ID" "$TEMPLATE_ID"
+    ;;
   project_unassign_user)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
@@ -1150,6 +1299,22 @@ case "$action" in
   superadmin_revoke)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
     $failed || sechub_superadmin_revoke "$SECHUB_USER"
+    ;;
+  template_create)
+    TEMPLATE_ID="$1" ; check_parameter TEMPLATE_ID '<template id>'
+    TEMPLATE_JSONFILE="$2" ; check_file "$TEMPLATE_JSONFILE" '<json-file>'
+    $failed || sechub_template_create "$TEMPLATE_ID" "$TEMPLATE_JSONFILE"
+    ;;
+  template_delete)
+    TEMPLATE_ID="$1" ; check_parameter TEMPLATE_ID '<template id>'
+    $failed || sechub_template_delete "$TEMPLATE_ID"
+    ;;
+  template_details)
+    TEMPLATE_ID="$1" ; check_parameter TEMPLATE_ID '<template id>'
+    $failed || sechub_template_details "$TEMPLATE_ID"
+    ;;
+  template_list)
+    $failed || sechub_template_list
     ;;
   user_change_email)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
