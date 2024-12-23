@@ -22,5 +22,11 @@
     "SCAN_CREATE_TITLE": "Create new Scan",
     "SCAN_CREATE_SELECT_SCAN_TYPE": "Select Scan Type",
     "SCAN_CREATE_FILE_UPLOAD": "File Upload",
-    "SCAN_CREATE_FILE_UPLOAD_INPUT": "Upload File"
+    "SCAN_CREATE_FILE_UPLOAD_INPUT": "Upload File",
+    "SCAN_CREATE_BINARIES": "Binaires",
+    "SCAN_CREATE_SOURCE_CODE": "Source Code",
+    "SCAN_CREATE_CODE_SCAN": "codeScan",
+    "SCAN_CREATE_SECRET_SCAN": "secretScan",
+    "SCAN_CREATE_SCAN_START": "Scan",
+    "SCAN_CREATE_SCAN_CONFIGURATION": "Scan Configuration"
 }

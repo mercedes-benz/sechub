@@ -1,28 +1,34 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-  <v-radio-group v-model="selectedRadio">
-    <v-radio 
-      :value="1" 
-      label="Source Code"
-      color="primary"></v-radio>
-    <v-radio 
-      :value="2" 
-      label="Binaries"
-      color="primary"></v-radio>
+  <v-radio-group
+    v-model="selectedRadio"
+    @update:model-value="clearSelectedFile"
+  >
+    <v-radio
+      color="primary"
+      :label="$t('SCAN_CREATE_SOURCE_CODE')"
+      :value="1"
+    />
+    <v-radio
+      color="primary"
+      :label="$t('SCAN_CREATE_BINARIES')"
+      :value="2"
+    />
   </v-radio-group>
-  
+
   <v-file-input
     v-model="file"
-    :multiple="false"
-    :label="$t('SCAN_CREATE_FILE_UPLOAD_INPUT')"
-    prepend-icon="mdi-upload"
-    max-width="1000px"
-    variant="outlined"
-    base-color="primary"
     :accept="fileAccept"
+    base-color="primary"
+    :clearable="false"
+    :label="$t('SCAN_CREATE_FILE_UPLOAD_INPUT')"
+    max-width="1000px"
+    :multiple="false"
+    prepend-icon="mdi-upload"
+    variant="outlined"
     @update:model-value="onFileChange"
   >
-    <template v-slot:selection="{ fileNames }">
+    <template #selection="{ }">
       <v-chip
         class="ma-2"
         outlined
@@ -34,30 +40,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref } from 'vue'
 
-export default defineComponent({
-  emits: ['onFileUpdate'],
-  setup(props, { emit }) {
-    const file = ref<File | null>(null);
-    const selectedRadio = ref(1);
+  export default defineComponent({
+    emits: ['onFileUpdate'],
+    setup (props, { emit }) {
+      const file = ref<File | null>(null)
+      const selectedRadio = ref(1)
 
-    const fileAccept = computed(() => {
-      // todo: define allowed files in team
-      return selectedRadio.value === 1 ? '.zip' : '.tar';
-    });
+      const fileAccept = computed(() => {
+        // todo: define allowed files in team
+        return selectedRadio.value === 1 ? '.zip' : '.tar'
+      })
 
-    function onFileChange () {
+      function onFileChange () {
+        let fileType = ''
+        switch (selectedRadio.value) {
+          case 1:
+            fileType = 'sources'
+            break
+          case 2:
+            fileType = 'binaries'
+            break
+        }
         // calls function from parent component (emit)
-        emit('onFileUpdate', file)
-    }
+        emit('onFileUpdate', file.value, fileType)
+      }
 
-    return {
-      file,
-      selectedRadio,
-      fileAccept,
-      onFileChange
-    };
-  },
-});
+      function clearSelectedFile () {
+        if (file.value !== null) {
+          file.value = null
+          onFileChange()
+        }
+      }
+
+      return {
+        file,
+        selectedRadio,
+        fileAccept,
+        onFileChange,
+        clearSelectedFile,
+      }
+    },
+  })
 </script>

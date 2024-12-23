@@ -13,9 +13,9 @@
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
-            <v-btn icon="mdi-plus" @click="openNewScanPage()"/>
+            <v-btn icon="mdi-plus" @click="openNewScanPage()" />
             <v-btn icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
-            <v-btn icon="mdi-reply" @click="backToProjectsList"/>
+            <v-btn icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
 
           <div v-if="jobs.length === 0 && !loading">
@@ -123,7 +123,7 @@
         fetchProjectJobs(currentRequestParameters)
       }
 
-      function openNewScanPage(){
+      function openNewScanPage () {
         router.push({
           name: `/[id]/scan`,
           params: {
@@ -132,9 +132,9 @@
         })
       }
 
-      function backToProjectsList(){
-      router.go(-1)
-    }
+      function backToProjectsList () {
+        router.go(-1)
+      }
 
       onMounted(async () => {
         fetchProjectJobs(currentRequestParameters)
