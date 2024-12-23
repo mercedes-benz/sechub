@@ -465,7 +465,7 @@ function sechub_job_upload_sourcecode {
     exit 1
   fi
 
-  local checkSum=$(sha256sum $zip_file | cut --delimiter=' ' --fields=1)
+  local checkSum=$(sha256sum "$zip_file" | cut --delimiter=' ' --fields=1)
 
   curl_with_sechub_auth -i -X POST --header "Content-Type: multipart/form-data" \
     --form "file=@$zip_file" \
@@ -484,7 +484,7 @@ function sechub_job_upload_binaries {
     exit 1
   fi
 
-  local checkSum=$(sha256sum $tar_file | cut --delimiter=' ' --fields=1)
+  local checkSum=$(sha256sum "$tar_file" | cut --delimiter=' ' --fields=1)
   local fileSize=$(ls -l "$tar_file" | cut --delimiter=' ' --fields 5)
 
   curl_with_sechub_auth -i -X POST \
