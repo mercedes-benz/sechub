@@ -93,7 +93,7 @@ jobs:
           key: ${{ runner.os }}-sechub-pds-${{ env.pds_version }}
 
       - name: Set up JDK 17 (to run servers)
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
         with:
           java-version: 17
           distribution: temurin
