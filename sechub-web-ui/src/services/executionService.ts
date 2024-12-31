@@ -1,0 +1,152 @@
+// SPDX-License-Identifier: MIT
+import { SecHubExecutionApi } from '@/generated-sources/openapi'
+import * as runtime from '@/generated-sources/openapi/runtime'
+import apiConfig from './configuration'
+import { v4 as uuidv4 } from 'uuid'
+import { MultiPartBodyPublisherBuilder } from './formDataUploadService'
+
+export interface UserUploadSourceCodeWorkaroundRequest {
+  projectId: string;
+  jobUUID: string;
+  checkSum: string;
+  file: File;
+}
+
+export interface UserUploadsBinariesWorkaroundRequest {
+    projectId: string;
+    jobUUID: string;
+    file: File;
+    xFileSize: string;
+    checkSum: string;
+}
+
+class SecHubExecutionApiWorkaround extends SecHubExecutionApi {
+  async userUploadSourceCode (requestParameters: UserUploadSourceCodeWorkaroundRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    await this.userUploadSourceCodeRaw(requestParameters, initOverrides)
+  }
+
+  async userUploadSourceCodeRaw (requestParameters: UserUploadSourceCodeWorkaroundRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.projectId == null) {
+      throw new runtime.RequiredError(
+        'projectId',
+        'Required parameter "projectId" was null or undefined when calling userUploadSourceCode().'
+      )
+    }
+
+    if (requestParameters.jobUUID == null) {
+      throw new runtime.RequiredError(
+        'jobUUID',
+        'Required parameter "jobUUID" was null or undefined when calling userUploadSourceCode().'
+      )
+    }
+
+    if (requestParameters.checkSum == null) {
+      throw new runtime.RequiredError(
+        'checkSum',
+        'Required parameter "checkSum" was null or undefined when calling userUploadSourceCode().'
+      )
+    }
+
+    if (requestParameters.file == null) {
+      throw new runtime.RequiredError(
+        'file',
+        'Required parameter "file" was null or undefined when calling userUploadSourceCode().'
+      )
+    }
+
+    // Adding content type and boundary (not generated)
+    const boundary = uuidv4()
+
+    // building header
+    const headerParameters: runtime.HTTPHeaders = {}
+    headerParameters['Content-Type'] = `multipart/form-data; boundary=${boundary}`
+    if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+      headerParameters.Authorization = 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password)
+    }
+
+    // building body
+    const builder = new MultiPartBodyPublisherBuilder(boundary)
+    builder.addString('checkSum', requestParameters.checkSum)
+    builder.addFile('file', requestParameters.file)
+    const formData = await builder.build()
+
+    const response = await this.request({
+      path: `/api/project/{projectId}/job/{jobUUID}/sourcecode`.replace(`{${'projectId'}}`, encodeURIComponent(String(requestParameters.projectId))).replace(`{${'jobUUID'}}`, encodeURIComponent(String(requestParameters.jobUUID))),
+      method: 'POST',
+      headers: headerParameters,
+      body: formData,
+    }, initOverrides)
+
+    return new runtime.VoidApiResponse(response)
+  }
+
+  async userUploadsBinaries (requestParameters: UserUploadsBinariesWorkaroundRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    await this.userUploadsBinariesRaw(requestParameters, initOverrides)
+  }
+
+  async userUploadsBinariesRaw (requestParameters: UserUploadsBinariesWorkaroundRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.projectId == null) {
+      throw new runtime.RequiredError(
+        'projectId',
+        'Required parameter "projectId" was null or undefined when calling userUploadsBinaries().'
+      )
+    }
+
+    if (requestParameters.jobUUID == null) {
+      throw new runtime.RequiredError(
+        'jobUUID',
+        'Required parameter "jobUUID" was null or undefined when calling userUploadsBinaries().'
+      )
+    }
+
+    if (requestParameters.file == null) {
+      throw new runtime.RequiredError(
+        'file',
+        'Required parameter "file" was null or undefined when calling userUploadsBinaries().'
+      )
+    }
+
+    if (requestParameters.xFileSize == null) {
+      throw new runtime.RequiredError(
+        'xFileSize',
+        'Required parameter "xFileSize" was null or undefined when calling userUploadsBinaries().'
+      )
+    }
+
+    if (requestParameters.checkSum == null) {
+      throw new runtime.RequiredError(
+        'checkSum',
+        'Required parameter "checkSum" was null or undefined when calling userUploadsBinaries().'
+      )
+    }
+
+    // Adding content type and boundary (not generated)
+    const boundary = uuidv4()
+
+    // building header
+    const headerParameters: runtime.HTTPHeaders = {}
+    headerParameters['Content-Type'] = `multipart/form-data; boundary=${boundary}`
+    headerParameters['x-file-size'] = requestParameters.xFileSize
+    if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+      headerParameters.Authorization = 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password)
+    }
+
+    // building body
+    const builder = new MultiPartBodyPublisherBuilder(boundary)
+    builder.addString('checkSum', requestParameters.checkSum)
+    builder.addFile('file', requestParameters.file)
+    const formData = await builder.build()
+
+    const response = await this.request({
+      path: `/api/project/{projectId}/job/{jobUUID}/binaries`.replace(`{${'projectId'}}`, encodeURIComponent(String(requestParameters.projectId))).replace(`{${'jobUUID'}}`, encodeURIComponent(String(requestParameters.jobUUID))),
+      method: 'POST',
+      headers: headerParameters,
+      body: formData,
+    }, initOverrides)
+
+    return new runtime.VoidApiResponse(response)
+  }
+}
+
+const executionApi = new SecHubExecutionApiWorkaround(apiConfig)
+export default executionApi

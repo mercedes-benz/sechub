@@ -14,6 +14,19 @@
               <h2 class="background-color text-h5 pa-5">{{ $t('SCAN_CREATE_TITLE') }}</h2>
             </v-sheet>
 
+            <v-alert
+              v-model="alert"
+              closable
+              color="error"
+              density="compact"
+              :title="$t('SCAN_ERROR_ALERT_TITLE')"
+              type="warning"
+              variant="tonal"
+            >
+              {{ errors.pop() }}
+
+            </v-alert>
+
             <v-card
               class="background-color ma-5"
               variant="plain"
@@ -50,12 +63,14 @@
                   variant="outlined"
                   @click="buildScanConfiguration"
                 />
+                <!-- todo make scan configuration downloadable
                 <v-btn
                   append-icon="mdi-download"
                   rounded
                   :text="$t('SCAN_CREATE_SCAN_CONFIGURATION')"
                   variant="outlined"
                 />
+                -->
               </template>
             </v-card>
 
@@ -71,11 +86,12 @@
   import { useRoute } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
-  import { buildSecHubConfiguration } from '@/utils/scanUtils'
+  import { buildSecHubConfiguration, scan } from '@/utils/scanUtils'
 
   export default defineComponent({
 
     setup () {
+      // routing and translation methods
       const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
@@ -84,19 +100,25 @@
         projectId.value = route.params.id
       }
 
-      const error = ref('')
+      // UI references
+      const errors = ref<string[]>([])
+      const alert = ref(false)
       const selectedFile = ref<File | null>(null)
       const selectedFileType = ref('')
       // todo: should be Map key, value = translation
       const selectedScanOptions = ref<string[]>([])
-      const configuration = ref<SecHubConfiguration | null>(null)
+
+      // sechub scan configuration
+      const defaultConfig : SecHubConfiguration = {
+        apiVersion: '1.0',
+        projectId: projectId.value,
+      }
+      const configuration = ref<SecHubConfiguration>(defaultConfig)
 
       const validateScanReady = computed(() => {
-        // todo: show errors when try to scan
-        
         if (selectedScanOptions.value.length === 0) {
           return false
-        } else if (selectedFile.value === null) {
+        } if (selectedFile.value === null) {
           return false
         }
         return true
@@ -118,13 +140,21 @@
 
         if (selectedFile.value !== null) {
           configuration.value = buildSecHubConfiguration(selectedScanOptions.value, selectedFile.value, selectedFileType.value, projectId.value)
+          createScan()
         }
-        console.log('Configuration', configuration.value)
-        createScan()
       }
 
-      function createScan () {
-      // userCreateNewJob
+      async function createScan () {
+        if (selectedFile.value !== null) {
+          errors.value = await scan(configuration.value, projectId.value, selectedFile.value)
+        }
+        if (errors.value.length > 0) {
+          // todo only one error is displayed in alert
+          alert.value = true
+        } else {
+          // todo success message?
+          backToProjectOverview()
+        }
       }
 
       return {
@@ -134,7 +164,8 @@
         validateScanReady,
         selectedFile,
         selectedFileType,
-        error,
+        errors,
+        alert,
         updateFileselection,
         backToProjectOverview,
         buildScanConfiguration,

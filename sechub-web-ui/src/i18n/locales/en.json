@@ -4,6 +4,7 @@
     "OWNED": "owned",
     "MEMBER": "member",
     "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects.",
+    "ERROR_MESSAGE_FETCHING_PROJECTS": "ProjectAPI error fetching assigned projects.",
     "NO_JOBS_RUNNED": "No jobs were started for this project.",
     "ERROR_FETCHING_DATA": "Could not load data from Server.",
     "HEADER_JOB_TABLE_STATUS": "State",
@@ -28,5 +29,11 @@
     "SCAN_CREATE_CODE_SCAN": "codeScan",
     "SCAN_CREATE_SECRET_SCAN": "secretScan",
     "SCAN_CREATE_SCAN_START": "Scan",
-    "SCAN_CREATE_SCAN_CONFIGURATION": "Scan Configuration"
+    "SCAN_CREATE_SCAN_CONFIGURATION": "Scan Configuration",
+    "SCAN_ERROR_ALERT_TITLE": "Scan Failed",
+    "SCAN_ERROR_ALERT_JOB_NOT_CREATED": "Could not create new Job.",
+    "SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED": "Could not upload sources. Is your zip file too big or not correctly packed?",
+    "SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED": "Could not upload binaries. Is your tar file too big or not correctly packed?",
+    "SCAN_ERROR_ALERT_JOB_NOT_APPROVED": "Could not approve Job.",
+    "SCAN_ERROR_ALERT_NO_DATA_SECTION": "Could not get data section from configuration. Internal Error."
 }
