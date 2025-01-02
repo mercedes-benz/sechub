@@ -53,6 +53,7 @@
               class="background-color ma-5"
               variant="plain"
             >
+
               <template #append>
                 <v-btn
                   class="me-2"

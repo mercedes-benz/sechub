@@ -49,7 +49,8 @@
       const selectedRadio = ref(1)
 
       const fileAccept = computed(() => {
-        // todo: define allowed files in team
+        // files allowed: .zip and .tar
+        // todo: when drag and drop check files?
         return selectedRadio.value === 1 ? '.zip' : '.tar'
       })
 

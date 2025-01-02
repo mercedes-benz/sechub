@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // This is implemented according to the sechub default client in Java
-export type MultiPartType = 'STRING' | 'FILE' | 'STREAM' | 'BOUNDARY';
+export type FormDataContentType = 'STRING' | 'FILE' | 'STREAM' | 'BOUNDARY';
 
-export interface MultiPartData {
+export interface FormDataContent {
   name: string;
-  type: MultiPartType;
+  type: FormDataContentType;
   value?: string;
   file?: File;
   stream?: () => Promise<ArrayBuffer>;
@@ -12,8 +12,8 @@ export interface MultiPartData {
   contentType?: string;
 }
 
-export class MultiPartBodyPublisherBuilder {
-  private multiPartData: MultiPartData[] = []
+export class FormDataBodyPublisherBuilder {
+  private multiPartData: FormDataContent[] = []
   private boundary: string
 
   constructor (boundary: string) {
@@ -60,11 +60,11 @@ export class MultiPartBodyPublisherBuilder {
     return this
   }
 
-  private boundaryPart (): MultiPartData {
+  private boundaryPart (): FormDataContent {
     return { name: '', type: 'BOUNDARY', value: `--${this.boundary}--` }
   }
 
-  private constructPartHeader (part: MultiPartData): Uint8Array {
+  private constructPartHeader (part: FormDataContent): Uint8Array {
     if (part.type === 'STRING') {
       return new TextEncoder().encode(
         `--${this.boundary}\r\nContent-Disposition: form-data; name="${part.name}"\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${part.value}`

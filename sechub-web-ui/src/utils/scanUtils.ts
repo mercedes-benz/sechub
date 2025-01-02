@@ -15,7 +15,7 @@ import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundReq
 import i18n from '@/i18n'
 
 export function buildSecHubConfiguration (scanTypes: string[], uploadFile: File, fileType: string, projectId: string): SecHubConfiguration {
-  const UNIQUE_NAME = 'refName'
+  const UNIQUE_NAME = 'web-ui-upload'
   console.log(scanTypes)
   const fileSystemConfig: SecHubFileSystemConfiguration = {
     files: [uploadFile.name],
