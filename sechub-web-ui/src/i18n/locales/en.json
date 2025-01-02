@@ -24,6 +24,9 @@
     "SCAN_CREATE_SELECT_SCAN_TYPE": "Select Scan Type",
     "SCAN_CREATE_FILE_UPLOAD": "File Upload",
     "SCAN_CREATE_FILE_UPLOAD_INPUT": "Upload File",
+    "SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TITLE": "Upload Error. Please select a valid file",
+    "SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP": "File must be a valid .zip containing the code you wish to scan.",
+    "SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR": "File must be a valid .tar containing the binary you wish to scan.",
     "SCAN_CREATE_BINARIES": "Binaires",
     "SCAN_CREATE_SOURCE_CODE": "Source Code",
     "SCAN_CREATE_CODE_SCAN": "codeScan",
@@ -32,8 +35,8 @@
     "SCAN_CREATE_SCAN_CONFIGURATION": "Scan Configuration",
     "SCAN_ERROR_ALERT_TITLE": "Ooops, your scan failed",
     "SCAN_ERROR_ALERT_JOB_NOT_CREATED": "Could not create a new Job.",
-    "SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED": "Could not upload sources. Is your zip file too big or not correctly packed?",
-    "SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED": "Could not upload binaries. Is your tar file too big or not correctly packed?",
+    "SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED": "Could not upload sources. Your Zip file might be too big or is not correctly packed.",
+    "SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED": "Could not upload binaries. Your Tar file might be too big or is not correctly packed.",
     "SCAN_ERROR_ALERT_JOB_NOT_APPROVED": "Could not approve Job.",
     "SCAN_ERROR_ALERT_NO_DATA_SECTION": "Could not get data section from configuration. Internal Error."
 }
