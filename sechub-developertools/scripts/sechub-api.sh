@@ -79,6 +79,7 @@ project_unassign_user <project-id> <user-id> - Unassign <user-id> from project (
 scheduler_disable - Stop SecHub job scheduler
 scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
+server_encryption_rotate <algorithm> var=<env-var> - Change server encryption to secret in <env-var>
 server_encryption_status - Get current status of encryption (json format)
 server_info - Print infos about SecHub server (json format)
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
@@ -803,6 +804,31 @@ function sechub_scheduler_status {
 }
 
 
+function generate_server_encryption_data {
+  cat <<EOF
+{
+  "algorithm" : "$1",
+  "passwordSourceType" : "$2",
+  "passwordSourceData" : "$3"
+}
+EOF
+}
+
+function sechub_server_encryption_rotate {
+  local algorithm="$1"
+  local encryption="$2"
+  if [[ ! "$encryption" =~ ^var=.+ ]] ; then
+    echo "Error: Unknown encryption key definition. Expected 'var=<env-var>' format"
+    exit 1
+  fi
+  local var_name=`echo "$encryption" | cut -d = -f 2`
+  
+  local JSON_DATA=$(generate_server_encryption_data "$algorithm" "ENVIRONMENT_VARIABLE" "$var_name")
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/encryption/rotate" | $CURL_FILTER
+}
+
+
 function sechub_server_encryption_status {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/encryption/status" | $RESULT_FILTER | jq '.domains'
 }
@@ -1276,6 +1302,11 @@ case "$action" in
     ;;
   scheduler_status)
     $failed || sechub_scheduler_status
+    ;;
+  server_encryption_rotate)
+    ALOGORITHM="$1" ; check_parameter ALOGORITHM '<algorithm>'
+    ENCRYPTION_KEY="$2" ; check_parameter ENCRYPTION_KEY 'var=<env-var>'
+    $failed || sechub_server_encryption_rotate "$ALOGORITHM" "$ENCRYPTION_KEY"
     ;;
   server_encryption_status)
     $failed || sechub_server_encryption_status
