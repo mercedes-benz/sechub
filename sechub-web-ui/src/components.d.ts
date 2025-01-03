@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
+    copy: typeof import('./components/ScanFileUpload copy.vue')['default']
     Pagination: typeof import('./components/Pagination.vue')['default']
     Project: typeof import('./components/Project.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
@@ -18,6 +19,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
     ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
+    ScanFileUploadTest: typeof import('./components/ScanFileUploadTest.vue')['default']
     ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
   }
 }

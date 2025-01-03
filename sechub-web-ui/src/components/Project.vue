@@ -47,10 +47,10 @@
                   :key="job.jobUUID"
                   class="background-color"
                 >
-                  <td>{{ formatDate(job.created) }}</td>
+                  <td>{{ formatDate(job.created?.toString() || '') }}</td>
                   <td>{{ job.executionState }}</td>
                   <td>{{ job.executionResult }}</td>
-                  <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight)" icon="mdi-circle" /></td>
+                  <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight || '')" icon="mdi-circle" /></td>
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
                     <v-btn class="ma-2">{{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
                       <v-icon end icon="mdi-arrow-down" />
@@ -63,8 +63,8 @@
             </v-table>
           </div>
           <Pagination
-            :current-page="jobsObject.page + 1"
-            :total-pages="jobsObject.totalPages"
+            :current-page="jobsObject.page || 0 + 1"
+            :total-pages="jobsObject.totalPages || 1"
             @page-changed="onPageChange"
           />
         </v-card>
@@ -78,11 +78,16 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
   import { onMounted, ref } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useRoute } from 'vue-router'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
+  import {
+    SecHubJobInfoForUser,
+    SecHubJobInfoForUserListPage,
+    UserListJobsForProjectRequest,
+  } from '@/generated-sources/openapi'
 
   export default {
     name: 'ProjectComponent',
@@ -91,21 +96,24 @@
       // loads projectId from route
       const route = useRoute()
       const router = useRouter()
-      const projectId = route.params.id
-
-      const currentRequestParameters = {
-        projectId,
-        size: 10,
-        page: 0,
+      const projectId = ref('')
+      if ('id' in route.params) {
+        projectId.value = route.params.id
       }
 
-      const jobsObject = ref({})
-      const jobs = ref([])
+      const currentRequestParameters : UserListJobsForProjectRequest = {
+        projectId: projectId.value,
+        size: '10',
+        page: '0',
+      }
+
+      const jobsObject = ref<SecHubJobInfoForUserListPage>({})
+      const jobs = ref<SecHubJobInfoForUser[] | undefined>([])
       const loading = ref(true)
-      const error = ref(null)
+      const error = ref<string | undefined>(undefined)
       const showProjectsDetails = ref(true)
 
-      async function fetchProjectJobs (requestParameters) {
+      async function fetchProjectJobs (requestParameters: UserListJobsForProjectRequest) {
         try {
           jobsObject.value = await defaultClient.withOtherApi.userListJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
@@ -117,9 +125,9 @@
         }
       }
 
-      function onPageChange (page) {
+      function onPageChange (page: number) {
         // the API page starts by 0 while vue pagination starts with 1
-        currentRequestParameters.page = page - 1
+        currentRequestParameters.page = (page - 1).toString()
         fetchProjectJobs(currentRequestParameters)
       }
 
@@ -127,7 +135,7 @@
         router.push({
           name: `/[id]/scan`,
           params: {
-            id: projectId,
+            id: projectId.value,
           },
         })
       }

@@ -5,7 +5,6 @@
     v-model="alert"
     closable
     color="error"
-    density="compact"
     :title="$t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TITLE')"
     type="warning"
     variant="tonal"
@@ -28,7 +27,18 @@
       :value="2"
     />
   </v-radio-group>
-
+  <v-alert
+    class="pa-2, mb-5"
+    color="info"
+    max-width="1000px"
+    :title="$t('SCAN_CREATE_FILE_UPLOAD_NOTE_TITLE')"
+    type="info"
+    variant="tonal"
+  >
+    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_ONE') }} <br>
+    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_TWO') }} <br>
+    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_THREE') }}
+  </v-alert>
   <v-file-input
     v-model="file"
     :accept="fileAccept"
@@ -54,7 +64,7 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
-  import { useI18n } from 'vue-i18n';
+  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     emits: ['onFileUpdate'],
@@ -71,34 +81,34 @@
         return selectedRadio.value === 1 ? '.zip' : '.tar'
       })
 
-      function onFileChange() {
-        let fileType = '';
-        let errorMessage = '';
-        let validType = false;
+      function onFileChange () {
+        let fileType = ''
+        let errorMessage = ''
+        let validType = false
 
         switch (selectedRadio.value) {
           case 1:
-            fileType = 'sources';
-            validType = file.value?.type === "application/zip";
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP');
-            break;
+            fileType = 'sources'
+            validType = file.value?.type === 'application/zip'
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
+            break
           case 2:
-            fileType = 'binaries';
-            validType = file.value?.type === "application/x-tar";
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR');
-            break;
+            fileType = 'binaries'
+            validType = file.value?.type === 'application/x-tar'
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
+            break
         }
 
         if (file.value && !validType) {
-          error.value = errorMessage;
-          file.value = null;
-          alert.value = true;
+          error.value = errorMessage
+          file.value = null
+          alert.value = true
         } else {
-          alert.value = false;
+          alert.value = false
         }
 
         // calls function from parent component (emit)
-        emit('onFileUpdate', file.value, fileType);
+        emit('onFileUpdate', file.value, fileType)
       }
 
       function clearSelectedFile () {

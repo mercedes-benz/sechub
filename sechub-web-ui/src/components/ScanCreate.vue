@@ -47,6 +47,15 @@
               <ScanFileUpload
                 @on-file-update="updateFileselection"
               />
+              <v-card-text v-if="isLoading">
+                Uploading your data
+              </v-card-text>
+              <v-progress-linear
+                v-if="isLoading"
+                color="primary"
+                :height="10"
+                indeterminate
+              />
             </v-card>
 
             <v-card
@@ -87,7 +96,8 @@
   import { useRoute } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
-  import { buildSecHubConfiguration, scan } from '@/utils/scanUtils'
+  import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
+  import defaultClient from '@/services/defaultClient'
 
   export default defineComponent({
 
@@ -106,6 +116,7 @@
       const alert = ref(false)
       const selectedFile = ref<File | null>(null)
       const selectedFileType = ref('')
+      const isLoading = ref(false)
       // todo: should be Map key, value = translation
       const selectedScanOptions = ref<string[]>([])
 
@@ -147,13 +158,14 @@
 
       async function createScan () {
         if (selectedFile.value !== null) {
-          errors.value = await scan(configuration.value, projectId.value, selectedFile.value)
+          isLoading.value = true
+          errors.value = await defaultClient.withScanService.scan(configuration.value, projectId.value, selectedFile.value)
         }
+        isLoading.value = false
         if (errors.value.length > 0) {
           // todo only one error is displayed in alert
           alert.value = true
         } else {
-          // todo success message?
           backToProjectOverview()
         }
       }
@@ -167,6 +179,7 @@
         selectedFileType,
         errors,
         alert,
+        isLoading,
         updateFileselection,
         backToProjectOverview,
         buildScanConfiguration,
