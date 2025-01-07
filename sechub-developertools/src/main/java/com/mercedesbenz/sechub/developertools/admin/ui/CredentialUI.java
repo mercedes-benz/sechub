@@ -88,11 +88,11 @@ public class CredentialUI {
         serverPortSpinner.setEnabled(false);
         protocolField.setEnabled(false);
 
-        serverField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER.getSystemPropertyid());
-        useridField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_USERID.getSystemPropertyid());
-        passwordField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getSystemPropertyid());
-        serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyid());
-        protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyid());
+        serverField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER.getSystemPropertyId());
+        useridField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_USERID.getSystemPropertyId());
+        passwordField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getSystemPropertyId());
+        serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyId());
+        protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyId());
 
         useDifferentColorsForWellknownEnvironments();
 

@@ -61,7 +61,7 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
         return (T) this;
     }
 
-    /*
+    /**
      * Mark this key as generated, means it will be automatically created and sent
      * on PDS calls
      */

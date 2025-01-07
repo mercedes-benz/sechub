@@ -1,0 +1,61 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examles at https://plantuml.com/class-diagram
+
+
+node scan {
+
+    class Template {
+        String id
+        TemplateDefinition definition
+    }
+    
+    class TemplateDefinition {
+        TemplateType type
+        ...
+        
+    }
+    
+    class ScanProjectConfig {
+        String projectId
+        String key
+        String value
+    }
+}
+
+
+node administration{
+    class Project {
+        String projectId
+        List<String> templates
+    }
+    
+}
+
+database "Scan\ndatabase" as DB1 {
+}
+
+database "Administration\ndatabase" as DB2 {
+}
+
+TemplateDefinition . Template
+Template --> DB1
+ScanProjectConfig --> DB1
+
+Project --> DB2
+
+
+note top of ScanProjectConfig
+We use the existing concept of scan project 
+configuration to handle project related 
+template setup:
+
+The key will be always "TEMPLATE_$templateType"
+and the value is the template identifier.
+end note
+@enduml

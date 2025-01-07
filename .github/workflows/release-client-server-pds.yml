@@ -94,23 +94,23 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808
+        uses: gradle/actions/setup-gradle@0bdd871935719febd78681f197cd39af5b6e16a6
         with:
           cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+        uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
         with:
           go-version: 1.21.6
 
       - name: Set up Go caching
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         id: go-cache
         with:
           path: |
@@ -173,7 +173,7 @@ jobs:
       # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
 
       # ----------------------
       # Build API Java publish
@@ -282,9 +282,9 @@ jobs:
           retention-days: 14
 
       # -----------------------------------------
-      # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
+      # Update and commit website and release documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
-      - name: Update release documentation
+      - name: Update website and release documentation
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
@@ -293,16 +293,16 @@ jobs:
       # -----------------------------------------
       # Create pull request for release documentation
       # -----------------------------------------
-      - name: Create pull request for release documentation
+      - name: Create pull request for website and release documentation
         id: pr_release_documentation
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
           delete-branch: true
-          title: '1 - Release documentation [auto-generated]'
+          title: '1 - Release website and documentation [auto-generated]'
           body: |
-            Release of SecHub documentation
+            Release of SecHub website and documentation
 
             -> Please review and merge **before** publishing the release.
 
@@ -323,135 +323,53 @@ jobs:
       # ******************************************
       # S E R V E R  release
       # ******************************************
-      - name: Create server release ${{ inputs.server-version }}
-        id: create_server_release
+      - name: Prepare server ${{ inputs.server-version }} release artifacts
         if: inputs.server-version != ''
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.server-version }}-server
-          commitish: master
-          release_name: Server Version ${{ inputs.server-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on SecHub server implementation
-
-            For more details please look at [Milestone ${{inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.server-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      - name: Create sha256 checksum file for SecHub server jar
-        if: inputs.server-version != ''
+        shell: bash
         run: |
-          cd sechub-server/build/libs
-          sha256sum sechub-server-${{ inputs.server-version }}.jar > sechub-server-${{ inputs.server-version }}.jar.sha256sum
+          mkdir server-release-artifacts
+          # Collect release artifacts
+          cp sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar \
+             sechub-developertools/build/libs/sechub-developertools-${{ inputs.server-version }}.jar \
+             server-release-artifacts/
+          cp sechub-doc/build/docs/asciidoc/sechub-architecture.pdf \
+             server-release-artifacts/sechub-architecture-${{ inputs.server-version }}.pdf
+          cp sechub-doc/build/docs/asciidoc/sechub-developer-quickstart-guide.pdf \
+             server-release-artifacts/sechub-developer-quickstart-guide-${{ inputs.server-version }}.pdf
+          cp sechub-doc/build/docs/asciidoc/sechub-operations.pdf \
+             server-release-artifacts/sechub-operations-${{ inputs.server-version }}.pdf
+          cp sechub-doc/build/docs/asciidoc/sechub-restapi.pdf \
+             server-release-artifacts/sechub-restapi-${{ inputs.server-version }}.pdf
+          cp sechub-doc/build/api-spec/openapi3.json \
+             server-release-artifacts/sechub-openapi3-${{ inputs.server-version }}.json          
+          # Compute sha256 checksums for .jar files
+          cd server-release-artifacts
+          for i in *.jar ; do
+            sha256sum "$i" > "$i.sha256sum"
+          done
 
-      - name: Create sha256 checksum files for SecHub developer tools jars
+      - name: Create server ${{ inputs.server-version }} release draft
         if: inputs.server-version != ''
+        shell: bash
         run: |
-          cd sechub-developertools/build/libs/
-          sha256sum sechub-developer-admin-ui-${{ inputs.server-version }}.jar > sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
-
-      - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+          assets=()
+          echo "# Adding Server binaries and docs"
+          cd server-release-artifacts/
+          for asset in * ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.server-version }}-server"
+          release_title="Server Version ${{ inputs.server-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on SecHub server implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.server-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar
-          asset_name: sechub-server-${{ inputs.server-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload Server release asset sechub-server-${{ inputs.server-version }}.jar.sha256sum
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar.sha256sum
-          asset_name: sechub-server-${{ inputs.server-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      - name: Upload SecHub release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar
-          asset_name: sechub-developer-admin-ui-${{ inputs.server-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload Server release asset sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
-          asset_name: sechub-developer-admin-ui-${{ inputs.server-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      # Server documentation:
-      - name: Upload sechub-architecture.pdf release asset
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-architecture.pdf
-          asset_name: sechub-architecture-${{ inputs.server-version }}.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload sechub-operations.pdf release asset
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
-          asset_name: sechub-operations-${{ inputs.server-version }}.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload sechub-developer-quickstart-guide.pdf release asset
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-developer-quickstart-guide.pdf
-          asset_name: sechub-developer-quickstart-guide-${{ inputs.server-version }}.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload sechub-restapi.pdf release asset
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
-          asset_name: sechub-restapi-${{ inputs.server-version }}.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload sechub-openapi3.json release asset
-        if: inputs.server-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/api-spec/openapi3.json
-          asset_name: sechub-openapi3-${{ inputs.server-version }}.json
-          asset_content_type: text/plain
 
       - name: Create Server ${{ inputs.server-version }} release issue
         if: inputs.server-version != ''
@@ -499,8 +417,8 @@ jobs:
         if: inputs.client-version != ''
         run: |
           cd sechub-cli/build/go
-          zip -r sechub-cli.zip platform
-          sha256sum sechub-cli.zip > sechub-cli.zip.sha256
+          zip -r sechub-cli-${{ inputs.client-version }}.zip platform
+          sha256sum sechub-cli-${{ inputs.client-version }}.zip > sechub-cli-${{ inputs.client-version }}.zip.sha256
 
       - name: Create client Debian packages
         if: inputs.client-version != ''
@@ -512,16 +430,13 @@ jobs:
         shell: bash
         run: |
           assets=()
-          echo "# Add Client binaries sechub-cli-${{ inputs.client-version }}.zip + checksum"
-          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip#sechub-cli-${{ inputs.client-version }}.zip")
-          assets+=("-a" "sechub-cli/build/go/sechub-cli.zip.sha256#sechub-cli-${{ inputs.client-version }}.zip.sha256")
-          echo "# Add Debian packages"
-          for asset in sechub-cli/build/deb-build/*.deb ; do
+          cp "sechub-doc/build/docs/asciidoc/sechub-client.pdf" sechub-client-${{ inputs.client-version }}.pdf
+          echo "# Adding Client binaries, docs and Debian packages"
+          for asset in sechub-cli/build/go/sechub-cli-${{ inputs.client-version }}.zip* sechub-client-${{ inputs.client-version }}.pdf sechub-cli/build/deb-build/*.deb ; do
             filename=`basename "$asset"`
+            echo "# - $filename"
             assets+=("-a" "${asset}#${filename}")
           done
-          echo "# Add Client documentation sechub-client-${{ inputs.client-version }}.pdf"
-          assets+=("-a" "sechub-doc/build/docs/asciidoc/sechub-client.pdf#sechub-client-${{ inputs.client-version }}.pdf")
           # Define release data
           tag_name="v${{ inputs.client-version }}-client"
           release_title="Client Version ${{ inputs.client-version }}"
@@ -549,63 +464,44 @@ jobs:
       # ******************************************
       # P D S  release
       # ******************************************
-      - name: Create PDS release ${{ inputs.pds-version }}
-        id: create_pds_release
+      - name: Prepare PDS ${{ inputs.pds-version }} release artifacts
         if: inputs.pds-version != ''
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ inputs.pds-version }}-pds
-          commitish: master
-          release_name: PDS Version ${{ inputs.pds-version }}
-          body: |
-            Changes in this Release
-            - Some minor changes on PDS server implementation
-
-            For more details please look at [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      - name: Create sha256 checksum file for PDS jar
-        if: inputs.pds-version != ''
+        shell: bash
         run: |
-          cd sechub-pds/build/libs/
-          sha256sum sechub-pds-${{ inputs.pds-version }}.jar > sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
+          mkdir pds-release-artifacts
+          # Collect release artifacts
+          cp sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar \
+             pds-release-artifacts/
+          cp sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf \
+             pds-release-artifacts/sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
+          # Compute sha256 checksums for .jar files
+          cd pds-release-artifacts
+          for i in *.jar ; do
+            sha256sum "$i" > "$i.sha256sum"
+          done
 
-      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar
+      - name: Create PDS ${{ inputs.pds-version }} release draft
         if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        shell: bash
+        run: |
+          assets=()
+          echo "# Adding PDS binaries and docs"
+          cd pds-release-artifacts/
+          for asset in * ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.pds-version }}-pds"
+          release_title="PDS Version ${{ inputs.pds-version }}"
+          release_message="Changes in this Release
+          - Some minor changes on PDS server implementation"
+          release_footer="For more details please look at [Milestone ${{inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.pds-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar
-          asset_name: sechub-pds-${{ inputs.pds-version }}.jar
-          asset_content_type: application/zip
-
-      - name: Upload PDS release asset sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-        if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: sechub-pds/build/libs/sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-          asset_name: sechub-pds-${{ inputs.pds-version }}.jar.sha256sum
-          asset_content_type: text/plain
-
-      # sechub-product-delegation-server.pdf
-      - name: Upload PDS release asset sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
-        if: inputs.pds-version != ''
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
-          asset_name: /sechub-product-delegation-server-${{ inputs.pds-version }}.pdf
-          asset_content_type: application/pdf
 
       - name: Create PDS ${{ inputs.pds-version }} release issue
         if: inputs.pds-version != ''

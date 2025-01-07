@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfigurator;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfiguratorProvider;
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.DefaultAdapterConfigurationStrategy;
@@ -136,7 +137,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     }
 
     @Override
-    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
+    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) throws ConfigurationFailureException {
         PDSAdapterConfigurator pdsConfigurator = null;
         if (configBuilder instanceof PDSAdapterConfiguratorProvider) {
             PDSAdapterConfiguratorProvider provider = (PDSAdapterConfiguratorProvider) configBuilder;
@@ -153,13 +154,11 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         handlePdsParts(pdsConfigurator);
     }
 
-    private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
+    private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) throws ConfigurationFailureException {
         PDSExecutorConfigSupport configSupport = strategyConfig.configSupport;
 
         SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
-        Map<String, String> jobParametersToSend = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 
-        pdsConfigurable.setJobParameters(jobParametersToSend);
         pdsConfigurable.setReusingSecHubStorage(configSupport.isReusingSecHubStorage());
         pdsConfigurable.setScanType(strategyConfig.scanType);
         pdsConfigurable.setPdsProductIdentifier(configSupport.getPDSProductIdentifier());
@@ -170,7 +169,6 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
-
         pdsConfigurable.setResilienceMaxRetries(configSupport.getPDSAdapterResilienceMaxRetries());
         pdsConfigurable.setResilienceTimeToWaitBeforeRetryInMilliseconds(configSupport.getPDSAdapterResilienceRetryWaitInMilliseconds());
 
@@ -179,6 +177,14 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
 
         handleBinariesChecksum(pdsConfigurable);
         handleBinariesFileSize(pdsConfigurable);
+
+        handleJobParameters(pdsConfigurable, configSupport, context);
+    }
+
+    private void handleJobParameters(PDSAdapterConfigurator pdsConfigurable, PDSExecutorConfigSupport configSupport, SecHubExecutionContext context)
+            throws ConfigurationFailureException {
+        Map<String, String> jobParametersToSend = configSupport.createJobParametersToSendToPDS(context);
+        pdsConfigurable.setJobParameters(jobParametersToSend);
     }
 
     private void handleSourceCodeChecksum(PDSAdapterConfigurator pdsConfigurable) {
@@ -237,7 +243,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         }
     }
 
-    private <B extends AdapterConfigBuilder> void handleCommonParts(B configBuilder) {
+    private <B extends AdapterConfigBuilder> void handleCommonParts(B configBuilder) throws ConfigurationFailureException {
         /* standard configuration */
 
         /* @formatter:off */

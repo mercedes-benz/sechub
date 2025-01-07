@@ -3,27 +3,37 @@ package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static java.io.File.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
+import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -41,6 +51,7 @@ class PDSWorkspaceServiceTest {
     private PDSWorkspacePreparationResultCalculator preparationResultCalculator;
     private PDSWorkspacePreparationContext preparationContext;
     private UUID jobUUID;
+    private CheckSumSupport checksumSupport;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -51,14 +62,15 @@ class PDSWorkspaceServiceTest {
     void beforeEach() {
         jobUUID = UUID.randomUUID();
 
-        storageService = mock(PDSMultiStorageService.class);
-        storage = mock(JobStorage.class);
-        storageInfoCollector = mock(PDSStorageInfoCollector.class);
-        preparationContextFactory = mock(PDSWorkspacePreparationContextFactory.class);
-        serverConfigService = mock(PDSServerConfigurationService.class);
-        preparationResultCalculator = mock(PDSWorkspacePreparationResultCalculator.class);
+        storageService = mock();
+        storage = mock();
+        storageInfoCollector = mock();
+        preparationContextFactory = mock();
+        serverConfigService = mock();
+        preparationResultCalculator = mock();
+        checksumSupport = mock();
 
-        preparationContext = mock(PDSWorkspacePreparationContext.class);
+        preparationContext = mock();
         when(preparationContextFactory.createPreparationContext(any())).thenReturn(preparationContext);
 
         PDSProductSetup setup = new PDSProductSetup();
@@ -73,6 +85,7 @@ class PDSWorkspaceServiceTest {
         serviceToTest.preparationContextFactory = preparationContextFactory;
         serviceToTest.serverConfigService = serverConfigService;
         serviceToTest.preparationResultCalculator = preparationResultCalculator;
+        serviceToTest.checksumSupport = checksumSupport;
 
         config = new PDSJobConfiguration();
 
@@ -145,7 +158,7 @@ class PDSWorkspaceServiceTest {
         PDSWorkspacePreparationResult result = serviceToTest.prepare(jobUUID, config, null);
 
         /* test */
-        assertSame(expected, result);
+        assertThat(expected).isSameAs(result);
     }
 
     @Test
@@ -156,7 +169,7 @@ class PDSWorkspaceServiceTest {
 
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
-        assertFalse(metaDataFile.exists());
+        assertThat(metaDataFile.exists()).isFalse();
 
     }
 
@@ -168,8 +181,8 @@ class PDSWorkspaceServiceTest {
 
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
-        assertTrue(metaDataFile.exists());
-        assertEquals("this is my metadata", TestFileReader.readTextFromFile(metaDataFile));
+        assertThat(metaDataFile.exists()).isTrue();
+        assertThat(TestFileReader.readTextFromFile(metaDataFile)).isEqualTo("this is my metadata");
     }
 
     @Test
@@ -182,14 +195,15 @@ class PDSWorkspaceServiceTest {
         String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + jobUUID;
 
         /* @formatter:off */
-        assertEquals(expectedWorspaceLocation,result.getWorkspaceLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.getResultFileLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages",result.getUserMessagesLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"metadata.txt",result.getMetaDataFileLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.getSourceCodeZipFileLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.getExtractedSourcesLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.getExtractedBinariesLocation());
-        assertEquals(expectedWorspaceLocation+separatorChar+"events",result.getEventsLocation());
+        assertThat(result.getWorkspaceLocation()).isEqualTo(expectedWorspaceLocation);
+        assertThat(result.getResultFileLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt");
+
+        assertThat(result.getUserMessagesLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages");
+        assertThat(result.getMetaDataFileLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"metadata.txt");
+        assertThat(result.getSourceCodeZipFileLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP);
+        assertThat(result.getExtractedSourcesLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources");
+        assertThat(result.getExtractedBinariesLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries");
+        assertThat(result.getEventsLocation()).isEqualTo(expectedWorspaceLocation+separatorChar+"events");
         /* @formatter:on */
     }
 
@@ -207,6 +221,69 @@ class PDSWorkspaceServiceTest {
 
         /* test */
         verify(storageService).createJobStorageForPath("xyz/abc/project1", config.getSechubJobUUID());
+    }
+
+    @Test
+    void prepare_downloads_asset_and_stores_file_locally_when_parameter_contains_pds_template_metadata_no_checksum_failure() throws Exception {
+        /* prepare */
+        PDSTemplateMetaData metaData = new PDSTemplateMetaData();
+        metaData.setTemplateId("template1");
+        metaData.setTemplateType(TemplateType.WEBSCAN_LOGIN);
+        PDSAssetData assetData = new PDSAssetData();
+        assetData.setAssetId("asset1");
+        assetData.setChecksum("checksum1");
+        assetData.setFileName("file1.txt");
+        metaData.setAssetData(assetData);
+
+        String json = JSONConverter.get().toJSON(metaData, false);
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST, json));
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage("asset1")).thenReturn(assetStorage);
+        when(assetStorage.fetch("file1.txt")).thenReturn(new ByteArrayInputStream("testdata".getBytes()));
+        when(checksumSupport.createSha256Checksum(any(Path.class))).thenReturn("checksum1");
+
+        /* execute */
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        ArgumentCaptor<Path> pathCaptor = ArgumentCaptor.captor();
+        verify(storageService).createAssetStorage("asset1");
+        verify(checksumSupport).createSha256Checksum(pathCaptor.capture());
+        Path path = pathCaptor.getValue();
+
+        assertThat(path.getFileName().toString()).isEqualTo("file1.txt");
+
+        // check file is created
+        assertThat(Files.exists(path)).isTrue();
+        List<String> lines = Files.readAllLines(path);
+        assertThat(lines).contains("testdata").hasSize(1);
+    }
+
+    @Test
+    void prepare_downloads_asset_and_stores_file_locally_when_parameter_contains_pds_template_metadata_checksum_failure() throws Exception {
+        /* prepare */
+        PDSTemplateMetaData metaData = new PDSTemplateMetaData();
+        metaData.setTemplateId("template1");
+        metaData.setTemplateType(TemplateType.WEBSCAN_LOGIN);
+        PDSAssetData assetData = new PDSAssetData();
+        assetData.setAssetId("asset1");
+        assetData.setChecksum("checksum1");
+        assetData.setFileName("file1.txt");
+        metaData.setAssetData(assetData);
+
+        String json = JSONConverter.get().toJSON(metaData, false);
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST, json));
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage("asset1")).thenReturn(assetStorage);
+        when(assetStorage.fetch("file1.txt")).thenReturn(new ByteArrayInputStream("testdata".getBytes()));
+        when(checksumSupport.createSha256Checksum(any(Path.class))).thenReturn("checksum-other-means-failure");
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.prepare(jobUUID, config, null)).cause().isInstanceOf(IOException.class)
+                .hasMessageStartingWith("Checksum not as expected");
+
     }
 
     private PDSExecutionParameterEntry createEntry(String key, String value) {

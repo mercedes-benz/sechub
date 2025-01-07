@@ -155,6 +155,20 @@ go_mmproxy:
   # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
   image: "example.org/go-mmproxy:2.1.0"
 
+oauth2:
+  # Enable Oauth2 authentication
+  # Explanation of the modes and parameters: Search for 'oauth2' in documentation
+  # https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
+  enabled: false
+  # Choose either 'JWT' or 'OPAQUE_TOKEN'
+  mode: JWT
+  jwt:
+    uri: https://sso.example.org/JWKS
+  opaque_token:
+    client_id: insert_your_client_id_here
+    client_secret: insert_your_client_secret_here
+    introspection_uri: https://sso.example.org/introspect.oauth2
+
 storage:
   local:
     # No shared storage - only for standalone SecHub server (stores into local /tmp)

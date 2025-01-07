@@ -314,15 +314,7 @@ fi
 
 if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then
     startJob "Format all sourcecode"
-    openApiFilePath="$SECHUB_ROOT_DIR/sechub-doc/build/api-spec/openapi3.json"
-    if [ -f "$openApiFilePath" ]; then
-        echo ">>> Open API file exists"
-    else
-        echo ">>> Open API file DOES NOT exist - must be generated."
-         # Problem detected: open api file must be generated to avoid problems with gradle configuration lifecycle for open api generator!
-         ./gradlew generateOpenapi 
-    fi        
-    ./gradlew spotlessApply -Dsechub.build.stage=all
+    ./gradlew spotlessApply
     
 fi
 
@@ -353,7 +345,7 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew spotlessCheck :sechub-cli:buildGo :sechub-cli:testGo
     
     step "Build Server, DAUI and generate OpenAPI file"
-    ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+    ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
     
     step "Generate and build Java projects related to SecHub Java API"
     ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI :sechub-web-server:build -Dsechub.build.stage=api-necessary

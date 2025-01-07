@@ -102,29 +102,40 @@ spec:
           limits:
             memory: "{{ .Values.memory.container }}"
         ports:
-        - name: sechub-https
-          containerPort: 8443
-        - name: debug
-          containerPort: 5005
+          - name: health-port
+            containerPort: 10250
+          - name: https-port
+            containerPort: 8443
         startupProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: sechub-https
-          failureThreshold: 24
-          periodSeconds: 5
+            port: https-port
+          initialDelaySeconds: 10
+          periodSeconds: 1
+          # probe every 1s x 600 = 10 mins before restart of container
+          failureThreshold: 600
           successThreshold: 1
           timeoutSeconds: 1
-          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /actuator/health/readiness
+            port: health-port
+          periodSeconds: 2
+          failureThreshold: 2
+          successThreshold: 1
+          timeoutSeconds: 1
         livenessProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: sechub-https
+            port: https-port
+          periodSeconds: 20
+          # probe every 20s x 3 = 60s before restart of container
           failureThreshold: 3
-          periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 3
+          timeoutSeconds: 10
         volumeMounts:
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub/secrets/secret-ssl
@@ -461,6 +472,22 @@ spec:
           value: ""
         - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
           value: "{{ .Values.server.spring.embeddedTomcat.logging.accessLogFormat }}"
+{{- end }}
+{{- if .Values.oauth2.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Oauth2
+# --------------------------------------------------------------------------------------------- #
+        # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
+        - name: SECHUB_SECURITY_OAUTH2_MODE
+          value: "{{ .Values.oauth2.mode }}"
+        - name: SECHUB_SECURITY_OAUTH2_JWK_SET_URI
+          value: "{{ .Values.oauth2.jwt.uri }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_ID
+          value: "{{ .Values.oauth2.opaque_token.client_id }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_SECRET
+          value: "{{ .Values.oauth2.opaque_token.client_secret }}"
+        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_INTROSPECTION_URI
+          value: "{{ .Values.oauth2.opaque_token.introspection_uri }}"
 {{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage

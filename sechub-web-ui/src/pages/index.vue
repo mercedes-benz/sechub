@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-  <Projects />
+  <ProjectsList />
 </template>
 
 <script lang="ts" setup>
-  import Projects from "@/components/Projects.vue";
+  import ProjectsList from '@/components/ProjectsList.vue'
 </script>

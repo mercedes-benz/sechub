@@ -9,9 +9,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
-    Projects: typeof import('./components/Projects.vue')['default']
+    Pagination: typeof import('./components/Pagination.vue')['default']
+    Project: typeof import('./components/Project.vue')['default']
+    ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
+    ProjectDetailsFab: typeof import('./components/ProjectDetailsFab.vue')['default']
+    ProjectsList: typeof import('./components/ProjectsList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SecHubDefault: typeof import('./components/SecHubDefault.vue')['default']
   }
 }

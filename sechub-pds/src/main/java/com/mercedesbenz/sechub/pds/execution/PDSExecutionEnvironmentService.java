@@ -105,6 +105,10 @@ public class PDSExecutionEnvironmentService {
         map.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
         map.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
 
+        String extractedAssetsLocation = locationData.getExtractedAssetsLocation();
+
+        map.put(PDS_JOB_EXTRACTED_ASSETS_FOLDER, extractedAssetsLocation);
+
         String extractedSourcesLocation = locationData.getExtractedSourcesLocation();
 
         map.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);

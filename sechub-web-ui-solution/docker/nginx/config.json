@@ -1,0 +1,5 @@
+{
+  // HOST represents the URL of the API client. In this case, it's the URL of the SPA because we proxy API requests to the backend to sidestep any CORS issues.
+  "HOST": "https://localhost",
+  "LOCAL_DEV": false
+}

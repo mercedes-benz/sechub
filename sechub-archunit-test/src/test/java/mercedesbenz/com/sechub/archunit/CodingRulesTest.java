@@ -32,6 +32,7 @@ public class CodingRulesTest {
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ignoreAllTests)
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreNessusAdapter)
                 .withImportOption(ignoreNessusProduct)
@@ -75,6 +76,7 @@ public class CodingRulesTest {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreDocGen)
@@ -105,6 +107,7 @@ public class CodingRulesTest {
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ignoreAllTests)
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreIntegrationTest)
                 .withImportOption(ignoreDocGen)
@@ -126,6 +129,7 @@ public class CodingRulesTest {
         /* @formatter:off */
         return new ClassFileImporter()
                 .withImportOption(ignoreAllTests)
+                .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreNessusAdapter)
                 .withImportOption(ignoreNessusProduct)

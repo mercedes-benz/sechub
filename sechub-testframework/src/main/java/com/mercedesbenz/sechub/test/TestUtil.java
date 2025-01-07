@@ -199,6 +199,29 @@ public class TestUtil {
         return dirAsPath;
     }
 
+    public static Path createTempFileInBuildSubFolder(String subFolderName, String explicitFileName, FileAttribute<?>... attributes) throws IOException {
+        Path parent = ensureBuildTmpDirAsFile();
+        if (subFolderName != null) {
+            parent = parent.resolve(subFolderName);
+        }
+        Path filePath = parent.resolve(explicitFileName);
+
+        if (Files.exists(filePath)) {
+            LOG.warn("Temporary file already exists and will be deleted:{}", filePath);
+            try {
+                Files.delete(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot delete former temp file", e);
+            }
+        }
+        Files.createDirectories(filePath.getParent());
+        Files.createFile(filePath, attributes);
+        if (isDeletingTempFiles()) {
+            filePath.toFile().deleteOnExit();
+        }
+        return filePath;
+    }
+
     /**
      * Creates a temporary file inside gradle build folder at
      * `./build/sechub/tmp/**`. When environment entry
@@ -214,22 +237,7 @@ public class TestUtil {
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String explicitFileName, FileAttribute<?>... attributes) throws IOException {
-        Path parent = ensureBuildTmpDirAsFile();
-        Path filePath = parent.resolve(explicitFileName);
-
-        if (Files.exists(filePath)) {
-            LOG.warn("Temporary file already exists and will be deleted:{}", filePath);
-            try {
-                Files.delete(filePath);
-            } catch (IOException e) {
-                throw new RuntimeException("Cannot delete former temp file", e);
-            }
-        }
-        Files.createFile(filePath, attributes);
-        if (isDeletingTempFiles()) {
-            filePath.toFile().deleteOnExit();
-        }
-        return filePath;
+        return createTempFileInBuildSubFolder(null, explicitFileName, attributes);
     }
 
     private static Path ensureBuildTmpDirAsFile() throws IOException {

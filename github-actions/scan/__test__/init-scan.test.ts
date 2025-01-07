@@ -5,6 +5,22 @@ import {initReportFormats, initSecHubJson} from '../src/init-scan';
 jest.mock('./../src/configuration-builder');
 import {SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile} from '../src/configuration-builder';
 
+import * as core from '@actions/core';
+
+jest.mock('@actions/core');
+
+const mockInfo = core.info as jest.MockedFunction<typeof core.info>;
+
+const debugEnabled = false;
+
+beforeEach(() => {
+    mockInfo.mockImplementation((message: string | Error) => {
+        if (debugEnabled) {
+            console.log(`Info: ${message}`);
+        }
+    });
+    mockInfo.mockClear();
+});
 
 describe('initSecHubJson', function () {
     it('throws error if configPath is set, but file does not exist', function () {

@@ -1,7 +1,7 @@
 {
   "name": "sechub-website",
-  "version": "1.0.0",
-  "author": "Bernardo Oliveira | Mercedes-Benz.io",
+  "version": "1.0.1",
+  "author": "SecHub team - new design by Bernardo Oliveira | Mercedes-Benz.io",
   "private": true,
   "type": "module",
   "scripts": {

@@ -48,7 +48,7 @@ Either use system properties
 pds.techuser.userid
 pds.techuser.apitoken
 ----
-or env entries
+or environment variables
 ----
 PDS_TECHUSER_USERID
 PDS_TECHUSER_APITOKEN
@@ -187,6 +187,12 @@ how the data is gathered.
 |PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file
 |PDS_JOB_EXTRACTED_SOURCES_FOLDER   | When auto extracting is enabled (default) the uploaded source code is extracted to this folder
 |PDS_JOB_EXTRACTED_BINARIES_FOLDER  | When auto extracting is enabled (default) the uploaded binaries are extracted to this folder
+|PDS_JOB_EXTRACTED_ASSETS_FOLDER    | The absolute path to the extracted assets. +
+ + 
+                                      Files for template types are located in dedicated sub folders which are named by the id of the template type. + +
+ +
+                                      For example: WEBSCAN_LOGIN template type has id: `webscan-login`. To access the file `custom-login.groovy` a script
+                                      or a wrapper application can simply fetch the file via `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/custom-login.groovy`. 
 |PDS_SCAN_TARGET_URL                | Target URL for current scan (e.g webscan). Will not be set in all scan types. E.g. for a code scan this environemnt variable will not be available
 |PDS_SCAN_CONFIGURATION             | Contains the SecHub configuration as JSON _(but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available)_ +
                                       +
@@ -216,10 +222,15 @@ include::../gen/gen_pds_executor_config_parameters.adoc[]
 ==== File locations
 
 ===== Upload
-`$PDS_JOB_WORKSPACE_LOCATION/upload/`
+Content from uploaded user archives is extracted to:
 
-Automatically unzipped content is available inside +
-`$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped`
+`PDS_JOB_EXTRACTED_SOURCES_FOLDER`,
+
+`PDS_JOB_EXTRACTED_BINARIES_FOLDER`
+
+Content from uploaded asset files is extracted to:
+ `PDS_JOB_EXTRACTED_ASSETS_FOLDER`,
+
 
 ===== Output
 

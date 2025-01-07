@@ -1,6 +1,8 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
+target_script_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy"
+
 shutdownZAP() {
 	# --full: to specify the process by looking at full command line including the parameters
 	pkill -9 --full "/pds/tools/ZAP_"
@@ -121,18 +123,18 @@ else
     echo "Use default value of wrapper for WRAPPER_RETRY_WAITTIME_MILLISECONDS"
 fi
 
+if [ -f "$target_script_file" ] ; then
+    export ZAP_GROOVY_LOGIN_SCRIPT_FILE="$target_script_file"
+    echo "Use script login file: $ZAP_GROOVY_LOGIN_SCRIPT_FILE"
+else
+    echo "No script login file was found"
+fi
+
 echo ""
 echo "Start scanning"
 echo ""
 
-if [ ! -z "$PDS_SCAN_CONFIGURATION" ] ; then
-    sechub_scan_configuration="$PDS_JOB_WORKSPACE_LOCATION/sechubScanConfiguration.json"
-    echo "Using configuration file: $sechub_scan_configuration"
-    echo "$PDS_SCAN_CONFIGURATION" > "$sechub_scan_configuration"
-    zap_options="$zap_options --sechubConfigfile $sechub_scan_configuration"
-fi
-
-java -jar $options "$TOOL_FOLDER/wrapperowaspzap.jar" $zap_options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE" --fullRulesetfile "$TOOL_FOLDER/owasp-zap-full-ruleset-all-release-status.json"
+java -jar $options "$TOOL_FOLDER/wrapperowaspzap.jar" $zap_options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
 
 # Shutdown OWASP-ZAP and cleanup after the scan
 echo "Shutdown OWASP-ZAP after scan"

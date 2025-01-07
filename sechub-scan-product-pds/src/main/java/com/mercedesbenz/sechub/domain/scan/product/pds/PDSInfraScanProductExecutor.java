@@ -112,8 +112,7 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
         data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                serviceCollection);
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext, serviceCollection);
         data.setNetworkTargetDataProvider(configSupport);
     }
 

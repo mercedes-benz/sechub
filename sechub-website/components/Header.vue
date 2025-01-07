@@ -3,42 +3,48 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/vue/20/solid';
 
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
+
 const documentationItems = [
   {
     title: 'Getting Started',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-getting-started.html'
   },
   {
-    title: 'Architecture',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-architecture.html'
-  },
-  {
-    title: 'Technical',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html'
+    title: 'Client',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-client.html'
   },
   {
     title: 'Rest API',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html'
   },
   {
-    title: 'Client',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-client.html'
+    title: 'Product Delegation Server (PDS)',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html'
   },
   {
     title: 'Operations',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-operations.html'
   },
   {
-    title: 'Product Delegation Server (PDS)',
-    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html'
-  },
-  {
     title: 'Developer - Quickstart Guide',
     href: 'https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html'
+  },
+  {
+    title: 'Developer - Architecture',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-architecture.html'
+  },
+  {
+    title: 'Developer - Technical',
+    href: 'https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html'
   }
 ];
 
 const items = [
+  {
+    title: 'Documentation',
+    href: 'https://mercedes-benz.github.io/sechub/index-old.html'
+  },
   {
     title: 'Downloads',
     href: '#download'
@@ -55,11 +61,12 @@ const items = [
     <nav>
       <div class="relative z-50 mx-auto flex max-w-7xl justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div class="relative z-10 flex items-center gap-16">
-          <NuxtLink aria-label="Home" to="/">
+          <NuxtLink aria-label="Home" :to="`${baseURL}/`">
             <img src="/logo.svg" class="h-12 w-10 object-contain" alt="SecHub Logo" />
           </NuxtLink>
 
           <div class="hidden items-center lg:flex lg:gap-10">
+            <!-- Unfortunately this currently only works in dev mode.
             <Menu as="div" class="relative inline-block">
               <div>
                 <MenuButton class="menu-item"> Documentation </MenuButton>
@@ -88,6 +95,7 @@ const items = [
                 </MenuItems>
               </transition>
             </Menu>
+            -->
             <NuxtLink
               v-for="item in items"
               :key="item.title"

@@ -18,6 +18,7 @@ public class EnvironmentVariableConstants {
     public static final String PDS_JOB_EXTRACTED_SOURCES_FOLDER = "PDS_JOB_EXTRACTED_SOURCES_FOLDER";
     public static final String PDS_JOB_USER_MESSAGES_FOLDER = "PDS_JOB_USER_MESSAGES_FOLDER";
     public static final String PDS_JOB_EVENTS_FOLDER = "PDS_JOB_EVENTS_FOLDER";
+    public static final String PDS_SCAN_CONFIGURATION = "PDS_SCAN_CONFIGURATION";
 
     public static final String ZAP_GROOVY_LOGIN_SCRIPT_FILE = "ZAP_GROOVY_LOGIN_SCRIPT_FILE";
 

@@ -25,12 +25,9 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
+import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
-import com.mercedesbenz.sechub.zapwrapper.config.data.DeactivatedRuleReferences;
-import com.mercedesbenz.sechub.zapwrapper.config.data.Rule;
-import com.mercedesbenz.sechub.zapwrapper.config.data.RuleReference;
-import com.mercedesbenz.sechub.zapwrapper.config.data.ZapFullRuleset;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.*;
@@ -79,7 +76,7 @@ public class ZapScanner implements ZapScan {
         try {
             /* ZAP setup on local machine */
             setupStandardConfiguration();
-            deactivateRules(scanContext.getFullRuleset(), scanContext.getDeactivatedRuleReferences());
+            deactivateRules();
             setupAdditonalProxyConfiguration(scanContext.getProxyInformation());
             int zapContextId = createContext();
             addXSecHubDASTHeader();
@@ -99,7 +96,7 @@ public class ZapScanner implements ZapScan {
             /* After scan */
             generateZapReport();
             cleanUp();
-        } catch (ClientApiException e) {
+        } catch (ClientApiException | ZapWrapperRuntimeException e) {
             cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
@@ -116,21 +113,14 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.setAjaxSpiderMaxDepth(DEFAULT_MAX_DEPTH_AJAX_SPIDER);
     }
 
-    void deactivateRules(ZapFullRuleset fullRuleset, DeactivatedRuleReferences deactivatedRuleReferences) throws ClientApiException {
-        if (fullRuleset == null || deactivatedRuleReferences == null) {
-            return;
-        }
-        List<RuleReference> rulesReferences = deactivatedRuleReferences.getDeactivatedRuleReferences();
-        if (rulesReferences == null) {
-            return;
-        }
-
-        for (RuleReference ruleRef : rulesReferences) {
-            Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
-            if (isPassiveRule(ruleToDeactivate.getType())) {
-                clientApiWrapper.disablePassiveScannerRule(ruleToDeactivate.getId());
-            } else if (isActiveRule(ruleToDeactivate.getType())) {
-                clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(ruleToDeactivate.getId());
+    void deactivateRules() throws ClientApiException {
+        for (String ruleId : scanContext.getZapRuleIDsToDeactivate()) {
+            boolean wasDeactivated = clientApiWrapper.disablePassiveScannerRule(ruleId);
+            if (!wasDeactivated) {
+                wasDeactivated = clientApiWrapper.disableActiveScannerRuleForDefaultPolicy(ruleId);
+            }
+            if (!wasDeactivated) {
+                LOG.warn("Unable to deactivate ruleId: {}, as it is neither a passive nor an active scanner rule!", ruleId);
             }
         }
     }
@@ -333,16 +323,14 @@ public class ZapScanner implements ZapScan {
             return initBasicAuthentication(zapContextId, webLoginConfiguration.getBasic().get());
         }
 
-        if (scriptLoginWanted()) {
+        if (scriptLoginConfigured()) {
             LOG.info("For scan {}: Setting up authentcation and session management method for script authentication.", scanContext.getContextName());
             setupAuthenticationAndSessionManagementMethodForScriptLogin(zapContextId);
 
             LOG.info("For scan {}: Performing script authentication.", scanContext.getContextName());
             String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
 
-            // TODO 2024-11-21 jan: read the username from templateData as soon as it is
-            // implemented
-            String username = "DUMMY";
+            String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
             /* @formatter:off */
             LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.", scanContext.getContextName());
             StringBuilder authCredentialsConfigParams = new StringBuilder();
@@ -682,14 +670,6 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
     }
 
-    private boolean isPassiveRule(String type) {
-        return "passive".equals(type.toLowerCase());
-    }
-
-    private boolean isActiveRule(String type) {
-        return "active".equals(type.toLowerCase());
-    }
-
     private UserInformation initBasicAuthentication(int zapContextId, BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {
         String realm = "";
         if (basicLoginConfiguration.getRealm().isPresent()) {
@@ -858,8 +838,8 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.addReplacerRule(description, enabled, matchtype, matchregex, matchstring, replacement, initiators, url);
     }
 
-    private boolean scriptLoginWanted() {
-        return scanContext.getGroovyScriptLoginFile() != null;
+    private boolean scriptLoginConfigured() {
+        return scanContext.getGroovyScriptLoginFile() != null && !scanContext.getTemplateVariables().isEmpty();
     }
 
     record UserInformation(String userName, int zapuserId) {

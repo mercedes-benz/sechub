@@ -9,12 +9,10 @@ import VueRouter from 'unplugin-vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
-
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import path from 'path';
-
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,7 +26,7 @@ export default defineConfig({
         'vue',
         {
           'vue-router/auto': ['useRoute', 'useRouter'],
-        }
+        },
       ],
       dts: 'src/auto-imports.d.ts',
       eslintrc: {
@@ -52,10 +50,10 @@ export default defineConfig({
     VueI18nPlugin({
       include: [path.resolve(__dirname, './src/i18n/locales/**')],
       strictMessage: false,
-  }),
+    }),
     Fonts({
       google: {
-        families: [ {
+        families: [{
           name: 'Roboto',
           styles: 'wght@100;300;400;500;700;900',
         }],
@@ -78,6 +76,15 @@ export default defineConfig({
     ],
   },
   server: {
+    // configuration for local dev server
     port: 3000,
+    // configuration to avoid CORS errors (as long as not impl. in server backend)
+    proxy: {
+      '/api': {
+        target: 'https://localhost:8443',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })

@@ -125,6 +125,7 @@ COPY nginx/ /etc/nginx/
 # Copy content to web server's document root
 COPY --from=builder "${WEB_UI_ARTIFACTS}/dist" "${HTDOCS_FOLDER}"
 COPY htdocs/ "${HTDOCS_FOLDER}/"
+COPY nginx/config.json "${HTDOCS_FOLDER}/"
 
 # Create self-signed certificate
 RUN cd /tmp && \

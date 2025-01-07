@@ -59,7 +59,10 @@ projectType = [
                     project(':sechub-wrapper-secretvalidation'),
 
                     /* archUnit */
-                    project(':sechub-archunit-test')
+                    project(':sechub-archunit-test'),
+                    
+                    /* developerTools */
+                    project(':sechub-developertools') // to have DAUI available by build and a working fat jar provided by spring boot
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */
