@@ -63,7 +63,7 @@
             </v-table>
           </div>
           <Pagination
-            :current-page="jobsObject.page || 0 + 1"
+            :current-page="jobsObject.page || 1"
             :total-pages="jobsObject.totalPages || 1"
             @page-changed="onPageChange"
           />
@@ -79,9 +79,9 @@
 </template>
 
 <script lang="ts">
-  import { onMounted, ref } from 'vue'
+  import { onMounted, onUnmounted, ref } from 'vue'
   import defaultClient from '@/services/defaultClient'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import {
     SecHubJobInfoForUser,
@@ -101,7 +101,12 @@
         projectId.value = route.params.id
       }
 
-      const currentRequestParameters : UserListJobsForProjectRequest = {
+      const maxAttempts = 10 // Maximum number of retries for backoff
+      const baseDelay = 1000 // Initial delay in milliseconds
+      let polling = false
+      let timeOutId: number | undefined
+
+      const currentRequestParameters: UserListJobsForProjectRequest = {
         projectId: projectId.value,
         size: '10',
         page: '0',
@@ -120,9 +125,28 @@
         } catch (err) {
           error.value = 'ProjectAPI error fetching jobs for project.'
           console.error('ProjectAPI error fetching jobs for project:', err)
+          stopPolling()
         } finally {
           loading.value = false
         }
+      }
+
+      const fetchDataWithPolling = async (attempt = 1) => {
+        if (timeOutId !== undefined) {
+          clearTimeout(timeOutId)
+        }
+
+        const maxAttemptsUnreched = attempt < maxAttempts
+        const delay = baseDelay * Math.pow(1.5, attempt)
+
+        if (maxAttemptsUnreched && polling) {
+          timeOutId = setTimeout(() => fetchDataWithPolling(attempt + 1), delay)
+        } else if (!maxAttemptsUnreched && polling) {
+          timeOutId = setTimeout(() => fetchDataWithPolling(attempt), delay)
+        } else {
+          return
+        }
+        fetchProjectJobs(currentRequestParameters)
       }
 
       function onPageChange (page: number) {
@@ -144,10 +168,23 @@
         router.go(-1)
       }
 
-      onMounted(async () => {
+      function stopPolling () {
+        polling = false
+        clearTimeout(timeOutId)
+      }
+
+      function startPolling () {
+        polling = true
+        fetchDataWithPolling()
+      }
+
+      onMounted(() => {
         fetchProjectJobs(currentRequestParameters)
-        // polling every 10 sec. for job states
-        setInterval(() => fetchProjectJobs(currentRequestParameters), 10000)
+        startPolling()
+      })
+
+      onUnmounted(() => {
+        stopPolling()
       })
 
       return {
@@ -173,22 +210,22 @@
       },
     },
   }
-  </script>
+</script>
 
 <style scoped>
-.background-color{
+.background-color {
   background-color: rgb(var(--v-theme-layer_01)) !important;
 }
-.traffic-light-none{
+.traffic-light-none {
   color: rgb(var(--v-theme-layer_01)) !important;
 }
-.traffic-light-red{
+.traffic-light-red {
   color: rgb(var(--v-theme-error)) !important;
 }
-.traffic-light-green{
+.traffic-light-green {
   color: rgb(var(--v-theme-success)) !important;
 }
-.traffic-light-yellow{
+.traffic-light-yellow {
   color: rgb(var(--v-theme-warning)) !important;
 }
 </style>
