@@ -144,6 +144,7 @@ ext {
         database_h2:                           "com.h2database:h2",
         // here we do NOT set a library version - will be handled automatically by spring boot dependency management
         flyway:                                "org.flywaydb:flyway-core",
+        flyway_database_postgresql:            "org.flywaydb:flyway-database-postgresql",
 
 
         /* additional (2): version based on other libraries used by spring boot */      
