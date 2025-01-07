@@ -50,4 +50,8 @@ public enum InputCacheIdentifier {
 
     PAGE_SIZE,
 
+    TEMPLATE_ID,
+
+    ASSET_ID,
+
 }

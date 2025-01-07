@@ -9,6 +9,7 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
@@ -27,14 +28,14 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static CheckmarxExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+    public static CheckmarxExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorContext context,
             SystemEnvironmentVariableSupport variableSupport) {
-        return new CheckmarxExecutorConfigSuppport(config, variableSupport, new CheckmarxProductExecutorMinimumConfigValidation());
+        return new CheckmarxExecutorConfigSuppport(context, variableSupport, new CheckmarxProductExecutorMinimumConfigValidation());
     }
 
-    private CheckmarxExecutorConfigSuppport(ProductExecutorConfig config, SystemEnvironmentVariableSupport variableSupport,
+    private CheckmarxExecutorConfigSuppport(ProductExecutorContext context, SystemEnvironmentVariableSupport variableSupport,
             Validation<ProductExecutorConfig> validation) {
-        super(config, variableSupport, validation);
+        super(context, variableSupport, validation);
     }
 
     public boolean isAlwaysFullScanEnabled() {

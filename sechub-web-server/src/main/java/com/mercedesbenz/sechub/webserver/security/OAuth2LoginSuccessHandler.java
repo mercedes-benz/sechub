@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * {@link Base64}.
  * </p>
  *
- * @see SecurityConfiguration
+ * @see WebServerSecurityConfiguration
  * @see RequestConstants
  * @see OAuth2Properties
  * @see OAuth2AuthorizedClientService
@@ -85,7 +85,7 @@ class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private Cookie createJwtCookie(String jwt, long expirySeconds) {
-        Cookie cookie = new Cookie(SecurityConfiguration.ACCESS_TOKEN, jwt);
+        Cookie cookie = new Cookie(WebServerSecurityConfiguration.ACCESS_TOKEN, jwt);
         cookie.setMaxAge((int) expirySeconds); /* Casting this should be safe in all cases */
         cookie.setHttpOnly(true); /* Prevents client-side code (JavaScript) from accessing the cookie */
         cookie.setSecure(true); /* Send the cookie only over HTTPS */

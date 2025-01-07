@@ -40,6 +40,11 @@ public class ScanProjectConfig {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = ScanProjectConfig.class.getSimpleName();
 
+    public static final String PROPERTY_KEY = "key";
+
+    public static final String QUERY_FIND_ALL_CONFIGURATIONS_FOR_PROJECT = "SELECT c FROM ScanProjectConfig c where c." + PROPERTY_KEY + "."
+            + ScanProjectConfigCompositeKey.PROPERTY_PROJECT_ID + " =:projectId";
+
     @EmbeddedId
     ScanProjectConfigCompositeKey key;
 
@@ -97,6 +102,8 @@ public class ScanProjectConfig {
     public static class ScanProjectConfigCompositeKey implements Serializable {
 
         private static final long serialVersionUID = 8753389792382752253L;
+
+        public static final String PROPERTY_PROJECT_ID = "projectId";
 
         @Column(name = COLUMN_PROJECT_ID, nullable = false)
         private String projectId;
@@ -169,6 +176,12 @@ public class ScanProjectConfig {
                 return false;
             return true;
         }
+
+        @Override
+        public String toString() {
+            return "ScanProjectConfigCompositeKey [" + (projectId != null ? "projectId=" + projectId + ", " : "")
+                    + (configId != null ? "configId=" + configId : "") + "]";
+        }
     }
 
     @Override
@@ -195,6 +208,11 @@ public class ScanProjectConfig {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ScanProjectConfig [" + (key != null ? "key=" + key + ", " : "") + (data != null ? "data=" + data : "") + "]";
     }
 
 }

@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.adapter;
 
 import static com.mercedesbenz.sechub.adapter.TimeConstants.*;
 
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
+
 public interface AdapterConfigBuilder {
 
     public static final int DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_MINUTE_IN_MILLISECONDS;
@@ -30,7 +32,7 @@ public interface AdapterConfigBuilder {
      * @param strategy
      * @return builder (configured by strategy)
      */
-    AdapterConfigBuilder configure(AdapterConfigurationStrategy strategy);
+    AdapterConfigBuilder configure(AdapterConfigurationStrategy strategy) throws ConfigurationFailureException;
 
     /**
      * Set result check interval in minutes.

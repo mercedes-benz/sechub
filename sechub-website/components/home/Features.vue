@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script setup lang="ts">
 import {
   ServerStackIcon,
@@ -12,37 +13,37 @@ const items = [
   {
     title: 'API Orchestration',
     description:
-      'SecHub orchestrates tools via a unified API, simplifying integration for projects and build pipelines without the need for multiple plugins.',
+      'SecHub orchestrates tools via an unified API, simplifying integration for projects without the need for different vendor plugins.',
     icon: ServerStackIcon
   },
   {
-    title: 'Build Pipeline Integration',
+    title: 'Easy to use Client',
     description:
-      'SecHub client, in Go, scans synchronously, interrupting build pipelines if needed. Easily integrates into any build system for robust security.',
+      'The SecHub client is written in Go and easy to use on your system of choice.',
     icon: PuzzlePieceIcon
   },
   {
     title: 'License Flexibility',
     description:
-      'SecHub is MIT licensed, allowing flexible usage, modification, and distribution, fostering collaboration and adoption across diverse projects.',
+      'SecHub is MIT licensed. This ensures freedom in use, modification and distribution, fostering collaboration and adoption across all kind of projects.',
     icon: CheckBadgeIcon
   },
   {
     title: 'Comprehensive Documentation',
     description:
-      'Extensive Asciidoc-format documentation covers Quickstart, Architecture, RestAPI, and more. Available on our documentation.',
+      'Extensive documentation covers Getting Started, Architecture, Client, RestAPI, Operations and more. Available on our documentation.',
     icon: BookOpenIcon
   },
   {
-    title: 'Integration with Build Systems',
+    title: 'Integration with Build Systems and IDEs',
     description:
-      'Seamless integration of SecHub client with every build system simplifies developer workflows, reinforcing security measures without additional complexity.',
+      'Seamless integration with every build system and multiple developer IDEs adds security to your code without additional complexity.',
     icon: WrenchScrewdriverIcon
   },
   {
     title: 'Product Delegation Server (PDS)',
     description:
-      "Explore SecHub's PDS, a vital component providing insights into architecture and functionality, enhancing understanding of the overall security infrastructure.",
+      "Explore SecHub's PDS, a vital component providing you the choice of many existing securtiy tools for use with SecHub. It also allows an easy integration of new securtiy tools.",
     icon: CpuChipIcon
   }
 ];
@@ -54,10 +55,10 @@ const items = [
       <div class="mx-auto max-w-2xl sm:text-center">
         <h2 class="text-3xl font-medium tracking-tight text-white">Your Security Guardian.</h2>
         <p class="mt-2 text-lg text-white">
-          SecHub server orchestrates different security tools by one API layer.
+          SecHub orchestrates different security tools by one API layer.
           <br />
-          Users interact with the SecHub Server, eliminating the need for projects/build pipelines to implement various
-          plugins.
+          Users interact with the SecHub Server, eliminating the need for projects to integrate
+          vendor plugins for each security tool.
         </p>
       </div>
 

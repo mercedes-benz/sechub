@@ -63,7 +63,7 @@ def buildVersionFiles(){
     def noStagedChanges = stagedChanges.getAllChanges().isEmpty()
     def hasChanged = !noUnstagedChanges || !noStagedChanges
     def buildNumber = getBuildNr()
-    def docsTimeStamp = getLocalBuildNr()
+    def docsTimeStamp = getTimeStamp()
     def currentGitCommit = git.head().abbreviatedId
 
     // ------------------------
@@ -336,8 +336,8 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
         calcversion = calcversion - "-libraries"
         calcversion = calcversion - "-pds-tools"
         calcversion = calcversion - "-pds"
-        calcversion = calcversion - "-server"
         calcversion = calcversion - "-web-server"
+        calcversion = calcversion - "-server"
         calcversion = calcversion - "-checkmarx-wrapper"
         calcversion = calcversion - "-owaspzap-wrapper"
         calcversion = calcversion - "-prepare-wrapper"
@@ -349,20 +349,22 @@ def buildVersionString(commitTag, boolean hasChanged, buildNumber){
     if (hasChanged){
         calcversion = "${calcversion}-dirty"
     }
-    calcversion = "${calcversion}-${buildNumber}"
+    if (buildNumber != "") {
+        calcversion = "${calcversion}-${buildNumber}"
+    }
     return calcversion
 }
 
 def getBuildNr(){
-    if (getServerBuildNr()!=null){
+    if (getServerBuildNr()!=null) {
         return "b"+getServerBuildNr()
-    }else{
+    } else {
         if (project.hasProperty('sechub.build.timestamp')){
             if (project.getProperty('sechub.build.timestamp')=="false"){
                 return "latest"
             }
         }
-        return getLocalBuildNr()
+        return ""
     }
 }
 
@@ -370,8 +372,8 @@ def getServerBuildNr(){
     return System.getenv('BUILD_NUMBER' )
 }
 
-def getLocalBuildNr() {
-    return new Date().format('yyyyMMddHHmmss')
+def getTimeStamp() {
+    return new Date().format("yyyy-MM-dd HH:mm ('UTC'X)")
 }
 
 

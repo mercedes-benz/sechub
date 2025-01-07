@@ -17,6 +17,7 @@ dependencies {
         'sechub-pds-tools', /* only pds tooling + avoid cycles */
         'sechub-api-java', /* the api project needs sechub-doc tests (and compile) for open api json files. So we may not have this as relation! */
         'sechub-systemtest', /* avoid cyclic dependency, see AdoptedSystemTestDefaultFallbacks javadoc for more information */
+        'sechub-wrapper-owasp-zap',
 
         ]
     /* fetch all sub projects, except unwanted and all only used for testing */
@@ -53,6 +54,7 @@ dependencies {
     for (String wantedProjectName: wanted){
         implementation project(":${wantedProjectName}")
     }
+    implementation project(':sechub-shared-kernel')
     implementation library.apache_commons_io
 
     implementation spring_boot_dependency.jackson_core

@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfigurat
 import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportException;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -79,6 +80,9 @@ public class ScanService implements SynchronMessageHandler {
 
     @Autowired
     ScanProgressStateFetcherFactory monitorFactory;
+
+    @Autowired
+    TemplateService templateService;
 
     @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
@@ -195,7 +199,7 @@ public class ScanService implements SynchronMessageHandler {
 
     }
 
-    private SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
+    SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
         UUID executionUUID = message.get(SECHUB_EXECUTION_UUID);
 
         UUID sechubJobUUID = message.get(SECHUB_JOB_UUID);
@@ -206,7 +210,6 @@ public class ScanService implements SynchronMessageHandler {
             throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
         }
         SecHubExecutionContext executionContext = new SecHubExecutionContext(sechubJobUUID, configuration, executedBy, executionUUID);
-
         buildOptions(executionContext);
 
         return executionContext;
@@ -224,6 +227,10 @@ public class ScanService implements SynchronMessageHandler {
             ScanProjectMockDataConfiguration mockDataConfig = ScanProjectMockDataConfiguration.fromString(data);
             executionContext.putData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION, mockDataConfig);
         }
+
+        /* append template definitions */
+        executionContext.getTemplateDefinitions().addAll(templateService.fetchAllTemplateDefinitionsForProject(projectId));
+
     }
 
     @Override

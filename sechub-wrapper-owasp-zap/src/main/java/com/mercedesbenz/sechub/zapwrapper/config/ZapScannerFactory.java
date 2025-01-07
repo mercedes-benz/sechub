@@ -7,7 +7,7 @@ import org.zaproxy.clientapi.core.ClientApi;
 
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiFacade;
+import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner;
 
 public class ZapScannerFactory {
@@ -26,9 +26,9 @@ public class ZapScannerFactory {
         String zaproxyApiKey = serverConfig.getZaproxyApiKey();
 
         ClientApi clientApi = new ClientApi(zaproxyHost, zaproxyPort, zaproxyApiKey);
-        ClientApiFacade clientApiFacade = new ClientApiFacade(clientApi);
+        ClientApiWrapper clientApiWrapper = new ClientApiWrapper(clientApi);
 
-        return ZapScanner.from(clientApiFacade, scanContext);
+        return new ZapScanner(clientApiWrapper, scanContext);
     }
 
     private void assertValidServerConfig(ZapServerConfiguration serverConfig) {

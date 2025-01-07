@@ -8,14 +8,14 @@ services:
         - BUILD_TYPE=${BUILD_TYPE}
         - BASE_IMAGE=${BASE_IMAGE}
         - WEB_UI_VERSION=${WEB_UI_VERSION}
-        - TAG=${TAG}
-        - BRANCH=${BRANCH}
+        - GIT_TAG=${GIT_TAG}
+        - GIT_BRANCH=${GIT_BRANCH}
       context: docker/
       dockerfile: Web-UI-Debian.dockerfile
     working_dir: /var/www/html/web-ui
     container_name: web-ui
     ports:
-      - "443:8443"
+      - "443:4443"
     env_file:
       - .env
     networks:

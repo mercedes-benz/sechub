@@ -19,11 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,16 +30,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
+import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.security.AbstractSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ProjectUpdateAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
-        ProjectUpdateAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
+@WebMvcTest
+@ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class })
+@Import(TestAdministrationSecurityConfiguration.class)
 @WithMockUser(roles = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class ProjectUpdateAdministrationRestControllerMockTest {
@@ -156,12 +154,5 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 		verifyNoInteractions(mockedProjectUpdateMetaDataService);
 		/* @formatter:on */
-    }
-
-    @TestConfiguration
-    @Profile(Profiles.TEST)
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration extends AbstractSecHubAPISecurityConfiguration {
-
     }
 }

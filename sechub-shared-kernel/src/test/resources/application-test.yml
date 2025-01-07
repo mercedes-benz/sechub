@@ -1,6 +1,0 @@
-# SPDX-License-Identifier: MIT
-
-sechub:
-  security:
-    oauth2:
-      jwk-set-uri: https://example.org/jwk-set-uri

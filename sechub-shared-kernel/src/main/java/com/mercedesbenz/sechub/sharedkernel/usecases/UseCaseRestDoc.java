@@ -50,6 +50,7 @@ public @interface UseCaseRestDoc {
         /* @formatter:off */
 		SpringRestDocOutput.PATH_PARAMETERS,
 
+		SpringRestDocOutput.QUERY_PARAMETERS,
 
 		SpringRestDocOutput.REQUEST_PARAMETERS,
 
@@ -90,6 +91,8 @@ public @interface UseCaseRestDoc {
 		RESPONSE_FIELDS("response-fields.adoc",SpringRestDocType.DEFINITION),
 
 		PATH_PARAMETERS("path-parameters.adoc",SpringRestDocType.DEFINITION),
+
+		QUERY_PARAMETERS("query-parameters.adoc",SpringRestDocType.DEFINITION),
 
 		REQUEST_PARAMETERS("request-parameters.adoc",SpringRestDocType.DEFINITION),
 

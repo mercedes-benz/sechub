@@ -2,13 +2,16 @@
 package com.mercedesbenz.sechub.domain.scan;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.sharedkernel.TypedKey;
@@ -49,6 +52,8 @@ public class SecHubExecutionContext {
     private boolean prepareFailed;
 
     private boolean suspended;
+
+    private List<TemplateDefinition> templateDefinitions = new ArrayList<>();
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
         this(sechubJobUUID, configuration, executedBy, executionUUID, null);
@@ -189,6 +194,10 @@ public class SecHubExecutionContext {
 
     public boolean isSuspended() {
         return suspended;
+    }
+
+    public List<TemplateDefinition> getTemplateDefinitions() {
+        return templateDefinitions;
     }
 
 }

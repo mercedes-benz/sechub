@@ -37,17 +37,13 @@ jobs:
           echo "actor-email: '${{ inputs.actor-email }}'"
           echo "Web-UI '${{ inputs.web-ui-version }}' - Milestone '${{ inputs.web-ui-milestone-number }}'"
 
-      # Check inputs:
-      - name: "Verify Input for Web-UI release"
-        if: (inputs.web-ui-version == '') || (inputs.web-ui-milestone-number == '')
-        run: |
-          echo "For Web-UI release, web-ui-version and web-ui-milestone-number must be provided!"
-          exit 1
-
       - name: Checkout master
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: master
+
+      - name: Install required packages
+        run: sudo apt-get -y install hub
 
       # Create temporary local tag, so we build for this tag...
       # The final tag on git server side will be done automatically by the release when the draft is saved as "real" release
@@ -109,10 +105,10 @@ jobs:
         run: |
           cd sechub-web-ui && \
           npm install && \
-          npx nuxi generate && \
-          cd .output/public && \
+          npm run build && \
+          cd dist && \
           echo '${{ inputs.web-ui-version }}' > sechub-web-ui_version.txt && \
-          zip -r ../../../$WEB_UI_RELEASE_ZIPFILE *
+          zip -r ../../$WEB_UI_RELEASE_ZIPFILE *
 
       - name: Collect GIT status
         if: always()
@@ -137,48 +133,36 @@ jobs:
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: sechub-web-ui_htdocs
-          path: sechub-web-ui/.output/
+          path: sechub-web-ui/dist/
           retention-days: 7
 
-      - name: Create Web-UI release
-        id: create_web-ui_release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own
-        with:
-          tag_name: v${{ inputs.web-ui-version }}-web-ui
-          commitish: master
-          release_name: web-ui frontend Version ${{ inputs.web-ui-version }}
-          body: |
-            Changes in this release:
-            - New shiny Web-UI features
-
-            For more details please look at [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1)
-          draft: true
-          prerelease: false
-
-      - name: Create sha256 checksum file for Web-UI zip file
+      # ******************************************
+      # W e b - U I  release
+      # ******************************************
+      - name: Prepare PDS-Tools ${{ inputs.pds-tools-version }} release artifacts
+        shell: bash
         run: sha256sum $WEB_UI_RELEASE_ZIPFILE > $WEB_UI_RELEASE_ZIPFILE.sha256sum
 
-      - name: Upload Web-UI release asset ${{ env.WEB_UI_RELEASE_ZIPFILE }}
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+      - name: Create PDS-Tools ${{ inputs.pds-tools-version }} release draft
+        shell: bash
+        run: |
+          assets=()
+          echo "# Adding web-ui content"
+          for asset in $WEB_UI_RELEASE_ZIPFILE $WEB_UI_RELEASE_ZIPFILE.sha256sum ; do
+            filename=`basename "$asset"`
+            echo "# - $filename"
+            assets+=("-a" "${asset}#${filename}")
+          done
+          # Define release data
+          tag_name="v${{ inputs.web-ui-version }}-web-ui"
+          release_title="web-ui frontend Version ${{ inputs.web-ui-version }}"
+          release_message="Changes in this Release
+          - New shiny Web-UI features"
+          release_footer="For more details please look at [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1)"
+          echo "# Create release draft \"$release_title\" on github"
+          hub release create --draft "${assets[@]}" -m "$release_title" -m "$release_message" -m "$release_footer" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_web-ui_release.outputs.upload_url }}
-          asset_path: ${{ env.WEB_UI_RELEASE_ZIPFILE }}
-          asset_name: ${{ env.WEB_UI_RELEASE_ZIPFILE }}
-          asset_content_type: application/zip
-
-      - name: Upload Web-UI release asset ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_web-ui_release.outputs.upload_url }}
-          asset_path: ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
-          asset_name: ${{ env.WEB_UI_RELEASE_ZIPFILE }}.sha256sum
-          asset_content_type: text/plain
 
       # -----------------------------------------
       # Create release issue
@@ -202,7 +186,7 @@ jobs:
           VERSION_TAG="${WEB_UI_VERSION}"
           echo "# Building image $DOCKER_REGISTRY:$VERSION_TAG"
           echo "  from $ACTIONS_BASE_IMAGE_DEBIAN"
-          cp -r sechub-web-ui/.output sechub-web-ui-solution/docker/copy
+          cp -r sechub-web-ui/dist sechub-web-ui-solution/docker/copy
           cd sechub-web-ui-solution
           export BASE_IMAGE="$ACTIONS_BASE_IMAGE_DEBIAN"
           export BUILD_TYPE=copy

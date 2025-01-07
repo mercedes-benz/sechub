@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script lang="ts" setup></script>
 
 <template>
@@ -13,7 +14,7 @@
             </div>
           </div>
 
-          <p class="mt-6 text-sm text-gray-500">© Copyright {{ new Date().getFullYear() }}. All rights reserved.</p>
+          <p class="mt-6 text-sm text-gray-500">© {{ new Date().getFullYear() }} Mercedes-Benz Tech Innovation GmbH - <a href="https://www.mercedes-benz-techinnovation.com/en/imprint/">Impressum</a>.</p>
         </div>
         <NuxtLink
           class="group relative -mx-4 flex items-center self-stretch p-4 transition-colors hover:bg-gray-100 sm:self-auto sm:rounded-2xl lg:mx-0 lg:self-auto lg:p-6"

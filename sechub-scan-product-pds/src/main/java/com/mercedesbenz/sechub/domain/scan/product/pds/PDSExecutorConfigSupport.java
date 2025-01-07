@@ -14,19 +14,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
@@ -41,6 +49,8 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     private PDSExecutorConfigSuppportServiceCollection serviceCollection;
     private SecHubDataConfigurationTypeListParser parser = new SecHubDataConfigurationTypeListParser();
+
+    PDSTemplateMetaDataService templateMetaDataTransformer = new PDSTemplateMetaDataService();
 
     static {
         List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
@@ -64,27 +74,61 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static PDSExecutorConfigSupport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+    public static PDSExecutorConfigSupport createSupportAndAssertConfigValid(ProductExecutorContext context,
             PDSExecutorConfigSuppportServiceCollection serviceCollection) {
-        return new PDSExecutorConfigSupport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
+        PDSExecutorConfigSupport result = new PDSExecutorConfigSupport(context, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
+        return result;
     }
 
-    private PDSExecutorConfigSupport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
+    private PDSExecutorConfigSupport(ProductExecutorContext context, PDSExecutorConfigSuppportServiceCollection serviceCollection,
             Validation<ProductExecutorConfig> validation) {
-        super(config, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
+        super(context, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
         this.serviceCollection = serviceCollection;
     }
 
-    public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
+    public Map<String, String> createJobParametersToSendToPDS(SecHubExecutionContext context) throws ConfigurationFailureException {
+        if (context == null) {
+            throw new IllegalArgumentException("context may not be null!");
+        }
+        SecHubConfiguration configuration = context.getConfiguration();
+        if (configuration == null) {
+            throw new IllegalStateException("configuration may not be null inside context at this moment!");
+        }
+        ProductIdentifier productIdentifier = config.getProductIdentifier();
+        if (productIdentifier == null) {
+            throw new IllegalStateException("productIdentifier may not be null inside config at this moment!");
+        }
+        ScanType scanType = productIdentifier.getType();
+        if (scanType == null) {
+            throw new IllegalStateException("scanType may not be null inside productIdentifier:" + productIdentifier);
+        }
 
         Map<String, String> parametersToSend = createParametersToSendByProviders(keyProvidersForSendingParametersToPDS);
         handleEnvironmentVariablesInJobParameters(parametersToSend);
 
         /* handle remaining parts without environment variable conversion */
-        handleSecHubStorageIfNecessary(secHubConfiguration, parametersToSend);
+        handleSecHubStorageIfNecessary(configuration, parametersToSend);
         addMappingsAsJobParameter(parametersToSend);
+        addPdsTemplateMetaDataList(scanType, context, parametersToSend);
 
         return parametersToSend;
+    }
+
+    private void addPdsTemplateMetaDataList(ScanType scanType, SecHubExecutionContext context, Map<String, String> parametersToSend)
+            throws ConfigurationFailureException {
+        List<TemplateDefinition> templateDefinitions = context.getTemplateDefinitions();
+        if (templateDefinitions == null) {
+            throw new IllegalStateException("template definitions may not be null inside context at this moment!");
+        }
+        PDSTemplateMetaDataService templateMetaDataService = serviceCollection.getTemplateMetaDataService();
+
+        List<PDSTemplateMetaData> pdsTemplateMetaDataList = templateMetaDataService.createTemplateMetaData(templateDefinitions, getPDSProductIdentifier(),
+                scanType, context.getConfiguration());
+
+        templateMetaDataService.ensureTemplateAssetFilesAreAvailableInStorage(pdsTemplateMetaDataList);
+
+        String pdsTemplateMetaDataListAsJson = JSONConverter.get().toJSON(pdsTemplateMetaDataList, false);
+        parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_TEMPLATE_META_DATA_LIST, pdsTemplateMetaDataListAsJson);
     }
 
     private void handleSecHubStorageIfNecessary(SecHubConfiguration secHubConfiguration, Map<String, String> parametersToSend) {
@@ -310,4 +354,5 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     public String getDataTypesSupportedByPDSAsString() {
         return getParameter(PDSConfigDataKeyProvider.PDS_CONFIG_SUPPORTED_DATATYPES);
     }
+
 }

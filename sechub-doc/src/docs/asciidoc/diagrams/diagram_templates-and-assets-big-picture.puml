@@ -1,0 +1,40 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+skinparam linetype ortho
+
+actor user
+
+rectangle "SecHub configuration file" as config #lightgreen
+
+rectangle "Template data" as templateData #lightgreen
+
+rectangle "SecHub\nJob" as sechub
+
+rectangle "Access to extracted\nproduct specific template files\n(from asset)" as assetFile #darkorange
+
+rectangle "PDS\nJob" as pds
+rectangle "PDS launcher script\nfor PDS product" as pdsLauncherScript
+
+rectangle "Template\ndefinition" as templateDefinition
+rectangle "Project" as project
+rectangle "Asset" as asset
+
+user->config
+config ->sechub
+config o--templateData
+
+pds ..> asset
+
+sechub ..> project
+project ..> templateDefinition 
+sechub -> pds
+
+templateDefinition .> asset
+
+pds -> pdsLauncherScript
+
+pdsLauncherScript ..> assetFile
+
+@enduml
+

@@ -1,8 +1,27 @@
+/* eslint-disable indent */
 // SPDX-License-Identifier: MIT
 
 import * as shellArgSanitizer from '../src/shell-arg-sanitizer';
+import * as core from '@actions/core';
+
+jest.mock('@actions/core');
+
+const mockError = core.error as jest.MockedFunction<typeof core.error>;
+
+const debugEnabled = false;
+
+beforeEach(() => {
+    mockError.mockImplementation((message: string | Error) => {
+        if (debugEnabled) {
+            console.log(`Error: ${message}`);
+        }
+    });
+    mockError.mockClear();
+});
+
 
 describe('sanitize', () => {
+
     test.each([
         ['rm -rf /; echo hacked'], // Command chaining
         ['echo $(whoami)'], // Command substitution
@@ -69,7 +88,7 @@ describe('sanitize', () => {
         (arg) => {
             /* test */
             expect(() => shellArgSanitizer.sanitize(arg)).not.toThrow();
-    });
+        });
 
     it('removes whitespaces', function () {
         /* prepare */

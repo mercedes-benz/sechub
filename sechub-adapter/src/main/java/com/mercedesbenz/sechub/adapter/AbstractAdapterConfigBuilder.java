@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.support.URIShrinkSupport;
+import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
 /**
@@ -69,10 +70,11 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      *
      * @param strategy
      * @return builder (configured by strategy)
+     * @throws ConfigurationFailureException
      */
     @Override
     @SuppressWarnings("unchecked")
-    public final B configure(AdapterConfigurationStrategy strategy) {
+    public final B configure(AdapterConfigurationStrategy strategy) throws ConfigurationFailureException {
         strategy.configure((B) this);
         return (B) this;
     }

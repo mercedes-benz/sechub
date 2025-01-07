@@ -12,13 +12,12 @@ import com.mercedesbenz.sechub.zapwrapper.util.TargetConnectionChecker;
 public class ZapScanExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanExecutor.class);
 
-    ZapScannerFactory zapScannerFactory;
+    private final ZapScannerFactory zapScannerFactory;
+    private final TargetConnectionChecker connectionChecker;
 
-    TargetConnectionChecker connectionChecker;
-
-    public ZapScanExecutor() {
-        zapScannerFactory = new ZapScannerFactory();
-        connectionChecker = new TargetConnectionChecker();
+    public ZapScanExecutor(ZapScannerFactory zapScannerFactory, TargetConnectionChecker connectionChecker) {
+        this.zapScannerFactory = zapScannerFactory;
+        this.connectionChecker = connectionChecker;
     }
 
     public void execute(ZapScanContext scanContext) throws ZapWrapperRuntimeException {

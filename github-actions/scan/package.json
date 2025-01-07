@@ -1,10 +1,11 @@
 {
   "name": "sechub-scan-action",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "GitHub Action for SecHub scan",
   "main": "dist/main.js",
   "scripts": {
     "build": "ncc build src/main.ts",
+    "deploy": "./deploy.sh",
     "cleanBuild": "ncc cache clean;ncc build src/main.ts",
     "lint": "eslint src",
     "prettier": "npx prettier --write src",

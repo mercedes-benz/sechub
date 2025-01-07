@@ -41,12 +41,14 @@ public class TestWebLoginConfigurationBuilder {
         return builder;
     }
 
-    public TestWebLoginConfigurationBuilder totp(String seed, int validityInSeconds, TOTPHashAlgorithm hashAlgorithm, int tokenLength) {
+    public TestWebLoginConfigurationBuilder totp(String seed, int validityInSeconds, TOTPHashAlgorithm hashAlgorithm, int tokenLength,
+            EncodingType encodingType) {
         WebLoginTOTPConfiguration totp = new WebLoginTOTPConfiguration();
         totp.setSeed(seed);
         totp.setValidityInSeconds(validityInSeconds);
         totp.setHashAlgorithm(hashAlgorithm);
         totp.setTokenLength(tokenLength);
+        totp.setEncodingType(encodingType);
         loginConfig.setTotp(totp);
 
         return this;

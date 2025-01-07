@@ -11,9 +11,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import com.mercedesbenz.sechub.commons.model.*;
-import com.mercedesbenz.sechub.commons.model.login.*;
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.Action;
+import com.mercedesbenz.sechub.commons.model.login.ActionType;
+import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.EncodingType;
+import com.mercedesbenz.sechub.commons.model.login.FormLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.Page;
+import com.mercedesbenz.sechub.commons.model.login.Script;
+import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -63,8 +86,8 @@ class ExampleFilesValidTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ExampleFile.class)
-    void every_sechub_config_file_is_valid(ExampleFile file) {
+    @EnumSource(SecHubConfigExampleFile.class)
+    void every_sechub_config_file_is_valid(SecHubConfigExampleFile file) {
         /* prepare */
         String json = TestFileReader.readTextFromFile(file.getPath());
         SecHubScanConfiguration config = null;
@@ -81,10 +104,10 @@ class ExampleFilesValidTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
+    @EnumSource(value = SecHubConfigExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
             "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE", "WEBSCAN_HEADER_SCAN", "WEBSCAN_CLIENT_CERTIFICATE",
             "WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP" }, mode = EnumSource.Mode.INCLUDE)
-    void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(ExampleFile file) {
+    void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(SecHubConfigExampleFile file) {
         /* prepare */
         String json = TestFileReader.readTextFromFile(file.getPath());
 
@@ -102,7 +125,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_anonymous_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_ANONYMOUS.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_ANONYMOUS.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -121,7 +144,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_basic_auth_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_BASIC_AUTH.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_BASIC_AUTH.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -144,7 +167,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_form_based_script_auth_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -168,7 +191,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_openapi_with_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_OPENAPI_WITH_DATA_REFERENCE.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_OPENAPI_WITH_DATA_REFERENCE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -185,7 +208,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_client_certificate_with_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -205,7 +228,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_client_certificate_with_openapi_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_CLIENT_CERTIFICATE.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -222,7 +245,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_header_scan_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_HEADER_SCAN.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_HEADER_SCAN.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -250,7 +273,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_header_from_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -283,7 +306,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_form_based_script_auth_with_totp_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(ExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP.getPath());
+        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -307,6 +330,29 @@ class ExampleFilesValidTest {
         assertEquals(60, totp.getValidityInSeconds());
         assertEquals(8, totp.getTokenLength());
         assertEquals(TOTPHashAlgorithm.HMAC_SHA256, totp.getHashAlgorithm());
+        assertEquals(EncodingType.BASE64, totp.getEncodingType());
+    }
+
+    @Test
+    void pds_param_template_metadata_array_syntax_example_is_valid() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(PDSDataExampleFile.PDS_PARAM_TEMPLATE_META_DATA_SYNTAX.getPath());
+
+        /* execute */
+        List<PDSTemplateMetaData> result = JSONConverter.get().fromJSONtoListOf(PDSTemplateMetaData.class, json);
+
+        /* test */
+        assertEquals(1, result.size());
+        PDSTemplateMetaData data = result.iterator().next();
+        assertEquals("templateId", data.getTemplateId());
+        assertEquals(TemplateType.WEBSCAN_LOGIN, data.getTemplateType());
+
+        PDSAssetData assetData = data.getAssetData();
+        assertNotNull(assetData);
+        assertEquals("assetId", assetData.getAssetId());
+        assertEquals("fileChecksum", assetData.getChecksum());
+        assertEquals("fileName", assetData.getFileName());
+
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {

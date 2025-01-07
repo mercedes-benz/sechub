@@ -641,7 +641,7 @@ We explain the integration test setup based on the IntelliJ IDEA IDE.
 First run the following commands to create the necessary certificates for the integration test servers:
 
 ----
-./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
 ----
 ----
 ./gradlew clean

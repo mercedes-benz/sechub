@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <script setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
@@ -14,22 +15,35 @@ const links = [
   {
     name: 'Product Delegation Server',
     href: 'https://mercedes-benz.github.io/sechub/latest/pds-download.html'
+  },
+  {
+    name: 'Kubernetes Images and Charts',
+    href: 'https://github.com/mercedes-benz/sechub/packages'
   }
 ];
 </script>
 
 <template>
-  <section aria-label="Download Sechub" id="download" class="relative overflow-hidden py-32">
+  <section aria-label="Download Sechub" id="download" class="relative bg-gray-100 py-32">
     <AbstractCircularAnimation />
 
     <div class="container">
       <div class="mx-auto max-w-md sm:text-center">
         <h2 class="text-3xl font-medium tracking-tight text-gray-900 sm:text-4xl">Start Using Today!</h2>
         <p class="mt-4 text-lg text-gray-700">
-          Download SecHub for seamless security integration. Orchestrates tools through a unified API. Scan
-          synchronously, break build pipelines. MIT License.
+          Download SecHub for seamless security integration.<br>Orchestrates security tools through an unified API.<br>MIT License.
         </p>
 
+        <Menu as="div" class="relative mt-8 inline-block text-left">
+          <div>
+            <MenuButton class="button">
+              <a href="https://mercedes-benz.github.io/sechub/index-old.html">
+                Downloads
+              </a>
+            </MenuButton>
+          </div>
+        </Menu>
+        <!-- Re-enable this block once issue #3744 is solved
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
             <MenuButton class="button">
@@ -53,7 +67,7 @@ const links = [
                 <NuxtLink
                   :to="link.href"
                   target="_blank"
-                  class="group flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-700 transition-colors duration-300 hover:bg-fern-500 hover:text-white"
+                  class="group flex w-full rounded-md px-2 py-2 text-sm text-gray-700 transition-colors duration-300 hover:bg-fern-500 hover:text-white"
                 >
                   {{ link.name }}
                 </NuxtLink>
@@ -61,6 +75,7 @@ const links = [
             </MenuItems>
           </transition>
         </Menu>
+        -->
       </div>
     </div>
   </section>

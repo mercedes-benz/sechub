@@ -35,6 +35,7 @@ public class Project {
     public static final String TABLE_NAME_PROJECT_TO_METADATA = "ADM_PROJECT_TO_METADATA";
     public static final String TABLE_NAME_PROJECT_WHITELIST_URI = "ADM_PROJECT_WHITELIST_URI";
     public static final String TABLE_NAME_PROJECT_METADATA = "ADM_PROJECT_METADATA";
+    public static final String TABLE_NAME_PROJECT_TEMPLATES = "ADM_PROJECT_TEMPLATES";
 
     public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
     public static final String COLUMN_PROJECT_OWNER = "PROJECT_OWNER";
@@ -43,10 +44,12 @@ public class Project {
     public static final String COLUMN_METADATA = "METADATA_KEY";
 
     public static final String COLUMN_PROJECT_ACCESS_LEVEL = "PROJECT_ACCESS_LEVEL";
+    public static final String COLUMN_TEMPLATE_ID = "PROJECT_TEMPLATE_ID";
 
     public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
     public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
     public static final String ASSOCIATE_PROJECT_TO_METADATA_COLUMN_PROJECT_ID = "PROJECT_ID";
+    public static final String ASSOCIATE_PROJECT_TO_TEMPLATE_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -88,6 +91,11 @@ public class Project {
     @OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = ProjectMetaDataEntity.PROPERTY_PROJECT_ID)
     Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 
+    @Column(name = COLUMN_TEMPLATE_ID, nullable = false)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = TABLE_NAME_PROJECT_TEMPLATES)
+    Set<String> templateIds = new HashSet<>();
+
     @Version
     @Column(name = "VERSION")
     Integer version;
@@ -125,6 +133,10 @@ public class Project {
 
     public ProjectAccessLevel getAccessLevel() {
         return accessLevel;
+    }
+
+    public Set<String> getTemplateIds() {
+        return templateIds;
     }
 
     @Override

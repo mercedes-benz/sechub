@@ -29,6 +29,7 @@ public class AsciidocGeneratorTest {
         generatorToTest.writer = mock(DocGenTextFileWriter.class);
 
         when(generatorToTest.propertiesGenerator.generate(any(), any())).thenReturn("properties-test");
+        when(generatorToTest.propertiesGenerator.generate(any(), any(), any())).thenReturn("properties-test");
         when(generatorToTest.scheduleDescriptionGenerator.generate(generatorToTest.collector)).thenReturn("schedule-test");
     }
 
@@ -69,7 +70,7 @@ public class AsciidocGeneratorTest {
         generatorToTest.generateSecHubSystemPropertiesDescription(genContext);
 
         /* test */
-        verify(generatorToTest.propertiesGenerator).generate(any(), any());
+        verify(generatorToTest.propertiesGenerator).generate(any(), any(), any());
         verify(generatorToTest.writer).writeTextToFile(genContext.systemProperitesFile, "properties-test");
 
     }

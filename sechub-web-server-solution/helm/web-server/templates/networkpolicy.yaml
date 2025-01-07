@@ -5,14 +5,14 @@ kind: NetworkPolicy
 metadata:
   name: web-server-policy
 spec:
-  ingress:
-  - ports:
-{{- if .Values.go_mmproxy.enabled }}
-    - port: 8080
-{{- else }}
-    - port: 4443
-{{- end }}
-      protocol: TCP
   podSelector:
     matchLabels:
       name: web-server
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: web-ui # Allow SecHub Web-UI access
+    ports:
+    - protocol: TCP
+      port: 4443

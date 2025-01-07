@@ -24,7 +24,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
@@ -37,6 +40,9 @@ import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
+import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
@@ -1423,6 +1429,113 @@ public class AsUser {
         String url = getUrlBuilder().buildAdminFetchesEncryptionStatus();
         String json = getRestHelper().getJSON(url);
         return SecHubEncryptionStatus.fromString(json);
+    }
+
+    public AsUser createOrUpdateTemplate(String templateId, TemplateDefinition definition) {
+        String url = getUrlBuilder().buildAdminCreatesOrUpdatesTemplate(templateId);
+        getRestHelper().putJSON(url, definition.toFormattedJSON());
+        return this;
+    }
+
+    public TemplateDefinition fetchTemplateDefinitionOrNull(String templateId) {
+        String url = getUrlBuilder().buildAdminFetchesTemplate(templateId);
+        try {
+            String json = getRestHelper().getJSON(url);
+            return TemplateDefinition.from(json);
+
+        } catch (HttpClientErrorException e) {
+            HttpStatusCode statusCode = e.getStatusCode();
+            if (statusCode.equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw e;
+        }
+    }
+
+    public void assignTemplateToProject(String templateid, TestProject project) {
+        String url = getUrlBuilder().buildAdminAssignsTemplateToProjectUrl(templateid, project.getProjectId());
+        getRestHelper().put(url);
+    }
+
+    public void unassignTemplateFromProject(String templateid, TestProject project) {
+        String url = getUrlBuilder().buildAdminUnAssignsTemplateToProjectUrl(templateid, project.getProjectId());
+        getRestHelper().delete(url);
+    }
+
+    public ProjectDetailInformation fetchProjectDetailInformation(TestProject project) {
+        String url = getUrlBuilder().buildAdminFetchProjectInfoUrl(project.getProjectId());
+        String json = getRestHelper().getJSON(url);
+        ProjectDetailInformation result = JSONConverter.get().fromJSON(ProjectDetailInformation.class, json);
+        return result;
+    }
+
+    public void deleteTemplate(String templateId) {
+        String url = getUrlBuilder().buildAdminDeletesTemplate(templateId);
+        getRestHelper().delete(url);
+    }
+
+    public List<String> fetchTemplateList() {
+        String url = getUrlBuilder().buildAdminFetchesTemplateList();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(String.class, json);
+    }
+
+    public AsUser uploadAssetFile(String assetId, File file) {
+        String url = getUrlBuilder().buildAdminUploadsAssetFile(assetId);
+        String checkSum = TestAPI.createSHA256Of(file);
+        /* @formatter:off */
+        autoDumper.execute(() -> getRestHelper().upload(url,file,checkSum)
+        );
+        /* @formatter:on */
+        return this;
+    }
+
+    public AsUser uploadAssetFiles(String assetId, File... files) {
+        for (File file : files) {
+            uploadAssetFile(assetId, file);
+        }
+        return this;
+    }
+
+    public File downloadAssetFile(String assetId, String fileName) {
+        String url = getUrlBuilder().buildAdminDownloadsAssetFile(assetId, fileName);
+        /* @formatter:off */
+        RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
+
+        ResponseExtractor<File> responseExtractor = response -> {
+            Path path = TestUtil.createTempFileInBuildSubFolder("assets/"+assetId, fileName);
+            Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
+            if (TestUtil.isDeletingTempFiles()) {
+                path.toFile().deleteOnExit();
+            }
+            return path.toFile();
+        };
+        RestTemplate template = getRestHelper().getTemplate();
+        File downloadedAssetFile = template.execute(url, HttpMethod.GET, requestCallback, responseExtractor);
+
+        return downloadedAssetFile;
+    }
+
+    public List<String> fetchAllAssetIds() {
+        String url = getUrlBuilder().buildAdminFetchesAllAssetIds();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(String.class, json);
+    }
+
+    public AssetDetailData fetchAssetDetails(String assetId) {
+        String url = getUrlBuilder().buildAdminFetchesAssetDetails(assetId);
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSON(AssetDetailData.class, json);
+    }
+
+    public void deleteAssetFile(String assetId, String fileName) {
+        String url = getUrlBuilder().buildAdminDeletesAssetFile(assetId, fileName);
+        getRestHelper().delete(url);
+    }
+
+    public void deleteAsset(String assetId) {
+        String url = getUrlBuilder().buildAdminDeletesAsset(assetId);
+        getRestHelper().delete(url);
     }
 
 }

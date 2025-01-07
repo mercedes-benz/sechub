@@ -99,9 +99,12 @@ Just call
 ./gradlew documentation
 ----
 
-==== Publish artefacts
-Just call
-----
-./gradlew publish
-----
-_(if not already builds done this will be triggered automatically)_
+=== Publishing artifacts / development naming convention
+https://github.com/mercedes-benz/sechub/packages[Artifacts] are being published automatically when a https://github.com/mercedes-benz/sechub/actions?query=workflow%3A%22Release*%22[release workflow] runs on github.com.
+
+If you publish artifacts while developing and testing then make sure that the versioning tag contains "-SNAPSHOT" behind the product version.
+
+Examples (SecHub server 1.10.0 development): +
+- `1.10.0_alpine-SNAPSHOT` +
+- `1.10.0_alpine-SNAPSHOT1` +
+- `1.10.0_alpine-SNAPSHOT-2024-11-30`

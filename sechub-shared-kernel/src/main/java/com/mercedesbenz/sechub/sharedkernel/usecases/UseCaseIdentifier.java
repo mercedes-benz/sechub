@@ -176,14 +176,40 @@ public enum UseCaseIdentifier {
 
     UC_ENCRYPTION_CLEANUP(77, false), // encryption cleanup is done by auto cleanup mechanism, no REST call necessary
 
+    /* job suspension */
     UC_SYSTEM_SUSPENDS_JOBS_WHEN_SIGTERM_RECEIVED(79, false),
 
     UC_SYSTEM_RESUMES_FORMER_SUSPENDED_JOBS(80, false),
 
     UC_GET_PROJECT_DATA(81),
 
-    ;
+    /* templates */
+    UC_ADMIN_CREATES_OR_UPDATES_TEMPLATE(82),
 
+    UC_ADMIN_DELETES_TEMPLATE(83),
+
+    UC_ADMIN_FETCHES_TEMPLATE(84),
+
+    UC_ADMIN_FETCHES_ALL_TEMPLATE_IDS(85),
+
+    UC_ADMIN_ASSIGNES_TEMPLATE_TO_PROJECT(86),
+
+    UC_ADMIN_UNASSIGNES_TEMPLATE_FROM_PROJECT(87),
+
+    /* assets */
+    UC_ADMIN_UPLOADS_ASSET_FILE(88),
+
+    UC_ADMIN_DOWNLOADS_ASSET_FILE(89),
+
+    UC_ADMIN_FETCHES_ASSET_IDS(90),
+
+    UC_ADMIN_FETCHES_ASSET_DETAILS(91),
+
+    UC_ADMIN_DELETES_ONE_FILE_FROM_ASSET(92),
+
+    UC_ADMIN_DELETES_ASSET_COMPLETELY(93),
+
+    ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +-----------------------------------------------------------------------+ */

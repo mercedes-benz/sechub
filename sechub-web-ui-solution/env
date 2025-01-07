@@ -1,9 +1,5 @@
-# Node Version
+# Base image Version
 BASE_IMAGE=debian:12-slim
-
-# Resource limits
-MEMORY_LIMIT=300M
-CPU_LIMIT=1.0
 
 # The build type of SecHub inside the container
 # Possible values are: build, copy, download (currently only copy)
@@ -13,8 +9,11 @@ CPU_LIMIT=1.0
 BUILD_TYPE=download
 
 # The PDS version used if the BUILD_TYPE is set to `download`
-WEB_UI_VERSION="0.1.0"
+WEB_UI_VERSION="0.2.0"
 
 # Git information if the BUILD_TYPE is set to `build`
 GIT_TAG=""
 GIT_BRANCH=""
+WEB_UI_SSL_KEYSTORE_ALIAS="undefined"
+
+# Please see docker/nignx/config.json for ENV variables for the SPA itself
