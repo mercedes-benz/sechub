@@ -21,11 +21,13 @@
       :label="$t('SCAN_CREATE_SOURCE_CODE')"
       :value="1"
     />
+    <!-- 
     <v-radio
       color="primary"
       :label="$t('SCAN_CREATE_BINARIES')"
       :value="2"
     />
+    -->
   </v-radio-group>
   <v-alert
     class="pa-2, mb-5"
@@ -93,9 +95,10 @@
             errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
             break
           case 2:
-            fileType = 'binaries'
-            validType = file.value?.type === 'application/x-tar'
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
+            // binary upload currently not needed
+            // fileType = 'binaries'
+            // validType = file.value?.type === 'application/x-tar'
+            // errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
             break
         }
 

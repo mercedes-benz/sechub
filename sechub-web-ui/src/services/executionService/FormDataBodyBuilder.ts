@@ -82,7 +82,8 @@ export class FormDataBodyBuilder {
   }
 
   private async appendFileInChunks (file: File, parts: (string | Uint8Array)[]): Promise<void> {
-    const chunkSize = 64 * 1024 * 1024 // 64MB chunks
+    // const chunkSize = 64 * 1024 * 1024 // 64MB chunks
+    const chunkSize = 8192; // 8KB chunks
     for (let offset = 0; offset < file.size; offset += chunkSize) {
       const chunk = file.slice(offset, offset + chunkSize)
       const arrayBuffer = await chunk.arrayBuffer()

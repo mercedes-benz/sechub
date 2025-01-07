@@ -13,7 +13,6 @@ import i18n from '@/i18n'
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {
   async scan (configuration: SecHubConfiguration, projectId: string, file: File): Promise<string[]> {
-    console.log(JSON.stringify(configuration))
     const errorMessages: string[] = []
     try {
       const jobId = await this.createJob(configuration)
