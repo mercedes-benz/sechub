@@ -21,7 +21,7 @@
       :label="$t('SCAN_CREATE_SOURCE_CODE')"
       :value="1"
     />
-    <!-- 
+    <!--
     <v-radio
       color="primary"
       :label="$t('SCAN_CREATE_BINARIES')"

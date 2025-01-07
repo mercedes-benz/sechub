@@ -146,8 +146,8 @@
 
       onMounted(async () => {
         fetchProjectJobs(currentRequestParameters)
-        // polling every 10 sec. for result
-        setInterval(() => fetchProjectJobs(currentRequestParameters), 10000);
+        // polling every 10 sec. for job states
+        setInterval(() => fetchProjectJobs(currentRequestParameters), 10000)
       })
 
       return {

@@ -9,7 +9,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
-    copy: typeof import('./components/ScanFileUpload copy.vue')['default']
     Pagination: typeof import('./components/Pagination.vue')['default']
     Project: typeof import('./components/Project.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
