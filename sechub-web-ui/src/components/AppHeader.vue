@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-  const username = 'Erika Mustermann'
+  const username = 'SecHub User'
 </script>
 
 <style scoped>

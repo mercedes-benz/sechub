@@ -13,8 +13,13 @@ declare module 'vue' {
     Project: typeof import('./components/Project.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
     ProjectDetailsFab: typeof import('./components/ProjectDetailsFab.vue')['default']
+    ProjectJobList: typeof import('./components/ProjectJobList.vue')['default']
     ProjectsList: typeof import('./components/ProjectsList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScanCreate: typeof import('./components/ScanCreate.vue')['default']
+    ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
+    ScanFileUploadTest: typeof import('./components/ScanFileUploadTest.vue')['default']
+    ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
   }
 }
