@@ -3,6 +3,7 @@ package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
+import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.ARCHUNIT_SUPPORT_NOTE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +60,7 @@ public class DomainAccessRulesTest {
                 .should()
                 .accessClassesThat()
                 .resideInAnyPackage(resolveOtherDomainsThan(domainToTest))
+                .because(ARCHUNIT_SUPPORT_NOTE)
                 .check(importedClasses);
         /* @formatter:on */
     }

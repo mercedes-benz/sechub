@@ -6,6 +6,7 @@ import static com.tngtech.archunit.lang.conditions.ArchConditions.accessTargetWh
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.GeneralCodingRules.*;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
+import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.ARCHUNIT_SUPPORT_NOTE;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ public class CodingRulesTest {
         JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
-        NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);
+        NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.because(ARCHUNIT_SUPPORT_NOTE).check(importedClasses);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class CodingRulesTest {
 //                 Following lines were out-commented because of JsonSerialize annotation uses deprecated default implementation
 //                .orShould(dependOnClassesThat(annotatedWith(Deprecated.class))
 //                        .as("depend on @Deprecated classes"))
-                .because("there should be a better alternative")
+                .because("there should be a better alternative! "+ ARCHUNIT_SUPPORT_NOTE)
                 .check(importedClasses);
         /* @formatter:on */
     }
@@ -68,7 +69,7 @@ public class CodingRulesTest {
         JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
-        ASSERTIONS_SHOULD_HAVE_DETAIL_MESSAGE.check(importedClasses);
+        ASSERTIONS_SHOULD_HAVE_DETAIL_MESSAGE.because(ARCHUNIT_SUPPORT_NOTE).check(importedClasses);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class CodingRulesTest {
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
-        testClassesShouldResideInTheSamePackageAsImplementation().check(importedClasses);
+        testClassesShouldResideInTheSamePackageAsImplementation().because(ARCHUNIT_SUPPORT_NOTE).check(importedClasses);
         /* @formatter:on */
     }
 
@@ -98,7 +99,7 @@ public class CodingRulesTest {
         JavaClasses importedClasses = ignoreTestGeneratedAndDeprecatedPackages();
 
         /* execute + test */
-        NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING.check(importedClasses);
+        NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING.because(ARCHUNIT_SUPPORT_NOTE).check(importedClasses);
     }
 
     @Test
@@ -121,7 +122,7 @@ public class CodingRulesTest {
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
-        NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(importedClasses);
+        NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.because(ARCHUNIT_SUPPORT_NOTE).check(importedClasses);
         /* @formatter:on */
     }
 

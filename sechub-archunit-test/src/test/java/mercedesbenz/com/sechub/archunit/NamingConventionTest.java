@@ -3,6 +3,7 @@ package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
+import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.ARCHUNIT_SUPPORT_NOTE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class NamingConventionTest {
                 .haveSimpleNameContaining("Assert")
                 .orShould()
                 .haveNameMatching(".*\\$.*") // ignoring inner classes
-                .because("Tests classes should contain 'Test' or 'Assert' in their name.");
+                .because("Tests classes should contain 'Test' or 'Assert' in their name. " + ARCHUNIT_SUPPORT_NOTE);
 
         rule.check(importedClasses);
         /* @formatter:on */
@@ -66,7 +67,7 @@ public class NamingConventionTest {
                 .haveSimpleNameContaining("Service")
                 .orShould()
                 .haveSimpleNameContaining("Executor")
-                .because("Service classes should contain 'Service' or 'Executor' in their name.")
+                .because("Service classes should contain 'Service' or 'Executor' in their name. " + ARCHUNIT_SUPPORT_NOTE)
                 .check(importedClasses);
         /* @formatter:on */
     }
