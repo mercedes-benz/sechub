@@ -473,22 +473,58 @@ spec:
         - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
           value: "{{ .Values.server.spring.embeddedTomcat.logging.accessLogFormat }}"
 {{- end }}
-{{- if .Values.oauth2.enabled }}
 # ----------------------------------------------------------------------------------------------#
-# - Scope: Oauth2
+# - Scope: security
 # --------------------------------------------------------------------------------------------- #
         # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
-        - name: SECHUB_SECURITY_OAUTH2_MODE
-          value: "{{ .Values.oauth2.mode }}"
-        - name: SECHUB_SECURITY_OAUTH2_JWK_SET_URI
-          value: "{{ .Values.oauth2.jwt.uri }}"
-        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_ID
-          value: "{{ .Values.oauth2.opaque_token.client_id }}"
-        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_CLIENT_SECRET
-          value: "{{ .Values.oauth2.opaque_token.client_secret }}"
-        - name: SECHUB_SECURITY_OAUTH2_OPAQUE_TOKEN_INTROSPECTION_URI
-          value: "{{ .Values.oauth2.opaque_token.introspection_uri }}"
+        - name: SECHUB_SECURITY_SERVER_MODES
+          value: "{{ .Values.security.resourceServer.modes }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_MODE
+          value: "{{ .Values.security.resourceServer.oauth2.mode }}"
+        # OAuth2 mode can be either 'jwt' or 'opaque-token'. Exactly one must be active.
+{{- if eq .Values.security.resourceServer.oauth2.mode "jwt" }}
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_JWT_JWK_SET_URI
+          value: "{{ .Values.security.resourceServer.oauth2.jwt.jwkSetUri }}"
+{{- else if eq .Values.security.resourceServer.oauth2.mode "opaque-token" }}
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_CLIENT_ID
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientId }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_CLIENT_SECRET
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientSecret }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_INTROSPECTION_URI
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.introspectionUri }}"
 {{- end }}
+        - name: SECHUB_SECURITY_LOGIN_ENABLED
+          value: "{{ .Values.security.login.enabled }}"
+{{- if .Values.security.login.enabled }}
+        - name: SECHUB_SECURITY_LOGIN_LOGIN_PAGE
+          value: "{{ .Values.security.login.loginPage }}"
+        - name: SECHUB_SECURITY_LOGIN_REDIRECT_URI
+          value: "{{ .Values.security.login.redirectUri }}"
+        - name: SECHUB_SECURITY_LOGIN_MODES
+          value: "{{ .Values.security.login.modes }}"
+  {{- if contains "oauth2" .Values.security.login.modes }}
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENT_ID
+          value: "{{ .Values.security.login.oauth2.clientId }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENT_SECRET
+          value: "{{ .Values.security.login.oauth2.clientSecret }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_PROVIDER
+          value: "{{ .Values.security.login.oauth2.provider }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_AUTHORIZATION_URI
+          value: "{{ .Values.security.login.oauth2.uri.authorization }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_ISSUER_URI
+          value: "{{ .Values.security.login.oauth2.uri.issuer }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_JWK_SET_URI
+          value: "{{ .Values.security.login.oauth2.uri.jwkSet }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_REDIRECT_URI
+          value: "{{ .Values.security.login.oauth2.uri.redirect }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_TOKEN_URI
+          value: "{{ .Values.security.login.oauth2.uri.token }}"
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_USER_INFO_URI
+          value: "{{ .Values.security.login.oauth2.uri.userInfo }}"
+  {{- end }}
+{{- end }}
+        - name: SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
+          value: "{{ .Values.security.encryption.secretKey }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage
 # --------------------------------------------------------------------------------------------- #
