@@ -24,4 +24,6 @@ dependencies {
     testImplementation library.arch_unit
 }
 
+
+
 // executing archunit tests: ./gradlew sechub-archunit-test:test

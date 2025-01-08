@@ -12,15 +12,15 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 
-public class RestDocumentation {
+public class RestDocumentationTest {
 
     private RestDocumentationDetails details;
 
-    public static RestDocumentation defineRestService() {
-        return new RestDocumentation();
+    public static RestDocumentationTest defineRestService() {
+        return new RestDocumentationTest();
     }
 
-    private RestDocumentation() {
+    private RestDocumentationTest() {
         this.details = new RestDocumentationDetails();
     }
 
@@ -109,8 +109,8 @@ public class RestDocumentation {
             return this;
         }
 
-        public RestDocumentation and() {
-            return RestDocumentation.this;
+        public RestDocumentationTest and() {
+            return RestDocumentationTest.this;
         }
 
     }

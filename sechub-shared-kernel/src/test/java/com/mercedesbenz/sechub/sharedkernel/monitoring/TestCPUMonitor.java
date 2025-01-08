@@ -9,7 +9,7 @@ import java.lang.management.OperatingSystemMXBean;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CPUMonitorTest {
+public class TestCPUMonitor {
 
     private OperatingSystemMXBean bean;
     private CPUMonitor monitorToTest;

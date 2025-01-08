@@ -6,12 +6,12 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SimulatedSchedulerAsManagedCPUConsumer {
+public class SimulatedSchedulerAsManagedCPUConsumerTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SimulatedSchedulerAsManagedCPUConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimulatedSchedulerAsManagedCPUConsumerTest.class);
     private Random random;
 
-    SimulatedSchedulerAsManagedCPUConsumer() {
+    SimulatedSchedulerAsManagedCPUConsumerTest() {
         this.random = new Random(System.currentTimeMillis());
     }
 

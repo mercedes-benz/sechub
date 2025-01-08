@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.restdoc;
 
 import com.epages.restdocs.apispec.Schema;
 
-enum OpenApiSchema {
+enum TestOpenApiSchema {
     MAPPING_CONFIGURATION("MappingConfiguration"),
 
     JOB_STATUS("JobStatus"),
@@ -72,7 +72,7 @@ enum OpenApiSchema {
 
     private final Schema schema;
 
-    private OpenApiSchema(String schemaName) {
+    private TestOpenApiSchema(String schemaName) {
         schema = new Schema(schemaName);
     }
 

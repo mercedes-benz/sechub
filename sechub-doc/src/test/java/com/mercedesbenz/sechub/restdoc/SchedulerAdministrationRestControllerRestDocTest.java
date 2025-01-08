@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -73,7 +73,7 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
 		this.mockMvc.perform(
 				post(apiEndpoint).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -101,7 +101,7 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
 		this.mockMvc.perform(
 				post(apiEndpoint).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -129,7 +129,7 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminEnablesSchedulerJobProcessing()).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().

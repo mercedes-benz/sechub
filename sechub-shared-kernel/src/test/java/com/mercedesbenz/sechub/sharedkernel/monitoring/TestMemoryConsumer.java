@@ -6,9 +6,9 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MemoryConsumer {
+public class TestMemoryConsumer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MemoryConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestMemoryConsumer.class);
     private Random random;
 
     public void consumeMemory(SystemMonitorService monitor, int maxThreads, int threadNr) {

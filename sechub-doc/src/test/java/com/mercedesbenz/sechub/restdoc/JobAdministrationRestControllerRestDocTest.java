@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -100,14 +100,14 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 		this.mockMvc.perform(
 					get(apiEndpoint).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.RUNNING_JOB_LIST.getSchema()).
+                    responseSchema(TestOpenApiSchema.RUNNING_JOB_LIST.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -138,7 +138,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
 		this.mockMvc.perform(
 					post(apiEndpoint, jobUUID).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -171,7 +171,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
         this.mockMvc.perform(
 	                post(apiEndpoint, jobUUID).
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -204,7 +204,7 @@ public class JobAdministrationRestControllerRestDocTest implements TestIsNecessa
         this.mockMvc.perform(
 	                post(apiEndpoint,jobUUID).
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().

@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.sereco.metadata;
 
 import java.util.List;
 
-public class MetaDataAccess {
+public class TestMetaDataAccess {
 
     public static void setClassification(SerecoVulnerability search, SerecoClassification classification) {
         search.classification = classification;

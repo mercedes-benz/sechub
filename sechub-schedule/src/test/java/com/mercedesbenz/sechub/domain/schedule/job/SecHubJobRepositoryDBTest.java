@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.domain.schedule.job;
 
 import static com.mercedesbenz.sechub.commons.model.job.ExecutionState.*;
-import static com.mercedesbenz.sechub.domain.schedule.job.JobCreator.*;
+import static com.mercedesbenz.sechub.domain.schedule.job.TestJobCreator.*;
 import static com.mercedesbenz.sechub.test.FlakyOlderThanTestWorkaround.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,11 +59,11 @@ public class SecHubJobRepositoryDBTest {
     @Autowired
     private SecHubJobRepository jobRepository;
 
-    private JobCreator jobCreator;
+    private TestJobCreator testJobCreator;
 
     @BeforeEach
     void before() {
-        jobCreator = jobCreator(PROJECT_ID, entityManager);
+        testJobCreator = jobCreator(PROJECT_ID, entityManager);
     }
 
     @Test
@@ -114,18 +114,18 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(ints = { 0, 1, 2, 10 })
     void countCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_works_as_expected(int expectedResultCount) {
         /* prepare */
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
 
         // generate data
         if (expectedResultCount > 0) {
-            jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+            testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
         }
         if (expectedResultCount > 1) {
             for (int i = 1; i < expectedResultCount; i++) {
-                jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+                testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
             }
         }
 
@@ -140,11 +140,11 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(ints = { 1, 2, 4 })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_only_single_entry_always_returned(int amount) {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
 
         // check preconditions
         assertEquals(0, newJob1.getEncryptionCipherPoolId());
@@ -166,11 +166,11 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(ints = { 1, 2, 4 })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_is_lower_ended_only_single_entry_always_returned(int amount) {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(0L).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(2L).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(3L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(0L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(1L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(2L).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p2").module(ModuleGroup.STATIC).encryptionPoolId(3L).being(ExecutionState.ENDED).create();
 
         // check preconditions
         assertEquals(0, newJob1.getEncryptionCipherPoolId());
@@ -192,12 +192,12 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(ints = { 2, 10, 100 })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_one_ended_one_canceled_entries_always_returned(int amount) {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
-        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob6 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
 
         // check preconditions
         assertEquals(0, newJob1.getEncryptionCipherPoolId());
@@ -228,12 +228,12 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_randomization_works() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob6 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob6 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
 
         // check preconditions
         assertEquals(0, newJob1.getEncryptionCipherPoolId());
@@ -274,10 +274,11 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(longs = { 0L, 1L, 100L })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_lower_encryption_entries_are_returned(long encryptionPoolId) {
         /* prepare */
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId)
+                .create();
 
         long newerEncryptionIdOnQuery = encryptionPoolId + 1;
 
@@ -293,10 +294,10 @@ public class SecHubJobRepositoryDBTest {
     @ValueSource(longs = { 0L, 1L, 100L })
     void nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan_no_entries_returned_when_same_encryption_id_already_set(long encryptionPoolId) {
         /* prepare */
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(encryptionPoolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(encryptionPoolId).create();
 
         /* execute */
         List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(encryptionPoolId, 10);
@@ -311,10 +312,10 @@ public class SecHubJobRepositoryDBTest {
         /* prepare */
         long newerEncryptionPoolId = encryptionPoolId + 1;
 
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(newerEncryptionPoolId).create();
-        jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(newerEncryptionPoolId).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(newerEncryptionPoolId).create();
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(newerEncryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).encryptionPoolId(newerEncryptionPoolId).create();
+        testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).encryptionPoolId(newerEncryptionPoolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).encryptionPoolId(newerEncryptionPoolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).encryptionPoolId(newerEncryptionPoolId).create();
 
         /* execute */
         List<ScheduleSecHubJob> list = jobRepository.nextCanceledOrEndedJobsWithEncryptionPoolIdLowerThan(encryptionPoolId, 10);
@@ -329,10 +330,10 @@ public class SecHubJobRepositoryDBTest {
         String projectId = "p1";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         entityManager.persist(job2);
 
         entityManager.flush();
@@ -361,10 +362,10 @@ public class SecHubJobRepositoryDBTest {
         String projectId = "p1";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         entityManager.persist(job2);
 
         entityManager.flush();
@@ -395,11 +396,11 @@ public class SecHubJobRepositoryDBTest {
         String value = "testvalue1";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData(acceptedKey, value);
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job2.addData("other", value);
         entityManager.persist(job2);
 
@@ -431,7 +432,7 @@ public class SecHubJobRepositoryDBTest {
         String value = "testvalue1";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData(acceptedKey, value);
         entityManager.persist(job1);
 
@@ -459,7 +460,7 @@ public class SecHubJobRepositoryDBTest {
         String sameValue = "testvalue1";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData("testkey1", sameValue);
         entityManager.persist(job1);
 
@@ -489,12 +490,12 @@ public class SecHubJobRepositoryDBTest {
         String value = "testvalue3";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData("other1", value);
         job1.addData(searchKey, value);
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job2.addData("other2", value);
         job2.addData(searchKey, value);
         entityManager.persist(job2);
@@ -530,7 +531,7 @@ public class SecHubJobRepositoryDBTest {
         String key = "testkey-common";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData(key, value);
         entityManager.persist(job1);
 
@@ -560,11 +561,11 @@ public class SecHubJobRepositoryDBTest {
         String value = "testvalue";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData(key, "other");
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job2.addData(key, value);
         entityManager.persist(job2);
 
@@ -595,16 +596,16 @@ public class SecHubJobRepositoryDBTest {
         String value = "testvalue";
 
         // persist data
-        ScheduleSecHubJob job1 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job1 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job1.addData("other-key1", value);
         entityManager.persist(job1);
 
-        ScheduleSecHubJob job2 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job2 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job2.addData("other-key1", value);
         job2.addData(key, value);
         entityManager.persist(job2);
 
-        ScheduleSecHubJob job3 = jobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
+        ScheduleSecHubJob job3 = testJobCreator.being(ExecutionState.READY_TO_START).project(projectId).create();
         job3.addData("other-key2", value);
         job3.addData(key, value);
         entityManager.persist(job3);
@@ -634,7 +635,7 @@ public class SecHubJobRepositoryDBTest {
         /* prepare */
         String key = "testkey1";
 
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.READY_TO_START).create();
         UUID jobUUID = newJob.getUUID();
         newJob.addData(key, "testvalue1");
 
@@ -666,7 +667,7 @@ public class SecHubJobRepositoryDBTest {
         /* prepare */
         String key = "testkey1";
 
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.READY_TO_START).create();
         UUID jobUUID = newJob.getUUID();
         newJob.addData(key, "testvalue1");
 
@@ -696,7 +697,7 @@ public class SecHubJobRepositoryDBTest {
     void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_no_suspended_exists_but_only_one_job_in_other_state(ExecutionState state) {
 
         /* prepare */
-        jobCreator.being(state).ended(LocalDateTime.now().minusSeconds(2)).create();
+        testJobCreator.being(state).ended(LocalDateTime.now().minusSeconds(2)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
@@ -708,7 +709,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteSuspended_2000_ms_duration_one_suspended_exist_but_only_1_second_so_nothing_returned() {
         /* prepare */
-        jobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(1)).create();
+        testJobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(1)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 2000L);
@@ -720,7 +721,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_one_suspended_exist_older_1_second_returned() {
         /* prepare */
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
@@ -733,10 +734,10 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteSuspended_1000_ms_duration_three_suspended_exist_both_older_1_second_older_returned() {
         /* prepare */
-        jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
-        ScheduleSecHubJob newJob2 = jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
+        testJobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
                 .ended(LocalDateTime.now().minusSeconds(3)).create();
-        jobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        testJobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 1000L);
@@ -749,10 +750,10 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteSuspended_3000_ms_duration_three_suspended_exist_but_olders_only_2_second_returns_last_created_because_latest_suspended() {
         /* prepare */
-        jobCreator.created(LocalDateTime.now().minusSeconds(15)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
-        ScheduleSecHubJob newJob2 = jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
+        testJobCreator.created(LocalDateTime.now().minusSeconds(15)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED)
                 .ended(LocalDateTime.now().minusSeconds(3)).create();
-        jobCreator.created(LocalDateTime.now().minusSeconds(16)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        testJobCreator.created(LocalDateTime.now().minusSeconds(16)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 3000L);
@@ -765,9 +766,9 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteSuspended_5000_ms_duration_three_suspended_exist_both_younger_5_seconds_none_returned() {
         /* prepare */
-        jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
-        jobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(3)).create();
-        jobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
+        testJobCreator.created(LocalDateTime.now().minusSeconds(5)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(4)).create();
+        testJobCreator.created(LocalDateTime.now().minusSeconds(14)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(3)).create();
+        testJobCreator.created(LocalDateTime.now().minusSeconds(4)).being(ExecutionState.SUSPENDED).ended(LocalDateTime.now().minusSeconds(2)).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteSuspended(FIRST_ENCRYPTION_POOL_ENTRY_ONLY, 5000L);
@@ -784,7 +785,8 @@ public class SecHubJobRepositoryDBTest {
     @EnumSource(value = ExecutionState.class, names = { "READY_TO_START", "SUSPENDED" }, mode = Mode.EXCLUDE)
     void custom_query_getJob_returns_not_created_job_because_not_in_accepted_state(ExecutionState state) {
         /* prepare */
-        ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
+        ScheduleSecHubJob created = testJobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4))
+                .create();
 
         /* execute */
         Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
@@ -797,7 +799,8 @@ public class SecHubJobRepositoryDBTest {
     @EnumSource(value = ExecutionState.class, names = { "READY_TO_START", "SUSPENDED" }, mode = Mode.INCLUDE)
     void custom_query_getJob_returns_created_job_because_in_accepted_state(ExecutionState state) {
         /* prepare */
-        ScheduleSecHubJob created = jobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4)).create();
+        ScheduleSecHubJob created = testJobCreator.created(LocalDateTime.now().minusSeconds(5)).being(state).ended(LocalDateTime.now().minusSeconds(4))
+                .create();
 
         /* execute */
         Optional<ScheduleSecHubJob> result = jobRepository.getJobAndIncrementVersionWhenExecutable(created.getUUID());
@@ -812,7 +815,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {
         /* prepare */
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
@@ -825,7 +828,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectNotYetExecuted_one_available() {
         /* prepare */
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted(Set.of(0L));
@@ -838,9 +841,9 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectNotYetExecuted_2_projects_1_project_running() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -857,9 +860,9 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_2_projects_1_project_running_all_same_groups() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -876,9 +879,9 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_2_projects_1_project_running_different_groups() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -895,10 +898,10 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_2_project_running_different_groups() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -916,10 +919,10 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_2_project_running_same_groups() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -937,10 +940,10 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_4_projects_no_project_started_all_ready() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p4").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p4").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -958,12 +961,12 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_different_states() {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
-        ScheduleSecHubJob newJob6 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob6 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -983,7 +986,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void custom_query_nextJobIdToExecuteFirstInFirstOut() {
         /* prepare */
-        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob = testJobCreator.being(ExecutionState.READY_TO_START).create();
 
         /* execute */
         Optional<UUID> uuid = jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY);
@@ -1181,7 +1184,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void findByUUID__the_job_is_returned_when_existing() {
         /* prepare */
-        ScheduleSecHubJob newJob = jobCreator.create();
+        ScheduleSecHubJob newJob = testJobCreator.create();
 
         /* execute */
         Optional<ScheduleSecHubJob> job = jobRepository.findById(newJob.getUUID());
@@ -1200,7 +1203,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     void findNextJobToExecute__and_no_executable_job_available_at_all_null_is_returned_when_existing() {
         /* prepare */
-        jobCreator.newJob().being(STARTED).create();
+        testJobCreator.newJob().being(STARTED).create();
 
         /* execute + test */
         assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut(FIRST_ENCRYPTION_POOL_ENTRY_ONLY).isPresent());
@@ -1211,18 +1214,18 @@ public class SecHubJobRepositoryDBTest {
     void findNextJobToExecute__the_first_job_in_state_READY_TO_START_is_returned_when_existing() {
         /* prepare @formatter:off*/
 
-        jobCreator.newJob().being(STARTED).createAnd().
+        testJobCreator.newJob().being(STARTED).createAnd().
                    newJob().being(CANCEL_REQUESTED).createAnd().
                    newJob().being(CANCELED).createAnd().
                    newJob().being(ENDED).create();
 
         ScheduleSecHubJob expectedNextJob =
-        jobCreator.newJob().being(READY_TO_START).create();
+        testJobCreator.newJob().being(READY_TO_START).create();
 
         TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
 
 
-        jobCreator.newJob().being(STARTED).createAnd().
+        testJobCreator.newJob().being(STARTED).createAnd().
                    newJob().being(READY_TO_START).create();
 
         /* execute */
@@ -1240,12 +1243,16 @@ public class SecHubJobRepositoryDBTest {
     @ArgumentsSource(NextJobIdToExecuteWithEncryptionPoolTestDataArgumentProvider.class)
     void nextJobIdToExecuteForProjectNotYetExecuted_2_projects_1_project_running(Set<Long> currentEncryptionPoolIds, TestResultVariant expectedVariant) {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3p0 = jobCreator.project("p2").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3p1 = jobCreator.project("p2").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3p2 = jobCreator.project("p2").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob3p3 = jobCreator.project("p2").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3p0 = testJobCreator.project("p2").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob3p1 = testJobCreator.project("p2").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob3p2 = testJobCreator.project("p2").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob3p3 = testJobCreator.project("p2").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -1288,23 +1295,23 @@ public class SecHubJobRepositoryDBTest {
             TestResultVariant expectedVariant) {
         /* prepare @formatter:off*/
 
-        jobCreator.newJob().being(STARTED).createAnd().
+        testJobCreator.newJob().being(STARTED).createAnd().
         newJob().being(CANCEL_REQUESTED).createAnd().
         newJob().being(CANCELED).createAnd().
         newJob().being(ENDED).create();
         ScheduleSecHubJob expectedNextJobWhenPoolId0Supported =
-                jobCreator.newJob().encryptionPoolId(0L).being(READY_TO_START).create();
+                testJobCreator.newJob().encryptionPoolId(0L).being(READY_TO_START).create();
         ScheduleSecHubJob expectedNextJobWhenPoolId1Supported =
-                jobCreator.newJob().encryptionPoolId(1L).being(READY_TO_START).create();
+                testJobCreator.newJob().encryptionPoolId(1L).being(READY_TO_START).create();
         ScheduleSecHubJob expectedNextJobWhenPoolId2Supported =
-                jobCreator.newJob().being(READY_TO_START).encryptionPoolId(2L).create();
+                testJobCreator.newJob().being(READY_TO_START).encryptionPoolId(2L).create();
         ScheduleSecHubJob expectedNextJobWhenPoolId3Supported =
-                jobCreator.newJob().being(READY_TO_START).encryptionPoolId(3L).create();
+                testJobCreator.newJob().being(READY_TO_START).encryptionPoolId(3L).create();
 
         TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
 
 
-        jobCreator.newJob().being(STARTED).createAnd().
+        testJobCreator.newJob().being(STARTED).createAnd().
         newJob().being(READY_TO_START).create();
 
         /* execute */
@@ -1343,16 +1350,20 @@ public class SecHubJobRepositoryDBTest {
     void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_in_state_READY_TO_START_multi_poolids(
             Set<Long> currentEncryptionPoolIds, TestResultVariant expectedVariant) {
         /* prepare */
-        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
-        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
-        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
-        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
-        ScheduleSecHubJob newJob5 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob1 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob2 = testJobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob3 = testJobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob4 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = testJobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
 
-        ScheduleSecHubJob newJob6v0 = jobCreator.project("p3").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob6v1 = jobCreator.project("p3").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob6v2 = jobCreator.project("p3").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
-        ScheduleSecHubJob newJob6v3 = jobCreator.project("p3").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob6v0 = testJobCreator.project("p3").encryptionPoolId(0L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob6v1 = testJobCreator.project("p3").encryptionPoolId(1L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob6v2 = testJobCreator.project("p3").encryptionPoolId(2L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
+        ScheduleSecHubJob newJob6v3 = testJobCreator.project("p3").encryptionPoolId(3L).module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START)
+                .create();
 
         /* check preconditions */
         assertTrue(newJob2.created.isAfter(newJob1.created));
@@ -1426,7 +1437,7 @@ public class SecHubJobRepositoryDBTest {
     }
 
     private void createJobUsingEncryptionPoolId(long poolId, ExecutionState state) {
-        jobCreator.project("p2").module(ModuleGroup.STATIC).being(state).encryptionPoolId(poolId).create();
+        testJobCreator.project("p2").module(ModuleGroup.STATIC).being(state).encryptionPoolId(poolId).create();
 
     }
 
@@ -1485,10 +1496,10 @@ public class SecHubJobRepositoryDBTest {
         ScheduleSecHubJob job4_now_created;
 
         private void createAndCheckAvailable() {
-            job1_90_days_before_created = jobCreator.created(before_90_days).started(null).create();
-            job2_2_days_before_created = jobCreator.created(before_3_days).started(before_1_day).being(ExecutionState.STARTED).create();
-            job3_1_day_before_created = jobCreator.created(before_1_day).started(now).create();
-            job4_now_created = jobCreator.created(now).create();
+            job1_90_days_before_created = testJobCreator.created(before_90_days).started(null).create();
+            job2_2_days_before_created = testJobCreator.created(before_3_days).started(before_1_day).being(ExecutionState.STARTED).create();
+            job3_1_day_before_created = testJobCreator.created(before_1_day).started(now).create();
+            job4_now_created = testJobCreator.created(now).create();
 
             // check preconditions
             jobRepository.flush();

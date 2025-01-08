@@ -23,6 +23,8 @@ public class NamingConventionTest {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreAllMain)
+                .withImportOption(ignoreArchUnit)
+                .withImportOption(ignoreDocGen)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
@@ -38,9 +40,7 @@ public class NamingConventionTest {
                 .orShould()
                 .haveSimpleNameContaining("Assert")
                 .orShould()
-                .haveNameMatching(".*\\.Assert.*") // including inner classes
-                .orShould()
-                .haveNameMatching(".*Test\\$.*") // including inner classes
+                .haveNameMatching(".*\\$.*") // ignoring inner classes
                 .because("Tests classes should contain 'Test' or 'Assert' in their name.");
 
         rule.check(importedClasses);

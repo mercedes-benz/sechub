@@ -6,13 +6,13 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CPUConsumer {
+public class TestCPUConsumer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CPUConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestCPUConsumer.class);
 
     private Random random;
 
-    CPUConsumer() {
+    TestCPUConsumer() {
         this.random = new Random(System.currentTimeMillis());
     }
 

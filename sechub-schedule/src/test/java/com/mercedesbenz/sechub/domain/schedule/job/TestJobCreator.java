@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.test.SechubTestComponent;
 
 @SechubTestComponent
-public class JobCreator {
+public class TestJobCreator {
 
     private TestEntityManager entityManager;
     private ScheduleSecHubJob job;
@@ -32,7 +32,7 @@ public class JobCreator {
     private SecHubConfigurationModelSupport modelSupport;
     private ScheduleEncryptionService encryptionService;
 
-    private JobCreator(String projectId, TestEntityManager entityManager) {
+    private TestJobCreator(String projectId, TestEntityManager entityManager) {
         this.modelSupport = new SecHubConfigurationModelSupport();
         this.entityManager = entityManager;
         this.projectId = projectId;
@@ -57,46 +57,46 @@ public class JobCreator {
         newJob();
     }
 
-    public static JobCreator jobCreator(String projectId, TestEntityManager entityManager) {
-        return new JobCreator(projectId, entityManager);
+    public static TestJobCreator jobCreator(String projectId, TestEntityManager entityManager) {
+        return new TestJobCreator(projectId, entityManager);
     }
 
-    public JobCreator module(ModuleGroup moduleGroup) {
+    public TestJobCreator module(ModuleGroup moduleGroup) {
         job.moduleGroup = moduleGroup;
         return this;
     }
 
-    public JobCreator being(ExecutionState state) {
+    public TestJobCreator being(ExecutionState state) {
         job.executionState = state;
         return this;
     }
 
-    public JobCreator result(ExecutionResult result) {
+    public TestJobCreator result(ExecutionResult result) {
         job.executionResult = result;
         return this;
     }
 
-    public JobCreator started(LocalDateTime dateTime) {
+    public TestJobCreator started(LocalDateTime dateTime) {
         job.started = dateTime;
         return this;
     }
 
-    public JobCreator created(LocalDateTime dateTime) {
+    public TestJobCreator created(LocalDateTime dateTime) {
         job.created = dateTime;
         return this;
     }
 
-    public JobCreator ended(LocalDateTime dateTime) {
+    public TestJobCreator ended(LocalDateTime dateTime) {
         job.ended = dateTime;
         return this;
     }
 
-    public JobCreator project(String projectId) {
+    public TestJobCreator project(String projectId) {
         job.projectId = projectId;
         return this;
     }
 
-    public JobCreator encryptionPoolId(Long encryptionCipherPoolId) {
+    public TestJobCreator encryptionPoolId(Long encryptionCipherPoolId) {
         job.encryptionCipherPoolId = encryptionCipherPoolId;
         return this;
     }
@@ -106,7 +106,7 @@ public class JobCreator {
      *
      * @return
      */
-    public JobCreator createAnd() {
+    public TestJobCreator createAnd() {
         create();
         return this;
     }
@@ -132,11 +132,11 @@ public class JobCreator {
         return result;
     }
 
-    public JobCreator newJob() {
+    public TestJobCreator newJob() {
         return newJob(new SecHubConfiguration());
     }
 
-    public JobCreator newJob(SecHubConfiguration configuration) {
+    public TestJobCreator newJob(SecHubConfiguration configuration) {
         configuration.setProjectId(projectId);
         job = jobFactory.createJob(configuration);
         return this;

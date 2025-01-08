@@ -38,13 +38,13 @@ class ResilientRunnableExecutorTest {
         /* prepare */
         executorToTest.add(new AlwaysRetry1TimeWith10MillisecondsTestConsultant());
 
-        FailDefinedTimes failDefinedTimes = new FailDefinedTimes(1);
+        FailDefinedTestTimes failDefinedTestTimes = new FailDefinedTestTimes(1);
 
         /* execute */
-        executorToTest.executeResilient(failDefinedTimes);
+        executorToTest.executeResilient(failDefinedTestTimes);
 
         /* test */
-        assertEquals(2, failDefinedTimes.runs);
+        assertEquals(2, failDefinedTestTimes.runs);
     }
 
     @Test
@@ -52,13 +52,13 @@ class ResilientRunnableExecutorTest {
         /* prepare */
         executorToTest.add(new AlwaysRetry1TimeWith10MillisecondsTestConsultant());
 
-        FailDefinedTimes failDefinedTimes = new FailDefinedTimes(2);
+        FailDefinedTestTimes failDefinedTestTimes = new FailDefinedTestTimes(2);
 
         /* execute */
-        assertThrows(IOException.class, () -> executorToTest.executeResilient(failDefinedTimes));
+        assertThrows(IOException.class, () -> executorToTest.executeResilient(failDefinedTestTimes));
 
         /* test */
-        assertEquals(2, failDefinedTimes.runs);
+        assertEquals(2, failDefinedTestTimes.runs);
     }
 
     private class AlwaysRetry1TimeWith10MillisecondsTestConsultant implements ResilienceConsultant {

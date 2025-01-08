@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.docgen.util.RestDocFactory.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -98,7 +98,7 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
                         post(apiEndpoint).
                                 contentType(MediaType.APPLICATION_JSON_VALUE).
                                 content(data.toFormattedJSON()).
-                                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                 andExpect(status().isOk()).
                 andDo(defineRestService().
@@ -135,14 +135,14 @@ public class EncryptionAdministrationRestControllerRestDocTest implements TestIs
         this.mockMvc.perform(
                         get(apiEndpoint).
                                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                 andExpect(status().isOk()).
                 andDo(defineRestService().
                         with().
                         useCaseData(useCase).
                         tag(extractTag(apiEndpoint)).
-                        responseSchema(OpenApiSchema.ENCRYPTION_STATUS.getSchema()).
+                        responseSchema(TestOpenApiSchema.ENCRYPTION_STATUS.getSchema()).
                         and().
                         document(
                                 requestHeaders(

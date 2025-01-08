@@ -5,11 +5,11 @@ import java.io.IOException;
 
 import com.mercedesbenz.sechub.commons.core.RunOrFail;
 
-class FailDefinedTimes implements RunOrFail<Exception> {
+class FailDefinedTestTimes implements RunOrFail<Exception> {
     private int wantedFailTimes;
     int runs;
 
-    FailDefinedTimes(int wantedFails) {
+    FailDefinedTestTimes(int wantedFails) {
         this.wantedFailTimes = wantedFails;
     }
 
