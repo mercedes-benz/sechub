@@ -101,9 +101,8 @@
         projectId.value = route.params.id
       }
 
-      const maxAttempts = 10 // Maximum number of retries for backoff
+      const maxAttempts = 4 // Maximum number of retries for backoff
       const baseDelay = 1000 // Initial delay in milliseconds
-      let polling = false
       let timeOutId: number | undefined
 
       const currentRequestParameters: UserListJobsForProjectRequest = {
@@ -125,28 +124,21 @@
         } catch (err) {
           error.value = 'ProjectAPI error fetching jobs for project.'
           console.error('ProjectAPI error fetching jobs for project:', err)
-          stopPolling()
         } finally {
           loading.value = false
         }
       }
 
-      const fetchDataWithPolling = async (attempt = 1) => {
-        if (timeOutId !== undefined) {
-          clearTimeout(timeOutId)
+      async function pollProjectJobs (attemptCount = 1) {
+        await fetchProjectJobs(currentRequestParameters)
+        if (attemptCount > maxAttempts) {
+          attemptCount = 1
         }
 
-        const maxAttemptsUnreched = attempt < maxAttempts
-        const delay = baseDelay * Math.pow(1.5, attempt)
-
-        if (maxAttemptsUnreched && polling) {
-          timeOutId = setTimeout(() => fetchDataWithPolling(attempt + 1), delay)
-        } else if (!maxAttemptsUnreched && polling) {
-          timeOutId = setTimeout(() => fetchDataWithPolling(attempt), delay)
-        } else {
-          return
+        if (!error.value) {
+          const delayMillis = baseDelay * Math.pow(1.5, attemptCount)
+          timeOutId = setTimeout(() => pollProjectJobs(attemptCount + 1), delayMillis)
         }
-        fetchProjectJobs(currentRequestParameters)
       }
 
       function onPageChange (page: number) {
@@ -168,23 +160,12 @@
         router.go(-1)
       }
 
-      function stopPolling () {
-        polling = false
-        clearTimeout(timeOutId)
-      }
-
-      function startPolling () {
-        polling = true
-        fetchDataWithPolling()
-      }
-
       onMounted(() => {
-        fetchProjectJobs(currentRequestParameters)
-        startPolling()
+        pollProjectJobs()
       })
 
       onUnmounted(() => {
-        stopPolling()
+        clearTimeout(timeOutId)
       })
 
       return {
