@@ -24,6 +24,10 @@ public class ArchUnitImportOptions {
         return !location.contains("/test/"); // ignore any URI to sources that contains '/test/'
     };
 
+    static ImportOption ignoreAllMain= location -> {
+        return !location.contains("/main/"); // ignore any URI to sources that contains '/main/'
+    };
+
     static List<ImportOption> ignoreFolders = new ArchUnitRuntimeSupport().createImportOptionsIgnoreFolder(); // ignore specific folders e.g. build folders
 
     static ImportOption ignoreSechubOpenAPIJava = location -> {

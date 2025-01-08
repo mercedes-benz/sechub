@@ -22,6 +22,7 @@ public class NamingConventionTest {
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreFolders)
+                .withImportOption(ignoreAllMain)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreSechubTestframework)
                 .withImportOption(ignoreSharedkernelTest)
@@ -30,9 +31,8 @@ public class NamingConventionTest {
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
+        // workaround for resideInAnyPackage not working, using ignoreFolders (ignore main) instead
         ArchRule rule = ArchRuleDefinition.classes()
-                .that()
-                .resideInAPackage("..test..")
                 .should()
                 .haveSimpleNameContaining("Test")
                 .orShould()
