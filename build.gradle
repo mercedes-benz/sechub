@@ -33,7 +33,7 @@ plugins {
     id 'org.openapi.generator' version '7.8.0'
     
     // spring
-    id 'org.springframework.boot' version '3.2.2' apply false
+    id 'org.springframework.boot' version '3.3.5' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
