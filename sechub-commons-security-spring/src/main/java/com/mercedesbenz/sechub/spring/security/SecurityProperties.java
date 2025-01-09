@@ -64,6 +64,8 @@ public class SecurityProperties {
     }
 
     public static class Server {
+        public static final String OAUTH2 = "oauth2";
+        public static final String CLASSIC = "classic";
         static final String PREFIX = "%s.server".formatted(SecurityProperties.PREFIX);
 
         private final Set<String> modes;
@@ -98,9 +100,9 @@ public class SecurityProperties {
         }
 
         public static class OAuth2 {
-            static final String PREFIX = "%s.oauth2".formatted(Server.PREFIX);
             public static final String OAUTH2_JWT_MODE = "jwt";
             public static final String OAUTH2_OPAQUE_TOKEN_MODE = "opaque-token";
+            static final String PREFIX = "%s.oauth2".formatted(Server.PREFIX);
             private static final Set<String> ALLOWED_MODES = Set.of(OAUTH2_JWT_MODE, OAUTH2_OPAQUE_TOKEN_MODE);
 
             private final String mode;
