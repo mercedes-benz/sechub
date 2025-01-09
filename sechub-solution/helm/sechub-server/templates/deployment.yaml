@@ -483,47 +483,47 @@ spec:
           value: "{{ .Values.security.resourceServer.oauth2.mode }}"
         # OAuth2 mode can be either 'jwt' or 'opaque-token'. Exactly one must be active.
 {{- if eq .Values.security.resourceServer.oauth2.mode "jwt" }}
-        - name: SECHUB_SECURITY_SERVER_OAUTH2_JWT_JWK_SET_URI
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_JWT_JWKSETURI
           value: "{{ .Values.security.resourceServer.oauth2.jwt.jwkSetUri }}"
 {{- else if eq .Values.security.resourceServer.oauth2.mode "opaque-token" }}
-        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_CLIENT_ID
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTID
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientId }}"
-        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_CLIENT_SECRET
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientSecret }}"
-        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUE_TOKEN_INTROSPECTION_URI
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.introspectionUri }}"
 {{- end }}
         - name: SECHUB_SECURITY_LOGIN_ENABLED
           value: "{{ .Values.security.login.enabled }}"
 {{- if .Values.security.login.enabled }}
-        - name: SECHUB_SECURITY_LOGIN_LOGIN_PAGE
+        - name: SECHUB_SECURITY_LOGIN_LOGINPAGE
           value: "{{ .Values.security.login.loginPage }}"
-        - name: SECHUB_SECURITY_LOGIN_REDIRECT_URI
+        - name: SECHUB_SECURITY_LOGIN_REDIRECTURI
           value: "{{ .Values.security.login.redirectUri }}"
         - name: SECHUB_SECURITY_LOGIN_MODES
           value: "{{ .Values.security.login.modes }}"
   {{- if contains "oauth2" .Values.security.login.modes }}
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENT_ID
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENTID
           value: "{{ .Values.security.login.oauth2.clientId }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENT_SECRET
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_CLIENTSECRET
           value: "{{ .Values.security.login.oauth2.clientSecret }}"
         - name: SECHUB_SECURITY_LOGIN_OAUTH2_PROVIDER
           value: "{{ .Values.security.login.oauth2.provider }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_AUTHORIZATION_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_AUTHORIZATIONURI
           value: "{{ .Values.security.login.oauth2.uri.authorization }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_ISSUER_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_ISSUERURI
           value: "{{ .Values.security.login.oauth2.uri.issuer }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_JWK_SET_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_JWKSETURI
           value: "{{ .Values.security.login.oauth2.uri.jwkSet }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_REDIRECT_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_REDIRECTURI
           value: "{{ .Values.security.login.oauth2.uri.redirect }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_TOKEN_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_TOKENURI
           value: "{{ .Values.security.login.oauth2.uri.token }}"
-        - name: SECHUB_SECURITY_LOGIN_OAUTH2_USER_INFO_URI
+        - name: SECHUB_SECURITY_LOGIN_OAUTH2_USERINFOURI
           value: "{{ .Values.security.login.oauth2.uri.userInfo }}"
   {{- end }}
 {{- end }}
-        - name: SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
+        - name: SECHUB_SECURITY_ENCRYPTION_SECRETKEY
           value: "{{ .Values.security.encryption.secretKey }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage
