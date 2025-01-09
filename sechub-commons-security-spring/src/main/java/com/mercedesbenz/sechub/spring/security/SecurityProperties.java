@@ -195,20 +195,20 @@ public class SecurityProperties {
 
         public Login(Boolean enabled, String loginPage, String redirectUri, Set<String> modes, OAuth2 oAuth2) {
             this.isEnabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
-            this.loginPage = requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page"));
-            this.redirectUri = requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri"));
-            this.modes = requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes"));
-            if (this.modes.isEmpty()) {
+            this.loginPage = enabled ? requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page")) : loginPage;
+            this.redirectUri = enabled ? requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri")) : redirectUri;
+            this.modes = enabled ? requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes")) : modes;
+            if (enabled && this.modes.isEmpty()) {
                 throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
-            if (this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
+            if (enabled && this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
                 throw new IllegalArgumentException("The property '%s.modes' allows only 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
             /*
              * Later we will differentiate between classic and oauth2 login. For now only
              * oauth2 login is enabled
              */
-            this.oAuth2 = requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2"));
+            this.oAuth2 = enabled ? requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2")) : oAuth2;
         }
 
         public boolean isEnabled() {
