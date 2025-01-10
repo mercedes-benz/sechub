@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * encoded in {@link Base64} format when passed as a cookie.
  *
  * @see BearerTokenResolver
+ * @see org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver
  * @see AES256Encryption
  *
  * @author hamidonos
@@ -29,7 +30,6 @@ import jakarta.servlet.http.HttpServletRequest;
 class DynamicBearerTokenResolver implements BearerTokenResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBearerTokenResolver.class);
-    private static final String MISSING_ACCESS_TOKEN_VALUE = "missing-access-token";
     private static final Base64.Decoder DECODER = Base64.getDecoder();
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -59,16 +59,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
 
         if (cookies == null) {
             LOG.debug("No cookies found in the request");
-
-            /*
-             * If the access token cookie is not found, we return a constant string to
-             * indicate that the access token is missing. We do this because we want to pass
-             * exception handling further down the chain. Spring does not provide a way to
-             * wrap exceptions around custom BearerTokenResolver classes effectively. This
-             * is a good practice because it allows us to handle the missing access token in
-             * a more controlled manner.
-             */
-            return MISSING_ACCESS_TOKEN_VALUE;
+            return null;
         }
 
         /* @formatter:off */
@@ -82,8 +73,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
 
         if (accessToken == null) {
             LOG.debug("Request is missing the 'access_token' cookie");
-            /* same here */
-            return MISSING_ACCESS_TOKEN_VALUE;
+            return null;
         }
 
         try {
@@ -91,8 +81,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
             return aes256Encryption.decrypt(jwtBytes);
         } catch (Exception e) {
             LOG.debug("Failed to decrypt the access token cookie", e);
-            /* same here */
-            return MISSING_ACCESS_TOKEN_VALUE;
+            return null;
         }
     }
 }

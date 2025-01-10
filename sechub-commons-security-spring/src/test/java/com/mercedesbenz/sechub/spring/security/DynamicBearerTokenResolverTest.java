@@ -26,7 +26,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 class DynamicBearerTokenResolverTest {
 
-    private static final String MISSING_ACCESS_TOKEN = "missing-access-token";
     private static final String ACCESS_TOKEN_KEY = "access_token";
     private static final String ACCESS_TOKEN = "access-token";
     private static final String ENCRYPTED_ACCESS_TOKEN = "encrypted-access-token";
@@ -77,7 +76,7 @@ class DynamicBearerTokenResolverTest {
 
     @ParameterizedTest
     @ArgumentsSource(DynamicBearerTokenResolverTest.InvalidCookieListProvider.class)
-    void resolve_returns_missing_access_token_value_when_access_token_cookie_is_not_found(List<Cookie> cookies) {
+    void resolve_returns_null_when_access_token_cookie_is_not_found(List<Cookie> cookies) {
         /* prepare */
         Cookie[] array = cookies == null ? null : cookies.toArray(new Cookie[0]);
         when(httpServletRequest.getCookies()).thenReturn(array);
@@ -86,11 +85,11 @@ class DynamicBearerTokenResolverTest {
         String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
 
         /* test */
-        assertThat(accessToken).isEqualTo(MISSING_ACCESS_TOKEN);
+        assertThat(accessToken).isEqualTo(null);
     }
 
     @Test
-    void resolve_returns_missing_access_token_value_when_access_token_decoding_fails() {
+    void resolve_returns_null_when_access_token_decoding_fails() {
         /* prepare */
         Cookie accessTokenCookie = createAccessTokenCookie(ACCESS_TOKEN_KEY, ENCRYPTED_ACCESS_TOKEN_B64_ENCODED.concat("-invalid-b64"));
         Cookie[] cookies = List.of(accessTokenCookie).toArray(new Cookie[0]);
@@ -101,11 +100,11 @@ class DynamicBearerTokenResolverTest {
         String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
 
         /* test */
-        assertThat(accessToken).isEqualTo(MISSING_ACCESS_TOKEN);
+        assertThat(accessToken).isEqualTo(null);
     }
 
     @Test
-    void resolve_returns_missing_access_token_value_when_access_token_decryption_fails() {
+    void resolve_returns_null_when_access_token_decryption_fails() {
         /* prepare */
         Cookie accessTokenCookie = createAccessTokenCookie(ACCESS_TOKEN_KEY, ENCRYPTED_ACCESS_TOKEN_B64_ENCODED);
         Cookie[] cookies = List.of(accessTokenCookie).toArray(new Cookie[0]);
@@ -117,7 +116,7 @@ class DynamicBearerTokenResolverTest {
         String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
 
         /* test */
-        assertThat(accessToken).isEqualTo(MISSING_ACCESS_TOKEN);
+        assertThat(accessToken).isEqualTo(null);
     }
 
     private static Cookie createAccessTokenCookie(String name, String value) {
