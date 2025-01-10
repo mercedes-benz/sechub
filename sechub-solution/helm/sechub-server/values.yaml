@@ -194,7 +194,7 @@ security:
       clientId: insert_your_client_id_here
       clientSecret: insert_your_client_secret_here
       # Name of your IDP provider
-      provider: keycloak
+      provider: example-provider
       uri:
         # The endpoint where users are redirected to authenticate. Usually hosted by the IDP.
         authorization: https://sso.example.org/authorization.oauth2
