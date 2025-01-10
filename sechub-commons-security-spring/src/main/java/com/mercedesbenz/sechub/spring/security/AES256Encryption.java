@@ -10,13 +10,13 @@ import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
 @Component
-@ConditionalOnExpression("'${sechub.security.server.modes[0]}' == 'oauth2' || '${sechub.security.server.modes[1]}' == 'oauth2' || '${sechub.security.login.modes[0]}' == 'oauth2' || '${sechub.security.login.modes[1]}' == 'oauth2'")
+@ConditionalOnProperty(name = "sechub.security.encryption.secret-key")
 public class AES256Encryption {
 
     private static final String TRANSFORMATION = "AES";
