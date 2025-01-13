@@ -73,8 +73,8 @@ public class ComboxSelectionDialogUI<T> {
         okButton = new JButton("Ok");
         okButton.addActionListener(this::okPressed);
 
-        buttonPanel.add(cancelButton);
         buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
         return buttonPanel;
     }
 
