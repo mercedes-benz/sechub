@@ -105,6 +105,7 @@ jobs:
         run: |
           cd sechub-web-ui && \
           npm install && \
+          npm run generate-api-client && \
           npm run build && \
           cd dist && \
           echo '${{ inputs.web-ui-version }}' > sechub-web-ui_version.txt && \
