@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.util;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
-import javax.crypto.SealedObject;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
-import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 
 /**
  * https://datatracker.ietf.org/doc/html/rfc6238
@@ -21,23 +21,18 @@ public class TOTPGenerator {
 
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
 
-    private SealedObject seed;
-    private String hashAlgorithmName;
-    private int totpLength;
-    private int tokenValidityTimeInSeconds;
-    private long digitsTruncate;
+    private final WebLoginTOTPConfiguration totpConfig;
+    private final long digitsTruncate;
+    private final ZapWrapperStringDecoder zapWrapperStringDecoder;
 
-    public TOTPGenerator(String seed, int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
-        if (seed == null) {
-            throw new IllegalArgumentException("The specified TOTP seed must not be null!");
-        }
+    public TOTPGenerator(WebLoginTOTPConfiguration totpConfig) {
+        this.totpConfig = requireNonNull(totpConfig, "The TOTP configuration must not be null!");
+        requireNonNull(totpConfig.getSeed(), "The TOTP configuration seed must not be null!");
+        requireNonNull(totpConfig.getHashAlgorithm(), "The TOTP configuration hash algorithm must not be null!");
+        requireNonNull(totpConfig.getEncodingType(), "The TOTP configuration encoding type must not be null!");
 
-        this.seed = CryptoAccess.CRYPTO_STRING.seal(seed);
-        this.totpLength = totpLength;
-        this.hashAlgorithmName = hashAlgorithm.getName();
-        this.tokenValidityTimeInSeconds = tokenValidityTimeInSeconds;
-
-        this.digitsTruncate = (long) Math.pow(BASE, this.totpLength);
+        this.digitsTruncate = (long) Math.pow(BASE, totpConfig.getTokenLength());
+        this.zapWrapperStringDecoder = new ZapWrapperStringDecoder();
     }
 
     /**
@@ -69,14 +64,16 @@ public class TOTPGenerator {
 
         long otp = binary % digitsTruncate;
         // add prepended zeros if the otp does not match the wanted length
-        return String.format("%0" + totpLength + "d", otp);
+        return String.format("%0" + totpConfig.getTokenLength() + "d", otp);
     }
 
     private byte[] computeHash(long currentTimeMillis) {
         try {
+            String hashAlgorithmName = totpConfig.getHashAlgorithm().getName();
             Mac mac = Mac.getInstance(hashAlgorithmName);
-            mac.init(new SecretKeySpec(CryptoAccess.CRYPTO_STRING.unseal(seed).getBytes(), hashAlgorithmName));
-            byte[] timeBytes = computeTimeBytes(currentTimeMillis, tokenValidityTimeInSeconds);
+
+            mac.init(new SecretKeySpec(zapWrapperStringDecoder.decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType()), hashAlgorithmName));
+            byte[] timeBytes = computeTimeBytes(currentTimeMillis, totpConfig.getValidityInSeconds());
             byte[] hash = mac.doFinal(timeBytes);
             return hash;
         } catch (NoSuchAlgorithmException e) {

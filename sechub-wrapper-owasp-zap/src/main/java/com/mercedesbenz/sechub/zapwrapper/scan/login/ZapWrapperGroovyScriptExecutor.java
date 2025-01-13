@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Map;
@@ -27,7 +26,6 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator;
-import com.mercedesbenz.sechub.zapwrapper.util.ZapWrapperStringDecoder;
 
 public class ZapWrapperGroovyScriptExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperGroovyScriptExecutor.class);
@@ -51,7 +49,6 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
-
         FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true);
         WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
 
@@ -84,16 +81,13 @@ public class ZapWrapperGroovyScriptExecutor {
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
         WebLoginTOTPConfiguration totp = webLoginConfiguration.getTotp();
-        TOTPGenerator totpGenerator = null;
-        if (totp != null) {
-            LOG.info("Trying to decode TOTP seed if necessary.");
-            ZapWrapperStringDecoder zapWrapperStringDecoder = new ZapWrapperStringDecoder();
-            byte[] decodedSeedBytes = zapWrapperStringDecoder.decodeIfNecessary(totp.getSeed(), totp.getEncodingType());
-            String decodedSeed = new String(decodedSeedBytes, StandardCharsets.UTF_8);
-
-            LOG.info("Setting up TOTP generator for login.");
-            totpGenerator = new TOTPGenerator(decodedSeed, totp.getTokenLength(), totp.getHashAlgorithm(), totp.getValidityInSeconds());
+        // setup a default, in case of wrong usage
+        if (totp == null) {
+            totp = new WebLoginTOTPConfiguration();
+            totp.setSeed("EMPTY-SEED");
         }
+        LOG.info("Setting up TOTP generator for login.");
+        TOTPGenerator totpGenerator = new TOTPGenerator(totp);
 
         Map<String, String> templateVariables = scanContext.getTemplateVariables();
 
