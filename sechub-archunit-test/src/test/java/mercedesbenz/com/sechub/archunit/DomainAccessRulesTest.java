@@ -3,13 +3,13 @@ package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
-import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.ARCHUNIT_SUPPORT_NOTE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,6 +21,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
+@ExtendWith(ArchUnitTestMessageExtension.class)
 public class DomainAccessRulesTest {
 
     private static final String DOMAIN_SCAN = "com.mercedesbenz.sechub.domain.scan";
@@ -60,7 +61,6 @@ public class DomainAccessRulesTest {
                 .should()
                 .accessClassesThat()
                 .resideInAnyPackage(resolveOtherDomainsThan(domainToTest))
-                .because(ARCHUNIT_SUPPORT_NOTE)
                 .check(importedClasses);
         /* @formatter:on */
     }

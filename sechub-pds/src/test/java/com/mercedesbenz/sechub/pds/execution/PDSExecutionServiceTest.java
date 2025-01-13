@@ -24,9 +24,9 @@ import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.TestPDSJobHelper;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
+import com.mercedesbenz.sechub.pds.job.TestPDSJobHelper;
 
 public class PDSExecutionServiceTest {
 

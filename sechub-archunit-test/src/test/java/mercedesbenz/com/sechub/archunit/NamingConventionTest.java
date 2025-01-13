@@ -3,9 +3,9 @@ package mercedesbenz.com.sechub.archunit;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
-import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.ARCHUNIT_SUPPORT_NOTE;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.stereotype.Service;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -15,10 +15,11 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
 @AnalyzeClasses
+@ExtendWith(ArchUnitTestMessageExtension.class)
 public class NamingConventionTest {
 
     @Test
-    void classes_in_test_packages_containing_test_or_assert_in_name() {
+    void classes_in_test_packages_start_with_test_or_assert_or_end_with_test() {
         /* prepare */
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
@@ -44,7 +45,7 @@ public class NamingConventionTest {
                 .haveSimpleNameStartingWith("Assert")
                 .orShould()
                 .haveNameMatching(".*\\$.*") // ignoring inner classes
-                .because("Tests classes should start or end with 'Test' or contain 'Assert' in their name. " + ARCHUNIT_SUPPORT_NOTE);
+                .because("Tests classes should start or end with 'Test' or start with 'Assert'");
 
         rule.check(importedClasses);
         /* @formatter:on */
@@ -69,7 +70,7 @@ public class NamingConventionTest {
                 .haveSimpleNameContaining("Service")
                 .orShould()
                 .haveSimpleNameContaining("Executor")
-                .because("Service classes should contain 'Service' or 'Executor' in their name. " + ARCHUNIT_SUPPORT_NOTE)
+                .because("Service classes should contain 'Service' or 'Executor' in their name. ")
                 .check(importedClasses);
         /* @formatter:on */
     }
