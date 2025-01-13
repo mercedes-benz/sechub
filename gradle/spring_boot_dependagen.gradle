@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 ext {
   spring_boot_dependency = [
           // Next parts are dependencies used by Spring Boot v 3.3.5
