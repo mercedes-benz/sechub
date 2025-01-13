@@ -42,7 +42,7 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
  * <li>When setting system property
  * {@value IntegrationTestSetup#SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION}
  * to "true", the integration tests for documentation only will be executed by
- * {@link IntegrationTestSetup. The marked tests will be always skipped.</li>
+ * {@link IntegrationTestSetup The marked tests will be always skipped.</li>
  * </ul>
  *
  * @author Albert Tregnaghi
