@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoVersionControl;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 class SarifV1JSONImporterTest {
 
@@ -582,7 +582,7 @@ class SarifV1JSONImporterTest {
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private static String loadSarifTestFile(String sarifTestFile) {
-        return SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/" + sarifTestFile);
+        return TestSerecoFileSupport.INSTANCE.loadTestFile("sarif/" + sarifTestFile);
     }
 
     private SerecoVulnerability fetchFirstNonFalsePositive(List<SerecoVulnerability> vulnerabilities) {

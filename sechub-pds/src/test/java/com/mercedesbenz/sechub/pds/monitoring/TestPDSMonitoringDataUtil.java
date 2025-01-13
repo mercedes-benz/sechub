@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.pds.execution.PDSExecutionJobInQueueStatusEntry;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 
-public class PDSMonitoringTestDataUtil {
+public class TestPDSMonitoringDataUtil {
 
     public static final long JOB_STATUS_DONE = 5L;
     public static final long JOB_STATUS_RUNNING = 4L;

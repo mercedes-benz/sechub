@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.test.JSONTestUtil;
 import com.mercedesbenz.sechub.test.TestVerifier;
 import com.mercedesbenz.sechub.test.WiremockUrlHistory;
 
-public class PDSWiremockTestSupport {
+public class TestPDSWiremockSupport {
 
     private boolean pdsJobCanBeCreated;
     private boolean pdsMarkReadyToStart;
@@ -33,7 +33,7 @@ public class PDSWiremockTestSupport {
     public String pdsProductIdentifier;
     public Map<String, String> pdsJobParameters;
     public SecHubMessagesList sechubMessageList;
-    private PDSTestSupport pdsTestSupport;
+    private TestPDSSupport testPDSSupport;
     private UUID pdsJobUUID;
     private List<UploadInfo> uploads = new ArrayList<>();
     private List<StateQueueInfo> stateRequestsResults = new ArrayList<>();
@@ -41,11 +41,11 @@ public class PDSWiremockTestSupport {
     private TestVerifier testVerifier = new TestVerifier();
     public boolean useSecHubStorage;
 
-    public PDSWiremockTestSupport(WireMockServer server) {
+    public TestPDSWiremockSupport(WireMockServer server) {
         this.server = server;
         this.history = new WiremockUrlHistory();
         this.pdsURLBuilder = new PDSUrlBuilder("");
-        this.pdsTestSupport = new PDSTestSupport();
+        this.testPDSSupport = new TestPDSSupport();
     }
 
     private static class UploadInfo {
@@ -207,7 +207,7 @@ public class PDSWiremockTestSupport {
         map.put("sechubJobUUID", sechubJobUUID.toString());
         map.put("productId", pdsProductIdentifier);
 
-        map.put("parameters", pdsTestSupport.toKeyValue(pdsJobParameters));
+        map.put("parameters", testPDSSupport.toKeyValue(pdsJobParameters));
 
         /* @formatter:off */
         String requestBody = JSONTestUtil.toJSONContainingNullValues(map);
@@ -226,10 +226,10 @@ public class PDSWiremockTestSupport {
 
     public static class PDSWiremockTestSupportBuilder {
 
-        private PDSWiremockTestSupport current;
+        private TestPDSWiremockSupport current;
 
         public PDSWiremockTestSupportBuilder(WireMockServer server) {
-            current = new PDSWiremockTestSupport(server);
+            current = new TestPDSWiremockSupport(server);
         }
 
         public PDSWiremockTestSupportBuilder simulateJobCanBeCreated(UUID sechubJobUUID, String pdsProductIdentifier, Map<String, String> parameters) {
@@ -287,10 +287,10 @@ public class PDSWiremockTestSupport {
             return this;
         }
 
-        PDSWiremockTestSupport build() {
+        TestPDSWiremockSupport build() {
 
-            PDSWiremockTestSupport buildResult = current;
-            current = new PDSWiremockTestSupport(buildResult.server);
+            TestPDSWiremockSupport buildResult = current;
+            current = new TestPDSWiremockSupport(buildResult.server);
             return buildResult;
         }
 

@@ -5,14 +5,14 @@ import com.mercedesbenz.sechub.test.SechubTestComponent;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
 @SechubTestComponent
-public class ScanProductSerecoTestFileSupport extends TestFileSupport {
-    private static final ScanProductSerecoTestFileSupport TESTFILE_SUPPORT = new ScanProductSerecoTestFileSupport();
+public class TestScanProductSerecoFileSupport extends TestFileSupport {
+    private static final TestScanProductSerecoFileSupport TESTFILE_SUPPORT = new TestScanProductSerecoFileSupport();
 
     public static TestFileSupport getTestfileSupport() {
         return TESTFILE_SUPPORT;
     }
 
-    ScanProductSerecoTestFileSupport() {
+    TestScanProductSerecoFileSupport() {
         super("sechub-scan-product-sereco/src/test/resources");
     }
 

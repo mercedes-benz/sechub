@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.mercedesbenz.sechub.test.JSONTestUtil.DirectJSonable;
 
-public class PDSTestSupport {
+public class TestPDSSupport {
 
     public List<JSONKeyValue> toKeyValue(Map<String, String> map) {
         List<JSONKeyValue> list = new ArrayList<>();

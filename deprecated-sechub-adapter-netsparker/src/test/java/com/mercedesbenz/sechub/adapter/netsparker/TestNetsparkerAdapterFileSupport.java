@@ -5,14 +5,14 @@ import com.mercedesbenz.sechub.test.SechubTestComponent;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
 @SechubTestComponent
-public class NetsparkerAdapterTestFileSupport extends TestFileSupport {
-    private static final NetsparkerAdapterTestFileSupport TESTFILE_SUPPORT = new NetsparkerAdapterTestFileSupport();
+public class TestNetsparkerAdapterFileSupport extends TestFileSupport {
+    private static final TestNetsparkerAdapterFileSupport TESTFILE_SUPPORT = new TestNetsparkerAdapterFileSupport();
 
-    public static NetsparkerAdapterTestFileSupport getTestfileSupport() {
+    public static TestNetsparkerAdapterFileSupport getTestfileSupport() {
         return TESTFILE_SUPPORT;
     }
 
-    NetsparkerAdapterTestFileSupport() {
+    TestNetsparkerAdapterFileSupport() {
         super("deprecated-sechub-adapter-netsparker/src/test/resources");
     }
 

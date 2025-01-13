@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-public class JSONConverterTestObject {
+public class TestJSONConverterObject {
     String info;
 
-    JSONConverterTestObject() {
+    TestJSONConverterObject() {
 
     }
 
-    JSONConverterTestObject(String info) {
+    TestJSONConverterObject(String info) {
         this.info = info;
     }
 

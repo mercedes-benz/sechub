@@ -13,7 +13,7 @@ public class PDSMonitoringTest {
     @Test
     public void monitoring_toJSON() throws Exception {
         /* prepare */
-        PDSMonitoring monitoringToTest = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
+        PDSMonitoring monitoringToTest = TestPDSMonitoringDataUtil.createTestMonitoringWith2ClusterMembers();
 
         /* execute */
         String json = monitoringToTest.toJSON();

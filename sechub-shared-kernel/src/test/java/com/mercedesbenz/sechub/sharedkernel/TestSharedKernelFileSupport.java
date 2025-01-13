@@ -5,14 +5,14 @@ import com.mercedesbenz.sechub.test.SechubTestComponent;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
 @SechubTestComponent
-public class SharedKernelTestFileSupport extends TestFileSupport {
-    private static final SharedKernelTestFileSupport TESTFILE_SUPPORT = new SharedKernelTestFileSupport();
+public class TestSharedKernelFileSupport extends TestFileSupport {
+    private static final TestSharedKernelFileSupport TESTFILE_SUPPORT = new TestSharedKernelFileSupport();
 
-    public static SharedKernelTestFileSupport getTestfileSupport() {
+    public static TestSharedKernelFileSupport getTestfileSupport() {
         return TESTFILE_SUPPORT;
     }
 
-    SharedKernelTestFileSupport() {
+    TestSharedKernelFileSupport() {
         super("sechub-shared-kernel/src/test/resources");
     }
 

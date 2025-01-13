@@ -5,14 +5,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 public class ProductExecutorConfigSetupTest {
 
     @Test
     public void executor_config_example_1_can_be_read_transformed_to_json_and_contains_expected_data() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("executor/executor-configuration-setup-example1.json");
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile("executor/executor-configuration-setup-example1.json");
 
         /* execute */
         ProductExecutorConfigSetup result = ProductExecutorConfigSetup.fromJSONString(json);

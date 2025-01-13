@@ -5,14 +5,14 @@ import com.mercedesbenz.sechub.test.SechubTestComponent;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
 @SechubTestComponent
-public class ScheduleTestFileSupport extends TestFileSupport {
-    private static final ScheduleTestFileSupport TESTFILE_SUPPORT = new ScheduleTestFileSupport();
+public class TestScheduleFileSupport extends TestFileSupport {
+    private static final TestScheduleFileSupport TESTFILE_SUPPORT = new TestScheduleFileSupport();
 
-    public static ScheduleTestFileSupport getTestfileSupport() {
+    public static TestScheduleFileSupport getTestfileSupport() {
         return TESTFILE_SUPPORT;
     }
 
-    ScheduleTestFileSupport() {
+    TestScheduleFileSupport() {
         super("sechub-schedule/src/test/resources");
     }
 

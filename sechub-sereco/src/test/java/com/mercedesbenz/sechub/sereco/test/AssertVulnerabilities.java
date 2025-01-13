@@ -33,7 +33,7 @@ public class AssertVulnerabilities {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertVulnerabilities.class);
 
-    private static VulnerabilityTestDescriptionBuilder descriptionBuilder = new VulnerabilityTestDescriptionBuilder();
+    private static TestVulnerabilityDescriptionBuilder descriptionBuilder = new TestVulnerabilityDescriptionBuilder();
 
     private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 

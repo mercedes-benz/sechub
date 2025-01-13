@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.test;
 
-import static com.mercedesbenz.sechub.sereco.test.VulnerabilityTestDataKey.*;
+import static com.mercedesbenz.sechub.sereco.test.TestVulnerabilityDataKey.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import com.mercedesbenz.sechub.sereco.test.AssertVulnerabilities.VulnerabilityFi
 public class AssertVulnerabilitiesParamTest {
 
     @Parameter
-    public VulnerabilityMutableTestData currentTestData;
+    public TestVulnerabilityMutableData currentTestData;
 
     @Test
     public void healthCheck_full_setup_is_found() {
@@ -82,8 +82,8 @@ public class AssertVulnerabilitiesParamTest {
         return testVulnerability;
     }
 
-    public static VulnerabilityMutableTestData createTestDataElement() {
-        return new VulnerabilityMutableTestData();
+    public static TestVulnerabilityMutableData createTestDataElement() {
+        return new TestVulnerabilityMutableData();
     }
 
     @Parameters(name = "parameter test {index}:{0}")
@@ -94,7 +94,7 @@ public class AssertVulnerabilitiesParamTest {
         result.add(new Object[] { createTestDataElement() });
 
         // for each key add the test data again, but touch it for the key...
-        for (VulnerabilityTestDataKey key : values()) {
+        for (TestVulnerabilityDataKey key : values()) {
             result.add(new Object[] { createTestDataElement().touch(key) });
         }
         return result;

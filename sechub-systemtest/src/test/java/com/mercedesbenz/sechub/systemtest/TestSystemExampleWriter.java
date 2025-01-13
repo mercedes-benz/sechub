@@ -14,9 +14,9 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.systemtest.config.SystemTestConfiguration;
 
-public class SystemTestExampleWriter {
+public class TestSystemExampleWriter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemTestExampleWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestSystemExampleWriter.class);
 
     public static void writeExample(SystemTestConfiguration configuration, String name) throws IOException {
         String configurationAsPrettyPrintedJson = createSmallPrettyPrintedJson(configuration);

@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
+import com.mercedesbenz.sechub.integrationtest.api.TestOnlyForRegularExecution;
 import com.mercedesbenz.sechub.test.TestUtil;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 class PersistentScenarioTestDataProviderTest {
 
     private PersistentScenarioTestDataProvider providerToTest;

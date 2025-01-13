@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.sereco.ImportParameter;
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 class NessusV1XMLImporterTest {
 
@@ -21,7 +21,7 @@ class NessusV1XMLImporterTest {
     @Test
     void xmlReportFromNessus7canBeImported() {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("nessus/nessus_7.0.2.result.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("nessus/nessus_7.0.2.result.xml");
 
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Nessus").build();
 

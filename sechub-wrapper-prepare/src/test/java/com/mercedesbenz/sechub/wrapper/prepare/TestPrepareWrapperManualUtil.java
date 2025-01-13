@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-public class PrepareWrapperManualTestUtil {
+public class TestPrepareWrapperManualUtil {
 
     public static void cleanup() throws IOException {
         File manuelTestFolder = new File("./build/manual-test/");

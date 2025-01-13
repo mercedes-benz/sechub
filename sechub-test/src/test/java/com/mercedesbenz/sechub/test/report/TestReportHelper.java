@@ -28,7 +28,7 @@ import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.TestUtil;
 
-public class ReportTestHelper {
+public class TestReportHelper {
 
     private static final String REPORT_PATH = "./src/test/resources/report/";
 
@@ -36,7 +36,7 @@ public class ReportTestHelper {
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer serecoProductResultTransformer = new TestSerecoProductResultTransformer();
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReportTestHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestReportHelper.class);
 
     public static String load3rdPartyReportAsString(String fullName) {
         return TestFileReader.readTextFromFile(new File(REPORT_PATH + "input/" + fullName));

@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.test.TestUtil;
  * @author Albert Tregnaghi, Jeremias Eppler
  *
  */
-public class CheckmarxAdapterTestApplication {
+public class TestCheckmarxAdapterApplication {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("log4j.logger.org.apache.http", "ERROR");
@@ -46,7 +46,7 @@ public class CheckmarxAdapterTestApplication {
         // "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue
         // "zipfile_contains_sechub_doc_java.zip"; // should work
 
-        File zipFile = CheckmarxTestFileSupport.getTestfileSupport().createFileFromRoot("sechub-other/testsourcecode/" + pathInOtherProject);
+        File zipFile = TestCheckmarxFileSupport.getTestfileSupport().createFileFromRoot("sechub-other/testsourcecode/" + pathInOtherProject);
         /* @formatter:off */
 		CheckmarxAdapterConfig config =
 				CheckmarxConfig.builder().

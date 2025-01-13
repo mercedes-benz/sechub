@@ -5,14 +5,14 @@ import com.mercedesbenz.sechub.test.SechubTestComponent;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
 @SechubTestComponent
-public class NessusAdapterTestFileSupport extends TestFileSupport {
-    private static final NessusAdapterTestFileSupport TESTFILE_SUPPORT = new NessusAdapterTestFileSupport();
+public class TestNessusAdapterFileSupport extends TestFileSupport {
+    private static final TestNessusAdapterFileSupport TESTFILE_SUPPORT = new TestNessusAdapterFileSupport();
 
-    public static NessusAdapterTestFileSupport getTestfileSupport() {
+    public static TestNessusAdapterFileSupport getTestfileSupport() {
         return TESTFILE_SUPPORT;
     }
 
-    NessusAdapterTestFileSupport() {
+    TestNessusAdapterFileSupport() {
         super("deprecated-sechub-adapter-nessus/src/test/resources");
     }
 

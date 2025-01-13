@@ -19,8 +19,8 @@ class ArchUnitRuntimeSupport {
     public List<ImportOption> createImportOptionsIgnoreFolder() {
         List<ImportOption> importOptions = new ArrayList<>();
 
-        // comma seperated list of folders to ignore e.g. build folders from different
-        // builds
+        /* comma seperated list of folders to ignore e.g. build folders from different
+        builds */
         String folderToIgnore = System.getProperty("sechub.archunit.ignoreFolders");
         if (folderToIgnore == null || folderToIgnore.isBlank()) {
             return importOptions;

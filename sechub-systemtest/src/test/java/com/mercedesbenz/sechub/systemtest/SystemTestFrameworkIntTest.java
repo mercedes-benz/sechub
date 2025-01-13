@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.systemtest;
 
 import static com.mercedesbenz.sechub.systemtest.SystemTestAPI.*;
-import static com.mercedesbenz.sechub.systemtest.SystemTestExampleWriter.*;
+import static com.mercedesbenz.sechub.systemtest.TestSystemExampleWriter.*;
 import static com.mercedesbenz.sechub.systemtest.TestConfigConstants.*;
 import static com.mercedesbenz.sechub.systemtest.TestConfigUtil.*;
 import static com.mercedesbenz.sechub.test.TestUtil.*;

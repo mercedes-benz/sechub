@@ -37,12 +37,14 @@ public class NamingConventionTest {
         // workaround for resideInAnyPackage not working, using ignoreFolders (ignore main) instead
         ArchRule rule = ArchRuleDefinition.classes()
                 .should()
-                .haveSimpleNameContaining("Test")
+                .haveSimpleNameEndingWith("Test")
                 .orShould()
-                .haveSimpleNameContaining("Assert")
+                .haveSimpleNameStartingWith("Test")
+                .orShould()
+                .haveSimpleNameStartingWith("Assert")
                 .orShould()
                 .haveNameMatching(".*\\$.*") // ignoring inner classes
-                .because("Tests classes should contain 'Test' or 'Assert' in their name. " + ARCHUNIT_SUPPORT_NOTE);
+                .because("Tests classes should start or end with 'Test' or contain 'Assert' in their name. " + ARCHUNIT_SUPPORT_NOTE);
 
         rule.check(importedClasses);
         /* @formatter:on */

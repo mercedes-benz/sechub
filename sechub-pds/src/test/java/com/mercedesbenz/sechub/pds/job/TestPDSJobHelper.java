@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
-public class PDSJobTestHelper {
+public class TestPDSJobHelper {
 
     /**
      * Creates a pds test job - started now, created 3 seconds before. State is

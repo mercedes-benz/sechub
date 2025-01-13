@@ -260,7 +260,7 @@ public class JSONConverterTest {
     @Test
     void toJSON_list_with_two_test_object_returns_expected_json_string() throws Exception {
         assertEquals("[{\"info\":\"test1\"},{\"info\":\"test2\"}]",
-                converterToTest.toJSON(Arrays.asList(new JSONConverterTestObject("test1"), new JSONConverterTestObject("test2"))));
+                converterToTest.toJSON(Arrays.asList(new TestJSONConverterObject("test1"), new TestJSONConverterObject("test2"))));
     }
 
     @Test
@@ -269,15 +269,15 @@ public class JSONConverterTest {
         String json = "[{\"info\":\"test1\"},{\"info\":\"test2\"}]";
 
         /* execute */
-        List<JSONConverterTestObject> result = converterToTest.fromJSONtoListOf(JSONConverterTestObject.class, json);
+        List<TestJSONConverterObject> result = converterToTest.fromJSONtoListOf(TestJSONConverterObject.class, json);
 
         /* test */
         assertNotNull(result);
         assertEquals(2, result.size());
 
-        Iterator<JSONConverterTestObject> it = result.iterator();
-        JSONConverterTestObject obj1 = it.next();
-        JSONConverterTestObject obj2 = it.next();
+        Iterator<TestJSONConverterObject> it = result.iterator();
+        TestJSONConverterObject obj1 = it.next();
+        TestJSONConverterObject obj2 = it.next();
 
         assertEquals("test1", obj1.getInfo());
         assertEquals("test2", obj2.getInfo());
@@ -285,7 +285,7 @@ public class JSONConverterTest {
 
     @Test
     void toJSON_test_object_returns_expected_json_string() throws Exception {
-        assertEquals("{\"info\":\"test1\"}", converterToTest.toJSON(new JSONConverterTestObject("test1")));
+        assertEquals("{\"info\":\"test1\"}", converterToTest.toJSON(new TestJSONConverterObject("test1")));
     }
 
     @Test
@@ -293,7 +293,7 @@ public class JSONConverterTest {
         /* prepare */
         String json = "{\"info\":\"test1\"}";
         /* execute */
-        JSONConverterTestObject result = converterToTest.fromJSON(JSONConverterTestObject.class, json);
+        TestJSONConverterObject result = converterToTest.fromJSON(TestJSONConverterObject.class, json);
         /* test */
         assertEquals("test1", result.getInfo());
     }
@@ -303,7 +303,7 @@ public class JSONConverterTest {
         /* prepare */
         String json = "{'info':'info1'}";
         /* execute */
-        JSONConverterTestObject result = converterToTest.fromJSON(JSONConverterTestObject.class, json);
+        TestJSONConverterObject result = converterToTest.fromJSON(TestJSONConverterObject.class, json);
 
         /* test */
         assertNotNull(result);
@@ -312,7 +312,7 @@ public class JSONConverterTest {
 
     @Test
     void fromJSON_when_string_null_throws_JSONConverterException() throws Exception {
-        assertThrows(JSONConverterException.class, () -> converterToTest.fromJSON(JSONConverterTestObject.class, null));
+        assertThrows(JSONConverterException.class, () -> converterToTest.fromJSON(TestJSONConverterObject.class, null));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class JSONConverterTest {
         /* prepare */
         String json = "//just a comment\\\n{\n//comments are a nice thing. \n/*not standard but used in *wildness* so we provide it*/\n'info':'info1'}";
         /* execute */
-        JSONConverterTestObject result = converterToTest.fromJSON(JSONConverterTestObject.class, json);
+        TestJSONConverterObject result = converterToTest.fromJSON(TestJSONConverterObject.class, json);
 
         /* test */
         assertNotNull(result);

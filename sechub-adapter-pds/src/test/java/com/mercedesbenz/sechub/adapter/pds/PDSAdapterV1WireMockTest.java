@@ -73,7 +73,7 @@ public class PDSAdapterV1WireMockTest {
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
 
         /* prepare */
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+        TestPDSWiremockSupport testSupport = TestPDSWiremockSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData(SOURCECODE_ZIP, SIM_SOURCE_ZIP_SIZE).
                 simulateMarkReadyToStart().
@@ -102,7 +102,7 @@ public class PDSAdapterV1WireMockTest {
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"false");
 
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+        TestPDSWiremockSupport testSupport = TestPDSWiremockSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData(SOURCECODE_ZIP,SIM_SOURCE_ZIP_SIZE).
                 simulateMarkReadyToStart().
@@ -131,7 +131,7 @@ public class PDSAdapterV1WireMockTest {
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"false");
 
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+        TestPDSWiremockSupport testSupport = TestPDSWiremockSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData(BINARIES_TAR,SIM_BINARIES_TAR_SIZE).
                 simulateMarkReadyToStart().
@@ -161,7 +161,7 @@ public class PDSAdapterV1WireMockTest {
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"true");
 
 
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+        TestPDSWiremockSupport testSupport = TestPDSWiremockSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 //no simulate upload here! --> if an upload would be called, wiremock would fail, because no stubbing available
                 simulateMarkReadyToStart().
@@ -195,7 +195,7 @@ public class PDSAdapterV1WireMockTest {
         messagesFromPDS.getSecHubMessages().add(new SecHubMessage(SecHubMessageType.INFO,"i am the info sent back by wiremock"));
 
 
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+        TestPDSWiremockSupport testSupport = TestPDSWiremockSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 //no simulate upload here!
                 simulateMarkReadyToStart().
@@ -218,7 +218,7 @@ public class PDSAdapterV1WireMockTest {
     }
 
     /* @formatter:off */
-    private PDSAdapterConfig createCodeScanConfiguration(PDSWiremockTestSupport testSupport) {
+    private PDSAdapterConfig createCodeScanConfiguration(TestPDSWiremockSupport testSupport) {
         String baseURL = testSupport.getTestBaseUrl();
         PDSCodeScanConfigBuilder builder = PDSCodeScanConfigImpl.builder().
                 setUser("testuser").
@@ -248,7 +248,7 @@ public class PDSAdapterV1WireMockTest {
     /* @formatter:on */
 
     /* @formatter:off */
-    private PDSAdapterConfig createCodeScanConfigurationWithBinary(PDSWiremockTestSupport testSupport) {
+    private PDSAdapterConfig createCodeScanConfigurationWithBinary(TestPDSWiremockSupport testSupport) {
         String baseURL = testSupport.getTestBaseUrl();
         PDSCodeScanConfigBuilder builder = PDSCodeScanConfigImpl.builder().
                 setUser("testuser").

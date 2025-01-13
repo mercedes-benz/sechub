@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.commons.model.login.ActionType;
  * @author Albert Tregnaghi
  *
  */
-public class NetsparkerAdapterTestApplication {
+public class TestNetsparkerAdapterApplication {
 
     public static void main(String[] args) throws Exception {
         SecHubTimeUnitData maxScanDuration = null;
