@@ -155,19 +155,63 @@ go_mmproxy:
   # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
   image: "example.org/go-mmproxy:2.1.0"
 
-oauth2:
-  # Enable Oauth2 authentication
-  # Explanation of the modes and parameters: Search for 'oauth2' in documentation
-  # https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
-  enabled: false
-  # Choose either 'JWT' or 'OPAQUE_TOKEN'
-  mode: JWT
-  jwt:
-    uri: https://sso.example.org/JWKS
-  opaque_token:
-    client_id: insert_your_client_id_here
-    client_secret: insert_your_client_secret_here
-    introspection_uri: https://sso.example.org/introspect.oauth2
+security:
+  # This section configures the application (or server) to be able to authorize incoming requests
+  resourceServer:
+    # The authorization can be configured in 'classic' or 'oauth2' mode. While both are possible, at least
+    # one must be active. Classic mode enables SecHub API Token authorization via basic auth.
+    modes: classic,oauth2
+    # classic: ... (To be implemented)
+    oauth2:
+      # OAuth2 authorization can be either 'jwt' or 'opaque-token'. Exactly one must be active.
+      mode: jwt
+      jwt:
+        # The location of the Json Web Key file. This is a meta data file necessary for JWT token validation.
+        jwkSetUri: https://sso.example.org/JWKS
+      opaqueToken:
+        # Client ID to use for token introspection. May be not the same client used for authentication.
+        clientId: insert_your_introspection_client_id_here
+        # Client secret to use for token introspection.
+        clientSecret: insert_your_introspection_client_secret_here
+        # This is the introspection endpoint of the IDP. For every incoming request this endpoint will be called.
+        introspectionUri: https://sso.example.org/introspect.oauth2
+  # This config defines everything necessary for the application (or server) to be able to offer user authentication.
+  # With this a login page will be available on the application.
+  login:
+    # Whether or not the login is enabled or not
+    enabled: false
+    # Path under which the login page will be hosted on the application (or server).
+    # Must not collide with other existing paths.
+    loginPage: /login
+    # Defines the URI to which the user is redirected after successful login.
+    redirectUri: https://sechub-web.example.org/index.html
+    # The authentication can be configured in 'classic' or 'oauth2' mode.
+    # While both are possible, at least one must be active when login is enabled.
+    modes: classic,oauth2
+    # classic: ... (To be implemented)
+    oauth2:
+      # Client credentials for authentication
+      clientId: insert_your_client_id_here
+      clientSecret: insert_your_client_secret_here
+      # Name of your IDP provider
+      provider: example-provider
+      uri:
+        # The endpoint where users are redirected to authenticate. Usually hosted by the IDP.
+        authorization: https://sso.example.org/authorization.oauth2
+        # Represents the issuing authority
+        issuer: https://sso.example.org/
+        # The endpoint that provides the JSON Web Key Set (JWKS) for verifying token signatures.
+        jwkSet: https://sso.example.org/realms/local-realm/protocol/openid-connect/certs
+        # The URL to which your IDP will redirect the user after they authenticate. This is an endpoint on the application.
+        redirect: https://sso.example.org/login/oauth2/code/keycloak
+        # The endpoint where the application exchanges an authorization code for an access token.
+        token: https://sso.example.org/realms/local-realm/protocol/openid-connect/token
+        # The endpoint used to retrieve user details (e.g., name, email, roles) based on the access token.
+        userInfo: https://sso.example.org/realms/local-realm/protocol/openid-connect/userinfo
+  encryption:
+    # Secret key used to encrypt the access token which is sent back to the user after sucessful authentication (or login).
+    # Must be AES256 compatible (256 bit / 32 byte)
+    secretKey: Insert-your-32-byte-string-here.
 
 storage:
   local:

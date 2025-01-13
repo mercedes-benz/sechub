@@ -2,3 +2,5 @@
 FINDSECURITYBUGS_VERSION="1.13.0"
 # The Spotbugs version to use. See https://github.com/spotbugs/spotbugs/releases
 SPOTBUGS_VERSION="4.8.3"
+PDS_ENCRYPTION_ALGORITHM="NONE"
+PDS_ENCRYPTION_SECRET_KEY=""
