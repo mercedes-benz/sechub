@@ -24,6 +24,7 @@ public class TOTPGenerator {
     private final WebLoginTOTPConfiguration totpConfig;
     private final long digitsTruncate;
     private final ZapWrapperStringDecoder zapWrapperStringDecoder;
+    private final Mac mac;
 
     public TOTPGenerator(WebLoginTOTPConfiguration totpConfig) {
         this.totpConfig = requireNonNull(totpConfig, "The TOTP configuration must not be null!");
@@ -33,6 +34,17 @@ public class TOTPGenerator {
 
         this.digitsTruncate = (long) Math.pow(BASE, totpConfig.getTokenLength());
         this.zapWrapperStringDecoder = new ZapWrapperStringDecoder();
+
+        String hashAlgorithmName = totpConfig.getHashAlgorithm().getName();
+        try {
+            this.mac = Mac.getInstance(hashAlgorithmName);
+            byte[] rawSeedBytes = zapWrapperStringDecoder.decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType());
+            mac.init(new SecretKeySpec(rawSeedBytes, hashAlgorithmName));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException("The specified hash algorithm: '" + hashAlgorithmName + "' is unknown!", e);
+        } catch (InvalidKeyException e) {
+            throw new IllegalArgumentException("The specified seed was invalid!", e);
+        }
     }
 
     /**
@@ -68,23 +80,13 @@ public class TOTPGenerator {
     }
 
     private byte[] computeHash(long currentTimeMillis) {
-        try {
-            String hashAlgorithmName = totpConfig.getHashAlgorithm().getName();
-            Mac mac = Mac.getInstance(hashAlgorithmName);
-
-            mac.init(new SecretKeySpec(zapWrapperStringDecoder.decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType()), hashAlgorithmName));
-            byte[] timeBytes = computeTimeBytes(currentTimeMillis, totpConfig.getValidityInSeconds());
-            byte[] hash = mac.doFinal(timeBytes);
-            return hash;
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("The specified hash algorithm is unknown!", e);
-        } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException("The specified seed was invalid!", e);
-        }
+        byte[] timeBytes = computeTimeBytes(currentTimeMillis);
+        byte[] hash = mac.doFinal(timeBytes);
+        return hash;
     }
 
-    private byte[] computeTimeBytes(long currentTimeMillis, int tokenValidityTimeInSeconds) {
-        Long timeStep = (currentTimeMillis / ONE_SECOND_IN_MILLISECONDS) / tokenValidityTimeInSeconds;
+    private byte[] computeTimeBytes(long currentTimeMillis) {
+        Long timeStep = (currentTimeMillis / ONE_SECOND_IN_MILLISECONDS) / totpConfig.getValidityInSeconds();
 
         /* @formatter:off */
         byte[] timeBytes = ByteBuffer.allocate(Long.BYTES)
