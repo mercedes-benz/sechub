@@ -42,6 +42,7 @@ projectType = [
                     project(':sechub-developertools'),
                     project(':sechub-test'),
                     project(':sechub-commons-security-spring'),
+                    project(':sechub-commons-security-login-spring'),
                     project(':sechub-testframework-spring'),
                     project(':sechub-storage-sharedvolume-spring'),
 
@@ -106,12 +107,10 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-web-server'),
                    project(':sechub-wrapper-secretvalidation'),
             ],
 
             springBootWebApplicationProjects:[
-                    project('sechub-web-server')
             ],
 
             /* documentation projects */
