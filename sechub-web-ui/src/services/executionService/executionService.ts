@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: MIT
-import { SecHubExecutionApi } from '@/generated-sources/openapi'
+import {
+  SecHubExecutionApi,
+  SecHubReport,
+  SecHubReportFromJSON,
+  UserDownloadJobReportRequest
+} from '@/generated-sources/openapi'
 import * as runtime from '@/generated-sources/openapi/runtime'
 import apiConfig from '../configuration'
 import { v4 as uuidv4 } from 'uuid'
@@ -146,6 +151,50 @@ class SecHubExecutionApiWorkaround extends SecHubExecutionApi {
     }, initOverrides)
 
     return new runtime.VoidApiResponse(response)
+  }
+
+  /**
+   * User downloads sechub job HTML report
+   */
+  async userDownloadJobReportHtmlRaw(requestParameters: UserDownloadJobReportRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SecHubReport>> {
+    if (requestParameters['projectId'] == null) {
+      throw new runtime.RequiredError(
+        'projectId',
+        'Required parameter "projectId" was null or undefined when calling userDownloadJobReportHtml().'
+      );
+    }
+
+    if (requestParameters['jobUUID'] == null) {
+      throw new runtime.RequiredError(
+        'jobUUID',
+        'Required parameter "jobUUID" was null or undefined when calling userDownloadJobReportHtml().'
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+    headerParameters['Accept'] = 'text/html';
+
+    if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+      headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+    }
+    const response = await this.request({
+      path: `/api/project/{projectId}/report/{jobUUID}`.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId']))).replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID']))),
+      method: 'GET',
+      headers: headerParameters,
+      query: queryParameters,
+    }, initOverrides);
+
+    return new runtime.TextApiResponse(response);
+  }
+
+  /**
+   * User downloads sechub job HTML report
+   */
+  async userDownloadJobReportHtml(requestParameters: UserDownloadJobReportRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SecHubReport> {
+    const response = await this.userDownloadJobReportHtmlRaw(requestParameters, initOverrides);
+    return await response.value();
   }
 }
 
