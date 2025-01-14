@@ -3862,7 +3862,7 @@ paths:
     get:
       summary: User lists jobs for project
       description: User lists jobs for project
-      operationId: userListJobsForProject
+      operationId: userListsJobsForProject
       parameters:
         - name: projectId
           description: The id of the project where job information shall be fetched
@@ -4172,3 +4172,26 @@ paths:
           description: "Not found"
       tags:
         - Configuration
+
+  /api/jobs/cancel/{jobUUID}:
+    post:
+      description: User does cancel a job by its Job UUID
+      operationId: userCancelsJob
+      parameters:
+        - description: The job UUID
+          explode: false
+          in: path
+          name: jobUUID
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          description: "200"
+      security:
+        - basic: [ ]
+      summary: User cancels a job
+      tags:
+        - Job Administration
+      x-accepts: application/json
