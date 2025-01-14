@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.restdoc;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -13,13 +11,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.domain.administration.job.JobInformation;
-import com.mercedesbenz.sechub.domain.administration.project.Project;
-import com.mercedesbenz.sechub.domain.administration.user.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +64,7 @@ public class JobRestControllerRestDocTest implements TestIsNecessaryForDocumenta
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserCancelJob(JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCancelsJob.class;
-        
+
         /* execute + test @formatter:off */
         UUID jobUUID = UUID.randomUUID();
         this.mockMvc.perform(
