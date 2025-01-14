@@ -62,7 +62,6 @@ ext {
       junit4:                                  "4.13.2",
       wiremock:                                "3.0.1",
       s3mock:                                  "3.3.0",
-      assertj_core:                            "3.24.2",
 
       /* gradle plugins */      
       dependency_check:                        "9.0.7",
@@ -181,8 +180,7 @@ ext {
         wiremock:                              "com.github.tomakehurst:wiremock-standalone:${libraryVersion.wiremock}",
         s3mock:                                "com.adobe.testing:s3mock:${libraryVersion.s3mock}",
         s3mock_junit5:                         "com.adobe.testing:s3mock-junit5:${libraryVersion.s3mock}",
-        assertj_core:                          "org.assertj:assertj-core:${libraryVersion.assertj_core}",
-        
+
         /*
          * RE2 is a regular expression engine that runs in time linear in the size of the input.
          * It's the default RegularExpression engine of Go

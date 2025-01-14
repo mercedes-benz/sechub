@@ -4,8 +4,14 @@ package mercedesbenz.com.sechub.archunit;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.lang.ArchCondition;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.platform.commons.annotation.Testable;
 import org.springframework.stereotype.Service;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -46,6 +52,45 @@ public class NamingConventionTest {
                 .orShould()
                 .haveNameMatching(".*\\$.*") // ignoring inner classes
                 .because("Tests classes should start or end with 'Test' or start with 'Assert'");
+
+        rule.check(importedClasses);
+        /* @formatter:on */
+    }
+
+    @Test
+    void test_classes_with_test_annotations_should_end_with_test() {
+        /* prepare */
+        /* @formatter:off */
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOptions(ignoreFolders)
+                .withImportOption(ignoreAllMain)
+                .withImportOption(ignoreArchUnit)
+                .withImportOption(ignoreDocGen)
+                .withImportOption(ignoreSechubOpenAPIJava)
+                .withImportOption(ignoreSechubTestframework)
+                .withImportOption(ignoreSharedkernelTest)
+                .withImportOption(ignoreSechubApiJava)
+                .withImportOption(ignoreJarFiles)
+                .importPath(SECHUB_ROOT_PATH);
+
+        /* execute + test */
+        // workaround for resideInAnyPackage not working, using ignoreFolders (ignore main) instead
+        ArchCondition<JavaClass> testMethodsClassNameCondition = new ArchCondition<JavaClass>("should end with 'Test' when containing test methods") {
+            @Override
+            public void check(JavaClass javaClass, ConditionEvents events) {
+                boolean hasTestMethodAnnotation = javaClass.getMethods().stream()
+                        .anyMatch(method -> method.isAnnotatedWith(Test.class)
+                                || method.isAnnotatedWith(ParameterizedTest.class));
+                if (hasTestMethodAnnotation) {
+                    boolean endsWithTest = javaClass.getSimpleName().endsWith("Test");
+                    String message = String.format("Class %s has test methods but does not end with 'Test'", javaClass.getFullName());
+                    events.add(new SimpleConditionEvent(javaClass, endsWithTest, message));
+                }
+            }
+        };
+
+        ArchRule rule = classes()
+                .should(testMethodsClassNameCondition);
 
         rule.check(importedClasses);
         /* @formatter:on */
