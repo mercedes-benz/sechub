@@ -52,6 +52,7 @@ public class DomainAccessRulesTest {
                 .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubProjects)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */

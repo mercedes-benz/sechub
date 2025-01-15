@@ -11,6 +11,8 @@ import com.tngtech.archunit.core.importer.ImportOption;
 public class ArchUnitImportOptions {
     public static Path SECHUB_ROOT_PATH = resolveRoothPath();
 
+    private static String SECHUB_PACKAGE_PREFIX = "com/mercedesbenz/sechub";
+
     private static Path resolveRoothPath() {
         try {
             return Paths.get("./../").toRealPath();
@@ -26,6 +28,10 @@ public class ArchUnitImportOptions {
 
     static ImportOption ignoreAllMain = location -> {
         return !location.contains("/main/"); // ignore any URI to sources that contains '/main/'
+    };
+
+    static ImportOption ignoreNonSecHubProjects = location -> {
+        return location.contains(SECHUB_PACKAGE_PREFIX); // ignore any URI to sources that does not remain in the sechub package'
     };
 
     static ImportOption ignoreArchUnit = location -> {

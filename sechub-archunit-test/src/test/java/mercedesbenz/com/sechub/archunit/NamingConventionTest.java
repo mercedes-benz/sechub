@@ -37,6 +37,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubProjects)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -70,11 +71,12 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubProjects)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
         // workaround for resideInAnyPackage not working, using ignoreFolders (ignore main) instead
-        ArchCondition<JavaClass> testMethodsClassNameCondition = new ArchCondition<JavaClass>("should end with 'Test' when containing test methods") {
+        ArchCondition<JavaClass> testMethodsClassNameCondition = new ArchCondition<JavaClass>("should end with 'Test' when containing test methods annotations") {
             @Override
             public void check(JavaClass javaClass, ConditionEvents events) {
                 boolean hasTestMethodAnnotation = javaClass.getMethods().stream()
@@ -104,6 +106,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubProjects)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
