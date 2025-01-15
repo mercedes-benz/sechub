@@ -23,7 +23,6 @@ public class TOTPGenerator {
 
     private final WebLoginTOTPConfiguration totpConfig;
     private final long digitsTruncate;
-    private final ZapWrapperStringDecoder zapWrapperStringDecoder;
     private final Mac mac;
 
     public TOTPGenerator(WebLoginTOTPConfiguration totpConfig) {
@@ -33,12 +32,11 @@ public class TOTPGenerator {
         requireNonNull(totpConfig.getEncodingType(), "The TOTP configuration encoding type must not be null!");
 
         this.digitsTruncate = (long) Math.pow(BASE, totpConfig.getTokenLength());
-        this.zapWrapperStringDecoder = new ZapWrapperStringDecoder();
 
         String hashAlgorithmName = totpConfig.getHashAlgorithm().getName();
         try {
             this.mac = Mac.getInstance(hashAlgorithmName);
-            byte[] rawSeedBytes = zapWrapperStringDecoder.decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType());
+            byte[] rawSeedBytes = new ZapWrapperStringDecoder().decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType());
             mac.init(new SecretKeySpec(rawSeedBytes, hashAlgorithmName));
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException("The specified hash algorithm: '" + hashAlgorithmName + "' is unknown!", e);
