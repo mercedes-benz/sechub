@@ -4175,7 +4175,7 @@ paths:
 
   /api/jobs/cancel/{jobUUID}:
     post:
-      description: User does cancel a job by its Job UUID
+      description: User cancels a job by its Job UUID
       operationId: userCancelsJob
       parameters:
         - description: The job UUID
@@ -4189,6 +4189,8 @@ paths:
       responses:
         "200":
           description: "200"
+        "404":
+          description: "Not found"
       security:
         - basic: [ ]
       summary: User cancels a job

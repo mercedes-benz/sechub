@@ -13,7 +13,6 @@ import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAuthorizedException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -66,8 +65,8 @@ public class JobCancelService {
         userInputAssertion.assertIsValidUserId(userId);
 
         auditLogService.log("User {} requested cancellation of job {}", userId, jobUUID);
-
         assertUserAllowedCancelJob(jobUUID, userId);
+
         JobMessage message = buildMessage(jobUUID);
 
         /* trigger event */
@@ -83,7 +82,7 @@ public class JobCancelService {
                 return;
             }
         }
-        throw new NotAuthorizedException("User not allowed to cancel job: " + jobUUID);
+        throw new NotFoundException("Job not found: " + jobUUID);
     }
 
     private JobMessage buildMessage(UUID jobUUID) {

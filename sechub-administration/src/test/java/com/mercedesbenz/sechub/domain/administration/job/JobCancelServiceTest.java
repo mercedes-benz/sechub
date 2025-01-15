@@ -15,7 +15,6 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAuthorizedException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -43,7 +42,7 @@ public class JobCancelServiceTest {
     }
 
     @Test
-    public void userCancelJob_receives_not_authorized_exception_when_job_not_found() {
+    public void userCancelJob_receives_not_found_exception_when_project_not_assigned() {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
         String userId = "user1";
@@ -62,7 +61,7 @@ public class JobCancelServiceTest {
         when(jobInformationRepository.findById(jobUUID)).thenReturn(Optional.of(jobInformation));
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotAuthorizedException.class);
+        assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
