@@ -153,6 +153,7 @@ The following example contains all available bindings, even if they are unused i
 import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys.*
 
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator
+import com.mercedesbenz.sechub.zapwrapper.scan.login.MissingMandatoryBindingException
 
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
@@ -173,6 +174,54 @@ final String user = binding.getVariable(USER_KEY)
 final String password = binding.getVariable(PASSWORD_KEY)
 final String loginUrl = binding.getVariable(LOGIN_URL_KEY)
 final String targetUrl = binding.getVariable(TARGET_URL_KEY)
+
+// example authentication script steps
+firefox.get(loginUrl)
+
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".close-dialog"))).click()
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("email"))).sendKeys(user)
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("password"))).sendKeys(password)
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("loginButton"))).click()
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp"))).sendKeys(totpGenerator.now())
+webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitOtp"))).click()
+----
+
+
+===== MissingMandatoryBindingException example usage
+There is a custom Exception called `MissingMandatoryBindingException` that can be used inside the script,
+e.g. if it is necessary to send a dedicated `SechubMessage` about an incorrect SecHub configuration.
+The message of the exception will be passed on as a `SechubMessage`.
+
+[source,groovy]
+----
+import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys.*
+
+import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator
+import com.mercedesbenz.sechub.zapwrapper.scan.login.MissingMandatoryBindingException
+
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.JavascriptExecutor
+
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration
+
+// all available bindings
+final FirefoxDriver firefox = binding.getVariable(FIREFOX_WEBDRIVER_KEY)
+final WebDriverWait webdriverWait = binding.getVariable(FIREFOX_WEBDRIVER_WAIT_KEY)
+final JavascriptExecutor javaScriptExecutor = binding.getVariable(JAVASCRIPTEXECUTOR_KEY)
+final SecHubWebScanConfiguration sechubWebScanConfig = binding.getVariable(SECHUB_WEBSCAN_CONFIG_KEY)
+final TOTPGenerator totpGenerator = binding.getVariable(TOTP_GENERATOR_KEY)
+
+final String user = binding.getVariable(USER_KEY)
+final String password = binding.getVariable(PASSWORD_KEY)
+final String loginUrl = binding.getVariable(LOGIN_URL_KEY)
+final String targetUrl = binding.getVariable(TARGET_URL_KEY)
+
+if (totpGenerator == null) {
+	throw new MissingMandatoryBindingException("The authentication requires TOTP but no TOTP configuration was found inside the SecHub configuration!");
+}
 
 // example authentication script steps
 firefox.get(loginUrl)

@@ -20,6 +20,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
@@ -70,6 +72,10 @@ public class ZapWrapperGroovyScriptExecutor {
         } catch (IOException | ScriptException e) {
             LOG.error("An error happened while executing the script file.", e);
             loginResult.setLoginFailed(true);
+        } catch (MissingMandatoryBindingException e) {
+            LOG.error("An error happened while executing the script file, because of a missing mandatory binding.", e);
+            loginResult.setLoginFailed(true);
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
             firefox.quit();
         }
@@ -81,13 +87,11 @@ public class ZapWrapperGroovyScriptExecutor {
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
         WebLoginTOTPConfiguration totp = webLoginConfiguration.getTotp();
-        // setup a default, in case of wrong usage
-        if (totp == null) {
-            totp = new WebLoginTOTPConfiguration();
-            totp.setSeed("EMPTY-SEED");
+        TOTPGenerator totpGenerator = null;
+        if (totp != null) {
+            LOG.info("Setting up TOTP generator for login.");
+            totpGenerator = new TOTPGenerator(totp);
         }
-        LOG.info("Setting up TOTP generator for login.");
-        TOTPGenerator totpGenerator = new TOTPGenerator(totp);
 
         Map<String, String> templateVariables = scanContext.getTemplateVariables();
 
