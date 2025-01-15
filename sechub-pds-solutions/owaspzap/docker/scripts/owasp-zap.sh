@@ -134,7 +134,7 @@ echo ""
 echo "Start scanning"
 echo ""
 
-java -jar $options "$TOOL_FOLDER/wrapperowaspzap.jar" $zap_options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
+java -Dwebdriver.gecko.driver=/home/pds/.ZAP/webdriver/linux/64/geckodriver -jar $options "$TOOL_FOLDER/wrapperowaspzap.jar" $zap_options --zapHost "$ZAP_HOST" --zapPort "$ZAP_PORT" --zapApiKey "$ZAP_API_KEY" --jobUUID "$SECHUB_JOB_UUID" --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
 
 # Shutdown OWASP-ZAP and cleanup after the scan
 echo "Shutdown OWASP-ZAP after scan"
