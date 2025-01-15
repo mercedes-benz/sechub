@@ -58,7 +58,6 @@ public class JobCancelService {
         informCancelJobRequested(message);
     }
 
-    @Validated
     @UseCaseUserCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
     public void userCancelJob(UUID jobUUID, String userId) {
         userInputAssertion.assertIsValidJobUUID(jobUUID);
@@ -74,7 +73,10 @@ public class JobCancelService {
     }
 
     private void assertUserAllowedCancelJob(UUID jobUUID, String userId) {
-        JobInformation jobInfo = jobInformationRepository.findById(jobUUID).orElseThrow(() -> new NotFoundException("Job not found: " + jobUUID));
+        JobInformation jobInfo = jobInformationRepository.findById(jobUUID).orElseThrow(() -> {
+            LOG.debug("Job not found: {}", jobUUID);
+            return new NotFoundException("Job not found: " + jobUUID);
+        });
 
         User user = userRepository.findOrFailUser(userId);
         for (Project project : user.getProjects()) {
@@ -82,6 +84,7 @@ public class JobCancelService {
                 return;
             }
         }
+        LOG.debug("User {} is not allowed to cancel job {}", userId, jobUUID);
         throw new NotFoundException("Job not found: " + jobUUID);
     }
 

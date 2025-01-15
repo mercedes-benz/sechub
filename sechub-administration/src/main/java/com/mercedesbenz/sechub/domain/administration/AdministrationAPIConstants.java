@@ -126,7 +126,7 @@ public class AdministrationAPIConstants {
     public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS + "refresh/apitoken/{emailAddress}";
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ Jobs ................................+ */
+    /* +............................... Jobs ..................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String API_USER_CANCEL_JOB = API_JOBS + "cancel/{jobUUID}";
 }

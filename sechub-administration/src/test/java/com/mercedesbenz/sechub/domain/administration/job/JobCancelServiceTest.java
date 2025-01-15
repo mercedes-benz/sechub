@@ -3,8 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.job;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -84,6 +83,7 @@ public class JobCancelServiceTest {
 
         /* execute + test */
         assertThatCode(() -> serviceToTest.userCancelJob(jobUUID, userId)).doesNotThrowAnyException();
+        verify(eventBusService, times(1)).sendAsynchron(any());
     }
 
 }

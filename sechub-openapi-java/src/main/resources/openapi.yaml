@@ -4187,8 +4187,8 @@ paths:
             type: string
           style: simple
       responses:
-        "200":
-          description: "200"
+        "204":
+          description: "No content"
         "404":
           description: "Not found"
       security:
