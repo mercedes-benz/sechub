@@ -72,7 +72,7 @@ public class JobRestControllerRestDocTest implements TestIsNecessaryForDocumenta
                                 contentType(MediaType.APPLICATION_JSON_VALUE).
                                 header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
-                andExpect(status().isOk()).
+                andExpect(status().isNoContent()).
                 andDo(defineRestService().
                         with().
                         useCaseData(useCase).
