@@ -52,9 +52,22 @@
                   <td>{{ job.executionResult }}</td>
                   <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight || '')" icon="mdi-circle" /></td>
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
-                    <v-btn class="ma-2">{{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                      <v-icon end icon="mdi-arrow-down" />
-                    </v-btn>
+                    <v-menu>
+                      <template #activator="{ props }">
+                        <v-btn class="ma-2" v-bind="props">
+                          {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
+                          <v-icon end icon="mdi-arrow-down" />
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item @click="downloadJobReportHtml(job.jobUUID)">
+                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_HTML_REPORT') }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="downloadJobReportJson(job.jobUUID)">
+                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_JSON_REPORT') }}</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
                   </span>
                   </td>
                   <td>{{ job.jobUUID }}</td>
@@ -141,6 +154,52 @@
         }
       }
 
+      async function downloadJobReportJson (jobUUID: string | undefined) {
+        if (!jobUUID) {
+          return
+        }
+
+        try {
+          const response = await defaultClient.withExecutionApi.userDownloadJobReport({
+            projectId: projectId.value,
+            jobUUID,
+          })
+          const prettyJson = JSON.stringify(response, null, 2)
+          downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
+        } catch (err) {
+          error.value = 'Failed to download JSON job report.'
+          console.error('Failed to download JSON job report:', err)
+        }
+      }
+
+      async function downloadJobReportHtml (jobUUID: string | undefined) {
+        if (!jobUUID) {
+          return
+        }
+
+        try {
+          const response = await defaultClient.withExecutionApi.userDownloadJobReportHtml({
+            projectId: projectId.value,
+            jobUUID,
+          })
+          downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
+        } catch (err) {
+          error.value = 'Failed to download HTML job report.'
+          console.error('Failed to download HTML job report:', err)
+        }
+      }
+
+      function downloadFile (blob: Blob, fileName: string): void {
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      }
+
       function onPageChange (page: number) {
         // the API page starts by 0 while vue pagination starts with 1
         currentRequestParameters.page = (page - 1).toString()
@@ -177,6 +236,8 @@
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
+        downloadJobReportJson,
+        downloadJobReportHtml,
         onPageChange,
         openNewScanPage,
         backToProjectsList,
