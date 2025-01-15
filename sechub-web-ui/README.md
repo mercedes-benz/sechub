@@ -35,10 +35,6 @@ VITE_API_PASSWORD=<your-api-password>
 VITE_API_LOCAL_DEV=true
 ```
 
-### Initialize test data on the SecHub Server
-
-See the `/test-setups/setup-integration-test-server.sh` script for setups (please note: the executor is only needed when PDS is used)
-
 ### Building openAPI SecHub Client
 
 To generate the SecHub openAPI Client use:
@@ -67,11 +63,7 @@ npm run dev
 1. Start the SecHub Server as Docker Container (see sechub-solution/01-...)
 2. Start the required PDS as Docker (e.g. sechub-pds-solutions/gosec/05-...)
 3. Set up PDS in sechub-solution/setups/ e.g. setup-gosec.sh
-4. Configure your `.env.local` file by copying `.env` to `.env.local` and adjusting the variables as needed.
-Set `VITE_API_LOCAL_DEV=true`
-Set `VITE_API_USER` to your SecHub user
-Set `VITE_API_PASSWORD` to your SecHub Api Token
-5. Make sure your user is assigned to the project you want to scan
+4. Make sure your user is assigned to the project you want to scan
 
 Now you can test your web-ui with sechub and real scans!
 
