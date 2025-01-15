@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.util;
 
-import static java.util.Objects.requireNonNull;
-
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -26,10 +24,7 @@ public class TOTPGenerator {
     private final Mac mac;
 
     public TOTPGenerator(WebLoginTOTPConfiguration totpConfig) {
-        this.totpConfig = requireNonNull(totpConfig, "The TOTP configuration must not be null!");
-        requireNonNull(totpConfig.getSeed(), "The TOTP configuration seed must not be null!");
-        requireNonNull(totpConfig.getHashAlgorithm(), "The TOTP configuration hash algorithm must not be null!");
-        requireNonNull(totpConfig.getEncodingType(), "The TOTP configuration encoding type must not be null!");
+        this.totpConfig = assertValidTotpConfig(totpConfig);
 
         this.digitsTruncate = (long) Math.pow(BASE, totpConfig.getTokenLength());
 
@@ -39,9 +34,9 @@ public class TOTPGenerator {
             byte[] rawSeedBytes = new ZapWrapperStringDecoder().decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType());
             mac.init(new SecretKeySpec(rawSeedBytes, hashAlgorithmName));
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("The specified hash algorithm: '" + hashAlgorithmName + "' is unknown!", e);
+            throw new IllegalArgumentException("The specified TOTP hash algorithm: '" + hashAlgorithmName + "' is unknown!", e);
         } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException("The specified seed was invalid!", e);
+            throw new IllegalArgumentException("The specified TOTP seed was invalid!", e);
         }
     }
 
@@ -92,6 +87,37 @@ public class TOTPGenerator {
                                      .array();
         /* @formatter:on */
         return timeBytes;
+    }
+
+    /**
+     * This method checks if the TOTP configuration does not contain any
+     * <code>null</code> values. It is necessary if the TOTPGenerator is used with
+     * WebLoginTOTPConfiguration, that are not provided by SecHub.
+     *
+     * The TOTP configuration provided by SecHub, should never contain
+     * <code>null</code> values, because SecHub already validates the SecHub TOTP
+     * configuration. For validation details see:
+     * {@link com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator}
+     *
+     * @param totpConfig
+     * @return totpConfig, only if it is valid.
+     *
+     * @throws IllegalArgumentException if the the parameter totpConfig is invalid.
+     */
+    private WebLoginTOTPConfiguration assertValidTotpConfig(WebLoginTOTPConfiguration totpConfig) {
+        if (totpConfig == null) {
+            throw new IllegalArgumentException("The TOTP configuration must not be null!");
+        }
+        if (totpConfig.getSeed() == null) {
+            throw new IllegalArgumentException("The TOTP configuration seed must not be null!");
+        }
+        if (totpConfig.getHashAlgorithm() == null) {
+            throw new IllegalArgumentException("The TOTP configuration hash algorithm must not be null!");
+        }
+        if (totpConfig.getEncodingType() == null) {
+            throw new IllegalArgumentException("The TOTP configuration encoding type must not be null!");
+        }
+        return totpConfig;
     }
 
 }

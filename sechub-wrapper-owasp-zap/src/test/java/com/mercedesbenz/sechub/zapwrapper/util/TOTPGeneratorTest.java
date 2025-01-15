@@ -3,11 +3,9 @@ package com.mercedesbenz.sechub.zapwrapper.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Base32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,9 +20,49 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 class TOTPGeneratorTest {
 
     @Test
-    void secret_key_being_null_throws_exception() {
+    void totp_config_being_null_throws_exception() {
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> new TOTPGenerator(new WebLoginTOTPConfiguration()));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null));
+
+        assertEquals("The TOTP configuration must not be null!", exception.getMessage());
+    }
+
+    @Test
+    void totp_seed_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration seed must not be null!", exception.getMessage());
+    }
+
+    @Test
+    void totp_hash_algorithm_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed("test-seed");
+        webLoginTOTPConfiguration.setHashAlgorithm(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration hash algorithm must not be null!", exception.getMessage());
+    }
+
+    @Test
+    void totp_encoding_type_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed("test-seed");
+        webLoginTOTPConfiguration.setEncodingType(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration encoding type must not be null!", exception.getMessage());
     }
 
     @Test
@@ -43,21 +81,6 @@ class TOTPGeneratorTest {
 
         /* test */
         assertEquals(expectedToken, generatedToken);
-    }
-
-    @Test
-    void type_conversions_can_produce_errors() {
-        /* prepare */
-        String seedBase32 = "FUT4GXRDROMWRSBHKNEHENL5IZRMLUWQ";
-        Base32 base32 = new Base32();
-
-        /* execute */
-        byte[] decodedSeed = base32.decode(seedBase32);
-        String decodedAsString = new String(decodedSeed, StandardCharsets.UTF_8);
-
-        /* test */
-        String reEncoded = new String(base32.encode(decodedAsString.getBytes()), StandardCharsets.UTF_8);
-        assertNotEquals(seedBase32, reEncoded);
     }
 
     @ParameterizedTest

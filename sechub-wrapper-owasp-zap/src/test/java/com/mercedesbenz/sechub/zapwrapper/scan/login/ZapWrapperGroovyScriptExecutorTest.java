@@ -108,9 +108,9 @@ class ZapWrapperGroovyScriptExecutorTest {
     }
 
     @Test
-    void valid_script_throws_missing_mandatory_binding_exception_results_in_result_failed() throws Exception {
+    void throws_user_info_script_exception_results_in_result_failed() throws Exception {
         /* prepare */
-        File scriptFile = new File("src/test/resources/login-script-examples/test-script-custom-exception.groovy");
+        File scriptFile = new File("src/test/resources/login-script-examples/throw-user-info-script-exception.groovy");
 
         SecHubWebScanConfiguration webScanConfig = new SecHubWebScanConfiguration();
         webScanConfig.setUrl(URI.create("http://example.com"));

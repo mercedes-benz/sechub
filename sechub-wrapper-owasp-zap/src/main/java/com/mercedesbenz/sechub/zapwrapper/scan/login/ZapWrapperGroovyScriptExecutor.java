@@ -72,8 +72,8 @@ public class ZapWrapperGroovyScriptExecutor {
         } catch (IOException | ScriptException e) {
             LOG.error("An error happened while executing the script file.", e);
             loginResult.setLoginFailed(true);
-        } catch (MissingMandatoryBindingException e) {
-            LOG.error("An error happened while executing the script file, because of a missing mandatory binding.", e);
+        } catch (UserInfoScriptException e) {
+            LOG.error("An error, which is reported to the user, happened while executing the script file.", e);
             loginResult.setLoginFailed(true);
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
@@ -86,11 +86,17 @@ public class ZapWrapperGroovyScriptExecutor {
         SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
-        WebLoginTOTPConfiguration totp = webLoginConfiguration.getTotp();
+        WebLoginTOTPConfiguration totpConfiguration = webLoginConfiguration.getTotp();
         TOTPGenerator totpGenerator = null;
-        if (totp != null) {
-            LOG.info("Setting up TOTP generator for login.");
-            totpGenerator = new TOTPGenerator(totp);
+        if (totpConfiguration != null) {
+            try {
+                LOG.info("Creating TOTP generator for login.");
+                totpGenerator = new TOTPGenerator(totpConfiguration);
+            } catch (IllegalArgumentException e) {
+                LOG.error("Could not create TOTP generator for login", e);
+                SecHubMessage productMessage = new SecHubMessage(SecHubMessageType.ERROR, "Please check the TOTP configuration because: " + e.getMessage());
+                scanContext.getZapProductMessageHelper().writeSingleProductMessage(productMessage);
+            }
         }
 
         Map<String, String> templateVariables = scanContext.getTemplateVariables();
