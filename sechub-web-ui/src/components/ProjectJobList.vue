@@ -60,10 +60,10 @@
                         </v-btn>
                       </template>
                       <v-list>
-                        <v-list-item @click="downloadReportHtml(job.jobUUID)">
+                        <v-list-item @click="downloadJobReportHtml(job.jobUUID)">
                           <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_HTML_REPORT') }}</v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="downloadReportJson(job.jobUUID)">
+                        <v-list-item @click="downloadJobReportJson(job.jobUUID)">
                           <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_JSON_REPORT') }}</v-list-item-title>
                         </v-list-item>
                       </v-list>
@@ -154,7 +154,7 @@
         }
       }
 
-      async function downloadReportJson(jobUUID: string) {
+      async function downloadJobReportJson(jobUUID: string) {
         try {
           const response = await defaultClient.withExecutionApi.userDownloadJobReport({
             projectId: projectId.value,
@@ -163,12 +163,12 @@
           const prettyJson = JSON.stringify(response, null, 2);
           downloadFile(new Blob([prettyJson], {type: 'application/json'}), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
-          error.value = 'Failed to download JSON report.'
-          console.error('Failed to download JSON report:', err)
+          error.value = 'Failed to download JSON job report.'
+          console.error('Failed to download JSON job report:', err)
         }
       }
 
-      async function downloadReportHtml(jobUUID: string) {
+      async function downloadJobReportHtml(jobUUID: string) {
         try {
           const response = await defaultClient.withExecutionApi.userDownloadJobReportHtml({
             projectId: projectId.value,
@@ -176,8 +176,8 @@
           })
           downloadFile(new Blob([response], {type: 'text/html'}), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
-          error.value = 'Failed to download HTML report.'
-          console.error('Failed to download HTML report:', err)
+          error.value = 'Failed to download HTML job report.'
+          console.error('Failed to download HTML job report:', err)
         }
       }
 
@@ -228,8 +228,8 @@
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
-        downloadReportJson,
-        downloadReportHtml,
+        downloadJobReportJson,
+        downloadJobReportHtml,
         onPageChange,
         openNewScanPage,
         backToProjectsList,
