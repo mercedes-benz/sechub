@@ -106,16 +106,16 @@ public class TOTPGenerator {
      */
     private WebLoginTOTPConfiguration assertValidTotpConfig(WebLoginTOTPConfiguration totpConfig) {
         if (totpConfig == null) {
-            throw new IllegalArgumentException("The TOTP configuration must not be null!");
+            throw new IllegalArgumentException("The TOTP configuration must be configured to generate TOTP values!");
         }
         if (totpConfig.getSeed() == null) {
-            throw new IllegalArgumentException("The TOTP configuration seed must not be null!");
+            throw new IllegalArgumentException("The TOTP configuration seed must be configured to generate TOTP values!");
         }
         if (totpConfig.getHashAlgorithm() == null) {
-            throw new IllegalArgumentException("The TOTP configuration hash algorithm must not be null!");
+            throw new IllegalArgumentException("The TOTP configuration hash algorithm must be configured to generate TOTP values!");
         }
         if (totpConfig.getEncodingType() == null) {
-            throw new IllegalArgumentException("The TOTP configuration encoding type must not be null!");
+            throw new IllegalArgumentException("The TOTP configuration encoding type must be configured to generate TOTP values!");
         }
         return totpConfig;
     }

@@ -24,7 +24,7 @@ class TOTPGeneratorTest {
         /* execute + test */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null));
 
-        assertEquals("The TOTP configuration must not be null!", exception.getMessage());
+        assertEquals("The TOTP configuration must be configured to generate TOTP values!", exception.getMessage());
     }
 
     @Test
@@ -36,7 +36,7 @@ class TOTPGeneratorTest {
         /* execute + test */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
 
-        assertEquals("The TOTP configuration seed must not be null!", exception.getMessage());
+        assertEquals("The TOTP configuration seed must be configured to generate TOTP values!", exception.getMessage());
     }
 
     @Test
@@ -49,7 +49,7 @@ class TOTPGeneratorTest {
         /* execute + test */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
 
-        assertEquals("The TOTP configuration hash algorithm must not be null!", exception.getMessage());
+        assertEquals("The TOTP configuration hash algorithm must be configured to generate TOTP values!", exception.getMessage());
     }
 
     @Test
@@ -62,7 +62,7 @@ class TOTPGeneratorTest {
         /* execute + test */
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
 
-        assertEquals("The TOTP configuration encoding type must not be null!", exception.getMessage());
+        assertEquals("The TOTP configuration encoding type must be configured to generate TOTP values!", exception.getMessage());
     }
 
     @Test
