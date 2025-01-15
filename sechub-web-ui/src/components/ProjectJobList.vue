@@ -161,7 +161,7 @@
             jobUUID
           })
           const prettyJson = JSON.stringify(response, null, 2);
-          downloadFile(new Blob([prettyJson], {type: 'application/json'}), `sechub_scan_report_${jobUUID}.json`)
+          downloadFile(new Blob([prettyJson], {type: 'application/json'}), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
           error.value = 'Failed to download JSON report.'
           console.error('Failed to download JSON report:', err)
@@ -174,7 +174,7 @@
             projectId: projectId.value,
             jobUUID
           })
-          downloadFile(new Blob([response], {type: 'text/html'}), `sechub_scan_report_${jobUUID}.html`)
+          downloadFile(new Blob([response], {type: 'text/html'}), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
           error.value = 'Failed to download HTML report.'
           console.error('Failed to download HTML report:', err)
