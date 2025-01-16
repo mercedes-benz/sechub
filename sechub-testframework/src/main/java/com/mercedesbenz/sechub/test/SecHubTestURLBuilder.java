@@ -123,7 +123,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildUserCancelJob(String jobUUID) {
-        return buildUrl(API_MANAGEMENT, "jobs/cancel", jobUUID);
+        return buildUrl(API_MANAGEMENT, "jobs/", jobUUID, "/cancel");
     }
 
     private static class ParameterBuilder {
