@@ -209,6 +209,8 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_DELETES_ASSET_COMPLETELY(93),
 
+    UC_USER_CANCELS_JOB(94),
+
     ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
