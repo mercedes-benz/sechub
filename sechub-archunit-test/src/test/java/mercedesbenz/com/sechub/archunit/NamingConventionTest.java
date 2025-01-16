@@ -37,7 +37,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -71,7 +71,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreSharedkernelTest)
                 .withImportOption(ignoreSechubApiJava)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -106,7 +106,7 @@ public class NamingConventionTest {
                 .withImportOption(ignoreAllTests)
                 .withImportOption(ignoreSechubOpenAPIJava)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */

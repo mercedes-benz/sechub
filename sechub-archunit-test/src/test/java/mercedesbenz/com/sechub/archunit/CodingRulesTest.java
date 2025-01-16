@@ -49,7 +49,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSystemTest)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -88,7 +88,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSystemTest)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -122,7 +122,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreExamples)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -145,7 +145,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
-                .withImportOption(ignoreNonSecHubProjects)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
         /* @formatter:on */
     }
