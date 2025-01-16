@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.error.InternalServerErrorException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -81,7 +82,8 @@ public class JobCancelService {
         Set<Project> projects = user.getProjects();
 
         if (projects == null) {
-            throw new IllegalStateException("Projects fore user {} are null." + userId);
+            LOG.debug("Projects for user {} are null.", userId);
+            throw new InternalServerErrorException("Projects fore user %s are null.".formatted(userId));
         }
 
         boolean isForbidden = projects.stream().noneMatch(project -> project.getId().equals(jobInfo.getProjectId()));
