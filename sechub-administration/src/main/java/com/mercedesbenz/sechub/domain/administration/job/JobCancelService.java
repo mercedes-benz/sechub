@@ -2,12 +2,12 @@
 package com.mercedesbenz.sechub.domain.administration.job;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.user.User;
@@ -45,7 +45,6 @@ public class JobCancelService {
         this.userRepository = userRepository;
     }
 
-    @Validated
     @UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
     public void cancelJob(UUID jobUUID) {
         userInputAssertion.assertIsValidJobUUID(jobUUID);
@@ -79,13 +78,18 @@ public class JobCancelService {
         });
 
         User user = userRepository.findOrFailUser(userId);
-        for (Project project : user.getProjects()) {
-            if (project.getId().equals(jobInfo.getProjectId())) {
-                return;
-            }
+        Set<Project> projects = user.getProjects();
+
+        if (projects == null) {
+            throw new IllegalStateException("Projects fore user {} are null." + userId);
         }
-        LOG.debug("User {} is not allowed to cancel job {}", userId, jobUUID);
-        throw new NotFoundException("Job not found: " + jobUUID);
+
+        boolean isForbidden = projects.stream().noneMatch(project -> project.getId().equals(jobInfo.getProjectId()));
+
+        if (isForbidden) {
+            LOG.debug("User {} is not allowed to cancel job {}", userId, jobUUID);
+            throw new NotFoundException("Job not found: " + jobUUID);
+        }
     }
 
     private JobMessage buildMessage(UUID jobUUID) {

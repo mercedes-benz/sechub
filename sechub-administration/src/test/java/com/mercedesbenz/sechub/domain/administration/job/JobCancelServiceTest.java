@@ -38,6 +38,8 @@ public class JobCancelServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotFoundException.class);
+        verify(eventBusService, never()).sendAsynchron(any());
+
     }
 
     @Test
@@ -61,6 +63,7 @@ public class JobCancelServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotFoundException.class);
+        verify(eventBusService, never()).sendAsynchron(any());
     }
 
     @Test
