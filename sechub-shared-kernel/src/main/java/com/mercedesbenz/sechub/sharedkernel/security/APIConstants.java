@@ -58,7 +58,7 @@ public class APIConstants {
     /**
      * API starting with this is accessible by users for project jobs
      */
-    public static final String API_JOBS = "/api/jobs/";
+    public static final String API_MANAGEMENT = "/api/management/";
 
     /**
      * Actuator endpoints are available anonymous

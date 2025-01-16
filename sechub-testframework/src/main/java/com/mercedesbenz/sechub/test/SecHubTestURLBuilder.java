@@ -26,7 +26,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
     private static final String API_PROJECTS = "/api/projects";
-    private static final String API_JOBS = "/api/jobs";
+    private static final String API_MANAGEMENT = "/api/management";
 
     public static SecHubTestURLBuilder https(int port) {
         return new SecHubTestURLBuilder("https", port);
@@ -123,7 +123,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildUserCancelJob(String jobUUID) {
-        return buildUrl(API_JOBS, "cancel", jobUUID);
+        return buildUrl(API_MANAGEMENT, "jobs/cancel", jobUUID);
     }
 
     private static class ParameterBuilder {

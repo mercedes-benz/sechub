@@ -34,6 +34,8 @@ tags:
     description: Operations relevant to encryption
   - name: Other
     description: All other use cases
+  - name: Job Management
+    description: Operations relevant to manage jobs
 
 components:
   securitySchemes:
@@ -4173,7 +4175,7 @@ paths:
       tags:
         - Configuration
 
-  /api/jobs/cancel/{jobUUID}:
+  /api/management/jobs/cancel/{jobUUID}:
     post:
       description: User cancels a job by its Job UUID
       operationId: userCancelsJob
@@ -4195,5 +4197,5 @@ paths:
         - basic: [ ]
       summary: User cancels a job
       tags:
-        - Job Administration
+        - Job Management
       x-accepts: application/json

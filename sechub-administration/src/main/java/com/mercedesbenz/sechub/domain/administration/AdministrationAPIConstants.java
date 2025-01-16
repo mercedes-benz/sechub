@@ -128,5 +128,5 @@ public class AdministrationAPIConstants {
     /* +-----------------------------------------------------------------------+ */
     /* +............................... Jobs ..................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String API_USER_CANCEL_JOB = API_JOBS + "cancel/{jobUUID}";
+    public static final String API_USER_CANCEL_JOB = API_MANAGEMENT + "jobs/cancel/{jobUUID}";
 }
