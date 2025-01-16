@@ -34,6 +34,8 @@ tags:
     description: Operations relevant to encryption
   - name: Other
     description: All other use cases
+  - name: Job Management
+    description: Operations relevant to manage jobs
 
 components:
   securitySchemes:
@@ -3862,7 +3864,7 @@ paths:
     get:
       summary: User lists jobs for project
       description: User lists jobs for project
-      operationId: userListJobsForProject
+      operationId: userListsJobsForProject
       parameters:
         - name: projectId
           description: The id of the project where job information shall be fetched
@@ -4172,3 +4174,28 @@ paths:
           description: "Not found"
       tags:
         - Configuration
+
+  /api/management/jobs/{jobUUID}/cancel:
+    post:
+      description: User cancels a job by its Job UUID
+      operationId: userCancelsJob
+      parameters:
+        - description: The job UUID
+          explode: false
+          in: path
+          name: jobUUID
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "204":
+          description: "No content"
+        "404":
+          description: "Not found"
+      security:
+        - basic: [ ]
+      summary: User cancels a job
+      tags:
+        - Job Management
+      x-accepts: application/json
