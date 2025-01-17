@@ -2,21 +2,21 @@
 <template>
   <v-card>
     <v-card-item>
-      <v-card-title>{{ $t('PROJECT_DETAILS_TITLE') }} {{ projectData.projectId }}</v-card-title>
+      <v-card-title>{{ $t('PROJECT_DETAILS_TITLE') }} {{ project.projectId }}</v-card-title>
     </v-card-item>
     <v-card-item>
       <v-card-title>{{ $t('PROJECT_DETAILS_OWNER') }}</v-card-title>
     </v-card-item>
     <v-card-text>
-      {{ projectData.owner }}
+      {{ project.owner }}
     </v-card-text>
-    <div v-if="projectData.assignedUsers">
+    <div v-if="project.assignedUsers">
       <v-card-item>
         <v-card-title>{{ $t('PROJECT_DETAILS_MEMBERS') }}</v-card-title>
       </v-card-item>
       <v-card-text>
         <div
-          v-for="(member,i) in projectData.assignedUsers"
+          v-for="(member,i) in project.assignedUsers"
           :key="i"
         >{{ member }}</div>
       </v-card-text>
@@ -47,9 +47,10 @@
 
     setup (props: Props) {
       const { projectData } = toRefs(props)
+      const project = projectData
 
       return {
-        projectData,
+        project,
       }
     },
   })

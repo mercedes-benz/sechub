@@ -98,16 +98,14 @@
   import { useProjectStore } from '@/stores/projectStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import {
+    ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
     UserListJobsForProjectRequest,
-    ProjectData,
   } from '@/generated-sources/openapi'
 
   export default {
     name: 'ProjectComponent',
-
-
 
     setup () {
       // loads projectId from route
@@ -120,10 +118,10 @@
 
       const store = useProjectStore()
       const projectData = ref<ProjectData>({
-        projectId: "",
+        projectId: '',
         isOwned: false,
         assignedUsers: [],
-        owner: ''
+        owner: '',
       })
 
       const maxAttempts = 4 // Maximum number of retries for backoff
@@ -232,12 +230,12 @@
       }
 
       onMounted(async () => {
-        let projectFromStore = await store.getProjectById(projectId.value)
-        if(!projectFromStore){
+        const projectFromStore = await store.getProjectById(projectId.value)
+        if (!projectFromStore) {
           router.push({
-            path: '/projects'
+            path: '/projects',
           })
-        }else{
+        } else {
           projectData.value = projectFromStore
           pollProjectJobs()
         }
