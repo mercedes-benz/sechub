@@ -211,6 +211,8 @@ public enum UseCaseIdentifier {
 
     UC_USER_CANCELS_JOB(94),
 
+    UC_USER_FETCHES_USER_DETAIL_INFORMATION(95)
+
     ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
