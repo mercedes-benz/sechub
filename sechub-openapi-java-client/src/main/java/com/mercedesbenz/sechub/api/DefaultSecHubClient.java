@@ -11,7 +11,6 @@ import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.model.JsonMapperFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private final SystemApi systemApi;
     private final TestingApi testingApi;
     private final UserAdministrationApi userAdministrationApi;
-    private final UserProfileApi userProfileApi;
+    private final UserSelfServiceApi userSelfServiceApi;
     private final SecHubExecutionWorkaroundApi secHubExecutionWorkaroundApi;
 
     public static DefaultSecHubClientBuilder builder() {
@@ -62,7 +61,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         systemApi = new SystemApi(apiClient);
         testingApi = new TestingApi(apiClient);
         userAdministrationApi = new UserAdministrationApi(apiClient);
-        userProfileApi = new UserProfileApi(apiClient);
+        userSelfServiceApi = new UserSelfServiceApi(apiClient);
         secHubExecutionWorkaroundApi = new SecHubExecutionWorkaroundApi(apiClient);
     }
 
@@ -192,8 +191,8 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     }
 
     @Override
-    public UserProfileApi withUserProfileApi() {
-        return userProfileApi;
+    public UserSelfServiceApi withUserSelfServiceApi() {
+        return userSelfServiceApi;
     }
 
     private void userUploadsBinaries(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {

@@ -18,8 +18,8 @@ tags:
     description: Operations relevant to user administration
   - name: Project Administration
     description: Operations relevant to project administration
-  - name: User Profile
-    description: Operations relevant to user profiles
+  - name: User Self Service
+    description: Operations relevant to the authenticated user
   - name: SecHub Execution
     description: Operations relevant to execution of SecHub
   - name: Sign Up
@@ -2680,9 +2680,9 @@ paths:
       tags:
         - Project Administration
  
-  ###################
-  ## User Profile ##
-  ###################
+  #######################
+  ## User Self Service ##
+  #######################
 
   /api/anonymous/apitoken/{oneTimeToken}:
     get:
@@ -2701,7 +2701,22 @@ paths:
           description: "Answer containing the new api token or error message if request could not be fulfilled"
       security: [ ]
       tags:
-        - User Profile
+        - User Self Service
+
+  /api/management/user:
+    get:
+      summary: User fetches his user details
+      description: The authenticated user fetches his user details
+      operationId: userFetchUserDetailInformation
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailInformation'
+          description: "200"
+      tags:
+        - User Self Service
 
   ######################
   ## SecHub Execution ##

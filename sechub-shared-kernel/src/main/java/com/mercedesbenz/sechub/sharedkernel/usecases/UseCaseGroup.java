@@ -9,7 +9,7 @@ public enum UseCaseGroup {
 
     PROJECT_ADMINISTRATION("Project administration", "Usecases for project administration"),
 
-    USER_PROFILE("User profile", "User actions belonging to their profiles"),
+    USER_SELF_SERVICE("User self service", "User actions belonging to their user identity"),
 
     SECHUB_EXECUTION("Sechub execution", "Execution of SecHub -either by CLI or direct with REST api call"),
 

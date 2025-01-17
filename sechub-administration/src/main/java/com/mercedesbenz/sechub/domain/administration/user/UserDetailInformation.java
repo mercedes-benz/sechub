@@ -20,15 +20,15 @@ public class UserDetailInformation {
     public static final String PROPERTY_OWNED_PROJECTS = "ownedProjects";
     public static final String PROPERTY_SUPERADMIN = "superAdmin";
 
-    private String userId;
+    private final String userId;
 
-    private String email;
+    private final String email;
 
-    private boolean superAdmin;
+    private final boolean superAdmin;
 
-    private List<String> projects = new ArrayList<>();
+    private final List<String> projects = new ArrayList<>();
 
-    private List<String> ownedProjects = new ArrayList<>();
+    private final List<String> ownedProjects = new ArrayList<>();
 
     public UserDetailInformation(User user) {
         this.userId = user.getName();

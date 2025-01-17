@@ -344,7 +344,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         when(user.getProjects()).thenReturn(projects);
         UserDetailInformation info = new UserDetailInformation(user);
 
-        when(userDetailService.fetchDetails("user1")).thenReturn(info);
+        when(userDetailService.fetchDetailsById("user1")).thenReturn(info);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

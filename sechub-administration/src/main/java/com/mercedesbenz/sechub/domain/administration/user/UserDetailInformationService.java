@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -12,27 +11,46 @@ import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetailsForEmailAddress;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserFetchesUserDetailInformation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
 
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserDetailInformationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDetailInformationService.class);
 
-    @Autowired
-    UserContextService userContext;
+    private final UserContextService userContext;
+    private final UserRepository userRepository;
+    private final LogSanitizer logSanitizer;
+    private final UserInputAssertion assertion;
 
-    @Autowired
-    UserRepository userRepository;
+    public UserDetailInformationService(UserContextService userContext, UserRepository userRepository, LogSanitizer logSanitizer,
+            UserInputAssertion assertion) {
+        this.userContext = userContext;
+        this.userRepository = userRepository;
+        this.logSanitizer = logSanitizer;
+        this.assertion = assertion;
+    }
 
-    @Autowired
-    LogSanitizer logSanitizer;
+    /* @formatter:off */
+	@UseCaseUserFetchesUserDetailInformation(
+			@Step(
+				number = 2,
+				name = "Service fetches user details for the authenticated user.",
+				description = "The service will fetch user details for the authenticated user"))
+	/* @formatter:on */
+    @RolesAllowed(RoleConstants.ROLE_USER)
+    public UserDetailInformation fetchDetails() {
+        String userId = userContext.getUserId();
 
-    @Autowired
-    UserInputAssertion assertion;
+        LOG.debug("User {} is fetching his user details", userId);
+
+        User user = userRepository.findOrFailUser(userId);
+
+        return new UserDetailInformation(user);
+    }
 
     /* @formatter:off */
 	@UseCaseAdminShowsUserDetails(
@@ -41,7 +59,8 @@ public class UserDetailInformationService {
 				name = "Service fetches user details.",
 				description = "The service will fetch user details for given user id"))
 	/* @formatter:on */
-    public UserDetailInformation fetchDetails(String userId) {
+    @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    public UserDetailInformation fetchDetailsById(String userId) {
         LOG.debug("User {} is fetching user details for user: {}", userContext.getUserId(), logSanitizer.sanitize(userId, 30));
 
         assertion.assertIsValidUserId(userId);
@@ -58,6 +77,7 @@ public class UserDetailInformationService {
                 name = "Service fetches user details.",
                 description = "The service will fetch user details for given user email address"))
     /* @formatter:on */
+    @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
     public UserDetailInformation fetchDetailsByEmailAddress(String emailAddress) {
         LOG.debug("User {} is fetching user details for user email: {}", userContext.getUserId(), logSanitizer.sanitize(emailAddress, 30));
 

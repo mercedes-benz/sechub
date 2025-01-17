@@ -107,7 +107,7 @@ public class UserAdministrationRestControllerMockTest {
         when(user.getProjects()).thenReturn(projects);
         UserDetailInformation info = new UserDetailInformation(user);
 
-        when(mockedUserDetailInformationService.fetchDetails("user1")).thenReturn(info);
+        when(mockedUserDetailInformationService.fetchDetailsById("user1")).thenReturn(info);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -148,7 +148,7 @@ public class UserAdministrationRestControllerMockTest {
         andExpect(status().isOk()).
         andExpect(jsonPath("$.userId", equalTo(userId))).
         andExpect(jsonPath("$.email", equalTo(emailAddress))).
-        andExpect(jsonPath("$.projects", equalTo(Arrays.asList("project1")))
+        andExpect(jsonPath("$.projects", equalTo(List.of("project1")))
                 );
 
         /* @formatter:on */
