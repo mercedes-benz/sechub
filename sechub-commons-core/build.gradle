@@ -5,5 +5,6 @@ dependencies {
 
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.mockito_core
+    testImplementation spring_boot_dependency.assertj_core
     
 }

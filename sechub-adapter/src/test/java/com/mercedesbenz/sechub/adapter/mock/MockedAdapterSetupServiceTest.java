@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterOptionKey;
-import com.mercedesbenz.sechub.adapter.SecHubAdapterTestFileSupport;
+import com.mercedesbenz.sechub.adapter.TestSecHubAdapterFileSupport;
 
 public class MockedAdapterSetupServiceTest {
 
@@ -29,7 +29,7 @@ public class MockedAdapterSetupServiceTest {
     @Test
     public void static_read_default_setup_possible_and_has_at_least_checkmarx_and_netsparker_data_for_ANY_OTHER_TARGET_inside() {
         /* prepare */
-        File gradleSafeTestFile = SecHubAdapterTestFileSupport.INSTANCE.createFileFromResourcePath(MockedAdapterSetupService.DEFAULT_FILE_PATH);
+        File gradleSafeTestFile = TestSecHubAdapterFileSupport.INSTANCE.createFileFromResourcePath(MockedAdapterSetupService.DEFAULT_FILE_PATH);
 
         serviceToTest.filePath = gradleSafeTestFile.getAbsolutePath();
 

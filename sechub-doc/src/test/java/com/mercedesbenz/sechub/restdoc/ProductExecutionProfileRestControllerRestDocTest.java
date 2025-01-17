@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -122,14 +122,14 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
 	    		post(apiEndpoint, profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(profile)).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isCreated()).
 	    			andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
+                                requestSchema(TestOpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -174,14 +174,14 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
                 put(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(profile)).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
+                                requestSchema(TestOpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -219,7 +219,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
         this.mockMvc.perform(
                 	post(apiEndpoint, profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isCreated()).
                     andDo(defineRestService().
@@ -254,7 +254,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
         this.mockMvc.perform(
                 delete(apiEndpoint, profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -315,14 +315,14 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
         this.mockMvc.perform(
                 get(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
+                                responseSchema(TestOpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -364,7 +364,7 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
 	    this.mockMvc.perform(
                 delete(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -411,14 +411,14 @@ public class ProductExecutionProfileRestControllerRestDocTest implements TestIsN
         this.mockMvc.perform(
                 get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
+                                responseSchema(TestOpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(

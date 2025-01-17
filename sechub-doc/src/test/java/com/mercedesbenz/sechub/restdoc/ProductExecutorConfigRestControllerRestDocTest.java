@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -136,7 +136,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
 	    		post(apiEndpoint).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(configFromUser)).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
@@ -144,8 +144,8 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_ID.getSchema()).
-                                requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                                responseSchema(TestOpenApiSchema.EXECUTOR_CONFIGURATION_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
                             and().
                             document(
 		    	                		requestHeaders(
@@ -194,14 +194,14 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
                 put(apiEndpoint,randomUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(configFromUser)).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                                requestSchema(TestOpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
                             and().
                             document(
 		    	                		requestHeaders(
@@ -256,14 +256,14 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
         this.mockMvc.perform(
                 get(apiEndpoint,uuid).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_WITH_UUID.getSchema()).
+                                responseSchema(TestOpenApiSchema.EXECUTOR_CONFIGURATION_WITH_UUID.getSchema()).
                             and().
                             document(
 		    	                		requestHeaders(
@@ -301,7 +301,7 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
         this.mockMvc.perform(
                 delete(apiEndpoint, configUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -340,14 +340,14 @@ public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNec
         this.mockMvc.perform(
                 get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_LIST.getSchema()).
+                                responseSchema(TestOpenApiSchema.EXECUTOR_CONFIGURATION_LIST.getSchema()).
                             and().
                             document(
 		    	                		requestHeaders(

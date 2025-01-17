@@ -24,9 +24,9 @@ import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.PDSJobTestHelper;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
+import com.mercedesbenz.sechub.pds.job.TestPDSJobHelper;
 
 public class PDSExecutionServiceTest {
 
@@ -84,15 +84,15 @@ public class PDSExecutionServiceTest {
         serviceToTest.queueMax = 5;
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
-        PDSJob job1 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
+        PDSJob job1 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
         TestPDSExecutionCallable callable1 = createTestCallable(uuid1, 500, result1);
 
         UUID uuid2 = UUID.randomUUID();
-        PDSJob job2 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
+        PDSJob job2 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
         TestPDSExecutionCallable callable2 = createTestCallable(uuid2, 500, result1);
 
         UUID uuid3 = UUID.randomUUID();
-        PDSJob job3 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
+        PDSJob job3 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
         TestPDSExecutionCallable callable3 = createTestCallable(uuid3, 500, result1);
 
         when(executionCallableFactory.createCallable(uuid1)).thenReturn(callable1);
@@ -162,15 +162,15 @@ public class PDSExecutionServiceTest {
         serviceToTest.queueMax = 5;
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
-        PDSJob job1 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
+        PDSJob job1 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
         TestPDSExecutionCallable callable1 = createTestCallable(uuid1, 0, result1);
 
         UUID uuid2 = UUID.randomUUID();
-        PDSJob job2 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
+        PDSJob job2 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
         TestPDSExecutionCallable callable2 = createTestCallable(uuid2, 500, result1);
 
         UUID uuid3 = UUID.randomUUID();
-        PDSJob job3 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
+        PDSJob job3 = TestPDSJobHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
         TestPDSExecutionCallable callable3 = createTestCallable(uuid3, 500, result1);
 
         when(executionCallableFactory.createCallable(uuid1)).thenReturn(callable1);

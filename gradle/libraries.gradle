@@ -181,7 +181,7 @@ ext {
         wiremock:                              "com.github.tomakehurst:wiremock-standalone:${libraryVersion.wiremock}",
         s3mock:                                "com.adobe.testing:s3mock:${libraryVersion.s3mock}",
         s3mock_junit5:                         "com.adobe.testing:s3mock-junit5:${libraryVersion.s3mock}",
-        
+
         /*
          * RE2 is a regular expression engine that runs in time linear in the size of the input.
          * It's the default RegularExpression engine of Go

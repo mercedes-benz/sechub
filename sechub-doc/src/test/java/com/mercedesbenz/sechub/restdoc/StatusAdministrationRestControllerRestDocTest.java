@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -92,7 +92,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
 		this.mockMvc.perform(
 				get(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				)./*
 				*/
 		andDo(print()).
@@ -101,7 +101,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                    responseSchema(TestOpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -132,7 +132,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                 put(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
 	                content(mappingDataTeam.toJSON()).
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 )./*
                 */
         andDo(print()).
@@ -141,7 +141,7 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                    requestSchema(TestOpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
 	                		requestHeaders(

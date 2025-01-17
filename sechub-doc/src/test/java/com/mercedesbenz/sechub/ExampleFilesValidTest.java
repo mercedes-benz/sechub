@@ -86,8 +86,8 @@ class ExampleFilesValidTest {
     }
 
     @ParameterizedTest
-    @EnumSource(SecHubConfigExampleFile.class)
-    void every_sechub_config_file_is_valid(SecHubConfigExampleFile file) {
+    @EnumSource(TestSecHubConfigExampleFile.class)
+    void every_sechub_config_file_is_valid(TestSecHubConfigExampleFile file) {
         /* prepare */
         String json = TestFileReader.readTextFromFile(file.getPath());
         SecHubScanConfiguration config = null;
@@ -104,10 +104,10 @@ class ExampleFilesValidTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = SecHubConfigExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
+    @EnumSource(value = TestSecHubConfigExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
             "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE", "WEBSCAN_HEADER_SCAN", "WEBSCAN_CLIENT_CERTIFICATE",
             "WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP" }, mode = EnumSource.Mode.INCLUDE)
-    void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(SecHubConfigExampleFile file) {
+    void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(TestSecHubConfigExampleFile file) {
         /* prepare */
         String json = TestFileReader.readTextFromFile(file.getPath());
 
@@ -125,7 +125,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_anonymous_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_ANONYMOUS.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_ANONYMOUS.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -144,7 +144,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_basic_auth_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_BASIC_AUTH.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_BASIC_AUTH.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -167,7 +167,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_form_based_script_auth_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -191,7 +191,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_openapi_with_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_OPENAPI_WITH_DATA_REFERENCE.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_OPENAPI_WITH_DATA_REFERENCE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -208,7 +208,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_client_certificate_with_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE_WITH_OPENAPI.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -228,7 +228,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_client_certificate_with_openapi_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_CLIENT_CERTIFICATE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -245,7 +245,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_header_scan_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_HEADER_SCAN.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_HEADER_SCAN.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -273,7 +273,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_header_from_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -306,7 +306,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_form_based_script_auth_with_totp_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
@@ -336,7 +336,7 @@ class ExampleFilesValidTest {
     @Test
     void pds_param_template_metadata_array_syntax_example_is_valid() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(PDSDataExampleFile.PDS_PARAM_TEMPLATE_META_DATA_SYNTAX.getPath());
+        String json = TestFileReader.readTextFromFile(TestPDSDataExampleFile.PDS_PARAM_TEMPLATE_META_DATA_SYNTAX.getPath());
 
         /* execute */
         List<PDSTemplateMetaData> result = JSONConverter.get().fromJSONtoListOf(PDSTemplateMetaData.class, json);

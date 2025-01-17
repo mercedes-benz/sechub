@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.resilience;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,13 +25,13 @@ class ResilientRunnableExecutorTest {
         executorToTest.add(new AlwaysRetry1TimeWith10MillisecondsTestConsultant());
 
         final AtomicInteger integer = new AtomicInteger();
-        assertEquals(0, integer.intValue());
+        assertThat(integer.intValue()).isEqualTo(0);
 
         /* execute */
         executorToTest.executeResilient(() -> integer.incrementAndGet());
 
         /* test */
-        assertEquals(1, integer.intValue()); // execution was done
+        assertThat(integer.intValue()).isEqualTo(1); // execution was done
     }
 
     @Test
@@ -38,13 +39,13 @@ class ResilientRunnableExecutorTest {
         /* prepare */
         executorToTest.add(new AlwaysRetry1TimeWith10MillisecondsTestConsultant());
 
-        FailDefinedTimes failDefinedTimes = new FailDefinedTimes(1);
+        TestFailDefinedTimes testFailDefinedTimes = new TestFailDefinedTimes(1);
 
         /* execute */
-        executorToTest.executeResilient(failDefinedTimes);
+        executorToTest.executeResilient(testFailDefinedTimes);
 
         /* test */
-        assertEquals(2, failDefinedTimes.runs);
+        assertThat(testFailDefinedTimes.runs).isEqualTo(2);
     }
 
     @Test
@@ -52,13 +53,12 @@ class ResilientRunnableExecutorTest {
         /* prepare */
         executorToTest.add(new AlwaysRetry1TimeWith10MillisecondsTestConsultant());
 
-        FailDefinedTimes failDefinedTimes = new FailDefinedTimes(2);
+        TestFailDefinedTimes testFailDefinedTimes = new TestFailDefinedTimes(2);
 
         /* execute */
-        assertThrows(IOException.class, () -> executorToTest.executeResilient(failDefinedTimes));
-
+        assertThatThrownBy(() -> executorToTest.executeResilient(testFailDefinedTimes)).isInstanceOf(IOException.class);
         /* test */
-        assertEquals(2, failDefinedTimes.runs);
+        assertThat(testFailDefinedTimes.runs).isEqualTo(2);
     }
 
     private class AlwaysRetry1TimeWith10MillisecondsTestConsultant implements ResilienceConsultant {

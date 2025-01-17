@@ -17,7 +17,7 @@ class PrepareWrapperApplicationSkopeoManualTest implements ManualTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        PrepareWrapperManualTestUtil.cleanup();
+        TestPrepareWrapperManualUtil.cleanup();
     }
 
     @Test
