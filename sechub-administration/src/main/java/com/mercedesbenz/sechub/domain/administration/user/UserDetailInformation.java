@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 
@@ -34,13 +35,18 @@ public class UserDetailInformation {
         this.userId = user.getName();
         this.email = user.getEmailAddress();
 
-        for (Project project : user.getProjects()) {
+        Set<Project> projects = user.getProjects() == null ? Set.of() : user.getProjects();
+
+        for (Project project : projects) {
             this.projects.add(project.getId());
         }
 
-        for (Project project : user.getOwnedProjects()) {
+        Set<Project> ownedProjects = user.getOwnedProjects() == null ? Set.of() : user.getOwnedProjects();
+
+        for (Project project : ownedProjects) {
             this.ownedProjects.add(project.getId());
         }
+
         this.superAdmin = user.isSuperAdmin();
     }
 
