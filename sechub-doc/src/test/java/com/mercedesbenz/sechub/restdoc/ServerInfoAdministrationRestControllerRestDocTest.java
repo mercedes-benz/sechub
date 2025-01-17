@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -73,7 +73,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 		this.mockMvc.perform(
 				get(apiEndpoint).
 					contentType(MediaType.APPLICATION_JSON).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(expectedContent)).
@@ -81,7 +81,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 		                        with().
 		                            useCaseData(useCase).
 		                            tag(RestDocFactory.extractTag(apiEndpoint)).
-		                            responseSchema(OpenApiSchema.SERVER_RUNTIME_DATA.getSchema()).
+		                            responseSchema(TestOpenApiSchema.SERVER_RUNTIME_DATA.getSchema()).
 		                        and().
 		                        document(
         	                            responseFields(

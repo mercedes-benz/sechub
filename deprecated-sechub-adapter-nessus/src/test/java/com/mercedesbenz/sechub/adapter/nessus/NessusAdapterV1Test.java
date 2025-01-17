@@ -22,7 +22,7 @@ public class NessusAdapterV1Test {
 
     @BeforeClass
     public static void beforeClass() {
-        NESSUS_7_0_2_GET_POLICIES_RESULT_JSON = NessusAdapterTestFileSupport.getTestfileSupport().loadTestFile("nessus_7.0.2.get_policies_result.json");
+        NESSUS_7_0_2_GET_POLICIES_RESULT_JSON = TestNessusAdapterFileSupport.getTestfileSupport().loadTestFile("nessus_7.0.2.get_policies_result.json");
     }
 
     @Rule

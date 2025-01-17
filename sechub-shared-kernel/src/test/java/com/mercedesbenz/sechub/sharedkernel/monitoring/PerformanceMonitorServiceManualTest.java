@@ -56,13 +56,13 @@ class PerformanceMonitorServiceManualTest implements ManualTest {
             int threadNr = 0;
             if (mode == TestMode.CPU) {
                 if (freezeComputerAccepted) {
-                    new CPUConsumer().consumeCPUTime(monitor, maxThreads, 100, 500);
+                    new TestCPUConsumer().consumeCPUTime(monitor, maxThreads, 100, 500);
                 } else {
-                    new SimulatedSchedulerAsManagedCPUConsumer().simulateScheduler(monitor, 100, 300);
+                    new SimulatedSchedulerAsManagedCPUConsumerTest().simulateScheduler(monitor, 100, 300);
                 }
             }
             if (mode == TestMode.MEMORY) {
-                new MemoryConsumer().consumeMemory(monitor, maxThreads, threadNr);
+                new TestMemoryConsumer().consumeMemory(monitor, maxThreads, threadNr);
             }
         }
 

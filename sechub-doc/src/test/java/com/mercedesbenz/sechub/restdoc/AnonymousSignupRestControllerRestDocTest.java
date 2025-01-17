@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -76,7 +76,7 @@ public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessary
         			            summary(RestDocFactory.createSummary(useCase)).
         			            description(RestDocFactory.createDescription(useCase)).
         			            tag(RestDocFactory.extractTag(apiEndpoint)).
-        			            requestSchema(OpenApiSchema.USER_SIGNUP.getSchema()).
+        			            requestSchema(TestOpenApiSchema.USER_SIGNUP.getSchema()).
         			        and().
         			        document(
         	                    requestFields(

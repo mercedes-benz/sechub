@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
+import com.mercedesbenz.sechub.integrationtest.api.TestOnlyForRegularExecution;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 public class SecHubReportFileNameFilterTest {
 
     @Test

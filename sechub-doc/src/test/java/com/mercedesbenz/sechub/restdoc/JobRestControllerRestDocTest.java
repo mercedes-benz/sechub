@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.JOB_UUID;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -70,7 +70,7 @@ public class JobRestControllerRestDocTest implements TestIsNecessaryForDocumenta
         this.mockMvc.perform(
                         post(apiEndpoint, jobUUID).
                                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
                 andExpect(status().isNoContent()).
                 andDo(defineRestService().

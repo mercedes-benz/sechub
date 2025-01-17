@@ -12,7 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.mercedesbenz.sechub.developertools.DeveloperToolsTestFileSupport;
+import com.mercedesbenz.sechub.developertools.TestDeveloperToolsFileSupport;
 import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration;
 import com.mercedesbenz.sechub.developertools.admin.ui.OutputUI;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
@@ -40,7 +40,7 @@ public class CreateProjectMassCSVImporterTest {
     @Test
     public void example_1_projects_can_be_imported() throws Exception {
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
         /* execute */
         importerToTest.importProjectsAndRelationsByCSV(file);
@@ -63,7 +63,7 @@ public class CreateProjectMassCSVImporterTest {
     @Test
     public void example_6_projects_can_be_imported_and_releations_to_profiles_are_added() throws Exception {
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport()
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport()
                 .createFileFromResourcePath("csv/example6-developer-admin-ui_mass-import_projects-with-profiles.csv");
 
         /* execute */

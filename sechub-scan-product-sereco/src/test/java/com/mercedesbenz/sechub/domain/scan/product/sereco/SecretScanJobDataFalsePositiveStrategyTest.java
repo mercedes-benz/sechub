@@ -158,7 +158,7 @@ public class SecretScanJobDataFalsePositiveStrategyTest {
     }
 
     private FalsePositiveMetaData fetchFirstEntryMetaDataOfExample5() {
-        String json = ScanProductSerecoTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example5.json");
+        String json = TestScanProductSerecoFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example5.json");
         FalsePositiveProjectConfiguration config = FalsePositiveProjectConfiguration.fromJSONString(json);
         FalsePositiveEntry entry = config.getFalsePositives().get(0);
         assertEquals("entry-1", entry.getJobData().getComment());// sanity check, means correct entry...

@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -124,14 +124,14 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
 			put(apiEndpoint, TEST_TEMPLATE_ID1).
 			contentType(MediaType.APPLICATION_JSON_VALUE).
 	        content(content).
-	        header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	        header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.TEMPLATES.getSchema()).
+                    requestSchema(TestOpenApiSchema.TEMPLATES.getSchema()).
                 and().
                 document(
                             requestFields(
@@ -164,14 +164,14 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         this.mockMvc.perform(
                 delete(apiEndpoint, TEST_TEMPLATE_ID1).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
                 useCaseData(useCase).
                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                requestSchema(OpenApiSchema.TEMPLATES.getSchema()).
+                requestSchema(TestOpenApiSchema.TEMPLATES.getSchema()).
                 and().
                 document(
                         pathParameters(
@@ -197,14 +197,14 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         this.mockMvc.perform(
             get(apiEndpoint, TEST_TEMPLATE_ID1).
             contentType(MediaType.APPLICATION_JSON_VALUE).
-            header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+            header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.TEMPLATES.getSchema()).
+                    requestSchema(TestOpenApiSchema.TEMPLATES.getSchema()).
                 and().
                 document(
                             responseFields(
@@ -240,14 +240,14 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         this.mockMvc.perform(
                 get(apiEndpoint, TEST_TEMPLATE_ID1).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
                 useCaseData(useCase).
                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                requestSchema(OpenApiSchema.TEMPLATES.getSchema()).
+                requestSchema(TestOpenApiSchema.TEMPLATES.getSchema()).
                 and().
                 document(
                         responseFields(
