@@ -1,8 +1,16 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-  <ProjectsList />
 </template>
+<script lang="ts">
+import { useRouter } from 'vue-router'
 
-<script lang="ts" setup>
-  import ProjectsList from '@/components/ProjectsList.vue'
+export default {
+    setup () {
+        const router = useRouter()
+        router.push({
+          name: `/projects/`
+        })
+    }
+}
 </script>
+  
