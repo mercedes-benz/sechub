@@ -393,7 +393,7 @@ include::sechub_config_example23_headers_to_identify_webscans_in_logs.json[]
 Custom HTTP <<sechub-config-example-webscan-header,headers>> can be used for a lot of things besides authentication, e.g. to identify the requests of the {sechub} webscan inside the target application's logs.
 A custom header with an arbitrary name like `sechub-webscan: $UNIQUE_IDENTIFIER_ONLY_KNOWN_TO_THE_PROJECT` can be used to distinguish {sechub} webscan requests and other potentially malicious requests.
 Additionally, the {sechub} webscan will contain the `x-sechub-dast` header containing the {sechub} job UUID inside the header value to identify the requests of the scan jobs.
-Specifying the header name `x-sechub-dast` with a custom value inside the JSON scan configuration, will overwrite the the default value which is the SecHub jobUUID.
+Specifying the header name `x-sechub-dast` with a custom value inside the JSON scan configuration, will overwrite the default value which is the SecHub jobUUID.
 
 [[sechub-config-example-webscan-header-value-from-data-section]]
 ====== Example Header scan with value from data section
