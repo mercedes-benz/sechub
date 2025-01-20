@@ -107,4 +107,26 @@ class ZapWrapperGroovyScriptExecutorTest {
         assertFalse(loginResult.isLoginFailed());
     }
 
+    @Test
+    void throws_user_info_script_exception_results_in_result_failed() throws Exception {
+        /* prepare */
+        File scriptFile = new File("src/test/resources/login-script-examples/throw-user-info-script-exception.groovy");
+
+        SecHubWebScanConfiguration webScanConfig = new SecHubWebScanConfiguration();
+        webScanConfig.setUrl(URI.create("http://example.com"));
+
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        login.setUrl(new URL("http://example.com/login"));
+        webScanConfig.setLogin(Optional.of(login));
+
+        ZapScanContext zapScanContext = ZapScanContext.builder().setSecHubWebScanConfiguration(webScanConfig).setTargetUrl(webScanConfig.getUrl().toURL())
+                .build();
+
+        /* execute */
+        ScriptLoginResult loginResult = scriptExecutorToTest.executeScript(scriptFile, zapScanContext);
+
+        /* test */
+        assertTrue(loginResult.isLoginFailed());
+    }
+
 }
