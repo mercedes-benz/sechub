@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package mercedesbenz.com.sechub.archunit;
 
 import static mercedesbenz.com.sechub.archunit.ArchUnitRuntimeSupport.SECHUB_ARCHUNIT_IGNORE_FOLDERS;
