@@ -273,7 +273,7 @@ class ExampleFilesValidTest {
     @Test
     void webscan_header_to_identify_sechub_requests_can_be_read_and_contains_expected_config() {
         /* prepare */
-        String json = TestFileReader.readTextFromFile(SecHubConfigExampleFile.WEBSCAN_HEADER_TO_IDENTIFY_SECHUB_REQUESTS.getPath());
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_HEADER_TO_IDENTIFY_SECHUB_REQUESTS.getPath());
 
         /* execute */
         SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
