@@ -2684,25 +2684,6 @@ paths:
   ## User Self Service ##
   #######################
 
-  /api/anonymous/apitoken/{oneTimeToken}:
-    get:
-      summary: User clicks link to get new api token
-      description: User clicks link to get new api token
-      operationId: anonymousGetNewApiTokenByOneTimeToken
-      parameters:
-        - name: oneTimeToken
-          description: A one time token the user has got by a previous mail from SecHub server
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: "Answer containing the new api token or error message if request could not be fulfilled"
-      security: [ ]
-      tags:
-        - User Self Service
-
   /api/management/user:
     get:
       summary: User fetches his user details
@@ -3227,6 +3208,25 @@ paths:
           description: "Not found"
         "406":
           description: "Not acceptable"
+      tags:
+        - Sign Up
+
+  /api/anonymous/apitoken/{oneTimeToken}:
+    get:
+      summary: User clicks link to get new api token
+      description: User clicks link to get new api token
+      operationId: anonymousGetNewApiTokenByOneTimeToken
+      parameters:
+        - name: oneTimeToken
+          description: A one time token the user has got by a previous mail from SecHub server
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Answer containing the new api token or error message if request could not be fulfilled"
+      security: [ ]
       tags:
         - Sign Up
 

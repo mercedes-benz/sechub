@@ -44,7 +44,7 @@
         -->
 
     <template #append>
-      <v-btn icon="mdi-account" />
+      <v-btn icon="mdi-account" @click="goToUserPage()" />
 
       <v-btn icon="mdi-logout-variant" />
 
@@ -54,7 +54,14 @@
 </template>
 
 <script setup lang="ts">
+  import { useRouter } from 'vue-router'
+  const router = useRouter()
   const username = 'SecHub User'
+
+  function goToUserPage () {
+    router.push('/user')
+  }
+
 </script>
 
 <style scoped>

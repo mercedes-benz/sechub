@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 /* eslint-disable */
 /* prettier-ignore */
 // @ts-nocheck
@@ -22,5 +21,6 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/[id]/': RouteRecordInfo<'/[id]/', '/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/[id]/scan': RouteRecordInfo<'/[id]/scan', '/:id/scan', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/user/': RouteRecordInfo<'/user/', '/user', Record<never, never>, Record<never, never>>,
   }
 }
