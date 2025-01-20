@@ -6,15 +6,24 @@
 * ============================================================================
 */
 
+// Ensure the ArchUnit module depends on all other modules
+projectType.archUnitProjects.each { Project project ->
+    evaluationDependsOn(project.path)
+}
+
+// Define a task dependency to ensure all tests are run before ArchUnit tests
+tasks.named('test') {
+    projectType.archUnitProjects.each { Project project ->
+        dependsOn "${project.path}:test"
+    }
+}
+
 dependencies {
     testImplementation library.springframework_web
-
-    for (project in projectType.archUnitProjects) {
-        testImplementation project
-    }
-
     testImplementation spring_boot_dependency.junit_jupiter
     testImplementation library.arch_unit
 }
+
+
 
 // executing archunit tests: ./gradlew sechub-archunit-test:test

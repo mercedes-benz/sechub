@@ -9,7 +9,10 @@ import java.util.List;
 import com.tngtech.archunit.core.importer.ImportOption;
 
 public class ArchUnitImportOptions {
-    public static Path SECHUB_ROOT_PATH = resolveRoothPath();
+
+    public static final Path SECHUB_ROOT_PATH = resolveRoothPath();
+
+    private static final String SECHUB_PACKAGE_PREFIX = "com/mercedesbenz/sechub";
 
     private static Path resolveRoothPath() {
         try {
@@ -22,6 +25,28 @@ public class ArchUnitImportOptions {
     /* Ignore specific directories */
     static ImportOption ignoreAllTests = location -> {
         return !location.contains("/test/"); // ignore any URI to sources that contains '/test/'
+    };
+
+    static ImportOption ignoreAllMain = location -> {
+        return !location.contains("/main/"); // ignore any URI to sources that contains '/main/'
+    };
+
+    static ImportOption ignoreNonSecHubPackages = location -> {
+        boolean accepted = location.contains(SECHUB_PACKAGE_PREFIX); // ignore any URI to sources that does not remain in the sechub package'
+
+        // Next follows a workaround for an existing build situation
+        // where we had in build folders a pseudo src folder which contained
+        // packages like "src.test.java.com.mercedesbenz.sechub.*"
+        // It is unclear why exactly this happens (maybe because of an eclipse build)
+        // but we exclude this here which is always correct:
+        accepted = accepted && !location.contains("src/test/java/" + SECHUB_PACKAGE_PREFIX);
+        accepted = accepted && !location.contains("src/main/java/" + SECHUB_PACKAGE_PREFIX);
+
+        return accepted;
+    };
+
+    static ImportOption ignoreArchUnit = location -> {
+        return !location.contains("/archunit/"); // ignore any URI to sources that contains '/archunit/'
     };
 
     static List<ImportOption> ignoreFolders = new ArchUnitRuntimeSupport().createImportOptionsIgnoreFolder(); // ignore specific folders e.g. build folders

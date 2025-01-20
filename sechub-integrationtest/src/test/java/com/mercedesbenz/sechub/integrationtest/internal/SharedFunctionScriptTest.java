@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
+import com.mercedesbenz.sechub.integrationtest.api.TestOnlyForRegularExecution;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 class SharedFunctionScriptTest {
 
     private Process process;

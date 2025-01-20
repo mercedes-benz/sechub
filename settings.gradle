@@ -110,11 +110,7 @@ include 'sechub-cli',
 'sechub-pds-tools',
 
 // Examples (are below 'sechub-examples' folder)
-'sechub-examples:example-sechub-api-java',
-
-/* Web Server and UI */
-'sechub-web-server',
-'sechub-web-server-solution'
+'sechub-examples:example-sechub-api-java'
 
 
 

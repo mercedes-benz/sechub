@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 
 public class FalsePositiveDataConfigMergerTest {
@@ -443,7 +443,7 @@ public class FalsePositiveDataConfigMergerTest {
     }
 
     private ScanSecHubReport loadScanReport(String path) {
-        String reportJSON = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(path);
+        String reportJSON = TestScanDomainFileSupport.getTestfileSupport().loadTestFile(path);
         return ScanSecHubReport.fromJSONString(reportJSON);
     }
 

@@ -101,7 +101,7 @@
     ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
-    UserListJobsForProjectRequest,
+    UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
 
   export default {
@@ -128,7 +128,7 @@
       const baseDelay = 1000 // Initial delay in milliseconds
       let timeOutId: number | undefined
 
-      const currentRequestParameters: UserListJobsForProjectRequest = {
+      const currentRequestParameters: UserListsJobsForProjectRequest = {
         projectId: projectId.value,
         size: '10',
         page: '0',
@@ -140,9 +140,9 @@
       const error = ref<string | undefined>(undefined)
       const showProjectsDetails = ref(true)
 
-      async function fetchProjectJobs (requestParameters: UserListJobsForProjectRequest) {
+      async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
-          jobsObject.value = await defaultClient.withOtherApi.userListJobsForProject(requestParameters)
+          jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
         } catch (err) {
           error.value = 'ProjectAPI error fetching jobs for project.'

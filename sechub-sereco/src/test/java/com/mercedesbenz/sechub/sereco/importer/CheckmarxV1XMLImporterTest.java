@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 public class CheckmarxV1XMLImporterTest {
 
@@ -35,7 +35,7 @@ public class CheckmarxV1XMLImporterTest {
     @CsvSource({ "Checkmarx", "PDS_CODESCAN" })
     void xmlReportFromCheckmarxV8canBeImported_for_given_product_id(String productIdentifer) {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration.xml");
 
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId(productIdentifer).build();
 
@@ -77,7 +77,7 @@ public class CheckmarxV1XMLImporterTest {
     @Test
     void xmlReportFromCheckmarxVhasNoDescriptionButCodeInfo() throws Exception {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.CODE_SCAN);
@@ -118,7 +118,7 @@ public class CheckmarxV1XMLImporterTest {
     @Test
     void xmlReportFromCheckmarxV8containsDeeplink() throws Exception {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.CODE_SCAN);
@@ -136,7 +136,7 @@ public class CheckmarxV1XMLImporterTest {
     @Test
     void xmlReportFromCheckmarxV8_with_false_positive_canBeImported_and_contains_not_false_positive() throws IOException {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
         SerecoMetaData data = importerToTest.importResult(xml, ScanType.CODE_SCAN);
@@ -152,7 +152,7 @@ public class CheckmarxV1XMLImporterTest {
     @Test
     void load_example1_contains_expected_data() throws IOException {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFileFromRoot("sechub-other/testoutput/checkmarx-example1.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFileFromRoot("sechub-other/testoutput/checkmarx-example1.xml");
 
         /* execute */
         SerecoMetaData data = importerToTest.importResult(xml, ScanType.CODE_SCAN);

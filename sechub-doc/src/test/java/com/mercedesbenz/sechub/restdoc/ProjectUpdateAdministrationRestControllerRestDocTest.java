@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -86,7 +86,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		    post(apiEndpoint, "projectId1").
-        		    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+        		    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()).
         		    contentType(MediaType.APPLICATION_JSON_VALUE).
         		    content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		).
@@ -95,7 +95,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                              with().
                                  useCaseData(useCase).
                                  tag(RestDocFactory.extractTag(apiEndpoint)).
-                                 requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
+                                 requestSchema(TestOpenApiSchema.PROJECT_WHITELIST.getSchema()).
                              and().
                              document(
 		    	                		requestHeaders(
@@ -123,7 +123,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint, "projectId1").
-        				header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+        				header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()).
         				contentType(MediaType.APPLICATION_JSON_VALUE).
         				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
         		).
@@ -132,7 +132,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                         with().
                             useCaseData(useCase).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
-                            requestSchema(OpenApiSchema.PROJECT_META_DATA.getSchema()).
+                            requestSchema(TestOpenApiSchema.PROJECT_META_DATA.getSchema()).
                         and().
                         document(
 	    	                		requestHeaders(

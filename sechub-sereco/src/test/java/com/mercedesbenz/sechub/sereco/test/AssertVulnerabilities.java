@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.sereco.metadata.MetaDataAccess;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoDetection;
@@ -28,12 +27,13 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWeb;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebBody;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
+import com.mercedesbenz.sechub.sereco.metadata.TestMetaDataAccess;
 
 public class AssertVulnerabilities {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertVulnerabilities.class);
 
-    private static VulnerabilityTestDescriptionBuilder descriptionBuilder = new VulnerabilityTestDescriptionBuilder();
+    private static TestVulnerabilityDescriptionBuilder descriptionBuilder = new TestVulnerabilityDescriptionBuilder();
 
     private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 
@@ -135,7 +135,7 @@ public class AssertVulnerabilities {
             String description = "";
             SerecoClassification classification = null;
 
-            search = MetaDataAccess.createVulnerability(type, severity, list, description, classification);
+            search = TestMetaDataAccess.createVulnerability(type, severity, list, description, classification);
         }
 
         private List<SerecoVulnerability> find(StringBuilder message) {
@@ -379,7 +379,7 @@ public class AssertVulnerabilities {
 
             private AssertClassification() {
                 classification = new SerecoClassification();
-                MetaDataAccess.setClassification(VulnerabilityFinder.this.search, classification);
+                TestMetaDataAccess.setClassification(VulnerabilityFinder.this.search, classification);
             }
 
             public AssertClassification hipaa(String hipaa) {
@@ -453,12 +453,12 @@ public class AssertVulnerabilities {
             }
 
             public WebVulnerabilityFinder withWebRequest(SerecoWebRequest webRequest) {
-                MetaDataAccess.setWebRequest(search, webRequest);
+                TestMetaDataAccess.setWebRequest(search, webRequest);
                 return this;
             }
 
             public WebVulnerabilityFinder withWebResponse(SerecoWebResponse webResponse) {
-                MetaDataAccess.setWebResponse(search, webResponse);
+                TestMetaDataAccess.setWebResponse(search, webResponse);
                 return this;
             }
 

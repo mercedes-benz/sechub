@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Map;
@@ -21,13 +20,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator;
-import com.mercedesbenz.sechub.zapwrapper.util.ZapWrapperStringDecoder;
 
 public class ZapWrapperGroovyScriptExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperGroovyScriptExecutor.class);
@@ -51,7 +51,6 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
-
         FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true);
         WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
 
@@ -73,6 +72,10 @@ public class ZapWrapperGroovyScriptExecutor {
         } catch (IOException | ScriptException e) {
             LOG.error("An error happened while executing the script file.", e);
             loginResult.setLoginFailed(true);
+        } catch (UserInfoScriptException e) {
+            LOG.error("An error, which is reported to the user, happened while executing the script file.", e);
+            loginResult.setLoginFailed(true);
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
             firefox.quit();
         }
@@ -83,16 +86,17 @@ public class ZapWrapperGroovyScriptExecutor {
         SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
         WebLoginConfiguration webLoginConfiguration = secHubWebScanConfiguration.getLogin().get();
 
-        WebLoginTOTPConfiguration totp = webLoginConfiguration.getTotp();
+        WebLoginTOTPConfiguration totpConfiguration = webLoginConfiguration.getTotp();
         TOTPGenerator totpGenerator = null;
-        if (totp != null) {
-            LOG.info("Trying to decode TOTP seed if necessary.");
-            ZapWrapperStringDecoder zapWrapperStringDecoder = new ZapWrapperStringDecoder();
-            byte[] decodedSeedBytes = zapWrapperStringDecoder.decodeIfNecessary(totp.getSeed(), totp.getEncodingType());
-            String decodedSeed = new String(decodedSeedBytes, StandardCharsets.UTF_8);
-
-            LOG.info("Setting up TOTP generator for login.");
-            totpGenerator = new TOTPGenerator(decodedSeed, totp.getTokenLength(), totp.getHashAlgorithm(), totp.getValidityInSeconds());
+        if (totpConfiguration != null) {
+            try {
+                LOG.info("Creating TOTP generator for login.");
+                totpGenerator = new TOTPGenerator(totpConfiguration);
+            } catch (IllegalArgumentException e) {
+                LOG.error("Could not create TOTP generator for login", e);
+                SecHubMessage productMessage = new SecHubMessage(SecHubMessageType.ERROR, "Please check the TOTP configuration because: " + e.getMessage());
+                scanContext.getZapProductMessageHelper().writeSingleProductMessage(productMessage);
+            }
         }
 
         Map<String, String> templateVariables = scanContext.getTemplateVariables();

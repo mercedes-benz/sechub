@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.commons.model.login.FormLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.Page;
 import com.mercedesbenz.sechub.commons.model.login.Script;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.SharedKernelTestFileSupport;
+import com.mercedesbenz.sechub.sharedkernel.TestSharedKernelFileSupport;
 import com.mercedesbenz.sechub.test.PojoTester;
 
 public class SecHubConfigurationTest {
@@ -47,7 +47,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_login_basic_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_basic.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_basic.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -77,7 +77,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_login_form_script_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -131,7 +131,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_login_form_script_with_descriptions_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_descriptions.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_descriptions.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -192,7 +192,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_login_form_script_with_wait_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_wait.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_wait.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -251,7 +251,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_alloptions_json_has_webconfig_with_all_examples() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_alloptions.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_alloptions.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -350,7 +350,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config0_json_file_from_json_has_no_webconfig_or_infraconfig_but_api_version_1() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config0.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config0.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -364,7 +364,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config1_json_file_from_json_has_webconfig_with_url() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config1.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config1.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -377,7 +377,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config2_json_file_from_json_has_infraconfig_with_url() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -390,7 +390,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config2_json_file_from_json_has_infraconfig_with_ips() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -405,7 +405,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config2_json_file_from_json_has_no_codescanconfig() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -418,7 +418,7 @@ public class SecHubConfigurationTest {
     @Test
     public void sechub_config4_json_file_from_json_has_codescanconfig_with_folders() throws Exception {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config4.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config4.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -490,7 +490,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_max_scan_duration_wrong_unit() {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_max_scan_duration_wrong_unit.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_max_scan_duration_wrong_unit.json");
 
         /* execute + test */
         assertThrows(JSONConverterException.class, () -> {
@@ -501,7 +501,7 @@ public class SecHubConfigurationTest {
     @Test
     public void webscan_empty_includes_excludes() {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_empty_includes_excludes.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_empty_includes_excludes.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -530,7 +530,7 @@ public class SecHubConfigurationTest {
     public void a_sechub_configuration_JSON_with_license_scan_can_be_read_and_license_scan_has_correct_data_configuration_reference() {
         /* prepare */
         String expectedDataConfigName = "build-artifacts";
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -548,7 +548,7 @@ public class SecHubConfigurationTest {
     public void a_sechub_configuration_JSON_with_secret_scan_can_be_read_and_secret_scan_has_correct_data_configuration_reference() {
         /* prepare */
         String expectedDataConfigName = "files";
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("secretscan/secret_scan.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("secretscan/secret_scan.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -565,7 +565,7 @@ public class SecHubConfigurationTest {
     @Test
     public void a_sechub_configuration_JSON_with_data_section_containing_unknown_excludes_can_be_read() {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("codescan/code_scan-with-datasections-and-unknown-excludes.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("codescan/code_scan-with-datasections-and-unknown-excludes.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
@@ -578,7 +578,7 @@ public class SecHubConfigurationTest {
     @Test
     public void a_sechub_configuration_JSON_with_combined_unknown_properties_can_be_read() {
         /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("combined_config_with_unknown_parts_everywhere.json");
+        String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("combined_config_with_unknown_parts_everywhere.json");
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);

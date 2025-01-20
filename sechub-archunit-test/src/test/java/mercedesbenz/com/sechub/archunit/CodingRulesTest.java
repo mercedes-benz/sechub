@@ -8,6 +8,7 @@ import static com.tngtech.archunit.library.GeneralCodingRules.*;
 import static mercedesbenz.com.sechub.archunit.ArchUnitImportOptions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.tngtech.archunit.core.domain.JavaAccess;
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -15,6 +16,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
+@ExtendWith(ArchUnitTestMessageExtension.class)
 public class CodingRulesTest {
 
     @Test
@@ -47,6 +49,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSystemTest)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -57,7 +60,7 @@ public class CodingRulesTest {
 //                 Following lines were out-commented because of JsonSerialize annotation uses deprecated default implementation
 //                .orShould(dependOnClassesThat(annotatedWith(Deprecated.class))
 //                        .as("depend on @Deprecated classes"))
-                .because("there should be a better alternative")
+                .because("there should be a better alternative! ")
                 .check(importedClasses);
         /* @formatter:on */
     }
@@ -85,6 +88,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreSystemTest)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -118,6 +122,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreExamples)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */
@@ -140,6 +145,7 @@ public class CodingRulesTest {
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreGenApi)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
         /* @formatter:on */
     }

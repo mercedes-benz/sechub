@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -113,7 +113,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                   put(apiEndpoint, USER_ID, EMAIL_ADDRESS).
-                  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                  	header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -145,7 +145,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				  post(apiEndpoint, RestDocPathParameter.USER_ID).
-				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				  	header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -174,7 +174,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				  post(apiEndpoint,RestDocPathParameter.USER_ID).
-				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				  	header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -204,7 +204,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 					delete(apiEndpoint, RestDocPathParameter.USER_ID).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -234,7 +234,7 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		  post(apiEndpoint, "user1").
-        		  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        		  header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isCreated()).
         			andDo(defineRestService().
@@ -271,14 +271,14 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				  get(apiEndpoint).
-				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				  header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                    responseSchema(TestOpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
                             responseFields(
@@ -305,14 +305,14 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				  get(apiEndpoint).
-				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				  header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                    responseSchema(TestOpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -344,19 +344,19 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         when(user.getProjects()).thenReturn(projects);
         UserDetailInformation info = new UserDetailInformation(user);
 
-        when(userDetailService.fetchDetails("user1")).thenReturn(info);
+        when(userDetailService.fetchDetailsById("user1")).thenReturn(info);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         			get(apiEndpoint, "user1").
-  				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+  				  	header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andDo(defineRestService().
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+                                responseSchema(TestOpenApiSchema.USER_DETAILS.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -405,18 +405,18 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(apiEndpoint, emailAddress).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
                 useCaseData(useCase).
                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+                responseSchema(TestOpenApiSchema.USER_DETAILS.getSchema()).
                 and().
                 document(
                         requestHeaders(
-                                headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                                headerWithName(TestAuthenticationHelper.HEADER_NAME).description(TestAuthenticationHelper.HEADER_DESCRIPTION)
                                 ),
                         pathParameters(
                                 parameterWithName(EMAIL_ADDRESS.paramName()).description("The email address of user to show details for")

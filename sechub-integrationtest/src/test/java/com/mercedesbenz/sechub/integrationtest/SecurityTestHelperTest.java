@@ -10,9 +10,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper.TestTargetType;
-import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
+import com.mercedesbenz.sechub.integrationtest.api.TestOnlyForRegularExecution;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 class SecurityTestHelperTest {
 
     private SecurityTestHelper helperToTest;

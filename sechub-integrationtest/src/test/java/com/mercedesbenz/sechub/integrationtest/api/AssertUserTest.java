@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.test.ExampleConstants;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 class AssertUserTest {
 
     private TestProject project;
