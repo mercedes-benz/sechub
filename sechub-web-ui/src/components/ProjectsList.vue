@@ -79,7 +79,7 @@
 
       const openProjectPage = (project: ProjectData) => {
         router.push({
-          name: `/[id]/`,
+          name: `/projects/[id]/`,
           params: {
             id: project.projectId,
           },

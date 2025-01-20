@@ -9,7 +9,7 @@
       <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
-            <v-toolbar-title>{{ projectId }}</v-toolbar-title>
+            <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
@@ -84,7 +84,7 @@
       </v-col>
       <v-col v-if="showProjectsDetails" cols="12" md="4">
         <ProjectDetails
-          :project-id="projectId"
+          :project-data="projectData"
         />
       </v-col>
     </v-row>
@@ -95,8 +95,10 @@
   import { onMounted, onUnmounted, ref } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useRoute, useRouter } from 'vue-router'
+  import { useProjectStore } from '@/stores/projectStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import {
+    ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
     UserListsJobsForProjectRequest,
@@ -113,6 +115,14 @@
       if ('id' in route.params) {
         projectId.value = route.params.id
       }
+
+      const store = useProjectStore()
+      const projectData = ref<ProjectData>({
+        projectId: '',
+        isOwned: false,
+        assignedUsers: [],
+        owner: '',
+      })
 
       const maxAttempts = 4 // Maximum number of retries for backoff
       const baseDelay = 1000 // Initial delay in milliseconds
@@ -208,7 +218,7 @@
 
       function openNewScanPage () {
         router.push({
-          name: `/[id]/scan`,
+          name: `/projects/[id]/scan`,
           params: {
             id: projectId.value,
           },
@@ -219,8 +229,16 @@
         router.go(-1)
       }
 
-      onMounted(() => {
-        pollProjectJobs()
+      onMounted(async () => {
+        const projectFromStore = await store.getProjectById(projectId.value)
+        if (!projectFromStore) {
+          router.push({
+            path: '/projects',
+          })
+        } else {
+          projectData.value = projectFromStore
+          pollProjectJobs()
+        }
       })
 
       onUnmounted(() => {
@@ -228,7 +246,7 @@
       })
 
       return {
-        projectId,
+        projectData,
         jobsObject,
         jobs,
         loading,

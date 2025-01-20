@@ -3,7 +3,7 @@
   <v-app-bar
     color="background_paper"
   >
-    <router-link to="/">
+    <router-link to="/projects">
       <img
         alt="Logo"
         class="logo ma-2 pa-1"
