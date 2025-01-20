@@ -520,8 +520,13 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ user self service .....+ */
+    /* +............................ user self service ........................+ */
     /* +-----------------------------------------------------------------------+ */
+
+    public String buildFetchUserDetailInformationUrl() {
+        return buildUrl(API_MANAGEMENT + "/user");
+    }
+
     public String buildGetProjects() {
         return buildUrl(API_PROJECTS);
     }

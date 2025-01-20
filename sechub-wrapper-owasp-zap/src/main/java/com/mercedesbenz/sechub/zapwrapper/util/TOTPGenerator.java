@@ -6,11 +6,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
-import javax.crypto.SealedObject;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
-import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 
 /**
  * https://datatracker.ietf.org/doc/html/rfc6238
@@ -21,23 +19,25 @@ public class TOTPGenerator {
 
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
 
-    private SealedObject seed;
-    private String hashAlgorithmName;
-    private int totpLength;
-    private int tokenValidityTimeInSeconds;
-    private long digitsTruncate;
+    private final WebLoginTOTPConfiguration totpConfig;
+    private final long digitsTruncate;
+    private final Mac mac;
 
-    public TOTPGenerator(String seed, int totpLength, TOTPHashAlgorithm hashAlgorithm, int tokenValidityTimeInSeconds) {
-        if (seed == null) {
-            throw new IllegalArgumentException("The specified TOTP seed must not be null!");
+    public TOTPGenerator(WebLoginTOTPConfiguration totpConfig) {
+        this.totpConfig = assertValidTotpConfig(totpConfig);
+
+        this.digitsTruncate = (long) Math.pow(BASE, totpConfig.getTokenLength());
+
+        String hashAlgorithmName = totpConfig.getHashAlgorithm().getName();
+        try {
+            this.mac = Mac.getInstance(hashAlgorithmName);
+            byte[] rawSeedBytes = new ZapWrapperStringDecoder().decodeIfNecessary(totpConfig.getSeed(), totpConfig.getEncodingType());
+            mac.init(new SecretKeySpec(rawSeedBytes, hashAlgorithmName));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException("The specified TOTP hash algorithm: '" + hashAlgorithmName + "' is unknown!", e);
+        } catch (InvalidKeyException e) {
+            throw new IllegalArgumentException("The specified TOTP seed was invalid!", e);
         }
-
-        this.seed = CryptoAccess.CRYPTO_STRING.seal(seed);
-        this.totpLength = totpLength;
-        this.hashAlgorithmName = hashAlgorithm.getName();
-        this.tokenValidityTimeInSeconds = tokenValidityTimeInSeconds;
-
-        this.digitsTruncate = (long) Math.pow(BASE, this.totpLength);
     }
 
     /**
@@ -69,25 +69,17 @@ public class TOTPGenerator {
 
         long otp = binary % digitsTruncate;
         // add prepended zeros if the otp does not match the wanted length
-        return String.format("%0" + totpLength + "d", otp);
+        return String.format("%0" + totpConfig.getTokenLength() + "d", otp);
     }
 
     private byte[] computeHash(long currentTimeMillis) {
-        try {
-            Mac mac = Mac.getInstance(hashAlgorithmName);
-            mac.init(new SecretKeySpec(CryptoAccess.CRYPTO_STRING.unseal(seed).getBytes(), hashAlgorithmName));
-            byte[] timeBytes = computeTimeBytes(currentTimeMillis, tokenValidityTimeInSeconds);
-            byte[] hash = mac.doFinal(timeBytes);
-            return hash;
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("The specified hash algorithm is unknown!", e);
-        } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException("The specified seed was invalid!", e);
-        }
+        byte[] timeBytes = computeTimeBytes(currentTimeMillis);
+        byte[] hash = mac.doFinal(timeBytes);
+        return hash;
     }
 
-    private byte[] computeTimeBytes(long currentTimeMillis, int tokenValidityTimeInSeconds) {
-        Long timeStep = (currentTimeMillis / ONE_SECOND_IN_MILLISECONDS) / tokenValidityTimeInSeconds;
+    private byte[] computeTimeBytes(long currentTimeMillis) {
+        Long timeStep = (currentTimeMillis / ONE_SECOND_IN_MILLISECONDS) / totpConfig.getValidityInSeconds();
 
         /* @formatter:off */
         byte[] timeBytes = ByteBuffer.allocate(Long.BYTES)
@@ -95,6 +87,37 @@ public class TOTPGenerator {
                                      .array();
         /* @formatter:on */
         return timeBytes;
+    }
+
+    /**
+     * This method checks if the TOTP configuration does not contain any
+     * <code>null</code> values. It is necessary if the TOTPGenerator is used with
+     * WebLoginTOTPConfiguration, that are not provided by SecHub.
+     *
+     * The TOTP configuration provided by SecHub, should never contain
+     * <code>null</code> values, because SecHub already validates the SecHub TOTP
+     * configuration. For validation details see:
+     * {@link com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator}
+     *
+     * @param totpConfig
+     * @return totpConfig, only if it is valid.
+     *
+     * @throws IllegalArgumentException if the the parameter totpConfig is invalid.
+     */
+    private WebLoginTOTPConfiguration assertValidTotpConfig(WebLoginTOTPConfiguration totpConfig) {
+        if (totpConfig == null) {
+            throw new IllegalArgumentException("The TOTP configuration must be configured to generate TOTP values!");
+        }
+        if (totpConfig.getSeed() == null) {
+            throw new IllegalArgumentException("The TOTP configuration seed must be configured to generate TOTP values!");
+        }
+        if (totpConfig.getHashAlgorithm() == null) {
+            throw new IllegalArgumentException("The TOTP configuration hash algorithm must be configured to generate TOTP values!");
+        }
+        if (totpConfig.getEncodingType() == null) {
+            throw new IllegalArgumentException("The TOTP configuration encoding type must be configured to generate TOTP values!");
+        }
+        return totpConfig;
     }
 
 }

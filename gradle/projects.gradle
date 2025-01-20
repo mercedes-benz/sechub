@@ -106,12 +106,11 @@ projectType = [
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
                    project(':sechub-wrapper-prepare'),
-                   project(':sechub-web-server'),
                    project(':sechub-wrapper-secretvalidation'),
             ],
 
             springBootWebApplicationProjects:[
-                    project('sechub-web-server')
+
             ],
 
             /* documentation projects */
@@ -128,8 +127,7 @@ projectType = [
                     project(':sechub-pds-solutions'),
 					project(':sechub-solution'),
 					project(':sechub-solutions-shared'),
-					project(':sechub-wrapper-xray'),
-					project(':sechub-web-server-solution'),
+					project(':sechub-wrapper-xray')
             ],
 
             asciiDoctorProjects: [

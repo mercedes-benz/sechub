@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.usecases.user;
-
-import static com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier.*;
+package com.mercedesbenz.sechub.sharedkernel.usecases.admin.user;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,17 +9,18 @@ import java.lang.annotation.Target;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UC_USER_CLICKS_LINK_TO_GET_NEW_API_TOKEN,
+		id=UseCaseIdentifier.UC_USER_FETCHES_USER_DETAIL_INFORMATION,
 		group=UseCaseGroup.USER_SELF_SERVICE,
-		apiName="userClicksLinkToGetNewAPIToken",
-		title="User clicks link to get new api token",
-		description="user/clicks_link_to_get_new_api_token.adoc")
-public @interface UseCaseUserClicksLinkToGetNewAPIToken {
+		apiName="userFetchUserDetailInformation",
+		title="User fetches his user details",
+		description="The authenticated user fetches his user details")
+public @interface UseCaseUserFetchesUserDetailInformation {
 
 	Step value();
 }

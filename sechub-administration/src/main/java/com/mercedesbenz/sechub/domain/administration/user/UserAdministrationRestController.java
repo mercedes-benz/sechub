@@ -93,7 +93,7 @@ public class UserAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_USER_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public UserDetailInformation showUserDetails(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
-        return detailsService.fetchDetails(userId);
+        return detailsService.fetchDetailsById(userId);
     }
 
     /* @formatter:off */
