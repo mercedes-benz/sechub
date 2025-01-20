@@ -31,7 +31,7 @@
       <v-card-title>{{ $t('USER_SETTINGS') }}</v-card-title>
     </v-card-item>
     <v-list lines="one">
-      <v-list-item>
+      <v-list-item v-if="false">
         <v-container>
           <v-btn variant="tonal">
             {{ $t('USER_SETTINGS_CHANGE_PASSWORD') }}
