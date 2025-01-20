@@ -271,6 +271,28 @@ class ExampleFilesValidTest {
     }
 
     @Test
+    void webscan_header_to_identify_sechub_requests_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_HEADER_TO_IDENTIFY_SECHUB_REQUESTS.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://example.org", webScanConfig.getUrl().toString());
+
+        List<HTTPHeaderConfiguration> headers = webScanConfig.getHeaders().get();
+        assertEquals(1, headers.size());
+
+        HTTPHeaderConfiguration header = headers.get(0);
+        assertEquals("sechub-webscan", header.getName());
+        assertEquals("unique-identifier", header.getValue());
+        assertTrue(header.isSensitive());
+        assertTrue(header.getOnlyForUrls().isEmpty());
+    }
+
+    @Test
     void webscan_header_from_data_reference_can_be_read_and_contains_expected_config() {
         /* prepare */
         String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_HEADER_FROM_DATA_REFERENCE.getPath());

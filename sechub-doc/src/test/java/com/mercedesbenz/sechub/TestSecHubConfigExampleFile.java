@@ -32,6 +32,9 @@ public enum TestSecHubConfigExampleFile {
 
     WEBSCAN_HEADER_SCAN("src/docs/asciidoc/documents/shared/configuration/sechub_config_example15_web_scan_header.json"),
 
+    WEBSCAN_HEADER_TO_IDENTIFY_SECHUB_REQUESTS(
+            "src/docs/asciidoc/documents/shared/configuration/sechub_config_example23_headers_to_identify_webscans_in_logs.json"),
+
     WEBSCAN_HEADER_FROM_DATA_REFERENCE("src/docs/asciidoc/documents/shared/configuration/sechub_config_example17_web_scan_header_value_from_data_section.json"),
 
     WEBSCAN_CLIENT_CERTIFICATE("src/docs/asciidoc/documents/shared/configuration/sechub_config_example4_webscan_login_clientcertificate.json"),
