@@ -8,3 +8,21 @@
 // @use 'vuetify/settings' with (
 //   $color-pack: false
 // );
+
+.v-list-item__spacer {
+  width: 0 !important;
+}
+
+.v-list-item .v-list-item__prepend {
+  padding-top: 0 !important;
+}
+
+.v-container v-locale--is-ltr {
+  padding-left: 0 !important;
+}
+
+.v-list-item__content {
+  .v-locale--is-ltr {
+    margin-left: 0 !important;
+  }
+}
