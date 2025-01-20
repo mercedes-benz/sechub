@@ -36,7 +36,7 @@ public class TriggerSecHubClientSynchronousScanAction extends AbstractUIAction {
 		        "Please enter target folder for sechub scan:\n\n"+
 		                (optionalProject.isPresent() ? "": "WARN: You didn't define a project. So this folder must contain a sechub.json having projectId defined inside to work!)")+"\nServer, user and apitoken are used by DAUI setup!\n"+
 		        "INFO: You can set a a default by system property:\n"+
-                ConfigurationSetup.SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN.getSystemPropertyid(), InputCacheIdentifier.CLIENT_SCAN_TARGETFOLDER
+                ConfigurationSetup.SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN.getSystemPropertyId(), InputCacheIdentifier.CLIENT_SCAN_TARGETFOLDER
         );
 		/* @formatter:on */
         if (!optionalPath.isPresent()) {

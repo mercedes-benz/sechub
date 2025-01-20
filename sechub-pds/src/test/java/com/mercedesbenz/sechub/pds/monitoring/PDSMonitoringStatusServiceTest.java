@@ -73,7 +73,7 @@ public class PDSMonitoringStatusServiceTest {
     @Test
     public void monitoringStatus_contains_information_about_two_members_when_two_members_defined() {
         /* prepare */
-        PDSMonitoring testData = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
+        PDSMonitoring testData = TestPDSMonitoringDataUtil.createTestMonitoringWith2ClusterMembers();
         List<PDSHeartBeat> heartBeatsForServerId = new ArrayList<>();
 
         // heartbeat1

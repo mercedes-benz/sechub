@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test.report;
 
-import static com.mercedesbenz.sechub.test.report.ReportTestHelper.*;
+import static com.mercedesbenz.sechub.test.report.TestReportHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -327,13 +327,13 @@ public class ThymeLeafHTMLReportingTest {
         private void initReport() {
             switch (inputFormat) {
             case SECHUB_REPORT:
-                sourceReportAsString = ReportTestHelper.loadSecHubReportFileTemplate(exampleName + "_" + variant);
+                sourceReportAsString = TestReportHelper.loadSecHubReportFileTemplate(exampleName + "_" + variant);
                 break;
             case CHECKMARX:
-                sourceReportAsString = ReportTestHelper.load3rdPartyReportAsString(exampleName + "_" + variant + ".xml");
+                sourceReportAsString = TestReportHelper.load3rdPartyReportAsString(exampleName + "_" + variant + ".xml");
                 break;
             case SARIF:
-                sourceReportAsString = ReportTestHelper.loadSarifReport(exampleName + "_" + variant);
+                sourceReportAsString = TestReportHelper.loadSarifReport(exampleName + "_" + variant);
                 break;
             default:
                 throw new IllegalStateException("input format not supported:" + inputFormat);

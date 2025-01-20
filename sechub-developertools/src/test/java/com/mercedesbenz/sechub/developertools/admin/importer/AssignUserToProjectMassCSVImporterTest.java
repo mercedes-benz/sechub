@@ -10,7 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.mercedesbenz.sechub.developertools.DeveloperToolsTestFileSupport;
+import com.mercedesbenz.sechub.developertools.TestDeveloperToolsFileSupport;
 import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -32,7 +32,7 @@ public class AssignUserToProjectMassCSVImporterTest {
     @Test
     public void example_3_user2projects_can_be_imported() throws Exception {
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport()
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport()
                 .createFileFromResourcePath("csv/example3-developer-admin-ui_mass-import_user2projects.csv");
 
         /* execute */

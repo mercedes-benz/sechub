@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 
-@OnlyForRegularTestExecution
+@TestOnlyForRegularExecution
 class JsonErrorFieldNamesAvailableHttpStatusExceptionTestValidatorTest {
 
     @Test

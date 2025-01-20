@@ -8,8 +8,9 @@ import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
 import { getReport } from './sechub-cli';
 import { getFieldFromJson } from './json-helper';
-import { execFileSync } from "child_process";
-import { sanitize } from "./shell-arg-sanitizer";
+import { execFileSync } from 'child_process';
+import { sanitize } from './shell-arg-sanitizer';
+import { storeOutput } from './output-helper';
 
 const NEW_LINE_SEPARATOR = '\n';
 
@@ -280,5 +281,5 @@ function setOutput(field: string, value: any, dataFormat: string) {
     value = value ?? (dataFormat === 'number' ? 0 : 'FAILURE');
 
     core.debug(`Output ${field} set to ${value}`);
-    core.setOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
+    storeOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }

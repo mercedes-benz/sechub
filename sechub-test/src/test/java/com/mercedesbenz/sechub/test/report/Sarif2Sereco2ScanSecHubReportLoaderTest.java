@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test.report;
 
-import static com.mercedesbenz.sechub.test.report.ReportTestHelper.*;
+import static com.mercedesbenz.sechub.test.report.TestReportHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;

@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 public class ScanMappingConfigurationTest {
 
@@ -28,7 +28,7 @@ public class ScanMappingConfigurationTest {
     @Test
     public void can_create_json_example1_and_has_expected_namePatternMappings() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
 
         /* execute */
         ScanMappingConfiguration config = ScanMappingConfiguration.createFromJSON(json);
@@ -47,7 +47,7 @@ public class ScanMappingConfigurationTest {
     @Test
     public void can_create_json_example1_and_providers() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
 
         /* execute */
         ScanMappingConfiguration config = ScanMappingConfiguration.createFromJSON(json);

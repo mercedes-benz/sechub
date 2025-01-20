@@ -7,7 +7,9 @@
  */
 plugins {
     id 'java-library'
+    id 'org.springframework.boot' apply true
 }
+ 
 dependencies {
 
     implementation project(':sechub-testframework')
@@ -23,48 +25,9 @@ dependencies {
 
 }
 
-task startIntegrationTestAdminUI(type: JavaExec){
-
-    group 'sechub'
-    description 'Starts developer admin ui ready to use with for a server started by gradle task <startIntegrationTestServer>'
-
-    classpath = sourceSets.main.runtimeClasspath
-
-    mainClass = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
-
-    jvmArgs = ['-Dsechub.developertools.admin.integrationtestserver=true',
-               '-Dsechub.developertools.admin.server=localhost',
-               '-Dsechub.developertools.admin.serverport=8443',
-               '-Dsechub.developertools.admin.userid=int-test_superadmin',
-               '-Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd']
-
-}
-
-task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
-    group 'sechub'
-    description 'Builds the SecHub Developer Admin tool as standalone executable jar. Use launch-developer-admin-ui script to execute'
-    archiveBaseName = 'sechub-developer-admin-ui'
-    /* TODO: This is a 'dirty' fix for the standard archive entries limit of 64K. We should refactor this module to make it leaner */
-    zip64 = true
-
-    manifest {
-        attributes 'Main-Class': 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
-    }
-    
-    from { 
-        configurations.runtimeClasspath.collect { 
-            it.isDirectory() ? it : zipTree(it) 
-        } 
-    }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    with jar
-}
-
-
 task importEclipseProjectsNeedingOpenApiFile(type: Exec){
     workingDir "$rootDir"
-    commandLine './gradlew', ':sechub-systemtest:cleanEclipse',':sechub-systemtest:eclipse', ':sechub-web-server:cleanEclipse',':sechub-web-server:eclipse', ':sechub-api-java:cleanEclipse',':sechub-api-java:eclipse', ':sechub-pds-tools:cleanEclipse',':sechub-pds-tools:eclipse',':sechub-examples:example-sechub-api-java:cleanEclipse',':sechub-examples:example-sechub-api-java:eclipse','-Dsechub.build.stage=all'
-            
+    commandLine './gradlew', ':sechub-systemtest:cleanEclipse',':sechub-systemtest:eclipse', ':sechub-api-java:cleanEclipse',':sechub-api-java:eclipse', ':sechub-pds-tools:cleanEclipse',':sechub-pds-tools:eclipse',':sechub-examples:example-sechub-api-java:cleanEclipse',':sechub-examples:example-sechub-api-java:eclipse','-Dsechub.build.stage=all'
 }
 
 /*

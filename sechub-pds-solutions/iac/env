@@ -2,3 +2,5 @@
 # uncomment to use local image
 # BASE_IMAGE="pds-base_pds"
 KICS_VERSION="2.1.3"
+PDS_ENCRYPTION_ALGORITHM="NONE"
+PDS_ENCRYPTION_SECRET_KEY=""

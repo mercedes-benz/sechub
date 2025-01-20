@@ -2,17 +2,19 @@
 package com.mercedesbenz.sechub.domain.administration.job;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
+import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.error.InternalServerErrorException;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageFactory;
@@ -22,32 +24,31 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class JobCancelService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobCancelService.class);
+    private final AuditLogService auditLogService;
+    private final UserInputAssertion userInputAssertion;
+    private final DomainMessageService eventBusService;
+    private final JobInformationRepository jobInformationRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    AuditLogService auditLogService;
+    public JobCancelService(AuditLogService auditLogService, UserInputAssertion userInputAssertion, DomainMessageService eventBusService,
+            JobInformationRepository jobInformationRepository, UserRepository userRepository) {
+        this.auditLogService = auditLogService;
+        this.userInputAssertion = userInputAssertion;
+        this.eventBusService = eventBusService;
+        this.jobInformationRepository = jobInformationRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    UserInputAssertion assertion;
-
-    @Autowired
-    DomainMessageService eventBusService;
-
-    @Autowired
-    JobInformationRepository repository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Validated
     @UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
     public void cancelJob(UUID jobUUID) {
-        assertion.assertIsValidJobUUID(jobUUID);
+        userInputAssertion.assertIsValidJobUUID(jobUUID);
 
         auditLogService.log("Requested cancellation of job {}", jobUUID);
 
@@ -57,12 +58,48 @@ public class JobCancelService {
         informCancelJobRequested(message);
     }
 
+    @UseCaseUserCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
+    public void userCancelJob(UUID jobUUID, String userId) {
+        userInputAssertion.assertIsValidJobUUID(jobUUID);
+        userInputAssertion.assertIsValidUserId(userId);
+
+        auditLogService.log("User {} requested cancellation of job {}", userId, jobUUID);
+        assertUserAllowedCancelJob(jobUUID, userId);
+
+        JobMessage message = buildMessage(jobUUID);
+
+        /* trigger event */
+        informCancelJobRequested(message);
+    }
+
+    private void assertUserAllowedCancelJob(UUID jobUUID, String userId) {
+        JobInformation jobInfo = jobInformationRepository.findById(jobUUID).orElseThrow(() -> {
+            LOG.debug("Job not found: {}", jobUUID);
+            return new NotFoundException("Job not found: " + jobUUID);
+        });
+
+        User user = userRepository.findOrFailUser(userId);
+        Set<Project> projects = user.getProjects();
+
+        if (projects == null) {
+            LOG.debug("Projects for user {} are null.", userId);
+            throw new InternalServerErrorException("Projects fore user %s are null.".formatted(userId));
+        }
+
+        boolean isForbidden = projects.stream().noneMatch(project -> project.getId().equals(jobInfo.getProjectId()));
+
+        if (isForbidden) {
+            LOG.debug("User {} is not allowed to cancel job {}", userId, jobUUID);
+            throw new NotFoundException("Job not found: " + jobUUID);
+        }
+    }
+
     private JobMessage buildMessage(UUID jobUUID) {
         JobMessage message = new JobMessage();
 
         message.setJobUUID(jobUUID);
 
-        Optional<JobInformation> optJobInfo = repository.findById(jobUUID);
+        Optional<JobInformation> optJobInfo = jobInformationRepository.findById(jobUUID);
         if (optJobInfo.isEmpty()) {
             LOG.warn("Did not found job information, so not able to resolve owner email address");
             return message;
@@ -91,5 +128,4 @@ public class JobCancelService {
 
         eventBusService.sendAsynchron(infoRequest);
     }
-
 }

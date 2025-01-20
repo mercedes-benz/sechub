@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,6 +21,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 
 @AnalyzeClasses
+@ExtendWith(ArchUnitTestMessageExtension.class)
 public class DomainAccessRulesTest {
 
     private static final String DOMAIN_SCAN = "com.mercedesbenz.sechub.domain.scan";
@@ -50,6 +52,7 @@ public class DomainAccessRulesTest {
                 .withImportOptions(ignoreFolders)
                 .withImportOption(ignoreDevelopertools)
                 .withImportOption(ignoreJarFiles)
+                .withImportOption(ignoreNonSecHubPackages)
                 .importPath(SECHUB_ROOT_PATH);
 
         /* execute + test */

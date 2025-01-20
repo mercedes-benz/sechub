@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 class ScanSecHubReportTest {
 
@@ -64,7 +64,7 @@ class ScanSecHubReportTest {
 
     private ScanSecHubReport deserializeReportFile(String fileName) {
         File file = new File("./src/test/resources/sechub_result/" + fileName);
-        ScanSecHubReport report = ScanSecHubReport.fromJSONString(ScanDomainTestFileSupport.loadTextFile(file, "\n"));
+        ScanSecHubReport report = ScanSecHubReport.fromJSONString(TestScanDomainFileSupport.loadTextFile(file, "\n"));
         return report;
     }
 

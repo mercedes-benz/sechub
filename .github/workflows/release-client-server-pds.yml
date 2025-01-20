@@ -94,23 +94,23 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 17
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@cc4fc85e6b35bafd578d5ffbc76a5518407e1af0
+        uses: gradle/actions/setup-gradle@0bdd871935719febd78681f197cd39af5b6e16a6
         with:
           cache-read-only: false
 
       - name: Set up Go
-        uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+        uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
         with:
           go-version: 1.21.6
 
       - name: Set up Go caching
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         id: go-cache
         with:
           path: |
@@ -146,7 +146,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -173,7 +173,7 @@ jobs:
       # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
 
       # ----------------------
       # Build API Java publish
@@ -295,7 +295,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for website and release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
@@ -330,7 +330,7 @@ jobs:
           mkdir server-release-artifacts
           # Collect release artifacts
           cp sechub-server/build/libs/sechub-server-${{ inputs.server-version }}.jar \
-             sechub-developertools/build/libs/sechub-developer-admin-ui-${{ inputs.server-version }}.jar \
+             sechub-developertools/build/libs/sechub-developertools-${{ inputs.server-version }}.jar \
              server-release-artifacts/
           cp sechub-doc/build/docs/asciidoc/sechub-architecture.pdf \
              server-release-artifacts/sechub-architecture-${{ inputs.server-version }}.pdf

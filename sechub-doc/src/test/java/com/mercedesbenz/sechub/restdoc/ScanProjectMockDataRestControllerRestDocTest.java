@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -78,14 +78,14 @@ public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNeces
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(config.toJSON()).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(defineRestService().
 	    	                with().
 	    	                    useCaseData(useCase).
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
-	    	                    requestSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+	    	                    requestSchema(TestOpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
 	    	                and().
 	    	                document(
 	                            		requestHeaders(
@@ -116,7 +116,7 @@ public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNeces
         		get(apiEndpoint, PROJECT1_ID).
         			accept(MediaType.APPLICATION_JSON_VALUE).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.codeScan.result").value("RED")).
@@ -127,7 +127,7 @@ public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNeces
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+                                responseSchema(TestOpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(

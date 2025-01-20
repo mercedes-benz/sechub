@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -93,7 +93,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint).
-        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAddress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAddress\":\"jane.smith@example.com\"}]")).
@@ -101,7 +101,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
         			        with().
         			            useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
+                                responseSchema(TestOpenApiSchema.SIGNUP_LIST.getSchema()).
                             and().
             			    document(
         	                		requestHeaders(
@@ -128,7 +128,7 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(apiEndpoint,"userId1").
-        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andDo(defineRestService().

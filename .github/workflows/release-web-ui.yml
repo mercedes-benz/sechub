@@ -81,7 +81,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -105,6 +105,7 @@ jobs:
         run: |
           cd sechub-web-ui && \
           npm install && \
+          npm run generate-api-client && \
           npm run build && \
           cd dist && \
           echo '${{ inputs.web-ui-version }}' > sechub-web-ui_version.txt && \

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -101,7 +101,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
@@ -109,7 +109,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             with().
                                 useCaseData(useCase, "JSON").
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                                responseSchema(TestOpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -151,7 +151,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         		get(apiEndpoint,PROJECT1_ID,jobUUID).
         		    accept(MediaType.APPLICATION_XHTML_XML).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
-        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
@@ -162,7 +162,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             with().
                                 useCaseData(useCase, "HTML").
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                                responseSchema(TestOpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -200,7 +200,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	    			header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json(spdxReport)).
@@ -208,7 +208,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                             with().
                                 useCaseData(useCase, "JSON").
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                                responseSchema(TestOpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(

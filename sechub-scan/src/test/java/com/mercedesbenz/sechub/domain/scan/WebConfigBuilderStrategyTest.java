@@ -196,7 +196,7 @@ public class WebConfigBuilderStrategyTest {
     }
 
     private SecHubExecutionContext createContext(String pathToTestConfig) {
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(pathToTestConfig);
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile(pathToTestConfig);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
 
         return new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
