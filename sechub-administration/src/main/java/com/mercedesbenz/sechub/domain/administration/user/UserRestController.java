@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
 import org.springframework.web.bind.annotation.GetMapping;
