@@ -14,11 +14,11 @@ import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 public class NetsparkerV1XMLImporterTest {
 
-    private SerecoTestFileSupport support = SerecoTestFileSupport.INSTANCE;
+    private TestSerecoFileSupport support = TestSerecoFileSupport.INSTANCE;
     private ProductResultImporter importerToTest;
 
     @BeforeEach
@@ -29,7 +29,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void xmlReportFromNetsparkerCanBeImported() {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("netsparker/netsparker_v1.0.40.109_scan_result_output_vulnerabilities.xml");
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile("netsparker/netsparker_v1.0.40.109_scan_result_output_vulnerabilities.xml");
 
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Netsparker").build();
 
@@ -43,7 +43,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void testfile1_contains_4_vulnerablities_which_exists_in_imported_metadata() throws Exception {
         /* prepare */
-        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
+        String xml = support.loadTestFile(TestSerecoFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
@@ -57,7 +57,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void testfile1_contains_ApacheVersionDisclosure_and_ApacheOutOfDate_in_imported_metadata() throws Exception {
         /* prepare */
-        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
+        String xml = support.loadTestFile(TestSerecoFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
@@ -105,7 +105,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void test_xml_import_netsparker_1_9_1_977_can_be_imported() throws Exception {
         /* prepare */
-        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+        String xml = TestSerecoFileSupport.INSTANCE.loadTestFile(TestSerecoFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Netsparker").build();
 
@@ -119,7 +119,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void test_xml_import_netsparker_1_9_1_977_contains_4_vulnerablities() throws Exception {
         /* prepare */
-        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+        String xml = support.loadTestFile(TestSerecoFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
@@ -132,7 +132,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void test_xml_import_netsparker_1_9_1_977_contains_specific_vulnerability() throws Exception {
         /* prepare */
-        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+        String xml = support.loadTestFile(TestSerecoFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
@@ -184,7 +184,7 @@ public class NetsparkerV1XMLImporterTest {
     @Test
     void test_xml_import_netsparker_1_9_1_977_contains_specific_vulnerability_with_table() throws Exception {
         /* prepare */
-        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+        String xml = support.loadTestFile(TestSerecoFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
         SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);

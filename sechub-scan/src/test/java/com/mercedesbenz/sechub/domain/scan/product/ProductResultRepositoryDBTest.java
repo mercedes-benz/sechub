@@ -21,7 +21,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 import com.mercedesbenz.sechub.domain.scan.product.config.DefaultProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
@@ -309,7 +309,7 @@ public class ProductResultRepositoryDBTest {
     public void a_standard_netsparker_output_can_be_persisted() {
         /* prepare */
         String path = "netsparker/netsparker_v1.0.40.109_testresult1.xml";
-        String netsparkerContent = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(path);
+        String netsparkerContent = TestScanDomainFileSupport.getTestfileSupport().loadTestFile(path);
 
         UUID secHubJobUUID = UUID.randomUUID();
         ProductResult result1 = new ProductResult(secHubJobUUID, "project1", new WithoutProductExecutorConfigInfo(ProductIdentifier.NETSPARKER),

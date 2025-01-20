@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.resilience;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -52,7 +53,7 @@ class ResilientActionExecutorTest {
 
                 failing = false;
             } catch (IllegalArgumentException e) {
-                assertEquals("first-to-reuse", e.getMessage());
+                assertThat(e.getMessage()).isEqualTo("first-to-reuse");
             }
         }
 
@@ -60,11 +61,12 @@ class ResilientActionExecutorTest {
         long timeEnd = System.currentTimeMillis();
         long timeElapsed = timeEnd - timeStart;
 
-        assertTrue(counter > 5, "Must have at least 5 times called action, but was only " + counter);
-        assertTrue(timeElapsed >= millisToFallThrough, "Time elapsed:" + timeElapsed + " millis");
-        assertNotNull(result);
-        assertEquals("OK", result.text);
+        assertThat(counter).withFailMessage("Must have at least 5 times called action, but was only %d", counter).isGreaterThan(5);
 
+        assertThat(timeElapsed).withFailMessage("Time elapsed: %d millis", timeElapsed).isGreaterThanOrEqualTo(millisToFallThrough);
+
+        assertThat(result).isNotNull();
+        assertThat(result.text).isEqualTo("OK");
     }
 
     @Test
@@ -73,8 +75,7 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action);
 
         /* test */
-        assertNotNull(result);
-
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -87,7 +88,7 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action);
 
         /* test */
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         verify(resilienceConsultant, never()).consultFor(any(ResilienceContext.class));
 
     }
@@ -113,8 +114,8 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action, callback);
 
         /* test */
-        assertNotNull(result);
-        assertEquals(4, result.timesActionHasBeenExecuted);
+        assertThat(result).isNotNull();
+        assertThat(result.timesActionHasBeenExecuted).isEqualTo(4);
         verify(callback, times(3)).beforeRetry(any());
 
     }
@@ -138,8 +139,8 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action, callback);
 
         /* test */
-        assertNotNull(result);
-        assertEquals(2, result.timesActionHasBeenExecuted);
+        assertThat(result).isNotNull();
+        assertThat(result.timesActionHasBeenExecuted).isEqualTo(2);
         verify(callback, times(1)).beforeRetry(any());
 
     }
@@ -163,9 +164,9 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action);
 
         /* test */
-        assertNotNull(result);
-        assertEquals(2, result.timesActionHasBeenExecuted);
-        assertEquals("OK", result.text);
+        assertThat(result).isNotNull();
+        assertThat(result.timesActionHasBeenExecuted).isEqualTo(2);
+        assertThat(result.text).isEqualTo("OK");
 
         /* check also that the consultant was inspected one time */
         verify(resilienceConsultant, times(1)).consultFor(any(ResilienceContext.class));
@@ -192,9 +193,9 @@ class ResilientActionExecutorTest {
         TestResult result = executorToTest.executeResilient(action);
 
         /* test */
-        assertNotNull(result);
-        assertEquals(3, result.timesActionHasBeenExecuted);
-        assertEquals("OK", result.text);
+        assertThat(result).isNotNull();
+        assertThat(result.timesActionHasBeenExecuted).isEqualTo(3);
+        assertThat(result.text).isEqualTo("OK");
 
         verify(resilienceConsultant, times(2)).consultFor(any(ResilienceContext.class));
 
@@ -218,15 +219,10 @@ class ResilientActionExecutorTest {
         executorToTest.add(resilienceConsultant);
 
         /* execute */
-        try {
-            executorToTest.executeResilient(action);
-            fail("no exception!");
-        } catch (IllegalArgumentException e) {
-            assertEquals("third", e.getMessage());
-        }
+        assertThatThrownBy(() -> executorToTest.executeResilient(action)).isInstanceOf(IllegalArgumentException.class).hasMessage("third");
 
         /* test */
-        assertEquals(3, action.result.timesActionHasBeenExecuted);
+        assertThat(action.result.timesActionHasBeenExecuted).isEqualTo(3);
         /*
          * check also that the consultant was inspected 3 times - we always ask the
          * consultants in case of errors, make because of an exception information the
@@ -242,8 +238,8 @@ class ResilientActionExecutorTest {
         executorToTest.add(new TestConsultant());
 
         /* test */
-        assertTrue(executorToTest.containsConsultant(TestConsultant.class));
-        assertFalse(executorToTest.containsConsultant(TestConsultant2.class));
+        assertThat(executorToTest.containsConsultant(TestConsultant.class)).isTrue();
+        assertThat(executorToTest.containsConsultant(TestConsultant2.class)).isFalse();
     }
 
     private class TestAction implements ResilientAction<TestResult> {

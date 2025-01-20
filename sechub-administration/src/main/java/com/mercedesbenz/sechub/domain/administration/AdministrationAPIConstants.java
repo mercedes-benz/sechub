@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration;
 
-import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ADMINISTRATION;
-import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.API_ANONYMOUS;
+import static com.mercedesbenz.sechub.sharedkernel.security.APIConstants.*;
 
 public class AdministrationAPIConstants {
 
@@ -65,7 +64,16 @@ public class AdministrationAPIConstants {
     public static final String API_LIST_USER_SIGNUPS = API_ADMINISTRATION + "signups";
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ Users ....................................+ */
+    /* +......................... Users (Self Service).........................+ */
+    /* +-----------------------------------------------------------------------+ */
+
+    /**
+     * Fetch user detail information for authenticated user
+     */
+    public static final String API_USER_DETAIL_INFO = API_MANAGEMENT + "user";
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Users (Admin) ............................+ */
     /* +-----------------------------------------------------------------------+ */
     /**
      * shows all users names
@@ -126,4 +134,8 @@ public class AdministrationAPIConstants {
     public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS + "apitoken";
     public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS + "refresh/apitoken/{emailAddress}";
 
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................... Jobs ..................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String API_USER_CANCEL_JOB = API_MANAGEMENT + "jobs/{jobUUID}/cancel";
 }

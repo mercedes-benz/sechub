@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -146,7 +146,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         /* execute + test @formatter:off */
 		mockMvc.perform(
 				post(apiEndpoint).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()).
 					contentType(MediaType.APPLICATION_JSON_VALUE).
 					content("{\"apiVersion\":\"1.0\", "
 					        + "\"name\":\"projectId\", "
@@ -160,7 +160,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.PROJECT.getSchema()).
+                    requestSchema(TestOpenApiSchema.PROJECT.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -197,14 +197,14 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 		mockMvc
 				.perform(
 						get(apiEndpoint).
-							header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+							header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()).
 							contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andDo(defineRestService().
 						with().
 							useCaseData(useCase).
 							tag(RestDocFactory.extractTag(apiEndpoint)).
-							responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
+							responseSchema(TestOpenApiSchema.PROJECT_LIST.getSchema()).
 						and().
 						document(
 								requestHeaders(
@@ -229,7 +229,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 		mockMvc.perform(
 				delete(apiEndpoint,"projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -259,7 +259,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         mockMvc.perform(
                 post(apiEndpoint, "projectId1", "userId1").
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -307,7 +307,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         mockMvc.perform(
                 post(apiEndpoint, "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
 	                contentType(MediaType.APPLICATION_JSON_VALUE).
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -339,7 +339,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 		mockMvc.perform(
 				post(apiEndpoint, "projectId1", "userId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -371,7 +371,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 		mockMvc.perform(
 				delete(apiEndpoint,"userId1", "projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -437,7 +437,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 		mockMvc.perform(
 				get(apiEndpoint,"projectId1").
 					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
 		).
 		andDo(print()).
 		andExpect(status().isOk()).
@@ -445,7 +445,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                    responseSchema(TestOpenApiSchema.PROJECT_DETAILS.getSchema()).
                 and().
                 document(
                 		requestHeaders(
@@ -512,7 +512,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         /* execute + test @formatter:off */
         mockMvc.perform(
                 post(apiEndpoint, "projectId1").
-	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()).
 	                content("{\n"
 	                        + "  \"description\" : \"new description\"\n"
 	                        + "}").
@@ -525,7 +525,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                    responseSchema(TestOpenApiSchema.PROJECT_DETAILS.getSchema()).
                 and().
                 document(
                 		requestHeaders(
@@ -562,7 +562,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         mockMvc.perform(
                 put(apiEndpoint, "projectId1", "template1").
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                    header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -594,7 +594,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
         mockMvc.perform(
                 delete(apiEndpoint, "projectId1", "template1").
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().

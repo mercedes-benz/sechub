@@ -6,7 +6,7 @@ import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.*
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.*;
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData.*;
 import static com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData.*;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
@@ -134,7 +134,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
 			put(apiEndpoint, PROJECT1_ID).
 			contentType(MediaType.APPLICATION_JSON_VALUE).
 	        content(content).
-	        header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+	        header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
 		andExpect(status().isOk()).
 		/*andDo(print()).*/
@@ -142,7 +142,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(OpenApiSchema.FALSE_POSITIVES.getSchema()).
+                    requestSchema(TestOpenApiSchema.FALSE_POSITIVES.getSchema()).
                 and().
                 document(
 	                		requestHeaders(
@@ -188,7 +188,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 delete(apiEndpoint,PROJECT1_ID,jobUUID,findingId).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
@@ -222,7 +222,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 delete(apiEndpoint,PROJECT1_ID,projectDataId).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isNoContent()).
         /*andDo(print()).*/
@@ -309,7 +309,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
 
         this.mockMvc.perform(
                 get(apiEndpoint,PROJECT1_ID).
-                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
@@ -317,7 +317,7 @@ public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryFo
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    responseSchema(OpenApiSchema.FALSE_POSITIVES.getSchema()).
+                    responseSchema(TestOpenApiSchema.FALSE_POSITIVES.getSchema()).
                 and().
                 document(
 	                		requestHeaders(

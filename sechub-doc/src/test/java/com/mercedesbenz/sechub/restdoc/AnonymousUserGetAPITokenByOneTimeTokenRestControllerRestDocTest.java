@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.ONE_TIME_TOKEN;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;

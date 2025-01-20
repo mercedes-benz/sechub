@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 public class FalsePositiveProjectConfigurationTest {
 
@@ -28,7 +28,7 @@ public class FalsePositiveProjectConfigurationTest {
     @Test
     public void example1_unmarshalled_contains_expected_data() throws Exception {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example1.json");
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example1.json");
 
         /* execute */
         configToTest = FalsePositiveProjectConfiguration.fromJSONString(json);

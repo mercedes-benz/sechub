@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.systemtest.config;
 
-import static com.mercedesbenz.sechub.systemtest.SystemTestExampleWriter.*;
+import static com.mercedesbenz.sechub.systemtest.TestSystemExampleWriter.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;

@@ -52,7 +52,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
     @BeforeEach
     public void beforeEach() throws Exception {
         /* prepare */
-        result = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
+        result = TestPDSMonitoringDataUtil.createTestMonitoringWith2ClusterMembers();
     }
 
     @Test
