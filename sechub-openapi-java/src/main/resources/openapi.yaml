@@ -17,7 +17,7 @@ tags:
   - name: User Administration
     description: Operations relevant to user administration
   - name: Project Administration
-    description: Operations relevant to project administration
+    description: Operations relevant to project administration by administrators
   - name: User Self Service
     description: Operations relevant to the authenticated user
   - name: SecHub Execution
@@ -25,7 +25,7 @@ tags:
   - name: Sign Up
     description: Operations relevant to user registration
   - name: Job Administration
-    description: Operations relevant to job administration
+    description: Operations relevant to job administration by administrators
   - name: Testing
     description: Operations relevant to testing
   - name: Configuration
@@ -35,7 +35,7 @@ tags:
   - name: Other
     description: All other use cases
   - name: Job Management
-    description: Operations relevant to manage jobs
+    description: Operations relevant to manage jobs by an user
 
 components:
   securitySchemes:
@@ -2718,6 +2718,28 @@ paths:
       tags:
         - User Self Service
 
+  /api/management/user//email/{newEmailAddress}:
+    put:
+      summary: User updates his email address
+      description: The authenticated user updates his email address
+      operationId: userUpdatesEmailAddress
+      parameters:
+        - name: newEmailAddress
+          description: The new email address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - User Self Service
+
   ######################
   ## SecHub Execution ##
   ######################
@@ -4214,3 +4236,4 @@ paths:
       tags:
         - Job Management
       x-accepts: application/json
+
