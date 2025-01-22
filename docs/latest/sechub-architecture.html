@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 2.4.1</span>
+<span id="revnumber"> Server 2.4.1 modified (commit eada480)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -633,7 +633,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#anonymous">7.5.1.1. Anonymous</a></li>
 <li><a href="#user-administration">7.5.1.2. User administration</a></li>
 <li><a href="#project-administration">7.5.1.3. Project administration</a></li>
-<li><a href="#user-profile">7.5.1.4. User profile</a></li>
+<li><a href="#user-self-service">7.5.1.4. User self service</a></li>
 <li><a href="#sechub-execution">7.5.1.5. Sechub execution</a></li>
 <li><a href="#sign-up">7.5.1.6. Sign up</a></li>
 <li><a href="#job-administration">7.5.1.7. Job administration</a></li>
@@ -748,6 +748,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_091">7.5.92. UC_091-Admin fetches asset details</a></li>
 <li><a href="#section-usecase-UC_092">7.5.93. UC_092-Admin deletes an asset file</a></li>
 <li><a href="#section-usecase-UC_093">7.5.94. UC_093-Admin deletes asset comletely</a></li>
+<li><a href="#section-usecase-UC_094">7.5.95. UC_094-User cancels a job</a></li>
+<li><a href="#section-usecase-UC_095">7.5.96. UC_095-User fetches his user details</a></li>
 </ul>
 </li>
 <li><a href="#section-ucrestdoc">7.6. Rest API documentation</a>
@@ -757,7 +759,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#anonymous-2">7.6.1.1. Anonymous</a></li>
 <li><a href="#user-administration-2">7.6.1.2. User administration</a></li>
 <li><a href="#project-administration-2">7.6.1.3. Project administration</a></li>
-<li><a href="#user-profile-2">7.6.1.4. User profile</a></li>
+<li><a href="#user-self-service-2">7.6.1.4. User self service</a></li>
 <li><a href="#sechub-execution-2">7.6.1.5. Sechub execution</a></li>
 <li><a href="#sign-up-2">7.6.1.6. Sign up</a></li>
 <li><a href="#job-administration-2">7.6.1.7. Job administration</a></li>
@@ -796,83 +798,85 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#admin-changes-project-access-level">7.6.23. Admin changes project access level</a></li>
 <li><a href="#get-assigned-project-data">7.6.24. get assigned project data</a></li>
 <li><a href="#user-clicks-link-to-get-new-api-token">7.6.25. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">7.6.26. User creates a new sechub job</a>
+<li><a href="#user-fetches-his-user-details">7.6.26. User fetches his user details</a></li>
+<li><a href="#user-creates-a-new-sechub-job">7.6.27. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.26.1. Code Scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.26.2. Code Scan using data section variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-secret-scan">7.6.26.3. Secret scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-license-scan">7.6.26.4. License scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.26.5. Infrastructure scan variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.26.6. Web scan anonymous variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.26.7. Web scan with api definition variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.26.8. Web scan with client certificate definition variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.26.9. Web Scan login basic variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.26.10. Web Scan login form scripted variant</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">7.6.26.11. Web Scan headers variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.27.1. Code Scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.27.2. Code Scan using data section variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-secret-scan">7.6.27.3. Secret scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-license-scan">7.6.27.4. License scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.27.5. Infrastructure scan variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.27.6. Web scan anonymous variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.27.7. Web scan with api definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.27.8. Web scan with client certificate definition variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.27.9. Web Scan login basic variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.27.10. Web Scan login form scripted variant</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-headers">7.6.27.11. Web Scan headers variant</a></li>
 </ul>
 </li>
-<li><a href="#user-uploads-source-code">7.6.27. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">7.6.28. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">7.6.29. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">7.6.30. User downloads sechub job report</a>
+<li><a href="#user-uploads-source-code">7.6.28. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">7.6.29. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">7.6.30. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">7.6.31. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-json">7.6.30.1. JSON variant</a></li>
-<li><a href="#section-ucrestdoc-UC_010-html">7.6.30.2. HTML variant</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">7.6.31.1. JSON variant</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">7.6.31.2. HTML variant</a></li>
 </ul>
 </li>
-<li><a href="#user-marks-false-positives">7.6.31. User marks false positives</a></li>
-<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.32. User unmarks existing false positive definitons</a></li>
-<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.33. User fetches false positive configuration of project</a></li>
-<li><a href="#user-uploads-binaries">7.6.34. User uploads binaries</a></li>
-<li><a href="#user-downloads-job-report-in-spdx-format">7.6.35. User downloads job report in SPDX format</a></li>
-<li><a href="#user-unmarks-existing-false-positive-project-data-definitons">7.6.36. User unmarks existing false positive project data definitons</a></li>
-<li><a href="#user-self-registration">7.6.37. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">7.6.38. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">7.6.39. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">7.6.40. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">7.6.41. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">7.6.42. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">7.6.43. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">7.6.44. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">7.6.45. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">7.6.46. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.47. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">7.6.48. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">7.6.49. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">7.6.50. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">7.6.51. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">7.6.52. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">7.6.53. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">7.6.54. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">7.6.55. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">7.6.56. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">7.6.57. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">7.6.58. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">7.6.59. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">7.6.60. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">7.6.61. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.62. Admin fetches auto cleanup configuration</a></li>
-<li><a href="#admin-updates-auto-cleanup-configuration">7.6.63. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-creates-or-updates-a-template">7.6.64. Admin creates or updates a template</a></li>
-<li><a href="#admin-deletes-a-template">7.6.65. Admin deletes a template</a></li>
-<li><a href="#admin-fetches-template">7.6.66. Admin fetches template</a></li>
-<li><a href="#admin-fetches-all-template-ids">7.6.67. Admin fetches all template ids</a></li>
-<li><a href="#admin-assigns-template-to-project">7.6.68. Admin assigns template to project</a></li>
-<li><a href="#admin-unassigns-template-from-project">7.6.69. Admin unassigns template from project</a></li>
-<li><a href="#admin-uploads-an-asset-file">7.6.70. Admin uploads an asset file</a></li>
-<li><a href="#admin-downloads-an-asset-file">7.6.71. Admin downloads an asset file</a></li>
-<li><a href="#admin-fetches-asset-ids">7.6.72. Admin fetches asset ids</a></li>
-<li><a href="#admin-fetches-asset-details">7.6.73. Admin fetches asset details</a></li>
-<li><a href="#admin-deletes-an-asset-file">7.6.74. Admin deletes an asset file</a></li>
-<li><a href="#admin-deletes-asset-comletely">7.6.75. Admin deletes asset comletely</a></li>
-<li><a href="#admin-starts-encryption-rotation">7.6.76. Admin starts encryption rotation</a></li>
-<li><a href="#admin-fetches-encryption-status">7.6.77. Admin fetches encryption status</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">7.6.78. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">7.6.79. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">7.6.80. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">7.6.81. Admin lists status information</a></li>
-<li><a href="#admin-fetches-server-runtime-data">7.6.82. Admin fetches server runtime data</a></li>
-<li><a href="#user-lists-jobs-for-project">7.6.83. User lists jobs for project</a></li>
+<li><a href="#user-marks-false-positives">7.6.32. User marks false positives</a></li>
+<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.33. User unmarks existing false positive definitons</a></li>
+<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.34. User fetches false positive configuration of project</a></li>
+<li><a href="#user-uploads-binaries">7.6.35. User uploads binaries</a></li>
+<li><a href="#user-downloads-job-report-in-spdx-format">7.6.36. User downloads job report in SPDX format</a></li>
+<li><a href="#user-unmarks-existing-false-positive-project-data-definitons">7.6.37. User unmarks existing false positive project data definitons</a></li>
+<li><a href="#user-self-registration">7.6.38. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">7.6.39. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">7.6.40. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">7.6.41. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">7.6.42. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">7.6.43. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">7.6.44. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">7.6.45. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">7.6.46. Admin restarts a job (hard)</a></li>
+<li><a href="#user-cancels-a-job">7.6.47. User cancels a job</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">7.6.48. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.49. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">7.6.50. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">7.6.51. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">7.6.52. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">7.6.53. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">7.6.54. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">7.6.55. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">7.6.56. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">7.6.57. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">7.6.58. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">7.6.59. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">7.6.60. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">7.6.61. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">7.6.62. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">7.6.63. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.64. Admin fetches auto cleanup configuration</a></li>
+<li><a href="#admin-updates-auto-cleanup-configuration">7.6.65. Admin updates auto cleanup configuration</a></li>
+<li><a href="#admin-creates-or-updates-a-template">7.6.66. Admin creates or updates a template</a></li>
+<li><a href="#admin-deletes-a-template">7.6.67. Admin deletes a template</a></li>
+<li><a href="#admin-fetches-template">7.6.68. Admin fetches template</a></li>
+<li><a href="#admin-fetches-all-template-ids">7.6.69. Admin fetches all template ids</a></li>
+<li><a href="#admin-assigns-template-to-project">7.6.70. Admin assigns template to project</a></li>
+<li><a href="#admin-unassigns-template-from-project">7.6.71. Admin unassigns template from project</a></li>
+<li><a href="#admin-uploads-an-asset-file">7.6.72. Admin uploads an asset file</a></li>
+<li><a href="#admin-downloads-an-asset-file">7.6.73. Admin downloads an asset file</a></li>
+<li><a href="#admin-fetches-asset-ids">7.6.74. Admin fetches asset ids</a></li>
+<li><a href="#admin-fetches-asset-details">7.6.75. Admin fetches asset details</a></li>
+<li><a href="#admin-deletes-an-asset-file">7.6.76. Admin deletes an asset file</a></li>
+<li><a href="#admin-deletes-asset-comletely">7.6.77. Admin deletes asset comletely</a></li>
+<li><a href="#admin-starts-encryption-rotation">7.6.78. Admin starts encryption rotation</a></li>
+<li><a href="#admin-fetches-encryption-status">7.6.79. Admin fetches encryption status</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">7.6.80. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">7.6.81. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">7.6.82. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">7.6.83. Admin lists status information</a></li>
+<li><a href="#admin-fetches-server-runtime-data">7.6.84. Admin fetches server runtime data</a></li>
+<li><a href="#user-lists-jobs-for-project">7.6.85. User lists jobs for project</a></li>
 </ul>
 </li>
 <li><a href="#domain-driven-design">7.7. Domain Driven Design</a>
@@ -1332,7 +1336,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.4.1 - Build date: 2024-12-18 14:20 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.4.1 modified (commit eada480) - Build date: 2025-01-22 14:30 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -1362,7 +1366,7 @@ software and system architecture.</p>
 <div class="paragraph">
 <p>&#169;
 We acknowledge that this document uses material from the
-arc 42 architecture template, <a href="http://www.arc42.de" class="bare">http://www.arc42.de</a>.
+arc 42 architecture template, <a href="http://www.arc42.org" class="bare">http://www.arc42.org</a>
 Created by Dr. Peter Hruschka &amp; Dr. Gernot Starke.</p>
 </div>
 <hr>
@@ -2163,14 +2167,17 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile">7.5.1.4. User profile</h5>
+<h5 id="user-self-service">7.5.1.4. User self service</h5>
 <div class="paragraph">
-<p>User actions belonging to their profiles</p>
+<p>User actions belonging to their user identity</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p><a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_095">UC_095-User fetches his user details</a></p>
 </li>
 </ul>
 </div>
@@ -2264,6 +2271,9 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 </li>
 <li>
 <p><a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard)</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_094">UC_094-User cancels a job</a></p>
 </li>
 </ul>
 </div>
@@ -7898,6 +7908,92 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-UC_094">7.5.95. UC_094-User cancels a job</h4>
+<div class="paragraph">
+<p>User does cancel a job by its Job UUID</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWNER, SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers job cancellation request, owners of project will be informed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will trigger event that job cancel requested</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_095">7.5.96. UC_095-User fetches his user details</h4>
+<div class="paragraph">
+<p>The authenticated user fetches his user details</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Json response containing details about the authenticated user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service fetches user details for the authenticated user.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will fetch user details for the authenticated user</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="section-ucrestdoc">7.6. Rest API documentation</h3>
@@ -8006,14 +8102,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile-2">7.6.1.4. User profile</h5>
+<h5 id="user-self-service-2">7.6.1.4. User self service</h5>
 <div class="paragraph">
-<p>User actions belonging to their profiles</p>
+<p>User actions belonging to their user identity</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_012">REST API for UC_012-User clicks link to get new api token </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_095">REST API for UC_095-User fetches his user details </a></p>
 </li>
 </ul>
 </div>
@@ -8104,6 +8203,9 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_042">REST API for UC_042-Admin restarts a job (hard) </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_094">REST API for UC_094-User cancels a job </a></p>
 </li>
 </ul>
 </div>
@@ -9076,7 +9178,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/9fa80123-9818-499a-b9fc-0ca9aaadd100' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/5433eb9c-496c-4dbb-81cb-a31b2ebffc8d' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10241,7 +10343,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">56761894-d5c0-4a7e-b799-da9a230e8874</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-17T14:20:31.686696258</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:20:31.68671901</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">30fb86d6-6ff4-4e21-86ba-2ebb07c6bad8</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-21T14:30:30.35686563</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:30:30.356882732</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -10828,17 +10930,68 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">7.6.26. User creates a new sechub job</h4>
-<div id="section-ucrestdoc-uc-UC_005" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
+<h4 id="user-fetches-his-user-details">7.6.26. User fetches his user details</h4>
+<div id="section-ucrestdoc-uc-UC_095" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_095">UC_095-User fetches his user details </a></p>
 </div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.26.1. Code Scan variant</h5>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_095-" class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 45. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/management/user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/user' -i -u 'user:secret' -X GET</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-creates-a-new-sechub-job">7.6.27. User creates a new sechub job</h4>
+<div id="section-ucrestdoc-uc-UC_005" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.27.1. Code Scan variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 46. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10868,7 +11021,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 47. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10987,17 +11140,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">61c45d37-8248-447a-bde6-32959701f733</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0c69eb38-f06d-4b03-91f3-19edf447b7a8</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.26.2. Code Scan using data section variant</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan-using-data-section">7.6.27.2. Code Scan using data section variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. General request information</caption>
+<caption class="title">Table 48. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11027,7 +11180,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 49. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11166,17 +11319,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">43037115-9512-49ca-a4c9-8cd854db18f9</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">18a5e6b0-bf35-465f-bc7d-0a64fd061301</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-secret-scan">7.6.26.3. Secret scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-secret-scan">7.6.27.3. Secret scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. General request information</caption>
+<caption class="title">Table 50. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11206,7 +11359,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 51. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11325,17 +11478,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e978e13f-c716-4355-a9d4-598eb902362e</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">737b4156-e0cd-4e32-a30a-648ed81c62d8</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-license-scan">7.6.26.4. License scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-license-scan">7.6.27.4. License scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. General request information</caption>
+<caption class="title">Table 52. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11365,7 +11518,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 53. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11484,17 +11637,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b3104bff-5a00-4486-bfc5-627bb42295ad</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9b9ea17d-2a50-4ce6-8db8-881f155c12c6</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.26.5. Infrastructure scan variant</h5>
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.27.5. Infrastructure scan variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. General request information</caption>
+<caption class="title">Table 54. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11524,7 +11677,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 55. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11638,17 +11791,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9c5ee3b5-44bb-43fd-b431-2fb2508272fc</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b8a2c6d0-8c8e-4f96-a88e-ee2f655e40a1</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.26.6. Web scan anonymous variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.27.6. Web scan anonymous variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. General request information</caption>
+<caption class="title">Table 56. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11678,7 +11831,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 57. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11807,17 +11960,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7e08a4fa-d8e9-47ae-8757-589984fcac5f</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b09b2fe6-110a-42b4-b17f-67b8405d6f59</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.26.7. Web scan with api definition variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-api-definition">7.6.27.7. Web scan with api definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. General request information</caption>
+<caption class="title">Table 58. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11847,7 +12000,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 58. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 59. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11971,17 +12124,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">644e40da-5f07-43a7-acb7-acf61c662935</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">734c19f5-9867-4b54-86d1-a10b3de2ecf2</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.26.8. Web scan with client certificate definition variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-with-client-certificate-definition">7.6.27.8. Web scan with client certificate definition variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 59. General request information</caption>
+<caption class="title">Table 60. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12011,7 +12164,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 60. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 61. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12130,17 +12283,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6933bc23-24b8-4806-8d8b-0f30209a53ee</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d3f453bf-63f3-449a-98ca-640558b8cfad</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.26.9. Web Scan login basic variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.27.9. Web Scan login basic variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 61. General request information</caption>
+<caption class="title">Table 62. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12170,7 +12323,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 62. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 63. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12304,17 +12457,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">3a1e2b09-b280-4841-a84e-2cbef10b8c97</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7ec0d96f-94e6-4e1e-9ede-9cee10b6b744</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.26.10. Web Scan login form scripted variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.27.10. Web Scan login form scripted variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 63. General request information</caption>
+<caption class="title">Table 64. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12344,7 +12497,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 64. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 65. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12528,17 +12681,17 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">8d662bf3-b26f-448d-b280-2e87e5d9c6f3</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">efa17693-a94a-403b-a7b3-271ee3da3555</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-headers">7.6.26.11. Web Scan headers variant</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-headers">7.6.27.11. Web Scan headers variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 65. General request information</caption>
+<caption class="title">Table 66. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12568,7 +12721,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 66. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 67. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12692,13 +12845,13 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">81cbab4b-9e6e-4bc9-8d78-a0188a1af262</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9ffdce97-e0e2-40b8-88f5-afd034ec1f2c</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">7.6.27. User uploads source code</h4>
+<h4 id="user-uploads-source-code">7.6.28. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -12706,7 +12859,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 67. General request information</caption>
+<caption class="title">Table 68. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12736,7 +12889,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 68. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 69. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12802,7 +12955,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1e1c0907-6f3f-4615-9758-2916563ba8f2/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ec38ec6d-ed8f-415e-b3f9-ab8502abd837/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -12816,7 +12969,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">7.6.28. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">7.6.29. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -12824,7 +12977,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. General request information</caption>
+<caption class="title">Table 70. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12854,7 +13007,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 71. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12899,7 +13052,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6738b3a3-56b0-4597-95b2-8f09fb50e64a/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0844f054-060d-43a9-8354-faad01a48bb9/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12909,7 +13062,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">7.6.29. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">7.6.30. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -12917,7 +13070,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. General request information</caption>
+<caption class="title">Table 72. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12947,7 +13100,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 73. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13051,7 +13204,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2879e71b-6bf6-44d1-9b69-e60c3b080288' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/712f73ae-9607-417e-af5a-09a8bb2c305b' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13060,22 +13213,22 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2879e71b-6bf6-44d1-9b69-e60c3b080288</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:05:29.794678032</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:20:29.794707817</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">712f73ae-9607-417e-af5a-09a8bb2c305b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:15:28.733099051</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:30:28.733126512</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">7.6.30. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">7.6.31. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-json">7.6.30.1. JSON variant</h5>
+<h5 id="section-ucrestdoc-UC_010-json">7.6.31.1. JSON variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 73. General request information</caption>
+<caption class="title">Table 74. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13105,7 +13258,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 74. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 75. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13135,19 +13288,19 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/bdcf655e-5c21-436e-978b-9e217be8d322' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e358277d-02ca-4c06-919c-cb2d2e1840f8' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-html">7.6.30.2. HTML variant</h5>
+<h5 id="section-ucrestdoc-UC_010-html">7.6.31.2. HTML variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. General request information</caption>
+<caption class="title">Table 76. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13177,7 +13330,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
+<caption class="title">Table 77. https://localhost:8081/api/project/{projectId}/report/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13207,7 +13360,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5d0352c5-4779-4d15-ab8e-8da21d57d398' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/7ebcb0c0-5e5b-4d1d-aaf7-584343ef35e1' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -13215,7 +13368,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-marks-false-positives">7.6.31. User marks false positives</h4>
+<h4 id="user-marks-false-positives">7.6.32. User marks false positives</h4>
 <div id="section-ucrestdoc-uc-UC_044" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives </a></p>
 </div>
@@ -13223,7 +13376,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. General request information</caption>
+<caption class="title">Table 78. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13253,7 +13406,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 79. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13389,7 +13542,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-definitons">7.6.32. User unmarks existing false positive definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-definitons">7.6.33. User unmarks existing false positive definitons</h4>
 <div id="section-ucrestdoc-uc-UC_045" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons </a></p>
 </div>
@@ -13397,7 +13550,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. General request information</caption>
+<caption class="title">Table 80. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13427,7 +13580,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 81. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13485,7 +13638,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-fetches-false-positive-configuration-of-project">7.6.33. User fetches false positive configuration of project</h4>
+<h4 id="user-fetches-false-positive-configuration-of-project">7.6.34. User fetches false positive configuration of project</h4>
 <div id="section-ucrestdoc-uc-UC_046" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_046">UC_046-User fetches false positive configuration of project </a></p>
 </div>
@@ -13493,7 +13646,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. General request information</caption>
+<caption class="title">Table 82. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13523,7 +13676,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 83. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13746,7 +13899,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-binaries">7.6.34. User uploads binaries</h4>
+<h4 id="user-uploads-binaries">7.6.35. User uploads binaries</h4>
 <div id="section-ucrestdoc-uc-UC_069" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_069">UC_069-User uploads binaries </a></p>
 </div>
@@ -13754,7 +13907,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. General request information</caption>
+<caption class="title">Table 84. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13784,7 +13937,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
+<caption class="title">Table 85. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/binaries</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13835,7 +13988,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/9b86d0ea-f044-4663-86fc-a0c59e2664a8/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/17e49206-f9cc-4e03-93d6-6b49c0c1c163/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -13848,7 +14001,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-job-report-in-spdx-format">7.6.35. User downloads job report in SPDX format</h4>
+<h4 id="user-downloads-job-report-in-spdx-format">7.6.36. User downloads job report in SPDX format</h4>
 <div id="section-ucrestdoc-uc-UC_070" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format </a></p>
 </div>
@@ -13856,7 +14009,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. General request information</caption>
+<caption class="title">Table 86. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13886,7 +14039,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<caption class="title">Table 87. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13916,14 +14069,14 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/57d1be13-f92a-4159-9ea8-56d601ed73d3' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/051bce52-c6de-4629-b8d0-b3266b6c70e9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-project-data-definitons">7.6.36. User unmarks existing false positive project data definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-project-data-definitons">7.6.37. User unmarks existing false positive project data definitons</h4>
 <div id="section-ucrestdoc-uc-UC_078" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_078">UC_078-User unmarks existing false positive project data definitons </a></p>
 </div>
@@ -13931,7 +14084,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. General request information</caption>
+<caption class="title">Table 88. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13961,7 +14114,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. https://localhost:8081/api/project/{projectId}/false-positive/project-data/{id}</caption>
+<caption class="title">Table 89. https://localhost:8081/api/project/{projectId}/false-positive/project-data/{id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14015,7 +14168,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">7.6.37. User self registration</h4>
+<h4 id="user-self-registration">7.6.38. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -14023,7 +14176,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. General request information</caption>
+<caption class="title">Table 90. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14102,7 +14255,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">7.6.38. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">7.6.39. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -14110,7 +14263,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. General request information</caption>
+<caption class="title">Table 91. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14206,7 +14359,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">7.6.39. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">7.6.40. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -14214,7 +14367,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. General request information</caption>
+<caption class="title">Table 92. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14244,7 +14397,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 93. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14294,7 +14447,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">7.6.40. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">7.6.41. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -14302,7 +14455,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. General request information</caption>
+<caption class="title">Table 94. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14332,7 +14485,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 95. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14382,7 +14535,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">7.6.41. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">7.6.42. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -14390,7 +14543,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. General request information</caption>
+<caption class="title">Table 96. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14420,7 +14573,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 97. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14456,7 +14609,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">7.6.42. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">7.6.43. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -14464,7 +14617,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. General request information</caption>
+<caption class="title">Table 98. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14566,12 +14719,12 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">12ae7889-fd46-44c0-a6f0-3da719174376</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:20:36.657777563</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cd9f97f0-2bf5-4370-85a8-b499dc94ce2f</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:30:35.21046551</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">7.6.43. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">7.6.44. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -14579,7 +14732,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 99. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14609,7 +14762,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 100. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14650,7 +14803,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/51a0803b-519f-4ff5-914d-2de214e3c8ab' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/6a645735-00ad-48d0-96b6-f3b83053b9cc' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14660,7 +14813,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">7.6.44. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">7.6.45. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -14668,7 +14821,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 101. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14698,7 +14851,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 102. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14739,7 +14892,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/411bf48a-4b38-4de0-a8fc-094e90c1071b' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/05e1441f-4e84-462a-b3d1-a66d5758675f' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14749,7 +14902,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">7.6.45. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">7.6.46. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -14757,7 +14910,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 103. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14787,7 +14940,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 104. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14828,7 +14981,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/8d3f64db-a0b1-49ce-aad7-ec0c00eccd21' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/64c8ae9e-7f2b-4785-8e4e-a8f8032a9495' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14838,7 +14991,96 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">7.6.46. User defines mock data configuration for project</h4>
+<h4 id="user-cancels-a-job">7.6.47. User cancels a job</h4>
+<div id="section-ucrestdoc-uc-UC_094" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_094">UC_094-User cancels a job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_094-" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 105. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/management/jobs/{jobUUID}/cancel</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">204 NO_CONTENT</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 106. https://localhost:8081/api/management/jobs/{jobUUID}//cancel</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request headers</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/jobs/8931047f-229f-4aa2-ace7-7113ad1c32e1/cancel' -i -u 'user:secret' -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-defines-mock-data-configuration-for-project">7.6.48. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -14846,7 +15088,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 107. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14907,7 +15149,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.47. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.49. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -14915,7 +15157,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. General request information</caption>
+<caption class="title">Table 108. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14979,7 +15221,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">7.6.48. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">7.6.50. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -14987,7 +15229,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 109. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15017,7 +15259,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 110. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15103,7 +15345,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">7.6.49. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">7.6.51. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -15111,7 +15353,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. General request information</caption>
+<caption class="title">Table 111. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15141,7 +15383,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 112. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15230,7 +15472,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">7.6.50. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">7.6.52. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -15238,7 +15480,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15361,12 +15603,12 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="plain">330dec38-f69a-48a9-85ac-e05fd3bc5835</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="plain">bd2babb2-56de-44e6-8b2c-7c82f78148e5</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">7.6.51. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">7.6.53. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -15374,7 +15616,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15404,7 +15646,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 115. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15445,7 +15687,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/797b8c7a-d678-47ee-a82b-3d4c3bd9e298' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2d431a77-0757-4c87-907e-6c068ba3117c' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -15455,7 +15697,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">7.6.52. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">7.6.54. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -15463,7 +15705,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 116. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15560,12 +15802,12 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b069a976-7615-483b-ba01-228c9f439586</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">af4b10d1-3b4a-4c4b-a2d3-fa36959ede19</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">7.6.53. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">7.6.55. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -15573,7 +15815,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. General request information</caption>
+<caption class="title">Table 117. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15603,7 +15845,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 118. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15713,7 +15955,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/0fa0f267-bcda-4af5-8718-2a21f5401c7e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/612735cb-e561-433c-9b01-b31512f12008' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -15722,12 +15964,12 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0fa0f267-bcda-4af5-8718-2a21f5401c7e</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">612735cb-e561-433c-9b01-b31512f12008</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">7.6.54. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">7.6.56. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -15735,7 +15977,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. General request information</caption>
+<caption class="title">Table 119. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15765,7 +16007,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 120. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15870,7 +16112,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/8eef81fa-6d9b-466f-91af-8dd5f484032c' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/05be7dfd-0586-4b18-af93-acdeb9a6ccec' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -15881,7 +16123,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">7.6.55. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">7.6.57. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -15889,7 +16131,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. General request information</caption>
+<caption class="title">Table 121. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -15919,7 +16161,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 122. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16010,7 +16252,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">7.6.56. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">7.6.58. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -16018,7 +16260,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. General request information</caption>
+<caption class="title">Table 123. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16048,7 +16290,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 124. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16099,7 +16341,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">7.6.57. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">7.6.59. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -16107,7 +16349,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. General request information</caption>
+<caption class="title">Table 125. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16137,7 +16379,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 126. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16214,7 +16456,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;5dce0528-5a02-44f7-91c2-da1ccde4c2bc&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;990093ee-59c8-4e4f-9a0f-4f87d1948ad3&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -16223,7 +16465,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">7.6.58. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">7.6.60. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -16231,7 +16473,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 124. General request information</caption>
+<caption class="title">Table 127. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16261,7 +16503,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 125. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 128. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16370,12 +16612,12 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5208b8bc-ecb3-415d-a084-fbb4c37f1dd8</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e972869d-29f5-47f3-81ad-2c677a82716d</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">7.6.59. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">7.6.61. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -16383,7 +16625,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 126. General request information</caption>
+<caption class="title">Table 129. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16485,7 +16727,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">7.6.60. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">7.6.62. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -16493,7 +16735,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 127. General request information</caption>
+<caption class="title">Table 130. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16523,7 +16765,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 128. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 131. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16578,7 +16820,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">7.6.61. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">7.6.63. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -16586,7 +16828,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 129. General request information</caption>
+<caption class="title">Table 132. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16616,7 +16858,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 130. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 133. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16671,7 +16913,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-auto-cleanup-configuration">7.6.62. Admin fetches auto cleanup configuration</h4>
+<h4 id="admin-fetches-auto-cleanup-configuration">7.6.64. Admin fetches auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_064" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_064">UC_064-Admin fetches auto cleanup configuration </a></p>
 </div>
@@ -16679,7 +16921,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 131. General request information</caption>
+<caption class="title">Table 134. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16742,7 +16984,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-auto-cleanup-configuration">7.6.63. Admin updates auto cleanup configuration</h4>
+<h4 id="admin-updates-auto-cleanup-configuration">7.6.65. Admin updates auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_065" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_065">UC_065-Admin updates auto cleanup configuration </a></p>
 </div>
@@ -16750,7 +16992,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 132. General request information</caption>
+<caption class="title">Table 135. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16810,7 +17052,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-or-updates-a-template">7.6.64. Admin creates or updates a template</h4>
+<h4 id="admin-creates-or-updates-a-template">7.6.66. Admin creates or updates a template</h4>
 <div id="section-ucrestdoc-uc-UC_082" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_082">UC_082-Admin creates or updates a template </a></p>
 </div>
@@ -16818,7 +17060,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 133. General request information</caption>
+<caption class="title">Table 136. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16848,7 +17090,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 134. https://localhost:8081/api/admin/template/{templateId}</caption>
+<caption class="title">Table 137. https://localhost:8081/api/admin/template/{templateId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16886,7 +17128,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@777f10f5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@7db2a40a</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>assetId</code></p></td>
@@ -16956,7 +17198,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-template">7.6.65. Admin deletes a template</h4>
+<h4 id="admin-deletes-a-template">7.6.67. Admin deletes a template</h4>
 <div id="section-ucrestdoc-uc-UC_083" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_083">UC_083-Admin deletes a template </a></p>
 </div>
@@ -16964,7 +17206,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 135. General request information</caption>
+<caption class="title">Table 138. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -16994,7 +17236,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 136. https://localhost:8081/api/admin/template/{templateId}</caption>
+<caption class="title">Table 139. https://localhost:8081/api/admin/template/{templateId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17030,7 +17272,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-template">7.6.66. Admin fetches template</h4>
+<h4 id="admin-fetches-template">7.6.68. Admin fetches template</h4>
 <div id="section-ucrestdoc-uc-UC_084" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_084">UC_084-Admin fetches template </a></p>
 </div>
@@ -17038,7 +17280,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 137. General request information</caption>
+<caption class="title">Table 140. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17068,7 +17310,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 138. https://localhost:8081/api/admin/template/{templateId}</caption>
+<caption class="title">Table 141. https://localhost:8081/api/admin/template/{templateId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17106,7 +17348,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@702d3fb4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@4dc4dea6</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
@@ -17172,7 +17414,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-all-template-ids">7.6.67. Admin fetches all template ids</h4>
+<h4 id="admin-fetches-all-template-ids">7.6.69. Admin fetches all template ids</h4>
 <div id="section-ucrestdoc-uc-UC_085" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_085">UC_085-Admin fetches all template ids </a></p>
 </div>
@@ -17180,7 +17422,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 139. General request information</caption>
+<caption class="title">Table 142. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17252,7 +17494,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-template-to-project">7.6.68. Admin assigns template to project</h4>
+<h4 id="admin-assigns-template-to-project">7.6.70. Admin assigns template to project</h4>
 <div id="section-ucrestdoc-uc-UC_086" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_086">UC_086-Admin assigns template to project </a></p>
 </div>
@@ -17260,7 +17502,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 140. General request information</caption>
+<caption class="title">Table 143. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17290,7 +17532,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 141. https://localhost:8081/api/admin/project/{projectId}/template/{templateId}</caption>
+<caption class="title">Table 144. https://localhost:8081/api/admin/project/{projectId}/template/{templateId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17345,7 +17587,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-template-from-project">7.6.69. Admin unassigns template from project</h4>
+<h4 id="admin-unassigns-template-from-project">7.6.71. Admin unassigns template from project</h4>
 <div id="section-ucrestdoc-uc-UC_087" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_087">UC_087-Admin unassigns template from project </a></p>
 </div>
@@ -17353,7 +17595,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 142. General request information</caption>
+<caption class="title">Table 145. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17383,7 +17625,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 143. https://localhost:8081/api/admin/project/{projectId}/template/{templateId}</caption>
+<caption class="title">Table 146. https://localhost:8081/api/admin/project/{projectId}/template/{templateId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17438,7 +17680,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-uploads-an-asset-file">7.6.70. Admin uploads an asset file</h4>
+<h4 id="admin-uploads-an-asset-file">7.6.72. Admin uploads an asset file</h4>
 <div id="section-ucrestdoc-uc-UC_088" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_088">UC_088-Admin uploads an asset file </a></p>
 </div>
@@ -17446,7 +17688,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 144. General request information</caption>
+<caption class="title">Table 147. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17476,7 +17718,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 145. https://localhost:8081/api/admin/asset/{assetId}/file</caption>
+<caption class="title">Table 148. https://localhost:8081/api/admin/asset/{assetId}/file</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17552,7 +17794,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-an-asset-file">7.6.71. Admin downloads an asset file</h4>
+<h4 id="admin-downloads-an-asset-file">7.6.73. Admin downloads an asset file</h4>
 <div id="section-ucrestdoc-uc-UC_089" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_089">UC_089-Admin downloads an asset file </a></p>
 </div>
@@ -17560,7 +17802,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 146. General request information</caption>
+<caption class="title">Table 149. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17590,7 +17832,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 147. https://localhost:8081/api/admin/asset/{assetId}/file/{fileName}</caption>
+<caption class="title">Table 150. https://localhost:8081/api/admin/asset/{assetId}/file/{fileName}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17626,7 +17868,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-asset-ids">7.6.72. Admin fetches asset ids</h4>
+<h4 id="admin-fetches-asset-ids">7.6.74. Admin fetches asset ids</h4>
 <div id="section-ucrestdoc-uc-UC_090" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_090">UC_090-Admin fetches asset ids </a></p>
 </div>
@@ -17634,7 +17876,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 148. General request information</caption>
+<caption class="title">Table 151. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17705,7 +17947,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-asset-details">7.6.73. Admin fetches asset details</h4>
+<h4 id="admin-fetches-asset-details">7.6.75. Admin fetches asset details</h4>
 <div id="section-ucrestdoc-uc-UC_091" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_091">UC_091-Admin fetches asset details </a></p>
 </div>
@@ -17713,7 +17955,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 149. General request information</caption>
+<caption class="title">Table 152. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17800,7 +18042,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-an-asset-file">7.6.74. Admin deletes an asset file</h4>
+<h4 id="admin-deletes-an-asset-file">7.6.76. Admin deletes an asset file</h4>
 <div id="section-ucrestdoc-uc-UC_092" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_092">UC_092-Admin deletes an asset file </a></p>
 </div>
@@ -17808,7 +18050,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 150. General request information</caption>
+<caption class="title">Table 153. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17838,7 +18080,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 151. https://localhost:8081/api/admin/asset/{assetId}/file/{fileName}</caption>
+<caption class="title">Table 154. https://localhost:8081/api/admin/asset/{assetId}/file/{fileName}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17877,7 +18119,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-asset-comletely">7.6.75. Admin deletes asset comletely</h4>
+<h4 id="admin-deletes-asset-comletely">7.6.77. Admin deletes asset comletely</h4>
 <div id="section-ucrestdoc-uc-UC_093" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_093">UC_093-Admin deletes asset comletely </a></p>
 </div>
@@ -17885,7 +18127,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 152. General request information</caption>
+<caption class="title">Table 155. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -17915,7 +18157,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 153. https://localhost:8081/api/admin/asset/{assetId}</caption>
+<caption class="title">Table 156. https://localhost:8081/api/admin/asset/{assetId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17951,7 +18193,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-starts-encryption-rotation">7.6.76. Admin starts encryption rotation</h4>
+<h4 id="admin-starts-encryption-rotation">7.6.78. Admin starts encryption rotation</h4>
 <div id="section-ucrestdoc-uc-UC_073" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_073">UC_073-Admin starts encryption rotation </a></p>
 </div>
@@ -17959,7 +18201,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 154. General request information</caption>
+<caption class="title">Table 157. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18023,7 +18265,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-encryption-status">7.6.77. Admin fetches encryption status</h4>
+<h4 id="admin-fetches-encryption-status">7.6.79. Admin fetches encryption status</h4>
 <div id="section-ucrestdoc-uc-UC_076" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_076">UC_076-Admin fetches encryption status </a></p>
 </div>
@@ -18031,7 +18273,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 155. General request information</caption>
+<caption class="title">Table 158. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18163,7 +18405,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">7.6.78. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">7.6.80. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -18171,7 +18413,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 156. General request information</caption>
+<caption class="title">Table 159. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18230,7 +18472,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">7.6.79. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">7.6.81. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -18238,7 +18480,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 157. General request information</caption>
+<caption class="title">Table 160. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18297,7 +18539,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">7.6.80. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">7.6.82. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -18305,7 +18547,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 158. General request information</caption>
+<caption class="title">Table 161. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18364,7 +18606,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">7.6.81. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">7.6.83. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -18372,7 +18614,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 159. General request information</caption>
+<caption class="title">Table 162. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18464,7 +18706,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-server-runtime-data">7.6.82. Admin fetches server runtime data</h4>
+<h4 id="admin-fetches-server-runtime-data">7.6.84. Admin fetches server runtime data</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin fetches server runtime data </a></p>
 </div>
@@ -18472,7 +18714,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 160. General request information</caption>
+<caption class="title">Table 163. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18544,7 +18786,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-lists-jobs-for-project">7.6.83. User lists jobs for project</h4>
+<h4 id="user-lists-jobs-for-project">7.6.85. User lists jobs for project</h4>
 <div id="section-ucrestdoc-uc-UC_071" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_071">UC_071-User lists jobs for project </a></p>
 </div>
@@ -18552,7 +18794,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 161. General request information</caption>
+<caption class="title">Table 164. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -18582,7 +18824,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 162. https://localhost:8081/api/project/{projectId}/jobs</caption>
+<caption class="title">Table 165. https://localhost:8081/api/project/{projectId}/jobs</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -18741,7 +18983,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">daead708-fd3d-4eb9-a682-023d81949bce</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:03:29.990943124</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:05:29.990996303</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2024-12-18T14:20:29.991009648</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">58882c0f-31f4-4191-b6ae-a659d387a6e8</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:13:28.908096865</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:15:28.908126731</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-01-22T14:30:28.908138823</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 </div>
@@ -20314,7 +20556,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <p>The next text blocks describe the keys available on SecHub:</p>
 </div>
 <table id="section-gen-configuration-scope-administration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 163. Scope 'administration'</caption>
+<caption class="title">Table 166. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20342,7 +20584,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-anonymous" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 164. Scope 'anonymous'</caption>
+<caption class="title">Table 167. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20364,7 +20606,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 165. Scope 'checkmarx'</caption>
+<caption class="title">Table 168. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20396,7 +20638,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 166. Scope 'initial'</caption>
+<caption class="title">Table 169. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20428,7 +20670,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 167. Scope 'migration'</caption>
+<caption class="title">Table 170. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20450,7 +20692,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 168. Scope 'mock'</caption>
+<caption class="title">Table 171. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20472,7 +20714,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 169. Scope 'nessus'</caption>
+<caption class="title">Table 172. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20549,7 +20791,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 170. Scope 'netsparker'</caption>
+<caption class="title">Table 173. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20621,7 +20863,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-new" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 171. Scope 'new'</caption>
+<caption class="title">Table 174. Scope 'new'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20643,7 +20885,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 172. Scope 'notification'</caption>
+<caption class="title">Table 175. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20675,7 +20917,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-oauth2-jwt" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 173. Scope 'oauth2-jwt'</caption>
+<caption class="title">Table 176. Scope 'oauth2-jwt'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20717,7 +20959,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-pdsinstall" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 174. Scope 'pdsinstall'</caption>
+<caption class="title">Table 177. Scope 'pdsinstall'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20744,7 +20986,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-pdsresilience" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 175. Scope 'pdsresilience'</caption>
+<caption class="title">Table 178. Scope 'pdsresilience'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20791,7 +21033,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 176. Scope 'scan'</caption>
+<caption class="title">Table 179. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20828,7 +21070,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-schedule" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 177. Scope 'schedule'</caption>
+<caption class="title">Table 180. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20856,7 +21098,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 178. Scope 'scheduler'</caption>
+<caption class="title">Table 181. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20918,7 +21160,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 179. Scope 'sec'</caption>
+<caption class="title">Table 182. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -20985,7 +21227,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 180. Scope 'security'</caption>
+<caption class="title">Table 183. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21007,7 +21249,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 181. Scope 'server'</caption>
+<caption class="title">Table 184. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21029,7 +21271,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-smtpserver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 182. Scope 'smtpserver'</caption>
+<caption class="title">Table 185. Scope 'smtpserver'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21071,7 +21313,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 183. Scope 'storage'</caption>
+<caption class="title">Table 186. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21158,7 +21400,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 184. Scope 'system'</caption>
+<caption class="title">Table 187. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21190,7 +21432,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 185. Scope 'target'</caption>
+<caption class="title">Table 188. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21222,7 +21464,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">8.2.4. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 186. Scope 'administration'</caption>
+<caption class="title">Table 189. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -21244,7 +21486,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 187. Scope 'scan'</caption>
+<caption class="title">Table 190. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -21266,7 +21508,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 188. Scope 'schedule'</caption>
+<caption class="title">Table 191. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -21301,7 +21543,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="sechub-mock-options">8.2.5. Configuration properties for mocked adapters</h4>
 <table id="section-gen-configuration-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 189. Scope 'abstract'</caption>
+<caption class="title">Table 192. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -21323,7 +21565,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 190. Scope 'mocked'</caption>
+<caption class="title">Table 193. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -23974,7 +24216,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.4.1<br>
+ Server 2.4.1 modified (commit eada480)<br>
 </div>
 </div>
 </body>
