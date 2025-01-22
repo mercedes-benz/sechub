@@ -2718,7 +2718,7 @@ paths:
       tags:
         - User Self Service
 
-  /api/management/user//email/{newEmailAddress}:
+  /api/management/user/email/{newEmailAddress}:
     put:
       summary: User updates his email address
       description: The authenticated user updates his email address
@@ -2733,8 +2733,26 @@ paths:
       responses:
         "200":
           description: "Ok"
-        "404":
-          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - User Self Service
+
+    /api/management/user/email/verify/{token}:
+    get:
+      summary: User verifies his email address
+      description: The authenticated user verifies his email address
+      operationId: userVerifiesEmailAddress
+      parameters:
+        - name: token
+          description: The token to verify the email address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
         "406":
           description: "Not acceptable"
       tags:

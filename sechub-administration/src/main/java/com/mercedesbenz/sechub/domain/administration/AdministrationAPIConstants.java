@@ -77,6 +77,16 @@ public class AdministrationAPIConstants {
      */
     public static final String API_USER_UPDATE_EMAIL = API_USER_DETAIL_INFO + "/email/{newEmailAddress}";
 
+    /**
+     * API to build the link the user verifies his email address.
+     */
+    public static final String API_USER_VERIFY_EMAIL_BUILD = API_USER_DETAIL_INFO + "/email/verify/";
+
+    /**
+     * User verifies his email address
+     */
+    public static final String API_USER_VERIFY_EMAIL = API_USER_VERIFY_EMAIL_BUILD + "{token}";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Users (Admin) ............................+ */
     /* +-----------------------------------------------------------------------+ */

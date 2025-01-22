@@ -32,19 +32,13 @@ class UserEmailAddressUpdateServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new UserEmailAddressUpdateService();
-
         assertion = mock(UserInputAssertion.class);
         auditLogService = mock(AuditLogService.class);
         eventBusService = mock(DomainMessageService.class);
         userRepository = mock(UserRepository.class);
         logSanitizer = mock(LogSanitizer.class);
 
-        serviceToTest.assertion = assertion;
-        serviceToTest.auditLogService = auditLogService;
-        serviceToTest.logSanitizer = logSanitizer;
-        serviceToTest.eventBusService = eventBusService;
-        serviceToTest.userRepository = userRepository;
+        serviceToTest = new UserEmailAddressUpdateService(eventBusService, userRepository, auditLogService, logSanitizer, assertion);
     }
 
     @Test
