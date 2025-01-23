@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 public class SpdxV1JSONImporterTest {
     private static String spdx_2_2_scancode;
@@ -105,6 +105,6 @@ public class SpdxV1JSONImporterTest {
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private static String loadSpdxTestFile(String spdxTestFile) {
-        return SerecoTestFileSupport.INSTANCE.loadTestFile("spdx/" + spdxTestFile);
+        return TestSerecoFileSupport.INSTANCE.loadTestFile("spdx/" + spdxTestFile);
     }
 }

@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.mercedesbenz.sechub.developertools.DeveloperToolsTestFileSupport;
+import com.mercedesbenz.sechub.developertools.TestDeveloperToolsFileSupport;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SimpleCSVImporterTest {
@@ -29,7 +29,7 @@ public class SimpleCSVImporterTest {
     @Test
     public void example1_can_be_read_with_3_columns_and_1_header_and_contains_expected_data() throws Exception {
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
         /* execute */
         List<CSVRow> importedRows = importerToTest.importCSVFile(file, 4, 1, false);
@@ -53,7 +53,7 @@ public class SimpleCSVImporterTest {
         expected.expect(IllegalStateException.class);
 
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
         /* execute */
         importerToTest.importCSVFile(file, 4, 1, true);
@@ -65,7 +65,7 @@ public class SimpleCSVImporterTest {
         expected.expect(IllegalStateException.class);
 
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
         /* execute */
         importerToTest.importCSVFile(file, 2, 1, false);
@@ -77,7 +77,7 @@ public class SimpleCSVImporterTest {
         expected.expect(IllegalStateException.class);
 
         /* prepare */
-        File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
+        File file = TestDeveloperToolsFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
         /* execute */
         importerToTest.importCSVFile(file, 2, 1);

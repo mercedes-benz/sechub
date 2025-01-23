@@ -9,14 +9,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 public class FalsePositiveDataListTest {
 
     @Test
     void json_content_as_described_in_example_of_documentation() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport()
+        String json = TestScanDomainFileSupport.getTestfileSupport()
                 .loadTestFileFromRoot("/sechub-doc/src/docs/asciidoc/documents/shared/false-positives/false-positives-REST-API-content-example1.json");
 
         /* execute */

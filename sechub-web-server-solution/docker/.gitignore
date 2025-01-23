@@ -1,3 +1,0 @@
-# install-java/ is copied by the build scripts from ../../sechub-solutions-shared/
-# so we exclude it here from git
-install-java/

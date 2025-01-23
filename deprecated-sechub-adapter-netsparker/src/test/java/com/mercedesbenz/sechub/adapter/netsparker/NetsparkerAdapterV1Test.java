@@ -68,7 +68,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/basic_weblogin_expected1.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/basic_weblogin_expected1.json");
         assertEquals(expected, json);
     }
 
@@ -83,7 +83,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
         assertEquals(expected, json);
     }
 
@@ -106,7 +106,7 @@ public class NetsparkerAdapterV1Test {
         /* test */
 
         // the minimum scan duration for Netsparker is 1 hour
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
         assertEquals(expected, json);
     }
 
@@ -126,7 +126,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
         assertEquals(expected, json);
     }
 
@@ -146,7 +146,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
         assertEquals(expected, json);
     }
 
@@ -253,7 +253,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/form_scripts_weblogin.json");
+        String expected = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("json/form_scripts_weblogin.json");
         assertEquals(expected, json);
     }
 
@@ -276,7 +276,7 @@ public class NetsparkerAdapterV1Test {
     @Test
     public void isAbleTo_extract_id_from_netsparker_v1_0_40_109_result_when_create_new_scan_triggered() throws AdapterException {
         /* prepare */
-        String body = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("netsparker_v1.0.40.109_new_scan_output.json");
+        String body = TestNetsparkerAdapterFileSupport.getTestfileSupport().loadTestFile("netsparker_v1.0.40.109_new_scan_output.json");
 
         /* execute */
         String id = adapterToTest.extractIDFromScanResult(body, context);

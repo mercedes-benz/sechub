@@ -8,14 +8,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.mercedesbenz.sechub.domain.scan.TestScanDomainFileSupport;
 
 public class ProductExecutorConfigListTest {
 
     @Test
     public void from_json_executor_config_example_1_can_be_read_transformed_to_json_and_contains_expected_data() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("executor/executor-configuration-list-example1.json");
+        String json = TestScanDomainFileSupport.getTestfileSupport().loadTestFile("executor/executor-configuration-list-example1.json");
 
         /* execute */
         ProductExecutorConfigList result = ProductExecutorConfigList.fromJSONString(json);

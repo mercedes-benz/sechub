@@ -9,7 +9,7 @@
       <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
-            <v-toolbar-title>{{ projectId }}</v-toolbar-title>
+            <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
@@ -52,9 +52,22 @@
                   <td>{{ job.executionResult }}</td>
                   <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight || '')" icon="mdi-circle" /></td>
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
-                    <v-btn class="ma-2">{{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                      <v-icon end icon="mdi-arrow-down" />
-                    </v-btn>
+                    <v-menu>
+                      <template #activator="{ props }">
+                        <v-btn class="ma-2" v-bind="props">
+                          {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
+                          <v-icon end icon="mdi-arrow-down" />
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item @click="downloadJobReportHtml(job.jobUUID)">
+                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_HTML_REPORT') }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="downloadJobReportJson(job.jobUUID)">
+                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_JSON_REPORT') }}</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
                   </span>
                   </td>
                   <td>{{ job.jobUUID }}</td>
@@ -71,7 +84,7 @@
       </v-col>
       <v-col v-if="showProjectsDetails" cols="12" md="4">
         <ProjectDetails
-          :project-id="projectId"
+          :project-data="projectData"
         />
       </v-col>
     </v-row>
@@ -82,11 +95,13 @@
   import { onMounted, onUnmounted, ref } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useRoute, useRouter } from 'vue-router'
+  import { useProjectStore } from '@/stores/projectStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import {
+    ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
-    UserListJobsForProjectRequest,
+    UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
 
   export default {
@@ -101,11 +116,19 @@
         projectId.value = route.params.id
       }
 
+      const store = useProjectStore()
+      const projectData = ref<ProjectData>({
+        projectId: '',
+        isOwned: false,
+        assignedUsers: [],
+        owner: '',
+      })
+
       const maxAttempts = 4 // Maximum number of retries for backoff
       const baseDelay = 1000 // Initial delay in milliseconds
       let timeOutId: number | undefined
 
-      const currentRequestParameters: UserListJobsForProjectRequest = {
+      const currentRequestParameters: UserListsJobsForProjectRequest = {
         projectId: projectId.value,
         size: '10',
         page: '0',
@@ -117,9 +140,9 @@
       const error = ref<string | undefined>(undefined)
       const showProjectsDetails = ref(true)
 
-      async function fetchProjectJobs (requestParameters: UserListJobsForProjectRequest) {
+      async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
-          jobsObject.value = await defaultClient.withOtherApi.userListJobsForProject(requestParameters)
+          jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
         } catch (err) {
           error.value = 'ProjectAPI error fetching jobs for project.'
@@ -141,6 +164,52 @@
         }
       }
 
+      async function downloadJobReportJson (jobUUID: string | undefined) {
+        if (!jobUUID) {
+          return
+        }
+
+        try {
+          const response = await defaultClient.withExecutionApi.userDownloadJobReport({
+            projectId: projectId.value,
+            jobUUID,
+          })
+          const prettyJson = JSON.stringify(response, null, 2)
+          downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
+        } catch (err) {
+          error.value = 'Failed to download JSON job report.'
+          console.error('Failed to download JSON job report:', err)
+        }
+      }
+
+      async function downloadJobReportHtml (jobUUID: string | undefined) {
+        if (!jobUUID) {
+          return
+        }
+
+        try {
+          const response = await defaultClient.withExecutionApi.userDownloadJobReportHtml({
+            projectId: projectId.value,
+            jobUUID,
+          })
+          downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
+        } catch (err) {
+          error.value = 'Failed to download HTML job report.'
+          console.error('Failed to download HTML job report:', err)
+        }
+      }
+
+      function downloadFile (blob: Blob, fileName: string): void {
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      }
+
       function onPageChange (page: number) {
         // the API page starts by 0 while vue pagination starts with 1
         currentRequestParameters.page = (page - 1).toString()
@@ -149,7 +218,7 @@
 
       function openNewScanPage () {
         router.push({
-          name: `/[id]/scan`,
+          name: `/projects/[id]/scan`,
           params: {
             id: projectId.value,
           },
@@ -160,8 +229,16 @@
         router.go(-1)
       }
 
-      onMounted(() => {
-        pollProjectJobs()
+      onMounted(async () => {
+        const projectFromStore = await store.getProjectById(projectId.value)
+        if (!projectFromStore) {
+          router.push({
+            path: '/projects',
+          })
+        } else {
+          projectData.value = projectFromStore
+          pollProjectJobs()
+        }
       })
 
       onUnmounted(() => {
@@ -169,7 +246,7 @@
       })
 
       return {
-        projectId,
+        projectData,
         jobsObject,
         jobs,
         loading,
@@ -177,6 +254,8 @@
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
+        downloadJobReportJson,
+        downloadJobReportHtml,
         onPageChange,
         openNewScanPage,
         backToProjectsList,

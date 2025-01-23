@@ -65,7 +65,7 @@ public class ProjectChangeOwnerServiceTest {
         when(oldOwner.getName()).thenReturn("old");
         when(newOwner.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
-        when(newOwner.getProjects()).thenReturn(new HashSet<Project>());
+        when(newOwner.getProjects()).thenReturn(new HashSet<>());
 
         /* execute */
         serviceToTest.changeProjectOwner(newOwner.getName(), project1.getId());

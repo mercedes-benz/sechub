@@ -18,8 +18,8 @@ tags:
     description: Operations relevant to user administration
   - name: Project Administration
     description: Operations relevant to project administration
-  - name: User Profile
-    description: Operations relevant to user profiles
+  - name: User Self Service
+    description: Operations relevant to the authenticated user
   - name: SecHub Execution
     description: Operations relevant to execution of SecHub
   - name: Sign Up
@@ -34,6 +34,8 @@ tags:
     description: Operations relevant to encryption
   - name: Other
     description: All other use cases
+  - name: Job Management
+    description: Operations relevant to manage jobs
 
 components:
   securitySchemes:
@@ -2678,28 +2680,24 @@ paths:
       tags:
         - Project Administration
  
-  ###################
-  ## User Profile ##
-  ###################
+  #######################
+  ## User Self Service ##
+  #######################
 
-  /api/anonymous/apitoken/{oneTimeToken}:
+  /api/management/user:
     get:
-      summary: User clicks link to get new api token
-      description: User clicks link to get new api token
-      operationId: anonymousGetNewApiTokenByOneTimeToken
-      parameters:
-        - name: oneTimeToken
-          description: A one time token the user has got by a previous mail from SecHub server
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: User fetches his user details
+      description: The authenticated user fetches his user details
+      operationId: userFetchUserDetailInformation
       responses:
         "200":
-          description: "Answer containing the new api token or error message if request could not be fulfilled"
-      security: [ ]
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailInformation'
+          description: "200"
       tags:
-        - User Profile
+        - User Self Service
 
   ######################
   ## SecHub Execution ##
@@ -3210,6 +3208,25 @@ paths:
           description: "Not found"
         "406":
           description: "Not acceptable"
+      tags:
+        - Sign Up
+
+  /api/anonymous/apitoken/{oneTimeToken}:
+    get:
+      summary: User clicks link to get new api token
+      description: User clicks link to get new api token
+      operationId: anonymousGetNewApiTokenByOneTimeToken
+      parameters:
+        - name: oneTimeToken
+          description: A one time token the user has got by a previous mail from SecHub server
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Answer containing the new api token or error message if request could not be fulfilled"
+      security: [ ]
       tags:
         - Sign Up
 
@@ -3862,7 +3879,7 @@ paths:
     get:
       summary: User lists jobs for project
       description: User lists jobs for project
-      operationId: userListJobsForProject
+      operationId: userListsJobsForProject
       parameters:
         - name: projectId
           description: The id of the project where job information shall be fetched
@@ -4172,3 +4189,28 @@ paths:
           description: "Not found"
       tags:
         - Configuration
+
+  /api/management/jobs/{jobUUID}/cancel:
+    post:
+      description: User cancels a job by its Job UUID
+      operationId: userCancelsJob
+      parameters:
+        - description: The job UUID
+          explode: false
+          in: path
+          name: jobUUID
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "204":
+          description: "No content"
+        "404":
+          description: "Not found"
+      security:
+        - basic: [ ]
+      summary: User cancels a job
+      tags:
+        - Job Management
+      x-accepts: application/json

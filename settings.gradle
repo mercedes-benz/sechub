@@ -17,7 +17,6 @@ include 'sechub-cli',
 
 /* encryption */
 'sechub-commons-encryption',
-'sechub-commons-aes-256-encryption',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -111,10 +110,7 @@ include 'sechub-cli',
 'sechub-pds-tools',
 
 // Examples (are below 'sechub-examples' folder)
-'sechub-examples:example-sechub-api-java',
-
-/* SecHub Web UI */
-'sechub-web-server-solution'
+'sechub-examples:example-sechub-api-java'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

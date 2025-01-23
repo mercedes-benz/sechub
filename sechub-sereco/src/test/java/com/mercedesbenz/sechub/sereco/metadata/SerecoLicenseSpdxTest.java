@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
+import com.mercedesbenz.sechub.sereco.test.TestSerecoFileSupport;
 
 public class SerecoLicenseSpdxTest {
     private static String spdx_2_2_scancode_json;
@@ -83,6 +83,6 @@ public class SerecoLicenseSpdxTest {
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private static String loadSpdxTestFile(String spdxTestFile) {
-        return SerecoTestFileSupport.INSTANCE.loadTestFile("spdx/" + spdxTestFile);
+        return TestSerecoFileSupport.INSTANCE.loadTestFile("spdx/" + spdxTestFile);
     }
 }

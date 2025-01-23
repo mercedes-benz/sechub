@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.restdoc;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
 import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.configureSecHub;
-import static com.mercedesbenz.sechub.restdoc.RestDocumentation.defineRestService;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.mockito.ArgumentMatchers.*;
@@ -156,8 +156,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                with().
 	    	                    useCaseData(useCase, VARIANT_CODE_SCAN).
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
-	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    	                    requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+	    	                    responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
 	    	                and().
 	    	                document(
 				    	                		requestHeaders(
@@ -227,8 +227,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
                                                 requestHeaders(
@@ -299,8 +299,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_SECRET_SCAN).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
                                                 requestHeaders(
@@ -367,8 +367,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                 with().
                 useCaseData(useCase, VARIANT_LICENSE_SCAN).
                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                 and().
                 document(
                         requestHeaders(
@@ -426,8 +426,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                with().
 	    	                    useCaseData(useCase, VARIANT_INFRASTRUCTURE_SCAN).
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
-	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    	                    requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+	    	                    responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
 	    	                and().
 	    	                document(
 		    	                		requestHeaders(
@@ -491,8 +491,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, "Web Scan anonymous").
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -555,8 +555,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_WEB_SCAN_WITH_API_DEFINITION).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
                                         requestHeaders(
@@ -615,8 +615,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
                                         requestHeaders(
@@ -670,8 +670,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_BASIC).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
 	                            		requestHeaders(
@@ -762,8 +762,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                         with().
                             useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
-                            requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                            responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                            responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                         and().
                         document(
 		                        		requestHeaders(
@@ -840,8 +840,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase, VARIANT_WEB_SCAN_HEADERS).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
                                         pathParameters(
@@ -1067,7 +1067,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
+                                responseSchema(TestOpenApiSchema.JOB_STATUS.getSchema()).
                             and().
                             document(
 	                            		 requestHeaders(
@@ -1140,7 +1140,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             with().
                                 useCaseData(useCase).
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.PROJECT_JOB_LIST.getSchema()).
+                                responseSchema(TestOpenApiSchema.PROJECT_JOB_LIST.getSchema()).
                             and().
                             document(
                                          requestHeaders(
