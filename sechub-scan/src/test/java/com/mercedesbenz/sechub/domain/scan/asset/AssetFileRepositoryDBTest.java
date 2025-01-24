@@ -1,29 +1,26 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.asset;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFile.AssetFileCompositeKey;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFileRepositoryDBTest.SimpleTestConfiguration;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @ContextConfiguration(classes = { AssetFile.class, AssetFileRepository.class, SimpleTestConfiguration.class })
-//@EnableAutoConfiguration
 class AssetFileRepositoryDBTest {
+
     @Autowired
     private TestEntityManager entityManager;
 

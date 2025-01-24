@@ -26,4 +26,7 @@ public interface ScanProjectConfigRepository extends JpaRepository<ScanProjectCo
     @Query(value = ScanProjectConfig.QUERY_FIND_ALL_CONFIGURATIONS_FOR_PROJECT)
     List<ScanProjectConfig> findAllForProject(@Param("projectId") String projectId);
 
+    @Query(value = ScanProjectConfig.QUERY_FIND_ALL_DATA_FOR_CONFIG_ID)
+    List<String> findAllDataForConfigId(@Param("configId") String configId);
+
 }

@@ -211,6 +211,8 @@ public enum UseCaseIdentifier {
 
     UC_USER_CANCELS_JOB(94),
 
+    UC_ADMIN_EXECUTES_TEMPLATE_HEALTHCHECK(95),
+
     ;
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */

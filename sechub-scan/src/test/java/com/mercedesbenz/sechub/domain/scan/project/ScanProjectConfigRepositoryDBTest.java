@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -136,6 +137,44 @@ public class ScanProjectConfigRepositoryDBTest {
         assertThat(repository.findById(config1C1.getKey())).isEmpty();
         assertThat(repository.findById(config2A1.getKey())).isEmpty();
         assertThat(repository.findById(config2C1.getKey())).isEmpty();
+    }
+
+    @Test
+    void findAllDataForConfigId_() {
+        String keyA = "configA";
+        String keyB = "configB";
+        String keyC = "configC";
+
+        String value1 = "val1";
+        String value2 = "val2";
+        String value3 = "val3";
+
+        ScanProjectConfig config1A3 = createNewScanProjectConfig("project1", keyA, value3);
+        ScanProjectConfig config1B1 = createNewScanProjectConfig("project1", keyB, value1);
+
+        ScanProjectConfig config2A1 = createNewScanProjectConfig("project2", keyA, value1);
+        ScanProjectConfig config2B1 = createNewScanProjectConfig("project2", keyB, value1);
+        ScanProjectConfig config2C1 = createNewScanProjectConfig("project2", keyC, value2);
+
+        ScanProjectConfig config3C2 = createNewScanProjectConfig("project3", keyB, value2);
+        ScanProjectConfig config3C3 = createNewScanProjectConfig("project3", keyC, value3);
+
+        repository.save(config1B1);
+
+        repository.save(config2A1);
+        repository.save(config2B1);
+        repository.save(config2C1);
+
+        repository.save(config1A3);
+        repository.save(config3C2);
+        repository.save(config3C3);
+
+        /* execute */
+        List<String> data = repository.findAllDataForConfigId(keyB);
+
+        /* test */
+        assertThat(data).contains(value1, value2).doesNotContain(value3).hasSize(3); // value1 is contained 2 times
+
     }
 
     private ScanProjectConfig createNewScanProjectConfig(String projectId, String pseudoConfigId) {

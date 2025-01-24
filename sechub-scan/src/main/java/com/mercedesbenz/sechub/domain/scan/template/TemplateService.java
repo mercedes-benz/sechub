@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,6 +202,23 @@ public class TemplateService {
             TemplateDefinition templateDefinition = fetchTemplateDefinition(templateId);
             result.add(templateDefinition);
         }
+        return result;
+    }
+
+    public Set<String> fetchProjectIdsUsingTemplate(String templateId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Set<String> fetchAllAssignedTemplateIds() {
+        Set<String> result = new TreeSet<>();
+
+        for (TemplateType templateType : TemplateType.values()) {
+            ScanProjectConfigID scanConfigType = resolver.resolve(templateType);
+            List<String> list = configService.findAllData(scanConfigType);
+            result.addAll(list);
+        }
+
         return result;
     }
 

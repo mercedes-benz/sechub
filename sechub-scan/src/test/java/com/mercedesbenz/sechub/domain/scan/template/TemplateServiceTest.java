@@ -205,4 +205,15 @@ class TemplateServiceTest {
 
     }
 
+    @Test
+    void fetchAssignedTemplateIds() {
+
+        /* execute */
+        Set<String> result = serviceToTest.fetchAllAssignedTemplateIds();
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result).contains("t1", "t2");
+    }
+
 }

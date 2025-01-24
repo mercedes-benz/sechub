@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.product.pds;
+package com.mercedesbenz.sechub.domain.scan.template;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,31 +45,44 @@ public class RelevantScanTemplateDefinitionFilter {
 
         for (TemplateDefinition definition : templateDefinitions) {
 
-            addDefinitionToResultIfNecessary(definition, scanType, configuration, result);
-        }
-        return result;
-    }
-
-    private void addDefinitionToResultIfNecessary(TemplateDefinition definition, ScanType scanType, SecHubConfigurationModel configuration,
-            List<TemplateDefinition> result) {
-        if (scanType == null) {
-            return;
-        }
-        switch (scanType) {
-        case WEB_SCAN:
-            /* for web scan we accept WEBSCAN_LOGIN templates */
-            if (TemplateType.WEBSCAN_LOGIN.equals(definition.getType())) {
-                TemplateData templateData = templateDataResolver.resolveTemplateData(TemplateType.WEBSCAN_LOGIN, configuration);
+            if (isScanTypeSupportingTemplate(scanType, definition)) {
+                TemplateData templateData = templateDataResolver.resolveTemplateData(definition.getType(), configuration);
                 if (templateData != null) {
                     /* data available, so add to result */
                     result.add(definition);
                 }
             }
-            break;
-        default:
-            break;
         }
+        return result;
+    }
 
+    /**
+     * Evaluates if given scan type is supporting the template type at all
+     *
+     * @param scanType
+     * @param templateType
+     * @return <code>true</code> when supported, otherwise <code>false</code>
+     */
+    public boolean isScanTypeSupportingTemplate(ScanType scanType, TemplateDefinition templateDefinition) {
+        if (scanType == null) {
+            return false;
+        }
+        if (templateDefinition == null) {
+            return false;
+        }
+        TemplateType templateType = templateDefinition.getType();
+        if (templateType == null) {
+            return false;
+        }
+        switch (scanType) {
+        case WEB_SCAN:
+            /* for web scan we accept WEBSCAN_LOGIN templates */
+            if (TemplateType.WEBSCAN_LOGIN.equals(templateType)) {
+                return true;
+            }
+        default:
+        }
+        return false;
     }
 
 }

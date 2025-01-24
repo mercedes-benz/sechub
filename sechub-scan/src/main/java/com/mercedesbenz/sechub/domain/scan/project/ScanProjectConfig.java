@@ -41,9 +41,13 @@ public class ScanProjectConfig {
     public static final String CLASS_NAME = ScanProjectConfig.class.getSimpleName();
 
     public static final String PROPERTY_KEY = "key";
+    public static final String PROPERTY_DATA = "data";
 
     public static final String QUERY_FIND_ALL_CONFIGURATIONS_FOR_PROJECT = "SELECT c FROM ScanProjectConfig c where c." + PROPERTY_KEY + "."
             + ScanProjectConfigCompositeKey.PROPERTY_PROJECT_ID + " =:projectId";
+
+    public static final String QUERY_FIND_ALL_DATA_FOR_CONFIG_ID = "SELECT c." + PROPERTY_DATA + " FROM ScanProjectConfig c where c." + PROPERTY_KEY + "."
+            + ScanProjectConfigCompositeKey.PROPERTY_CONFIG_ID + " =:configId";
 
     @EmbeddedId
     ScanProjectConfigCompositeKey key;
@@ -104,6 +108,7 @@ public class ScanProjectConfig {
         private static final long serialVersionUID = 8753389792382752253L;
 
         public static final String PROPERTY_PROJECT_ID = "projectId";
+        public static final String PROPERTY_CONFIG_ID = "configId";
 
         @Column(name = COLUMN_PROJECT_ID, nullable = false)
         private String projectId;

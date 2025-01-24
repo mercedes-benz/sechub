@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesOrUpdatesTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesTemplate;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminExecutesTemplatesHealthcheck;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAllTemplateIds;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesTemplate;
 
@@ -37,6 +38,9 @@ public class TemplateRestController {
 
     @Autowired
     TemplateService templateService;
+
+    @Autowired
+    TemplatesHealthCheckService templatesHealthcheckService;
 
     @Autowired
     AuditLogService auditLogService;
@@ -82,6 +86,17 @@ public class TemplateRestController {
     @ResponseStatus(HttpStatus.OK)
     public List<String> fetchAllTemplateIds() {
         return templateService.fetchAllTemplateIds();
+
+    }
+
+    @UseCaseAdminExecutesTemplatesHealthcheck(@Step(number = 1, next = 2, name = "REST API call to create or update template", needsRestDoc = true))
+    @RequestMapping(path = "/templates/healthcheck", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesHealthCheckResult executeTemplatesHealthcheck() {
+
+        auditLogService.log("starts templates healthcheck");
+
+        return templatesHealthcheckService.executeHealthCheck();
 
     }
 }
