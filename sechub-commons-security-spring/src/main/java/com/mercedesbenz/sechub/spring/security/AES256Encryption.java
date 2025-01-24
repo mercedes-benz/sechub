@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -26,8 +28,9 @@ public class AES256Encryption {
     private final Cipher decrypt;
     private final SealedObject sealedSecretKey;
 
-    AES256Encryption(SecurityProperties securityProperties) throws GeneralSecurityException {
-        SecretKey secretKey = new SecretKeySpec(securityProperties.getEncryption().getSecretKey().getBytes(StandardCharsets.UTF_8), TRANSFORMATION);
+    AES256Encryption(SecHubSecurityProperties secHubSecurityProperties) throws GeneralSecurityException {
+        requireNonNull(secHubSecurityProperties, "SecHubSecurityProperties must not be null");
+        SecretKey secretKey = getSecretKey(secHubSecurityProperties);
         this.sealedSecretKey = secretKeyCryptoAccess.seal(secretKey);
 
         this.encrypt = Cipher.getInstance(TRANSFORMATION);
@@ -43,6 +46,14 @@ public class AES256Encryption {
         } catch (Exception e) {
             throw new GeneralSecurityException(e);
         }
+    }
+
+    private static SecretKey getSecretKey(SecHubSecurityProperties secHubSecurityProperties) {
+        SecHubSecurityProperties.EncryptionProperties encryption = requireNonNull(secHubSecurityProperties.getEncryptionProperties(),
+                "Property %s must not be null".formatted(SecHubSecurityProperties.EncryptionProperties.PREFIX));
+        String secretKeyString = requireNonNull(encryption.getSecretKey(),
+                "Property %s.%s must not be null".formatted(SecHubSecurityProperties.EncryptionProperties.PREFIX, "secret-key"));
+        return new SecretKeySpec(secretKeyString.getBytes(StandardCharsets.UTF_8), TRANSFORMATION);
     }
 
     public byte[] encrypt(String plainText) {

@@ -7,3 +7,5 @@ include::./../../shared/springboot_profiles.adoc[]
 include::./../../shared/sechub_options.adoc[]
 
 include::./../../shared/sechub_mockoptions.adoc[]
+
+include::./../../shared/springboot_security.adoc[]

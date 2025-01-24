@@ -152,18 +152,18 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     }
 
     /* @formatter:off */
-    private static Map<String, Object> getIntrospectionClaims(Instant issuedAt, OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse) {
+    private static Map<String, Object> getIntrospectionClaims(Instant issuedAt, OAuth2OpaqueTokenIntrospectionResponse oAuth2OpaqueTokenIntrospectionResponse) {
         Map<String, Object> map = new HashMap<>();
-        map.put(OAuth2TokenIntrospectionClaimNames.ACTIVE, OAuth2OpaqueTokenIntrospectionResponse.isActive());
-        map.put(OAuth2TokenIntrospectionClaimNames.SCOPE, OAuth2OpaqueTokenIntrospectionResponse.getScope());
-        map.put(OAuth2TokenIntrospectionClaimNames.CLIENT_ID, OAuth2OpaqueTokenIntrospectionResponse.getClientId());
-        map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, OAuth2OpaqueTokenIntrospectionResponse.getUsername());
-        map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, OAuth2OpaqueTokenIntrospectionResponse.getTokenType());
+        map.put(OAuth2TokenIntrospectionClaimNames.ACTIVE, oAuth2OpaqueTokenIntrospectionResponse.isActive());
+        map.put(OAuth2TokenIntrospectionClaimNames.SCOPE, oAuth2OpaqueTokenIntrospectionResponse.getScope());
+        map.put(OAuth2TokenIntrospectionClaimNames.CLIENT_ID, oAuth2OpaqueTokenIntrospectionResponse.getClientId());
+        map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, oAuth2OpaqueTokenIntrospectionResponse.getUsername());
+        map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, oAuth2OpaqueTokenIntrospectionResponse.getTokenType());
         map.put(OAuth2TokenIntrospectionClaimNames.IAT, issuedAt);
-        Instant expiresAt = OAuth2OpaqueTokenIntrospectionResponse.getExpiresAt();
+        Instant expiresAt = oAuth2OpaqueTokenIntrospectionResponse.getExpiresAt();
         map.put(OAuth2TokenIntrospectionClaimNames.EXP, expiresAt == null ? issuedAt.plusSeconds(DEFAULT_EXPIRES_IN_SECONDS) : expiresAt);
-        map.put(OAuth2TokenIntrospectionClaimNames.SUB, OAuth2OpaqueTokenIntrospectionResponse.getSubject());
-        map.put(OAuth2TokenIntrospectionClaimNames.AUD, OAuth2OpaqueTokenIntrospectionResponse.getAudience());
+        map.put(OAuth2TokenIntrospectionClaimNames.SUB, oAuth2OpaqueTokenIntrospectionResponse.getSubject());
+        map.put(OAuth2TokenIntrospectionClaimNames.AUD, oAuth2OpaqueTokenIntrospectionResponse.getAudience());
         return map;
     }
     /* @formatter:on */

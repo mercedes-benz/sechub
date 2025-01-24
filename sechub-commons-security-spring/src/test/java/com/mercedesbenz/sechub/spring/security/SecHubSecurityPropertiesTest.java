@@ -26,39 +26,39 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-security-properties-test.yaml", factory = YamlPropertyLoaderFactory.class)
-class SecurityPropertiesTest {
+class SecHubSecurityPropertiesTest {
 
-    private final SecurityProperties properties;
+    private final SecHubSecurityProperties properties;
 
     @Autowired
-    SecurityPropertiesTest(SecurityProperties properties) {
+    SecHubSecurityPropertiesTest(SecHubSecurityProperties properties) {
         this.properties = properties;
     }
 
     @Test
     void construct_security_properties_with_valid_properties_file_succeeds() {
-        SecurityProperties.Server server = properties.getServer();
+        SecHubSecurityProperties.ResourceServerProperties server = properties.getResourceServerProperties();
         assertThat(server).isNotNull();
         assertThat(server.isOAuth2ModeEnabled()).isTrue();
         assertThat(server.isClassicModeEnabled()).isTrue();
-        SecurityProperties.Server.OAuth2 oAuth2 = server.getOAuth2();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = server.getOAuth2Properties();
         assertThat(oAuth2).isNotNull();
         assertThat(oAuth2.getMode()).isEqualTo("jwt");
         assertThat(oAuth2.isJwtModeEnabled()).isTrue();
         assertThat(oAuth2.isOpaqueTokenModeEnabled()).isFalse();
-        SecurityProperties.Server.OAuth2.Jwt jwt = oAuth2.getJwt();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.JwtProperties jwt = oAuth2.getJwtProperties();
         assertThat(jwt).isNotNull();
         assertThat(jwt.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
-        SecurityProperties.Server.OAuth2.OpaqueToken opaqueToken = oAuth2.getOpaqueToken();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = oAuth2.getOpaqueTokenProperties();
         assertThat(opaqueToken).isNull();
 
-        SecurityProperties.Login login = properties.getLogin();
+        SecHubSecurityProperties.LoginProperties login = properties.getLoginProperties();
         assertThat(login).isNotNull();
         assertThat(login.isEnabled()).isTrue();
         assertThat(login.getLoginPage()).isEqualTo("/login");
         assertThat(login.getRedirectUri()).isEqualTo("example.org/redirect-uri");
         assertThat(login.getModes()).containsExactly("oauth2", "classic");
-        SecurityProperties.Login.OAuth2 loginOAuth2 = login.getOAuth2();
+        SecHubSecurityProperties.LoginProperties.OAuth2Properties loginOAuth2 = login.getOAuth2Properties();
         assertThat(loginOAuth2).isNotNull();
         assertThat(loginOAuth2.getClientId()).isEqualTo("example-client-id");
         assertThat(loginOAuth2.getClientSecret()).isEqualTo("example-client-secret");
@@ -70,7 +70,7 @@ class SecurityPropertiesTest {
         assertThat(loginOAuth2.getUserInfoUri()).isEqualTo("https://example.org/user-info-uri");
         assertThat(loginOAuth2.getJwkSetUri()).isEqualTo("https://example.org/jwk-set-uri");
 
-        SecurityProperties.Encryption encryption = properties.getEncryption();
+        SecHubSecurityProperties.EncryptionProperties encryption = properties.getEncryptionProperties();
         assertThat(encryption).isNotNull();
         assertThat(encryption.getSecretKey()).isEqualTo("test-test-test-test-test-test-32");
     }
@@ -78,24 +78,24 @@ class SecurityPropertiesTest {
     @Test
     void construct_security_properties_with_null_server_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecurityProperties(null, null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(null, null, null));
     }
 
     @Test
     void construct_security_properties_with_null_login_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecurityProperties(mock(), null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(mock(), null, null));
     }
 
     @Test
     void construct_security_properties_with_login_enabled_and_null_encryption_fails() {
         /* prepare */
-        SecurityProperties.Login loginMock = mock();
+        SecHubSecurityProperties.LoginProperties loginMock = mock();
         when(loginMock.isEnabled()).thenReturn(true);
 
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties(mock(), loginMock, null))
+        assertThatThrownBy(() -> new SecHubSecurityProperties(mock(), loginMock, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.encryption' must not be null");
         /* @formatter:on */
@@ -105,23 +105,23 @@ class SecurityPropertiesTest {
     void construct_server_properties_with_valid_arguments_succeeds() {
         /* prepare */
         Set<String> modes = Set.of("oauth2", "classic");
-        SecurityProperties.Server.OAuth2 oAuth2 = mock();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
-        SecurityProperties.Server server = new SecurityProperties.Server(modes, oAuth2);
+        SecHubSecurityProperties.ResourceServerProperties server = new SecHubSecurityProperties.ResourceServerProperties(modes, oAuth2);
 
         /* test */
         assertThat(server.getModes()).isEqualTo(modes);
         assertThat(server.isOAuth2ModeEnabled()).isTrue();
         assertThat(server.isClassicModeEnabled()).isTrue();
-        assertThat(server.getOAuth2()).isEqualTo(oAuth2);
+        assertThat(server.getOAuth2Properties()).isEqualTo(oAuth2);
     }
 
     @Test
     void construct_server_properties_with_null_modes_fails() {
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server(null, mock()))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties(null, mock()))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.server.modes' must not be null");
         /* @formatter:on */
@@ -134,7 +134,7 @@ class SecurityPropertiesTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server(modes, mock()))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties(modes, mock()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property 'sechub.security.server.modes' must at least include 'oauth2' or 'classic' mode");
         /* @formatter:on */
@@ -147,7 +147,7 @@ class SecurityPropertiesTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server(modes, mock()))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties(modes, mock()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property 'sechub.security.server.modes' allows only 'oauth2' or 'classic' mode");
         /* @formatter:on */
@@ -157,41 +157,43 @@ class SecurityPropertiesTest {
     void construct_server_oauth2_properties_with_jwt_mode_succeeds() {
         /* prepare */
         String mode = "jwt";
-        SecurityProperties.Server.OAuth2.Jwt jwt = mock();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.JwtProperties jwt = mock();
 
         /* execute */
-        SecurityProperties.Server.OAuth2 oAuth2 = new SecurityProperties.Server.OAuth2(mode, jwt, null);
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties(mode,
+                jwt, null);
 
         /* test */
         assertThat(oAuth2.getMode()).isEqualTo(mode);
         assertThat(oAuth2.isJwtModeEnabled()).isTrue();
         assertThat(oAuth2.isOpaqueTokenModeEnabled()).isFalse();
-        assertThat(oAuth2.getJwt()).isEqualTo(jwt);
-        assertThat(oAuth2.getOpaqueToken()).isNull();
+        assertThat(oAuth2.getJwtProperties()).isEqualTo(jwt);
+        assertThat(oAuth2.getOpaqueTokenProperties()).isNull();
     }
 
     @Test
     void construct_server_oauth2_properties_with_opaque_token_mode_succeeds() {
         /* prepare */
         String mode = "opaque-token";
-        SecurityProperties.Server.OAuth2.OpaqueToken opaqueToken = mock();
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = mock();
 
         /* execute */
-        SecurityProperties.Server.OAuth2 oAuth2 = new SecurityProperties.Server.OAuth2(mode, null, opaqueToken);
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties(mode,
+                null, opaqueToken);
 
         /* test */
         assertThat(oAuth2.getMode()).isEqualTo(mode);
         assertThat(oAuth2.isJwtModeEnabled()).isFalse();
         assertThat(oAuth2.isOpaqueTokenModeEnabled()).isTrue();
-        assertThat(oAuth2.getJwt()).isNull();
-        assertThat(oAuth2.getOpaqueToken()).isEqualTo(opaqueToken);
+        assertThat(oAuth2.getJwtProperties()).isNull();
+        assertThat(oAuth2.getOpaqueTokenProperties()).isEqualTo(opaqueToken);
     }
 
     @Test
     void construct_server_oauth2_properties_with_null_mode_fails() {
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server.OAuth2(null, mock(), mock()))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties(null, mock(), mock()))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.server.oauth2.mode' must not be null");
         /* @formatter:on */
@@ -201,7 +203,7 @@ class SecurityPropertiesTest {
     void construct_server_oauth2_properties_with_invalid_mode_fails() {
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server.OAuth2("invalid", mock(), mock()))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties("invalid", mock(), mock()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property 'sechub.security.server.oauth2.mode' allows only 'jwt' or 'opaque-token' mode");
         /* @formatter:on */
@@ -213,7 +215,8 @@ class SecurityPropertiesTest {
         String jwkSetUri = "https://example.org/jwk-set-uri";
 
         /* execute */
-        SecurityProperties.Server.OAuth2.Jwt jwt = new SecurityProperties.Server.OAuth2.Jwt(jwkSetUri);
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.JwtProperties jwt = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.JwtProperties(
+                jwkSetUri);
 
         /* test */
         assertThat(jwt.getJwkSetUri()).isEqualTo(jwkSetUri);
@@ -223,7 +226,7 @@ class SecurityPropertiesTest {
     void construct_jwt_properties_with_null_jwk_set_uri_fails() {
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Server.OAuth2.Jwt(null))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.JwtProperties(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.server.oauth2.jwt.jwk-set-uri' must not be null");
         /* @formatter:on */
@@ -237,7 +240,8 @@ class SecurityPropertiesTest {
         String clientSecret = "example-client-secret";
 
         /* execute */
-        SecurityProperties.Server.OAuth2.OpaqueToken opaqueToken = new SecurityProperties.Server.OAuth2.OpaqueToken(introspectionUri, clientId, clientSecret);
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
+                introspectionUri, clientId, clientSecret);
 
         /* test */
         assertThat(opaqueToken.getIntrospectionUri()).isEqualTo(introspectionUri);
@@ -253,7 +257,7 @@ class SecurityPropertiesTest {
                                                                      String clientSecret,
                                                                      String errMsg) {
         /* execute + test */
-        assertThatThrownBy(() -> new SecurityProperties.Server.OAuth2.OpaqueToken(introspectionUri, clientId, clientSecret))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(introspectionUri, clientId, clientSecret))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -266,17 +270,17 @@ class SecurityPropertiesTest {
         String loginPage = "/login";
         String redirectUri = "example.org/redirect-uri";
         Set<String> modes = Set.of("oauth2", "classic");
-        SecurityProperties.Login.OAuth2 oAuth2 = mock();
+        SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
-        SecurityProperties.Login login = new SecurityProperties.Login(enabled, loginPage, redirectUri, modes, oAuth2);
+        SecHubSecurityProperties.LoginProperties login = new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2);
 
         /* test */
         assertThat(login.isEnabled()).isEqualTo(enabled);
         assertThat(login.getLoginPage()).isEqualTo(loginPage);
         assertThat(login.getRedirectUri()).isEqualTo(redirectUri);
         assertThat(login.getModes()).isEqualTo(modes);
-        assertThat(login.getOAuth2()).isEqualTo(oAuth2);
+        assertThat(login.getOAuth2Properties()).isEqualTo(oAuth2);
     }
 
     @ParameterizedTest
@@ -286,10 +290,10 @@ class SecurityPropertiesTest {
                                                              String loginPage,
                                                              String redirectUri,
                                                              Set<String> modes,
-                                                             SecurityProperties.Login.OAuth2 oAuth2,
+                                                             SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2,
                                                              String errMsg) {
         /* execute + test */
-        assertThatThrownBy(() -> new SecurityProperties.Login(enabled, loginPage, redirectUri, modes, oAuth2))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -309,8 +313,8 @@ class SecurityPropertiesTest {
         String jwkSetUri = "https://example.org/jwk-set-uri";
 
         /* execute */
-        SecurityProperties.Login.OAuth2 oAuth2 = new SecurityProperties.Login.OAuth2(clientId, clientSecret, provider, redirectUri, issuerUri, authorizationUri,
-                tokenUri, userInfoUri, jwkSetUri);
+        SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = new SecHubSecurityProperties.LoginProperties.OAuth2Properties(clientId, clientSecret,
+                provider, redirectUri, issuerUri, authorizationUri, tokenUri, userInfoUri, jwkSetUri);
 
         /* test */
         assertThat(oAuth2.getClientId()).isEqualTo(clientId);
@@ -338,7 +342,7 @@ class SecurityPropertiesTest {
                                                                      String jwkSetUri,
                                                                      String errMsg) {
         /* execute + test */
-        assertThatThrownBy(() -> new SecurityProperties.Login.OAuth2(clientId, clientSecret, provider, redirectUri, issuerUri, authorizationUri, tokenUri, userInfoUri, jwkSetUri))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties.OAuth2Properties(clientId, clientSecret, provider, redirectUri, issuerUri, authorizationUri, tokenUri, userInfoUri, jwkSetUri))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -350,7 +354,7 @@ class SecurityPropertiesTest {
         String secretKey = "test-test-test-test-test-test-32";
 
         /* execute */
-        SecurityProperties.Encryption encryption = new SecurityProperties.Encryption(secretKey);
+        SecHubSecurityProperties.EncryptionProperties encryption = new SecHubSecurityProperties.EncryptionProperties(secretKey);
 
         /* test */
         assertThat(encryption.getSecretKey()).isEqualTo(secretKey);
@@ -360,7 +364,7 @@ class SecurityPropertiesTest {
     void construct_encryption_properties_with_null_secret_key_fails() {
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecurityProperties.Encryption(null))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.EncryptionProperties(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.encryption.secret-key' must not be null");
         /* @formatter:on */
@@ -371,14 +375,14 @@ class SecurityPropertiesTest {
     void construct_aes256encryption_properties_with_non_256_bit_long_secret_key_fails(String secretKey) {
         /* @formatter:off */
         /* execute & test */
-        assertThatThrownBy(() -> new SecurityProperties.Encryption(secretKey))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.EncryptionProperties(secretKey))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property sechub.security.encryption.secret-key must be a 256-bit string");
         /* @formatter:on */
     }
 
     @Configuration
-    @EnableConfigurationProperties(SecurityProperties.class)
+    @EnableConfigurationProperties(SecHubSecurityProperties.class)
     static class TestConfiguration {
 
     }
@@ -401,10 +405,10 @@ class SecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecurityProperties.Login.OAuth2.class), "The property 'sechub.security.login.enabled' must not be null"),
-                    Arguments.of(true, null, "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecurityProperties.Login.OAuth2.class), "The property 'sechub.security.login.login-page' must not be null"),
-                    Arguments.of(true, "/login", null, Set.of("oauth2", "classic"), mock(SecurityProperties.Login.OAuth2.class), "The property 'sechub.security.login.redirect-uri' must not be null"),
-                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecurityProperties.Login.OAuth2.class), "The property 'sechub.security.login.modes' must not be null"),
+                    Arguments.of(null, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.enabled' must not be null"),
+                    Arguments.of(true, null, "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.login-page' must not be null"),
+                    Arguments.of(true, "/login", null, Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.redirect-uri' must not be null"),
+                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.modes' must not be null"),
                     Arguments.of(true, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), null, "The property 'sechub.security.login.oauth2' must not be null")
             );
         }

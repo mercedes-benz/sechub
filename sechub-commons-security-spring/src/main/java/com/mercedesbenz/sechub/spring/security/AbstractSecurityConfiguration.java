@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.spring.security;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +31,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -58,12 +62,12 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author hamidonos
  */
-@EnableConfigurationProperties(SecurityProperties.class)
+@EnableConfigurationProperties(SecHubSecurityProperties.class)
 public abstract class AbstractSecurityConfiguration {
 
     static final String ACCESS_TOKEN = "access_token";
-    static final String SERVER_OAUTH2_PROPERTIES_PREFIX = "sechub.security.server.oauth2";;
-    static final String MODE = "mode";
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSecurityConfiguration.class);
 
     private static final String SCOPE = "openid";
     private static final String SUBJECT = "sub";
@@ -83,101 +87,36 @@ public abstract class AbstractSecurityConfiguration {
     @Bean
 	@Order(1)
 	SecurityFilterChain securityFilterChainResourceServer(HttpSecurity httpSecurity,
-														  SecurityProperties securityProperties,
+														  SecHubSecurityProperties secHubSecurityProperties,
 														  @Autowired(required = false) UserDetailsService userDetailsService,
 														  RestTemplate restTemplate,
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
 														  @Autowired(required = false) JwtDecoder jwtDecoder) throws Exception {
-		SecurityProperties.Login login = securityProperties.getLogin();
 
-		if (login != null && login.isEnabled()) {
-			Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
-			publicPaths.add(login.getLoginPage());
-
-			RequestMatcher publicPathsMatcher = new OrRequestMatcher(
-					publicPaths.stream()
-							.map(AntPathRequestMatcher::new)
-							.toArray(AntPathRequestMatcher[]::new));
-
-			RequestMatcher protectedPathsMatcher = new NegatedRequestMatcher(publicPathsMatcher);
-
-			httpSecurity.securityMatcher(protectedPathsMatcher);
-		}
+		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
 
 		httpSecurity
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorizeHttpRequests())
-				.csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled. The CookieServerCsrfTokenRepository does
-				// not work since Spring Boot 3
-				.httpBasic(Customizer.withDefaults()).headers((headers) -> headers
-						.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
-
-		SecurityProperties.Server server = securityProperties.getServer();
-
-		if (server != null && server.isOAuth2ModeEnabled()) {
-			if (userDetailsService == null) {
-				throw new NoSuchBeanDefinitionException(UserDetailsService.class);
-			}
-
-			SecurityProperties.Server.OAuth2 oAuth2 = server.getOAuth2();
-
-			if (oAuth2.isJwtModeEnabled() == oAuth2.isOpaqueTokenModeEnabled()) {
-				String exMsg = "Either 'jwt' or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
-						SERVER_OAUTH2_PROPERTIES_PREFIX,
-						MODE,
-						SecurityProperties.Server.OAuth2.OAUTH2_JWT_MODE,
-						SecurityProperties.Server.OAuth2.OAUTH2_OPAQUE_TOKEN_MODE
+				/* CSRF protection disabled. The CookieServerCsrfTokenRepository does not work since Spring Boot 3 */
+				.csrf(AbstractHttpConfigurer::disable)
+				.headers((headers) -> headers.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")))
+				.exceptionHandling(ex -> ex
+						/* Unauthorized requests will be handled with a 401 status code */
+						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
 				);
 
-				throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
-			}
-
-			if (aes256Encryption == null) {
-				throw new NoSuchBeanDefinitionException(AES256Encryption.class);
-			}
-
-			BearerTokenResolver bearerTokenResolver = new DynamicBearerTokenResolver(aes256Encryption);
-
-			if (oAuth2.isJwtModeEnabled()) {
-				if (jwtDecoder == null) {
-					throw new NoSuchBeanDefinitionException(JwtDecoder.class);
-				}
-				AuthenticationProvider authenticationProvider = new OAuth2JwtAuthenticationProvider(userDetailsService, jwtDecoder);
-
-				httpSecurity
-						.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-                                    .jwt(jwt -> jwt.decoder(jwtDecoder))
-                                    .bearerTokenResolver(bearerTokenResolver)
-						)
-						.authenticationProvider(authenticationProvider);
-			}
-
-			if (oAuth2.isOpaqueTokenModeEnabled()) {
-				SecurityProperties.Server.OAuth2.OpaqueToken opaqueToken = oAuth2.getOpaqueToken();
-				OpaqueTokenIntrospector opaqueTokenIntrospector = new OAuth2OpaqueTokenIntrospector(
-						restTemplate,
-						opaqueToken.getIntrospectionUri(),
-						opaqueToken.getClientId(),
-						opaqueToken.getClientSecret(),
-						userDetailsService);
-
-				httpSecurity
-						.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-								.opaqueToken(opaqueTokenConfigurer -> opaqueTokenConfigurer.introspector(opaqueTokenIntrospector))
-								.bearerTokenResolver(bearerTokenResolver)
-						);
-			}
-		}
-		/* @formatter:on */
+		configureResourceServerMode(httpSecurity, secHubSecurityProperties.getResourceServerProperties(), userDetailsService, aes256Encryption, jwtDecoder, restTemplate);
 
         return httpSecurity.build();
     }
+	/* @formatter:on */
 
     @Bean
     @Conditional(LoginEnabledCondition.class)
-    ClientRegistrationRepository clientRegistrationRepository(SecurityProperties securityProperties) {
-        SecurityProperties.Login login = securityProperties.getLogin();
-        SecurityProperties.Login.OAuth2 oAuth2 = login.getOAuth2();
+    ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties secHubSecurityProperties) {
+        SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
+        SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();
 
         /* @formatter:off */
 		ClientRegistration clientRegistration = ClientRegistration
@@ -204,13 +143,14 @@ public abstract class AbstractSecurityConfiguration {
     @Order(2)
     /* @formatter:off */
 	SecurityFilterChain securityFilterChainLogin(HttpSecurity httpSecurity,
-												 @Autowired(required = false) SecurityProperties securityProperties,
-												 @Autowired(required = false) AES256Encryption aes256Encryption,
-												 @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
-		SecurityProperties.Login login = securityProperties.getLogin();
+												 SecHubSecurityProperties secHubSecurityProperties,
+												 RestTemplate restTemplate,
+												 AES256Encryption aes256Encryption,
+												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+		SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
 
 		Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
-		publicPaths.add(login.getLoginPage());
+		publicPaths.add(loginProperties.getLoginPage());
 
 		httpSecurity.securityMatcher(publicPaths.toArray(new String[0]))
 				/* Disable CSRF */
@@ -219,41 +159,232 @@ public abstract class AbstractSecurityConfiguration {
 				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-		if (login.isOAuth2ModeEnabled()) {
-			SecurityProperties.Login.OAuth2 loginOAuth2 = login.getOAuth2();
-			RestTemplate restTemplate = new RestTemplate();
-			LoginOAuth2AccessTokenClient loginOAuth2AccessTokenClient = new LoginOAuth2AccessTokenClient(restTemplate);
-			if (oAuth2AuthorizedClientService == null) {
-				throw new NoSuchBeanDefinitionException(OAuth2AuthorizedClientService.class);
-			}
-			if (aes256Encryption == null) {
-				throw new NoSuchBeanDefinitionException(AES256Encryption.class);
-			}
-			AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2.getProvider(), oAuth2AuthorizedClientService,
-					aes256Encryption, login.getRedirectUri());
-			/* Enable OAuth2 */
-			httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(login.getLoginPage())
-					.tokenEndpoint(token -> token.accessTokenResponseClient(loginOAuth2AccessTokenClient))
-					.successHandler(authenticationSuccessHandler));
-		}
+		if (!loginProperties.isOAuth2ModeEnabled() && !loginProperties.isClassicModeEnabled()) {
+			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
+					SecHubSecurityProperties.LoginProperties.PREFIX,
+					SecHubSecurityProperties.LoginProperties.MODES
+			);
+			/* @formatter:on */
 
-		if (login.isClassicModeEnabled()) {
-			/*
-			 * Enable Classic Authentication
-			 *
-			 * Note: This must be the last configuration in
-			 * order to set the default 'loginPage' to oAuth2 because spring uses the
-			 * 'loginPage' from the first authentication method configured
-			 */
-			AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(login.getRedirectUri());
-			httpSecurity.formLogin(form -> form.loginPage(login.getLoginPage()).successHandler(authenticationSuccessHandler));
-		}
+            throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
+        }
+        if (loginProperties.isOAuth2ModeEnabled()) {
+            /*
+             * Note:
+             *
+             * This will set the default login page to the oauth2 login page. Spring will
+             * always use the default login page of the first configured login mode.
+             */
+            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService);
+        }
 
-		/* @formatter:on */
+        if (loginProperties.isClassicModeEnabled()) {
+            configureLoginClassicMode(httpSecurity, loginProperties);
+        }
+
+        /* @formatter:on */
 
         return httpSecurity.build();
     }
 
     protected abstract Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> authorizeHttpRequests();
 
+    /**
+     * Configures the security matcher for the resource server.
+     * <p>
+     * By default the http security config of the resource server will apply to all
+     * paths. If the login is enabled, the login page and public paths will be
+     * excluded from the security matcher.
+     * </p>
+     *
+     * @param httpSecurity    the {@link HttpSecurity} object to configure
+     * @param loginProperties the SecHub security login properties
+     * @see HttpSecurity#securityMatcher(RequestMatcher)
+     */
+    private static void configureResourceServerSecurityMatcher(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) {
+        if (loginProperties == null || !loginProperties.isEnabled()) {
+            return;
+        }
+
+        Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
+        publicPaths.add(loginProperties.getLoginPage());
+        RequestMatcher publicPathsMatcher = new OrRequestMatcher(publicPaths.stream().map(AntPathRequestMatcher::new).toArray(AntPathRequestMatcher[]::new));
+        RequestMatcher protectedPathsMatcher = new NegatedRequestMatcher(publicPathsMatcher);
+        httpSecurity.securityMatcher(protectedPathsMatcher);
+    }
+
+    /* @formatter:off */
+    private static void configureResourceServerMode(HttpSecurity httpSecurity,
+													SecHubSecurityProperties.ResourceServerProperties resourceServerProperties,
+													UserDetailsService userDetailsService,
+													AES256Encryption aes256Encryption,
+													JwtDecoder jwtDecoder,
+													RestTemplate restTemplate) throws Exception {
+
+		if (resourceServerProperties == null) {
+			/*
+			 * This is useful for testing purposes where the security layer is mocked or if you need disable all authentication
+			 * modes for any reason. Note that the application is still protected but all requests to protected paths will be
+			 * rejected.
+			 */
+			LOG.warn("No resource server configuration detected. All requests to protected paths will be rejected.");
+			return;
+		}
+
+		if (!resourceServerProperties.isClassicModeEnabled() && !resourceServerProperties.isOAuth2ModeEnabled()) {
+			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
+					SecHubSecurityProperties.ResourceServerProperties.PREFIX,
+					SecHubSecurityProperties.ResourceServerProperties.MODES
+			);
+			/* @formatter:on */
+
+            throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
+        }
+
+        if (resourceServerProperties.isClassicModeEnabled()) {
+            configureResourceServerClassicMode(httpSecurity);
+        }
+
+        if (resourceServerProperties.isOAuth2ModeEnabled()) {
+            configureResourceServerOAuth2Mode(httpSecurity, resourceServerProperties.getOAuth2Properties(), userDetailsService, aes256Encryption, jwtDecoder,
+                    restTemplate);
+        }
+    }
+
+    private static void configureResourceServerClassicMode(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.httpBasic(Customizer.withDefaults());
+    }
+
+    /* @formatter:off */
+	private static void configureResourceServerOAuth2Mode(HttpSecurity httpSecurity,
+														  SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2Properties,
+														  UserDetailsService userDetailsService,
+														  AES256Encryption aes256Encryption,
+														  JwtDecoder jwtDecoder,
+														  RestTemplate restTemplate) throws Exception {
+
+		if (oAuth2Properties.isJwtModeEnabled() == oAuth2Properties.isOpaqueTokenModeEnabled()) {
+			String exMsg = "Either 'jwt' or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
+					SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX,
+					SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.MODE,
+					SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OAUTH2_JWT_MODE,
+					SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OAUTH2_OPAQUE_TOKEN_MODE
+			);
+
+			throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
+		}
+
+		if (oAuth2Properties.isJwtModeEnabled()) {
+			configureResourceServerOAuth2JwtMode(httpSecurity, userDetailsService, jwtDecoder, aes256Encryption);
+		}
+
+		if (oAuth2Properties.isOpaqueTokenModeEnabled()) {
+			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption);
+		}
+	}
+	/* @formatter:on */
+
+    /* @formatter:off */
+	private static void configureResourceServerOAuth2JwtMode(HttpSecurity httpSecurity,
+															 UserDetailsService userDetailsService,
+															 JwtDecoder jwtDecoder,
+															 AES256Encryption aes256Encryption) throws Exception {
+
+		if (userDetailsService == null) {
+			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
+		}
+
+		if (jwtDecoder == null) {
+			throw new NoSuchBeanDefinitionException(JwtDecoder.class);
+		}
+
+		AuthenticationProvider authenticationProvider = new OAuth2JwtAuthenticationProvider(userDetailsService, jwtDecoder);
+
+		if (aes256Encryption == null) {
+			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
+		}
+
+		BearerTokenResolver bearerTokenResolver = new DynamicBearerTokenResolver(aes256Encryption);
+
+		httpSecurity
+				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+						.jwt(jwt -> jwt.decoder(jwtDecoder))
+						.bearerTokenResolver(bearerTokenResolver)
+				)
+				.authenticationProvider(authenticationProvider);
+	}
+	/* @formatter:on */
+
+    /* @formatter:off */
+	private static void configureResourceServerOAuth2OpaqueTokenMode(HttpSecurity httpSecurity,
+																	 SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueTokenProperties,
+																	 UserDetailsService userDetailsService,
+																	 RestTemplate restTemplate,
+																	 AES256Encryption aes256Encryption) throws Exception {
+
+		if (userDetailsService == null) {
+			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
+		}
+
+		if (restTemplate == null) {
+			throw new NoSuchBeanDefinitionException(RestTemplate.class);
+		}
+
+		OpaqueTokenIntrospector opaqueTokenIntrospector = new OAuth2OpaqueTokenIntrospector(
+				restTemplate,
+				opaqueTokenProperties.getIntrospectionUri(),
+				opaqueTokenProperties.getClientId(),
+				opaqueTokenProperties.getClientSecret(),
+				userDetailsService);
+
+		if (aes256Encryption == null) {
+			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
+		}
+
+		BearerTokenResolver bearerTokenResolver = new DynamicBearerTokenResolver(aes256Encryption);
+
+		httpSecurity
+				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+						.opaqueToken(opaqueTokenConfigurer -> opaqueTokenConfigurer.introspector(opaqueTokenIntrospector))
+						.bearerTokenResolver(bearerTokenResolver)
+				);
+		}
+	/* @formatter:on */
+
+    /* @formatter:off */
+	private static void configureLoginOAuth2Mode(HttpSecurity httpSecurity,
+												 SecHubSecurityProperties.LoginProperties loginProperties,
+												 RestTemplate restTemplate,
+												 AES256Encryption aes256Encryption,
+												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+		SecHubSecurityProperties.LoginProperties.OAuth2Properties loginOAuth2Properties = loginProperties.getOAuth2Properties();
+
+		if (restTemplate == null) {
+			throw new NoSuchBeanDefinitionException(RestTemplate.class);
+		}
+
+		LoginOAuth2AccessTokenClient loginOAuth2AccessTokenClient = new LoginOAuth2AccessTokenClient(restTemplate);
+
+		if (oAuth2AuthorizedClientService == null) {
+			throw new NoSuchBeanDefinitionException(OAuth2AuthorizedClientService.class);
+		}
+
+		if (aes256Encryption == null) {
+			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
+		}
+
+		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
+				aes256Encryption, loginProperties.getRedirectUri());
+
+		/* Enable OAuth2 */
+		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(loginProperties.getLoginPage())
+				.tokenEndpoint(token -> token.accessTokenResponseClient(loginOAuth2AccessTokenClient))
+				.successHandler(authenticationSuccessHandler));
+	}
+	/* @formatter:on */
+
+    private static void configureLoginClassicMode(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
+        AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(loginProperties.getRedirectUri());
+        httpSecurity.formLogin(form -> form.loginPage(loginProperties.getLoginPage()).successHandler(authenticationSuccessHandler));
+    }
 }

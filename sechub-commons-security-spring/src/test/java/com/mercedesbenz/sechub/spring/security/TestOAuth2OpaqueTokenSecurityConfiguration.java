@@ -58,9 +58,9 @@ public class TestOAuth2OpaqueTokenSecurityConfiguration {
     /* @formatter:off */
     @Autowired
     TestOAuth2OpaqueTokenSecurityConfiguration(RestTemplate restTemplate,
-                                               SecurityProperties securityProperties) {
+                                               SecHubSecurityProperties secHubSecurityProperties) {
 
-        String introspectionUri = securityProperties.getServer().getOAuth2().getOpaqueToken().getIntrospectionUri();
+        String introspectionUri = secHubSecurityProperties.getResourceServerProperties().getOAuth2Properties().getOpaqueTokenProperties().getIntrospectionUri();
 
         when(restTemplate.postForObject(eq(introspectionUri), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenAnswer(invocation -> {
             HttpEntity<MultiValueMap<String, String>> request = invocation.getArgument(1);

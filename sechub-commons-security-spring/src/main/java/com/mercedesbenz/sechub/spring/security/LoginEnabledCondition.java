@@ -11,7 +11,7 @@ public class LoginEnabledCondition implements Condition {
         /* @formatter:off */
         return context
                 .getEnvironment()
-                .getProperty("%s.enabled".formatted(SecurityProperties.Login.PREFIX), boolean.class, false);
+                .getProperty("%s.enabled".formatted(SecHubSecurityProperties.LoginProperties.PREFIX), boolean.class, false);
         /* @formatter:on */
     }
 }

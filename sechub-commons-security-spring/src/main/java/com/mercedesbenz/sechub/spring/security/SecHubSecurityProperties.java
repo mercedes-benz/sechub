@@ -14,11 +14,11 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
-@ConfigurationProperties(prefix = SecurityProperties.PREFIX)
-public class SecurityProperties {
+@ConfigurationProperties(prefix = SecHubSecurityProperties.PREFIX)
+public class SecHubSecurityProperties {
     static final String PREFIX = "sechub.security";
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityProperties.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubSecurityProperties.class);
     private static final String ERR_MSG_FORMAT = "The property '%s.%s' must not be null";
     private static final String OAUTH2_MODE = "oauth2";
     private static final String CLASSIC_MODE = "classic";
@@ -30,49 +30,50 @@ public class SecurityProperties {
      * 'classic' mode. Set this to null if none of these modes is needed (e.g. when
      * testing)
      */
-    private final Server server;
+    private final ResourceServerProperties server;
 
     /**
      * Configures the server to offer login functionality for users. With this
      * configuration, the server will be able to provide authentication to users.
      * Set this to null if the server should not offer login functionality.
      */
-    private final Login login;
+    private final LoginProperties login;
 
-    private final Encryption encryption;
+    private final EncryptionProperties encryption;
 
     @ConstructorBinding
-    public SecurityProperties(Server server, Login login, Encryption encryption) {
+    public SecHubSecurityProperties(ResourceServerProperties server, LoginProperties login, EncryptionProperties encryption) {
         this.server = server;
         if (server == null) {
-            LOG.warn("The property '%s.server' is not set. The server will not be able to authenticate requests".formatted(PREFIX));
+            LOG.warn("The property '%s.server' is not set".formatted(PREFIX));
         }
         this.login = login;
         this.encryption = login != null && login.isEnabled() ? requireNonNull(encryption, ERR_MSG_FORMAT.formatted(PREFIX, "encryption")) : encryption;
     }
 
-    public Server getServer() {
+    public ResourceServerProperties getResourceServerProperties() {
         return server;
     }
 
-    public Login getLogin() {
+    public LoginProperties getLoginProperties() {
         return login;
     }
 
-    public Encryption getEncryption() {
+    public EncryptionProperties getEncryptionProperties() {
         return encryption;
     }
 
-    public static class Server {
+    public static class ResourceServerProperties {
+        public static final String MODES = "modes";
         public static final String OAUTH2 = "oauth2";
         public static final String CLASSIC = "classic";
-        static final String PREFIX = "%s.server".formatted(SecurityProperties.PREFIX);
+        static final String PREFIX = "%s.server".formatted(SecHubSecurityProperties.PREFIX);
 
         private final Set<String> modes;
-        private final OAuth2 oAuth2;
+        private final OAuth2Properties oAuth2;
 
         @ConstructorBinding
-        public Server(Set<String> modes, OAuth2 oAuth2) {
+        public ResourceServerProperties(Set<String> modes, OAuth2Properties oAuth2) {
             this.modes = requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes"));
             if (this.modes.isEmpty()) {
                 throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
@@ -95,22 +96,23 @@ public class SecurityProperties {
             return modes.contains(CLASSIC_MODE);
         }
 
-        public OAuth2 getOAuth2() {
+        public OAuth2Properties getOAuth2Properties() {
             return oAuth2;
         }
 
-        public static class OAuth2 {
+        public static class OAuth2Properties {
+            public static final String MODE = "mode";
             public static final String OAUTH2_JWT_MODE = "jwt";
             public static final String OAUTH2_OPAQUE_TOKEN_MODE = "opaque-token";
-            static final String PREFIX = "%s.oauth2".formatted(Server.PREFIX);
+            static final String PREFIX = "%s.oauth2".formatted(ResourceServerProperties.PREFIX);
             private static final Set<String> ALLOWED_MODES = Set.of(OAUTH2_JWT_MODE, OAUTH2_OPAQUE_TOKEN_MODE);
 
             private final String mode;
-            private final Jwt jwt;
-            private final OpaqueToken opaqueToken;
+            private final JwtProperties jwt;
+            private final OpaqueTokenProperties opaqueToken;
 
             @ConstructorBinding
-            public OAuth2(String mode, Jwt jwt, OpaqueToken opaqueToken) {
+            public OAuth2Properties(String mode, JwtProperties jwt, OpaqueTokenProperties opaqueToken) {
                 this.mode = requireNonNull(mode, ERR_MSG_FORMAT.formatted(PREFIX, "mode"));
                 if (!ALLOWED_MODES.contains(mode)) {
                     throw new IllegalArgumentException("The property '%s.mode' allows only 'jwt' or 'opaque-token' mode".formatted(PREFIX));
@@ -132,21 +134,21 @@ public class SecurityProperties {
                 return OAUTH2_OPAQUE_TOKEN_MODE.equals(mode);
             }
 
-            public Jwt getJwt() {
+            public JwtProperties getJwtProperties() {
                 return jwt;
             }
 
-            public OpaqueToken getOpaqueToken() {
+            public OpaqueTokenProperties getOpaqueTokenProperties() {
                 return opaqueToken;
             }
 
-            public static class Jwt {
-                static final String PREFIX = "%s.jwt".formatted(OAuth2.PREFIX);
+            public static class JwtProperties {
+                static final String PREFIX = "%s.jwt".formatted(OAuth2Properties.PREFIX);
 
                 private final String jwkSetUri;
 
                 @ConstructorBinding
-                public Jwt(String jwkSetUri) {
+                public JwtProperties(String jwkSetUri) {
                     this.jwkSetUri = requireNonNull(jwkSetUri, ERR_MSG_FORMAT.formatted(PREFIX, "jwk-set-uri"));
                 }
 
@@ -155,15 +157,15 @@ public class SecurityProperties {
                 }
             }
 
-            public static class OpaqueToken {
-                static final String PREFIX = "%s.opaque-token".formatted(OAuth2.PREFIX);
+            public static class OpaqueTokenProperties {
+                static final String PREFIX = "%s.opaque-token".formatted(OAuth2Properties.PREFIX);
 
                 private final String introspectionUri;
                 private final String clientId;
                 private final String clientSecret;
 
                 @ConstructorBinding
-                public OpaqueToken(String introspectionUri, String clientId, String clientSecret) {
+                public OpaqueTokenProperties(String introspectionUri, String clientId, String clientSecret) {
                     this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
                     this.clientId = requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id"));
                     this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
@@ -184,16 +186,17 @@ public class SecurityProperties {
         }
     }
 
-    public static class Login {
-        static final String PREFIX = "%s.login".formatted(SecurityProperties.PREFIX);
+    public static class LoginProperties {
+        static final String PREFIX = "%s.login".formatted(SecHubSecurityProperties.PREFIX);
+        static final String MODES = "modes";
 
         private final boolean isEnabled;
         private final String loginPage;
         private final String redirectUri;
         private final Set<String> modes;
-        private final OAuth2 oAuth2;
+        private final OAuth2Properties oAuth2;
 
-        public Login(Boolean enabled, String loginPage, String redirectUri, Set<String> modes, OAuth2 oAuth2) {
+        public LoginProperties(Boolean enabled, String loginPage, String redirectUri, Set<String> modes, OAuth2Properties oAuth2) {
             this.isEnabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
             this.loginPage = enabled ? requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page")) : loginPage;
             this.redirectUri = enabled ? requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri")) : redirectUri;
@@ -235,12 +238,12 @@ public class SecurityProperties {
             return modes.contains(CLASSIC_MODE);
         }
 
-        public OAuth2 getOAuth2() {
+        public OAuth2Properties getOAuth2Properties() {
             return oAuth2;
         }
 
-        public static class OAuth2 {
-            static final String PREFIX = "%s.oauth2".formatted(Login.PREFIX);
+        public static class OAuth2Properties {
+            static final String PREFIX = "%s.oauth2".formatted(LoginProperties.PREFIX);
 
             private final String clientId;
             private final String clientSecret;
@@ -253,8 +256,8 @@ public class SecurityProperties {
             private final String jwkSetUri;
 
             @ConstructorBinding
-            public OAuth2(String clientId, String clientSecret, String provider, String redirectUri, String issuerUri, String authorizationUri, String tokenUri,
-                    String userInfoUri, String jwkSetUri) {
+            public OAuth2Properties(String clientId, String clientSecret, String provider, String redirectUri, String issuerUri, String authorizationUri,
+                    String tokenUri, String userInfoUri, String jwkSetUri) {
                 this.clientId = requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id"));
                 this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
                 this.provider = requireNonNull(provider, ERR_MSG_FORMAT.formatted(PREFIX, "provider"));
@@ -305,14 +308,14 @@ public class SecurityProperties {
         }
     }
 
-    public static class Encryption {
-        static final String PREFIX = "%s.encryption".formatted(SecurityProperties.PREFIX);
+    public static class EncryptionProperties {
+        static final String PREFIX = "%s.encryption".formatted(SecHubSecurityProperties.PREFIX);
         private static final int AES_256_SECRET_KEY_LENGTH = 32;
 
         private final SealedObject secretKey;
 
         @ConstructorBinding
-        public Encryption(String secretKey) {
+        public EncryptionProperties(String secretKey) {
             requireNonNull(secretKey, ERR_MSG_FORMAT.formatted(PREFIX, "secret-key"));
             if (!is256BitString(secretKey)) {
                 throw new IllegalArgumentException("The property %s.%s must be a 256-bit string".formatted(PREFIX, "secret-key"));

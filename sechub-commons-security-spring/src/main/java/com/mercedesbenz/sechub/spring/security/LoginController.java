@@ -13,18 +13,18 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Conditional(LoginEnabledCondition.class)
 class LoginController {
 
-    private final SecurityProperties.Login login;
+    private final SecHubSecurityProperties.LoginProperties loginProperties;
     private final boolean isOAuth2Enabled;
     private final boolean isClassicAuthEnabled;
 
     /* @formatter:off */
     LoginController(RequestMappingHandlerMapping requestMappingHandlerMapping,
-                    SecurityProperties securityProperties) throws NoSuchMethodException {
-        login = securityProperties.getLogin();
+                    SecHubSecurityProperties secHubSecurityProperties) throws NoSuchMethodException {
+        loginProperties = secHubSecurityProperties.getLoginProperties();
         /* register the login page dynamically at runtime */
-        registerLoginMapping(requestMappingHandlerMapping, login.getLoginPage());
-        this.isOAuth2Enabled = login.isOAuth2ModeEnabled();
-        this.isClassicAuthEnabled = login.isClassicModeEnabled();
+        registerLoginMapping(requestMappingHandlerMapping, loginProperties.getLoginPage());
+        this.isOAuth2Enabled = loginProperties.isOAuth2ModeEnabled();
+        this.isClassicAuthEnabled = loginProperties.isClassicModeEnabled();
     }
     /* @formatter:on */
 
@@ -32,8 +32,8 @@ class LoginController {
         model.addAttribute("isOAuth2Enabled", isOAuth2Enabled);
         model.addAttribute("isClassicAuthEnabled", isClassicAuthEnabled);
 
-        if (login != null) {
-            String registrationId = login.getOAuth2().getProvider();
+        if (loginProperties != null && isOAuth2Enabled) {
+            String registrationId = loginProperties.getOAuth2Properties().getProvider();
             model.addAttribute("registrationId", registrationId);
         }
 

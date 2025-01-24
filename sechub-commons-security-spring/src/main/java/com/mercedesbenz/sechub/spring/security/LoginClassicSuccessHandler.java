@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * {@code ClassicLoginSuccessHandler} implements
+ * {@code LoginClassicSuccessHandler} implements
  * {@link AuthenticationSuccessHandler} to provide custom behavior upon
  * successful authentication. This handler redirects the user to the specified
  * <code>redirectUri</code>.

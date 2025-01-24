@@ -34,7 +34,7 @@ class DynamicBearerTokenResolverTest {
     private static final String BASE_PATH = "/";
 
     private static final AES256Encryption aes256Encryption = mock();
-    private static final DynamicBearerTokenResolver DYNAMIC_BEARER_TOKEN_RESOLVER = new DynamicBearerTokenResolver(aes256Encryption);
+    private static final DynamicBearerTokenResolver bearerTokenResolverToTest = new DynamicBearerTokenResolver(aes256Encryption);
     private static final HttpServletRequest httpServletRequest = mock();
 
     @BeforeEach
@@ -49,7 +49,7 @@ class DynamicBearerTokenResolverTest {
         when(httpServletRequest.getHeader("Authorization")).thenReturn("Bearer " + ACCESS_TOKEN);
 
         /* execute */
-        String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
+        String accessToken = bearerTokenResolverToTest.resolve(httpServletRequest);
 
         /* test */
         assertThat(accessToken).isEqualTo(ACCESS_TOKEN);
@@ -67,7 +67,7 @@ class DynamicBearerTokenResolverTest {
         when(httpServletRequest.getCookies()).thenReturn(cookies);
 
         /* execute */
-        String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
+        String accessToken = bearerTokenResolverToTest.resolve(httpServletRequest);
 
         /* test */
         assertThat(accessToken).isEqualTo(ACCESS_TOKEN);
@@ -82,7 +82,7 @@ class DynamicBearerTokenResolverTest {
         when(httpServletRequest.getCookies()).thenReturn(array);
 
         /* execute */
-        String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
+        String accessToken = bearerTokenResolverToTest.resolve(httpServletRequest);
 
         /* test */
         assertThat(accessToken).isEqualTo(null);
@@ -97,7 +97,7 @@ class DynamicBearerTokenResolverTest {
 
         /* execute & test */
 
-        String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
+        String accessToken = bearerTokenResolverToTest.resolve(httpServletRequest);
 
         /* test */
         assertThat(accessToken).isEqualTo(null);
@@ -113,7 +113,7 @@ class DynamicBearerTokenResolverTest {
 
         /* execute & test */
 
-        String accessToken = DYNAMIC_BEARER_TOKEN_RESOLVER.resolve(httpServletRequest);
+        String accessToken = bearerTokenResolverToTest.resolve(httpServletRequest);
 
         /* test */
         assertThat(accessToken).isEqualTo(null);
