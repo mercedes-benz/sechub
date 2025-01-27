@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -98,13 +97,13 @@ public abstract class AbstractSecurityConfiguration {
 		httpSecurity
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorizeHttpRequests())
+				.exceptionHandling(exceptionHandling -> exceptionHandling
+						/* Unauthorized requests will return a 401 status code */
+						.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+				)
 				/* CSRF protection disabled. The CookieServerCsrfTokenRepository does not work since Spring Boot 3 */
 				.csrf(AbstractHttpConfigurer::disable)
-				.headers((headers) -> headers.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")))
-				.exceptionHandling(ex -> ex
-						/* Unauthorized requests will be handled with a 401 status code */
-						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-				);
+				.headers((headers) -> headers.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
 
 		configureResourceServerMode(httpSecurity, secHubSecurityProperties.getResourceServerProperties(), userDetailsService, aes256Encryption, jwtDecoder, restTemplate);
 

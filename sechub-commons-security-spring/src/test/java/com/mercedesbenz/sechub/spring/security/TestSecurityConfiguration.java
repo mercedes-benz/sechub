@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.web.client.RestTemplate;
 
 /* @formatter:off */
@@ -39,13 +40,23 @@ class TestSecurityConfiguration extends AbstractSecurityConfiguration {
         return mock();
     }
 
+    @Bean
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        /*
+         * In Spring Security, roles are prefixed with ROLE_ by default when performing
+         * authorization checks. This will remove the default prefix ROLE_ from the
+         * check.
+         */
+        return new GrantedAuthorityDefaults("");
+    }
+
     @Override
     protected Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> authorizeHttpRequests() {
         /* @formatter:off */
         return (auth) -> auth.
-                requestMatchers("/api/admin" + "/**").hasAnyAuthority(TestRoles.SUPERADMIN).
-                requestMatchers("/api/user"+ "/**").hasAnyAuthority(TestRoles.USER, TestRoles.SUPERADMIN).
-                requestMatchers("/api/owner"+ "/**").hasAnyAuthority(TestRoles.OWNER, TestRoles.SUPERADMIN).
+                requestMatchers("/api/admin" + "/**").hasAnyRole(TestRoles.SUPERADMIN).
+                requestMatchers("/api/user"+ "/**").hasAnyRole(TestRoles.USER, TestRoles.SUPERADMIN).
+                requestMatchers("/api/owner"+ "/**").hasAnyRole(TestRoles.OWNER, TestRoles.SUPERADMIN).
                 requestMatchers("/api/anonymous"+ "/**").permitAll().
                 requestMatchers("/**").denyAll();
         /* @formatter:on */
