@@ -7,18 +7,19 @@
   <v-container fluid>
     <v-row>
       <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
-                    <v-alert
-              v-model="alert"
-              closable
-              color="error"
-              density="compact"
-              :title="$t('JOB_ERROR_TITLE')"
-              type="warning"
-              variant="tonal"
-            >
-              {{ error }}
 
-            </v-alert>
+        <v-alert
+          v-model="alert"
+          closable
+          color="error"
+          density="compact"
+          :title="$t('JOB_ERROR_TITLE')"
+          type="warning"
+          variant="tonal"
+        >
+          {{ error }}
+        </v-alert>
+
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
@@ -83,12 +84,13 @@
                   </span>
                   </td>
                   <td>{{ job.jobUUID }}</td>
-                  <td><v-btn 
+                  <td>
+                    <v-btn 
                     v-if="!(job.executionState === 'ENDED' 
                     || job.executionState === 'INITIALIZING'
                     || job.executionResult === 'OK')"
-                    icon="mdi-close-circle-outline" 
-                    density="comfortable" 
+                    icon="mdi-close-circle-outline"
+                    density="comfortable"
                     color="error"
                     @click="cancelJob(job.jobUUID)"></v-btn>
                   </td>
@@ -204,8 +206,8 @@
           downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
           alert.value = true
-          error.value = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED')
-          console.error(t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED'), err)
+          error.value = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
+          console.error(t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID), err)
         }
       }
 
@@ -222,8 +224,8 @@
           downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
           alert.value = true
-          error.value = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED')
-          console.error(t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED'), err)
+          error.value = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
+          console.error(t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID), err)
         }
       }
 
