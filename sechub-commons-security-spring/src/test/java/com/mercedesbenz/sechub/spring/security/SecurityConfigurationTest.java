@@ -26,13 +26,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  *
  * <p>
  * <b>Note:</b> Here we don't test the integration of OAuth2 or Basic Auth. For
- * that, see {@link OAuth2JwtIntegrationTest}. This test class is only concerned
+ * that, see {@link OAuth2JwtIntegrationTest} or
+ * {@link OAuth2OpaqueTokenIntegrationTest}. This test class is only concerned
  * with verifying if the security rules are correctly applied on an abstract
  * level.
  * </p>
  *
  * @see WithMockUser
  * @see OAuth2JwtIntegrationTest
+ * @see OAuth2OpaqueTokenIntegrationTest
  * @see AbstractSecurityConfiguration
  *
  * @author hamidonos

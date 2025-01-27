@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRequestsNewApiToken;
 
 /**
- * Request new api token by a given onetimetoken. Can be done anonymous
+ * Request new api token by a given email address. Can be done anonymously
  *
  * @author Albert Tregnaghi
  *

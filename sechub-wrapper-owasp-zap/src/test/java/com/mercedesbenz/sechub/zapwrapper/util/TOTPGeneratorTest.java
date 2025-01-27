@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,26 +13,68 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import com.mercedesbenz.sechub.commons.model.login.EncodingType;
 import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 
 class TOTPGeneratorTest {
 
     @Test
-    void secret_key_being_null_throws_exception() {
+    void totp_config_being_null_throws_exception() {
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null, 6, TOTPHashAlgorithm.HMAC_SHA1, 30));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(null));
+
+        assertEquals("The TOTP configuration must be configured to generate TOTP values!", exception.getMessage());
+    }
+
+    @Test
+    void totp_seed_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration seed must be configured to generate TOTP values!", exception.getMessage());
+    }
+
+    @Test
+    void totp_hash_algorithm_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed("test-seed");
+        webLoginTOTPConfiguration.setHashAlgorithm(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration hash algorithm must be configured to generate TOTP values!", exception.getMessage());
+    }
+
+    @Test
+    void totp_encoding_type_being_null_throws_exception() {
+        /* prepare */
+        WebLoginTOTPConfiguration webLoginTOTPConfiguration = new WebLoginTOTPConfiguration();
+        webLoginTOTPConfiguration.setSeed("test-seed");
+        webLoginTOTPConfiguration.setEncodingType(null);
+
+        /* execute + test */
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TOTPGenerator(webLoginTOTPConfiguration));
+
+        assertEquals("The TOTP configuration encoding type must be configured to generate TOTP values!", exception.getMessage());
     }
 
     @Test
     void generate_the_excpected_otp_with_default_config() throws DecoderException {
         /* prepare */
         String seed = "NFQDO2DXCNAHULZU";
-        byte[] seedBytes = new Base32().decode(seed);
         long timeMillis = 1724650799055L;
         String expectedToken = "950308";
-        String seedDecoded = new String(seedBytes, StandardCharsets.UTF_8);
+        WebLoginTOTPConfiguration totpConfig = new WebLoginTOTPConfiguration();
+        totpConfig.setSeed(seed);
 
-        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded, 6, TOTPHashAlgorithm.HMAC_SHA1, 30);
+        TOTPGenerator totpGenerator = new TOTPGenerator(totpConfig);
 
         /* execute */
         String generatedToken = totpGenerator.generateTOTP(timeMillis);
@@ -50,10 +88,14 @@ class TOTPGeneratorTest {
     void rfc_6238_test_data_generate_the_excpected_otp(String seed, long timeInMillis, TOTPHashAlgorithm algorithm, int totpLength,
             int totpValidityTimeInSeconds, String expectedToken) throws DecoderException {
         /* prepare */
-        byte[] seedBytes = Hex.decodeHex(seed);
-        String seedDecoded = new String(seedBytes, StandardCharsets.UTF_8);
+        WebLoginTOTPConfiguration totpConfig = new WebLoginTOTPConfiguration();
+        totpConfig.setSeed(seed);
+        totpConfig.setEncodingType(EncodingType.HEX);
+        totpConfig.setTokenLength(totpLength);
+        totpConfig.setHashAlgorithm(algorithm);
+        totpConfig.setValidityInSeconds(totpValidityTimeInSeconds);
 
-        TOTPGenerator totpGenerator = new TOTPGenerator(seedDecoded, totpLength, algorithm, totpValidityTimeInSeconds);
+        TOTPGenerator totpGenerator = new TOTPGenerator(totpConfig);
 
         /* execute */
         String generatedToken = totpGenerator.generateTOTP(timeInMillis);

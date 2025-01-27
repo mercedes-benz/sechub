@@ -20,9 +20,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtException;
 
 /**
  * This configuration class provides the necessary beans to test Springs OAuth2
@@ -85,7 +85,7 @@ public class TestOAuth2JwtSecurityConfiguration {
                 return builder.subject(USER_ID).build();
             }
 
-            throw new JwtException("Invalid JWT token");
+            throw new BadJwtException("Invalid JWT token");
         });
         return jwtDecoder;
     }

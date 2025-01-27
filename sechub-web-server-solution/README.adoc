@@ -1,5 +1,0 @@
-// SPDX-License-Identifier: MIT
-
-== Web Server Image
-
-The files to create the Web Server container image.

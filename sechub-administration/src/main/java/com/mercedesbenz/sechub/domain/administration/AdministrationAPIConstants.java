@@ -64,7 +64,16 @@ public class AdministrationAPIConstants {
     public static final String API_LIST_USER_SIGNUPS = API_ADMINISTRATION + "signups";
 
     /* +-----------------------------------------------------------------------+ */
-    /* +............................ Users ....................................+ */
+    /* +......................... Users (Self Service).........................+ */
+    /* +-----------------------------------------------------------------------+ */
+
+    /**
+     * Fetch user detail information for authenticated user
+     */
+    public static final String API_USER_DETAIL_INFO = API_MANAGEMENT + "user";
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Users (Admin) ............................+ */
     /* +-----------------------------------------------------------------------+ */
     /**
      * shows all users names
