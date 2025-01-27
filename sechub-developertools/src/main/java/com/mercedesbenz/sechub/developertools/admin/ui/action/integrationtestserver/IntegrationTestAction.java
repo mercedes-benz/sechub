@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 
 /**
@@ -46,7 +46,7 @@ public abstract class IntegrationTestAction extends AbstractUIAction {
         integrationTestContext.setPort(getContext().getPort());
 
         String isAliveURL = integrationTestContext.getUrlBuilder().buildIntegrationTestIsAliveUrl();
-        if (!Boolean.TRUE.equals(IntegrationTestSetup.fetchTestServerStatus(isAliveURL))) {
+        if (!Boolean.TRUE.equals(IntegrationTestSupport.fetchTestServerStatus(isAliveURL))) {
             warn("You are not running an integration test server, so cannot exeucte action!");
             return false;
         }

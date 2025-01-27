@@ -47,7 +47,7 @@ public class LocalDeveloperFileSetupSupport {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(sechubDevConfig)) {
             properties.load(fis);
-            alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSetup.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
+            alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSupport.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
             for (Object key : properties.keySet()) {
                 Object value = properties.get(key);
                 if (key instanceof String && value instanceof String) {

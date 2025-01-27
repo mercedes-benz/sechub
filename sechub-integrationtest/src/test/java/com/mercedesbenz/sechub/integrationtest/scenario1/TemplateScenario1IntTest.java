@@ -1,31 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario1;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.SUPER_ADMIN;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
-import static org.assertj.core.api.Assertions.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.executeResilient;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.fetchScanProjectConfigurations;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
 
-public class TemplateScenario1IntTest {
-
-    @Rule
-    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
-
-    @Rule
-    public Timeout timeOut = Timeout.seconds(600);
+@ExtendWith(IntegrationTestExtension.class)
+@WithTestScenario(Scenario1.class)
+class TemplateScenario1IntTest {
 
     private String templateId;
 
@@ -34,8 +32,8 @@ public class TemplateScenario1IntTest {
     private TemplateDefinition definitionWithId;
     private TemplateDefinition updateDefinition;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void beforeEach() {
 
         templateId = "template-1_" + System.nanoTime();
 
@@ -64,7 +62,7 @@ public class TemplateScenario1IntTest {
     }
 
     @Test
-    public void template_crud_test() {
+    void template_crud_test() {
         /* prepare */
         as(SUPER_ADMIN).createProject(Scenario1.PROJECT_1, SUPER_ADMIN); // not done in this scenario automatically
 
