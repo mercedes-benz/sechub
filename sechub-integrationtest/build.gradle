@@ -28,6 +28,10 @@ dependencies {
     api library.junit4
 
     api library.apache_commons_lang3
+    
+    implementation spring_boot_dependency.junit_jupiter
+    implementation spring_boot_dependency.mockito_core
+    implementation spring_boot_dependency.assertj_core
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
