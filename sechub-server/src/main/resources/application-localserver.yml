@@ -12,5 +12,11 @@ server:
     key-alias:
        tomcat
 sechub:
-   server:
-      baseurl: "https://localhost:${server.port}"
+  server:
+    baseurl: "https://localhost:${server.port}"
+  security:
+    server:
+      modes:
+       - classic
+    login:
+      enabled: false

@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,10 +31,12 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * <p>
  * In a typical setup, the
- * {@link org.springframework.security.oauth2.jwt.JwtDecoder} decodes JWT tokens
- * by integrating with a identity provider. With this configuration, however, we
- * mock the identity provider to avoid external dependencies. Additionally, we
- * mock the user's roles, which are otherwise fetched from the database.
+ * {@link org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector}
+ * introspects the opaque token by calling the introspection endpoint of the
+ * identity provider. With this configuration, however, we mock the identity
+ * provider to avoid external dependencies
+ * {@link TestOAuth2OpaqueTokenSecurityConfiguration}. Additionally, we mock the
+ * user's roles, which are otherwise fetched from the database.
  * </p>
  *
  * <p>
@@ -46,8 +47,7 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * @see AbstractSecurityConfiguration
  * @see com.mercedesbenz.sechub.domain.authorization.AuthUserDetailsService
- * @see OAuth2JwtAuthenticationProvider
- * @see org.springframework.security.oauth2.jwt.JwtDecoder
+ * @see org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
  * @see SecurityConfigurationTest
  *
  * @author hamidonos
@@ -55,7 +55,6 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
 @SuppressWarnings("JavadocReference")
 @WebMvcTest
 @TestPropertySource(locations = "classpath:application-opaque-token-test.yml", factory = YamlPropertyLoaderFactory.class)
-@ActiveProfiles("oauth2")
 class OAuth2OpaqueTokenIntegrationTest {
 
     /**
@@ -134,7 +133,7 @@ class OAuth2OpaqueTokenIntegrationTest {
     }
 
     @Configuration
-    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, OAuth2OpaqueTokenPropertiesConfiguration.class })
+    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, AES256Encryption.class })
     static class TestConfig {
 
         @Bean

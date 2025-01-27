@@ -21,8 +21,62 @@ use those by explicit ENV entries
 ==== Spring Boot Security
 Spring boot security is always turned on, no matter if development or in production.
 
+==== Security Configuration
+
+SecHub Server supports two different _modes_ when it comes to security.
+
+- 1) **Classic Mode**: This is the standard SecHub authentication mode. In this mode `Basic Auth` is available for authentication.
+Whenever we speak of `Basic Auth`, we refer to this mode.
+
+- 2) **OAuth2 Mode**: Like the name suggests, this mode enables `OAuth2` for authentication.
+
+Both modes can be enabled at the same time, but at least one of them must be enabled.
+
+When running SecHub Server, `Classic Mode` is enabled. This means that you can use `Basic Auth` to authenticate yourself
+against the API. Your credentials are provided when starting up the server. You don't have to configure anything else
+when running this mode only.
+
+If you want to test `OAuth2` integration with IDPs (Identity Providers) like `Keycloak`, you can do so like this:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: <jwk-set-uri-of-your-idp>
+----
+
+Note that above configuration assumes that your IDP is configured to work with `JWT` tokens. This is the standard use case
+for most applications, but SecHub also supports a different type of token, namely `Opaque Tokens`. If you want to use `Opaque
+Tokens`, you have to configure the `mode` to `opaque-token` instead of `jwt`:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+      oauth2:
+        mode: opaque-token
+        opaque-token:
+          introspection-uri: <introspection-uri-of-your-idp>
+          client-id: <client-id>
+          client-secret: <client-secret>
+----
+
+We recommend `Keycloak` as an IDP for testing purposes. It is easy to set up and provides a lot of features for free.
+But you are free to use any other IDP you like.
+
+
+
+
 ==== Certificates
 
 For development gradle task `ensureLocalhostCertificate` in `sechub-server` will automatically generate a
 localhost server certificate. For details look into task and called bash script.
-

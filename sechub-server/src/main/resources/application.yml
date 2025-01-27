@@ -8,7 +8,7 @@ sechub:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
-    
+
 spring:
   profiles:
     group:
@@ -58,6 +58,10 @@ spring:
       max-request-size: 5MB
       resolve-lazily: true
       enabled: true
+  web:
+    resources:
+      static-locations: classpath:/static
+
 # --------------------------------------
 # - Security
 # --------------------------------------

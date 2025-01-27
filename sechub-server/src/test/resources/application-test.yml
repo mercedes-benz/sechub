@@ -18,6 +18,34 @@
 #spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target=build/test-sql/created.sql
 
 sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: https://example.org/jwk-set-uri
+    login:
+      enabled: true
+      login-page: /login
+      redirect-uri: example.org/redirect-uri
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        client-id: example-client-id
+        client-secret: example-client-secret
+        provider: example-provider
+        redirect-uri: https://example.org/redirect-uri
+        issuer-uri: https://example.org/issuer-uri
+        authorization-uri: https://example.org/authorization-uri
+        token-uri: https://example.org/token-uri
+        user-info-uri: https://example.org/user-info-uri
+        jwk-set-uri: https://example.org/jwk-set-uri
+    encryption:
+      secret-key: test-test-test-test-test-test-32
   config:
     scheduling:
       enable: false

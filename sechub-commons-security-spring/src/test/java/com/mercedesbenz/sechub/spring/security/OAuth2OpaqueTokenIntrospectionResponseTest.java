@@ -26,14 +26,14 @@ import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 
-class OpaqueTokenResponseTest {
+class OAuth2OpaqueTokenIntrospectionResponseTest {
 
-    private static final String opaqueTokenResponseJson;
+    private static final String jsonResponse;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
         try {
-            opaqueTokenResponseJson = Files.readString(Paths.get("src/test/resources/opaque-token-response.json"));
+            jsonResponse = Files.readString(Paths.get("src/test/resources/opaque-token-response.json"));
         } catch (IOException e) {
             throw new TestAbortedException("Failed to prepare test", e);
         }
@@ -45,27 +45,27 @@ class OpaqueTokenResponseTest {
         Instant epoch = Instant.EPOCH;
 
         /* execute */
-        OpaqueTokenResponse opaqueTokenResponse = objectMapper.readValue(opaqueTokenResponseJson, OpaqueTokenResponse.class);
+        OAuth2OpaqueTokenIntrospectionResponse response = objectMapper.readValue(jsonResponse, OAuth2OpaqueTokenIntrospectionResponse.class);
 
         // assert
-        assertThat(opaqueTokenResponse).isNotNull();
-        assertThat(opaqueTokenResponse.isActive()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.active"));
-        assertThat(opaqueTokenResponse.getScope()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.scope"));
-        assertThat(opaqueTokenResponse.getClientId()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.client_id"));
-        assertThat(opaqueTokenResponse.getClientType()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.client_type"));
-        assertThat(opaqueTokenResponse.getUsername()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.username"));
-        assertThat(opaqueTokenResponse.getTokenType()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.token_type"));
-        assertThat(opaqueTokenResponse.getExpiresAt()).isAfter(epoch);
-        assertThat(opaqueTokenResponse.getSubject()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.sub"));
-        assertThat(opaqueTokenResponse.getAudience()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.aud"));
-        assertThat(opaqueTokenResponse.getGroupType()).isEqualTo(JsonPath.read(opaqueTokenResponseJson, "$.group_type"));
+        assertThat(response).isNotNull();
+        assertThat(response.isActive()).isEqualTo(JsonPath.read(jsonResponse, "$.active"));
+        assertThat(response.getScope()).isEqualTo(JsonPath.read(jsonResponse, "$.scope"));
+        assertThat(response.getClientId()).isEqualTo(JsonPath.read(jsonResponse, "$.client_id"));
+        assertThat(response.getClientType()).isEqualTo(JsonPath.read(jsonResponse, "$.client_type"));
+        assertThat(response.getUsername()).isEqualTo(JsonPath.read(jsonResponse, "$.username"));
+        assertThat(response.getTokenType()).isEqualTo(JsonPath.read(jsonResponse, "$.token_type"));
+        assertThat(response.getExpiresAt()).isAfter(epoch);
+        assertThat(response.getSubject()).isEqualTo(JsonPath.read(jsonResponse, "$.sub"));
+        assertThat(response.getAudience()).isEqualTo(JsonPath.read(jsonResponse, "$.aud"));
+        assertThat(response.getGroupType()).isEqualTo(JsonPath.read(jsonResponse, "$.group_type"));
     }
 
     @ParameterizedTest
     @ArgumentsSource(ValidOpaqueTokenResponseProvider.class)
     void construct_opaque_token_response_from_valid_json_with_nullable_properties_is_successful(String validOpaqueTokenResponseJson) {
         /* execute & test */
-        assertDoesNotThrow(() -> objectMapper.readValue(validOpaqueTokenResponseJson, OpaqueTokenResponse.class));
+        assertDoesNotThrow(() -> objectMapper.readValue(validOpaqueTokenResponseJson, OAuth2OpaqueTokenIntrospectionResponse.class));
     }
 
     @ParameterizedTest
@@ -74,7 +74,7 @@ class OpaqueTokenResponseTest {
         /* execute & test */
 
         /* @formatter:off */
-        assertThatThrownBy(() -> objectMapper.readValue(invalidOpaqueTokenResponseJson, OpaqueTokenResponse.class))
+        assertThatThrownBy(() -> objectMapper.readValue(invalidOpaqueTokenResponseJson, OAuth2OpaqueTokenIntrospectionResponse.class))
                 .isInstanceOf(ValueInstantiationException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -82,7 +82,7 @@ class OpaqueTokenResponseTest {
 
     private static String removeJsonKeyAndValue(String key) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(opaqueTokenResponseJson);
+        JsonNode rootNode = objectMapper.readTree(jsonResponse);
 
         if (rootNode instanceof ObjectNode) {
             ((ObjectNode) rootNode).remove(key);

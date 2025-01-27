@@ -1,0 +1,114 @@
+// SPDX-License-Identifier: MIT
+[[springboot-security]]
+=== Spring Boot Security
+
+SecHub uses Spring Boot Security to secure the application. Spring Security can be split into two modes:
+
+* `Resource Server`
+* `Login`
+
+==== Resource Server
+
+In `Resource Server` mode you tell Spring to authenticate incoming requests using existing credentials and tokens. SecHub
+allows for `Basic Authentication` or `OAuth2`.
+
+In SecHub we call anything that has to do with basic authentication the `Classic` mode. The classic mode is the default
+authentication mode for SecHub. In classic mode the server validates the credentials itself using the database.
+
+NOTE: SecHub requires you to activate at least `Classic` mode or `OAuth2`. If you don't have any requirements for OAuth2
+you can simply use the classic mode.
+
+OAuth2 can be split further into two modes: `JWT` and `Opaque Token`.
+With JWT mode enabled the server checks the token itself using signature validation.
+
+Below is an example configuration with `Classic` mode and `OAuth2` in `JWT` mode:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: <jwk-set-uri-of-your-idp>
+----
+
+In `Opaque Token` mode the server forwards the token to an introspection endpoint for every request.
+
+NOTE:  `Opaque Token` mode increases the load on the IDP server hence caching is very important. Adjust the caching settings to your
+IDPs needs. If you don't have high security requirements you can simply use `JWT` mode.
+
+Below is an example configuration with `Classic` mode and `OAuth2` in `Opaque Token` mode:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        mode: opaque-token
+        opaque-token:
+          introspection-uri: <introspection-uri-of-your-idp>
+          client-id: <client-id>
+          client-secret: <client-secret>
+----
+
+
+==== Login
+
+SecHub can also be configured to act as a login provider. With login enabled SecHub will serve a login mask under the
+configured path. After successful authentication the user will be redirected to the configured redirect uri. The redirect
+will also include the authentication details in the `Cookies`. With this any browser based client will be automatically
+authenticated in subsequent requests unless the cookies are cleared or the authentication expires.
+
+Like with the `Resource Server` mode you can choose between `Classic` and `OAuth2`.
+
+NOTE: The authentication credentials are securely encrypted in the cookies. For that `AES 256 Encryption` is used. You
+have to configure a secret key for the encryption.
+
+Below is a full configuration example with `Login` enabled in `Classic` and `OAuth2` mode:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: <jwk-set-uri-of-your-idp>
+    login:
+      enabled: true
+      # This is the path where the login mask will be served on the SecHub server
+      # You can choose any other path as long as it does not conflict with existing paths
+      login-page: /login
+      # Here you can configure the target application where the user will be redirected after successful login
+      redirect-uri: <your-target-application>
+      modes:
+        - oauth2
+        - classic
+      oauth2:
+        client-id: <client-id>
+        client-secret: <client-secret>
+        provider: <provider> # e.g. keycloak
+        # This is the callback uri where the IDP will redirect the user after successful login
+        # For most IDPs this URI has to be configured inside the IDP client
+        redirect-uri: https://<sechub-server-host>/login/oauth2/code/<provider>
+        issuer-uri: <issuer-uri>
+        authorization-uri: <authorization-uri>
+        token-uri: <token-uri>
+        user-info-uri: <user-info-uri>
+        jwk-set-uri: <jwk-set-uri>
+    encryption:
+      secret-key: <aes-256-compatible-secret-key>
+----

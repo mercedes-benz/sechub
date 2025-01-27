@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+# Utility file to load user specific configuration for local development
+# Define a profile for your local system user by creating a file named application-local.${USER}.yml (if needed)
+# ${USER} is the value of your system username (e.g. application-local.JOHNDOE.yml)
+# Note that all application-local.${USER}.yml files are ignored by git
+
+spring:
+  config:
+    import:
+      - optional:classpath:application-local.${USER}.yml

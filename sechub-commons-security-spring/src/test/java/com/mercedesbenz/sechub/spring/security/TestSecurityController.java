@@ -51,4 +51,5 @@ class TestSecurityController {
     String actuator() {
         return OK;
     }
+
 }
