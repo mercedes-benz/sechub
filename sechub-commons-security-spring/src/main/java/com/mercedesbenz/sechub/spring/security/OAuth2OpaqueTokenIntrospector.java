@@ -51,7 +51,8 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
  *
  * <p>
  * The class also handles the encoding of client credentials using Base64 and
- * includes them in the authorization header of the introspection request.
+ * includes them in the <code>Authorization</code> header of the introspection
+ * request.
  * </p>
  *
  * @see org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
@@ -61,9 +62,9 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
  *
  * @author hamidonos
  */
-class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
+class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Base64OAuth2OpaqueTokenIntrospector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OAuth2OpaqueTokenIntrospector.class);
     private static final CryptoAccess<String> CRYPTO_STRING = CryptoAccess.CRYPTO_STRING;
     private static final String TOKEN = "token";
     private static final String BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT = "Basic %s";
@@ -80,11 +81,11 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     private final UserDetailsService userDetailsService;
 
     /* @formatter:off */
-    Base64OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
-                                        String introspectionUri,
-                                        String clientId,
-                                        String clientSecret,
-                                        UserDetailsService userDetailsService) {
+    OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
+                                  String introspectionUri,
+                                  String clientId,
+                                  String clientSecret,
+                                  UserDetailsService userDetailsService) {
         this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
         this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
         this.clientIdSealed = CRYPTO_STRING.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
@@ -104,11 +105,11 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         headers.set(HttpHeaders.AUTHORIZATION, getBasicAuthHeaderValue());
         HttpEntity<MultiValueMap<String, String>> entity = getRequestParameters(opaqueToken, headers);
 
-        OpaqueTokenResponse opaqueTokenResponse;
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse;
         try {
-            opaqueTokenResponse = restTemplate.postForObject(introspectionUri, entity, OpaqueTokenResponse.class);
+            OAuth2OpaqueTokenIntrospectionResponse = restTemplate.postForObject(introspectionUri, entity, OAuth2OpaqueTokenIntrospectionResponse.class);
 
-            if (opaqueTokenResponse == null) {
+            if (OAuth2OpaqueTokenIntrospectionResponse == null) {
                 throw new RestClientException("Response is null");
             }
         } catch (RestClientException e) {
@@ -119,17 +120,17 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
         Instant now = Instant.now();
 
-        if (!opaqueTokenResponse.isActive()) {
+        if (!OAuth2OpaqueTokenIntrospectionResponse.isActive()) {
             throw new BadOpaqueTokenException("Token is not active");
         }
 
-        String subject = opaqueTokenResponse.getSubject();
+        String subject = OAuth2OpaqueTokenIntrospectionResponse.getSubject();
 
         if (subject == null || subject.isEmpty()) {
             throw new BadOpaqueTokenException("Subject is null");
         }
 
-        Map<String, Object> introspectionClaims = getIntrospectionClaims(now, opaqueTokenResponse);
+        Map<String, Object> introspectionClaims = getIntrospectionClaims(now, OAuth2OpaqueTokenIntrospectionResponse);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         return new OAuth2IntrospectionAuthenticatedPrincipal(subject, introspectionClaims, authorities);
@@ -151,18 +152,18 @@ class Base64OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     }
 
     /* @formatter:off */
-    private static Map<String, Object> getIntrospectionClaims(Instant issuedAt, OpaqueTokenResponse opaqueTokenResponse) {
+    private static Map<String, Object> getIntrospectionClaims(Instant issuedAt, OAuth2OpaqueTokenIntrospectionResponse oAuth2OpaqueTokenIntrospectionResponse) {
         Map<String, Object> map = new HashMap<>();
-        map.put(OAuth2TokenIntrospectionClaimNames.ACTIVE, opaqueTokenResponse.isActive());
-        map.put(OAuth2TokenIntrospectionClaimNames.SCOPE, opaqueTokenResponse.getScope());
-        map.put(OAuth2TokenIntrospectionClaimNames.CLIENT_ID, opaqueTokenResponse.getClientId());
-        map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, opaqueTokenResponse.getUsername());
-        map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, opaqueTokenResponse.getTokenType());
+        map.put(OAuth2TokenIntrospectionClaimNames.ACTIVE, oAuth2OpaqueTokenIntrospectionResponse.isActive());
+        map.put(OAuth2TokenIntrospectionClaimNames.SCOPE, oAuth2OpaqueTokenIntrospectionResponse.getScope());
+        map.put(OAuth2TokenIntrospectionClaimNames.CLIENT_ID, oAuth2OpaqueTokenIntrospectionResponse.getClientId());
+        map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, oAuth2OpaqueTokenIntrospectionResponse.getUsername());
+        map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, oAuth2OpaqueTokenIntrospectionResponse.getTokenType());
         map.put(OAuth2TokenIntrospectionClaimNames.IAT, issuedAt);
-        Instant expiresAt = opaqueTokenResponse.getExpiresAt();
+        Instant expiresAt = oAuth2OpaqueTokenIntrospectionResponse.getExpiresAt();
         map.put(OAuth2TokenIntrospectionClaimNames.EXP, expiresAt == null ? issuedAt.plusSeconds(DEFAULT_EXPIRES_IN_SECONDS) : expiresAt);
-        map.put(OAuth2TokenIntrospectionClaimNames.SUB, opaqueTokenResponse.getSubject());
-        map.put(OAuth2TokenIntrospectionClaimNames.AUD, opaqueTokenResponse.getAudience());
+        map.put(OAuth2TokenIntrospectionClaimNames.SUB, oAuth2OpaqueTokenIntrospectionResponse.getSubject());
+        map.put(OAuth2TokenIntrospectionClaimNames.AUD, oAuth2OpaqueTokenIntrospectionResponse.getAudience());
         return map;
     }
     /* @formatter:on */

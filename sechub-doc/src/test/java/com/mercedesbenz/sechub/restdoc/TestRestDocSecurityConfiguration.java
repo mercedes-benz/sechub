@@ -14,4 +14,5 @@ class TestRestDocSecurityConfiguration {
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 }

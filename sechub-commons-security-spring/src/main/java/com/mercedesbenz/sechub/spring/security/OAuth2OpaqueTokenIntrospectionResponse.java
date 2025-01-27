@@ -9,10 +9,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * <code>OpaqueTokenResponse</code> represents the response from the OAuth2
- * opaque token introspection endpoint. It contains various properties related
- * to the token, such as its active status, scope, client ID, client type,
- * username, token type, expiration time, subject, audience, and group type.
+ * <code>OAuth2OpaqueTokenIntrospectionResponse</code> represents the response
+ * from the OAuth2 opaque token introspection endpoint. It contains various
+ * properties related to the token, such as its active status, scope, client ID,
+ * client type, username, token type, expiration time, subject, audience, and
+ * group type.
  *
  * <p>
  * The <code>active</code> property is required and indicates whether the token
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author hamidonos
  */
-class OpaqueTokenResponse {
+class OAuth2OpaqueTokenIntrospectionResponse {
 
     private static final String ERR_MSG_FORMAT = "Property '%s' must not be null";
 
@@ -52,16 +53,16 @@ class OpaqueTokenResponse {
 
     /* @formatter:off */
     @JsonCreator
-    OpaqueTokenResponse(@JsonProperty(JSON_PROPERTY_ACTIVE) Boolean active,
-                        @JsonProperty(JSON_PROPERTY_SCOPE) String scope,
-                        @JsonProperty(JSON_PROPERTY_CLIENT_ID) String clientId,
-                        @JsonProperty(JSON_PROPERTY_CLIENT_TYPE) String clientType,
-                        @JsonProperty(JSON_PROPERTY_USERNAME) String username,
-                        @JsonProperty(JSON_PROPERTY_TOKEN_TYPE) String tokenType,
-                        @JsonProperty(JSON_PROPERTY_EXP) Long expiresAt,
-                        @JsonProperty(JSON_PROPERTY_SUBJECT) String subject,
-                        @JsonProperty(JSON_PROPERTY_AUDIENCE) String audience,
-                        @JsonProperty(JSON_PROPERTY_GROUP_TYPE) String groupType) {
+    OAuth2OpaqueTokenIntrospectionResponse(@JsonProperty(JSON_PROPERTY_ACTIVE) Boolean active,
+                                           @JsonProperty(JSON_PROPERTY_SCOPE) String scope,
+                                           @JsonProperty(JSON_PROPERTY_CLIENT_ID) String clientId,
+                                           @JsonProperty(JSON_PROPERTY_CLIENT_TYPE) String clientType,
+                                           @JsonProperty(JSON_PROPERTY_USERNAME) String username,
+                                           @JsonProperty(JSON_PROPERTY_TOKEN_TYPE) String tokenType,
+                                           @JsonProperty(JSON_PROPERTY_EXP) Long expiresAt,
+                                           @JsonProperty(JSON_PROPERTY_SUBJECT) String subject,
+                                           @JsonProperty(JSON_PROPERTY_AUDIENCE) String audience,
+                                           @JsonProperty(JSON_PROPERTY_GROUP_TYPE) String groupType) {
         this.active = requireNonNull(active, ERR_MSG_FORMAT.formatted(JSON_PROPERTY_ACTIVE));
         this.scope = scope;
         this.clientId = clientId;

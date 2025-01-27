@@ -33,14 +33,14 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-class Base64OAuth2OpaqueTokenIntrospectorTest {
+class OAuth2OpaqueTokenIntrospectorTest {
 
     private static final String INTROSPECTION_URI = "https://example.org/introspection-uri";
     private static final RestTemplate restTemplate = mock();
     private static final String CLIENT_ID = "example-client-id";
     private static final String CLIENT_SECRET = "example-client-secret";
     private static final UserDetailsService userDetailsService = mock();
-    private static final OpaqueTokenIntrospector introspectorToTest = new Base64OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID,
+    private static final OpaqueTokenIntrospector introspectorToTest = new OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID,
             CLIENT_SECRET, userDetailsService);
     private static final String OPAQUE_TOKEN = "opaque-token";
     private static final String SUBJECT = "sub";
@@ -60,7 +60,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
                                                                                       String clientSecret,
                                                                                       UserDetailsService userDetailsService,
                                                                                       String errMsg) {
-        assertThatThrownBy(() -> new Base64OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, userDetailsService))
+        assertThatThrownBy(() -> new OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, userDetailsService))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
     }
@@ -79,7 +79,7 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_null_response_fails() {
         /* prepare */
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(null);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(null);
 
         /* execute & assert */
         /* @formatter:off */
@@ -92,8 +92,9 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_inactive_token_fails() {
         /* prepare */
-        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.FALSE, null);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.FALSE, null);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
 
         /* execute & assert */
         /* @formatter:off */
@@ -107,8 +108,9 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     void introspect_with_valid_token_succeeds() {
         /* prepare */
         long expiresAt = 3600L;
-        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
@@ -118,23 +120,24 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
         /* assert */
         assertThat(principal.getName()).isEqualTo(SUBJECT);
         Map<String, Object> attributes = principal.getAttributes();
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(opaqueTokenResponse.isActive());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(opaqueTokenResponse.getScope());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(opaqueTokenResponse.getClientId());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(opaqueTokenResponse.getUsername());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(opaqueTokenResponse.getTokenType());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.isActive());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getScope());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getClientId());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getUsername());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getTokenType());
         assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.IAT)).isAfter(Instant.EPOCH);
         assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP)).isEqualTo(Instant.ofEpochSecond(expiresAt));
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(opaqueTokenResponse.getSubject());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(opaqueTokenResponse.getAudience());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getSubject());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getAudience());
     }
 
     @Test
     void introspect_with_null_expires_at_constructs_principal_with_default_expires_at() {
         /* prepare */
         Instant now = Instant.now();
-        OpaqueTokenResponse opaqueTokenResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OpaqueTokenResponse.class))).thenReturn(opaqueTokenResponse);
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
@@ -148,8 +151,8 @@ class Base64OAuth2OpaqueTokenIntrospectorTest {
     }
 
     /* @formatter:off */
-    private static OpaqueTokenResponse createOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
-        return new OpaqueTokenResponse(
+    private static OAuth2OpaqueTokenIntrospectionResponse createOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
+        return new OAuth2OpaqueTokenIntrospectionResponse(
                 isActive,
                 "scope",
                 "client-id",
