@@ -135,7 +135,7 @@ public class TemplatesHealthCheckService {
             if (assetFileDataList == null) {
                 assetFileDataList = new ArrayList<>();
             }
-            Set<String> projectIds = templateService.fetchProjectIdsUsingTemplate(templateId);
+            Set<String> projectIds = templateService.fetchProjectsUsingTemplate(templateId);
 
             for (String projectId : projectIds) {
                 List<ProductExecutionProfile> profiles = profileRepository.findExecutionProfilesForProject(projectId);
@@ -148,11 +148,15 @@ public class TemplatesHealthCheckService {
                         ProductIdentifier productIdentifier = config.getProductIdentifier();
                         ScanType scanType = productIdentifier.getType();
 
+                        boolean productSupportsTemplates = templateDefinitionFilter.isProductAbleToHandleTemplates(productIdentifier);
+                        if (!productSupportsTemplates) {
+                            continue;
+                        }
+
                         boolean scanTypeSupportsTemplates = templateDefinitionFilter.isScanTypeSupportingTemplate(scanType, templateDefinition);
                         if (!scanTypeSupportsTemplates) {
                             continue;
                         }
-
                         String fileName = assetFileNameService.resolveAssetFileName(config);
                         if (fileName == null) {
                             fileName = "<error: assetFileNameService was not able to resolve filename for config/>"; // just to have a value inside output
@@ -213,18 +217,20 @@ public class TemplatesHealthCheckService {
     }
 
     private void addCalculatedStatus(TemplatesHealthCheckResult result) {
-        result.setStatus(TemplatesHealthCheckStatus.OK); // initial ok...
+        result.setStatus(TemplatesHealthCheckStatus.OK); // initial ...
 
         for (TemplateHealthCheckEntry entry : result.getEntries()) {
+
             switch (entry.getType()) {
             case ERROR:
                 result.setStatus(TemplatesHealthCheckStatus.ERROR);
-                break;
+                return; /* we break here - error level reached */
             case WARNING:
                 result.setStatus(TemplatesHealthCheckStatus.WARNING);
+                break;
             case INFO:
-                /* we do not overwrite here anything, info if the default value */
             default:
+                /* just do nothing */
             }
         }
     }
@@ -242,7 +248,7 @@ public class TemplatesHealthCheckService {
                 entry.setSolution("Either unassign template id from project(s) or create a template with the identifier.");
                 entry.setType(TemplateHealthCheckProblemType.ERROR);
 
-                Set<String> projectIds = templateService.fetchProjectIdsUsingTemplate(assignedTemplateId);
+                Set<String> projectIds = templateService.fetchProjectsUsingTemplate(assignedTemplateId);
                 entry.getProjects().addAll(projectIds);
 
                 result.getEntries().add(entry);

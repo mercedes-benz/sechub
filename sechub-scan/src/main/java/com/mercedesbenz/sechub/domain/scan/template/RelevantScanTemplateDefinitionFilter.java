@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @Component
 /**
@@ -81,6 +82,19 @@ public class RelevantScanTemplateDefinitionFilter {
                 return true;
             }
         default:
+        }
+        return false;
+    }
+
+    public boolean isProductAbleToHandleTemplates(ProductIdentifier productIdentifier) {
+        if (productIdentifier == null) {
+            return false;
+        }
+        if (productIdentifier.name().startsWith("PDS")) {
+            /*
+             * The PDS server implementation is always same and is able to handle templates.
+             */
+            return true;
         }
         return false;
     }

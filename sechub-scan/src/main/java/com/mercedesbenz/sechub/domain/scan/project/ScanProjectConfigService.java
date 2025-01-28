@@ -126,8 +126,18 @@ public class ScanProjectConfigService {
         repository.deleteAllConfigurationsOfGivenConfigIdsAndValue(configIds, value);
     }
 
-    public List<String> findAllData(ScanProjectConfigID scanConfigType) {
-        return repository.findAllDataForConfigId(scanConfigType.getId());
+    /**
+     * Find all data for given configuration identifier
+     *
+     * @param configId
+     * @return all data inside a list, never <code>null</code>
+     */
+    public List<String> findAllData(ScanProjectConfigID configId) {
+        return repository.findAllDataForConfigId(configId.getId());
+    }
+
+    public Set<String> findAllProjectsWhereConfigurationHasGivenData(Set<String> possibleConfigIds, String data) {
+        return repository.findAllProjectsWhereConfigurationHasGivenData(possibleConfigIds, data);
     }
 
 }

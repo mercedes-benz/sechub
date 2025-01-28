@@ -770,4 +770,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/project-scanconfig/" + projectId);
     }
 
+    public String buildIntegrationTestClearAllTemplates() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/templates/clear-all");
+    }
+
 }

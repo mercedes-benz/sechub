@@ -44,6 +44,7 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckResult;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
@@ -1478,6 +1479,12 @@ public class AsUser {
         String url = getUrlBuilder().buildAdminFetchesTemplateList();
         String json = getRestHelper().getJSON(url);
         return JSONConverter.get().fromJSONtoListOf(String.class, json);
+    }
+
+    public TemplatesHealthCheckResult executeTemplatesHealthcheck() {
+        String url = getUrlBuilder().buildAdminExecutesTemplatesCheck();
+        String json = getRestHelper().getJSON(url);
+        return TemplatesHealthCheckResult.fromJson(json);
     }
 
     public AsUser uploadAssetFile(String assetId, File file) {

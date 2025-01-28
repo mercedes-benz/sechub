@@ -177,6 +177,90 @@ public class ScanProjectConfigRepositoryDBTest {
 
     }
 
+    @Test
+    void findAllProjectsWhereConfigurationHasGivenData__one_key() {
+        String keyA = "configA";
+        String keyB = "configB";
+        String keyC = "configC";
+
+        String value1 = "val1";
+        String value2 = "val2";
+        String value3 = "val3";
+
+        String projectId1 = "project1";
+        String projectId2 = "project2";
+        String projectId3 = "project3";
+
+        ScanProjectConfig config1A3 = createNewScanProjectConfig(projectId1, keyA, value3);
+        ScanProjectConfig config1B1 = createNewScanProjectConfig(projectId1, keyB, value1);
+
+        ScanProjectConfig config2A1 = createNewScanProjectConfig(projectId2, keyA, value1);
+        ScanProjectConfig config2B1 = createNewScanProjectConfig(projectId2, keyB, value1);
+        ScanProjectConfig config2C1 = createNewScanProjectConfig(projectId2, keyC, value2);
+
+        ScanProjectConfig config3C2 = createNewScanProjectConfig(projectId3, keyB, value2);
+        ScanProjectConfig config3C3 = createNewScanProjectConfig(projectId3, keyC, value3);
+
+        repository.save(config1B1);
+
+        repository.save(config2A1);
+        repository.save(config2B1);
+        repository.save(config2C1);
+
+        repository.save(config1A3);
+        repository.save(config3C2);
+        repository.save(config3C3);
+
+        /* execute */
+        Set<String> projectIds = repository.findAllProjectsWhereConfigurationHasGivenData(Set.of(keyB, "unknown"), value2);
+
+        /* test */
+        assertThat(projectIds).contains(projectId3).doesNotContain(projectId1, projectId2).hasSize(1); // value1 is contained 2 times
+
+    }
+
+    @Test
+    void findAllProjectsWhereConfigurationHasGivenData__two_key() {
+        String keyA = "configA";
+        String keyB = "configB";
+        String keyC = "configC";
+
+        String value1 = "val1";
+        String value2 = "val2";
+        String value3 = "val3";
+
+        String projectId1 = "project1";
+        String projectId2 = "project2";
+        String projectId3 = "project3";
+
+        ScanProjectConfig config1A3 = createNewScanProjectConfig(projectId1, keyA, value3);
+        ScanProjectConfig config1B1 = createNewScanProjectConfig(projectId1, keyB, value1);
+
+        ScanProjectConfig config2A1 = createNewScanProjectConfig(projectId2, keyA, value1);
+        ScanProjectConfig config2B1 = createNewScanProjectConfig(projectId2, keyB, value1);
+        ScanProjectConfig config2C1 = createNewScanProjectConfig(projectId2, keyC, value2);
+
+        ScanProjectConfig config3C2 = createNewScanProjectConfig(projectId3, keyB, value2);
+        ScanProjectConfig config3C3 = createNewScanProjectConfig(projectId3, keyC, value3);
+
+        repository.save(config1B1);
+
+        repository.save(config2A1);
+        repository.save(config2B1);
+        repository.save(config2C1);
+
+        repository.save(config1A3);
+        repository.save(config3C2);
+        repository.save(config3C3);
+
+        /* execute */
+        Set<String> projectIds = repository.findAllProjectsWhereConfigurationHasGivenData(Set.of(keyB, keyC), value2);
+
+        /* test */
+        assertThat(projectIds).contains(projectId2, projectId3).doesNotContain(projectId1).hasSize(2); // value1 is contained 2 times
+
+    }
+
     private ScanProjectConfig createNewScanProjectConfig(String projectId, String pseudoConfigId) {
         ScanProjectConfigCompositeKey key = new ScanProjectConfigCompositeKey(pseudoConfigId, projectId);
         return new ScanProjectConfig(key);

@@ -18,7 +18,13 @@ public class TemplateHealthCheckEntry {
     private String assetId;
     private String fileName;
 
+    /**
+     * @return type, never <code>null</code>
+     */
     public TemplateHealthCheckProblemType getType() {
+        if (type == null) {
+            return TemplateHealthCheckProblemType.INFO;
+        }
         return type;
     }
 
@@ -84,6 +90,11 @@ public class TemplateHealthCheckEntry {
 
     public Set<String> getHints() {
         return hints;
+    }
+
+    @Override
+    public String toString() {
+        return "TemplateHealthCheckEntry [" + (type != null ? "type=" + type + ", " : "") + (description != null ? "description=" + description : "") + "]";
     }
 
 }

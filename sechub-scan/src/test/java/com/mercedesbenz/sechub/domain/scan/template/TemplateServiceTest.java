@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class TemplateServiceTest {
 
+    private static final String TEST_TEMPLATE_ID_ASSERTION_MESSAGE = "Template id may not be null!";
     private TemplateService serviceToTest;
     private TemplateRepository repository;
     private ScanProjectConfigService configService;
@@ -33,6 +34,9 @@ class TemplateServiceTest {
         repository = mock(TemplateRepository.class);
         configService = mock(ScanProjectConfigService.class);
         inputAssertion = mock(UserInputAssertion.class);
+
+        doThrow(new IllegalArgumentException(TEST_TEMPLATE_ID_ASSERTION_MESSAGE)).when(inputAssertion).assertIsValidTemplateId(null);
+
         resolver = mock(TemplateTypeScanConfigIdResolver.class);
 
         serviceToTest = new TemplateService(repository, configService, inputAssertion, resolver);
@@ -42,10 +46,10 @@ class TemplateServiceTest {
     void createOrUpdateTemplate_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate(null, null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate(null, new TemplateDefinition())).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate("id1", null)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Template definition may not be null!");
@@ -56,7 +60,7 @@ class TemplateServiceTest {
     void delete_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.deleteTemplate(null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
     }
 
@@ -64,7 +68,7 @@ class TemplateServiceTest {
     void fetch_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.fetchTemplateDefinition(null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
     }
 
@@ -208,12 +212,34 @@ class TemplateServiceTest {
     @Test
     void fetchAssignedTemplateIds() {
 
+        /* prepare */
+        when(resolver.resolve(any(TemplateType.class))).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
+        when(configService.findAllData(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN)).thenReturn(List.of("t1","t2"));
+
         /* execute */
         Set<String> result = serviceToTest.fetchAllAssignedTemplateIds();
 
         /* test */
         assertThat(result).isNotNull();
         assertThat(result).contains("t1", "t2");
+    }
+
+    @Test
+    void fetchProjectsUsingTemplate() {
+        /* prepare */
+        String templateId = "test-template1";
+        Set<String> projects = Set.of("p1", "p2");
+        Set<String> allConfigIds = Set.of("c1", "c2");
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allConfigIds);
+        when(configService.findAllProjectsWhereConfigurationHasGivenData(allConfigIds, templateId)).thenReturn(projects);
+
+        /* execute */
+        Set<String> result = serviceToTest.fetchProjectsUsingTemplate(templateId);
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result).contains("p1", "p2");
+
     }
 
 }

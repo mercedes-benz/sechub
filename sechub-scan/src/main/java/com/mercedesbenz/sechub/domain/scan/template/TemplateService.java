@@ -37,7 +37,7 @@ public class TemplateService {
 
     private final ScanProjectConfigService configService;
 
-    private final TemplateTypeScanConfigIdResolver resolver;
+    private final TemplateTypeScanConfigIdResolver scanProjectConfigIdResolver;
 
     private final UserInputAssertion inputAssertion;
 
@@ -45,7 +45,7 @@ public class TemplateService {
             TemplateTypeScanConfigIdResolver resolver) {
         this.repository = repository;
         this.configService = configService;
-        this.resolver = resolver;
+        this.scanProjectConfigIdResolver = resolver;
         this.inputAssertion = inputAssertion;
     }
 
@@ -97,7 +97,7 @@ public class TemplateService {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
         }
-        Set<String> allTemplateConfigIds = resolver.resolveAllPossibleConfigIds();
+        Set<String> allTemplateConfigIds = scanProjectConfigIdResolver.resolveAllPossibleConfigIds();
         configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 
         repository.deleteById(templateId);
@@ -113,9 +113,8 @@ public class TemplateService {
      */
     @UseCaseAdminFetchesTemplate(@Step(number = 2, name = "Service fetches template"))
     public TemplateDefinition fetchTemplateDefinition(String templateId) {
-        if (templateId == null) {
-            throw new IllegalArgumentException("Template id may not be null!");
-        }
+        inputAssertion.assertIsValidTemplateId(templateId);
+
         Optional<Template> templateOpt = repository.findById(templateId);
         if (templateOpt.isEmpty()) {
             throw new NotFoundException("Template does not exist!");
@@ -138,7 +137,7 @@ public class TemplateService {
         LOG.debug("try to assign template '{}' to project '{}'", templateId, projectId);
 
         TemplateDefinition template = fetchTemplateDefinition(templateId);
-        ScanProjectConfigID key = resolver.resolve(template.getType());
+        ScanProjectConfigID key = scanProjectConfigIdResolver.resolve(template.getType());
 
         configService.set(projectId, key, templateId);
 
@@ -153,7 +152,7 @@ public class TemplateService {
         LOG.debug("try to unassign template '{}' from project '{}'", templateId, projectId);
 
         TemplateDefinition template = fetchTemplateDefinition(templateId);
-        ScanProjectConfigID key = resolver.resolve(template.getType());
+        ScanProjectConfigID key = scanProjectConfigIdResolver.resolve(template.getType());
 
         ScanProjectConfig config = configService.get(projectId, key);
         String value = config.getData();
@@ -178,7 +177,7 @@ public class TemplateService {
     public Set<String> fetchAssignedTemplateIdsForProject(String projectId) {
         Set<String> result = new LinkedHashSet<>();
         for (TemplateType type : TemplateType.values()) {
-            ScanProjectConfigID configId = resolver.resolve(type);
+            ScanProjectConfigID configId = scanProjectConfigIdResolver.resolve(type);
             ScanProjectConfig config = configService.get(projectId, configId, false);
             if (config == null) {
                 continue;
@@ -205,16 +204,20 @@ public class TemplateService {
         return result;
     }
 
-    public Set<String> fetchProjectIdsUsingTemplate(String templateId) {
-        // TODO Auto-generated method stub
-        return null;
+    public Set<String> fetchProjectsUsingTemplate(String templateId) {
+        inputAssertion.assertIsValidTemplateId(templateId);
+
+        Set<String> possibleConfigIds = scanProjectConfigIdResolver.resolveAllPossibleConfigIds();
+
+        Set<String> projectIds = configService.findAllProjectsWhereConfigurationHasGivenData(possibleConfigIds, templateId);
+        return projectIds;
     }
 
     public Set<String> fetchAllAssignedTemplateIds() {
         Set<String> result = new TreeSet<>();
 
         for (TemplateType templateType : TemplateType.values()) {
-            ScanProjectConfigID scanConfigType = resolver.resolve(templateType);
+            ScanProjectConfigID scanConfigType = scanProjectConfigIdResolver.resolve(templateType);
             List<String> list = configService.findAllData(scanConfigType);
             result.addAll(list);
         }

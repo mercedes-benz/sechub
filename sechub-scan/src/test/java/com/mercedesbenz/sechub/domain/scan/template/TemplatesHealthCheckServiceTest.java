@@ -113,7 +113,7 @@ class TemplatesHealthCheckServiceTest {
         /* prepare */
         prepareTemplate1AvailableButNotAssignedToAnyProject();
         when(templateService.fetchAllAssignedTemplateIds()).thenReturn(Set.of(TEMPLATE1_ID, NON_EXISTING_TEMPLATE_ID));
-        when(templateService.fetchProjectIdsUsingTemplate(NON_EXISTING_TEMPLATE_ID)).thenReturn(Set.of("p1", "p2", "p3"));
+        when(templateService.fetchProjectsUsingTemplate(NON_EXISTING_TEMPLATE_ID)).thenReturn(Set.of("p1", "p2", "p3"));
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -140,7 +140,7 @@ class TemplatesHealthCheckServiceTest {
         TemplateDefinition templateDefinition = prepareTemplate1AvailableAndAssignedToProjects(PROJECT1_ID);
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of());
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -163,7 +163,7 @@ class TemplatesHealthCheckServiceTest {
 
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -197,7 +197,7 @@ class TemplatesHealthCheckServiceTest {
 
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -238,7 +238,7 @@ class TemplatesHealthCheckServiceTest {
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile1));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -260,26 +260,31 @@ class TemplatesHealthCheckServiceTest {
 
     @Test
     void warn_profiles_not_enabled_template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing() {
-        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(false, true);
+        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(false, true, true);
     }
 
     @Test
     void warn_profiles_and_executor_not_enabled_template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing() {
-        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(false, false);
+        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(false, false, true);
     }
 
     @Test
     void warn_executor_not_enabled_template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing() {
-        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(true, false);
+        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(true, false, true);
     }
 
     @Test
     void error_template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing() {
-        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(true, true);
+        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(true, true, true);
+    }
+
+    @Test
+    void no_error_when_product_does_not_support_templates() {
+        template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(true, true, false);
     }
 
     void template_defined_and_assigned_to_project1_and_project2_different_profiles_same_executor_but_same_file_missing(boolean profilesEnabled,
-            boolean executorConfigEnabled) {
+            boolean executorConfigEnabled, boolean productSupportsTemplates) {
 
         boolean expectOnlyWarning = !profilesEnabled || !executorConfigEnabled;
 
@@ -311,14 +316,18 @@ class TemplatesHealthCheckServiceTest {
         when(templateService.fetchAllAssignedTemplateIds()).thenReturn(Set.of(TEMPLATE1_ID));
         when(templateService.fetchTemplateDefinition(TEMPLATE1_ID)).thenReturn(templateDefinition);
         when(templateService.fetchAllTemplateIds()).thenReturn(List.of(TEMPLATE1_ID));
-        when(templateService.fetchProjectIdsUsingTemplate(TEMPLATE1_ID)).thenReturn(Set.of(PROJECT1_ID, PROJECT2_ID));
+        when(templateService.fetchProjectsUsingTemplate(TEMPLATE1_ID)).thenReturn(Set.of(PROJECT1_ID, PROJECT2_ID));
 
         when(assetFileNameService.resolveAssetFileName(config1)).thenReturn(ASSET1_EXECUTOR_CONFIG_FILENAME1);
 
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile2));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        if (productSupportsTemplates) {
+            ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
+        } else {
+            ensureTemplateSupportedByScanTypeButNotProduct(templateDefinition);
+        }
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -327,6 +336,11 @@ class TemplatesHealthCheckServiceTest {
         dumpIfEnabled(result);
 
         assertThat(result).isNotNull();
+        if (!productSupportsTemplates) {
+            assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.OK);
+            assertThat(result.getEntries()).isEmpty();
+            return;
+        }
         assertThat(result.getStatus()).isEqualTo(expectOnlyWarning ? TemplatesHealthCheckStatus.WARNING : TemplatesHealthCheckStatus.ERROR);
         assertThat(result.getEntries()).hasSize(1);
 
@@ -384,7 +398,7 @@ class TemplatesHealthCheckServiceTest {
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile2));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -458,7 +472,7 @@ class TemplatesHealthCheckServiceTest {
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile2));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -467,7 +481,7 @@ class TemplatesHealthCheckServiceTest {
         dumpIfEnabled(result);
 
         assertThat(result).isNotNull();
-        assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.WARNING);
+        assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.ERROR);
         assertThat(result.getEntries()).hasSize(2);
 
         Iterator<TemplateHealthCheckEntry> iterator = result.getEntries().iterator();
@@ -535,7 +549,7 @@ class TemplatesHealthCheckServiceTest {
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile2));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -592,7 +606,7 @@ class TemplatesHealthCheckServiceTest {
         when(profileRepository.findExecutionProfilesForProject(PROJECT1_ID)).thenReturn(List.of(profile1));
         when(profileRepository.findExecutionProfilesForProject(PROJECT2_ID)).thenReturn(List.of(profile2));
 
-        ensureTemplateSupportedByScanType(templateDefinition);
+        ensureTemplateSupportedByScanTypeAndProduct(templateDefinition);
 
         /* execute */
         TemplatesHealthCheckResult result = serviceToTest.executeHealthCheck();
@@ -631,7 +645,7 @@ class TemplatesHealthCheckServiceTest {
         when(templateService.fetchAllTemplateIds()).thenReturn(List.of(TEMPLATE1_ID));
         if (assigned) {
             when(templateService.fetchAllAssignedTemplateIds()).thenReturn(Set.of(TEMPLATE1_ID));
-            when(templateService.fetchProjectIdsUsingTemplate(TEMPLATE1_ID)).thenReturn(Set.of(projectIds));
+            when(templateService.fetchProjectsUsingTemplate(TEMPLATE1_ID)).thenReturn(Set.of(projectIds));
         }
         when(templateService.fetchTemplateDefinition(TEMPLATE1_ID)).thenReturn(templateDefinition);
         when(templateService.fetchAllTemplateIds()).thenReturn(List.of(TEMPLATE1_ID));
@@ -639,13 +653,21 @@ class TemplatesHealthCheckServiceTest {
         return templateDefinition;
     }
 
-    private void ensureTemplateSupportedByScanType(TemplateDefinition templateDefinition) {
+    private void ensureTemplateSupportedByScanTypeAndProduct(TemplateDefinition templateDefinition) {
         when(templateDefinitionFilter.isScanTypeSupportingTemplate(any(ScanType.class), eq(templateDefinition))).thenReturn(true);
+        when(templateDefinitionFilter.isProductAbleToHandleTemplates(any(ProductIdentifier.class))).thenReturn(true);
+    }
+
+    private void ensureTemplateSupportedByScanTypeButNotProduct(TemplateDefinition templateDefinition) {
+        when(templateDefinitionFilter.isScanTypeSupportingTemplate(any(ScanType.class), eq(templateDefinition))).thenReturn(true);
+        when(templateDefinitionFilter.isProductAbleToHandleTemplates(any(ProductIdentifier.class))).thenReturn(false);
     }
 
     private void dumpIfEnabled(TemplatesHealthCheckResult result) {
-        String json = result.toFormattedJSON();
-        LOG.debug("result={}", json);
+        if (LOG.isDebugEnabled()) {
+            String json = result.toFormattedJSON();
+            LOG.debug("result={}", json);
+        }
     }
 
 }

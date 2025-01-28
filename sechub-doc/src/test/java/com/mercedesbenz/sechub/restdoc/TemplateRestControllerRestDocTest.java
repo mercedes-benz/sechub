@@ -306,7 +306,7 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
         when(templateHealthCheckService.executeHealthCheck()).thenReturn(healthCheckResult);
 
         String apiEndpoint = https(PORT_USED).buildAdminExecutesTemplatesCheck();
-        Class<? extends Annotation> useCase = UseCaseAdminFetchesAllTemplateIds.class;
+        Class<? extends Annotation> useCase = UseCaseAdminExecutesTemplatesHealthcheck.class;
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

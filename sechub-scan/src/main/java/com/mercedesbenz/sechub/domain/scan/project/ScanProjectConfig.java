@@ -49,6 +49,10 @@ public class ScanProjectConfig {
     public static final String QUERY_FIND_ALL_DATA_FOR_CONFIG_ID = "SELECT c." + PROPERTY_DATA + " FROM ScanProjectConfig c where c." + PROPERTY_KEY + "."
             + ScanProjectConfigCompositeKey.PROPERTY_CONFIG_ID + " =:configId";
 
+    public static final String QUERY_FIND_ALL_PROJECT_IDS_FOR_SET_OF_CONFIG_IDS_AND_DATA = "SELECT c." + PROPERTY_KEY + "."
+            + ScanProjectConfigCompositeKey.PROPERTY_PROJECT_ID + " FROM ScanProjectConfig c where c." + PROPERTY_KEY + "."
+            + ScanProjectConfigCompositeKey.PROPERTY_CONFIG_ID + " in :configIds AND c." + PROPERTY_DATA + " =:data";
+
     @EmbeddedId
     ScanProjectConfigCompositeKey key;
 
