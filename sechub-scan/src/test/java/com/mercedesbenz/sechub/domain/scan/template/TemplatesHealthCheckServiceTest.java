@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
@@ -27,6 +29,8 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 class TemplatesHealthCheckServiceTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TemplatesHealthCheckServiceTest.class);
 
     private static final String NON_EXISTING_TEMPLATE_ID = "non-existing-template-id";
     private static final String ASSET1_EXECUTOR_CONFIG_FILENAME1 = "pds-product1-id.zip";
@@ -640,11 +644,8 @@ class TemplatesHealthCheckServiceTest {
     }
 
     private void dumpIfEnabled(TemplatesHealthCheckResult result) {
-//        if (! Boolean.getBoolean("sechub.debug.enabled")) {
-//            return;
-//        }
         String json = result.toFormattedJSON();
-        System.out.println(json);
+        LOG.debug("result={}", json);
     }
 
 }

@@ -90,7 +90,7 @@ public class TemplateRestController {
     }
 
     @UseCaseAdminExecutesTemplatesHealthcheck(@Step(number = 1, next = 2, name = "REST API call to create or update template", needsRestDoc = true))
-    @RequestMapping(path = "/templates/healthcheck", method = RequestMethod.PUT)
+    @RequestMapping(path = "/templates/healthcheck", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public TemplatesHealthCheckResult executeTemplatesHealthcheck() {
 
