@@ -85,14 +85,13 @@
                   </td>
                   <td>{{ job.jobUUID }}</td>
                   <td>
-                    <v-btn 
-                    v-if="!(job.executionState === 'ENDED' 
-                    || job.executionState === 'INITIALIZING'
-                    || job.executionResult === 'OK')"
-                    icon="mdi-close-circle-outline"
-                    density="comfortable"
-                    color="error"
-                    @click="cancelJob(job.jobUUID)"></v-btn>
+                    <v-btn
+                      v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
+                      color="error"
+                      density="comfortable"
+                      icon="mdi-close-circle-outline"
+                      @click="cancelJob(job.jobUUID)"
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -125,8 +124,8 @@
     ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
-    UserListsJobsForProjectRequest,
     UserCancelsJobRequest,
+    UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
 
   export default {
@@ -165,7 +164,6 @@
       const error = ref<string | undefined>(undefined)
       const alert = ref(false)
       const showProjectsDetails = ref(true)
-      const canCancelJob = ref(false)
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
@@ -205,9 +203,8 @@
           const prettyJson = JSON.stringify(response, null, 2)
           downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
-          alert.value = true
-          error.value = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
-          console.error(t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID), err)
+          const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
+          onError(errMsg, err)
         }
       }
 
@@ -223,9 +220,8 @@
           })
           downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
-          alert.value = true
-          error.value = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
-          console.error(t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID), err)
+          const errMsg = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
+          onError(errMsg, err)
         }
       }
 
@@ -240,19 +236,18 @@
         window.URL.revokeObjectURL(url)
       }
 
-      async function cancelJob(jobUUID: string | undefined){
-        if(!jobUUID){
+      async function cancelJob (jobUUID: string | undefined) {
+        if (!jobUUID) {
           return
         }
         const requestParameter: UserCancelsJobRequest = {
-          jobUUID
+          jobUUID,
         }
         try {
-          const response = await defaultClient.withJobManagementApi.userCancelsJob(requestParameter)
-        }catch(err){
-          alert.value = true
-          error.value = (t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID)
-          console.error((t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID), err)
+          await defaultClient.withJobManagementApi.userCancelsJob(requestParameter)
+        } catch (err) {
+          const errMsg = (t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID)
+          onError(errMsg, err)
         }
         fetchProjectJobs(currentRequestParameters)
       }
@@ -274,6 +269,12 @@
 
       function backToProjectsList () {
         router.go(-1)
+      }
+
+      function onError (errMsg: string, err : unknown) {
+        alert.value = true
+        error.value = errMsg
+        console.error(errMsg, err)
       }
 
       onMounted(async () => {
