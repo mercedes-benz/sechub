@@ -32,7 +32,6 @@ public class IntegrationTestSupport {
     static final String SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.only.necessary4documentation";
     static final String SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.never.necessary4documentation";
 
-    static final String SECHUB_INTEGRATIONTEST_LONG_RUNNING = "sechub.integrationtest.longrunning";
     static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
     static final String SECHUB_INTEGRATIONTEST_CLIENT_DEBUG = "sechub.integrationtest.client.debug";
     static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
@@ -62,8 +61,6 @@ public class IntegrationTestSupport {
     private static Boolean integrationTestingEnabled;
 
     private TestScenario scenario;
-
-    private boolean longrunning;
 
     private IntegrationTestSupport(TestScenario scenario) {
         this.scenario = scenario;
@@ -284,19 +281,6 @@ public class IntegrationTestSupport {
     public void executeTest(Class<?> testClass, String testMethodName, ProceedHandler proceedHandler, TestSkipper testSkipper) throws Throwable {
         /* skip tests when not in integration test mode */
 
-        /*
-         * we differ between long running and "normal" integration tests. If user wants
-         * both executed, just two system properties must be set at execution time.
-         * Otherwise a dedicated ones can be enabled
-         */
-        if (longrunning) {
-            boolean longIntegrationTestsEnabled = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_LONG_RUNNING);
-            if (!longIntegrationTestsEnabled) {
-                String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration (long running )test mode.\nDefine -D"
-                        + SECHUB_INTEGRATIONTEST_LONG_RUNNING + "=true to enable *long* running integration tests!";
-                testSkipper.skipTest(message);
-            }
-        }
         if (!isIntegrationTestingEnabled()) {
             String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                     + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";

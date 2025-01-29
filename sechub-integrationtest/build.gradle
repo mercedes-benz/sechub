@@ -183,7 +183,6 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
     * integration test properties here
     */
    systemProperty "sechub.integrationtest.running", "true"
-   systemProperty "sechub.integrationtest.longrunning", "true"
    
    finalizedBy "stopIntegrationTestInstances"
    
