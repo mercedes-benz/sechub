@@ -394,15 +394,54 @@ TIP: For an example look into `JobRepositoryDBTest`
 ===== Integration tests
 In project `sechub-integrationtest` full integration tests are settled.
 The project needs a running server in profile `integrationtest`.
-For more details about those tests read the `README.md` file inside
-projects root folder.
 
-====== Integration tests using RestAPI
+====== Example for an integration test
+[source, java]
+----
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+
+import org.junit.jupiter.api.Test;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
+
+
+@ExtendWith(IntegrationTestExtension.class)//<1>
+@WithTestScenario(Scenario6.class)//<2>
+public class ExampleIntTest {
+	
+	@Test
+	void example_doing_some_test_stuff(){
+	   // now use the TestAPI methods to test your wanted stuff
+	}
+}
+----
+<1> Annotation used to mark this test as a {sechub} Integration Test
+<2> Annotation used to select the scenario to use inside the integration test.
+    (Scenarios are predefined and use an automated setup with test data which
+    will be always cleaned up and provided automatically)
+
+[TIP]
+====
+For more details about those tests inspect existing tests. You can also read the `README.md` file inside
+projects root folder.
+====
+
+[IMPORTANT]
+====
+There are old existing integration tests which are not using the Junit5 extension `IntegrationTestExtension`
+but the old Junit4 rule `IntegrationTestSetup`. Those old junit4 tests shall be replaced step by step (in future with
+the new Junit5 way.
+
+**New integration tests shall always use the new Junit5 annotations.**
+New assert methods created for TestAPI shall use Junit5 only as well.
+
+====
+
+
 These tests will be called `${name}Scenario${n}IntTest.java`
 
 ====== Integration tests using SecHubClient
 Some integration tests do need a build SecHub client and execute the client.
-These tests will be called `${name}Scenario${n}SecHubClientIntTest.java`
 
 TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
      otherwise no {sechub} client is available for testing...

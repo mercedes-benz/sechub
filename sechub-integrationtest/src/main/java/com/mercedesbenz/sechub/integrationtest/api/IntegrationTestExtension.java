@@ -1,6 +1,6 @@
 package com.mercedesbenz.sechub.integrationtest.api;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -17,6 +17,11 @@ public class IntegrationTestExtension implements InvocationInterceptor {
     @Override
     public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
             throws Throwable {
+        if (!IntegrationTestSupport.isIntegrationTestingEnabled()) {
+            String message = "Integration test skipped because not enabled. To enable please define -D" + IntegrationTestSupport.SECHUB_INTEGRATIONTEST_RUNNING
+                    + "=true to enable integration tests!";
+            Assumptions.abort(message);
+        }
 
         IntegrationTestSupport integrationTestSupport = null;
         Class<?> clazz = invocationContext.getTargetClass();
@@ -39,4 +44,38 @@ public class IntegrationTestExtension implements InvocationInterceptor {
 
         integrationTestSupport.executeTest(clazz, testMethodName, () -> invocation.proceed(), (text) -> Assumptions.assumeTrue(false, text));
     }
+
+    @Override
+    public void interceptAfterAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+            throws Throwable {
+        if (!IntegrationTestSupport.isIntegrationTestingEnabled()) {
+            invocation.skip();
+        }
+
+    }
+
+    @Override
+    public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+            throws Throwable {
+        if (!IntegrationTestSupport.isIntegrationTestingEnabled()) {
+            invocation.skip();
+        }
+    }
+
+    @Override
+    public void interceptBeforeAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+            throws Throwable {
+        if (!IntegrationTestSupport.isIntegrationTestingEnabled()) {
+            invocation.skip();
+        }
+    }
+
+    @Override
+    public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+            throws Throwable {
+        if (!IntegrationTestSupport.isIntegrationTestingEnabled()) {
+            invocation.skip();
+        }
+    }
+
 }

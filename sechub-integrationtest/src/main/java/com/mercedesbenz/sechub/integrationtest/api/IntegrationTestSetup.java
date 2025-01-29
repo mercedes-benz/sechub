@@ -8,6 +8,14 @@ import org.junit.runners.model.Statement;
 
 import com.mercedesbenz.sechub.integrationtest.internal.TestScenario;
 
+/**
+ * Old junit4 way to setup integration tests. Please do not longer use them
+ * inside new integration tests but instead use the new Junit5 way via :
+ * {@link IntegrationTestExtension}.
+ *
+ * (Older integration tests using this test rule will be migrated step by step
+ * in future)
+ */
 public class IntegrationTestSetup implements TestRule {
 
     private IntegrationTestSupport integrationTestSupport;

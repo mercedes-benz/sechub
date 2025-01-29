@@ -59,6 +59,8 @@ public class IntegrationTestSupport {
     private static String criticalProblem;
     private static String criticalTestClass;
 
+    private static Boolean integrationTestingEnabled;
+
     private TestScenario scenario;
 
     private boolean longrunning;
@@ -267,9 +269,20 @@ public class IntegrationTestSupport {
         return new IntegrationTestSupport(resolveScenarioFromCacheOrCreate(scenarioClazz));
     }
 
+    public static boolean isIntegrationTestingEnabled() {
+        /*
+         * we use a static field which is lazy created to do not always do check
+         * operation again and again - state will not change after integration tests are
+         * started.
+         */
+        if (integrationTestingEnabled == null) {
+            integrationTestingEnabled = support.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
+        }
+        return integrationTestingEnabled;
+    }
+
     public void executeTest(Class<?> testClass, String testMethodName, ProceedHandler proceedHandler, TestSkipper testSkipper) throws Throwable {
         /* skip tests when not in integration test mode */
-        boolean integrationTestEnabled;
 
         /*
          * we differ between long running and "normal" integration tests. If user wants
@@ -277,19 +290,17 @@ public class IntegrationTestSupport {
          * Otherwise a dedicated ones can be enabled
          */
         if (longrunning) {
-            integrationTestEnabled = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_LONG_RUNNING);
-            if (!integrationTestEnabled) {
+            boolean longIntegrationTestsEnabled = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_LONG_RUNNING);
+            if (!longIntegrationTestsEnabled) {
                 String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration (long running )test mode.\nDefine -D"
                         + SECHUB_INTEGRATIONTEST_LONG_RUNNING + "=true to enable *long* running integration tests!";
                 testSkipper.skipTest(message);
             }
-        } else {
-            integrationTestEnabled = support.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
-            if (!integrationTestEnabled) {
-                String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
-                        + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";
-                testSkipper.skipTest(message);
-            }
+        }
+        if (!isIntegrationTestingEnabled()) {
+            String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
+                    + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";
+            testSkipper.skipTest(message);
         }
 
         if (criticalIntegrationSetupProblemDetected) {
