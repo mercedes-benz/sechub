@@ -32,7 +32,7 @@ import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
  * testing templates here, can only check common parts - e.g. info that template
  * exists but is not assigned to any project.
  */
-class TemplateScenario1IntTest {
+public class TemplateScenario1IntTest {
 
     private String templateId;
 

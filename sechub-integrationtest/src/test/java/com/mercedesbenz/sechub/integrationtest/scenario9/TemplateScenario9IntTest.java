@@ -28,7 +28,7 @@ import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
  * template check because the product (PDS) is supporting templates and the scan
  * type (Web scan) is supported as well!
  */
-class TemplateScenario9IntTest {
+public class TemplateScenario9IntTest {
 
     private String templateId;
 
