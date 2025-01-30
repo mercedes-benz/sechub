@@ -1,0 +1,499 @@
+<!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
+<style type="text/css" th:fragment="renderStyles">
+
+    body {
+        background-color: #2B2B2B;
+        color: white;
+    }
+
+    a {
+        color: #3a849f;
+    }
+
+    .trafficlight {
+        background: #222;
+        background-image: linear-gradient(transparent 2%, #111 2%, transparent 3%, #111 30%);
+        width: 170px;
+        height: 400px;
+        border-radius: 20px;
+        position: relative;
+        border: solid 5px #333;
+    }
+
+    .trafficlight:before {
+        background: #222;
+        background-image: radial-gradient(#444, #000);
+        content: "";
+        width: 170px;
+        height: 150px;
+        margin: 0 auto;
+        position: absolute;
+        top: -20px;
+        margin-left: 0px;
+        border-radius: 50%;
+        z-index: -1;
+    }
+
+    .trafficlight:after {
+        background: #222;
+        background-image: linear-gradient(-90deg, #222 0%, #444 30%, #000);
+        content: "";
+        width: 50px;
+        height: 600px;
+        margin-left: 60px;
+        position: absolute;
+        top: 150px;
+        z-index: -1;
+    }
+
+    .protector {
+        background: transparent;
+        width: 180px;
+        height: 0;
+        position: absolute;
+        top: 20px;
+        left: -35px;
+        border-right: solid 30px transparent;
+        border-left: solid 30px transparent;
+        border-top: solid 90px #111;
+        border-radius: 10px;
+        z-index: -1;
+    }
+
+    .protector:nth-child(2) {
+        top: 140px;
+    }
+
+    .protector:nth-child(3) {
+        top: 260px;
+    }
+
+    .red {
+        background: red;
+        background-image: radial-gradient(brown, transparent);
+        background-size: 5px 5px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        position: absolute;
+        top: 20px;
+        left: 35px;
+        border: dotted 2px red;
+        box-shadow: 0 0 20px #111 inset, 0 0 10px red;
+    }
+
+    .yellow {
+        background: yellow;
+        background-image: radial-gradient(orange, transparent);
+        background-size: 5px 5px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: dotted 2px yellow;
+        position: absolute;
+        top: 145px;
+        left: 35px;
+        box-shadow: 0 0 20px #111 inset, 0 0 10px yellow;
+    }
+
+    .green {
+        background: green;
+        background-image: radial-gradient(lime, transparent);
+        background-size: 5px 5px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: dotted 2px lime;
+        position: absolute;
+        top: 270px;
+        left: 35px;
+        box-shadow: 0 0 20px #111 inset, 0 0 10px lime;
+    }
+
+    /* The sidebar menu */
+    .sidenav {
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 10;
+        background-color: #2B2B2B;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+    /* Style page content */
+    .main {
+        margin-left: 250px;
+        padding: 0px 10px;
+    }
+
+    .content {
+
+    }
+
+    .logo {
+        width: 100px;
+    }
+
+    .logotitle {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 60px;
+    }
+
+    .reportsubtitle {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 24px;
+    }
+
+    .reportVersionControl {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 20px;
+    }
+
+    .reportMetaDataTable {
+        padding-bottom: 16px;
+        padding-top: 10px;
+        border-spacing: 0px;
+    }
+
+    .reportMetaDataTable th {
+        padding: 8px;
+        vertical-align: top;
+        text-align: left;
+    }
+
+    .reportMetaDataTable td {
+        padding-right: 20px;
+    }
+
+    .metaDataLabelKey {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .metaDataLabelValue {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 16px;
+    }
+
+    .findingsTable {
+        width: 100%;
+        padding-bottom: 16px;
+        padding-top: 10px;
+        border-collapse: separate;
+        border: solid #cccccc 1px;
+        border-radius: 16px;
+        border-spacing: 0px;
+        font-size: 12px;
+    }
+
+    .findingsTable th {
+        padding: 8px;
+        vertical-align: top;
+        text-align: left;
+    }
+
+    .findingsTable tr:nth-child(even) {
+        background-color: #2B2B2B;
+    }
+
+    .findingsTable tr:nth-child(odd) {
+        background-color: #1e1f22;
+    }
+
+    .findingsTable td {
+        padding:8px;
+
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        vertical-align: top;
+        text-align: left;
+    }
+
+    .findingsTable td:nth-child(1) {
+        width: 50px;
+        padding-left: 10px;
+    }
+
+    .findingsTable td:nth-child(2) {
+        width: 60px;
+        padding-left: 10px;
+        border-left: 1px solid #cccccc;
+    }
+
+    .findingsTable td:nth-child(3) {
+        width: 200px;
+        border-left: 1px solid #cccccc;
+    }
+
+    .findingsTable td:nth-child(4) {
+        border-left: 1px solid #cccccc;
+        width: 99%;
+        display: block;
+        padding-right: 1%;
+    }
+
+    .redFindingsTable {
+
+    }
+
+    .yellowFindingsTable {
+
+    }
+
+    .greenFindingsTable {
+
+    }
+
+    .greenFindingHeadline {
+        color: #248f24;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .yellowFindingHeadline {
+        color: #ccbb00;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .redFindingHeadline {
+        color: #cc0000;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .messagesHeadline {
+        color: #3584e4;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .rTable {
+        display: table;
+        padding-top: 0;
+        width:100%;
+    }
+
+    .rTableRow {
+        display: table-row;
+    }
+
+    .rTableRowHead {
+        display: table-row;
+    }
+
+    .rTableHeading {
+        display: table-header-group;
+    }
+
+    .rTableBody {
+        display: table-row-group;
+    }
+
+    .rTableFoot {
+        display: table-footer-group;
+    }
+
+    .rTableCell, .rTableHead {
+        display: table-cell;
+        word-break: break-all;
+        padding-right: 5px;
+    }
+
+    .rTableHead {
+        font-weight: bolder;
+    }
+
+    details[open] summary::after {
+        content: attr(data-close);
+    }
+
+    details:not([open]) summary::after {
+        content: attr(data-open);
+    }
+    summary{
+        padding-top: 15px;
+    }
+
+    .rText {
+        white-space: pre-line;
+    }
+
+    .rAttackVectorText,
+    .rEvidenceText,
+    .rBodyText,
+    .rBodyBinary {
+        white-space: pre-line;
+        border: thin;
+        border-style: dotted;
+        background-color: #2B2B2B;
+        color: #A9B7C6;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: left;
+        padding: 15px;
+        width: 950px;
+
+    }
+    .rBodyText {
+        height: 150px;
+    }
+
+    .rAttackVectorText {
+        height: 10px;
+    }
+
+    .rRequestMethod {
+        display:flex
+    }
+
+    .rRequestMethod > div {
+        vertical-align: text-bottom;
+        padding: 2px 0 0 0;
+        font-weight: bolder;
+    }
+    .rRequestMethod > textarea {
+        vertical-align: middle;
+        width: 950px;
+        height:16px;
+        border:none; /* the border is only visible when selected */
+    }
+
+    .rRequestDetailHeadline,
+    .rResponseDetailHeadline {
+        text-decoration: underline;
+    }
+
+    .rCalculatedText {
+        display:flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .rCalculatedMarkerInsideText{
+        font-style: italic;
+    }
+
+    .rLocationHead {
+        width: 400px;
+    }
+
+    .rAttackVectorHead{
+        width: 300px;
+    }
+    .rTableSourceHead{
+        padding-right: 0px;
+    }
+    rTableSourceHead,
+    .rEvidenceHead{
+        width: calc(100% - 500px);
+    }
+
+    .rDetailsContent,
+    .rRequestProtocol,
+    .rResponseProtocol,
+    .rEvidenceStartLine{
+        display:flex;
+    }
+
+    .summaryHeadline {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .summaryTable {
+        width: 50%;
+        padding-bottom: 16px;
+        padding-top: 10px;
+        border-collapse: separate;
+        border: solid #cccccc 1px;
+        border-radius: 16px;
+        border-spacing: 0px;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .summaryTable th {
+        padding: 8px;
+        vertical-align: center;
+        text-align: center;
+    }
+
+    .summaryTable td {
+        padding: 8px;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        vertical-align: center;
+        text-align: center;
+    }
+
+    .summaryTable td:nth-child(2) {
+        border-left: 1px solid #cccccc;
+    }
+
+    .summaryTable td:nth-child(3) {
+        border-left: 1px solid #cccccc;
+    }
+
+    .summaryScanType {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .summarySeverity {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .summaryScanTypeTable {
+        width: 100%;
+        padding-bottom: 16px;
+        padding-top: 10px;
+        border-collapse: separate;
+        border: solid #cccccc 1px;
+        border-radius: 16px;
+        border-spacing: 0px;
+        font-size: 14px;
+    }
+
+    .summaryScanTypeTable th {
+        padding: 8px;
+        vertical-align: center;
+        text-align: left;
+    }
+
+    .summaryScanTypeTable td {
+        padding: 8px;
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        vertical-align: center;
+        text-align: left;
+    }
+
+    .summaryScanTypeTable td:nth-child(2) {
+        border-left: 1px solid #cccccc;
+    }
+
+    .summaryScanTypeTable td:nth-child(3) {
+        border-left: 1px solid #cccccc;
+    }
+
+    .scanTypeHeadline {
+        /*color: #cc0000;*/
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .findingRevisionTable {
+        all: revert;
+    }
+    .findingRevisionTable th{
+        all: revert;
+    }
+    .findingRevisionTable td{
+        all: revert;
+    }
+    .findingRevisionTable td:nth-child(2){
+        all: revert;
+    }
+
+    .findingRevisionTable td:nth-child(3){
+        all: revert;
+    }
+
+
+</style>

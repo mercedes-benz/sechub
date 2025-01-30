@@ -384,7 +384,7 @@ public class ThymeLeafHTMLReportingTest {
                 scanReport.setMetaData(reportMetaData.get());
             }
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
-            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);
+            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, theme);
             return tyhmeleafMap;
         }
 

@@ -1,0 +1,153 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.container {
+    display: flex;
+    width: 1000px;
+    height: 600px;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.login-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tabs {
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    color: #606060;
+    background-color: #e0e0e0;
+    border: 1px solid #ddd;
+    border-radius: 10px 10px 0 0;
+    transition: background-color 0.3s;
+}
+
+.tab.active {
+    background-color: white;
+    color: #100c08;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.login-option {
+    display: none;
+}
+
+.login-option.active {
+    display: block;
+}
+
+.login-option .button-space {
+    margin-top: 15px;
+}
+
+.login-option .register {
+    margin-top: 30px;
+}
+
+.login-section h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 50px;
+}
+
+.login-section label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: #28a745;
+}
+
+.login-section input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-width: 0 0 1px 0;
+    border-radius: 0;
+    font-size: 0.9em;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.login-section input:focus {
+    border-color: #28a745;
+}
+
+.login-section button {
+    background-color: #000;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 50%;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+.login-section button:hover {
+    background-color: #333;
+}
+
+.login-section a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.login-section a:hover {
+    text-decoration: underline;
+}
+
+.info-section {
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.info-section img {
+    width: 180px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.info-section h2 {
+    color: #28a745;
+    font-size: 2.0em;
+    margin-bottom: 10px;
+}
+
+.info-section p {
+    color: #666;
+    font-size: 1.1em;
+    margin: 0 10px;
+    max-width: 280px;
+}

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,6 +23,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDow
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 
 import jakarta.annotation.security.RolesAllowed;
+
+import static com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder.DEFAULT_THEME;
 
 /**
  * The rest API for job scheduling. It shall be same obvious like
@@ -64,12 +67,26 @@ public class ScanReportRestController {
 	@ResponseBody
 	public ModelAndView getScanSecHubReportAsHTML(
 			@PathVariable("projectId") String projectId,
-			@PathVariable("jobUUID") UUID jobUUID
+			@PathVariable("jobUUID") UUID jobUUID,
+            @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme
 			) {
 		/* @formatter:on */
         ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
-        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
+        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
+        return new ModelAndView("report/html/report", model);
+    }
+
+    /* @formatter:off */
+    @UseCaseUserDownloadsJobReport(@Step(number=2, next= {3}, name="REST API call to get HTML report", needsRestDoc=true))
+    @RequestMapping(path = "/report", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
+    @ResponseBody
+    public ModelAndView getScanSecHubReportAsHTML(@PathVariable("projectId") String projectId,
+                                                  @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme) {
+        /* @formatter:on */
+        ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId);
+
+        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
         return new ModelAndView("report/html/report", model);
     }
 
@@ -85,6 +102,10 @@ public class ScanReportRestController {
         String spdxDocument = serecoSpdxDownloadService.getScanSpdxJsonReport(projectId, jobUUID);
 
         return spdxDocument;
+    }
+
+    private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId) {
+        return downloadReportService.getObfuscatedScanSecHubReport(projectId);
     }
 
     private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {

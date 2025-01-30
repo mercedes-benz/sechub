@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.report;
 import static com.mercedesbenz.sechub.domain.scan.report.ScanReport.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ScanReportRepository extends JpaRepository<ScanReport, UUID> {
 
     public ScanReport findBySecHubJobUUID(UUID secHubJobUUID);
+
+    Optional<ScanReport> findTopByProjectIdOrderByStartedDesc(String projectId);
 
     @Modifying
     @Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)

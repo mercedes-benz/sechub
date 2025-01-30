@@ -6,12 +6,21 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import java.util.Set;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Controller
 @Conditional(LoginEnabledCondition.class)
 class LoginController {
+
+    private static final String DEFAULT_THEME = "default";
+    private static final String JETBRAINS_THEME = "jetbrains";
 
     private final SecHubSecurityProperties.LoginProperties loginProperties;
     private final boolean isOAuth2Enabled;
@@ -28,7 +37,12 @@ class LoginController {
     }
     /* @formatter:on */
 
-    String login(Model model) {
+    String login(Model model, @RequestParam(required = false, defaultValue = DEFAULT_THEME) String theme) {
+        if (!Set.of(JETBRAINS_THEME, DEFAULT_THEME).contains(theme)) {
+            throw new ResponseStatusException(BAD_REQUEST, "Invalid theme");
+        }
+
+        model.addAttribute("theme", theme);
         model.addAttribute("isOAuth2Enabled", isOAuth2Enabled);
         model.addAttribute("isClassicAuthEnabled", isClassicAuthEnabled);
 
@@ -41,9 +55,13 @@ class LoginController {
     }
 
     private void registerLoginMapping(RequestMappingHandlerMapping requestMappingHandlerMapping, String loginPage) throws NoSuchMethodException {
-        RequestMappingInfo requestMappingInfo = RequestMappingInfo.paths(loginPage).methods(RequestMethod.GET).produces(MediaType.APPLICATION_JSON_VALUE)
+        /* @formatter:off */
+        RequestMappingInfo requestMappingInfo = RequestMappingInfo
+                .paths(loginPage)
+                .methods(RequestMethod.GET).produces(MediaType.APPLICATION_JSON_VALUE)
                 .build();
+        /* @formatter:on */
 
-        requestMappingHandlerMapping.registerMapping(requestMappingInfo, this, getClass().getDeclaredMethod("login", Model.class));
+        requestMappingHandlerMapping.registerMapping(requestMappingInfo, this, getClass().getDeclaredMethod("login", Model.class, String.class));
     }
 }

@@ -1,0 +1,168 @@
+body {
+    font-family: 'Roboto', sans-serif; /* JetBrains uses a clean sans-serif font like Roboto */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2d2d2d; /* Darker background for modern IDE-style appearance */
+}
+
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1000px;
+    height: 600px;
+    background-color: #2b2b2b; /* Dark theme background */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Softer shadow for depth */
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #444; /* Subtle border to match JetBrains' subtle styling */
+}
+
+.login-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tabs {
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 20px;
+    justify-content: space-between; /* Add space between tabs */
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    color: #bbbbbb;
+    background-color: #444;
+    border: 1px solid #555;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #353535;
+    color: #f8f8f2; /* Light text for active state */
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.login-option {
+    display: none;
+}
+
+.login-option h4 {
+    color: #f8f8f2;
+}
+
+.login-option.active {
+    display: block;
+}
+
+.login-option .button-space {
+    margin-top: 20px;
+}
+
+.login-option .register {
+    color: #f8f8f2;
+    margin-top: 40px;
+}
+
+.login-section h1 {
+    font-size: 2.2em;
+    color: #f8f8f2;
+    margin-bottom: 60px;
+    font-weight: 600;
+}
+
+.login-section label {
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: #8abf7f; /* A softer green, more readable */
+}
+
+.login-section input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-width: 0 0 2px 0;
+    border-radius: 0;
+    font-size: 1em;
+    background-color: #3c3c3c;
+    color: #f8f8f2;
+    border-color: #666;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.login-section input:focus {
+    border-color: #8abf7f; /* Soft green for focus */
+}
+
+.login-section button {
+    background-color: #5c5c5c;
+    color: #f8f8f2;
+    padding: 12px;
+    border: none;
+    width: 50%;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.login-section button:hover {
+    background-color: #787878; /* Slightly lighter shade for hover */
+}
+
+.login-section a {
+    color: #66b3ff;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.login-section a:hover {
+    text-decoration: underline;
+}
+
+.info-section {
+    flex: 1;
+    background-color: #3c3c3c;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: 1px solid #444;
+}
+
+.info-section img {
+    width: 180px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.info-section h2 {
+    color: #8abf7f;
+    font-size: 2.2em;
+    margin-bottom: 15px;
+}
+
+.info-section p {
+    color: #bbbbbb;
+    font-size: 1.1em;
+    margin: 0 10px;
+    max-width: 300px;
+}

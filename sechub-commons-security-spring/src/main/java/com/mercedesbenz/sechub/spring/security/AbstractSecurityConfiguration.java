@@ -72,13 +72,14 @@ public abstract class AbstractSecurityConfiguration {
     private static final String SUBJECT = "sub";
     /* @formatter:off */
 	private static final Set<String> DEFAULT_PUBLIC_PATHS = Set.of(
-			"/css/**",
 			"/js/**",
 			"/images/**",
 			"/login/oauth2/**",
 			"/oauth2/**",
 			"/favicon.ico",
-			"/sechub-logo.svg"
+			"/sechub-logo.svg",
+			"/login-default.css",
+			"/login-jetbrains.css"
 	);
 	/* @formatter:on */
 
