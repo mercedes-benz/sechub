@@ -15,12 +15,13 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_USER_VERIFIES_EMAIL_ADDRESS,
+		id=UseCaseIdentifier.UC_ANONYMOUS_USER_VERIFIES_EMAIL_ADDRESS,
 		group=UseCaseGroup.USER_SELF_SERVICE,
-		apiName="userUpdatesEmailAddress",
-		title="User updates his own email address",
-		description="The authenticated user updates his own email address")
-public @interface UseCaseUserVerifiesEmailAddress {
+		apiName="anonymousUserVerifiesEmailAddress",
+		title="Anonymous user verifies new email address",
+		description="The unauthenticated user verifies his new email address by link containing JWT token."
+		)
+public @interface UseCaseAnonymousUserVerifiesEmailAddress {
 	Step value();
 }
 /* @formatter:on */

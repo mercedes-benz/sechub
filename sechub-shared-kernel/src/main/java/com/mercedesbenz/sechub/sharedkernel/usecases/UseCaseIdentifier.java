@@ -215,7 +215,7 @@ public enum UseCaseIdentifier {
 
     UC_USER_UPDATES_EMAIL_ADDRESS(96),
 
-    UC_USER_VERIFIES_EMAIL_ADDRESS(97);
+    UC_ANONYMOUS_USER_VERIFIES_EMAIL_ADDRESS(97);
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +-----------------------------------------------------------------------+ */

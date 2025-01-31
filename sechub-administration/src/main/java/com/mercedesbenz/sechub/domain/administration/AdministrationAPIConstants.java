@@ -75,17 +75,12 @@ public class AdministrationAPIConstants {
     /**
      * User updates his email address
      */
-    public static final String API_USER_UPDATE_EMAIL = API_USER_DETAIL_INFO + "/email/{newEmailAddress}";
+    public static final String API_USER_EMAIL = API_USER_DETAIL_INFO + "/email";
 
     /**
-     * API to build the link the user verifies his email address.
+     * API anonymous user verifies his new email address.
      */
-    public static final String API_USER_VERIFY_EMAIL_BUILD = API_USER_DETAIL_INFO + "/email/verify/";
-
-    /**
-     * User verifies his email address
-     */
-    public static final String API_USER_VERIFY_EMAIL = API_USER_VERIFY_EMAIL_BUILD + "{token}";
+    public static final String API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD = API_ANONYMOUS + "email/verify/";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Users (Admin) ............................+ */

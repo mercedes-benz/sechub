@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -17,18 +20,25 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
+import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.test.TestCanaryException;
 
 class UserEmailAddressUpdateServiceTest {
 
     private static final String KNOWN_USER1 = "knownUser1";
+    public static final String FORMER_USER_1_EXAMPLE_COM = "former.user1@example.com";
+    public static final String NEW_MAIL_USER1_EXAMPLE_COM = "new.user1@example.com";
+    private final User knownUser1 = createKnownUser1();
     private UserEmailAddressUpdateService serviceToTest;
-    private UserInputAssertion assertion;
-    private AuditLogService auditLogService;
     private DomainMessageService eventBusService;
     private UserRepository userRepository;
+    private AuditLogService auditLogService;
     private LogSanitizer logSanitizer;
+    private UserInputAssertion assertion;
+    private UserContextService userContextService;
+    private UserEmailChangeTokenService userEmailChangeTokenService;
+    private SecHubEnvironment environment;
 
     @BeforeEach
     void beforeEach() {
@@ -37,19 +47,23 @@ class UserEmailAddressUpdateServiceTest {
         eventBusService = mock(DomainMessageService.class);
         userRepository = mock(UserRepository.class);
         logSanitizer = mock(LogSanitizer.class);
+        userContextService = mock(UserContextService.class);
+        userEmailChangeTokenService = mock(UserEmailChangeTokenService.class);
+        environment = mock(SecHubEnvironment.class);
 
-        serviceToTest = new UserEmailAddressUpdateService(eventBusService, userRepository, auditLogService, logSanitizer, assertion);
+        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
+
+        serviceToTest = new UserEmailAddressUpdateService(eventBusService, userRepository, auditLogService, logSanitizer, assertion, userContextService,
+                userEmailChangeTokenService, environment);
     }
 
     @Test
     void audit_log_is_called_with_sanitized_user_id_when_user_was_found() {
         /* prepare */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
         when(logSanitizer.sanitize(knownUser1.getName(), 30)).thenReturn("sanitized-userid");
 
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
+        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         verify(auditLogService).log(any(String.class), eq("sanitized-userid"));
@@ -61,7 +75,7 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findOrFailUser("notfound")).thenThrow(TestCanaryException.class);
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "new.user1@example.com"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
 
         /* test */
         verify(auditLogService, never()).log(any(String.class), any());
@@ -69,25 +83,17 @@ class UserEmailAddressUpdateServiceTest {
 
     @Test
     void asserts_email_address_parameter() {
-        /* prepare - just to have no NPE while testing with mock data */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
-
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
+        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
-        verify(assertion).assertIsValidEmailAddress("new.user1@example.com");
+        verify(assertion).assertIsValidEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM);
     }
 
     @Test
     void asserts_user_id_parameter() {
-        /* prepare - just to have no NPE while testing with mock data */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
-
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
+        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         verify(assertion).assertIsValidUserId(KNOWN_USER1);
@@ -100,7 +106,7 @@ class UserEmailAddressUpdateServiceTest {
         doThrow(TestCanaryException.class).when(assertion).assertIsValidUserId(any());
 
         /* execute + test */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("novalid", "former.user1@example.com"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("novalid", FORMER_USER_1_EXAMPLE_COM));
     }
 
     @Test
@@ -133,12 +139,8 @@ class UserEmailAddressUpdateServiceTest {
 
     @Test
     void throws_not_acceptable_when_same_email_address_as_before() {
-        /* prepare */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
-
         /* execute + test (exception ) */
-        assertThrows(NotAcceptableException.class, () -> serviceToTest.updateUserEmailAddress(KNOWN_USER1, "former.user1@example.com"));
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.updateUserEmailAddress(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
     }
 
     @Test
@@ -147,33 +149,25 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findOrFailUser(any())).thenThrow(NotFoundException.class);
 
         /* execute + test (exception ) */
-        assertThrows(NotFoundException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "new.user1@example.com"));
+        assertThrows(NotFoundException.class, () -> serviceToTest.updateUserEmailAddress("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
     }
 
     @Test
     void saves_user_when_parameters_are_valid() {
-        /* prepare */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
-
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
+        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         // check the user object has new mail address when saved:
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
-        assertEquals("new.user1@example.com", userCaptor.getValue().getEmailAddress());
+        assertEquals(NEW_MAIL_USER1_EXAMPLE_COM, userCaptor.getValue().getEmailAddress());
     }
 
     @Test
     void sends_event_with_user_data_when_parameters_are_valid() {
-        /* prepare */
-        User knownUser1 = createKnownUser1();
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
-
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
+        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         // check event is sent with expected data
@@ -183,14 +177,78 @@ class UserEmailAddressUpdateServiceTest {
         assertNotNull(userMessage);
 
         assertEquals(KNOWN_USER1, userMessage.getUserId());
-        assertEquals("new.user1@example.com", userMessage.getEmailAddress());
-        assertEquals("former.user1@example.com", userMessage.getFormerEmailAddress());
+        assertEquals(NEW_MAIL_USER1_EXAMPLE_COM, userMessage.getEmailAddress());
+        assertEquals(FORMER_USER_1_EXAMPLE_COM, userMessage.getFormerEmailAddress());
+    }
+
+    @Test
+    void request_update_email_address_with_same_email_throws_NotAcceptableException(){
+        /* prepare */
+        when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(FORMER_USER_1_EXAMPLE_COM))
+                .isInstanceOf(NotAcceptableException.class)
+                .hasMessageContaining("User has already this email address");
+    }
+
+    @Test
+    void request_update_email_address_with_different_email_sends_event() {
+        /* prepare */
+        when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
+
+        /* execute */
+        serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM);
+
+        /* test */
+        ArgumentCaptor<DomainMessage> messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(eventBusService).sendAsynchron(messageCaptor.capture());
+
+        UserMessage userMessage = messageCaptor.getValue().get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA);
+        assertThat(userMessage).isNotNull();
+        assertThat("You have requested to change your SecHub email address").isEqualTo(userMessage.getSubject());
+        assertThat(KNOWN_USER1).isEqualTo(userMessage.getUserId());
+        assertThat(NEW_MAIL_USER1_EXAMPLE_COM).isEqualTo(userMessage.getEmailAddress());
+        assertThat (FORMER_USER_1_EXAMPLE_COM).isEqualTo(userMessage.getFormerEmailAddress());
+        assertThat(userMessage.getLinkWithOneTimeToken()).isNotNull();
+    }
+
+    @Test
+    void user_verifies_user_email_address_throws_NotAcceptableException_when_user_has_already_this_email_address() {
+        /* prepare */
+        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserInfo(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.userVerifiesUserEmailAddress("token"))
+                .isInstanceOf(NotAcceptableException.class)
+                .hasMessageContaining("User has already this email address");
+    }
+
+    @Test
+    void user_verifies_user_email_address_sends_event() {
+        /* prepare */
+        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserInfo(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
+        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
+
+        /* execute */
+        serviceToTest.userVerifiesUserEmailAddress("token");
+
+        /* test */
+        ArgumentCaptor<DomainMessage> messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(eventBusService).sendAsynchron(messageCaptor.capture());
+
+        UserMessage userMessage = messageCaptor.getValue().get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA);
+        assertThat(userMessage).isNotNull();
+        assertThat("Your SecHub email address has been changed").isEqualTo(userMessage.getSubject());
+        assertThat(KNOWN_USER1).isEqualTo(userMessage.getUserId());
+        assertThat(NEW_MAIL_USER1_EXAMPLE_COM).isEqualTo(userMessage.getEmailAddress());
+        assertThat(FORMER_USER_1_EXAMPLE_COM).isEqualTo(userMessage.getFormerEmailAddress());
     }
 
     private User createKnownUser1() {
         User user = new User();
         user.name = KNOWN_USER1;
-        user.emailAddress = "former.user1@example.com";
+        user.emailAddress = FORMER_USER_1_EXAMPLE_COM;
         return user;
     }
 

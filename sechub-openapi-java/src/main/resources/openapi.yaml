@@ -2698,14 +2698,13 @@ paths:
           description: "200"
       tags:
         - User Self Service
-
-  /api/management/user/email/{newEmailAddress}:
-    put:
+  /api/management/user/email/{emailAddress}:
+    post:
       summary: User updates his email address
       description: The authenticated user updates his email address
       operationId: userUpdatesEmailAddress
       parameters:
-        - name: newEmailAddress
+        - name: emailAddress
           description: The new email address
           in: path
           required: true
@@ -2713,17 +2712,17 @@ paths:
             type: string
       responses:
         "200":
-          description: "Ok"
+          description: "200"
         "406":
           description: "Not acceptable"
       tags:
         - User Self Service
 
-    /api/management/user/email/verify/{token}:
+  /api/anonymous/email/verify/{token}:
     get:
-      summary: User verifies his email address
-      description: The authenticated user verifies his email address
-      operationId: userVerifiesEmailAddress
+      summary: Anonymous user verifies new email address
+      description: The unauthenticated user verifies new email address in token
+      operationId: anonymousUserVerifiesEmailAddress
       parameters:
         - name: token
           description: The token to verify the email address
@@ -2733,7 +2732,7 @@ paths:
             type: string
       responses:
         "200":
-          description: "Ok"
+          description: "200"
         "406":
           description: "Not acceptable"
       tags:

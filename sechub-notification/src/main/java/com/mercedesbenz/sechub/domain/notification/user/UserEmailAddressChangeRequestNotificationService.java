@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserUpdat
 
 @Service
 public class UserEmailAddressChangeRequestNotificationService {
-    private static final String EMAIL_SUBJECT_ADDRESS = "Verify new SecHub account email address";
+    static final String EMAIL_SUBJECT_ADDRESS = "Verify new SecHub account email address";
     private final MailMessageFactory mailMessageFactory;
     private final EmailService emailService;
 
@@ -34,7 +34,7 @@ public class UserEmailAddressChangeRequestNotificationService {
                 userMessage.getLinkWithOneTimeToken();
         /* @formatter:on */
         SimpleMailMessage message = mailMessageFactory.createMessage(EMAIL_SUBJECT_ADDRESS);
-        message.setTo(userMessage.getFormerEmailAddress());
+        message.setTo(userMessage.getEmailAddress());
         message.setText(emailContent);
 
         emailService.send(message);

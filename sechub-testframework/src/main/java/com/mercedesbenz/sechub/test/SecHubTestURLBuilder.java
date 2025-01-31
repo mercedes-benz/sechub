@@ -118,12 +118,16 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return url;
     }
 
-    private static ParameterBuilder params() {
-        return new ParameterBuilder();
-    }
-
     public String buildUserCancelJob(String jobUUID) {
         return buildUrl(API_MANAGEMENT, "jobs/", jobUUID, "/cancel");
+    }
+
+    public String buildUnauthenticatedUserVerifyEmailAddressUrl(String token) {
+        return buildUrl(API_ANONYMOUS, "email/verify/", token);
+    }
+
+    private static ParameterBuilder params() {
+        return new ParameterBuilder();
     }
 
     private static class ParameterBuilder {
@@ -525,6 +529,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildFetchUserDetailInformationUrl() {
         return buildUrl(API_MANAGEMENT + "/user");
+    }
+
+    public String buildUserUpdatesEmailUrl(String emailAddress) {
+        return buildUrl(API_MANAGEMENT, "user/email", emailAddress);
     }
 
     public String buildGetProjects() {

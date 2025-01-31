@@ -21,8 +21,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAnonymousUserVerifiesEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserUpdatesEmailAddress;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserVerifiesEmailAddress;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -36,7 +36,7 @@ public class UserEmailAddressUpdateService {
     private final LogSanitizer logSanitizer;
     private final UserInputAssertion assertion;
     private final UserContextService userContextService;
-    private final UserEmailChangeTokenGenerator userEmailChangeTokenGenerator;
+    private final UserEmailChangeTokenService userEmailChangeTokenService;
     private final SecHubEnvironment environment;
 
     /* @formatter:off */
@@ -46,7 +46,7 @@ public class UserEmailAddressUpdateService {
                                          LogSanitizer logSanitizer,
                                          UserInputAssertion assertion,
                                          UserContextService userContextService,
-                                         UserEmailChangeTokenGenerator userEmailChangeTokenGenerator,
+                                         UserEmailChangeTokenService userEmailChangeTokenService,
                                          SecHubEnvironment environment) {
         /* @formatter:on */
         this.eventBusService = eventBusService;
@@ -55,7 +55,7 @@ public class UserEmailAddressUpdateService {
         this.logSanitizer = logSanitizer;
         this.assertion = assertion;
         this.userContextService = userContextService;
-        this.userEmailChangeTokenGenerator = userEmailChangeTokenGenerator;
+        this.userEmailChangeTokenService = userEmailChangeTokenService;
         this.environment = environment;
     }
 
@@ -96,7 +96,7 @@ public class UserEmailAddressUpdateService {
 
     @UseCaseUserUpdatesEmailAddress(@Step(number = 2, name = "Service checks user mail address and sends approval mail", next = {
             3 }, description = "The service will check the user input and send a mail to verify"))
-    public void userUpdatesEmailAddress(String email) {
+    public void userRequestUpdateMailAddress(String email) {
         assertion.assertIsValidEmailAddress(email);
         String userId = userContextService.getUserId();
         User user = userRepository.findOrFailUser(userId);
@@ -110,8 +110,10 @@ public class UserEmailAddressUpdateService {
             throw new NotAcceptableException("User has already this email address");
         }
 
-        String mailToken = userEmailChangeTokenGenerator.generateToken(email);
-        String linkWithOneTimeToken = environment.getServerBaseUrl() + AdministrationAPIConstants.API_USER_VERIFY_EMAIL_BUILD + "/" + mailToken;
+        String baseUrl = environment.getServerBaseUrl();
+        UserInfo userInfo = new UserInfo(userId, email);
+        String mailToken = userEmailChangeTokenService.generateToken(userInfo, baseUrl);
+        String linkWithOneTimeToken = baseUrl + AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD + "/" + mailToken;
 
         UserMessage message = new UserMessage();
         message.setUserId(userId);
@@ -123,14 +125,16 @@ public class UserEmailAddressUpdateService {
         informUserWantsToChangeEmailAddress(message);
     }
 
-    @UseCaseUserVerifiesEmailAddress(@Step(number = 2, name = "Service verifies user mail address", next = {
+    @UseCaseAnonymousUserVerifiesEmailAddress(@Step(number = 2, name = "Service verifies user mail address", next = {
             3 }, description = "The service will verify the token and update the user email address"))
-    public void verifyUserEmailAddress(String token) {
+    public void userVerifiesUserEmailAddress(String token) {
 
-        String emailFromToken = userEmailChangeTokenGenerator.getEmailFromToken(token);
+        UserInfo userInfo = userEmailChangeTokenService.extractUserInfoFromJWTToken(token);
 
-        String userId = userContextService.getUserId();
-        User user = userRepository.findOrFailUser(userId);
+        String userIdFromToken = userInfo.getUserId();
+        User user = userRepository.findOrFailUser(userIdFromToken);
+
+        String emailFromToken = userInfo.getEmail();
 
         if (user.getEmailAddress().equals(emailFromToken)) {
             throw new NotAcceptableException("User has already this email address");
@@ -141,7 +145,7 @@ public class UserEmailAddressUpdateService {
         user.emailAddress = emailFromToken;
 
         UserMessage message = getUserMessage(user, formerEmailAddress);
-        message.setUserId(userId);
+        message.setUserId(userIdFromToken);
         message.setEmailAddress(emailFromToken);
         message.setFormerEmailAddress(formerEmailAddress);
         message.setSubject("Your SecHub email address has been changed");
