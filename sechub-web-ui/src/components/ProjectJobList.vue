@@ -85,12 +85,12 @@
                   </td>
                   <td>{{ job.jobUUID }}</td>
                   <td>
-                    <v-btn
+                    <AsyncButton
                       v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
+                      :id=job.jobUUID
                       color="error"
-                      density="comfortable"
                       icon="mdi-close-circle-outline"
-                      @click="cancelJob(job.jobUUID)"
+                      @button-clicked="cancelJob"
                     />
                   </td>
                 </tr>
@@ -127,6 +127,7 @@
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
+import AsyncButton from './AsyncButton.vue'
 
   export default {
     name: 'ProjectComponent',
@@ -204,7 +205,7 @@
           downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
           const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
-          onError(errMsg, err)
+          handleError(errMsg, err)
         }
       }
 
@@ -221,7 +222,7 @@
           downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
           const errMsg = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
-          onError(errMsg, err)
+          handleError(errMsg, err)
         }
       }
 
@@ -247,7 +248,7 @@
           await defaultClient.withJobManagementApi.userCancelsJob(requestParameter)
         } catch (err) {
           const errMsg = (t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID)
-          onError(errMsg, err)
+          handleError(errMsg, err)
         }
         fetchProjectJobs(currentRequestParameters)
       }
@@ -271,7 +272,7 @@
         router.go(-1)
       }
 
-      function onError (errMsg: string, err : unknown) {
+      function handleError (errMsg: string, err : unknown) {
         alert.value = true
         error.value = errMsg
         console.error(errMsg, err)

@@ -19,6 +19,7 @@ declare module 'vue' {
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
     ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
     ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
+    AsyncButton: typeof import('./components/AsyncButton')['default']
     UserDetailInformation: typeof import('./components/UserDetailInformation.vue')['default']
   }
 }
