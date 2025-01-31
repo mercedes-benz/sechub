@@ -24,7 +24,7 @@ public class AuthUserDetailsServiceTest {
         entity.setRoleSuperAdmin(true);
 
         /* execute */
-        UserDetails result = AuthUserDetailsService.adoptUser(entity);
+        AuthUserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN,
@@ -40,7 +40,7 @@ public class AuthUserDetailsServiceTest {
         entity.setRoleSuperAdmin(false);
 
         /* execute */
-        UserDetails result = AuthUserDetailsService.adoptUser(entity);
+        AuthUserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
@@ -56,7 +56,7 @@ public class AuthUserDetailsServiceTest {
         entity.setRoleSuperAdmin(false);
 
         /* execute */
-        UserDetails result = AuthUserDetailsService.adoptUser(entity);
+        AuthUserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
@@ -71,13 +71,13 @@ public class AuthUserDetailsServiceTest {
         entity.setRoleSuperAdmin(true);
 
         /* execute */
-        UserDetails result = AuthUserDetailsService.adoptUser(entity);
+        AuthUserDetails result = AuthUserDetailsService.adoptUser(entity);
 
         /* test */
         assertHasAuthority(result, AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);
     }
 
-    private void assertHasAuthority(UserDetails result, String... authorities) {
+    private void assertHasAuthority(AuthUserDetails result, String... authorities) {
         Collection<? extends GrantedAuthority> auth = result.getAuthorities();
         for (String authority : authorities) {
             boolean found = false;

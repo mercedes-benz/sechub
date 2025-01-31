@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -26,14 +27,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 class LoginOAuth2SuccessHandlerTest {
 
-    private static final String ACCESS_TOKEN_KEY = "access_token";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "SECHUB_OAUTH2_ACCESS_TOKEN";
     private static final String ENCRYPTED_ACCESS_TOKEN = "this-is-an-encrypted-access-token";
     private static final byte[] ENCRYPTED_ACCESS_TOKEN_BYTES = ENCRYPTED_ACCESS_TOKEN.getBytes(StandardCharsets.UTF_8);
     private static final String ENCRYPTED_ACCESS_TOKEN_BASE64_ENCODED = Base64.getEncoder().encodeToString(ENCRYPTED_ACCESS_TOKEN_BYTES);
     private static final String PROVIDER = "example-provider";
     private static final String PRINCIPAL = "example-principal";
     private static final String ACCESS_TOKEN = "this-is-a-plain-access-token";
-    private static final int DEFAULT_EXPIRY_SECONDS = 3600;
+    private static final Duration DEFAULT_EXPIRY = Duration.ofHours(1);
     private static final String BASE_PATH = "/";
     private static final String REDIRECT_URI = "https://example.org/redirect-uri";
 
@@ -60,10 +61,11 @@ class LoginOAuth2SuccessHandlerTest {
     @Test
     void on_authentication_success_sends_a_valid_redirect_containing_the_encrypted_access_token_cookie() throws IOException {
         /* prepare */
+        Duration expiry = Duration.ofMinutes(1);
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(now.plusSeconds(60));
-        int expirySeconds = 60;
+        /* setting this should make sure that the default expiry (1 hour) is not used */
+        when(oAuth2AccessToken.getExpiresAt()).thenReturn(now.plusSeconds(expiry.toSeconds()));
 
         /* execute */
         loginOAuth2SuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
@@ -73,9 +75,9 @@ class LoginOAuth2SuccessHandlerTest {
         verify(httpServletResponse).sendRedirect(REDIRECT_URI);
         ArgumentMatcher<Cookie> argumentMatcher = cookie -> {
             /* @formatter:off */
-            if (!ACCESS_TOKEN_KEY.equals(cookie.getName())) return false;
+            if (!ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName())) return false;
             if (!ENCRYPTED_ACCESS_TOKEN_BASE64_ENCODED.equals(cookie.getValue())) return false;
-            if (cookie.getMaxAge() != expirySeconds) return false;
+            if (cookie.getMaxAge() != expiry.toSeconds()) return false;
             if (!cookie.isHttpOnly()) return false;
             if (!cookie.getSecure()) return false;
             return BASE_PATH.equals(cookie.getPath());
@@ -95,7 +97,7 @@ class LoginOAuth2SuccessHandlerTest {
         loginOAuth2SuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
 
         /* test */
-        ArgumentMatcher<Cookie> argumentMatcher = cookie -> cookie.getMaxAge() == DEFAULT_EXPIRY_SECONDS;
+        ArgumentMatcher<Cookie> argumentMatcher = cookie -> cookie.getMaxAge() == DEFAULT_EXPIRY.toSeconds();
         verify(httpServletResponse).addCookie(ArgumentMatchers.argThat(argumentMatcher));
     }
 }

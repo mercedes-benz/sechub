@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.domain.authorization;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,7 +51,7 @@ public class AuthUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public AuthUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         /* @formatter:off */
         return repository
                 .findByUserId(username.toLowerCase())
@@ -58,8 +60,9 @@ public class AuthUserDetailsService implements UserDetailsService {
         /* @formatter:on */
     }
 
-    static UserDetails adoptUser(AuthUser entity) {
-        User.UserBuilder builder = User.builder();
+    static AuthUserDetails adoptUser(AuthUser entity) {
+        AuthUserDetails.Builder builder = AuthUserDetails.BUILDER;
+
         builder.username(entity.getUserId());
         String hashedApiToken = entity.getHashedApiToken();
 
@@ -81,29 +84,38 @@ public class AuthUserDetailsService implements UserDetailsService {
             builder.password(hashedApiToken);
         }
 
-        List<String> authorities = accumulateAuthorities(entity);
-        builder.authorities(authorities.toArray(new String[authorities.size()]));
+        /* user is enabled if api token is present */
+        boolean enabled = hashedApiToken != null && !hashedApiToken.isEmpty();
+        builder.enabled(enabled);
 
-        /* when api token is empty or null then access is disabled */
-        boolean disabled = hashedApiToken == null || hashedApiToken.isEmpty();
-        builder.disabled(disabled);
-        UserDetails details = builder.build();
+        /* SecHub user is never locked, expired or has expired credentials */
+        builder.accountNonLocked(true);
+        builder.accountNonExpired(true);
+        builder.credentialsNonExpired(true);
+
+        Collection<GrantedAuthority> authorities = accumulateAuthorities(entity);
+        builder.authorities(authorities);
+
+        AuthUserDetails details = builder.build();
+
         LOG.trace("User:{} has authorities: {}, entity:{}", entity.getUserId(), details.getAuthorities(), entity);
+
         return details;
     }
 
-    private static List<String> accumulateAuthorities(AuthUser entity) {
-        List<String> authorities = new ArrayList<String>();
+    private static Collection<GrantedAuthority> accumulateAuthorities(AuthUser entity) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
 
         if (entity.isRoleUser()) {
-            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
+            authorities.add(() -> AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_USER);
         }
         if (entity.isRoleSuperAdmin()) {
-            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);
+            authorities.add(() -> AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_SUPERADMIN);
         }
         if (entity.isRoleOwner()) {
-            authorities.add(AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
+            authorities.add(() -> AuthorityConstants.AUTHORITY_ROLE_PREFIX + RoleConstants.ROLE_OWNER);
         }
+
         return authorities;
     }
 }
