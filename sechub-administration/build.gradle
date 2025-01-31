@@ -8,7 +8,9 @@
 dependencies {
     implementation project(':sechub-shared-kernel')
     implementation project(':sechub-commons-encryption') // necessary to validate
+    implementation project(':sechub-commons-security-spring')
     implementation library.springboot_starter_thymeleaf
+    implementation library.jjwt
 
     testImplementation project(':sechub-testframework')
 
