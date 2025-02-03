@@ -100,3 +100,43 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
         context.lastClientExitCode= error.status;
     }
 }
+
+/**
+ * Executes the defineFalsePositives method of the SecHub CLI. Sets the client exitcode inside context.
+ * @param context launch context
+ */
+export function defineFalsePositives(context: LaunchContext) {
+    if (!context.defineFalsePositivesFile) {
+        core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        context.lastClientExitCode = 0;
+        return;
+    }
+    
+    const clientExecutablePath = sanitize(context.clientExecutablePath);
+    const projectIdValue = sanitize(context.projectName); 
+    const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
+    
+    try {
+        const output = execFileSync(clientExecutablePath,
+            ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'],
+            {
+                env: {
+                    SECHUB_SERVER: process.env.SECHUB_SERVER,
+                    SECHUB_USERID: process.env.SECHUB_USERID,
+                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+                },
+                encoding: 'utf-8'
+            }
+        );
+
+        core.info('defineFalsePositives executed successfully');
+        context.lastClientExitCode = 0;
+    } catch (error: any) {
+        core.error(`Error executing defineFalsePositives command: ${error.message}`);
+        core.error(`Standard error: ${error.stderr}`);
+        context.lastClientExitCode = error.status;
+    }
+}

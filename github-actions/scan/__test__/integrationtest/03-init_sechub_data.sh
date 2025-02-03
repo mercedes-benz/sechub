@@ -81,5 +81,6 @@ createData 3 codescan red
 createData 4 webscan red
 createData 5 secretscan yellow
 createData 6 licensescan green
+createData 7 codescan red-def-fp
 
 ./sechub-api.sh project_set_whitelist_uris test-project-4 https://vulnerable.demo.example.com

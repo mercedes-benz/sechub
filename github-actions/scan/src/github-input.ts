@@ -18,6 +18,7 @@ export const PARAM_TRUST_ALL = 'trust-all';
 
 export const PARAM_SCAN_TYPES = 'scan-types';
 export const PARAM_CONTENT_TYPE = 'content-type';
+export const PARAM_DEFINE_FALSE_POSITIVES= 'define-false-positives';
 
 export interface GitHubInputData {
     configPath: string;
@@ -35,6 +36,7 @@ export interface GitHubInputData {
     trustAll: string;
     scanTypes: string;
     contentType: string;
+    defineFalsePositives: string;
 
 }
 
@@ -54,6 +56,7 @@ export const INPUT_DATA_DEFAULTS: GitHubInputData = {
     trustAll: '',
     scanTypes: '',
     contentType: '',
+    defineFalsePositives: '',
 
 };
 
@@ -74,6 +77,7 @@ export function resolveGitHubInputData(): GitHubInputData {
         trustAll: getParam(PARAM_TRUST_ALL),
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
+        defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
     };
 }
 

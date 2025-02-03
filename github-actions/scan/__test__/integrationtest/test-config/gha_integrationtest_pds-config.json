@@ -21,6 +21,12 @@
       "description": "This is only a fake code scan - used by integration tests. The code scan will just return one high vulnerability"
     },
     {
+      "id": "codescan_demo_red_def_fp",
+      "path": "./__test__/integrationtest/test-scripts/pds-codescan-demo-red-define-false-positives.sh",
+      "scanType": "codeScan",
+      "description": "This is only a fake code scan - used by integration tests. The code scan will just return one high vulnerability, which is used for false positives handling."
+    },
+    {
       "id": "webscan_demo_red",
       "path": "./__test__/integrationtest/test-scripts/pds-webscan-demo-red.sh",
       "scanType": "webScan",
