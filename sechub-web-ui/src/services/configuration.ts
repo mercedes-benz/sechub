@@ -19,7 +19,6 @@ if (config.value.LOCAL_DEV) {
   apiConfig = new Configuration({
     basePath: config.value.HOST,
     headers: {
-      // todo: check if cookie set by server is sent back (for auth reasons)
       'Content-Type': 'application/json',
     },
   })
