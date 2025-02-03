@@ -7,25 +7,32 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateHealthCheckEntry;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateHealthCheckProblemType;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckResult;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckStatus;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
 
+@ExtendWith(IntegrationTestExtension.class)
+@WithTestScenario(Scenario1.class)
+/**
+ * Info: There are similarities to TemplateScenario9IntTest, but here we have no
+ * product in executor configurations which supports templates. This means that
+ * testing templates here, can only check common parts - e.g. info that template
+ * exists but is not assigned to any project.
+ */
 public class TemplateScenario1IntTest {
-
-    @Rule
-    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
-
-    @Rule
-    public Timeout timeOut = Timeout.seconds(600);
 
     private String templateId;
 
@@ -34,8 +41,8 @@ public class TemplateScenario1IntTest {
     private TemplateDefinition definitionWithId;
     private TemplateDefinition updateDefinition;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void beforeEach() {
 
         templateId = "template-1_" + System.nanoTime();
 
@@ -61,10 +68,17 @@ public class TemplateScenario1IntTest {
         definitionWithId = TemplateDefinition.from(fullTemplateDefinitionJson);
 
         updateDefinition = TemplateDefinition.from(fullTemplateDefinitionJson.replace(templateId, "will-not-be-changed-by-update"));
+
+        /*
+         * we need to clear old template data , to be able to restart the test for
+         * development
+         */
+        TestAPI.clearAllExistingTemplates();
+
     }
 
     @Test
-    public void template_crud_test() {
+    void template_crud_and_healthcheck_test() {
         /* prepare */
         as(SUPER_ADMIN).createProject(Scenario1.PROJECT_1, SUPER_ADMIN); // not done in this scenario automatically
 
@@ -72,15 +86,24 @@ public class TemplateScenario1IntTest {
         assertTemplateNotInsideTemplateList();
 
         /* execute + test */
+
+        assertTemplateHealthCheckSaysOKwithoutAnyEntries(); // beforeEach drops any old template data, so we can test here
+
         assertTemplateCanBeCreated();
 
         assertTemplateCanBeUpdated();
+
+        assertTemplateHealthCheckSaysOkButInfoThatTemplateIsNotAssigned();
 
         assertTemplateCanBeAssignedToProject();
 
         assertTemplateCanBeUnassignedFromProject();
 
         assertTemplateCanBeAssignedToProject();
+
+        assertTemplateHealthCheckSaysOkWithoutEntries(); // ok without entries... why? because template is assigned, no asset file
+                                                         // exists, but... there is no product which would support templates, so no
+                                                         // runtime problems!
 
         assertTemplateCanBeDeletedAndAssignmentIsPurged();
 
@@ -100,6 +123,40 @@ public class TemplateScenario1IntTest {
 
         // check cleanup worked
         assertTemplateNotInsideTemplateList();
+
+    }
+
+    private void assertTemplateHealthCheckSaysOKwithoutAnyEntries() {
+        TemplatesHealthCheckResult result = as(SUPER_ADMIN).executeTemplatesHealthcheck();
+
+        executeResilient(() -> {
+            assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.OK);
+            assertThat(result.getEntries()).isEmpty();
+
+        });
+    }
+
+    private void assertTemplateHealthCheckSaysOkWithoutEntries() {
+        TemplatesHealthCheckResult result = as(SUPER_ADMIN).executeTemplatesHealthcheck();
+
+        executeResilient(() -> {
+            assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.OK);
+            assertThat(result.getEntries()).hasSize(0);
+
+        });
+    }
+
+    private void assertTemplateHealthCheckSaysOkButInfoThatTemplateIsNotAssigned() {
+        TemplatesHealthCheckResult result = as(SUPER_ADMIN).executeTemplatesHealthcheck();
+
+        executeResilient(() -> {
+            assertThat(result.getStatus()).isEqualTo(TemplatesHealthCheckStatus.OK);
+            assertThat(result.getEntries()).hasSize(1);
+            TemplateHealthCheckEntry firstEntry = result.getEntries().iterator().next();
+            assertThat(firstEntry.getType()).isEqualTo(TemplateHealthCheckProblemType.INFO);
+            assertThat(firstEntry.getDescription()).contains("The template is defined, but not assigned to any project");
+
+        });
 
     }
 

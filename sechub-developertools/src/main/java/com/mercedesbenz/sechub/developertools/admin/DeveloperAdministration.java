@@ -858,4 +858,12 @@ public class DeveloperAdministration {
         return asTestUser().downloadAssetFile(assetId, fileName);
     }
 
+    public String executeTemplatesHealthCheck() {
+        return asTestUser().executeTemplatesHealthcheck().toFormattedJSON();
+    }
+
+    public void deleteTemplate(String templateId) {
+        asTestUser().deleteTemplate(templateId);
+    }
+
 }

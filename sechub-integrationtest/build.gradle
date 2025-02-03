@@ -28,6 +28,10 @@ dependencies {
     api library.junit4
 
     api library.apache_commons_lang3
+    
+    implementation spring_boot_dependency.junit_jupiter
+    implementation spring_boot_dependency.mockito_core
+    implementation spring_boot_dependency.assertj_core
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -157,11 +161,18 @@ task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopInt
 
 }
 
+task cleanIntegrationTest(type: Delete) {
+  delete "${project.buildDir}/test-results", "${project.buildDir}/reports/tests", "${project.buildDir}/sechub-testreports"
+}
 
 /**
  * Own task for integration tests.
+ 
+ * We use cleanIntegrationTest task as dependency here - reason: When tests are executed before in CI/CD, the integration
+ * tests are skipped - which is okay. Unfortunately gradle will assume that there are no changes in tests
+ * (source has not changed, test was executed, so means still valid...). To avoid this we do the cleanTest
  */
-task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
+task integrationtest(type: Test, dependsOn: [cleanIntegrationTest, startIntegrationTestInstances]) {
    group 'sechub'
    description 'Starts integration test server, execute tests and automatically stops server after done or failed'
    // integration tests seems to be very often  "up-to-date"
@@ -179,13 +190,21 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
     * integration test properties here
     */
    systemProperty "sechub.integrationtest.running", "true"
-   systemProperty "sechub.integrationtest.longrunning", "true"
    
    finalizedBy "stopIntegrationTestInstances"
-   
-   filter {
-         includeTestsMatching "*IntTest"
-   }
+
+   /*
+    * we do NOT something like 
+    * ``` 
+    *  filter {
+    *      includeTestsMatching "*IntTest"
+    *   }
+    * ```
+    * 
+    * Why? Because we need the cleanIntegrationTest task run (see documentation on top of task for reasons) and this
+    * will also cleanup the "normal" unit test results inside the gradle sub module "sechub-integration".
+    * Means if we would filter here, the tests would no longer exist.
+    */   
 
 }
 

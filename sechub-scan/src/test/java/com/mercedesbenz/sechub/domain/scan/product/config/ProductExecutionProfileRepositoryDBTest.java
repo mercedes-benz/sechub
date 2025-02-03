@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,12 +14,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 @ActiveProfiles(Profiles.TEST)
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @ContextConfiguration(classes = { ProductExecutionProfile.class, ProductExecutionProfileRepositoryDBTest.SimpleTestConfiguration.class })
 public class ProductExecutionProfileRepositoryDBTest {
@@ -31,12 +28,8 @@ public class ProductExecutionProfileRepositoryDBTest {
     @Autowired
     private ProductExecutionProfileRepository repositoryToTest;
 
-    @Before
-    public void before() {
-    }
-
     @Test
-    public void can_remove_existing_project_relation() {
+    void can_remove_existing_project_relation() {
         /* prepare */
         String profileId = "1profile1";
         String projectId = "1projectA";
@@ -55,7 +48,7 @@ public class ProductExecutionProfileRepositoryDBTest {
     }
 
     @Test
-    public void can_remove_all_existing_project_relation_for_profile_but_not_influence_other_profiles() {
+    void can_remove_all_existing_project_relation_for_profile_but_not_influence_other_profiles() {
         /* prepare */
         String profileId1 = "2profile1";
         String profileId2 = "2profile2";
@@ -83,7 +76,7 @@ public class ProductExecutionProfileRepositoryDBTest {
     }
 
     @Test
-    public void can_add_project_relation() {
+    void can_add_project_relation() {
         /* prepare */
         String projectId = "3projectB";
         String profileId = "3profile2";
@@ -99,7 +92,7 @@ public class ProductExecutionProfileRepositoryDBTest {
     }
 
     @Test
-    public void count_0_when_not_exists() {
+    void count_0_when_not_exists() {
         /* prepare */
         String projectId = "4projectB";
         String profileId = "4profile2";
@@ -110,12 +103,12 @@ public class ProductExecutionProfileRepositoryDBTest {
         int count = repositoryToTest.countRelationShipEntries(profileId, projectId);
 
         /* test */
-        assertEquals(0, count);
+        assertThat(count).isEqualTo(0);
 
     }
 
     @Test
-    public void count_1_when__exists() {
+    void count_1_when__exists() {
         /* prepare */
         String profileId2 = "5profile2";
         String profileId3 = "5profile3";
@@ -130,8 +123,32 @@ public class ProductExecutionProfileRepositoryDBTest {
         int count = repositoryToTest.countRelationShipEntries(profileId2, projectIdB);
 
         /* test */
-        assertEquals(1, count);
+        assertThat(count).isEqualTo(1);
 
+    }
+
+    @Test
+    void findExecutionProfilesForProject() {
+
+        /* prepare */
+        String profile1 = "profile1";
+        String profile2 = "profile2";
+
+        String project1 = "project1";
+        String project2 = "project2";
+
+        createProfileWithProjectRelation(profile1, project1, project2);
+        createProfileWithProjectRelation(profile2, project2);
+
+        /* execute */
+        List<ProductExecutionProfile> profilesProject1 = repositoryToTest.findExecutionProfilesForProject(project1);
+        List<ProductExecutionProfile> profilesProject2 = repositoryToTest.findExecutionProfilesForProject(project2);
+        List<ProductExecutionProfile> profilesProjectUnknown = repositoryToTest.findExecutionProfilesForProject("unknown");
+
+        /* test */
+        assertThat(profilesProject1).hasSize(1);
+        assertThat(profilesProject2).hasSize(2);
+        assertThat(profilesProjectUnknown).isEmpty();
     }
 
     private ProductExecutionProfile createProfile(String profileId) {
@@ -164,8 +181,8 @@ public class ProductExecutionProfileRepositoryDBTest {
         entityManager.clear();
 
         ProductExecutionProfile loaded = entityManager.find(ProductExecutionProfile.class, profileId);
-        assertEquals("Expected was that loaded project ids contains" + projectId + ":" + expectedToExist, expectedToExist,
-                loaded.projectIds.contains(projectId));
+        assertThat(loaded.projectIds.contains(projectId)).describedAs("Expected was that loaded project ids contains" + projectId + ":" + expectedToExist)
+                .isEqualTo(expectedToExist);
     }
 
     @TestConfiguration

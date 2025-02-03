@@ -13,7 +13,6 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
@@ -28,6 +27,8 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData;
+import com.mercedesbenz.sechub.domain.scan.DefaultExecutorConfigSupport;
+import com.mercedesbenz.sechub.domain.scan.JobParameterProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
@@ -49,8 +50,6 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     private PDSExecutorConfigSuppportServiceCollection serviceCollection;
     private SecHubDataConfigurationTypeListParser parser = new SecHubDataConfigurationTypeListParser();
-
-    PDSTemplateMetaDataService templateMetaDataTransformer = new PDSTemplateMetaDataService();
 
     static {
         List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
@@ -174,7 +173,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
 
     private Map<String, String> createParametersToSendByProviders(List<PDSKeyProvider<?>> providers) {
         Map<String, String> parametersToSend = new TreeMap<>();
-        for (String originKey : configuredExecutorParameters.keySet()) {
+        for (String originKey : getJobParameterProvider().getKeys()) {
             PDSKeyProvider<?> foundProvider = null;
             for (PDSKeyProvider<?> provider : providers) {
                 String key = provider.getKey().getId();
@@ -185,7 +184,7 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
             }
             /* either not special (so always sent to PDS) or special but must be sent */
             if (foundProvider == null || foundProvider.getKey().isSentToPDS()) {
-                parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
+                parametersToSend.put(originKey, getJobParameterProvider().get(originKey));
             }
         }
         return parametersToSend;
@@ -196,7 +195,18 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     }
 
     public String getPDSProductIdentifier() {
-        return getParameter(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER);
+        return getPDSProductIdentifier(getJobParameterProvider());
+    }
+
+    /**
+     * Public available static method to access pds product identifier, without
+     * creating a config support object but using still same logic.
+     *
+     * @param provider
+     * @return pds product identiier or <code>null</code>
+     */
+    public static String getPDSProductIdentifier(JobParameterProvider provider) {
+        return provider.get(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER.getKey().getId());
     }
 
     public int getTimeToWaitForNextCheckOperationInMilliseconds(PDSInstallSetup setup) {
@@ -250,15 +260,15 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     }
 
     private String getParameter(PDSKey configDataKey) {
-        return getParameter(configDataKey.getId());
+        return getJobParameterProvider().get(configDataKey.getId());
     }
 
     private int getParameterIntValue(PDSKeyProvider<? extends PDSKey> provider) {
-        return getParameterIntValue(provider.getKey().getId());
+        return getJobParameterProvider().getInt(provider.getKey().getId());
     }
 
     private boolean getParameterBooleanValue(PDSKeyProvider<? extends PDSKey> provider) {
-        return getParameterBooleanValue(provider.getKey().getId());
+        return getJobParameterProvider().getBoolean(provider.getKey().getId());
     }
 
     @Override
@@ -316,11 +326,11 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     }
 
     public int getPDSAdapterResilienceMaxRetries() {
-        return getParameterIntValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_MAX);
+        return getJobParameterProvider().getInt(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_MAX);
     }
 
     public long getPDSAdapterResilienceRetryWaitInMilliseconds() {
-        return getParameterLongValue(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS);
+        return getJobParameterProvider().getLong(PDSProductExecutorKeyConstants.ADAPTER_RESILIENCE_RETRY_WAIT_MILLISECONDS);
     }
 
     public boolean isGivenStorageSupportedByPDSProduct(PDSStorageContentProvider contentProvider) {

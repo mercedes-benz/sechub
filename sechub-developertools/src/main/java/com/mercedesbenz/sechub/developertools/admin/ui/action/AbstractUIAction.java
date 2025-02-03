@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.developertools.JSONDeveloperHelper;
+import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration;
 import com.mercedesbenz.sechub.developertools.admin.ErrorHandler;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.OutputUI;
@@ -56,6 +57,10 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     protected UIContext getContext() {
         return context;
+    }
+
+    protected DeveloperAdministration getAdministration() {
+        return getContext().getAdministration();
     }
 
     /**

@@ -40,6 +40,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutor
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
@@ -96,6 +97,9 @@ public class IntegrationTestScanRestController {
 
     @Autowired
     private ScanProjectConfigRepository scanProjectConfigRepository;
+
+    @Autowired
+    private TemplateService templateService;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/scan/days", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -221,7 +225,6 @@ public class IntegrationTestScanRestController {
 
     }
 
-    @SuppressWarnings("deprecation")
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/namepattern/{namePatternProviderId}/{name}", method = RequestMethod.GET)
     public String getIdForNameByProvider(@PathVariable("namePatternProviderId") String namePatternProviderId, @PathVariable("name") String name) {
         MappingIdentifier mappingIdentifier = MappingIdentifier.valueOf(namePatternProviderId);
@@ -232,6 +235,14 @@ public class IntegrationTestScanRestController {
         String id = provider.getIdForName(name);
         return id;
 
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/templates/clear-all", method = RequestMethod.POST)
+    public void clearAllTemplates() {
+        List<String> templateIds = templateService.fetchAllTemplateIds();
+        for (String templateId : templateIds) {
+            templateService.deleteTemplate(templateId);
+        }
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{jobUUID}/pds/uuids", method = RequestMethod.GET)

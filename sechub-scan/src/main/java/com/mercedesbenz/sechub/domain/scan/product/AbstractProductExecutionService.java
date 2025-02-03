@@ -166,6 +166,11 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
                 /* fall through */
             default:
                 LOG.debug("search config for project={}, executor={}, version={}", projectId, productIdentifier, executorVersion);
+                /*
+                 * Some info for better understanding: We use here only
+                 * productExecutorConfigRepository - which does internally join with profile -
+                 * we do not need here the profile, just the executor configuration.
+                 */
                 List<ProductExecutorConfig> executorConfigurations = productExecutorConfigRepository.findExecutableConfigurationsForProject(projectId,
                         productIdentifier, executorVersion);
                 if (executorConfigurations.isEmpty()) {

@@ -121,12 +121,16 @@ with
 -Dsechub.integrationtest.running=true
 ----
 
-Some integration tests are long running. These tests are only run when you set
-----
--Dsechub.integrationtest.longrunning=true
-----
+[TIP]
+====
+To make things easier there is the possibility to define system properties also
+inside file:
+`~/.sechub/sechub-developer.properties`
 
-So you can easily switch or enable all by enabling dedicated system property.
+This file is used inside integration tests automatically.
+If you add a line with `sechub.integrationtest.running=true` to this file, you do not
+need to set the system property for every integration test launch configuration...
+====
 
 ====== Console
 Next line starts integration test server, execute tests and automatically stops
