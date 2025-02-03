@@ -18,8 +18,7 @@ class LoginController {
 
     private static final String OAUTH2_TAB = "oauth2";
     private static final String CLASSIC_TAB = "classic";
-    private static final Set<String> TABS = Set.of(OAUTH2_TAB, CLASSIC_TAB);
-    private static final String REDIRECT_LOGIN_WITH_TAB_FORMAT = "redirect:/login?tab=%s";
+    private static final Set<String> ALLOWED_TABS = Set.of(OAUTH2_TAB, CLASSIC_TAB);
     private final SecHubSecurityProperties.LoginProperties loginProperties;
     private final boolean isOAuth2Enabled;
     private final boolean isClassicAuthEnabled;
@@ -35,7 +34,7 @@ class LoginController {
     }
     /* @formatter:on */
 
-    String login(Model model, @RequestParam(required = false, defaultValue = "") String tab){
+    String login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab){
         model.addAttribute("isOAuth2Enabled", isOAuth2Enabled);
         model.addAttribute("isClassicAuthEnabled", isClassicAuthEnabled);
 
@@ -44,16 +43,21 @@ class LoginController {
             model.addAttribute("registrationId", registrationId);
         }
 
-        if (!TABS.contains(tab) && isOAuth2Enabled) {
-            return REDIRECT_LOGIN_WITH_TAB_FORMAT.formatted(OAUTH2_TAB);
+        if (!ALLOWED_TABS.contains(tab) && isOAuth2Enabled) {
+            return "redirect:/login?tab=%s".formatted(OAUTH2_TAB);
         }
 
-        return "login";
+        return "login.html";
     }
 
     private void registerLoginMapping(RequestMappingHandlerMapping requestMappingHandlerMapping, String loginPage) throws NoSuchMethodException {
-        RequestMappingInfo requestMappingInfo = RequestMappingInfo.paths(loginPage).methods(RequestMethod.GET).produces(MediaType.APPLICATION_JSON_VALUE)
+        /* @formatter:off */
+        RequestMappingInfo requestMappingInfo = RequestMappingInfo
+                .paths(loginPage)
+                .methods(RequestMethod.GET)
+                .produces(MediaType.APPLICATION_JSON_VALUE)
                 .build();
+        /* @formatter:on */
 
         requestMappingHandlerMapping.registerMapping(requestMappingInfo, this, getClass().getDeclaredMethod("login", Model.class, String.class));
     }

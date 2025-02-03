@@ -188,6 +188,8 @@ public class SecHubSecurityProperties {
 
     public static class LoginProperties {
         static final String PREFIX = "%s.login".formatted(SecHubSecurityProperties.PREFIX);
+        static final String CLASSIC_MODE = "classic";
+        static final String OAUTH2_MODE = "oauth2";
         static final String MODES = "modes";
 
         private final boolean isEnabled;
@@ -207,11 +209,7 @@ public class SecHubSecurityProperties {
             if (enabled && this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
                 throw new IllegalArgumentException("The property '%s.modes' allows only 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
-            /*
-             * Later we will differentiate between classic and oauth2 login. For now only
-             * oauth2 login is enabled
-             */
-            this.oAuth2 = enabled ? requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2")) : oAuth2;
+            this.oAuth2 = enabled && isOAuth2ModeEnabled() ? requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2")) : oAuth2;
         }
 
         public boolean isEnabled() {
@@ -235,7 +233,7 @@ public class SecHubSecurityProperties {
         }
 
         public boolean isClassicModeEnabled() {
-            return modes.contains(CLASSIC_MODE);
+            return modes.contains(SecHubSecurityProperties.CLASSIC_MODE);
         }
 
         public OAuth2Properties getOAuth2Properties() {

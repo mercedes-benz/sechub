@@ -9,7 +9,6 @@ import jakarta.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -22,7 +21,9 @@ import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfigurat
  * {@code LoginClassicSuccessHandler} implements
  * {@link AuthenticationSuccessHandler} to provide custom behavior upon
  * successful authentication. This handler redirects the user to the specified
- * <code>redirectUri</code>.
+ * <code>redirectUri</code>. Before redirecting, it creates a cookie containing
+ * the user's credentials in the form of <code>username:password</code>. The
+ * cookie is encrypted using {@link AES256Encryption} and then encoded using Base64.
  *
  * @see AbstractSecurityConfiguration
  *
@@ -30,10 +31,8 @@ import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfigurat
  */
 class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
 
-    // TODO: klären mit Team wegen Dauer
-    // TODO: tests
     private static final Duration ONE_HOUR = Duration.ofHours(1);
-    private static final Logger LOG = LoggerFactory.getLogger(LoginClassicSuccessHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(LoginClassicSuccessHandler.class);
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
     private final String redirectUri;
@@ -51,10 +50,10 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
         String password = userDetails.getPassword().replace("{noop}", "");
         String classicAuthCredentials = "%s:%s".formatted(username, password);
         byte[] classicAuthCredentialsEncrypted = aes256Encryption.encrypt(classicAuthCredentials);
-        String classicAuthCredentialsBase64 = encoder.encodeToString(classicAuthCredentialsEncrypted);
-        Cookie cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, classicAuthCredentialsBase64, ONE_HOUR, BASE_PATH);
+        String classicAuthCredentialsEncoded = encoder.encodeToString(classicAuthCredentialsEncrypted);
+        Cookie cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, classicAuthCredentialsEncoded, ONE_HOUR, BASE_PATH);
         response.addCookie(cookie);
-        LOG.debug("Redirecting to {}", redirectUri);
+        log.debug("Redirecting to {}", redirectUri);
         response.sendRedirect(redirectUri);
     }
 }

@@ -113,7 +113,7 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     @Bean
-    @Conditional(LoginEnabledCondition.class)
+    @Conditional(LoginOAuth2EnabledCondition.class)
     ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties secHubSecurityProperties) {
         SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();
@@ -146,7 +146,7 @@ public abstract class AbstractSecurityConfiguration {
 												 SecHubSecurityProperties secHubSecurityProperties,
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
-												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+												 @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
 		SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
 
 		Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
@@ -155,6 +155,7 @@ public abstract class AbstractSecurityConfiguration {
 		httpSecurity.securityMatcher(publicPaths.toArray(new String[0]))
 				/* Disable CSRF */
 				.csrf(AbstractHttpConfigurer::disable)
+
 				/* Make the application stateless */
 				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
