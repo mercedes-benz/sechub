@@ -4,10 +4,14 @@ package com.mercedesbenz.sechub.sharedkernel.messaging;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.SealedObject;
+
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+
 public abstract class DomainMessagePart {
 
     private MessageID id;
-    protected Map<String, String> parameters;
+    protected Map<String, SealedObject> parameters;
 
     DomainMessagePart(MessageID id) {
         this.id = id;
@@ -33,8 +37,8 @@ public abstract class DomainMessagePart {
      */
     public <T> T get(MessageDataKey<T> key) {
         assertKeyNotNull(key);
-        String data = parameters.get(key.getId());
-        return key.getProvider().get(data);
+        SealedObject sealedObject = parameters.get(key.getId());
+        return key.getProvider().get(CryptoAccess.CRYPTO_STRING.unseal(sealedObject));
     }
 
     @Override
@@ -46,12 +50,11 @@ public abstract class DomainMessagePart {
         if (key == null) {
             throw new IllegalArgumentException("key may not be null!");
         }
-        String contentAsString = key.getProvider().getString(content);
-        parameters.put(key.getId(), contentAsString);
+        parameters.put(key.getId(), CryptoAccess.CRYPTO_STRING.seal(key.getProvider().getString(content)));
     }
 
     String getRaw(String key) {
-        return parameters.get(key);
+        return CryptoAccess.CRYPTO_STRING.unseal(parameters.get(key));
     }
 
     private <T> void assertKeyNotNull(MessageDataKey<T> key) {
