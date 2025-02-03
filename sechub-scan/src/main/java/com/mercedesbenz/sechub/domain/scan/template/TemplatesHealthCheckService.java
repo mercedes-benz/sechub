@@ -145,68 +145,8 @@ public class TemplatesHealthCheckService {
 
                     for (ProductExecutorConfig config : configurations) {
 
-                        ProductIdentifier productIdentifier = config.getProductIdentifier();
-                        ScanType scanType = productIdentifier.getType();
-
-                        boolean productSupportsTemplates = templateDefinitionFilter.isProductAbleToHandleTemplates(productIdentifier);
-                        if (!productSupportsTemplates) {
-                            continue;
-                        }
-
-                        boolean scanTypeSupportsTemplates = templateDefinitionFilter.isScanTypeSupportingTemplate(scanType, templateDefinition);
-                        if (!scanTypeSupportsTemplates) {
-                            continue;
-                        }
-                        String fileName = assetFileNameService.resolveAssetFileName(config);
-                        if (fileName == null) {
-                            fileName = "<error: assetFileNameService was not able to resolve filename for config/>"; // just to have a value inside output
-                                                                                                                     // result.
-                        }
-
-                        boolean exists = false;
-                        for (AssetFileData fileData : assetFileDataList) {
-                            if (fileName.equals(fileData.getFileName())) {
-                                exists = true;
-                                break;
-                            }
-                        }
-                        if (!exists) {
-
-                            boolean configNotActive = Boolean.FALSE.equals(config.getEnabled());
-                            boolean profileNotActive = Boolean.FALSE.equals(profile.getEnabled());
-
-                            TemplateHealthCheckEntry problem = ensureProblemInMap(templateExecutorConfigProblemMap, templateDefinition, config);
-                            problem.getProfiles().add(profile.getId()); // it is a set to duplication does not matter
-                            problem.getProjects().add(projectId);
-
-                            if (problem.getFileName() == null) {
-                                /* not already set - do it */
-                                problem.setFileName(fileName);
-                                problem.setDescription("The file '" + problem.getAssetId() + "/" + problem.getFileName() + "' does not exist!");
-                                problem.setSolution("Upload a file '" + problem.getFileName() + "' to asset folder '" + problem.getAssetId() + "'");
-                            }
-
-                            if (!TemplateHealthCheckProblemType.ERROR.equals(problem.getType())) {
-                                /* not already marked as an error - mark it */
-                                if (configNotActive || profileNotActive) {
-                                    problem.setType(TemplateHealthCheckProblemType.WARNING);
-                                } else {
-                                    problem.setType(TemplateHealthCheckProblemType.ERROR);
-                                    problem.getHints().add(AT_LEAST_ONE_PROFILE_AND_EXECPUTOR_COMBINATION_ENABLED);
-                                }
-                            }
-
-                            if (configNotActive) {
-                                problem.getHints().add(AT_LEAST_ONE_CONFIG_IS_NOT_ENABLED);
-                            } else {
-                                problem.getHints().add(AT_LEAST_ONE_CONFIG_IS_ENABLED);
-                            }
-                            if (profileNotActive) {
-                                problem.getHints().add(AT_LEAST_ONE_PROFILE_IS_NOT_ENABLED);
-                            } else {
-                                problem.getHints().add(AT_LEAST_ONE_PROFILE_IS_ENABLED);
-                            }
-                        }
+                        handleTemplateExecutorConfigProblem(templateExecutorConfigProblemMap, templateDefinition, assetFileDataList, projectId, profile,
+                                config);
                     }
 
                 }
@@ -214,6 +154,79 @@ public class TemplatesHealthCheckService {
         }
         /* append all */
         result.getEntries().addAll(templateExecutorConfigProblemMap.values());
+    }
+
+    private void handleTemplateExecutorConfigProblem(Map<String, TemplateHealthCheckEntry> templateExecutorConfigProblemMap,
+            TemplateDefinition templateDefinition, List<AssetFileData> assetFileDataList, String projectId, ProductExecutionProfile profile,
+            ProductExecutorConfig config) {
+        ProductIdentifier productIdentifier = config.getProductIdentifier();
+        ScanType scanType = productIdentifier.getType();
+
+        boolean productSupportsTemplates = templateDefinitionFilter.isProductAbleToHandleTemplates(productIdentifier);
+        if (!productSupportsTemplates) {
+            return;
+        }
+
+        boolean scanTypeSupportsTemplates = templateDefinitionFilter.isScanTypeSupportingTemplate(scanType, templateDefinition);
+        if (!scanTypeSupportsTemplates) {
+            return;
+        }
+        String fileName = assetFileNameService.resolveAssetFileName(config);
+        if (fileName == null) {
+            fileName = "<error: Was not able to resolve filename for executor config. Can happen for example when no PDS prodcut identifier defined./>"; // just
+                                                                                                                                                         // to
+                                                                                                                                                         // have
+                                                                                                                                                         // a
+                                                                                                                                                         // value
+                                                                                                                                                         // inside
+                                                                                                                                                         // output
+            // result.
+        }
+
+        boolean exists = false;
+        for (AssetFileData fileData : assetFileDataList) {
+            if (fileName.equals(fileData.getFileName())) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+
+            boolean configNotActive = Boolean.FALSE.equals(config.getEnabled());
+            boolean profileNotActive = Boolean.FALSE.equals(profile.getEnabled());
+
+            TemplateHealthCheckEntry problem = ensureProblemInMap(templateExecutorConfigProblemMap, templateDefinition, config);
+            problem.getProfiles().add(profile.getId()); // it is a set to duplication does not matter
+            problem.getProjects().add(projectId);
+
+            if (problem.getFileName() == null) {
+                /* not already set - do it */
+                problem.setFileName(fileName);
+                problem.setDescription("The file '" + problem.getAssetId() + "/" + problem.getFileName() + "' does not exist!");
+                problem.setSolution("Upload a file '" + problem.getFileName() + "' to asset folder '" + problem.getAssetId() + "'");
+            }
+
+            if (!TemplateHealthCheckProblemType.ERROR.equals(problem.getType())) {
+                /* not already marked as an error - mark it */
+                if (configNotActive || profileNotActive) {
+                    problem.setType(TemplateHealthCheckProblemType.WARNING);
+                } else {
+                    problem.setType(TemplateHealthCheckProblemType.ERROR);
+                    problem.getHints().add(AT_LEAST_ONE_PROFILE_AND_EXECPUTOR_COMBINATION_ENABLED);
+                }
+            }
+
+            if (configNotActive) {
+                problem.getHints().add(AT_LEAST_ONE_CONFIG_IS_NOT_ENABLED);
+            } else {
+                problem.getHints().add(AT_LEAST_ONE_CONFIG_IS_ENABLED);
+            }
+            if (profileNotActive) {
+                problem.getHints().add(AT_LEAST_ONE_PROFILE_IS_NOT_ENABLED);
+            } else {
+                problem.getHints().add(AT_LEAST_ONE_PROFILE_IS_ENABLED);
+            }
+        }
     }
 
     private void addCalculatedStatus(TemplatesHealthCheckResult result) {

@@ -121,17 +121,15 @@ with
 -Dsechub.integrationtest.running=true
 ----
 
-So you can easily switch or enable all by enabling dedicated system property.
-
 [TIP]
 ====
-To make things easier there is the possibility to define this property also
+To make things easier there is the possibility to define system properties also
 inside file:
 `~/.sechub/sechub-developer.properties`
 
 This file is used inside integration tests automatically.
-If you set there a line like
-`sechub.integrationtest.running=true`
+If you add a line with `sechub.integrationtest.running=true` to this file, you do not
+need to set the system property for every integration test launch configuration...
 ====
 
 ====== Console

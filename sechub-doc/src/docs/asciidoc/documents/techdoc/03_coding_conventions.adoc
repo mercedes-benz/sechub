@@ -430,7 +430,7 @@ projects root folder.
 ====
 There are old existing integration tests which are not using the Junit5 extension `IntegrationTestExtension`
 but the old Junit4 rule `IntegrationTestSetup`. Those old junit4 tests shall be replaced step by step (in future with
-the new Junit5 way.
+the new Junit5 way).
 
 **New integration tests shall always use the new Junit5 annotations.**
 New assert methods created for TestAPI shall use Junit5 only as well.

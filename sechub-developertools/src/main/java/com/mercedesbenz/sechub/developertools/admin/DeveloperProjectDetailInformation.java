@@ -17,12 +17,14 @@ public class DeveloperProjectDetailInformation implements JSONable<DeveloperProj
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_ACCESSLEVEL = "accessLevel";
     public static final String PROPERTY_DESCRIPTION = "description";
+    public static final String PROPERTY_TEMPLATE_IDS = "templateIds";
 
     private String projectId;
 
     private List<String> users = new ArrayList<>();
     private List<String> whitelist = new ArrayList<>();
     private Map<String, String> metaData = new HashMap<>();
+    private List<String> templateIds = new ArrayList<>();;
     private String owner;
     private String description;
     private String accessLevel;
@@ -56,6 +58,10 @@ public class DeveloperProjectDetailInformation implements JSONable<DeveloperProj
 
     public String getAccessLevel() {
         return accessLevel;
+    }
+
+    public List<String> getTemplateIds() {
+        return templateIds;
     }
 
     @Override
