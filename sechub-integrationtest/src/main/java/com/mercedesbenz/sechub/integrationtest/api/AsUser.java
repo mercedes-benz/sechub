@@ -190,6 +190,11 @@ public class AsUser {
         return this;
     }
 
+    public AsUser requestChangeMailAddressTo(String emailAddress) {
+        getRestHelper().postJson(getUrlBuilder().buildUserRequestUpdatesEmailUrl(emailAddress), "");
+        return this;
+    }
+
     private SecHubTestURLBuilder getUrlBuilder() {
         return getContext().getUrlBuilder();
     }

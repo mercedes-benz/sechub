@@ -1,10 +1,12 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Service;
 
@@ -13,19 +15,22 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.spring.security.SecHubSecurityProperties;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Service
 public class UserEmailChangeTokenService {
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
     private static final String CLAIM_EMAIL = "email";
+    private static final String TRANSFORMATION = "HmacSHA256";
+    private static final CryptoAccess<SecretKey> secretKeyCryptoAccess = new CryptoAccess<>();
+
     private final SecHubSecurityProperties secHubSecurityProperties;
     private final SealedObject sealedSecretKey;
 
     public UserEmailChangeTokenService(SecHubSecurityProperties secHubSecurityProperties) {
         this.secHubSecurityProperties = secHubSecurityProperties;
-        this.sealedSecretKey = CryptoAccess.CRYPTO_STRING.seal(secHubSecurityProperties.getEncryptionProperties().getSecretKey());
+        String secretKeyString = secHubSecurityProperties.getEncryptionProperties().getSecretKey();
+        this.sealedSecretKey = secretKeyCryptoAccess.seal(new SecretKeySpec(secretKeyString.getBytes(StandardCharsets.UTF_8), TRANSFORMATION));
     }
 
     /**
@@ -86,7 +91,10 @@ public class UserEmailChangeTokenService {
     }
 
     private SecretKey getSealedSecretKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(CryptoAccess.CRYPTO_STRING.unseal(sealedSecretKey));
+        // byte[] keyBytes =
+        // Decoders.BASE64.decode(CryptoAccess.CRYPTO_STRING.unseal(sealedSecretKey));
+        SecretKey secretKey = secretKeyCryptoAccess.unseal(sealedSecretKey);
+        byte[] keyBytes = secretKey.getEncoded();
         // HMAC + SHA256 common signing algorithm for JWT
         return Keys.hmacShaKeyFor(keyBytes);
     }
