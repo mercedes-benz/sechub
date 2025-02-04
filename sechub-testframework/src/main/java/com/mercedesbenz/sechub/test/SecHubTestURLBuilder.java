@@ -122,7 +122,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_MANAGEMENT, "jobs/", jobUUID, "/cancel");
     }
 
-    public String buildUnauthenticatedUserVerifyEmailAddressUrl(String token) {
+    public String buildAnonymousUserVerifiesMailAddress(String token) {
         return buildUrl(API_ANONYMOUS, "email/verify/", token);
     }
 
@@ -531,7 +531,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_MANAGEMENT + "/user");
     }
 
-    public String buildUserUpdatesEmailUrl(String emailAddress) {
+    public String buildUserRequestUpdatesEmailUrl(String emailAddress) {
         return buildUrl(API_MANAGEMENT, "user/email", emailAddress);
     }
 

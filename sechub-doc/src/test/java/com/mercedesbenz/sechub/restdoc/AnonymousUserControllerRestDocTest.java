@@ -1,10 +1,10 @@
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.ONE_TIME_TOKEN;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 
@@ -49,7 +49,7 @@ public class AnonymousUserControllerRestDocTest implements TestIsNecessaryForDoc
     @UseCaseRestDoc(useCase = UseCaseAnonymousUserVerifiesEmailAddress.class)
     public void restDoc__anonymousUserVerifiesEmailAddress() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUnauthenticatedUserVerifyEmailAddressUrl(ONE_TIME_TOKEN.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAnonymousUserVerifiesMailAddress(ONE_TIME_TOKEN.pathElement());
         Class<? extends Annotation> useCase = UseCaseAnonymousUserVerifiesEmailAddress.class;
 
         /* @formatter:off */

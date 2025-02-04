@@ -1,21 +1,25 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.EMAIL_ADDRESS;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.ONE_TIME_TOKEN;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
@@ -23,6 +27,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest
 @ContextConfiguration(classes = { AnonymousUserRestController.class })
 @ActiveProfiles({ Profiles.TEST })
+@Import(TestAdministrationSecurityConfiguration.class)
 public class AnonymousUserRestControllerTest {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
@@ -33,15 +38,16 @@ public class AnonymousUserRestControllerTest {
     private UserEmailAddressUpdateService userEmailAddressUpdateService;
 
     @Test
-    void verifyEmailAddress() throws Exception {
+    @WithAnonymousUser
+    public void anonymous_user_verifies_new_mail_address_with_one_time_token() throws Exception {
         /* prepare */
-        String token = "token1";
-        doNothing().when(userEmailAddressUpdateService).userVerifiesUserEmailAddress(EMAIL_ADDRESS.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAnonymousUserVerifiesMailAddress(ONE_TIME_TOKEN.pathElement());
+        doNothing().when(userEmailAddressUpdateService).userVerifiesUserEmailAddress(anyString());
 
         /* @formatter:off */
         /* execute + test */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildUnauthenticatedUserVerifyEmailAddressUrl(token)))
+                        get(apiEndpoint,"token1"))
                 .andExpect(status().isOk());
     }
 

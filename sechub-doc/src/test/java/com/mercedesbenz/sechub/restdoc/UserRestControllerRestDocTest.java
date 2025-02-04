@@ -80,7 +80,7 @@ public class UserRestControllerRestDocTest implements TestIsNecessaryForDocument
     public void restDoc__userUpdatesEmailAddress() throws Exception {
         /* prepare */
         String newMailAddress = "new.user1@email.com";
-        String apiEndpoint = https(PORT_USED).buildUserUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
+        String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
 
         Class<? extends Annotation> useCase = UseCaseUserUpdatesEmailAddress.class;
 

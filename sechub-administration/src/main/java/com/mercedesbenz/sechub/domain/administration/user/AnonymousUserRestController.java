@@ -1,6 +1,5 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +9,6 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAnonymousUserVerifiesEmailAddress;
 
 @RestController
-@EnableAutoConfiguration
 public class AnonymousUserRestController {
 
     private final UserEmailAddressUpdateService emailAddressUpdateService;

@@ -80,7 +80,7 @@ public class AdministrationAPIConstants {
     /**
      * API anonymous user verifies his new email address.
      */
-    public static final String API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD = API_ANONYMOUS + "email/verify/";
+    public static final String API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD = API_ANONYMOUS + "email/verify";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Users (Admin) ............................+ */
