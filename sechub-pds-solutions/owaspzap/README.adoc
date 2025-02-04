@@ -23,9 +23,11 @@ When creating a template with an asset for webscan authentication and assigning 
 
 - `PDS_OWASP_ZAP.zip` is available as asset file inside the used asset
 - `PDS_OWASP_ZAP.zip` contains `script.groovy` at root level
+- optionally `PDS_OWASP_ZAP.zip` can contain `proxy.pac` at root level for dynamic proxy handling during authentication
 
-The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy`.
-If the extracted file exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
+The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` and `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac`.
+If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
+If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac` exists by the time the script `owasp-zap.sh` is executed, the PAC file will be used by the browser during the authentication.
 Details about the configuration of the wrapper application that is used to configure the ZAP, can be found at link:https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc[https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc].
 
 === Script authentication template data variables

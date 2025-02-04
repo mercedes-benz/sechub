@@ -585,6 +585,82 @@ class ZapScanContextFactoryTest {
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
+    @Test
+    void no_pac_file_specified_results_in_no_pac_file_configured_and_env_reader_called_once() throws ZapWrapperContextCreationException {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+
+        /* execute */
+        ZapScanContext zapScanContext = factoryToTest.create(settings);
+
+        /* test */
+        assertNull(zapScanContext.getPacFilePath());
+        verify(settings).getPacFilePath();
+        verify(envVariableReader).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
+    }
+
+    @Test
+    void pac_file_in_cli_settings_results_in_pac_file_configured_and_env_reader_never_called() throws ZapWrapperContextCreationException {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        String pacFilePath = "src/test/resources/example-pac-files/test-proxy.pac";
+        when(settings.getPacFilePath()).thenReturn(pacFilePath);
+
+        /* execute */
+        ZapScanContext zapScanContext = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(pacFilePath, zapScanContext.getPacFilePath().toString());
+        verify(settings).getPacFilePath();
+        verify(envVariableReader, never()).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
+    }
+
+    @Test
+    void pac_file_only_in_env_variable_results_in_pac_file_configured_from_env_variable() throws ZapWrapperContextCreationException {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        String pacFilePath = "src/test/resources/example-pac-files/test-proxy.pac";
+        when(envVariableReader.readAsString(ZAP_LOGIN_PAC_FILE_PATH)).thenReturn(pacFilePath);
+
+        /* execute */
+        ZapScanContext zapScanContext = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(pacFilePath, zapScanContext.getPacFilePath().toString());
+        verify(settings).getPacFilePath();
+        verify(envVariableReader).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
+    }
+
+    @Test
+    void pac_file_configured_in_cli_settings_but_does_not_exist_throws_exception() throws ZapWrapperContextCreationException {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        String pacFilePath = "not-existing-file.pac";
+        when(settings.getPacFilePath()).thenReturn(pacFilePath);
+
+        /* execute + test */
+        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
+
+        assertEquals("A pac file was specified for script login, that does not exist on the filesystem!", exception.getMessage());
+        verify(settings).getPacFilePath();
+        verify(envVariableReader, never()).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
+    }
+
+    @Test
+    void pac_file_configured_in_env_variable_but_does_not_exist_throws_exception() throws ZapWrapperContextCreationException {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        String pacFilePath = "not-existing-file.pac";
+        when(envVariableReader.readAsString(ZAP_LOGIN_PAC_FILE_PATH)).thenReturn(pacFilePath);
+
+        /* execute + test */
+        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
+
+        assertEquals("A pac file was specified for script login, that does not exist on the filesystem!", exception.getMessage());
+        verify(settings).getPacFilePath();
+        verify(envVariableReader).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
+    }
+
     private CommandLineSettings createSettingsMock() {
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
