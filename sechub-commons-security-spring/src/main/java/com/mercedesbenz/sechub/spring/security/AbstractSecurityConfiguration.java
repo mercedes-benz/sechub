@@ -396,8 +396,8 @@ public abstract class AbstractSecurityConfiguration {
             throw new NoSuchBeanDefinitionException(AES256Encryption.class);
         }
 
-        if (loginProperties.getClassicAuthProperties() == null) {
-            throw new NoSuchBeanDefinitionException(SecHubSecurityProperties.LoginProperties.ClassicAuthProperties.class);
+        if (loginProperties == null) {
+            throw new IllegalArgumentException("Property '%s' must not be null".formatted(SecHubSecurityProperties.LoginProperties.PREFIX));
         }
 
         /* @formatter:off */

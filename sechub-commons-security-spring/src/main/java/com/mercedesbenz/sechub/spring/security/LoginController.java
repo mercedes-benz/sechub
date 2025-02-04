@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -35,7 +34,7 @@ class LoginController {
     }
     /* @formatter:on */
 
-    ModelAndView login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab) {
+    String login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab) {
         model.addAttribute("isOAuth2Enabled", isOAuth2Enabled);
         model.addAttribute("isClassicAuthEnabled", isClassicAuthEnabled);
 
@@ -45,10 +44,10 @@ class LoginController {
         }
 
         if (!ALLOWED_TABS.contains(tab) && isOAuth2Enabled) {
-            return new ModelAndView("redirect:/login?tab=%s".formatted(OAUTH2_TAB));
+            return "redirect:/login?tab=%s".formatted(OAUTH2_TAB);
         }
 
-        return new ModelAndView("login");
+        return "login";
     }
 
     private void registerLoginMapping(RequestMappingHandlerMapping requestMappingHandlerMapping, String loginPage) throws NoSuchMethodException {

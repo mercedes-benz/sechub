@@ -68,7 +68,7 @@ class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
 
         /*
          * If both OAuth2 and Classic Auth cookies are present, remove the Classic Auth
-         * cookie OAuth2 has higher priority
+         * cookie to prioritize OAuth2 authentication
          */
         if (optOAuth2Cookie.isPresent()) {
             logger.warn("Found both OAuth2 and Classic Auth cookies! Classic Auth cookie will be removed.");
