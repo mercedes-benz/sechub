@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.template;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +23,11 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class TemplateServiceTest {
@@ -28,18 +38,20 @@ class TemplateServiceTest {
     private ScanProjectConfigService configService;
     private UserInputAssertion inputAssertion;
     private TemplateTypeScanConfigIdResolver resolver;
+    private DomainMessageService domainMessageService;
 
     @BeforeEach
     void beforeEach() {
-        repository = mock(TemplateRepository.class);
-        configService = mock(ScanProjectConfigService.class);
-        inputAssertion = mock(UserInputAssertion.class);
+        repository = mock();
+        configService = mock();
+        inputAssertion = mock();
+        domainMessageService = mock();
 
         doThrow(new IllegalArgumentException(TEST_TEMPLATE_ID_ASSERTION_MESSAGE)).when(inputAssertion).assertIsValidTemplateId(null);
 
         resolver = mock(TemplateTypeScanConfigIdResolver.class);
 
-        serviceToTest = new TemplateService(repository, configService, inputAssertion, resolver);
+        serviceToTest = new TemplateService(repository, configService, inputAssertion, resolver, domainMessageService);
     }
 
     @Test
@@ -150,6 +162,34 @@ class TemplateServiceTest {
         /* test */
         verify(configService).deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
         verify(repository).deleteById(templateId);
+    }
+
+    @Test
+    void delete_triggers_domain_request() {
+        /* prepare */
+        String templateId = "template1";
+        TemplateDefinition template1 = new TemplateDefinition();
+        template1.setType(TemplateType.WEBSCAN_LOGIN);
+        Template template = mock(Template.class);
+
+        when(template.getDefinition()).thenReturn(template1.toJSON());
+        Set<String> allTemplateConfigIds = Set.of("resolved-template-type1", "resolved-template-type2");
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
+
+        when(repository.findById(templateId)).thenReturn(Optional.of(template));
+
+        /* execute */
+        serviceToTest.deleteTemplate(templateId);
+
+        /* test */
+        ArgumentCaptor<DomainMessage> messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(domainMessageService).sendAsynchron(messageCaptor.capture());
+
+        DomainMessage sentMessage = messageCaptor.getValue();
+        assertThat(sentMessage.getMessageId()).isEqualTo(MessageID.TEMPLATE_DELETED);
+        SecHubProjectToTemplate data = sentMessage.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
+        assertThat(data).isNotNull();
+        assertThat(data.getTemplateId()).isEqualTo(templateId);
     }
 
     @Test

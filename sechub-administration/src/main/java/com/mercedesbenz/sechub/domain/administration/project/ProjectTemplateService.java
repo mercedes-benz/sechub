@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
+import static java.util.Objects.*;
+
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
@@ -83,6 +86,11 @@ public class ProjectTemplateService {
         LOG.info("Template '{}' has been {} project '{}'", templateId, assignOrUnassignInfo, projectId);
 
         LOG.debug("Project '{}' has following template ids: {}", projectId, templateIds);
+    }
+
+    @Transactional
+    public void unassignTemplateFromAllProjects(String templateId) {
+        projectRepository.deleteTemplateAssignmentFromAnyProject(requireNonNull(templateId, "Template id must be defined"));
     }
 
     @IsSendingSyncMessage(MessageID.REQUEST_ASSIGN_TEMPLATE_TO_PROJECT)

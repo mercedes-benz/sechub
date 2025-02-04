@@ -182,6 +182,16 @@ class ProjectTemplateServiceTest {
                 .hasMessageContaining("Was not able to change template to project assignment");
     }
 
+    @Test
+    void unassignTemplateFromAllProjects_calls_repository() {
+
+        /* execute */
+        serviceToTest.unassignTemplateFromAllProjects("template-xyz");
+
+        /* test */
+        verify(projectRepository).deleteTemplateAssignmentFromAnyProject("template-xyz");
+    }
+
     private DomainMessageSynchronousResult mockEventBusSynchronResultWithMessageId(MessageID resultMessageId) {
         Project project1 = new Project();
         project1.getTemplateIds().addAll(Set.of(ASSIGNED_TEMPLATE_ID_A, ASSIGNED_TEMPLATE_ID_B));
