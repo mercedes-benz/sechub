@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 target_script_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy"
+target_pac_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac"
 
 shutdownZAP() {
 	# --full: to specify the process by looking at full command line including the parameters
@@ -128,6 +129,13 @@ if [ -f "$target_script_file" ] ; then
     echo "Use script login file: $ZAP_GROOVY_LOGIN_SCRIPT_FILE"
 else
     echo "No script login file was found"
+fi
+
+if [ -f "$target_pac_file" ] ; then
+    export ZAP_LOGIN_PAC_FILE_PATH="$target_pac_file"
+    echo "Use PAC file: $ZAP_LOGIN_PAC_FILE_PATH"
+else
+    echo "No PAC file was found"
 fi
 
 echo ""

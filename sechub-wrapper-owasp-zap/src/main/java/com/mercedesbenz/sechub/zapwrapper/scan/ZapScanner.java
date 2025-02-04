@@ -25,7 +25,6 @@ import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
@@ -42,6 +41,9 @@ public class ZapScanner implements ZapScan {
     private static final int CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS = 5000;
     private static final int DEFAULT_MAX_DEPTH_AJAX_SPIDER = 10;
     private static final int DEFAULT_MAX_DEPTH_SPIDER = 5;
+
+    // all kinds of logout calls that might show up
+    private static final String DEFAULT_EXCLUDE = "(?i).*(log[\\s_+-]*out|log[\\s_+-]*off|sign[\\s_+-]*out|sign[\\s_+-]*off|abmelden|ausloggen).*";
 
     private final ClientApiWrapper clientApiWrapper;
     private final ZapScanContext scanContext;
@@ -81,6 +83,7 @@ public class ZapScanner implements ZapScan {
             int zapContextId = createContext();
             addXSecHubDASTHeader();
             addReplacerRulesForHeaders();
+            addDefaultExcludes();
 
             /* ZAP setup with access to target */
             // The order of the following method calls is important. We want to load the
@@ -306,6 +309,29 @@ public class ZapScanner implements ZapScan {
     /**
      * Configure login according to the sechub webscan config.
      *
+     * <p>
+     * A future use case with script authentication could be multiple users scan
+     * with different sessions. See also
+     * <a href="https://github.com/zaproxy/zaproxy/issues/6342">
+     * https://github.com/zaproxy/zaproxy/issues/6342</a>
+     * </p>
+     *
+     * <pre>
+     * {@code
+     * // Example how to set up one user with a specific session
+     *
+     * String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
+     * String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
+     * LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.",
+     * scanContext.getContextName()); StringBuilder authCredentialsConfigParams =
+     * new StringBuilder();
+     * authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username))
+     * .append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
+     * clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(),
+     * "^.*"+scanContext.getTargetUrl().getHost()+".*"); UserInformation userInfo =
+     * setupScanUserForZapContext(zapContextId, username,
+     * authCredentialsConfigParams.toString()); }
+     *
      * @param zapContextId
      * @return UserInformation containing userName and zapUserId or
      *         <code>null</code> if nothing could be configured.
@@ -328,17 +354,14 @@ public class ZapScanner implements ZapScan {
             setupAuthenticationAndSessionManagementMethodForScriptLogin(zapContextId);
 
             LOG.info("For scan {}: Performing script authentication.", scanContext.getContextName());
-            String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
-
-            String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
-            /* @formatter:off */
-            LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.", scanContext.getContextName());
-            StringBuilder authCredentialsConfigParams = new StringBuilder();
-            authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username))
-                                       .append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
-            /* @formatter:on */
-            UserInformation userInfo = setupScanUserForZapContext(zapContextId, username, authCredentialsConfigParams.toString());
-            return userInfo;
+            // we only want to scan with one valid session
+            // this means it is enough to login and set the session to the active session
+            // ZAP will then use this session for all requests, no user setup is needed
+            // A user setup with ZAP's manual authentication mode is only necessary if
+            // multiple users with different sessions must be used
+            // See the JavaDoc for an example if this use case appears.
+            scriptLogin.login(scanContext, clientApiWrapper);
+            return null;
         }
         return null;
     }
@@ -840,6 +863,10 @@ public class ZapScanner implements ZapScan {
 
     private boolean scriptLoginConfigured() {
         return scanContext.getGroovyScriptLoginFile() != null && !scanContext.getTemplateVariables().isEmpty();
+    }
+
+    private void addDefaultExcludes() throws ClientApiException {
+        clientApiWrapper.addExcludeUrlPatternToContext(scanContext.getContextName(), DEFAULT_EXCLUDE);
     }
 
     record UserInformation(String userName, int zapuserId) {

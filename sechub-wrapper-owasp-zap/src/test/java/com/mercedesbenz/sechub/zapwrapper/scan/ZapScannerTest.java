@@ -635,18 +635,13 @@ class ZapScannerTest {
         UserInformation userInformation = scannerToTest.setupLoginInsideZapContext(contextId);
 
         /* test */
-        assertEquals(username, userInformation.userName());
-        assertEquals(userId, userInformation.zapuserId());
+        assertNull(userInformation);
 
         verify(scriptLogin).login(scanContext, clientApiWrapper);
         verify(scanContext).getGroovyScriptLoginFile();
 
         verify(clientApiWrapper).setManualAuthenticationMethod(contextId);
         verify(clientApiWrapper).setCookieBasedSessionManagementMethod(contextId);
-        verify(clientApiWrapper).createNewUser(contextId, username);
-        verify(clientApiWrapper).configureAuthenticationCredentials(eq(contextId), eq(userId), any());
-        verify(clientApiWrapper).setForcedUser(contextId, userId);
-        verify(clientApiWrapper).setForcedUserModeEnabled(true);
     }
 
     @Test

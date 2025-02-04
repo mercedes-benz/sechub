@@ -49,6 +49,7 @@ public class ZapScanContext {
 
     private File groovyScriptLoginFile;
     private Map<String, String> templateVariables = new LinkedHashMap<>();
+    private File pacFilePath;
 
     private ZapScanContext() {
     }
@@ -155,6 +156,10 @@ public class ZapScanContext {
         return Collections.unmodifiableMap(templateVariables);
     }
 
+    public File getPacFilePath() {
+        return pacFilePath;
+    }
+
     public static ZapScanContextBuilder builder() {
         return new ZapScanContextBuilder();
     }
@@ -203,6 +208,8 @@ public class ZapScanContext {
         private List<String> zapRuleIDsToDeactivate = new LinkedList<>();
 
         private Map<String, String> templateVariables = new LinkedHashMap<>();
+
+        private File pacFilePath;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -331,6 +338,11 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder setPacFilePath(File pacFilePath) {
+            this.pacFilePath = pacFilePath;
+            return this;
+        }
+
         public ZapScanContext build() {
             ZapScanContext zapScanContext = new ZapScanContext();
             zapScanContext.serverConfig = this.serverConfig;
@@ -369,6 +381,8 @@ public class ZapScanContext {
 
             zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
             zapScanContext.templateVariables = this.templateVariables;
+
+            zapScanContext.pacFilePath = this.pacFilePath;
 
             return zapScanContext;
         }

@@ -43,7 +43,7 @@ public class CommandLineSettings {
         return jobUUID;
     }
 
-    @Parameter(names = { "--sechubConfigfile" }, description = "The SecHub config file, containing additonal configurations for the scan.", required = false)
+    @Parameter(names = { "--sechubConfigfile" }, description = "The SecHub config file, containing additional configurations for the scan.", required = false)
     private String sechubConfigFile;
 
     public File getSecHubConfigFile() {
@@ -204,5 +204,14 @@ public class CommandLineSettings {
 
     public String getGroovyLoginScriptFile() {
         return groovyLoginScriptFile;
+    }
+
+    @Parameter(names = {
+            "--pacFilePath" }, description = "PAC file the ZAP wrapper uses for script based authentication for the browsers profile, when templates are defined. You can also set the environment variable "
+                    + EnvironmentVariableConstants.ZAP_LOGIN_PAC_FILE_PATH + ", instead of using this parameter.", required = false)
+    private String pacFilePath;
+
+    public String getPacFilePath() {
+        return pacFilePath;
     }
 }

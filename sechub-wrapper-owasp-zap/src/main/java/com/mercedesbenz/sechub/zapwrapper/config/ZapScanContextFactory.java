@@ -15,7 +15,6 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
-import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.helper.*;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
@@ -111,6 +110,7 @@ public class ZapScanContextFactory {
 												.setZapPDSEventHandler(zapEventHandler)
 												.setGroovyScriptLoginFile(groovyScriptFile)
 												.setTemplateVariables(templateVariables)
+												.setPacFilePath(fetchPacFilePath(settings))
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -302,7 +302,6 @@ public class ZapScanContextFactory {
      * @param templateVariables
      * @throws ZapWrapperContextCreationException
      *
-     * @throws ZapWrapperRuntimeException
      */
     private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables) throws ZapWrapperContextCreationException {
         // no script login was defined
@@ -333,4 +332,35 @@ public class ZapScanContextFactory {
             }
         }
     }
+
+    /**
+     * This method returns a PAC file for script based authentication. If a file is
+     * specified it must exist on the filesystem. As always, command line parameters
+     * take precedence over environment variables.
+     *
+     * @param settings
+     * @return a file that exists on the filesystem or <code>null</code> if nothing
+     *         was specified.
+     *
+     *
+     * @throws ZapWrapperContextCreationException in case the specified file does
+     *                                            not exist on the filesystem
+     */
+    private File fetchPacFilePath(CommandLineSettings settings) throws ZapWrapperContextCreationException {
+        String pacFilePath = settings.getPacFilePath();
+
+        if (pacFilePath == null) {
+            pacFilePath = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_LOGIN_PAC_FILE_PATH);
+        }
+        if (pacFilePath == null) {
+            return null;
+        }
+        File pacFile = new File(pacFilePath);
+        if (!pacFile.isFile()) {
+            throw new ZapWrapperContextCreationException("A pac file was specified for script login, that does not exist on the filesystem!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        return pacFile;
+    }
+
 }
