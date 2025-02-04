@@ -65,7 +65,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
         /* @formatter:off */
         String accessToken = Arrays
                 .stream(cookies)
-                .filter(cookie -> AbstractSecurityConfiguration.ACCESS_TOKEN.equals(cookie.getName()))
+                .filter(cookie -> AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME.equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
@@ -77,8 +77,8 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
         }
 
         try {
-            byte[] jwtBytes = DECODER.decode(accessToken);
-            return aes256Encryption.decrypt(jwtBytes);
+            byte[] tokenBytes = DECODER.decode(accessToken);
+            return aes256Encryption.decrypt(tokenBytes);
         } catch (Exception e) {
             LOG.debug("Failed to decrypt the access token cookie", e);
             return null;
