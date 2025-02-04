@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME;
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
+import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
@@ -11,7 +11,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
-import jakarta.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -20,6 +19,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

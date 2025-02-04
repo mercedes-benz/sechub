@@ -1,24 +1,5 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
-import org.mockito.exceptions.base.MockitoException;
-import org.mockito.internal.verification.VerificationModeFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,12 +7,29 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Base64;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.internal.verification.VerificationModeFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 class ClassicAuthCredentialsCookieFilterTest {
 
@@ -41,8 +39,10 @@ class ClassicAuthCredentialsCookieFilterTest {
     private static final Base64.Decoder b64Decoder = Base64.getDecoder();
     private static final String ENCRYPTED_VALUE = b64Encoder.encodeToString("someEncryptedValue".getBytes(StandardCharsets.UTF_8));
     private static final String DECRYPTED_VALUE = "someDecryptedValue";
-    private static final Cookie oAuth2Cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME, ENCRYPTED_VALUE, Duration.ofHours(1), AbstractSecurityConfiguration.BASE_PATH);
-    private static final Cookie classicAuthCookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, ENCRYPTED_VALUE, Duration.ofHours(1), AbstractSecurityConfiguration.BASE_PATH);
+    private static final Cookie oAuth2Cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME, ENCRYPTED_VALUE, Duration.ofHours(1),
+            AbstractSecurityConfiguration.BASE_PATH);
+    private static final Cookie classicAuthCookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, ENCRYPTED_VALUE,
+            Duration.ofHours(1), AbstractSecurityConfiguration.BASE_PATH);
 
     @BeforeEach
     void beforeEach() {
@@ -112,7 +112,7 @@ class ClassicAuthCredentialsCookieFilterTest {
             verify(filterChain).doFilter(assertArg(requestWrapper -> {
                 HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) requestWrapper;
                 assertThat(httpServletRequestWrapper).isNotNull();
-                assertThat(httpServletRequestWrapper.getCookies()).isEqualTo(new Cookie[]{classicAuthCookie});
+                assertThat(httpServletRequestWrapper.getCookies()).isEqualTo(new Cookie[] { classicAuthCookie });
                 String basicAuthHeader = httpServletRequestWrapper.getHeader(HttpHeaders.AUTHORIZATION);
                 String expectedBasicAuthHeader = "Basic " + b64Encoder.encodeToString(DECRYPTED_VALUE.getBytes(StandardCharsets.UTF_8));
                 assertThat(basicAuthHeader).isEqualTo(expectedBasicAuthHeader);

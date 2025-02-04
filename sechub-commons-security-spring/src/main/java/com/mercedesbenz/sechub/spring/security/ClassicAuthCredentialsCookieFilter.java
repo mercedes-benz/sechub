@@ -1,23 +1,43 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.Optional;
-
+/**
+ * The {@code ClassicAuthCredentialsCookieFilter} is a filter that processes
+ * requests containing a <code>Classic Auth</code> cookie. When present, it
+ * decrypts the cookie value to extract <code>Basic Auth</code> credentials and
+ * injects them into the request's <code>Authorization: Basic</code> header,
+ * effectively simulating a standard <code>Basic Auth</code> request.
+ *
+ * <p>
+ * If both <code>OAuth2</code> and <code>Classic Auth</code> cookies are
+ * detected, the filter removes the <code>Classic Auth</code> cookie,
+ * prioritizing <code>OAuth2</code> authentication.
+ * </p>
+ *
+ * <p>
+ * The credentials in the Classic Auth cookie are decrypted using
+ * {@link AES256Encryption}.
+ * </p>
+ *
+ * @author hamidonos
+ */
 class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassicAuthCredentialsCookieFilter.class);
@@ -32,8 +52,7 @@ class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
 
     @Override
     @SuppressWarnings("NullableProblems")
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         Optional<Cookie> optOAuth2Cookie = CookieHelper.getCookie(request, AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME);
         Optional<Cookie> optClassicAuthCookie = CookieHelper.getCookie(request, AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME);
@@ -48,8 +67,8 @@ class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
         }
 
         /*
-         * If both OAuth2 and Classic Auth cookies are present, remove the Classic Auth cookie
-         * OAuth2 has higher priority
+         * If both OAuth2 and Classic Auth cookies are present, remove the Classic Auth
+         * cookie OAuth2 has higher priority
          */
         if (optOAuth2Cookie.isPresent()) {
             logger.warn("Found both OAuth2 and Classic Auth cookies! Classic Auth cookie will be removed.");

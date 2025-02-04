@@ -1,15 +1,16 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import jakarta.servlet.http.Cookie;
 
 class CookieHelperTest {
 
@@ -100,7 +101,8 @@ class CookieHelperTest {
         assertThat(result).contains(cookie1, cookie2);
 
         /*
-         * The cookie to be removed should be present as well, but with an empty value and a max age of 0
+         * The cookie to be removed should be present as well, but with an empty value
+         * and a max age of 0
          */
         Cookie cookieToBeRemoved = result[2];
         assertThat(cookieToBeRemoved).isNotEqualTo(cookie1);

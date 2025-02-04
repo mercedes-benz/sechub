@@ -40,5 +40,7 @@ sechub:
         token-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/token
         user-info-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/userinfo
         jwk-set-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/certs
+      classic-auth:
+        cookie-age-seconds: 3600
     encryption:
       secret-key: aB3xYz8KpL9mQw2VcT1sNj7FuW4vEp0Z

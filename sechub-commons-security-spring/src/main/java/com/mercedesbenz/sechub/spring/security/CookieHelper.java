@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.time.Duration;
+import java.util.Optional;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.time.Duration;
-import java.util.Optional;
-
 /**
- * Class {@code CookieHelper} provides utility methods for creating, retrieving, and removing cookies from the
- * {@link HttpServletRequest} and {@link HttpServletResponse} objects.
+ * Class {@code CookieHelper} provides utility methods for creating, retrieving,
+ * and removing cookies from the {@link HttpServletRequest} and
+ * {@link HttpServletResponse} objects.
  *
  * @author hamidonos
  */
@@ -42,11 +43,12 @@ final class CookieHelper {
     }
 
     /**
-     * Removes a cookie from the {@link HttpServletResponse}. Removing cookies is done by creating a new cookie
-     * with the same name and setting the max age to <code>0</code>.
+     * Removes a cookie from the {@link HttpServletResponse}. Removing cookies is
+     * done by creating a new cookie with the same name and setting the max age to
+     * <code>0</code>.
      *
      * @param httpServletResponse The http response to remove the cookie from
-     * @param cookieName The name of the cookie to remove
+     * @param cookieName          The name of the cookie to remove
      */
     static void removeCookie(HttpServletResponse httpServletResponse, String cookieName) {
         Cookie cookieToBeRemoved = createCookie(cookieName, "", Duration.ZERO, AbstractSecurityConfiguration.BASE_PATH);

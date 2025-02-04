@@ -64,9 +64,9 @@ import org.springframework.web.client.RestTemplate;
  */
 @EnableConfigurationProperties(SecHubSecurityProperties.class)
 public abstract class AbstractSecurityConfiguration {
-	static final String CLASSIC_AUTH_COOKIE_NAME = "SECHUB_CLASSIC_AUTH_CREDENTIALS";
-	static final String OAUTH2_COOKIE_NAME = "SECHUB_OAUTH2_ACCESS_TOKEN";
-	static final String BASE_PATH = "/";
+    static final String CLASSIC_AUTH_COOKIE_NAME = "SECHUB_CLASSIC_AUTH_CREDENTIALS";
+    static final String OAUTH2_COOKIE_NAME = "SECHUB_OAUTH2_ACCESS_TOKEN";
+    static final String BASE_PATH = "/";
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSecurityConfiguration.class);
     private static final String SCOPE = "openid";
@@ -180,7 +180,7 @@ public abstract class AbstractSecurityConfiguration {
         }
 
         if (loginProperties.isClassicModeEnabled()) {
-            configureLoginClassicMode(httpSecurity, loginProperties, aes256Encryption);
+            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties);
         }
 
         /* @formatter:on */
@@ -253,9 +253,9 @@ public abstract class AbstractSecurityConfiguration {
     }
 
     private static void configureResourceServerClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption) throws Exception {
-		ClassicAuthCredentialsCookieFilter classicAuthCredentialsCookieFilter = new ClassicAuthCredentialsCookieFilter(aes256Encryption);
+        ClassicAuthCredentialsCookieFilter classicAuthCredentialsCookieFilter = new ClassicAuthCredentialsCookieFilter(aes256Encryption);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		httpSecurity
 				.httpBasic(Customizer.withDefaults())
 				.addFilterBefore(classicAuthCredentialsCookieFilter, SecurityContextHolderFilter.class);
@@ -390,12 +390,23 @@ public abstract class AbstractSecurityConfiguration {
 	}
 	/* @formatter:on */
 
-    private static void configureLoginClassicMode(HttpSecurity httpSecurity,
-												  SecHubSecurityProperties.LoginProperties loginProperties,
-												  AES256Encryption aes256Encryption) throws Exception {
-		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(loginProperties.getRedirectUri(), aes256Encryption);
-		String loginPage = loginProperties.getLoginPage();
-		/* @formatter:off */
+    private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
+            SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
+        if (aes256Encryption == null) {
+            throw new NoSuchBeanDefinitionException(AES256Encryption.class);
+        }
+
+        if (loginProperties.getClassicAuthProperties() == null) {
+            throw new NoSuchBeanDefinitionException(SecHubSecurityProperties.LoginProperties.ClassicAuthProperties.class);
+        }
+
+        /* @formatter:off */
+        AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(
+				aes256Encryption,
+				loginProperties.getClassicAuthProperties().getCookieAge(),
+				loginProperties.getRedirectUri()
+		);
+        String loginPage = loginProperties.getLoginPage();
 		httpSecurity.formLogin(form -> form
 				.loginPage(loginPage)
 				.successHandler(authenticationSuccessHandler)

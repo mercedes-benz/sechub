@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.util.Set;
+
 import org.springframework.context.annotation.Conditional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
-import java.util.Set;
 
 @Controller
 @Conditional(LoginEnabledCondition.class)
@@ -34,7 +35,7 @@ class LoginController {
     }
     /* @formatter:on */
 
-    String login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab){
+    ModelAndView login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab) {
         model.addAttribute("isOAuth2Enabled", isOAuth2Enabled);
         model.addAttribute("isClassicAuthEnabled", isClassicAuthEnabled);
 
@@ -44,10 +45,10 @@ class LoginController {
         }
 
         if (!ALLOWED_TABS.contains(tab) && isOAuth2Enabled) {
-            return "redirect:/login?tab=%s".formatted(OAUTH2_TAB);
+            return new ModelAndView("redirect:/login?tab=%s".formatted(OAUTH2_TAB));
         }
 
-        return "login.html";
+        return new ModelAndView("login");
     }
 
     private void registerLoginMapping(RequestMappingHandlerMapping requestMappingHandlerMapping, String loginPage) throws NoSuchMethodException {
@@ -55,7 +56,7 @@ class LoginController {
         RequestMappingInfo requestMappingInfo = RequestMappingInfo
                 .paths(loginPage)
                 .methods(RequestMethod.GET)
-                .produces(MediaType.APPLICATION_JSON_VALUE)
+                .produces(MediaType.TEXT_HTML_VALUE)
                 .build();
         /* @formatter:on */
 
