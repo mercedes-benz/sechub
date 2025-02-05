@@ -6,58 +6,36 @@
 {sechub} requires a PostgreSQL DB, Version > 10.x
 
 ===== Plain server
-In this scenario you would configure a database server available from {sechub}.
-
-_For example: Just install PostgreSQL DB server on same machine as your server._
+In this scenario you can just install a PostgreSQL DB instance on your {sechub} server machine.
 
 ===== Kubernetes
-Here you must provide a PostgreSQL DB server deployment *(one POD only)*,
-define a network policy, services, endpoints etc. etc.
-
-[IMPORTANT]
-====
-Be aware to mount *only ONE pod* - the database is *shared by all {sechub} server
-PODs* _(means this is a shared kernel / bottle neck but necessary)_
-====
+Here you need to deploy a PostgreSQL DB server in your Kubernetes namespace.
 
 [TIP]
 ====
-Think about an automated database backup - no matter which is your choosen
-installation variant...
+Think about regular database backups - no matter which variant you choose...
 ====
+
 
 ==== File upload storage
 
-{sechub} requires a file system folder where source scan uploads can be transferred to.
+{sechub} requires a shared file system folder to store uploads. +
+This can be a shared disk, a network share (e.g. NFS) or a S3 storage.
 
 [IMPORTANT]
 ====
-In a clustered environment like kubernetes the storage must be accessible by
+In a clustered environment like Kubernetes the storage must be accessible by
 every cluster member!
 ====
 
-===== Plain server
-In this scenario you would just either reuse {sechub} server file system or
-define a network share available form server.
-
-===== Kubernetes
-Here you must provide a PostgreSQL DB server deployment *(one POD only)*,
-define a network policy, services, endpoints etc.
-
-[IMPORTANT]
-====
-Be aware to mount *only ONE pod* - the database is *shared by all {sechub} server
-PODs* _(means this is a shared kernel / bottle neck but necessary)_
-====
 
 ==== Server Application
 
 {sechub} server is a written in `Java` and needs at least `{required_JDK}`.
 
-You can configure {sechub} server by system properties or also by  environment
-variables.
+You can configure the {sechub} server by system properties or also by environment variables.
 
-Next blocks describe necessary system properties and their ENV pendants.
+The next blocks describes necessary system properties and their environment variable pendants.
 
 ===== Mandatory configuration
 
@@ -68,7 +46,8 @@ include::../../shared/hint_admin_access_profile.adoc[]
 ====== Storage configuration
 include::../../shared/storage_configuration.adoc[]
 
-===== Plain server
+
+===== Start the server locally
 
 To start the server by executing
 
@@ -77,15 +56,8 @@ To start the server by executing
 Where `${systemProperties}` is a place holder for Java system properties or
 you use environment entries (configuration is explained in common chapter before)
 
-====== Logging
 
-{sechub} uses per default logging to stdout. So you have to change this behaviour
-for your server when you want to change log output format, location etc.
-
-Please refer spring boot documentation for logging:
-https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
-
-===== Docker
+===== Run in Docker
 The public Docker image can be found at https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server
 
 The {sechub} server can be simply run like this
@@ -95,7 +67,7 @@ docker run ghcr.io/mercedes-benz/sechub/sechub-server
 ----
 
 
-===== Kubernetes
+===== Run in Kubernetes
 We provide a Helm chart for the container image above: https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server
 
 Same as before described for plain server, but you should use a copy of the `values.yaml` and adapt it to your needs.
@@ -110,3 +82,44 @@ cp sechub-server/values.yaml sechub-server.yaml
 # Deploy SecHub server to your Kubernetes:
 helm install sechub-server sechub-server/ -f ./sechub-server.yaml
 ----
+
+
+====== Logging
+
+{sechub} uses per default logging to stdout. So you have to change this behaviour
+for your server when you want to change log output format, location etc.
+
+Please refer spring boot documentation for logging:
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
+
+
+====== Activating server encryption of sensitive data
+Some configuration data provided to SecHub may contain secrets (e.g. for DAST).
+If you do not want that data in plain text in your database, you need to activate encryption. +
+The following steps use the https://github.com/mercedes-benz/sechub/blob/develop/sechub-developertools/scripts/sechub-api.sh[sechub-api.sh] helper script.
+
+**Query the encryption status**
+[source,bash]
+----
+sechub-api.sh server_encryption_status
+----
+
+In order to **enable encryption** for {sechub} server follow these steps:
+
+1. Create an encryption key +
+   .. Create a random 16- (AES_GCM_SIV_128) or 32-character string (AES_GCM_SIV_256) <string> and `echo -n '<string>' | base64` +
+    Example: `echo -n 'Example Example Example Example ' | base64`
+   .. Alternatively you can use the Developer Admin UI > Encryption > Secret Key Generator
+2. Put the encryption key into an environment variable for your SecHub server +
+   (For Kubernetes you can do this via the Helm chart) +
+   Example: `export SERVER_ENCRYPTION_SECRET_KEY_1='RXhhbXBsZSBFeGFtcGxlIEV4YW1wbGUgRXhhbXBsZSA='`
+3. Start {sechub} server / deploy in Kubernetes
+4. Activate encryption +
+   `sechub-api.sh server_encryption_rotate <algorithm> var=<env var name>` +
+   Please check the return code / server messages +
+   Example: `sechub-api.sh server_encryption_rotate AES_GCM_SIV_256 var=SERVER_ENCRYPTION_SECRET_KEY_1`
+5. Verify +
+   Run `sechub-api.sh server_encryption_status` multiple times. Now you should see that all ended jobs are getting encrypted.
+
+NOTE: You can change the encryption key by following above steps to define another environment variable containing the new encryption key (e.g. `SERVER_ENCRYPTION_SECRET_KEY_2`). +
+  Make sure that environment variables are set for all active encryption setups!
