@@ -229,6 +229,7 @@ class UserEmailAddressUpdateServiceTest {
         /* prepare */
         when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserInfo(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
+        assertThat(knownUser1.getEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
 
         /* execute */
         serviceToTest.userVerifiesUserEmailAddress("token");
@@ -243,6 +244,9 @@ class UserEmailAddressUpdateServiceTest {
         assertThat(KNOWN_USER1).isEqualTo(userMessage.getUserId());
         assertThat(NEW_MAIL_USER1_EXAMPLE_COM).isEqualTo(userMessage.getEmailAddress());
         assertThat(FORMER_USER_1_EXAMPLE_COM).isEqualTo(userMessage.getFormerEmailAddress());
+
+        assertThat(userMessage.getEmailAddress()).isEqualTo(NEW_MAIL_USER1_EXAMPLE_COM);
+        assertThat(userMessage.getFormerEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
     }
 
     private User createKnownUser1() {

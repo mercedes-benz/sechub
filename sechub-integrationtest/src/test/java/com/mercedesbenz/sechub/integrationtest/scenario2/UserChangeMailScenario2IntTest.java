@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestUserDetailInformation;
 
 public class UserChangeMailScenario2IntTest {
 
@@ -29,6 +30,10 @@ public class UserChangeMailScenario2IntTest {
         /* test */
         String link = getLinktToVerifyEmailAddressAfterChangeRequest(newEmail, USER_1);
         assertThat(link).isNotNull();
+
+        updateEmailByOneTimeTokenLink(link);
+        TestUserDetailInformation testUserDetailInformation = as(SUPER_ADMIN).fetchUserDetails(USER_1);
+        assertThat(testUserDetailInformation.getEmail()).isEqualTo(newEmail);
     }
 
 }

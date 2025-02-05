@@ -650,6 +650,10 @@ public class TestAPI {
         return newToken;
     }
 
+    public static void updateEmailByOneTimeTokenLink(String link) {
+        String email = as(ANONYMOUS).getStringFromURL(link);
+    }
+
     /**
      * Returns link to fetch a new api token, after a signup was acepted. Will use
      * last sent mail body to determine the token.

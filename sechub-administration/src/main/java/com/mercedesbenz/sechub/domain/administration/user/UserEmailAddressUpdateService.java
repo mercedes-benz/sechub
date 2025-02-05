@@ -97,6 +97,8 @@ public class UserEmailAddressUpdateService {
     @UseCaseUserUpdatesEmailAddress(@Step(number = 2, name = "Service checks user mail address and sends approval mail", next = {
             3 }, description = "The service will check the user input and send a mail to verify"))
     public void userRequestUpdateMailAddress(String email) {
+        // todo email muss unique sein?! checks???
+
         assertion.assertIsValidEmailAddress(email);
         String userId = userContextService.getUserId();
         User user = userRepository.findOrFailUser(userId);
@@ -135,12 +137,11 @@ public class UserEmailAddressUpdateService {
         User user = userRepository.findOrFailUser(userIdFromToken);
 
         String emailFromToken = userInfo.getEmail();
+        String formerEmailAddress = user.getEmailAddress();
 
-        if (user.getEmailAddress().equals(emailFromToken)) {
+        if (formerEmailAddress.equals(emailFromToken)) {
             throw new NotAcceptableException("User has already this email address");
         }
-
-        String formerEmailAddress = user.getEmailAddress();
 
         user.emailAddress = emailFromToken;
 
