@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.project;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -123,6 +124,20 @@ public class ScanProjectConfigService {
     @Transactional
     public void deleteAllConfigurationsOfGivenConfigIdsAndValue(Set<String> configIds, String value) {
         repository.deleteAllConfigurationsOfGivenConfigIdsAndValue(configIds, value);
+    }
+
+    /**
+     * Find all data for given configuration identifier
+     *
+     * @param configId
+     * @return all data inside a list, never <code>null</code>
+     */
+    public List<String> findAllData(ScanProjectConfigID configId) {
+        return repository.findAllDataForConfigId(configId.getId());
+    }
+
+    public Set<String> findAllProjectsWhereConfigurationHasGivenData(Set<String> possibleConfigIds, String data) {
+        return repository.findAllProjectsWhereConfigurationHasGivenData(possibleConfigIds, data);
     }
 
 }

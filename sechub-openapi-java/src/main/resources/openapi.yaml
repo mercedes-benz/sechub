@@ -2098,6 +2098,69 @@ components:
          checksum:
            type: string
            
+    TemplateHealthCheckEntry:
+      title: TemplateHealthCheckEntry
+      type: object
+      properties:
+        type:
+            type: object
+            $ref: '#/components/schemas/TemplateHealthCheckProblemType'
+        description:
+           type: string
+        templateId:
+           type: string
+        projects:
+          type: array
+          items:
+            type: string
+        executorConfigUUID:
+            type: string
+            format: uuid
+        profiles:
+          type: array
+          items:
+            type: string   
+        hints:
+          type: array
+          items:
+            type: string   
+        solution:
+           type: string
+        assetId:
+           type: string
+        fileName:
+           type: string
+           
+    TemplateHealthCheckProblemType:
+      title: TemplateHealthCheckProblemType
+      type: string
+      enum:
+        - INFO
+        - WARNING
+        - ERROR
+    
+    TemplatesHealthCheckStatus:
+      title: TemplatesHealthCheckStatus
+      type: string
+      enum:
+        - OK
+        - WARNING
+        - ERROR
+
+    TemplatesHealthCheckResult:
+      title: TemplatesHealthCheckResult
+    
+      type: object
+      properties:
+        status:
+            type: object
+            $ref: '#/components/schemas/TemplatesHealthCheckStatus'
+        entries:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/TemplateHealthCheckEntry'
+    
 security:
   - basicAuth: [ ]
 
@@ -4067,6 +4130,22 @@ paths:
       tags:
         - Configuration
   
+  /api/admin/templates/healthcheck:
+    get:
+      summary: Admin executes a template health check and fetches result
+      description: An administrator wants to inspect the runtime status of template setup. The health check trigger will return 
+      operationId: adminExecuteTemplatesHealthCheck
+      
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/TemplatesHealthCheckResult'
+      tags:
+        - Configuration
+                    
   /api/admin/asset/ids:
     get:
       summary: Admin fetches asset ids
@@ -4116,7 +4195,7 @@ paths:
       operationId: adminDeletesAssetCompletely
       parameters:
       - name: assetId
-        description: TThe asset identifier for the asset which shall be deleted completely
+        description: The asset identifier for the asset which shall be deleted completely
         in: path
         required: true
         schema:

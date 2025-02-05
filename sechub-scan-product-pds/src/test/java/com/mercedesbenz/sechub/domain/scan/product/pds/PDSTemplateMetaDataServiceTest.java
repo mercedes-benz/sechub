@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFileData;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetService;
+import com.mercedesbenz.sechub.domain.scan.template.RelevantScanTemplateDefinitionFilter;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 
 class PDSTemplateMetaDataServiceTest {

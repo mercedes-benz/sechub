@@ -20,6 +20,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_ADMIN_SCHEDULER = API_ADMIN + "/scheduler";
 
     private static final String API_ADMIN_TEMPLATE = API_ADMIN + "/template";
+    private static final String API_ADMIN_TEMPLATES = API_ADMIN + "/templates";
     private static final String API_ADMIN_ASSET = API_ADMIN + "/asset";
     private static final String API_ADMIN_SCAN = API_ADMIN + "/scan";
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
@@ -263,7 +264,11 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildAdminFetchesTemplateList() {
-        return buildUrl(API_ADMIN_TEMPLATE + "s");
+        return buildUrl(API_ADMIN_TEMPLATES);
+    }
+
+    public String buildAdminExecutesTemplatesCheck() {
+        return buildUrl(API_ADMIN_TEMPLATES + "/healthcheck");
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -771,6 +776,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildIntegrationTestFetchScanProjectConfigurations(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project-scanconfig/" + projectId);
+    }
+
+    public String buildIntegrationTestClearAllTemplates() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/templates/clear-all");
     }
 
 }

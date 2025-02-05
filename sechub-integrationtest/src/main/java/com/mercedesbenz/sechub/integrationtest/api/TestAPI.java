@@ -1722,4 +1722,10 @@ public class TestAPI {
         return JSONConverter.get().fromJSONtoListOf(ScanProjectConfig.class, json);
 
     }
+
+    public static void clearAllExistingTemplates() {
+        String url = getURLBuilder().buildIntegrationTestClearAllTemplates();
+        getSuperAdminRestHelper().post(url);
+
+    }
 }

@@ -213,9 +213,11 @@ public enum UseCaseIdentifier {
 
     UC_USER_FETCHES_USER_DETAIL_INFORMATION(95),
 
-    UC_USER_UPDATES_EMAIL_ADDRESS(96),
+    UC_ADMIN_EXECUTES_TEMPLATE_HEALTHCHECK(96),
 
-    UC_ANONYMOUS_USER_VERIFIES_EMAIL_ADDRESS(97);
+    UC_USER_UPDATES_EMAIL_ADDRESS(97),
+
+    UC_ANONYMOUS_USER_VERIFIES_EMAIL_ADDRESS(98);
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +-----------------------------------------------------------------------+ */
