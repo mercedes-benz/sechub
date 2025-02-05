@@ -99,6 +99,8 @@ public abstract class AbstractSecurityConfiguration {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorizeHttpRequests())
 				.exceptionHandling(exceptionHandling -> exceptionHandling
+						/* Forbidden requests will return a 403 status code */
+						.accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase()))
 						/* Unauthorized requests will return a 401 status code */
 						.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()))
 				)
