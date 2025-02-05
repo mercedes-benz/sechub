@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.*;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.CLASS_NAME;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROFILE_TO_PROJECT__COLUMN_PROFILE_ID;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROFILE_TO_PROJECT__COLUMN_PROJECT_ID;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ID;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_PROJECT_IDS;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.TABLE_NAME_PROFILE_TO_PROJECT;
+
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,4 +34,6 @@ public interface ProductExecutionProfileRepository extends JpaRepository<Product
     @Query(value = "select count (p) from " + CLASS_NAME + " p where p." + PROPERTY_ID + " =:profileId and :projectId member of p." + PROPERTY_PROJECT_IDS)
     int countRelationShipEntries(@Param("profileId") String profileId, @Param("projectId") String projectId);
 
+    @Query(value = "select p from " + CLASS_NAME + " p where :projectId member of p." + PROPERTY_PROJECT_IDS)
+    public List<ProductExecutionProfile> findExecutionProfilesForProject(String projectId);
 }

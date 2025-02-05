@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSTemplateMetaData.PDSAssetData
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFileData;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetService;
+import com.mercedesbenz.sechub.domain.scan.template.RelevantScanTemplateDefinitionFilter;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 
 @Service
@@ -30,6 +31,9 @@ public class PDSTemplateMetaDataService {
 
     @Autowired
     RelevantScanTemplateDefinitionFilter filter;
+
+    @Autowired
+    PDSProductExecutorConfigAssetFileNameResolver assetFileNameResolver;
 
     public List<PDSTemplateMetaData> createTemplateMetaData(List<TemplateDefinition> templateDefinitions, String pdsProductId, ScanType scanType,
             SecHubConfigurationModel configuration) throws ConfigurationFailureException {

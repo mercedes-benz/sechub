@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.adapter;
+package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
+import static com.mercedesbenz.sechub.sharedkernel.util.Assert.notNull;
 
 import java.util.List;
 import java.util.Map;
@@ -34,13 +34,14 @@ public class DefaultExecutorConfigSupport {
 
     private static final NamePatternIdProvider FALLBACK_NOT_FOUND_PROVIDER = new NamePatternIdProvider("fallback");
 
-    protected Map<String, String> configuredExecutorParameters = new TreeMap<>();
     private Map<String, NamePatternIdProvider> namePatternIdProviders = new TreeMap<>();
     private SystemEnvironmentVariableSupport variableSupport;
 
     protected ProductExecutorConfig config;
 
     NamePatternIdProviderFactory providerFactory;
+
+    private JobParameterProvider jobParameterProvider;
 
     public DefaultExecutorConfigSupport(ProductExecutorContext context, SystemEnvironmentVariableSupport variableSupport,
             Validation<ProductExecutorConfig> validation) {
@@ -59,10 +60,12 @@ public class DefaultExecutorConfigSupport {
 
         /* create a simple map containing parameters */
         List<ProductExecutorConfigSetupJobParameter> jobParameters = config.getSetup().getJobParameters();
-        for (ProductExecutorConfigSetupJobParameter jobParameter : jobParameters) {
-            configuredExecutorParameters.put(jobParameter.getKey(), jobParameter.getValue());
-        }
+        jobParameterProvider = new JobParameterProvider(jobParameters);
 
+    }
+
+    public JobParameterProvider getJobParameterProvider() {
+        return jobParameterProvider;
     }
 
     public String getPasswordOrAPIToken() {
@@ -79,67 +82,6 @@ public class DefaultExecutorConfigSupport {
         ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
         String user = credentials.getUser();
         return variableSupport.getValueOrVariableContent(user);
-    }
-
-    /**
-     * Get parameter boolean value for given key
-     *
-     * @param key
-     * @return <code>true</code> when value for given key is "true" or "TRUE",
-     *         otherwise false
-     */
-    protected boolean getParameterBooleanValue(String key) {
-        String asText = getParameter(key);
-        return Boolean.parseBoolean(asText);
-    }
-
-    /**
-     * Get parameter string value for given key
-     *
-     * @param key
-     * @return string or <code>null</code>
-     */
-    protected String getParameter(String key) {
-        if (key == null) {
-            return null;
-        }
-        return configuredExecutorParameters.get(key);
-    }
-
-    /**
-     * Get parameter integer value for given key
-     *
-     * @param key
-     * @return integer value or -1 if not defined
-     */
-    protected int getParameterIntValue(String key) {
-        String asText = getParameter(key);
-        if (asText == null) {
-            return -1;
-        }
-        try {
-            return Integer.parseInt(asText);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
-    /**
-     * Get parameter long value for given key
-     *
-     * @param key
-     * @return long value or -1 if not defined
-     */
-    protected long getParameterLongValue(String key) {
-        String asText = getParameter(key);
-        if (asText == null) {
-            return -1;
-        }
-        try {
-            return Integer.parseInt(asText);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
     }
 
     /**
@@ -169,7 +111,7 @@ public class DefaultExecutorConfigSupport {
             return provider;
         }
 
-        String parameterValue = getParameter(id);
+        String parameterValue = jobParameterProvider.get(id);
         if (parameterValue == null) {
             if (failWhenNotConfigured) {
                 throw new SecHubRuntimeException("No parameter found for necessary mapping key:" + id);

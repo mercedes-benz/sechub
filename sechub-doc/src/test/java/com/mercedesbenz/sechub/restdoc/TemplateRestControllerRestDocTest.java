@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.assertj.core.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,9 +35,13 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.Templat
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariableValidation;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
+import com.mercedesbenz.sechub.domain.scan.template.TemplateHealthCheckProblemType;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateRepository;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateRestController;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckResult;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckService;
+import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckStatus;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -44,6 +49,7 @@ import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesOrUpdatesTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesTemplate;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminExecutesTemplatesHealthcheck;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAllTemplateIds;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesTemplate;
 import com.mercedesbenz.sechub.test.ExampleConstants;
@@ -66,6 +72,9 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
 
     @MockBean
     private TemplateRepository templateRepository;
+
+    @MockBean
+    private TemplatesHealthCheckService templateHealthCheckService;
 
     @MockBean
     TemplateService templateService;
@@ -257,4 +266,80 @@ public class TemplateRestControllerRestDocTest implements TestIsNecessaryForDocu
 
         /* @formatter:on */
     }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminExecutesTemplatesHealthcheck.class)
+    public void restdoc_admin_executes_templates_healthcheck() throws Exception {
+
+        /* prepare */
+
+        String json = """
+                {
+                  "status" : "WARNING",
+                  "entries" : [ {
+                    "type" : "ERROR",
+                    "description" : "The file 'asset-1/pds-product1-id.zip' does not exist!",
+                    "templateId" : "template-1",
+                    "projects" : [ "project-1" ],
+                    "executorConfigUUID" : "349ea899-e780-4553-bd50-06c12fe96c9e",
+                    "profiles" : [ "profile-1" ],
+                    "hints" : [ "At least one combination of executor and profile is enabled.", "At least one executor config is enabled.", "At least one profile is enabled." ],
+                    "solution" : "Upload a file 'pds-product1-id.zip' to asset folder 'asset-1'",
+                    "assetId" : "asset-1",
+                    "fileName" : "pds-product1-id.zip"
+                  }, {
+                    "type" : "WARNING",
+                    "description" : "The file 'asset-1/pds-product2-id.zip' does not exist!",
+                    "templateId" : "template-1",
+                    "projects" : [ "project-2" ],
+                    "executorConfigUUID" : "2b25b007-f3d2-4591-ba42-409e19d9a5e8",
+                    "profiles" : [ "profile-2" ],
+                    "hints" : [ "At least one executor config is not enabled.", "At least one profile is enabled." ],
+                    "solution" : "Upload a file 'pds-product2-id.zip' to asset folder 'asset-1'",
+                    "assetId" : "asset-1",
+                    "fileName" : "pds-product2-id.zip"
+                  } ]
+                }
+                """;
+        TemplatesHealthCheckResult healthCheckResult = TemplatesHealthCheckResult.fromJson(json);
+
+        when(templateHealthCheckService.executeHealthCheck()).thenReturn(healthCheckResult);
+
+        String apiEndpoint = https(PORT_USED).buildAdminExecutesTemplatesCheck();
+        Class<? extends Annotation> useCase = UseCaseAdminExecutesTemplatesHealthcheck.class;
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(apiEndpoint).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
+                ).
+        andExpect(status().isOk()).
+        andDo(defineRestService().
+                with().
+                useCaseData(useCase).
+                tag(RestDocFactory.extractTag(apiEndpoint)).
+                requestSchema(TestOpenApiSchema.TEMPLATES.getSchema()).
+                and().
+                document(
+                    responseFields(
+                        fieldWithPath("status").description("Represents overall healthcheck status. Can be one of : "+ Arrays.asList(TemplatesHealthCheckStatus.values())),
+                        fieldWithPath("entries").description("A list of healthcheck status entries. Each entry represents a problem or an information."),
+                        fieldWithPath("entries[].type").description("Type of this entry. Can be one of : "+ Arrays.asList(TemplateHealthCheckProblemType.values())),
+                        fieldWithPath("entries[].description").description("A description about the the entry"),
+                        fieldWithPath("entries[].templateId").description("The template id for the template where the problem/information is related to"),
+                        fieldWithPath("entries[].projects").description("A list of projects which have the template assigned"),
+                        fieldWithPath("entries[].executorConfigUUID").description("The uuid of the product executor config where the problem/info is related to (in combination with template)"),
+                        fieldWithPath("entries[].profiles").description("A list of the invovled profiles, means using executor config and being assigned to projects"),
+                        fieldWithPath("entries[].hints").description("A list of hints which gives additinal information. E.g. A disabled executor configuration which leads to problems will lead to a WARNING, but not to an ERROR. In this case a hint 'At least one executor config is not enabled' would be added."),
+                        fieldWithPath("entries[].solution").description("A solution how to fix/resolve the problem"),
+                        fieldWithPath("entries[].assetId").description("The asset identifier which is used to locate the file"),
+                        fieldWithPath("entries[].fileName").description("The name of the file inside the asset")
+                        )
+                    )
+               );
+
+        /* @formatter:on */
+    }
+
 }

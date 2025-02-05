@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -20,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSupport;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.IntegrationTestExampleFolder;
@@ -215,7 +216,7 @@ public class SecHubClientExecutor {
         environment.put("SECHUB_TRUSTALL", "" + trustAll);
         environment.put("SECHUB_INITIAL_WAIT_INTERVAL", "0.1");
 
-        if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
+        if (IntegrationTestSupport.SECHUB_CLIENT_DEBUGGING_ENABLED) {
             // we enable only when explicit wanted - so logs are smaller and easier to read
             environment.put("SECHUB_DEBUG", "true");
         }
