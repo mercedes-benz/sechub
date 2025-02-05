@@ -7,6 +7,7 @@ import systemApi from './systemApiService'
 import otherApi from './otherService'
 import executionApi from './executionService/executionService'
 import scanService from './executionService/ScanService'
+import jobManagementApi from './jobManagementService'
 
 const defaultClient = {
   withProjectApi: projectApi,
@@ -17,6 +18,7 @@ const defaultClient = {
   withOtherApi: otherApi,
   withExecutionApi: executionApi,
   withScanService: scanService,
+  withJobManagementApi: jobManagementApi,
 }
 
 export default defaultClient

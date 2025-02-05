@@ -48,7 +48,7 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
  * @author Albert Tregnaghi
  *
  */
-@DisabledIfSystemProperty(named = IntegrationTestSetup.SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION, matches = "true")
+@DisabledIfSystemProperty(named = IntegrationTestSupport.SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION, matches = "true")
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestOnlyForRegularExecution {
 

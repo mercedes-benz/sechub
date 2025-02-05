@@ -99,7 +99,10 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.status.CheckStatus
 import com.mercedesbenz.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.template.AssignTemplateToProjectAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.template.CreateOrUpdateTemplateAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.DeleteTemplateAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.ExecuteTemplatesHealthcheckAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.template.FetchAllTemplateIdentifiersAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.template.ShowTemplatesOverviewAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.template.UnassignTemplateFromProjectAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
@@ -260,10 +263,14 @@ public class CommandUI {
         menu.add(templatesMenu);
         add(templatesMenu, new CreateOrUpdateTemplateAction(context));
         add(templatesMenu, new FetchAllTemplateIdentifiersAction(context));
-
+        templatesMenu.addSeparator();
         add(templatesMenu, new AssignTemplateToProjectAction(context));
         add(templatesMenu, new UnassignTemplateFromProjectAction(context));
-
+        templatesMenu.addSeparator();
+        add(templatesMenu, new DeleteTemplateAction(context));
+        templatesMenu.addSeparator();
+        add(templatesMenu, new ShowTemplatesOverviewAction(context));
+        add(templatesMenu, new ExecuteTemplatesHealthcheckAction(context));
         menu.add(new ManageAssetsAction(context));
 
     }

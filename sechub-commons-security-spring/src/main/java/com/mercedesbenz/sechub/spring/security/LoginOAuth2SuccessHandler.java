@@ -1,15 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
+import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +50,7 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoginOAuth2SuccessHandler.class);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
-    private static final int DEFAULT_EXPIRY_SECONDS = 3600;
-    private static final String BASE_PATH = "/";
+    private static final Duration DEFAULT_EXPIRY_ONE_HOUR = Duration.ofHours(1);
 
     private final String provider;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
@@ -71,13 +74,15 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2AccessToken oAuth2AccessToken = getAccessTokenFromAuthentication(authentication);
         Instant issuedAt = requireNonNullElseGet(oAuth2AccessToken.getIssuedAt(), Instant::now);
         /* Assume a default expiry of 1 hour if the expiry time is not set */
-        Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> Instant.now().plusSeconds(DEFAULT_EXPIRY_SECONDS));
+        Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> Instant.now().plusSeconds(DEFAULT_EXPIRY_ONE_HOUR.toSeconds()));
         long expirySeconds = expiresAt.getEpochSecond() - issuedAt.getEpochSecond();
+        Duration expiryDuration = Duration.ofSeconds(expirySeconds);
         String accessToken = oAuth2AccessToken.getTokenValue();
         byte[] encryptedAccessTokenBytes = aes256Encryption.encrypt(accessToken);
         String encryptedAccessTokenB64Encoded = ENCODER.encodeToString(encryptedAccessTokenBytes);
-        response.addCookie(createAccessTokenCookie(encryptedAccessTokenB64Encoded, expirySeconds));
+        Cookie cookie = CookieHelper.createCookie(OAUTH2_COOKIE_NAME, encryptedAccessTokenB64Encoded, expiryDuration, BASE_PATH);
         HttpSession session = request.getSession(false);
+        response.addCookie(cookie);
         String redirectUri = (session != null) ? (String) session.getAttribute("redirectUri") : null;
         if (redirectUri != null) {
             sendRedirect(response, redirectUri);
@@ -98,14 +103,5 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private OAuth2AccessToken getAccessTokenFromAuthentication(Authentication authentication) {
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient(provider, authentication.getName());
         return oAuth2AuthorizedClient.getAccessToken();
-    }
-
-    private Cookie createAccessTokenCookie(String accessToken, long expirySeconds) {
-        Cookie cookie = new Cookie(AbstractSecurityConfiguration.ACCESS_TOKEN, accessToken);
-        cookie.setMaxAge((int) expirySeconds); /* Casting this should be safe in all cases */
-        cookie.setHttpOnly(true); /* Prevents client-side code (JavaScript) from accessing the cookie */
-        cookie.setSecure(true); /* Send the cookie only over HTTPS */
-        cookie.setPath(BASE_PATH); /* Cookie is available throughout the application */
-        return cookie;
     }
 }

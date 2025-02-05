@@ -24,24 +24,29 @@
         <h1>Login</h1>
 
         <div th:if="${isOAuth2Enabled && isClassicAuthEnabled}" class="tabs">
-            <div class="tab active" onclick="switchTab(this)">OAuth2</div>
-            <div class="tab" onclick="switchTab(this)">API Token (Classic)</div>
+            <div class="tab" th:classappend="${param.tab != null && param.tab.contains('oauth2')} ? ' active' : ''" onclick="switchTab(this)">OAuth2</div>
+            <div class="tab" th:classappend="${param.tab != null && param.tab.contains('classic')} ? ' active' : ''" onclick="switchTab(this)">API Token (Classic)</div>
         </div>
 
-        <div th:if="${isOAuth2Enabled}" class="login-option active">
+        <div th:if="${isOAuth2Enabled}" class="login-option" th:classappend="${param.tab != null && param.tab.contains('oauth2')} ? ' active' : ''">
             <h4>You will be redirected to your OAuth2 Provider for authentication.</h4>
             <form th:action="@{/oauth2/authorization/__${registrationId}__}" method="POST">
                 <button type="submit">Login</button>
             </form>
         </div>
 
-        <div th:if="${isClassicAuthEnabled}" class="login-option" th:classappend="${!isOAuth2Enabled && isClassicAuthEnabled} ? 'active' : ''">
+        <div th:if="${isClassicAuthEnabled}" class="login-option" th:classappend="${param.tab != null && param.tab.contains('classic')} ? ' active' : ''">
             <h4>Login with your provided User ID & API Token.</h4>
+
+            <div th:if="${param.error}">
+                <p style="color:red;" th:text="${param.errorMsg}"></p>
+            </div>
+
             <form action="/login" method="POST">
                 <label for="id">User ID</label>
-                <input type="text" id="id" name="id" required>
+                <input type="text" id="id" name="username" required>
                 <label for="apiToken">API Token</label>
-                <input type="password" id="apiToken" name="apiToken" required>
+                <input type="password" id="apiToken" name="password" required>
                 <div class="button-space"></div>
                 <button type="submit">Login</button>
             </form>

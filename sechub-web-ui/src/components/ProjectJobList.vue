@@ -7,6 +7,19 @@
   <v-container fluid>
     <v-row>
       <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
+
+        <v-alert
+          v-model="alert"
+          closable
+          color="error"
+          density="compact"
+          :title="$t('JOB_ERROR_TITLE')"
+          type="warning"
+          variant="tonal"
+        >
+          {{ error }}
+        </v-alert>
+
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
@@ -71,6 +84,15 @@
                   </span>
                   </td>
                   <td>{{ job.jobUUID }}</td>
+                  <td>
+                    <AsyncButton
+                      v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
+                      :id=job.jobUUID
+                      color="error"
+                      icon="mdi-close-circle-outline"
+                      @button-clicked="cancelJob"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -97,18 +119,21 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useProjectStore } from '@/stores/projectStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
+  import { useI18n } from 'vue-i18n'
   import {
     ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
+    UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
+import AsyncButton from './AsyncButton.vue'
 
   export default {
     name: 'ProjectComponent',
 
     setup () {
-      // loads projectId from route
+      const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
       const projectId = ref('')
@@ -138,6 +163,7 @@
       const jobs = ref<SecHubJobInfoForUser[] | undefined>([])
       const loading = ref(true)
       const error = ref<string | undefined>(undefined)
+      const alert = ref(false)
       const showProjectsDetails = ref(true)
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
@@ -145,8 +171,9 @@
           jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
         } catch (err) {
-          error.value = 'ProjectAPI error fetching jobs for project.'
-          console.error('ProjectAPI error fetching jobs for project:', err)
+          alert.value = true
+          error.value = t('JOB_ERROR_FETCHING_JOBS_FOR_PROJECT')
+          console.error(t('JOB_ERROR_FETCHING_JOBS_FOR_PROJECT'), err)
         } finally {
           loading.value = false
         }
@@ -177,8 +204,8 @@
           const prettyJson = JSON.stringify(response, null, 2)
           downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
-          error.value = 'Failed to download JSON job report.'
-          console.error('Failed to download JSON job report:', err)
+          const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
+          handleError(errMsg, err)
         }
       }
 
@@ -194,8 +221,8 @@
           })
           downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
-          error.value = 'Failed to download HTML job report.'
-          console.error('Failed to download HTML job report:', err)
+          const errMsg = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
+          handleError(errMsg, err)
         }
       }
 
@@ -208,6 +235,22 @@
         link.click()
         document.body.removeChild(link)
         window.URL.revokeObjectURL(url)
+      }
+
+      async function cancelJob (jobUUID: string | undefined) {
+        if (!jobUUID) {
+          return
+        }
+        const requestParameter: UserCancelsJobRequest = {
+          jobUUID,
+        }
+        try {
+          await defaultClient.withJobManagementApi.userCancelsJob(requestParameter)
+        } catch (err) {
+          const errMsg = (t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID)
+          handleError(errMsg, err)
+        }
+        fetchProjectJobs(currentRequestParameters)
       }
 
       function onPageChange (page: number) {
@@ -227,6 +270,12 @@
 
       function backToProjectsList () {
         router.go(-1)
+      }
+
+      function handleError (errMsg: string, err : unknown) {
+        alert.value = true
+        error.value = errMsg
+        console.error(errMsg, err)
       }
 
       onMounted(async () => {
@@ -251,11 +300,13 @@
         jobs,
         loading,
         error,
+        alert,
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
         downloadJobReportJson,
         downloadJobReportHtml,
+        cancelJob,
         onPageChange,
         openNewScanPage,
         backToProjectsList,

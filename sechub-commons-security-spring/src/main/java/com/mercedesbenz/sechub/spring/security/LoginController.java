@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.util.Set;
+
 import org.springframework.context.annotation.Conditional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Conditional(LoginEnabledCondition.class)
 class LoginController {
 
+    private static final String OAUTH2_TAB = "oauth2";
+    private static final String CLASSIC_TAB = "classic";
+    private static final Set<String> ALLOWED_TABS = Set.of(OAUTH2_TAB, CLASSIC_TAB);
     private static final String DEFAULT_THEME = "default";
     private static final String JETBRAINS_THEME = "jetbrains";
 
@@ -37,7 +42,7 @@ class LoginController {
     }
     /* @formatter:on */
 
-    String login(Model model, @RequestParam(required = false, defaultValue = DEFAULT_THEME) String theme) {
+    String login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab, @RequestParam(required = false, defaultValue = DEFAULT_THEME) String theme) {
         if (!Set.of(JETBRAINS_THEME, DEFAULT_THEME).contains(theme)) {
             throw new ResponseStatusException(BAD_REQUEST, "Invalid theme");
         }
@@ -51,6 +56,10 @@ class LoginController {
             model.addAttribute("registrationId", registrationId);
         }
 
+        if (!ALLOWED_TABS.contains(tab) && isOAuth2Enabled) {
+            return "redirect:/login?tab=%s".formatted(OAUTH2_TAB);
+        }
+
         return "login";
     }
 
@@ -58,7 +67,8 @@ class LoginController {
         /* @formatter:off */
         RequestMappingInfo requestMappingInfo = RequestMappingInfo
                 .paths(loginPage)
-                .methods(RequestMethod.GET).produces(MediaType.APPLICATION_JSON_VALUE)
+                .methods(RequestMethod.GET)
+                .produces(MediaType.TEXT_HTML_VALUE)
                 .build();
         /* @formatter:on */
 
