@@ -36,7 +36,7 @@ class ZapWrapperGroovyScriptExecutorTest {
 
         scriptExecutorToTest = new ZapWrapperGroovyScriptExecutor(webDriverFactory, 0);
 
-        when(webDriverFactory.createFirefoxWebdriver(any(), anyBoolean())).thenReturn(firefox);
+        when(webDriverFactory.createFirefoxWebdriver(any(), any(), anyBoolean())).thenReturn(firefox);
         when(firefox.manage()).thenReturn(options);
         when(options.getCookies()).thenReturn(Collections.emptySet());
     }
