@@ -35,7 +35,7 @@ every cluster member!
 
 You can configure the {sechub} server by system properties or also by environment variables.
 
-The next blocks describes necessary system properties and their environment variable pendants.
+The next sections describe necessary system properties and their environment variable pendants.
 
 ===== Mandatory configuration
 
@@ -49,7 +49,7 @@ include::../../shared/storage_configuration.adoc[]
 
 ===== Start the server locally
 
-To start the server by executing
+Start the server by executing
 
 `java ${systemProperties} -jar sechub-server-x.y.z.jar`
 
