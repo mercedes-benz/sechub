@@ -357,7 +357,8 @@ public class ZapScanContextFactory {
         }
         File pacFile = new File(pacFilePath);
         if (!pacFile.isFile()) {
-            throw new ZapWrapperContextCreationException("A pac file was specified for script login, that does not exist on the filesystem!",
+            throw new ZapWrapperContextCreationException(
+                    "A pac file was specified for script login, that does not exist on the filesystem!\n:Pac file path was:  " + pacFilePath,
                     ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         return pacFile;

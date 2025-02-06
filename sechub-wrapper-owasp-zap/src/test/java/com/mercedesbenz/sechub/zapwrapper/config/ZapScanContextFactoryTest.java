@@ -641,7 +641,7 @@ class ZapScanContextFactoryTest {
         /* execute + test */
         ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
-        assertEquals("A pac file was specified for script login, that does not exist on the filesystem!", exception.getMessage());
+        assertTrue(exception.getMessage().contains(pacFilePath));
         verify(settings).getPacFilePath();
         verify(envVariableReader, never()).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
     }
@@ -656,7 +656,7 @@ class ZapScanContextFactoryTest {
         /* execute + test */
         ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
 
-        assertEquals("A pac file was specified for script login, that does not exist on the filesystem!", exception.getMessage());
+        assertTrue(exception.getMessage().contains(pacFilePath));
         verify(settings).getPacFilePath();
         verify(envVariableReader).readAsString(ZAP_LOGIN_PAC_FILE_PATH);
     }

@@ -22,8 +22,8 @@ SecHub will automatically create the directory `$PDS_JOB_EXTRACTED_ASSETS_FOLDER
 When creating a template with an asset for webscan authentication and assigning it to a SecHub project, ensure that 
 
 - `PDS_OWASP_ZAP.zip` is available as asset file inside the used asset
-- `PDS_OWASP_ZAP.zip` contains `script.groovy` at root level
-- optionally `PDS_OWASP_ZAP.zip` can contain `proxy.pac` at root level for dynamic proxy handling during authentication
+- `PDS_OWASP_ZAP.zip` can optionally contain `script.groovy` at root level for authentication
+- `PDS_OWASP_ZAP.zip` can optionally contain `proxy.pac` at root level for dynamic proxy handling during authentication
 
 The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` and `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac`.
 If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
