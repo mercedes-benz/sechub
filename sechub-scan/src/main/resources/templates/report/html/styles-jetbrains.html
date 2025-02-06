@@ -1,9 +1,13 @@
 <!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
 <style type="text/css" th:fragment="renderStyles">
 
+    html {
+        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+        color: #BBBBBB;
+    }
+
     body {
-        background-color: #2B2B2B;
-        color: white;
+        background-color: #3C3F41;
     }
 
     a {
@@ -118,7 +122,6 @@
         z-index: 1;
         top: 0;
         left: 10;
-        background-color: #2B2B2B;
         overflow-x: hidden;
         padding-top: 20px;
     }
@@ -138,17 +141,14 @@
     }
 
     .logotitle {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 60px;
     }
 
     .reportsubtitle {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 24px;
     }
 
     .reportVersionControl {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 20px;
     }
 
@@ -169,13 +169,11 @@
     }
 
     .metaDataLabelKey {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 16px;
         font-weight: bold;
     }
 
     .metaDataLabelValue {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 16px;
     }
 
@@ -197,17 +195,16 @@
     }
 
     .findingsTable tr:nth-child(even) {
-        background-color: #2B2B2B;
+
     }
 
     .findingsTable tr:nth-child(odd) {
-        background-color: #1e1f22;
+        background-color: #313335;
     }
 
     .findingsTable td {
         padding:8px;
 
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         vertical-align: top;
         text-align: left;
     }
@@ -249,22 +246,22 @@
 
     .greenFindingHeadline {
         color: #248f24;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .yellowFindingHeadline {
         color: #ccbb00;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .redFindingHeadline {
         color: #cc0000;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .messagesHeadline {
         color: #3584e4;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+    }
+
+    .messagesTable {
+
     }
 
     .rTable {
@@ -326,7 +323,6 @@
         border: thin;
         border-style: dotted;
         background-color: #2B2B2B;
-        color: #A9B7C6;
         overflow-x: hidden;
         overflow-y: auto;
         text-align: left;
@@ -396,7 +392,6 @@
     }
 
     .summaryHeadline {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .summaryTable {
@@ -407,7 +402,6 @@
         border: solid #cccccc 1px;
         border-radius: 16px;
         border-spacing: 0px;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .summaryTable th {
@@ -418,7 +412,6 @@
 
     .summaryTable td {
         padding: 8px;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         vertical-align: center;
         text-align: center;
     }
@@ -432,13 +425,11 @@
     }
 
     .summaryScanType {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         font-size: 1.5em;
         font-weight: bold;
     }
 
     .summarySeverity {
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .summaryScanTypeTable {
@@ -460,7 +451,6 @@
 
     .summaryScanTypeTable td {
         padding: 8px;
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
         vertical-align: center;
         text-align: left;
     }
@@ -475,7 +465,6 @@
 
     .scanTypeHeadline {
         /*color: #cc0000;*/
-        font-family: "JetBrains Mono", Consolas, Monaco, monospace;
     }
 
     .findingRevisionTable {
@@ -493,6 +482,58 @@
 
     .findingRevisionTable td:nth-child(3){
         all: revert;
+    }
+
+    #startScan {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
+    #goToWebUi {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
+    .actionButtonMain {
+        background-color: #3c78c5;
+        color: #ffffff;
+        font-size: 16px;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background 0.2s, transform 0.1s;
+    }
+
+    .actionButtonMain:hover {
+        background-color: #4f89d6;
+    }
+
+    .actionButtonMain:active {
+        background-color: #2f6690;
+        transform: scale(0.98);
+    }
+
+    .actionButtonDefault {
+        background-color: #555555;
+        color: #ffffff;
+        font-size: 16px;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background 0.2s, transform 0.1s;
+    }
+
+    .actionButtonDefault:hover {
+        background-color: #666666;
+    }
+
+    .actionButtonDefault:active {
+        background-color: #444444;
+        transform: scale(0.98);
     }
 
 

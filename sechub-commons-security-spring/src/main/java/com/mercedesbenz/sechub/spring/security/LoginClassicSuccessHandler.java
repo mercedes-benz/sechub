@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.spring.security;
 
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
 
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -37,14 +39,14 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
     private static final String BASIC_AUTH_CREDENTIALS_FORMAT = "%s:%s";
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
-    private final String redirectUri;
+    private final String defaultRedirectUri;
     private final AES256Encryption aes256Encryption;
     private final Duration cookieAge;
 
-    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String redirectUri) {
-        this.redirectUri = redirectUri;
+    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String defaultRedirectUri) {
         this.aes256Encryption = aes256Encryption;
         this.cookieAge = cookieAge;
+        this.defaultRedirectUri = requireNonNull(defaultRedirectUri, "Property defaultRedirectUri must not be null");
     }
 
     @Override
@@ -56,7 +58,22 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
         String credentialsEncoded = encoder.encodeToString(credentialsEncrypted);
         Cookie cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, credentialsEncoded, cookieAge, BASE_PATH);
         response.addCookie(cookie);
-        log.debug("Redirecting to {}", redirectUri);
-        response.sendRedirect(redirectUri);
+        String theme = request.getParameter("theme");
+        String redirectUri = request.getParameter("redirectUri");
+        if (redirectUri != null) {
+            sendRedirect(response, redirectUri, theme);
+        } else {
+            sendRedirect(response, defaultRedirectUri, theme);
+        }
+    }
+
+    // TODO: extract common redirect component for this and login oauth2 success handler
+    private static void sendRedirect(HttpServletResponse response, String redirectUri, String theme) {
+        try {
+            log.debug("Redirecting to {}", redirectUri);
+            response.sendRedirect(redirectUri + "?theme=" + theme);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

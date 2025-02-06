@@ -81,9 +81,9 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         byte[] encryptedAccessTokenBytes = aes256Encryption.encrypt(accessToken);
         String encryptedAccessTokenB64Encoded = ENCODER.encodeToString(encryptedAccessTokenBytes);
         Cookie cookie = CookieHelper.createCookie(OAUTH2_COOKIE_NAME, encryptedAccessTokenB64Encoded, expiryDuration, BASE_PATH);
-        HttpSession session = request.getSession(false);
         response.addCookie(cookie);
-        String redirectUri = (session != null) ? (String) session.getAttribute("redirectUri") : null;
+        String theme = (String) request.getAttribute("theme");
+        String redirectUri = (String) request.getAttribute("redirectUri");
         if (redirectUri != null) {
             sendRedirect(response, redirectUri);
         } else {

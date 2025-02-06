@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -82,6 +84,7 @@ public class HTMLScanResultReportModelBuilder {
         } else {
             model.put("jobuuid", "none");
         }
+
 
         return model;
     }

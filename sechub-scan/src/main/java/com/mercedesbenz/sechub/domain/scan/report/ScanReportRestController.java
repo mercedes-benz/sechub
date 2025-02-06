@@ -1,12 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -81,12 +88,23 @@ public class ScanReportRestController {
     @UseCaseUserDownloadsJobReport(@Step(number=2, next= {3}, name="REST API call to get HTML report", needsRestDoc=true))
     @RequestMapping(path = "/report", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
     @ResponseBody
-    public ModelAndView getScanSecHubReportAsHTML(@PathVariable("projectId") String projectId,
-                                                  @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme) {
+    public ModelAndView getScanSecHubReportAsHTML(HttpServletResponse response,
+                                                  @PathVariable("projectId") String projectId,
+                                                  @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme)throws IOException {
         /* @formatter:on */
-        ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId);
+        // ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId);
 
+        ScanSecHubReport scanSecHubReport;
+
+        File file = ResourceUtils.getFile("classpath:defaultFullReport.json");
+        scanSecHubReport = new ObjectMapper().readValue(file, ScanSecHubReport.class);
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
+
+        String nonce = UUID.randomUUID().toString().replace("-", ""); // Generate a unique nonce
+        response.setHeader("Content-Security-Policy", "script-src 'nonce-" + nonce + "' 'strict-dynamic';");
+
+        model.put("nonce", nonce);
+
         return new ModelAndView("report/html/report", model);
     }
 
@@ -112,4 +130,24 @@ public class ScanReportRestController {
         return downloadReportService.getObfuscatedScanSecHubReport(projectId, jobUUID);
     }
 
+    private static final String defaultReport = """
+                {
+                  "result" : {
+                    "count" : 0,
+                    "findings" : [ ]
+                  },
+                  "jobUUID" : "b1928324-b240-4e78-b8ac-7afe89ce421e",
+                  "reportVersion" : "1.0",
+                  "messages" : [ {
+                    "type" : "WARNING",
+                    "text" : "No results from a security product available for this job!"
+                  } ],
+                  "trafficLight" : "OFF",
+                  "metaData" : {
+                    "labels" : { },
+                    "summary" : { }
+                  },
+                  "status" : "SUCCESS"
+                }
+                """;
 }

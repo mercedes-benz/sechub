@@ -10,7 +10,59 @@
     </style>
 </head>
 <body>
-    <!--                   
+
+<script th:nonce="${nonce}">
+    <!-- Doing this because inline event callbacks are blocked by Content Security Policy -->
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const startScan = document.getElementById("startScan");
+
+        startScan.addEventListener("click", function() {
+            window.dispatchEvent(new CustomEvent("START_SCAN"));
+        });
+
+        const goToWebUi = document.getElementById("goToWebUi");
+
+        goToWebUi.addEventListener("click", function() {
+            window.dispatchEvent(new CustomEvent("GO_TO_WEB_UI"));
+        });
+
+        const markFalsePositives = document.querySelectorAll(".markFalsePositive");
+
+        markFalsePositives.forEach(function(element) {
+            element.addEventListener("change", function() {
+                const findingId = element.id;
+                if (element.checked) {
+                    window.dispatchEvent(new CustomEvent("MARK_FALSE_POSITIVE", {
+                        detail: { findingId: findingId }
+                    }));
+                } else {
+                    window.dispatchEvent(new CustomEvent("UNMARK_FALSE_POSITIVE", {
+                        detail: { findingId: findingId }
+                    }));
+                }
+            });
+        });
+
+        const codeScanEntryLocations = document.querySelectorAll(".codeScanEntryLocation");
+
+        codeScanEntryLocations.forEach(function(element) {
+            element.addEventListener("click", function(event) {
+                event.preventDefault();
+                window.dispatchEvent(new CustomEvent("JUMP_TO_LOCATION", {
+                    detail: {
+                        location: element.getAttribute('data-location'),
+                        line: element.getAttribute('data-line'),
+                        column: element.getAttribute('data-column')
+                    }
+                }));
+            });
+        });
+    });
+</script>
+
+    <!--
     ---------------------------------
     -      Traffic light            -
     ---------------------------------
@@ -36,6 +88,16 @@
 <div class="main">
     <div class="header">
         <table>
+
+            <tr class="actions">
+                <td>
+                    <button id="startScan" class="actionButtonMain">Start Scan</button>
+                </td>
+                <td>
+                    <button id="goToWebUi" class="actionButtonDefault">Open Web UI</button>
+                </td>
+            </tr>
+
             <tr>
                 <td>
                    <!--                   

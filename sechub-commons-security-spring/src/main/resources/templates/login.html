@@ -42,7 +42,7 @@
                 <p style="color:red;" th:text="${param.errorMsg}"></p>
             </div>
 
-            <form action="/login" method="POST">
+            <form th:action="@{/login(theme='jetbrains', redirectUri='/api/project/test/report')}" method="POST">
                 <label for="id">User ID</label>
                 <input type="text" id="id" name="username" required>
                 <label for="apiToken">API Token</label>

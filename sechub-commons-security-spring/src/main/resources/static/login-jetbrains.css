@@ -1,12 +1,13 @@
 body {
-    font-family: 'Roboto', sans-serif; /* JetBrains uses a clean sans-serif font like Roboto */
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #2d2d2d; /* Darker background for modern IDE-style appearance */
+    background-color: #3C3F41;
+    color: #BBBBBB;
 }
 
 .container {
@@ -14,11 +15,11 @@ body {
     width: 90%;
     max-width: 1000px;
     height: 600px;
-    background-color: #2b2b2b; /* Dark theme background */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Softer shadow for depth */
+    background-color: #313335;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #444; /* Subtle border to match JetBrains' subtle styling */
+    border: 1px solid #444;
 }
 
 .login-section {
@@ -33,7 +34,7 @@ body {
     display: flex;
     cursor: pointer;
     margin-bottom: 20px;
-    justify-content: space-between; /* Add space between tabs */
+    justify-content: space-between;
 }
 
 .tab {
@@ -41,15 +42,15 @@ body {
     padding: 12px;
     text-align: center;
     color: #bbbbbb;
-    background-color: #444;
+    background-color: #313335;
     border: 1px solid #555;
     border-radius: 8px 8px 0 0;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .tab.active {
-    background-color: #353535;
-    color: #f8f8f2; /* Light text for active state */
+    background-color: #3e4243;
+    color: #f8f8f2;
     border-bottom: none;
     font-weight: bold;
 }
@@ -89,14 +90,14 @@ body {
 }
 
 .login-section input {
+    color: #BBBBBB;
     width: 100%;
     padding: 12px;
     margin: 8px 0;
     border-width: 0 0 2px 0;
     border-radius: 0;
     font-size: 1em;
-    background-color: #3c3c3c;
-    color: #f8f8f2;
+    background-color: #3d3f42;
     border-color: #666;
     box-sizing: border-box;
     outline: none;
@@ -104,12 +105,12 @@ body {
 }
 
 .login-section input:focus {
-    border-color: #8abf7f; /* Soft green for focus */
+    border-color: #8abf7f;
 }
 
 .login-section button {
-    background-color: #5c5c5c;
-    color: #f8f8f2;
+    color: #BBBBBB;
+    background-color: #3d3f42;
     padding: 12px;
     border: none;
     width: 50%;
@@ -121,7 +122,7 @@ body {
 }
 
 .login-section button:hover {
-    background-color: #787878; /* Slightly lighter shade for hover */
+    background-color: #505657;
 }
 
 .login-section a {
@@ -136,7 +137,7 @@ body {
 
 .info-section {
     flex: 1;
-    background-color: #3c3c3c;
+    background-color: #3e4243;
     padding: 30px;
     text-align: center;
     display: flex;
@@ -161,7 +162,6 @@ body {
 }
 
 .info-section p {
-    color: #bbbbbb;
     font-size: 1.1em;
     margin: 0 10px;
     max-width: 300px;

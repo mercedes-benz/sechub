@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.springframework.context.annotation.Conditional;
@@ -42,7 +43,12 @@ class LoginController {
     }
     /* @formatter:on */
 
-    String login(Model model, @RequestParam(name = "tab", required = false, defaultValue = "") String tab, @RequestParam(required = false, defaultValue = DEFAULT_THEME) String theme) {
+    /* @formatter:off */
+    String login(Model model,
+                 @RequestParam(name = "tab", required = false, defaultValue = "") String tab,
+                 @RequestParam(required = false, defaultValue = DEFAULT_THEME) String theme,
+                 @RequestParam(required = false, defaultValue = "") String redirectUri) {
+        /* @formatter:on */
         if (!Set.of(JETBRAINS_THEME, DEFAULT_THEME).contains(theme)) {
             throw new ResponseStatusException(BAD_REQUEST, "Invalid theme");
         }
@@ -57,7 +63,7 @@ class LoginController {
         }
 
         if (!ALLOWED_TABS.contains(tab) && isOAuth2Enabled) {
-            return "redirect:/login?tab=%s".formatted(OAUTH2_TAB);
+            return "redirect:/login?tab=%s&theme=%s&redirectUri=%s".formatted(OAUTH2_TAB, theme, redirectUri);
         }
 
         return "login";
@@ -72,6 +78,7 @@ class LoginController {
                 .build();
         /* @formatter:on */
 
-        requestMappingHandlerMapping.registerMapping(requestMappingInfo, this, getClass().getDeclaredMethod("login", Model.class, String.class));
+        Method loginMethod = getClass().getDeclaredMethod("login", Model.class, String.class, String.class, String.class);
+        requestMappingHandlerMapping.registerMapping(requestMappingInfo, this, loginMethod);
     }
 }
