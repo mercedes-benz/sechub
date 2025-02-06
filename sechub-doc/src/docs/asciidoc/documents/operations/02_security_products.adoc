@@ -5,36 +5,56 @@
 
 == Security Products
 
-TIP: You must only setup those products you have listed inside your
-     profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>>
+TIP: Only setup those products you intend to use. +
+     See <<section-initial-profile-and-executors,execution profiles and executor configurations>>
 
 === {pds}
 ==== General
-The {pds} adapters can communicate with the {pds} instances which delegates to the underlying
-security products.
+The {pds} adapter communicates with the {pds} instances which delegate to the underlying security products.
 
-Via {pds} every security product, even simple CLI tools, can be easily integrated
-into {sechub}.
+Via {pds} every security product, even simple CLI tools, can be easily integrated into {sechub}.
 
-Please look into `Product delegation server` documentation for more information about the {pds} in common.
+NOTE: For more information about the {pds} look into `Product delegation server` documentation.
+
+==== Enabling PDS encryption
+In order to **enable encryption** for a {pds} follow these steps:
+
+1. Create an encryption key +
+   Create a random 16- (AES_GCM_SIV_128) or 32-character string (AES_GCM_SIV_256) <string> and `echo -n '<string>' | base64` +
+    Example: `echo -n 'Example Example Example Example ' | base64`
+2. Set these environment variables for your {pds} solution +
+   (For Kubernetes you can do this via the PDS solution's Helm chart; look for "encryption" in the values.yaml) +
+   .. PDS_ENCRYPTION_ALGORITHM - possible values: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256" +
+      Example: `export PDS_ENCRYPTION_ALGORITHM="AES_GCM_SIV_256"`
+   .. PDS_ENCRYPTION_SECRET_KEY - Take value from step 1 +
+      Example: `export PDS_ENCRYPTION_SECRET_KEY='RXhhbXBsZSBFeGFtcGxlIEV4YW1wbGUgRXhhbXBsZSA='`
+3. Start the {pds} solution / deploy in Kubernetes
+4. Verify: Check the logs.
+
+IMPORTANT: If you deploy with a new encryption key while jobs are running, these jobs cannot be processed any more. +
+  So you should stop the {sechub} server's scheduler so the {pds} solution is idle before enabling/changing {pds} encryption.
+
+TIP: To disable encryption set the algorithm to "NONE".
 
 
-==== PDS solutions
-There are already ready to use {pds} implementations available - we call them "{pds} solutions".
+=== PDS solutions
+There are ready-to-use {pds} implementations available - we call them "{pds} solutions".
 
-Every {pds} solution does work out of the box and provide the possibility to start in following three flavors:
+Every {pds} solution should work out of the box and provides the possibility to start in following three flavors:
 
-- docker (single instance)
-- docker compose (cluster)
-- helm charts (k8s cluster)
+- Helm charts (Kubernetes)
+- Docker (single instance)
+- Docker compose (cluster)
 
 The next sub chapters list the current implementations:
 
-===== GoSec
+TIP: The list is growing permanently. Please check https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/ for all provided {pds} solutions.
+
+==== GoSec
 The PDS integration of https://securego.io[GoSec] (SAST) can be found at
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec
 
-===== Multi
+==== Multi
 This solution does integrate multiple SAST tools:
 
 - https://github.com/PyCQA/bandit[Bandit]
@@ -44,19 +64,20 @@ This solution does integrate multiple SAST tools:
 
 It can be found at https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi
 
-===== OWASP ZAP
+==== OWASP ZAP (DAST)
 This solution does integrate the https://www.zaproxy.org/ (web application scanner) - please look at
 https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/
 
-===== PMD
-https://pmd.github.io/ stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
+==== PMD
+https://pmd.github.io/ stands normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd
 
-===== ScanCode
+==== ScanCode
 Implements https://github.com/nexB/scancode-toolkit as a license scan tool:
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode
 
-=== {checkmarx}
+
+=== DEPRECATED: {checkmarx}
 
 ==== What does the adapter do?
 include::../shared/adapter/checkmarx_adapter_flow.adoc[]
@@ -103,7 +124,7 @@ IMPORTANT: Fix team ID will change in future to provide grouping of results in
            product(for multi tenancy).
 
 
-=== {netsparker}
+=== DEPRECATED: {netsparker}
 
 ==== What does the adapter do?
 
