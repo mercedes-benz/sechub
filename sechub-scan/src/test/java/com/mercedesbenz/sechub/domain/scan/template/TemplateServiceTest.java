@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.template;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,34 +23,45 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class TemplateServiceTest {
 
+    private static final String TEST_TEMPLATE_ID_ASSERTION_MESSAGE = "Template id may not be null!";
     private TemplateService serviceToTest;
     private TemplateRepository repository;
     private ScanProjectConfigService configService;
     private UserInputAssertion inputAssertion;
     private TemplateTypeScanConfigIdResolver resolver;
+    private DomainMessageService domainMessageService;
 
     @BeforeEach
     void beforeEach() {
-        repository = mock(TemplateRepository.class);
-        configService = mock(ScanProjectConfigService.class);
-        inputAssertion = mock(UserInputAssertion.class);
+        repository = mock();
+        configService = mock();
+        inputAssertion = mock();
+        domainMessageService = mock();
+
+        doThrow(new IllegalArgumentException(TEST_TEMPLATE_ID_ASSERTION_MESSAGE)).when(inputAssertion).assertIsValidTemplateId(null);
+
         resolver = mock(TemplateTypeScanConfigIdResolver.class);
 
-        serviceToTest = new TemplateService(repository, configService, inputAssertion, resolver);
+        serviceToTest = new TemplateService(repository, configService, inputAssertion, resolver, domainMessageService);
     }
 
     @Test
     void createOrUpdateTemplate_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate(null, null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate(null, new TemplateDefinition())).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
         assertThatThrownBy(() -> serviceToTest.createOrUpdateTemplate("id1", null)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Template definition may not be null!");
@@ -56,7 +72,7 @@ class TemplateServiceTest {
     void delete_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.deleteTemplate(null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
     }
 
@@ -64,7 +80,7 @@ class TemplateServiceTest {
     void fetch_missing_parameter_throws_illegal_argument_exception() throws Exception {
 
         assertThatThrownBy(() -> serviceToTest.fetchTemplateDefinition(null)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template id may not be null!");
+                .hasMessageContaining(TEST_TEMPLATE_ID_ASSERTION_MESSAGE);
 
     }
 
@@ -149,6 +165,34 @@ class TemplateServiceTest {
     }
 
     @Test
+    void delete_triggers_domain_request() {
+        /* prepare */
+        String templateId = "template1";
+        TemplateDefinition template1 = new TemplateDefinition();
+        template1.setType(TemplateType.WEBSCAN_LOGIN);
+        Template template = mock(Template.class);
+
+        when(template.getDefinition()).thenReturn(template1.toJSON());
+        Set<String> allTemplateConfigIds = Set.of("resolved-template-type1", "resolved-template-type2");
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
+
+        when(repository.findById(templateId)).thenReturn(Optional.of(template));
+
+        /* execute */
+        serviceToTest.deleteTemplate(templateId);
+
+        /* test */
+        ArgumentCaptor<DomainMessage> messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(domainMessageService).sendAsynchron(messageCaptor.capture());
+
+        DomainMessage sentMessage = messageCaptor.getValue();
+        assertThat(sentMessage.getMessageId()).isEqualTo(MessageID.TEMPLATE_DELETED);
+        SecHubProjectToTemplate data = sentMessage.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
+        assertThat(data).isNotNull();
+        assertThat(data.getTemplateId()).isEqualTo(templateId);
+    }
+
+    @Test
     void fetch_returns_definition_from_repo() {
         /* prepare */
         TemplateDefinition def = new TemplateDefinition();
@@ -202,6 +246,39 @@ class TemplateServiceTest {
 
         /* test */
         assertThat(templateDefinitions).contains(t1);
+
+    }
+
+    @Test
+    void fetchAssignedTemplateIds() {
+
+        /* prepare */
+        when(resolver.resolve(any(TemplateType.class))).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
+        when(configService.findAllData(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN)).thenReturn(List.of("t1","t2"));
+
+        /* execute */
+        Set<String> result = serviceToTest.fetchAllAssignedTemplateIds();
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result).contains("t1", "t2");
+    }
+
+    @Test
+    void fetchProjectsUsingTemplate() {
+        /* prepare */
+        String templateId = "test-template1";
+        Set<String> projects = Set.of("p1", "p2");
+        Set<String> allConfigIds = Set.of("c1", "c2");
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allConfigIds);
+        when(configService.findAllProjectsWhereConfigurationHasGivenData(allConfigIds, templateId)).thenReturn(projects);
+
+        /* execute */
+        Set<String> result = serviceToTest.fetchProjectsUsingTemplate(templateId);
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result).contains("p1", "p2");
 
     }
 

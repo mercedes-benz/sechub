@@ -11,7 +11,6 @@
 # again with necessary system properties defined!
 set -e
 
-
 echo "-----------------------------------"
 echo "Regenerate OpenAPI class files"
 echo "-----------------------------------"
@@ -29,5 +28,8 @@ echo "- generate open api file"
 echo "- generate sechub java api"
 
 cd ..
-./gradlew spotlessApply generateOpenapi 
+echo ">> Generate OpenAPI (sechub-openapi-java-client)"
+./gradlew spotlessApply generateOpenapi
+
+echo ">> Generate OpenAPI (sechub-api-java) [DEPRECATED]"
 ./gradlew :sechub-api-java:build  -Dsechub.build.stage=all 

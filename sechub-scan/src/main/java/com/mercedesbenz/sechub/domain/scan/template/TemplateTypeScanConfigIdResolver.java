@@ -33,6 +33,14 @@ public class TemplateTypeScanConfigIdResolver {
         map.put(TemplateType.WEBSCAN_LOGIN, ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
     }
 
+    /**
+     * Resolves configuration identifier for given template type
+     *
+     * @param type
+     * @return configuration identifier, never <code>null</code>
+     * @throws IllegalStateException if a template type would exist which could not
+     *                               be mapped to a configuration identifier
+     */
     public ScanProjectConfigID resolve(TemplateType type) {
 
         ScanProjectConfigID result = map.get(type);
@@ -43,6 +51,12 @@ public class TemplateTypeScanConfigIdResolver {
 
     }
 
+    /**
+     * Resolve all possible configuration ids for templates
+     *
+     * @return set containing all possible configuration ids (for template types),
+     *         never <code>null</code>
+     */
     public Set<String> resolveAllPossibleConfigIds() {
         return unmodifiableSet;
     }

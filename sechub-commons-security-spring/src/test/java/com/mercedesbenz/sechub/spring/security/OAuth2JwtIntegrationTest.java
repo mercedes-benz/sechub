@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -54,7 +53,6 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  */
 @WebMvcTest
 @TestPropertySource(locations = "classpath:application-jwt-test.yml", factory = YamlPropertyLoaderFactory.class)
-@ActiveProfiles("oauth2")
 class OAuth2JwtIntegrationTest {
 
     /**
@@ -133,7 +131,7 @@ class OAuth2JwtIntegrationTest {
     }
 
     @Configuration
-    @Import({ TestSecurityConfiguration.class, TestOAuth2JwtSecurityConfiguration.class, OAuth2JwtPropertiesConfiguration.class })
+    @Import({ TestSecurityConfiguration.class, TestOAuth2JwtSecurityConfiguration.class, AES256Encryption.class })
     static class TestConfig {
 
         @Bean
@@ -141,4 +139,5 @@ class OAuth2JwtIntegrationTest {
             return new TestSecurityController();
         }
     }
+
 }

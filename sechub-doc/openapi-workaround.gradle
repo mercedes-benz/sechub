@@ -31,6 +31,9 @@ stringType.put("type", "string")
    
    Remark: if you still find any `oneOf` elements inside the `openApi3.json` file you have
    to fix another one this inside this gradle file!
+   
+   Remark 2025-01-30, de-jcup: This ugly workaround gradle file will be removed completely
+                               when we switch to use sechub-openapi-java-client only!!!
 */
 void postProcessOpenApiGeneration(){
         

@@ -4,11 +4,11 @@ package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
@@ -39,7 +39,7 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
     }
 
     public boolean isAlwaysFullScanEnabled() {
-        return getParameterBooleanValue(CheckmarxExecutorConfigParameterKeys.CHECKMARX_FULLSCAN_ALWAYS);
+        return getJobParameterProvider().getBoolean(CheckmarxExecutorConfigParameterKeys.CHECKMARX_FULLSCAN_ALWAYS);
     }
 
     public String getTeamIdForNewProjects(String projectId) {
@@ -67,7 +67,7 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
     }
 
     public String getEngineConfigurationName() {
-        String configuredEngineConfigurationName = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_ENGINE_CONFIGURATIONNAME);
+        String configuredEngineConfigurationName = getJobParameterProvider().get(CheckmarxExecutorConfigParameterKeys.CHECKMARX_ENGINE_CONFIGURATIONNAME);
 
         if (SimpleStringUtils.isEmpty(configuredEngineConfigurationName)) {
 
@@ -77,7 +77,7 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
     }
 
     public String getClientSecret() {
-        String configuredClientSecret = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_CLIENT_SECRET);
+        String configuredClientSecret = getJobParameterProvider().get(CheckmarxExecutorConfigParameterKeys.CHECKMARX_CLIENT_SECRET);
 
         if (SimpleStringUtils.isEmpty(configuredClientSecret)) {
 
