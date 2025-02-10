@@ -48,9 +48,6 @@ public class SecHubSecurityProperties {
             LOG.warn("The property '%s.server' is not set".formatted(PREFIX));
         }
         this.login = login;
-        // this.encryption = login != null && login.isEnabled() ?
-        // requireNonNull(encryption, ERR_MSG_FORMAT.formatted(PREFIX, "encryption")) :
-        // encryption;
         this.encryption = login != null ? requireNonNull(encryption, ERR_MSG_FORMAT.formatted(PREFIX, "encryption")) : encryption;
     }
 

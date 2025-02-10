@@ -73,6 +73,7 @@ public class UserEmailAddressUpdateService {
     public void updateUserEmailAddress(String userId, String newEmailAddress) {
         assertion.assertIsValidUserId(userId);
         assertion.assertIsValidEmailAddress(newEmailAddress);
+        assertUniqueEmailAddress(newEmailAddress);
 
         User user = userRepository.findOrFailUser(userId);
         String formerEmailAddress = user.getEmailAddress();
@@ -87,6 +88,7 @@ public class UserEmailAddressUpdateService {
 
         /* create message containing data before user email has changed */
         UserMessage message = getUserMessage(user, formerEmailAddress);
+        message.setSubject("A SecHub administrator has changed your email address");
 
         userRepository.save(user);
 
@@ -97,9 +99,8 @@ public class UserEmailAddressUpdateService {
     @UseCaseUserUpdatesEmailAddress(@Step(number = 2, name = "Service checks user mail address and sends approval mail", next = {
             3 }, description = "The service will check the user input and send a mail to verify"))
     public void userRequestUpdateMailAddress(String email) {
-        // todo email muss unique sein?! checks???
-
         assertion.assertIsValidEmailAddress(email);
+        assertUniqueEmailAddress(email);
         String userId = userContextService.getUserId();
         User user = userRepository.findOrFailUser(userId);
 
@@ -113,45 +114,48 @@ public class UserEmailAddressUpdateService {
         }
 
         String baseUrl = environment.getServerBaseUrl();
-        UserInfo userInfo = new UserInfo(userId, email);
-        String mailToken = userEmailChangeTokenService.generateToken(userInfo, baseUrl);
+        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
+        String mailToken = userEmailChangeTokenService.generateToken(userEmailInfo, baseUrl);
         String linkWithOneTimeToken = baseUrl + AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD + "/" + mailToken;
 
-        UserMessage message = new UserMessage();
-        message.setUserId(userId);
+        UserMessage message = getUserMessage(user, formerEmailAddress);
+        // send mail to new email address
         message.setEmailAddress(email);
-        message.setFormerEmailAddress(formerEmailAddress);
         message.setLinkWithOneTimeToken(linkWithOneTimeToken);
         message.setSubject("You have requested to change your SecHub email address");
 
         informUserWantsToChangeEmailAddress(message);
     }
 
+    private void assertUniqueEmailAddress(String email) {
+        if (userRepository.findByEmailAddress(email).isPresent()) {
+            throw new NotAcceptableException("The email address is already in use. Please chose another one.");
+        }
+    }
+
     @UseCaseAnonymousUserVerifiesEmailAddress(@Step(number = 2, name = "Service verifies user mail address", next = {
             3 }, description = "The service will verify the token and update the user email address"))
     public void userVerifiesUserEmailAddress(String token) {
 
-        UserInfo userInfo = userEmailChangeTokenService.extractUserInfoFromJWTToken(token);
+        UserEmailInfo userEmailInfo = userEmailChangeTokenService.extractUserInfoFromJWTToken(token);
 
-        String userIdFromToken = userInfo.getUserId();
+        String userIdFromToken = userEmailInfo.userId();
         User user = userRepository.findOrFailUser(userIdFromToken);
-
-        String emailFromToken = userInfo.getEmail();
+        String emailFromToken = userEmailInfo.email();
         String formerEmailAddress = user.getEmailAddress();
 
         if (formerEmailAddress.equals(emailFromToken)) {
             throw new NotAcceptableException("User has already this email address");
         }
+        assertUniqueEmailAddress(emailFromToken);
 
         user.emailAddress = emailFromToken;
 
         UserMessage message = getUserMessage(user, formerEmailAddress);
-        message.setUserId(userIdFromToken);
-        message.setEmailAddress(emailFromToken);
-        message.setFormerEmailAddress(formerEmailAddress);
         message.setSubject("Your SecHub email address has been changed");
 
         userRepository.save(user);
+
         informUserEmailAddressUpdated(message);
     }
 
@@ -177,7 +181,6 @@ public class UserEmailAddressUpdateService {
         message.setUserId(user.getName());
         message.setEmailAddress(user.getEmailAddress());
         message.setFormerEmailAddress(formerEmailAddress);
-        message.setSubject("A SecHub administrator has changed your email address");
         return message;
     }
 

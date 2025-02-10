@@ -24,7 +24,7 @@ class UserEmailChangeTokenServiceTest {
     void beforeEach() {
         secHubSecurityProperties = mock(SecHubSecurityProperties.class);
         when(secHubSecurityProperties.getEncryptionProperties()).thenReturn(mock(SecHubSecurityProperties.EncryptionProperties.class));
-        when(secHubSecurityProperties.getEncryptionProperties().getSecretKey()).thenReturn("3f8a2e5b9c7d4e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2test");
+        when(secHubSecurityProperties.getEncryptionProperties().getSecretKey()).thenReturn("test-test-test-test-test-test-32");
         serviceToTest = new UserEmailChangeTokenService(secHubSecurityProperties);
     }
 
@@ -36,10 +36,10 @@ class UserEmailChangeTokenServiceTest {
         String userId = "user1";
         String email = "user1@email";
 
-        UserInfo userInfo = new UserInfo(userId, email);
+        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(userInfo, baseUrl)).isInstanceOf(NotAcceptableException.class)
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailInfo, baseUrl)).isInstanceOf(NotAcceptableException.class)
                 .hasMessageContaining("Base URL not set");
     }
 
@@ -59,16 +59,16 @@ class UserEmailChangeTokenServiceTest {
         /* prepare */
         String baseUrl = "http://localhost:8080";
 
-        UserInfo userInfo = new UserInfo(userId, email);
+        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
 
         /* execute */
-        String token = serviceToTest.generateToken(userInfo, baseUrl);
-        UserInfo userInfoFromToken = serviceToTest.extractUserInfoFromJWTToken(token);
+        String token = serviceToTest.generateToken(userEmailInfo, baseUrl);
+        UserEmailInfo userEmailInfoFromToken = serviceToTest.extractUserInfoFromJWTToken(token);
 
         /* test */
         assertNotNull(token);
-        assert (userInfo.getUserId()).equals(userInfoFromToken.getUserId());
-        assert (userInfo.getEmail()).equals(userInfoFromToken.getEmail());
+        assert (userEmailInfo.userId()).equals(userEmailInfoFromToken.userId());
+        assert (userEmailInfo.email()).equals(userEmailInfoFromToken.email());
     }
 
     @ParameterizedTest
@@ -88,4 +88,5 @@ class UserEmailChangeTokenServiceTest {
         assertThatThrownBy(() -> serviceToTest.extractUserInfoFromJWTToken(invalidToken)).isInstanceOf(NotAcceptableException.class)
                 .hasMessageContaining("Invalid token");
     }
+
 }

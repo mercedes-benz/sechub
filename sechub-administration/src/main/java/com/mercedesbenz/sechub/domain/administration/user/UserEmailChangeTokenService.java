@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Service;
 
@@ -21,32 +20,31 @@ import io.jsonwebtoken.security.Keys;
 public class UserEmailChangeTokenService {
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
     private static final String CLAIM_EMAIL = "email";
-    private static final String TRANSFORMATION = "HmacSHA256";
-    private static final CryptoAccess<SecretKey> secretKeyCryptoAccess = new CryptoAccess<>();
-
     private final SecHubSecurityProperties secHubSecurityProperties;
-    private final SealedObject sealedSecretKey;
+
+    private final SealedObject sealedSecretKeyString;
 
     public UserEmailChangeTokenService(SecHubSecurityProperties secHubSecurityProperties) {
         this.secHubSecurityProperties = secHubSecurityProperties;
         String secretKeyString = secHubSecurityProperties.getEncryptionProperties().getSecretKey();
-        this.sealedSecretKey = secretKeyCryptoAccess.seal(new SecretKeySpec(secretKeyString.getBytes(StandardCharsets.UTF_8), TRANSFORMATION));
+        this.sealedSecretKeyString = CryptoAccess.CRYPTO_STRING.seal(secretKeyString);
     }
 
     /**
      * Generates a JWT token for the given user info with a 24-hour expiration time
      *
-     * @param userInfo the user info containing the user ID and the new user email
+     * @param userEmailInfo the user info containing the user ID and the new user
+     *                      email
      * @return the generated JWT token
      */
-    public String generateToken(UserInfo userInfo, String baseUrl) {
-        validateInputs(userInfo, baseUrl);
+    public String generateToken(UserEmailInfo userEmailInfo, String baseUrl) {
+        validateInputs(userEmailInfo, baseUrl);
 
         /* @formatter:off */
         return Jwts.builder()
                 .issuer(baseUrl)
-                .subject(userInfo.getUserId())
-                .claim(CLAIM_EMAIL, userInfo.getEmail())
+                .subject(userEmailInfo.userId())
+                .claim(CLAIM_EMAIL, userEmailInfo.email())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSealedSecretKey())
@@ -62,7 +60,7 @@ public class UserEmailChangeTokenService {
      *         from the token
      * @throws NotAcceptableException if the token is invalid or expired
      */
-    public UserInfo extractUserInfoFromJWTToken(String token) {
+    public UserEmailInfo extractUserInfoFromJWTToken(String token) {
         if (token == null || token.isBlank()) {
             throw new NotAcceptableException("Token not set");
         }
@@ -84,23 +82,21 @@ public class UserEmailChangeTokenService {
                 throw new NotAcceptableException("Token expired");
             }
 
-            return new UserInfo(userId, email);
+            return new UserEmailInfo(userId, email);
         } catch (JwtException e) {
             throw new NotAcceptableException("Invalid token");
         }
     }
 
     private SecretKey getSealedSecretKey() {
-        // byte[] keyBytes =
-        // Decoders.BASE64.decode(CryptoAccess.CRYPTO_STRING.unseal(sealedSecretKey));
-        SecretKey secretKey = secretKeyCryptoAccess.unseal(sealedSecretKey);
-        byte[] keyBytes = secretKey.getEncoded();
+        String secretKeyString = CryptoAccess.CRYPTO_STRING.unseal(sealedSecretKeyString);
+        byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
         // HMAC + SHA256 common signing algorithm for JWT
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private void validateInputs(UserInfo userInfo, String baseUrl) {
-        Optional.ofNullable(userInfo).orElseThrow(() -> new NotAcceptableException("User info not set"));
+    private void validateInputs(UserEmailInfo userEmailInfo, String baseUrl) {
+        Optional.ofNullable(userEmailInfo).orElseThrow(() -> new NotAcceptableException("User info not set"));
         Optional.ofNullable(baseUrl).filter(url -> !url.isBlank()).orElseThrow(() -> new NotAcceptableException("Base URL not set"));
     }
 }

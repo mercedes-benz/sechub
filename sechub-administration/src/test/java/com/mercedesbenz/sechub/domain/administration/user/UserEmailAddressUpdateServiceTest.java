@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -216,7 +218,7 @@ class UserEmailAddressUpdateServiceTest {
     @Test
     void user_verifies_user_email_address_throws_NotAcceptableException_when_user_has_already_this_email_address() {
         /* prepare */
-        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserInfo(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserEmailInfo(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userVerifiesUserEmailAddress("token"))
@@ -227,7 +229,7 @@ class UserEmailAddressUpdateServiceTest {
     @Test
     void user_verifies_user_email_address_sends_event() {
         /* prepare */
-        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserInfo(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
+        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserEmailInfo(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
         assertThat(knownUser1.getEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
 
@@ -247,6 +249,18 @@ class UserEmailAddressUpdateServiceTest {
 
         assertThat(userMessage.getEmailAddress()).isEqualTo(NEW_MAIL_USER1_EXAMPLE_COM);
         assertThat(userMessage.getFormerEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
+    }
+
+    @Test
+    void when_email_requested_to_change_already_in_use_throws_NotAcceptableException() {
+        /* prepare */
+        User user2 = new User();
+        user2.emailAddress = NEW_MAIL_USER1_EXAMPLE_COM;
+        when(userRepository.findByEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(Optional.of(user2));
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(NotAcceptableException.class)
+                .hasMessageContaining("The email address is already in use. Please chose another one.");
     }
 
     private User createKnownUser1() {
