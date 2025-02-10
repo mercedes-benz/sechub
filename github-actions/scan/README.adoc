@@ -80,7 +80,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # DEFAULT: true
     fail-job-with-findings: true
 
-    # OPTIONAL: File that defines false positives. This step is executed before the scan. The SecHub cli defineFalsePositives overwrites the false positives on SecHub side with the ones defined in this file. Use the SecHub cli getFalsePositives to get the current false positives and extend the returned false positive list.
+    # OPTIONAL: File that defines false positives. This step is executed before the scan. The SecHub cli defineFalsePositives overwrites the false positives on SecHub side with the ones defined in this file. Uses the SecHub cli getFalsePositives to get the current false positives and extend the returned false positive list.
     define-false-positives: 'sechub-false-positives.json'
 ----
 
