@@ -125,8 +125,8 @@ task checkAndBuildDependencies {
     }
 }
 
-// Use ./gradlew buildPlugin -Parg=rebuildJar, to rebuild
-// 'lib/sechub-java-api-all-0.0.0.jar' autmomatically
-tasks.named('buildPlugin') {
+// Use ./gradlew compileJava -Parg=rebuildJar, to rebuild
+// 'lib/sechub-java-api-all-0.0.0.jar' autmomatically or remove the jar manually
+tasks.named('compileJava') {
     dependsOn checkAndBuildDependencies
 }
