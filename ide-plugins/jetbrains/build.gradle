@@ -117,11 +117,9 @@ changelog {
  */
  
 task checkAndBuildDependencies {
-    doLast {
-        def arg = project.hasProperty('arg') ? project.property('arg') : ''
-        exec {
-            commandLine '/bin/bash', './build-dependencies.sh', arg
-        }
+    def arg = project.hasProperty('arg') ? project.property('arg') : ''
+    exec {
+        commandLine '/bin/bash', './build-dependencies.sh', arg
     }
 }
 
