@@ -123,8 +123,8 @@ task checkAndBuildDependencies {
     }
 }
 
-// Use ./gradlew compileJava -Parg=rebuildJar, to rebuild
-// 'lib/sechub-java-api-all-0.0.0.jar' autmomatically or remove the jar manually
+// Use ./gradlew compileJava -Parg=rebuildJar, to rebuild 'lib/sechub-java-api-all-0.0.0.jar' automatically.
+// Alternatively the jar file can be deleted manually and it will be rebuild from sources whenever compileJava is used
 tasks.named('compileJava') {
     dependsOn checkAndBuildDependencies
 }
