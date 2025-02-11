@@ -58,7 +58,7 @@ inputs:
     required: false
     default: true
   define-false-positives:
-    description: 'The file that defines false positives. This step is executed before the scan. The SecHub cli defineFalsePositives overwrites the false positives on SecHub side with the ones defined in this file. Uses the SecHub cli getFalsePositives to get the current false positives and extend the returned false positive list.'
+    description: 'The file that defines false positives. This step is executed before the scan. The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file. You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.'
     required: false
 
 outputs:
