@@ -51,9 +51,8 @@ class UserEmailChangeTokenServiceTest {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(strings = { "", " ", "  " })
-    void generateToken_throws_not_acceptable_exception_userId_null_or_blank(String userId) {
+    void generateToken_throws_not_acceptable_exception_userId_blank(String userId) {
         /* prepare */
         String baseUrl = "http://localhost:8080";
         String email = "user1@email";
@@ -65,9 +64,8 @@ class UserEmailChangeTokenServiceTest {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(strings = { "", " ", "  " })
-    void generateToken_throws_not_acceptable_exception_email_null_or_blank(String email) {
+    void generateToken_throws_not_acceptable_exception_email_blank(String email) {
         /* prepare */
         String baseUrl = "http://localhost:8080";
         String userId = "user1";

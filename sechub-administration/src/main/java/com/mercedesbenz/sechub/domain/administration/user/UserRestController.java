@@ -35,7 +35,7 @@ public class UserRestController {
 
     /* @formatter:off */
     @UseCaseUserUpdatesEmailAddress(@Step(number = 1, name = "Rest call", description = "User request to update his email address", needsRestDoc = true))
-    @PostMapping (AdministrationAPIConstants.API_USER_EMAIL+ "/{emailAddress}")
+    @RequestMapping (value = AdministrationAPIConstants.API_USER_EMAIL+ "/{emailAddress}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUserEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
         /* @formatter:on */

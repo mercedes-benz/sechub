@@ -89,7 +89,7 @@ public class UserRestControllerRestDocTest implements TestIsNecessaryForDocument
         this.mockMvc.perform(
                 post(apiEndpoint, newMailAddress)
                         .header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andDo(defineRestService()
                         .with()
                         .useCaseData(useCase)

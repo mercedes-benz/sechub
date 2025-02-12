@@ -109,6 +109,10 @@ public class UserEmailAddressUpdateService {
             throw new InternalServerErrorException("User has no email address");
         }
 
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Email must not be empty");
+        }
+
         if (email.equalsIgnoreCase(formerEmailAddress)) {
             throw new BadRequestException("User has already this email address");
         }

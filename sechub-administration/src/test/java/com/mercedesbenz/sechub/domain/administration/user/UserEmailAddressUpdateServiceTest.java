@@ -11,6 +11,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
@@ -192,6 +195,19 @@ class UserEmailAddressUpdateServiceTest {
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(FORMER_USER_1_EXAMPLE_COM))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("User has already this email address");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "", " ", "  " })
+    void request_update_email_throws_BadRequestException_when_email_is_null(String email){
+        /* prepare */
+        when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(email))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Email must not be empty");
     }
 
     @Test
