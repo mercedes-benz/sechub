@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.administration.user;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class UserEmailChangeTokenService {
     }
 
     public String generateToken(UserEmailChangeRecord userEmailChangeRecord, String baseUrl) {
-        validateString(baseUrl, "Base URL must not be null or blank!");
+        validateString(baseUrl, "Base URL must not be blank!");
 
         UserEmailChangeToken userEmailChangeToken = new UserEmailChangeToken(userEmailChangeRecord.userId(), userEmailChangeRecord.newEmail(),
                 clock.instant().toString());
@@ -36,7 +37,7 @@ public class UserEmailChangeTokenService {
     }
 
     public UserEmailChangeRecord extractUserInfoFromToken(String token) {
-        validateString(token, "Token must not be null or blank!");
+        validateString(token, "Token must not be blank!");
 
         byte[] bytes = DECODER.decode(token);
         String decryptedToken = aes256Encryption.decrypt(bytes);
@@ -56,7 +57,8 @@ public class UserEmailChangeTokenService {
     }
 
     private void validateString(String string, String message) {
-        if (string == null || string.isBlank()) {
+        Objects.requireNonNull(string);
+        if (string.isBlank()) {
             throw new BadRequestException(message);
         }
     }

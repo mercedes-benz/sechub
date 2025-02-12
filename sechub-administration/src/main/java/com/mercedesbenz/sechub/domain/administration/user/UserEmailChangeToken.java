@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 
 public class UserEmailChangeToken {
 
@@ -41,13 +40,13 @@ public class UserEmailChangeToken {
 
     public void validate() {
         if (this.emailAddress == null || this.emailAddress.isBlank()) {
-            throw new NotAcceptableException("Email address must not be null or blank!");
+            throw new IllegalStateException("Email address must not be null or blank!");
         }
         if (this.userId == null || this.userId.isBlank()) {
-            throw new NotAcceptableException("User ID must not be null or blank!");
+            throw new IllegalStateException("User ID must not be null or blank!");
         }
         if (this.timestamp == null || this.timestamp.isBlank()) {
-            throw new NotAcceptableException("Timestamp must not be null or blank!");
+            throw new IllegalStateException("Timestamp must not be null or blank!");
         }
     }
 }
