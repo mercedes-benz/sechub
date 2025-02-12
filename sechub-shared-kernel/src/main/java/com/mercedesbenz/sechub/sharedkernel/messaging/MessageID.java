@@ -230,6 +230,8 @@ public enum MessageID {
 
     RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT(MessageDataKeys.PROJECT_TEMPLATES),
 
+    TEMPLATE_DELETED(MessageDataKeys.PROJECT_TO_TEMPLATE),
+
     /**
      * Message to request a full validation of a SecHub configuration.
      */
