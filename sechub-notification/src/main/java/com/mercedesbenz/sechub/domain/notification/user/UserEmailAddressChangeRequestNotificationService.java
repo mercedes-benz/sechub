@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.notification.user;
 
 import org.springframework.mail.SimpleMailMessage;

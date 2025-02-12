@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.ONE_TIME_TOKEN;
@@ -48,7 +49,7 @@ public class AnonymousUserRestControllerTest {
         /* execute + test */
         this.mockMvc.perform(
                         get(apiEndpoint,"token1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
 }

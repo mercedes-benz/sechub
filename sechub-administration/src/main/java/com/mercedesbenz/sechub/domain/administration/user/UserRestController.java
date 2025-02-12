@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
@@ -35,6 +36,7 @@ public class UserRestController {
     /* @formatter:off */
     @UseCaseUserUpdatesEmailAddress(@Step(number = 1, name = "Rest call", description = "User request to update his email address", needsRestDoc = true))
     @PostMapping (AdministrationAPIConstants.API_USER_EMAIL+ "/{emailAddress}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUserEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
         /* @formatter:on */
         emailAddressUpdateService.userRequestUpdateMailAddress(emailAddress);

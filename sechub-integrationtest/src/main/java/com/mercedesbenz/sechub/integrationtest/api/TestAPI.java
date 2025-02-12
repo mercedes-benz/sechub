@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -650,8 +651,9 @@ public class TestAPI {
         return newToken;
     }
 
-    public static void updateEmailByOneTimeTokenLink(String link) {
-        String email = as(ANONYMOUS).getStringFromURL(link);
+    public static void updateEmailByOneTimeTokenLink(URI uri) {
+        as(ANONYMOUS).sendGetRequestToURI(uri);
+        // as(ANONYMOUS).getStringFromURL(uri.toString());
     }
 
     /**

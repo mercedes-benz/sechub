@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -140,9 +140,9 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void throws_not_acceptable_when_same_email_address_as_before() {
+    void throws_bad_request_when_same_email_address_as_before() {
         /* execute + test (exception ) */
-        assertThrows(NotAcceptableException.class, () -> serviceToTest.updateUserEmailAddress(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+        assertThrows(BadRequestException.class, () -> serviceToTest.updateUserEmailAddress(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
     }
 
     @Test
@@ -184,13 +184,13 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void request_update_email_address_with_same_email_throws_NotAcceptableException(){
+    void request_update_email_address_with_same_email_throws_BadRequestException(){
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(FORMER_USER_1_EXAMPLE_COM))
-                .isInstanceOf(NotAcceptableException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("User has already this email address");
     }
 
@@ -198,7 +198,8 @@ class UserEmailAddressUpdateServiceTest {
     void request_update_email_address_with_different_email_sends_event() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
-
+        when(userEmailChangeTokenService.generateToken(any(), any()))
+                .thenReturn("token");
         /* execute */
         serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM);
 
@@ -216,20 +217,21 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void user_verifies_user_email_address_throws_NotAcceptableException_when_user_has_already_this_email_address() {
+    void user_verifies_user_email_address_throws_BadRequestException_when_user_has_already_this_email_address() {
         /* prepare */
-        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserEmailInfo(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+        when(userEmailChangeTokenService.extractUserInfoFromToken(any())).thenReturn(new UserEmailChangeRecord(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userVerifiesUserEmailAddress("token"))
-                .isInstanceOf(NotAcceptableException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("User has already this email address");
     }
 
     @Test
     void user_verifies_user_email_address_sends_event() {
         /* prepare */
-        when(userEmailChangeTokenService.extractUserInfoFromJWTToken(any())).thenReturn(new UserEmailInfo(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
+        when(userEmailChangeTokenService.extractUserInfoFromToken(any())).thenReturn(new UserEmailChangeRecord(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
         assertThat(knownUser1.getEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
 
@@ -252,14 +254,14 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void when_email_requested_to_change_already_in_use_throws_NotAcceptableException() {
+    void when_email_requested_to_change_already_in_use_throws_BadRequestException() {
         /* prepare */
         User user2 = new User();
         user2.emailAddress = NEW_MAIL_USER1_EXAMPLE_COM;
         when(userRepository.findByEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(Optional.of(user2));
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(NotAcceptableException.class)
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("The email address is already in use. Please chose another one.");
     }
 

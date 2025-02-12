@@ -92,7 +92,7 @@ public class UserRestControllerTest {
         this.mockMvc.perform(
                         post(apiEndpoint, newEmailAddress)
                                 .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         /* @formatter:on */
 
         verify(emailAddressUpdateService).userRequestUpdateMailAddress(newEmailAddress);

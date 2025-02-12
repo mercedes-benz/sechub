@@ -2774,10 +2774,10 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: "200"
-        "406":
-          description: "Not acceptable"
+        "202":
+          description: "202"
+        "400":
+          description: "Bad request"
       tags:
         - User Self Service
 
@@ -2794,10 +2794,10 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: "200"
-        "406":
-          description: "Not acceptable"
+        "202":
+          description: "202"
+        "400":
+          description: "Bad request"
       tags:
         - User Self Service
 

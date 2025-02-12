@@ -1,9 +1,14 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Clock;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,63 +17,115 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
-import com.mercedesbenz.sechub.spring.security.SecHubSecurityProperties;
+import com.mercedesbenz.sechub.spring.security.AES256Encryption;
 
 class UserEmailChangeTokenServiceTest {
 
+    public static final String BASE_64_ENCODED = "dGhpc19pc19hbl9lbmNyeXB0ZWRfYWNjZXNzX3Rva2Vu";
+    private static final String ENCRYPTED_ACCESS_TOKEN = "this_is_an_encrypted_access_token";
+    private static final byte[] ENCRYPTED_ACCESS_TOKEN_BYTES = ENCRYPTED_ACCESS_TOKEN.getBytes(StandardCharsets.UTF_8);
     private UserEmailChangeTokenService serviceToTest;
-    private SecHubSecurityProperties secHubSecurityProperties;
+    private AES256Encryption aes256Encryption;
 
     @BeforeEach
     void beforeEach() {
-        secHubSecurityProperties = mock(SecHubSecurityProperties.class);
-        when(secHubSecurityProperties.getEncryptionProperties()).thenReturn(mock(SecHubSecurityProperties.EncryptionProperties.class));
-        when(secHubSecurityProperties.getEncryptionProperties().getSecretKey()).thenReturn("test-test-test-test-test-test-32");
-        serviceToTest = new UserEmailChangeTokenService(secHubSecurityProperties);
+        aes256Encryption = mock(AES256Encryption.class);
+        when(aes256Encryption.encrypt(anyString())).thenReturn(ENCRYPTED_ACCESS_TOKEN_BYTES);
+        serviceToTest = new UserEmailChangeTokenService(aes256Encryption);
     }
 
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = { "", " ", "  " })
-    void generateToken_throws_not_acceptable_exception_basUrlBlank(String baseUrl) {
+    void generateToken_throws_not_acceptable_exception_basUrl_null_or_blank(String baseUrl) {
         /* prepare */
         String userId = "user1";
         String email = "user1@email";
-
-        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
+        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailInfo, baseUrl)).isInstanceOf(NotAcceptableException.class)
-                .hasMessageContaining("Base URL not set");
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Base URL must not be null or blank!");
     }
 
-    @Test
-    void generateToken_throws_not_acceptable_exception_userInfoNull() {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "", " ", "  " })
+    void generateToken_throws_not_acceptable_exception_userId_null_or_blank(String userId) {
         /* prepare */
         String baseUrl = "http://localhost:8080";
+        String email = "user1@email";
+        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(null, baseUrl)).isInstanceOf(NotAcceptableException.class)
-                .hasMessageContaining("User info not set");
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(NotAcceptableException.class)
+                .hasMessageContaining("User ID must not be null or blank!");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "", " ", "  " })
+    void generateToken_throws_not_acceptable_exception_email_null_or_blank(String email) {
+        /* prepare */
+        String baseUrl = "http://localhost:8080";
+        String userId = "user1";
+        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(NotAcceptableException.class)
+                .hasMessageContaining("Email address must not be null or blank!");
     }
 
     @ParameterizedTest
     @CsvSource({ "user1, user1@email", "user2, user2@email", "user3, user3@email" })
-    void generateToken_and_extractToken_reveals_same_information(String userId, String email) {
+    void generateToken_generates_token_from_input(String userId, String email) {
         /* prepare */
         String baseUrl = "http://localhost:8080";
-
-        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
+        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
 
         /* execute */
-        String token = serviceToTest.generateToken(userEmailInfo, baseUrl);
-        UserEmailInfo userEmailInfoFromToken = serviceToTest.extractUserInfoFromJWTToken(token);
+        String token = serviceToTest.generateToken(userEmailChangeRecord, baseUrl);
 
         /* test */
-        assertNotNull(token);
-        assert (userEmailInfo.userId()).equals(userEmailInfoFromToken.userId());
-        assert (userEmailInfo.email()).equals(userEmailInfoFromToken.email());
+        assertThat(token).isNotNull().isNotEmpty();
+        assertThat(token).isEqualTo(BASE_64_ENCODED);
+    }
+
+    @Test
+    void expiredToken_throws_NotAcceptableException() {
+        /* prepare */
+        String expiredTimestamp = "2021-08-01T12:00:00Z";
+        String userId = "user1";
+        String email = "user1@email";
+        UserEmailChangeToken userEmailChangeToken = new UserEmailChangeToken(userId, email, expiredTimestamp);
+        String json = userEmailChangeToken.toJSON();
+        when(aes256Encryption.decrypt(ENCRYPTED_ACCESS_TOKEN_BYTES)).thenReturn(json);
+
+        /* execute */
+        assertThatThrownBy(() -> serviceToTest.extractUserInfoFromToken(BASE_64_ENCODED)).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Token has expired!");
+
+    }
+
+    @Test
+    void valid_token_reveals_information() {
+        /* prepare */
+        String expiredTimestamp = Clock.systemUTC().instant().toString();
+        String userId = "user1";
+        String email = "user1@email";
+        UserEmailChangeToken expectedUserEmailChangeToken = new UserEmailChangeToken(userId, email, expiredTimestamp);
+        String json = expectedUserEmailChangeToken.toJSON();
+        when(aes256Encryption.decrypt(ENCRYPTED_ACCESS_TOKEN_BYTES)).thenReturn(json);
+
+        /* execute */
+        UserEmailChangeRecord userEmailChangeRecord = serviceToTest.extractUserInfoFromToken(BASE_64_ENCODED);
+
+        /* test */
+        assertThat(userEmailChangeRecord).isNotNull();
+        assertThat(userEmailChangeRecord.userId()).isEqualTo(userId);
+        assertThat(userEmailChangeRecord.newEmail()).isEqualTo(email);
     }
 
     @ParameterizedTest
@@ -76,17 +133,8 @@ class UserEmailChangeTokenServiceTest {
     @ValueSource(strings = { "", " ", "  " })
     void extractUserInfoFromJWTToken_throws_not_acceptable_exception_for_null_empty_token(String invalidToken) {
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.extractUserInfoFromJWTToken(invalidToken)).isInstanceOf(NotAcceptableException.class)
-                .hasMessageContaining("Token not set");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "invalid_token", "abcde",
-            "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJzdWIiOiJ1c2VyMiIsImVtYWlsIjoidXNlcjJAZW1haWwiLCJpYXQiOjE3MzgyMjIyNTQsImV4cCI6MTczODMwODY1NH0.B7eSs3c3McMAvG8rHZVasIP_d-OWcDy5jPBpS4Ltest" })
-    void extractUserInfoFromJWTToken_throws_not_acceptable_exception_for_invalid_token(String invalidToken) {
-        /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.extractUserInfoFromJWTToken(invalidToken)).isInstanceOf(NotAcceptableException.class)
-                .hasMessageContaining("Invalid token");
+        assertThatThrownBy(() -> serviceToTest.extractUserInfoFromToken(invalidToken)).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Token must not be null or blank!");
     }
 
 }

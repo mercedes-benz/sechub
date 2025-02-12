@@ -8,8 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.InternalServerErrorException;
-import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -79,7 +79,7 @@ public class UserEmailAddressUpdateService {
         String formerEmailAddress = user.getEmailAddress();
 
         if (newEmailAddress.equalsIgnoreCase(formerEmailAddress)) {
-            throw new NotAcceptableException("User has already this email address");
+            throw new BadRequestException("User has already this email address");
         }
         /* parameters valid, we audit log the change */
         auditLogService.log("Changed email address of user {}", logSanitizer.sanitize(userId, 30));
@@ -87,7 +87,7 @@ public class UserEmailAddressUpdateService {
         user.emailAddress = newEmailAddress;
 
         /* create message containing data before user email has changed */
-        UserMessage message = getUserMessage(user, formerEmailAddress);
+        UserMessage message = createUserMessage(user, formerEmailAddress);
         message.setSubject("A SecHub administrator has changed your email address");
 
         userRepository.save(user);
@@ -110,15 +110,16 @@ public class UserEmailAddressUpdateService {
         }
 
         if (email.equalsIgnoreCase(formerEmailAddress)) {
-            throw new NotAcceptableException("User has already this email address");
+            throw new BadRequestException("User has already this email address");
         }
 
         String baseUrl = environment.getServerBaseUrl();
-        UserEmailInfo userEmailInfo = new UserEmailInfo(userId, email);
-        String mailToken = userEmailChangeTokenService.generateToken(userEmailInfo, baseUrl);
-        String linkWithOneTimeToken = baseUrl + AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL_BUILD + "/" + mailToken;
+        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
+        String mailToken = userEmailChangeTokenService.generateToken(userEmailChangeRecord, baseUrl);
 
-        UserMessage message = getUserMessage(user, formerEmailAddress);
+        String linkWithOneTimeToken = baseUrl + AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL + "/" + mailToken;
+
+        UserMessage message = createUserMessage(user, formerEmailAddress);
         // send mail to new email address
         message.setEmailAddress(email);
         message.setLinkWithOneTimeToken(linkWithOneTimeToken);
@@ -129,32 +130,35 @@ public class UserEmailAddressUpdateService {
 
     private void assertUniqueEmailAddress(String email) {
         if (userRepository.findByEmailAddress(email).isPresent()) {
-            throw new NotAcceptableException("The email address is already in use. Please chose another one.");
+            throw new BadRequestException("The email address is already in use. Please chose another one.");
         }
     }
 
     @UseCaseAnonymousUserVerifiesEmailAddress(@Step(number = 2, name = "Service verifies user mail address", next = {
             3 }, description = "The service will verify the token and update the user email address"))
     public void userVerifiesUserEmailAddress(String token) {
+        UserEmailChangeRecord userEmailChangeRecord = userEmailChangeTokenService.extractUserInfoFromToken(token);
 
-        UserEmailInfo userEmailInfo = userEmailChangeTokenService.extractUserInfoFromJWTToken(token);
-
-        String userIdFromToken = userEmailInfo.userId();
+        String userIdFromToken = userEmailChangeRecord.userId();
         User user = userRepository.findOrFailUser(userIdFromToken);
-        String emailFromToken = userEmailInfo.email();
+        String emailFromToken = userEmailChangeRecord.newEmail();
         String formerEmailAddress = user.getEmailAddress();
 
         if (formerEmailAddress.equals(emailFromToken)) {
-            throw new NotAcceptableException("User has already this email address");
+            throw new BadRequestException("User has already this email address");
         }
         assertUniqueEmailAddress(emailFromToken);
 
         user.emailAddress = emailFromToken;
 
-        UserMessage message = getUserMessage(user, formerEmailAddress);
+        UserMessage message = createUserMessage(user, formerEmailAddress);
         message.setSubject("Your SecHub email address has been changed");
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Was not able to update the user Mail Address user.");
+        }
 
         informUserEmailAddressUpdated(message);
     }
@@ -176,7 +180,7 @@ public class UserEmailAddressUpdateService {
         eventBusService.sendAsynchron(infoRequest);
     }
 
-    private static UserMessage getUserMessage(User user, String formerEmailAddress) {
+    private static UserMessage createUserMessage(User user, String formerEmailAddress) {
         UserMessage message = new UserMessage();
         message.setUserId(user.getName());
         message.setEmailAddress(user.getEmailAddress());

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -398,6 +399,10 @@ public class AsUser {
 
     public String getStringFromURL(String link) {
         return getRestHelper().getStringFromURL(link);
+    }
+
+    public void sendGetRequestToURI(URI uri) {
+        getRestHelper().sendGetRequestToURI(uri);
     }
 
     /**
