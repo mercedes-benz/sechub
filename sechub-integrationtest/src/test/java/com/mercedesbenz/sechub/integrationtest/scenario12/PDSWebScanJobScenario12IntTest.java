@@ -44,6 +44,10 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSuppo
  */
 public class PDSWebScanJobScenario12IntTest {
 
+    private static final String TEMPLATE_VARIABLE_PASSWORD = "test-password";
+
+    private static final String TEMPLATE_VARIABLE_USERNAME = "test-username";
+
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario12.class);
 
@@ -94,10 +98,10 @@ public class PDSWebScanJobScenario12IntTest {
         String targetURL = configuration.getWebScan().get().getUrl().toString();
 
         TemplateVariable userNameVariable = new TemplateVariable();
-        userNameVariable.setName("username");
+        userNameVariable.setName(TEMPLATE_VARIABLE_USERNAME);
 
         TemplateVariable passwordVariable = new TemplateVariable();
-        passwordVariable.setName("password");
+        passwordVariable.setName(TEMPLATE_VARIABLE_PASSWORD);
 
         TemplateDefinition templateDefinition = new TemplateDefinition();
         templateDefinition.setAssetId(assetId);
@@ -106,6 +110,13 @@ public class PDSWebScanJobScenario12IntTest {
         templateDefinition.getVariables().add(passwordVariable);
 
         String templateId = "template-scenario12-1";
+
+        // we must add the mandatory variables from template definition also to template data section of configuration (or job could not be created)
+        var templateDataVariables = configuration.getWebScan().get().getLogin().get().getTemplateData().getVariables();
+        templateDataVariables.put(TEMPLATE_VARIABLE_USERNAME, "test-user");
+        templateDataVariables.put(TEMPLATE_VARIABLE_PASSWORD, "test-fake-password");
+
+
         as(SUPER_ADMIN).
             updateWhiteListForProject(project, Arrays.asList(targetURL)).
             uploadAssetFile(assetId, productZipFile).

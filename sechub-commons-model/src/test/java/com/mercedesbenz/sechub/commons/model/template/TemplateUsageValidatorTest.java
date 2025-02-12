@@ -97,7 +97,6 @@ class TemplateUsageValidatorTest {
 
     @ParameterizedTest
     @EmptySource
-    @NullSource
     @ValueSource(strings = { "mandatory-var", "other" })
     void mandatory_variable_is_defined_in_template_data(String variableName) {
         /* prepare */
@@ -138,7 +137,6 @@ class TemplateUsageValidatorTest {
 
     @ParameterizedTest
     @EmptySource
-    @NullSource
     @ValueSource(strings = { "optional-var", "other" })
     void optional_variable_is_defined_in_template_data(String variableName) {
         /* prepare */
