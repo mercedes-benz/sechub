@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class TemplateData {
 
-    private Map<String, String> variables = new LinkedHashMap<>();
+    private Map<String, String> variables = new LinkedHashMap<>(); // entries are ordered in model like ordered in json
 
     public Map<String, String> getVariables() {
         return variables;

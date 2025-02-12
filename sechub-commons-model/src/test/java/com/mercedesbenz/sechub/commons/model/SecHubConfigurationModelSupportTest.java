@@ -82,7 +82,7 @@ class SecHubConfigurationModelSupportTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        Set<ScanType> result = supportToTest.collectPublicScanTypes(model);
+        Set<ScanType> result = supportToTest.collectScanTypes(model);
 
         /* test */
         assertEquals(0, result.size());
@@ -95,7 +95,7 @@ class SecHubConfigurationModelSupportTest {
         SecHubConfigurationModel model = sechub_license_and_code_scan_example3;
 
         /* execute */
-        Set<ScanType> result = supportToTest.collectPublicScanTypes(model);
+        Set<ScanType> result = supportToTest.collectScanTypes(model);
 
         /* test */
         assertEquals(2, result.size());
@@ -121,7 +121,7 @@ class SecHubConfigurationModelSupportTest {
         when(model.getSecretScan()).thenReturn(Optional.of(secretScan));
 
         /* execute */
-        Set<ScanType> result = supportToTest.collectPublicScanTypes(model);
+        Set<ScanType> result = supportToTest.collectScanTypes(model);
 
         /* test */
 

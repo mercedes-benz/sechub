@@ -9,6 +9,13 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 
 public class TemplateDataResolver {
 
+    /**
+     * Resolves template data for given type
+     *
+     * @param type          template type
+     * @param configuration SecHub configuration
+     * @return data or <code>null</code>
+     */
     public TemplateData resolveTemplateData(TemplateType type, SecHubConfigurationModel configuration) {
         if (type == null) {
             return null;

@@ -230,6 +230,19 @@ public enum MessageID {
 
     RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT(MessageDataKeys.PROJECT_TEMPLATES),
 
+    /**
+     * Message to request a full validation of a SecHub configuration.
+     */
+    REQUEST_FULL_CONFIGURATION_VALIDATION(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG),
+
+    /**
+     * Result of a full validation of a SecHub configuration. If one of the
+     * MessageDataKeys#ERROR_MESSAGES contains at least one error message, the
+     * validation has failed.
+     *
+     */
+    RESULT_FULL_CONFIGURATION_VALIDATION(MessageDataKeys.ERROR_MESSAGES),
+
     ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
