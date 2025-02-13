@@ -44,7 +44,7 @@ class UserEmailChangeTokenServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Base URL must not be blank!");
+                .hasMessageContaining("Base URL must not be null or blank!");
     }
 
     @ParameterizedTest
@@ -128,7 +128,7 @@ class UserEmailChangeTokenServiceTest {
     void extractUserInfoFromJWTToken_throws_not_acceptable_exception_for_null_empty_token(String invalidToken) {
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.extractUserInfoFromToken(invalidToken)).isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Token must not be blank!");
+                .hasMessageContaining("Token must not be null or blank!");
     }
 
     @Test

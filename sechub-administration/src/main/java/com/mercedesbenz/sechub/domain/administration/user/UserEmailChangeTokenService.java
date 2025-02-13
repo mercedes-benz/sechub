@@ -25,7 +25,7 @@ public class UserEmailChangeTokenService {
     }
 
     public String generateToken(UserEmailChangeRecord userEmailChangeRecord, String baseUrl) {
-        validateString(baseUrl, "Base URL must not be blank!");
+        validateString(baseUrl, "Base URL must not be null or blank!");
 
         UserEmailChangeToken userEmailChangeToken = new UserEmailChangeToken(userEmailChangeRecord.userId(), userEmailChangeRecord.newEmail(),
                 clock.instant().toString());
@@ -37,10 +37,11 @@ public class UserEmailChangeTokenService {
     }
 
     public UserEmailChangeRecord extractUserInfoFromToken(String token) {
-        validateString(token, "Token must not be blank!");
+        validateString(token, "Token must not be null or blank!");
 
         byte[] bytes = DECODER.decode(token);
         String decryptedToken = aes256Encryption.decrypt(bytes);
+
         UserEmailChangeToken userEmailChangeToken = UserEmailChangeToken.fromJSON(decryptedToken);
 
         if (userEmailChangeToken == null) {

@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -134,12 +132,10 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void when_assertions_do_not_handle_null_email_user_repository_would_be_called_without_npe() {
-        /* prepare */
-        when(userRepository.findOrFailUser("somebody")).thenThrow(TestCanaryException.class);
-
-        /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("somebody", null));
+    void when_assertions_do_not_handle_null_email_email_validation_throws_bad_request() {
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.updateUserEmailAddress("somebody", null)).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Email must not be empty");
     }
 
     @Test
@@ -272,9 +268,7 @@ class UserEmailAddressUpdateServiceTest {
     @Test
     void when_email_requested_to_change_already_in_use_throws_BadRequestException() {
         /* prepare */
-        User user2 = new User();
-        user2.emailAddress = NEW_MAIL_USER1_EXAMPLE_COM;
-        when(userRepository.findByEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(Optional.of(user2));
+        when(userRepository.existsByEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(true);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)

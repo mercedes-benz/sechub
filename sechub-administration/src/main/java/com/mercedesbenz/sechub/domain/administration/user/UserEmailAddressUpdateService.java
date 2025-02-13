@@ -72,8 +72,7 @@ public class UserEmailAddressUpdateService {
     @Transactional
     public void updateUserEmailAddress(String userId, String newEmailAddress) {
         assertion.assertIsValidUserId(userId);
-        assertion.assertIsValidEmailAddress(newEmailAddress);
-        assertUniqueEmailAddress(newEmailAddress);
+        validateNewEmail(newEmailAddress);
 
         User user = userRepository.findOrFailUser(userId);
         String formerEmailAddress = user.getEmailAddress();
@@ -96,21 +95,23 @@ public class UserEmailAddressUpdateService {
 
     }
 
-    @UseCaseUserUpdatesEmailAddress(@Step(number = 2, name = "Service checks user mail address and sends approval mail", next = {
-            3 }, description = "The service will check the user input and send a mail to verify"))
+    /* @formatter:off */
+    @UseCaseUserUpdatesEmailAddress(
+            @Step(
+                    number = 2,
+                    name = "Service checks user mail address and sends approval mail",
+                    next = {3},
+                    description = "The service will check the user input and send a mail to verify"))
+    /* @formatter:on */
     public void userRequestUpdateMailAddress(String email) {
-        assertion.assertIsValidEmailAddress(email);
-        assertUniqueEmailAddress(email);
+        validateNewEmail(email);
+
         String userId = userContextService.getUserId();
         User user = userRepository.findOrFailUser(userId);
 
         String formerEmailAddress = user.getEmailAddress();
         if (formerEmailAddress == null || formerEmailAddress.isBlank()) {
             throw new InternalServerErrorException("User has no email address");
-        }
-
-        if (email == null || email.isBlank()) {
-            throw new BadRequestException("Email must not be empty");
         }
 
         if (email.equalsIgnoreCase(formerEmailAddress)) {
@@ -132,14 +133,26 @@ public class UserEmailAddressUpdateService {
         informUserWantsToChangeEmailAddress(message);
     }
 
-    private void assertUniqueEmailAddress(String email) {
-        if (userRepository.findByEmailAddress(email).isPresent()) {
+    private void validateNewEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Email must not be empty");
+        }
+
+        assertion.assertIsValidEmailAddress(email);
+
+        if (userRepository.existsByEmailAddress(email)) {
             throw new BadRequestException("The email address is already in use. Please chose another one.");
         }
     }
 
-    @UseCaseAnonymousUserVerifiesEmailAddress(@Step(number = 2, name = "Service verifies user mail address", next = {
-            3 }, description = "The service will verify the token and update the user email address"))
+    /* @formatter:off */
+    @UseCaseAnonymousUserVerifiesEmailAddress(
+            @Step(
+                    number = 2,
+                    name = "Service verifies user mail address",
+                    next = {3},
+                    description = "The service will verify the token and update the user email address"))
+    /* @formatter:on */
     public void userVerifiesUserEmailAddress(String token) {
         UserEmailChangeRecord userEmailChangeRecord = userEmailChangeTokenService.extractUserInfoFromToken(token);
 
@@ -148,10 +161,10 @@ public class UserEmailAddressUpdateService {
         String emailFromToken = userEmailChangeRecord.newEmail();
         String formerEmailAddress = user.getEmailAddress();
 
+        validateNewEmail(emailFromToken);
         if (formerEmailAddress.equals(emailFromToken)) {
             throw new BadRequestException("User has already this email address");
         }
-        assertUniqueEmailAddress(emailFromToken);
 
         user.emailAddress = emailFromToken;
 
