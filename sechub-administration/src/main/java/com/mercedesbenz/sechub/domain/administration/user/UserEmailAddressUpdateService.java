@@ -102,8 +102,8 @@ public class UserEmailAddressUpdateService {
                     name = "Service checks user mail address and sends approval mail",
                     next = {3},
                     description = "The service will check the user input and send a mail to verify"))
-    /* @formatter:on */
     public void userRequestUpdateMailAddress(String email) {
+        /* @formatter:on */
         validateNewEmail(email);
 
         String userId = userContextService.getUserId();
@@ -133,18 +133,6 @@ public class UserEmailAddressUpdateService {
         informUserWantsToChangeEmailAddress(message);
     }
 
-    private void validateNewEmail(String email) {
-        if (email == null || email.isBlank()) {
-            throw new BadRequestException("Email must not be empty");
-        }
-
-        assertion.assertIsValidEmailAddress(email);
-
-        if (userRepository.existsByEmailAddress(email)) {
-            throw new BadRequestException("The email address is already in use. Please chose another one.");
-        }
-    }
-
     /* @formatter:off */
     @UseCaseAnonymousUserVerifiesEmailAddress(
             @Step(
@@ -152,8 +140,8 @@ public class UserEmailAddressUpdateService {
                     name = "Service verifies user mail address",
                     next = {3},
                     description = "The service will verify the token and update the user email address"))
-    /* @formatter:on */
     public void userVerifiesUserEmailAddress(String token) {
+        /* @formatter:on */
         UserEmailChangeRecord userEmailChangeRecord = userEmailChangeTokenService.extractUserInfoFromToken(token);
 
         String userIdFromToken = userEmailChangeRecord.userId();
@@ -195,6 +183,18 @@ public class UserEmailAddressUpdateService {
         infoRequest.set(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA, message);
 
         eventBusService.sendAsynchron(infoRequest);
+    }
+
+    private void validateNewEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Email must not be empty");
+        }
+
+        assertion.assertIsValidEmailAddress(email);
+
+        if (userRepository.existsByEmailAddress(email)) {
+            throw new BadRequestException("The email address is already in use. Please chose another one.");
+        }
     }
 
     private static UserMessage createUserMessage(User user, String formerEmailAddress) {

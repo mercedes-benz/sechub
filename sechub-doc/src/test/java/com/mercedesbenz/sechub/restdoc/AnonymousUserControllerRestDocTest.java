@@ -64,7 +64,6 @@ public class AnonymousUserControllerRestDocTest implements TestIsNecessaryForDoc
                         .tag(RestDocFactory.extractTag(apiEndpoint))
                         .and()
                         .document());
+        /* @formatter:on */
     }
-    /* @formatter:on */
-
 }

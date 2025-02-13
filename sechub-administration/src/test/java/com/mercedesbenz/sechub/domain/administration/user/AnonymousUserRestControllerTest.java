@@ -50,6 +50,7 @@ public class AnonymousUserRestControllerTest {
         this.mockMvc.perform(
                         get(apiEndpoint,"token1"))
                 .andExpect(status().isNoContent());
+        /* @formatter:on */
     }
 
 }

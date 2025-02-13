@@ -686,6 +686,14 @@ public class TestAPI {
         return getLinkFromMail(text);
     }
 
+    public static String getLinktToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
+        LOG.debug("Get link to verify email address after change requested for user:{}", user.getUserId());
+        MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(newMailAddress, "Verify new SecHub account email address");
+        String text = mail.text.trim();
+        String linkOfOneApiToken = getLinkFromMail(text);
+        return linkOfOneApiToken;
+    }
+
     private static String getLinkFromMail(String text) {
         String[] lines = text.split("\n");
 
@@ -693,14 +701,6 @@ public class TestAPI {
         if (linkOfOneApiToken.isEmpty()) {
             fail("empty link line, origin text mail was:\n" + text);
         }
-        return linkOfOneApiToken;
-    }
-
-    public static String getLinktToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
-        LOG.debug("Get link to verify email address after change requested for user:{}", user.getUserId());
-        MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(newMailAddress, "Verify new SecHub account email address");
-        String text = mail.text.trim();
-        String linkOfOneApiToken = getLinkFromMail(text);
         return linkOfOneApiToken;
     }
 

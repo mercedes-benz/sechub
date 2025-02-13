@@ -17,7 +17,15 @@ public class AnonymousUserRestController {
         this.emailAddressUpdateService = emailAddressUpdateService;
     }
 
-    @UseCaseAnonymousUserVerifiesEmailAddress(@Step(number = 1, name = "Rest call", description = "User verifies his new email address", needsRestDoc = true))
+    /* @formatter:off*/
+    @UseCaseAnonymousUserVerifiesEmailAddress(
+            @Step(
+                    number = 1,
+                    name = "Rest call",
+                    next = {2},
+                    description = "User verifies his new email address",
+                    needsRestDoc = true))
+    /* @formatter:on*/
     @RequestMapping(value = AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL + "/{oneTimeToken}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void verifyEmailAddress(@PathVariable(name = "oneTimeToken") String oneTimeToken) {

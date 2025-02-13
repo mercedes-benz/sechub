@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario2;
 
+import static com.mercedesbenz.sechub.integrationtest.api.AssertMail.assertMailExists;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.getLinktToVerifyEmailAddressAfterChangeRequest;
 import static com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2.USER_1;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestUserDetailInformation;
+import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 
 public class UserChangeMailScenario2IntTest {
 
@@ -45,6 +47,9 @@ public class UserChangeMailScenario2IntTest {
         updateEmailByOneTimeTokenLink(uri);
         TestUserDetailInformation testUserDetailInformation = as(SUPER_ADMIN).fetchUserDetails(USER_1);
         assertThat(testUserDetailInformation.getEmail()).isEqualTo(newEmail);
+        // check mails have been sent
+        assertMailExists(newEmail, "has been changed to this address", TextSearchMode.CONTAINS);
+        assertMailExists(email, "SecHub account email address changed", TextSearchMode.CONTAINS);
     }
 
 }
