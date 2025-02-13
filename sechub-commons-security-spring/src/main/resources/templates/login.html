@@ -182,14 +182,14 @@
             <div class="tab" th:classappend="${param.tab != null && param.tab.contains('classic')} ? ' active' : ''" onclick="switchTab(this)">API Token (Classic)</div>
         </div>
 
-        <div th:if="${isOAuth2Enabled}" class="login-option" th:classappend="${param.tab != null && param.tab.contains('oauth2')} ? ' active' : ''">
+        <div th:if="${isOAuth2Enabled}" class="login-option" th:classappend="${!isClassicAuthEnabled || (param.tab != null && param.tab.contains('oauth2'))} ? ' active' : ''">
             <h4>You will be redirected to your OAuth2 Provider for authentication.</h4>
             <form th:action="@{/oauth2/authorization/__${registrationId}__}" method="POST">
                 <button type="submit">Login</button>
             </form>
         </div>
 
-        <div th:if="${isClassicAuthEnabled}" class="login-option" th:classappend="${param.tab != null && param.tab.contains('classic')} ? ' active' : ''">
+        <div th:if="${isClassicAuthEnabled}" class="login-option" th:classappend="${!isOAuth2Enabled || (param.tab != null && param.tab.contains('classic'))} ? ' active' : ''">
             <h4>Login with your provided User ID & API Token.</h4>
 
             <div th:if="${param.error}">
