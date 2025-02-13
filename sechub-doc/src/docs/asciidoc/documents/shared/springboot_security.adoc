@@ -115,5 +115,9 @@ sechub:
       classic-auth:
         cookie-age-seconds: 86400 # This is the default
     encryption:
-      secret-key: <aes-256-compatible-secret-key>
+      secret-key: <aes-256-compatible-secret-key> <1>
 ----
+<1> {sechub} uses `AES` encryption to provide temporary but still sensitive information in a secure way.
+    This is the secret key for the encryption. The key can be anything, but must 
+    have exactly a length of 32 bytes. For example: `example-key-32-byte-long-1234567`.
+    

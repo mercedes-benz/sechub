@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-To start spring boot application `{launchServerClassName}` create a new launch configuration with
+To start Spring Boot application `{launchServerClassName}` create a new launch configuration with
 following arguments:
 
 class: `{launchServerPackageName}.{launchServerClassName}`
