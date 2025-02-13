@@ -161,7 +161,9 @@ public abstract class AbstractSecurityConfiguration {
 				/* Make the application stateless */
 				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+		
+		LOG.info("Configure login mode: classic={}, oauth2={}", loginProperties.isClassicModeEnabled(), loginProperties.isOAuth2ModeEnabled());
+		
 		if (!loginProperties.isOAuth2ModeEnabled() && !loginProperties.isClassicModeEnabled()) {
 			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
 					SecHubSecurityProperties.LoginProperties.PREFIX,
@@ -233,6 +235,8 @@ public abstract class AbstractSecurityConfiguration {
 			LOG.warn("No resource server configuration detected. All requests to protected paths will be rejected.");
 			return;
 		}
+		
+		LOG.info("Configure resource server mode: classic={}, oauth2={}", resourceServerProperties.isClassicModeEnabled(), resourceServerProperties.isOAuth2ModeEnabled());
 
 		if (!resourceServerProperties.isClassicModeEnabled() && !resourceServerProperties.isOAuth2ModeEnabled()) {
 			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
@@ -271,7 +275,9 @@ public abstract class AbstractSecurityConfiguration {
 														  AES256Encryption aes256Encryption,
 														  JwtDecoder jwtDecoder,
 														  RestTemplate restTemplate) throws Exception {
-
+	    
+	    LOG.info("Configure oAuth2 mode: jwt={}, opaqueToken={}", oAuth2Properties.isJwtModeEnabled(), oAuth2Properties.isOpaqueTokenModeEnabled());
+	    
 		if (oAuth2Properties.isJwtModeEnabled() == oAuth2Properties.isOpaqueTokenModeEnabled()) {
 			String exMsg = "Either 'jwt' or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
 					SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX,
@@ -298,7 +304,6 @@ public abstract class AbstractSecurityConfiguration {
 															 UserDetailsService userDetailsService,
 															 JwtDecoder jwtDecoder,
 															 AES256Encryption aes256Encryption) throws Exception {
-
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
 		}
