@@ -139,7 +139,7 @@ class SecHubJobFactorySpringBootTest {
         /* prepare */
         when(userContextService.getUserId()).thenReturn("user1");
         SecHubConfiguration configuration = mock(SecHubConfiguration.class);
-        when(modelSupport.collectPublicScanTypes(configuration)).thenReturn(Collections.singleton(type));
+        when(modelSupport.collectScanTypes(configuration)).thenReturn(Collections.singleton(type));
 
         /* execute */
         ScheduleSecHubJob result = factoryToTest.createJob(configuration);
