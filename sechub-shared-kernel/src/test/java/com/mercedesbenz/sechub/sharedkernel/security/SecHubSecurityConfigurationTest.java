@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
 
 /**
@@ -187,6 +188,11 @@ class SecHubSecurityConfigurationTest {
 
         @Bean
         RestTemplate restTemplate() {
+            return mock();
+        }
+
+        @Bean
+        ApplicationShutdownHandler applicationShutdownHandler() {
             return mock();
         }
 

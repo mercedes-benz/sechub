@@ -164,13 +164,21 @@ public class SecHubSecurityProperties {
                 private final String introspectionUri;
                 private final String clientId;
                 private final String clientSecret;
+                private final Duration defaultTokenExpiresIn;
                 private final Duration maxCacheDuration;
 
                 @ConstructorBinding
-                public OpaqueTokenProperties(String introspectionUri, String clientId, String clientSecret, Duration maxCacheDuration) {
+                /* @formatter:off */
+                public OpaqueTokenProperties(String introspectionUri,
+                                             String clientId,
+                                             String clientSecret,
+                                             Duration defaultTokenExpiresIn,
+                                             Duration maxCacheDuration) {
+                    /* @formatter:on */
                     this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
                     this.clientId = requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id"));
                     this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
+                    this.defaultTokenExpiresIn = defaultTokenExpiresIn == null ? Duration.ofDays(1) : defaultTokenExpiresIn;
                     this.maxCacheDuration = requireNonNull(maxCacheDuration, ERR_MSG_FORMAT.formatted(PREFIX, "max-cache-duration"));
                 }
 
@@ -184,6 +192,10 @@ public class SecHubSecurityProperties {
 
                 public String getClientSecret() {
                     return clientSecret;
+                }
+
+                public Duration getDefaultTokenExpiresAt() {
+                    return defaultTokenExpiresIn;
                 }
 
                 public Duration getMaxCacheDuration() {

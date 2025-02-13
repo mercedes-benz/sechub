@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.sharedkernel.security.SecHubSecurityConfiguration;
 
 @Configuration
@@ -16,6 +17,11 @@ public class TestAdministrationSecurityConfiguration {
 
     @Bean
     RestTemplate restTemplate() {
+        return mock();
+    }
+
+    @Bean
+    ApplicationShutdownHandler applicationShutdownHandler() {
         return mock();
     }
 }

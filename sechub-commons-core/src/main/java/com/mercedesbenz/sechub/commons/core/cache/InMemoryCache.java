@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.commons.core.cache;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.Closeable;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
@@ -17,7 +16,8 @@ import java.util.concurrent.TimeUnit;
 import javax.crypto.SealedObject;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
-import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownManager;
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
+import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
 
 /**
  * The <code>InMemoryCache</code> class provides a thread-safe, in-memory
@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownManager;
  *
  * @author hamidonos
  */
-public class InMemoryCache<T extends Serializable> implements Closeable {
+public class InMemoryCache<T extends Serializable> implements ShutdownListener {
 
     private static final Duration CACHE_CLEAR_JOB_PERIOD_DEFAULT = Duration.ofMinutes(1);
 
@@ -50,14 +50,14 @@ public class InMemoryCache<T extends Serializable> implements Closeable {
     private final ScheduledFuture<?> cacheClearJob;
     private final Duration cacheClearJobPeriod;
 
-    public InMemoryCache(ApplicationShutdownManager applicationShutdownManager) {
-        this(CACHE_CLEAR_JOB_PERIOD_DEFAULT, applicationShutdownManager);
+    public InMemoryCache(ApplicationShutdownHandler applicationShutdownHandler) {
+        this(CACHE_CLEAR_JOB_PERIOD_DEFAULT, applicationShutdownHandler);
     }
 
-    public InMemoryCache(Duration cacheClearJobPeriod, ApplicationShutdownManager applicationShutdownManager) {
+    public InMemoryCache(Duration cacheClearJobPeriod, ApplicationShutdownHandler applicationShutdownHandler) {
         this.cacheClearJobPeriod = requireNonNull(cacheClearJobPeriod, "Property 'cacheClearJobPeriod' must not be null");
         cacheClearJob = scheduleClearCacheJob();
-        applicationShutdownManager.register(this);
+        applicationShutdownHandler.register(this);
     }
 
     /**
@@ -103,7 +103,7 @@ public class InMemoryCache<T extends Serializable> implements Closeable {
     }
 
     @Override
-    public void close() {
+    public void onShutdown() {
         cacheClearJob.cancel(true);
         scheduledExecutorService.shutdownNow();
     }
@@ -135,8 +135,8 @@ public class InMemoryCache<T extends Serializable> implements Closeable {
      * Represents the data stored in the cache under a specific key.
      *
      * <p>
-     *      The cached data can be any serializable object. It is securely sealed using a {@link CryptoAccess}
-     *      instance of type <code>T</code>.
+     * The cached data can be any serializable object. It is securely sealed using a
+     * {@link CryptoAccess} instance of type <code>T</code>.
      * </p>
      */
     private class CacheData {

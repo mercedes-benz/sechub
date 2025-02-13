@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -44,9 +43,6 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
 
     @Test
     void construct_opaque_token_response_from_valid_json_is_successful() throws JsonProcessingException {
-        /* prepare */
-        Instant epoch = Instant.EPOCH;
-
         /* execute */
         OAuth2OpaqueTokenIntrospectionResponse response = objectMapper.readValue(jsonResponse, OAuth2OpaqueTokenIntrospectionResponse.class);
 
@@ -58,21 +54,11 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
         assertThat(response.getClientType()).isEqualTo(JsonPath.read(jsonResponse, "$.client_type"));
         assertThat(response.getUsername()).isEqualTo(JsonPath.read(jsonResponse, "$.username"));
         assertThat(response.getTokenType()).isEqualTo(JsonPath.read(jsonResponse, "$.token_type"));
-        assertThat(response.getIssuedAt()).isAfter(epoch);
-        assertThat(response.getExpiresAt()).isAfter(epoch);
+        assertThat(response.getIssuedAt()).isNotNull();
+        assertThat(response.getExpiresAt()).isNotNull();
         assertThat(response.getSubject()).isEqualTo(JsonPath.read(jsonResponse, "$.sub"));
         assertThat(response.getAudience()).isEqualTo(JsonPath.read(jsonResponse, "$.aud"));
         assertThat(response.getGroupType()).isEqualTo(JsonPath.read(jsonResponse, "$.group_type"));
-    }
-
-    @Test
-    void construct_opaque_token_response_with_null_expires_at_uses_default_expires_in() throws JsonProcessingException {
-        /* execute */
-        OAuth2OpaqueTokenIntrospectionResponse response = objectMapper.readValue(removeJsonKeyAndValue("exp"), OAuth2OpaqueTokenIntrospectionResponse.class);
-
-        // assert
-        assertThat(response).isNotNull();
-        assertThat(response.getExpiresAt()).isEqualTo(response.getIssuedAt().plus(DEFAULT_EXPIRES_IN));
     }
 
     @ParameterizedTest

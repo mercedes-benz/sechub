@@ -10,17 +10,17 @@ import java.util.Optional;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownManager;
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 class InMemoryCacheTest {
 
     private static final Duration CACHE_CLEAR_JOB_PERIOD_DEFAULT = Duration.ofMinutes(1);
-    private static final ApplicationShutdownManager applicationShutdownManager = mock();
+    private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
 
     @Test
     void construct_with_default_cache_clear_job_period() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(CACHE_CLEAR_JOB_PERIOD_DEFAULT);
@@ -32,7 +32,7 @@ class InMemoryCacheTest {
         Duration cacheClearJobPeriod = Duration.ofSeconds(1);
 
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(cacheClearJobPeriod);
@@ -41,7 +41,7 @@ class InMemoryCacheTest {
     @Test
     void get_returns_empty_optional_when_cache_does_not_contain_key() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.get("key")).isEmpty();
@@ -50,7 +50,7 @@ class InMemoryCacheTest {
     @Test
     void get_returns_value_when_cache_contains_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
         String key = "key";
         String value = "result";
         Duration duration = Duration.ofSeconds(1);
@@ -66,7 +66,7 @@ class InMemoryCacheTest {
     @Test
     void put_overrides_existing_cache_data_with_same_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
         String key = "key";
         String oldValue = "old value";
         Duration duration = Duration.ofSeconds(1);
@@ -88,7 +88,7 @@ class InMemoryCacheTest {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofSeconds(1);
         /* the cache clear job will run right away (point in time = 0s) */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownHandler);
         String key = "key";
         String value = "value";
         Duration cacheDataDuration = Duration.ofSeconds(1);
@@ -117,7 +117,7 @@ class InMemoryCacheTest {
     @Test
     void clearCache_does_not_remove_cache_data_until_it_has_expired() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownManager);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
         String key = "key";
         String value = "value";
         /* the cache is valid for 2 seconds */

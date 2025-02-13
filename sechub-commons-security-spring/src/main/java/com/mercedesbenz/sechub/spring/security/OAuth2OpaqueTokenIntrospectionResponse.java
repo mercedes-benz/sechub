@@ -77,7 +77,7 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
         this.username = username;
         this.tokenType = tokenType;
         this.issuedAt = Instant.now();
-        this.expiresAt = expiresAt == null ? Instant.now().plus(DEFAULT_EXPIRES_IN) : Instant.ofEpochSecond(expiresAt);
+        this.expiresAt = expiresAt != null ? Instant.ofEpochSecond(expiresAt) : null;
         this.subject = active ? requireNonNull(subject, ERR_MSG_FORMAT.formatted(JSON_PROPERTY_SUBJECT)) : subject;
         this.audience = audience;
         this.groupType = groupType;
