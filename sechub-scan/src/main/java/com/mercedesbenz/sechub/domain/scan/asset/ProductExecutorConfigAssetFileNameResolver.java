@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.asset;
 
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
