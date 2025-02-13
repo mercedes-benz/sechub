@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.Serializable;
+import java.time.Duration;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -25,9 +27,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author hamidonos
  */
-class OAuth2OpaqueTokenIntrospectionResponse {
+class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final String ERR_MSG_FORMAT = "Property '%s' must not be null";
+
+    private static final Duration DEFAULT_EXPIRES_IN = Duration.ofDays(1);
 
     private static final String JSON_PROPERTY_ACTIVE = "active";
     private static final String JSON_PROPERTY_SCOPE = "scope";
@@ -46,6 +52,7 @@ class OAuth2OpaqueTokenIntrospectionResponse {
     private final String clientType;
     private final String username;
     private final String tokenType;
+    private final Instant issuedAt;
     private final Instant expiresAt;
     private final String subject;
     private final String audience;
@@ -69,7 +76,8 @@ class OAuth2OpaqueTokenIntrospectionResponse {
         this.clientType = clientType;
         this.username = username;
         this.tokenType = tokenType;
-        this.expiresAt = expiresAt != null ? Instant.ofEpochSecond(expiresAt) : null;
+        this.issuedAt = Instant.now();
+        this.expiresAt = expiresAt == null ? Instant.now().plus(DEFAULT_EXPIRES_IN) : Instant.ofEpochSecond(expiresAt);
         this.subject = active ? requireNonNull(subject, ERR_MSG_FORMAT.formatted(JSON_PROPERTY_SUBJECT)) : subject;
         this.audience = audience;
         this.groupType = groupType;
@@ -98,6 +106,10 @@ class OAuth2OpaqueTokenIntrospectionResponse {
 
     String getTokenType() {
         return tokenType;
+    }
+
+    Instant getIssuedAt() {
+        return issuedAt;
     }
 
     Instant getExpiresAt() {

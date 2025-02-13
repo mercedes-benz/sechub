@@ -334,6 +334,7 @@ public abstract class AbstractSecurityConfiguration {
 				opaqueTokenProperties.getIntrospectionUri(),
 				opaqueTokenProperties.getClientId(),
 				opaqueTokenProperties.getClientSecret(),
+				opaqueTokenProperties.getMaxCacheDuration(),
 				userDetailsService);
 
 		if (aes256Encryption == null) {

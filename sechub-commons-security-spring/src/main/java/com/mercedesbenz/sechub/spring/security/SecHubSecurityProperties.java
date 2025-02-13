@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -163,12 +164,14 @@ public class SecHubSecurityProperties {
                 private final String introspectionUri;
                 private final String clientId;
                 private final String clientSecret;
+                private final Duration maxCacheDuration;
 
                 @ConstructorBinding
-                public OpaqueTokenProperties(String introspectionUri, String clientId, String clientSecret) {
+                public OpaqueTokenProperties(String introspectionUri, String clientId, String clientSecret, Duration maxCacheDuration) {
                     this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
                     this.clientId = requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id"));
                     this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
+                    this.maxCacheDuration = requireNonNull(maxCacheDuration, ERR_MSG_FORMAT.formatted(PREFIX, "max-cache-duration"));
                 }
 
                 public String getIntrospectionUri() {
@@ -181,6 +184,10 @@ public class SecHubSecurityProperties {
 
                 public String getClientSecret() {
                     return clientSecret;
+                }
+
+                public Duration getMaxCacheDuration() {
+                    return maxCacheDuration;
                 }
             }
         }

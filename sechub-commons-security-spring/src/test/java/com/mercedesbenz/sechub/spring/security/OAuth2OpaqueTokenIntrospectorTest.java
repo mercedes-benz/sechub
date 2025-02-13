@@ -7,8 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
@@ -40,11 +44,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
     private static final String CLIENT_ID = "example-client-id";
     private static final String CLIENT_SECRET = "example-client-secret";
     private static final UserDetailsService userDetailsService = mock();
+    private static final Duration MAX_CACHE_DURATION = Duration.ofDays(1);
     private static final OpaqueTokenIntrospector introspectorToTest = new OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID,
-            CLIENT_SECRET, userDetailsService);
+            CLIENT_SECRET, MAX_CACHE_DURATION, userDetailsService);
     private static final String OPAQUE_TOKEN = "opaque-token";
     private static final String SUBJECT = "sub";
-    private static final int DEFAULT_EXPIRES_IN_SECONDS = 60 * 60 * 24;
 
     @BeforeEach
     void beforeEach() {
@@ -53,14 +57,15 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     /* @formatter:off */
     @ParameterizedTest
-    @ArgumentsSource(Base64OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider.class)
-    void construct_base64_o_auth_2_opaque_token_introspector_with_null_argument_fails(RestTemplate restTemplate,
+    @ArgumentsSource(OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider.class)
+    void construct_o_auth_2_opaque_token_introspector_with_null_argument_fails(RestTemplate restTemplate,
                                                                                       String introspectionUri,
                                                                                       String clientId,
                                                                                       String clientSecret,
+                                                                                      Duration maxCacheDuration,
                                                                                       UserDetailsService userDetailsService,
                                                                                       String errMsg) {
-        assertThatThrownBy(() -> new OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, userDetailsService))
+        assertThatThrownBy(() -> new OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, maxCacheDuration, userDetailsService))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
     }
@@ -74,6 +79,25 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 .isInstanceOf(BadOpaqueTokenException.class)
                 .hasMessageContaining("Token is null or empty");
         /* @formatter:on */
+    }
+
+    @Test
+    void introspect_with_cached_opaque_token_returns_cached_opaque_token_introspection_response() {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE);
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
+                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
+        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+        introspectorToTest.introspect(OPAQUE_TOKEN);
+
+        /* execute */
+        introspectorToTest.introspect(OPAQUE_TOKEN);
+
+        /* test */
+        verifyNoInteractions(restTemplate);
+
+
     }
 
     @Test
@@ -92,7 +116,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_inactive_token_fails() {
         /* prepare */
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.FALSE, null);
+        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.FALSE);
         when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
                 .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
 
@@ -107,10 +131,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_valid_token_succeeds() {
         /* prepare */
-        long expiresAt = 3600L;
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt);
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createOpaqueTokenResponse(Boolean.TRUE);
         when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
-                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+                .thenReturn(introspectionResponse);
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
 
@@ -120,38 +143,19 @@ class OAuth2OpaqueTokenIntrospectorTest {
         /* assert */
         assertThat(principal.getName()).isEqualTo(SUBJECT);
         Map<String, Object> attributes = principal.getAttributes();
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.isActive());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getScope());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getClientId());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getUsername());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getTokenType());
-        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.IAT)).isAfter(Instant.EPOCH);
-        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP)).isEqualTo(Instant.ofEpochSecond(expiresAt));
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getSubject());
-        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(OAuth2OpaqueTokenIntrospectionResponse.getAudience());
-    }
-
-    @Test
-    void introspect_with_null_expires_at_constructs_principal_with_default_expires_at() {
-        /* prepare */
-        Instant now = Instant.now();
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
-                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
-        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
-
-        /* execute */
-        OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
-
-        /* assert */
-        Instant actual = (Instant) principal.getAttributes().get(OAuth2TokenIntrospectionClaimNames.EXP);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isAfterOrEqualTo(now.plusSeconds(DEFAULT_EXPIRES_IN_SECONDS));
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(introspectionResponse.isActive());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SCOPE)).isEqualTo(introspectionResponse.getScope());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.CLIENT_ID)).isEqualTo(introspectionResponse.getClientId());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.USERNAME)).isEqualTo(introspectionResponse.getUsername());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE)).isEqualTo(introspectionResponse.getTokenType());
+        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.IAT)).isEqualTo(introspectionResponse.getIssuedAt());
+        assertThat((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP)).isEqualTo(introspectionResponse.getExpiresAt());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.SUB)).isEqualTo(introspectionResponse.getSubject());
+        assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.AUD)).isEqualTo(introspectionResponse.getAudience());
     }
 
     /* @formatter:off */
-    private static OAuth2OpaqueTokenIntrospectionResponse createOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
+    private static OAuth2OpaqueTokenIntrospectionResponse createOpaqueTokenResponse(Boolean isActive) {
         return new OAuth2OpaqueTokenIntrospectionResponse(
                 isActive,
                 "scope",
@@ -159,7 +163,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 "client-type",
                 SUBJECT,
                 "token-type",
-                expiresAt,
+                Instant.MAX.getEpochSecond(),
                 SUBJECT,
                 "aud",
                 "group-type"
@@ -167,14 +171,15 @@ class OAuth2OpaqueTokenIntrospectorTest {
     }
     /* @formatter:on */
 
-    private static class Base64OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider implements ArgumentsProvider {
+    private static class OAuth2OpaqueTokenIntrospectorSingleNullArgumentProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(Arguments.of(null, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Parameter restTemplate must not be null"),
-                    Arguments.of(restTemplate, null, CLIENT_ID, CLIENT_SECRET, userDetailsService, "Parameter introspectionUri must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, null, CLIENT_SECRET, userDetailsService, "Parameter clientId must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, null, userDetailsService, "Parameter clientSecret must not be null"),
-                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, null, "Parameter userDetailsService must not be null"));
+            return Stream.of(Arguments.of(null, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, MAX_CACHE_DURATION, userDetailsService, "Parameter restTemplate must not be null"),
+                    Arguments.of(restTemplate, null, CLIENT_ID, CLIENT_SECRET, MAX_CACHE_DURATION, userDetailsService, "Parameter introspectionUri must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, null, CLIENT_SECRET, MAX_CACHE_DURATION, userDetailsService, "Parameter clientId must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, null, MAX_CACHE_DURATION, userDetailsService, "Parameter clientSecret must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, null, userDetailsService, "Parameter maxCacheDuration must not be null"),
+                    Arguments.of(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, MAX_CACHE_DURATION, null, "Parameter userDetailsService must not be null"));
         }
     }
 }
