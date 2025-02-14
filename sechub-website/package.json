@@ -19,6 +19,7 @@
     "nuxt": "^3.15.4",
     "nuxt-security": "^1.2.1",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.11"
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "sass-embedded": "^1.85.0"
   }
 }
