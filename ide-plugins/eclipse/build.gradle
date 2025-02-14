@@ -1,0 +1,105 @@
+// SPDX-License-Identifier: MIT
+allprojects{
+	apply from: "${rootProject.projectDir}/libraries.gradle"
+	/* turn off doclint java 8 */
+	if (JavaVersion.current().isJava8Compatible()) {
+	        tasks.withType(Javadoc) {
+	            options.addStringOption('Xdoclint:none', '-quiet')
+	        }
+	}
+	repositories {
+		mavenLocal()
+		mavenCentral()
+    }
+    
+}
+
+def doAutomateEclipseSetup = ['sechub-eclipse-other'];
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+	
+	if (doAutomateEclipseSetup.contains(project.name)){
+		apply plugin: 'eclipse'
+	}
+	sourceSets {
+			  	main {
+			   		java {
+			    		srcDir 'src/main/java'
+			    		}
+			   }	
+	}
+//	apply plugin: "maven"
+		
+	/* Setup UTF-8 for compile AND test compilation*/
+	[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+
+	sourceCompatibility = '17'
+	targetCompatibility = '17'
+		
+		
+	dependencies{
+			
+		testImplementation library.junit
+		testImplementation library.mockito_all
+	}
+	
+	task sourcesJar(type: Jar, dependsOn:classes) {
+		archiveClassifier = 'sources'
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+		from sourceSets.main.allSource
+	}
+
+	task javadocJar(type: Jar, dependsOn:javadoc) {
+		archiveClassifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+    afterEvaluate{
+        // Use ./gradlew compileJava -Parg=rebuildJar, to rebuild 'sechub-eclipse-plugin/lib/sechub-java-api-all-0.0.0.jar' automatically.
+        // Alternatively the jar file can be deleted manually and it will be rebuild from sources whenever compileJava is used
+        tasks.named('compileJava') {
+            dependsOn rootProject.tasks.named('checkAndBuildDependencies')
+        }
+    }
+
+}
+
+/**
+ * Copies update site (must be build before in eclipse) to static part which
+ * is shown inside github pages
+ */
+task prepareDocs (type: Copy){
+	group 'SecHub'
+	
+	def updateSiteLocation="${rootProject.projectDir}/sechub-eclipse-update-site/"
+
+    from ("$updateSiteLocation") {
+		exclude '.gitignore', '.project'             
+    }
+
+    into "${rootProject.projectDir}/docs/update-site"
+    eachFile { println "copied:${it.name}" }
+    
+    doFirst{
+        
+        println "ATTENTION! Be aware that you must call signJars before! Otherwise update-site contains unsigned jars!"
+        
+    }
+
+}
+
+task checkAndBuildDependencies {
+    def arg = project.hasProperty('arg') ? project.property('arg') : ''
+    exec {
+        commandLine '/bin/bash', './build-dependencies.sh', arg
+    }
+}
+
+

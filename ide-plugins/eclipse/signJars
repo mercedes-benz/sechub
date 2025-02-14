@@ -1,0 +1,33 @@
+#!/bin/bash 
+
+if [ "$KEYSTORE_PWD" == "" ]; then
+    echo "KEYSTORE_PWD not set!"
+    exit 1
+fi
+
+if [ "$KEYSTORE_LOCATION" == "" ]; then
+    echo "KEYSTORE_LOCATION not set!"
+    exit 1
+fi
+cd sechub-eclipse-update-site
+
+PLUGINDIR=./plugins/*
+FEATUREDIR=./features/*
+
+echo "Processing features dir $FEATUREDIR file..."
+for f in $FEATUREDIR;
+do
+  echo "Signing feature: $f file..."
+  jarsigner -keystore $KEYSTORE_LOCATION -storepass:env KEYSTORE_PWD $f signFiles
+  echo ""
+done
+
+echo "Processing plugin dir $PLUGINDIR file..."
+
+for f in $PLUGINDIR;
+do
+   # take action on each file. $f store current file name
+  echo "Signing plugin: $f file..."
+   jarsigner -keystore $KEYSTORE_LOCATION -storepass:env KEYSTORE_PWD $f signFiles
+  echo ""
+done
