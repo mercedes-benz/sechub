@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.4.1 modified (commit eada480)</span>
+<span id="revnumber"> Server 2.5.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -559,12 +559,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#kubernetes">2.3.1.2. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#file-upload-storage">2.3.2. File upload storage</a>
-<ul class="sectlevel4">
-<li><a href="#plain-server-2">2.3.2.1. Plain server</a></li>
-<li><a href="#kubernetes-2">2.3.2.2. Kubernetes</a></li>
-</ul>
-</li>
+<li><a href="#file-upload-storage">2.3.2. File upload storage</a></li>
 <li><a href="#server-application">2.3.3. Server Application</a>
 <ul class="sectlevel4">
 <li><a href="#mandatory-configuration">2.3.3.1. Mandatory configuration</a>
@@ -572,13 +567,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#storage-configuration">2.3.3.1.1. Storage configuration</a></li>
 </ul>
 </li>
-<li><a href="#plain-server-3">2.3.3.2. Plain server</a>
+<li><a href="#start-the-server-locally">2.3.3.2. Start the server locally</a></li>
+<li><a href="#run-in-docker">2.3.3.3. Run in Docker</a></li>
+<li><a href="#run-in-kubernetes">2.3.3.4. Run in Kubernetes</a>
 <ul class="sectlevel5">
-<li><a href="#logging">2.3.3.2.1. Logging</a></li>
+<li><a href="#logging">2.3.3.4.1. Logging</a></li>
+<li><a href="#activating-server-encryption-of-sensitive-data">2.3.3.4.2. Activating server encryption of sensitive data</a></li>
 </ul>
 </li>
-<li><a href="#docker">2.3.3.3. Docker</a></li>
-<li><a href="#kubernetes-3">2.3.3.4. Kubernetes</a></li>
 </ul>
 </li>
 </ul>
@@ -653,49 +649,50 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#pds-2">3.1. PDS</a>
 <ul class="sectlevel3">
 <li><a href="#general-2">3.1.1. General</a></li>
-<li><a href="#pds-solutions">3.1.2. PDS solutions</a>
-<ul class="sectlevel4">
-<li><a href="#gosec">3.1.2.1. GoSec</a></li>
-<li><a href="#multi">3.1.2.2. Multi</a></li>
-<li><a href="#owasp-zap">3.1.2.3. OWASP ZAP</a></li>
-<li><a href="#pmd">3.1.2.4. PMD</a></li>
-<li><a href="#scancode">3.1.2.5. ScanCode</a></li>
+<li><a href="#enabling-pds-encryption">3.1.2. Enabling PDS encryption</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#checkmarx-2">3.2. Checkmarx</a>
+<li><a href="#pds-solutions">3.2. PDS solutions</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do">3.2.1. What does the adapter do?</a>
+<li><a href="#gosec">3.2.1. GoSec</a></li>
+<li><a href="#multi">3.2.2. Multi</a></li>
+<li><a href="#owasp-zap-dast">3.2.3. OWASP ZAP (DAST)</a></li>
+<li><a href="#pmd">3.2.4. PMD</a></li>
+<li><a href="#scancode">3.2.5. ScanCode</a></li>
+</ul>
+</li>
+<li><a href="#deprecated-checkmarx">3.3. DEPRECATED: Checkmarx</a>
+<ul class="sectlevel3">
+<li><a href="#what-does-the-adapter-do">3.3.1. What does the adapter do?</a>
 <ul class="sectlevel4">
-<li><a href="#what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</a></li>
-<li><a href="#what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</a>
+<li><a href="#what-must-be-done-on-checkmarx-ui">3.3.1.1. What must be done on Checkmarx UI</a></li>
+<li><a href="#what-can-be-configured-for-sechub">3.3.1.2. What can be configured for SecHub ?</a>
 <ul class="sectlevel5">
-<li><a href="#environment">3.2.1.2.1. Environment</a></li>
-<li><a href="#runtime">3.2.1.2.2. Runtime</a></li>
+<li><a href="#environment">3.3.1.2.1. Environment</a></li>
+<li><a href="#runtime">3.3.1.2.2. Runtime</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#summary">3.2.2. Summary</a></li>
+<li><a href="#summary">3.3.2. Summary</a></li>
 </ul>
 </li>
-<li><a href="#netsparker">3.3. Netsparker</a>
+<li><a href="#deprecated-netsparker">3.4. DEPRECATED: Netsparker</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-2">3.3.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</a>
+<li><a href="#what-does-the-adapter-do-2">3.4.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-netsparker-ui">3.4.2. What must be done on Netsparker UI</a>
 <ul class="sectlevel4">
-<li><a href="#users">3.3.2.1. Users</a></li>
+<li><a href="#users">3.4.2.1. Users</a></li>
 </ul>
 </li>
-<li><a href="#summary-2">3.3.3. Summary</a></li>
+<li><a href="#summary-2">3.4.3. Summary</a></li>
 </ul>
 </li>
-<li><a href="#nessus">3.4. Nessus</a>
+<li><a href="#nessus">3.5. Nessus</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-3">3.4.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</a></li>
-<li><a href="#summary-3">3.4.3. Summary</a></li>
+<li><a href="#what-does-the-adapter-do-3">3.5.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-nessus-ui">3.5.2. What must be done on Nessus UI</a></li>
+<li><a href="#summary-3">3.5.3. Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -791,7 +788,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.4.1 modified (commit eada480) - Build date: 2025-01-22 14:30 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.5.0 - Build date: 2025-02-14 12:45 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1868,32 +1865,13 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect4">
 <h5 id="plain-server">2.3.1.1. Plain server</h5>
 <div class="paragraph">
-<p>In this scenario you would configure a database server available from SecHub.</p>
-</div>
-<div class="paragraph">
-<p><em>For example: Just install PostgreSQL DB server on same machine as your server.</em></p>
+<p>In this scenario you can just install a PostgreSQL DB instance on your SecHub server machine.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="kubernetes">2.3.1.2. Kubernetes</h5>
 <div class="paragraph">
-<p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
-define a network policy, services, endpoints etc. etc.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all SecHub server
-PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
-</div>
-</td>
-</tr>
-</table>
+<p>Here you need to deploy a PostgreSQL DB server in your Kubernetes namespace.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1903,8 +1881,7 @@ PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</e
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Think about an automated database backup - no matter which is your choosen
-installation variant&#8230;&#8203;</p>
+<p>Think about regular database backups - no matter which variant you choose&#8230;&#8203;</p>
 </div>
 </td>
 </tr>
@@ -1915,7 +1892,8 @@ installation variant&#8230;&#8203;</p>
 <div class="sect3">
 <h4 id="file-upload-storage">2.3.2. File upload storage</h4>
 <div class="paragraph">
-<p>SecHub requires a file system folder where source scan uploads can be transferred to.</p>
+<p>SecHub requires a shared file system folder to store uploads.<br>
+This can be a shared disk, a network share (e.g. NFS) or a S3 storage.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1925,41 +1903,12 @@ installation variant&#8230;&#8203;</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>In a clustered environment like kubernetes the storage must be accessible by
+<p>In a clustered environment like Kubernetes the storage must be accessible by
 every cluster member!</p>
 </div>
 </td>
 </tr>
 </table>
-</div>
-<div class="sect4">
-<h5 id="plain-server-2">2.3.2.1. Plain server</h5>
-<div class="paragraph">
-<p>In this scenario you would just either reuse SecHub server file system or
-define a network share available form server.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="kubernetes-2">2.3.2.2. Kubernetes</h5>
-<div class="paragraph">
-<p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
-define a network policy, services, endpoints etc.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all SecHub server
-PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -1968,11 +1917,10 @@ PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</e
 <p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 17</code>.</p>
 </div>
 <div class="paragraph">
-<p>You can configure SecHub server by system properties or also by  environment
-variables.</p>
+<p>You can configure the SecHub server by system properties or also by environment variables.</p>
 </div>
 <div class="paragraph">
-<p>Next blocks describe necessary system properties and their ENV pendants.</p>
+<p>The next sections describe necessary system properties and their environment variable pendants.</p>
 </div>
 <div class="sect4">
 <h5 id="mandatory-configuration">2.3.3.1. Mandatory configuration</h5>
@@ -2072,9 +2020,9 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="plain-server-3">2.3.3.2. Plain server</h5>
+<h5 id="start-the-server-locally">2.3.3.2. Start the server locally</h5>
 <div class="paragraph">
-<p>To start the server by executing</p>
+<p>Start the server by executing</p>
 </div>
 <div class="paragraph">
 <p><code>java ${systemProperties} -jar sechub-server-x.y.z.jar</code></p>
@@ -2083,20 +2031,9 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 <p>Where <code>${systemProperties}</code> is a place holder for Java system properties or
 you use environment entries (configuration is explained in common chapter before)</p>
 </div>
-<div class="sect5">
-<h6 id="logging">2.3.3.2.1. Logging</h6>
-<div class="paragraph">
-<p>SecHub uses per default logging to stdout. So you have to change this behaviour
-for your server when you want to change log output format, location etc.</p>
-</div>
-<div class="paragraph">
-<p>Please refer spring boot documentation for logging:
-<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html" class="bare">https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html</a></p>
-</div>
-</div>
 </div>
 <div class="sect4">
-<h5 id="docker">2.3.3.3. Docker</h5>
+<h5 id="run-in-docker">2.3.3.3. Run in Docker</h5>
 <div class="paragraph">
 <p>The public Docker image can be found at <a href="https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server" class="bare">https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fsechub-server</a></p>
 </div>
@@ -2110,7 +2047,7 @@ for your server when you want to change log output format, location etc.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="kubernetes-3">2.3.3.4. Kubernetes</h5>
+<h5 id="run-in-kubernetes">2.3.3.4. Run in Kubernetes</h5>
 <div class="paragraph">
 <p>We provide a Helm chart for the container image above: <a href="https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server" class="bare">https://github.com/mercedes-benz/sechub/pkgs/container/sechub%2Fhelm-charts%2Fsechub-server</a></p>
 </div>
@@ -2126,6 +2063,85 @@ cp sechub-server/values.yaml sechub-server.yaml
 
 # Deploy SecHub server to your Kubernetes:
 helm install sechub-server sechub-server/ -f ./sechub-server.yaml</code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="logging">2.3.3.4.1. Logging</h6>
+<div class="paragraph">
+<p>SecHub uses per default logging to stdout. So you have to change this behaviour
+for your server when you want to change log output format, location etc.</p>
+</div>
+<div class="paragraph">
+<p>Please refer spring boot documentation for logging:
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html" class="bare">https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html</a></p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="activating-server-encryption-of-sensitive-data">2.3.3.4.2. Activating server encryption of sensitive data</h6>
+<div class="paragraph">
+<p>Some configuration data provided to SecHub may contain secrets (e.g. for DAST).
+If you do not want that data in plain text in your database, you need to activate encryption.<br>
+The following steps use the <a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-developertools/scripts/sechub-api.sh">sechub-api.sh</a> helper script.</p>
+</div>
+<div class="paragraph">
+<p><strong>Query the encryption status</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub-api.sh server_encryption_status</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to <strong>enable encryption</strong> for SecHub server follow these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an encryption key<br></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a random 16- (AES_GCM_SIV_128) or 32-character string (AES_GCM_SIV_256) &lt;string&gt; and <code>echo -n '&lt;string&gt;' | base64</code><br>
+Example: <code>echo -n 'Example Example Example Example ' | base64</code></p>
+</li>
+<li>
+<p>Alternatively you can use the Developer Admin UI &gt; Encryption &gt; Secret Key Generator</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Put the encryption key into an environment variable for your SecHub server<br>
+(For Kubernetes you can do this via the Helm chart)<br>
+Example: <code>export SERVER_ENCRYPTION_SECRET_KEY_1='RXhhbXBsZSBFeGFtcGxlIEV4YW1wbGUgRXhhbXBsZSA='</code></p>
+</li>
+<li>
+<p>Start SecHub server / deploy in Kubernetes</p>
+</li>
+<li>
+<p>Activate encryption<br>
+<code>sechub-api.sh server_encryption_rotate &lt;algorithm&gt; var=&lt;env var name&gt;</code><br>
+Please check the return code / server messages<br>
+Example: <code>sechub-api.sh server_encryption_rotate AES_GCM_SIV_256 var=SERVER_ENCRYPTION_SECRET_KEY_1</code></p>
+</li>
+<li>
+<p>Verify<br>
+Run <code>sechub-api.sh server_encryption_status</code> multiple times. Now you should see that all ended jobs are getting encrypted.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can change the encryption key by following above steps to define another environment variable containing the new encryption key (e.g. <code>SERVER_ENCRYPTION_SECRET_KEY_2</code>).<br>
+  Make sure that environment variables are set for all active encryption setups!
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -3247,8 +3263,8 @@ Just use the <code>provider</code> ID as mapping ID.
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You must only setup those products you have listed inside your
-     profiles. See <a href="#section-initial-profile-and-executors">execution profiles and executor configurations</a>
+Only setup those products you intend to use.<br>
+     See <a href="#section-initial-profile-and-executors">execution profiles and executor configurations</a>
 </td>
 </tr>
 </table>
@@ -3258,50 +3274,132 @@ You must only setup those products you have listed inside your
 <div class="sect3">
 <h4 id="general-2">3.1.1. General</h4>
 <div class="paragraph">
-<p>The PDS adapters can communicate with the PDS instances which delegates to the underlying
-security products.</p>
+<p>The PDS adapter communicates with the PDS instances which delegate to the underlying security products.</p>
 </div>
 <div class="paragraph">
-<p>Via PDS every security product, even simple CLI tools, can be easily integrated
-into SecHub.</p>
+<p>Via PDS every security product, even simple CLI tools, can be easily integrated into SecHub.</p>
 </div>
-<div class="paragraph">
-<p>Please look into <code>Product delegation server</code> documentation for more information about the PDS in common.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more information about the PDS look into <code>Product delegation server</code> documentation.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="pds-solutions">3.1.2. PDS solutions</h4>
+<h4 id="enabling-pds-encryption">3.1.2. Enabling PDS encryption</h4>
 <div class="paragraph">
-<p>There are already ready to use PDS implementations available - we call them "PDS solutions".</p>
+<p>In order to <strong>enable encryption</strong> for a PDS follow these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an encryption key<br>
+Create a random 16- (AES_GCM_SIV_128) or 32-character string (AES_GCM_SIV_256) &lt;string&gt; and <code>echo -n '&lt;string&gt;' | base64</code><br>
+ Example: <code>echo -n 'Example Example Example Example ' | base64</code></p>
+</li>
+<li>
+<p>Set these environment variables for your PDS solution<br>
+(For Kubernetes you can do this via the PDS solution&#8217;s Helm chart; look for "encryption" in the values.yaml)<br></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>PDS_ENCRYPTION_ALGORITHM - possible values: "NONE", "AES_GCM_SIV_128" or "AES_GCM_SIV_256"<br>
+Example: <code>export PDS_ENCRYPTION_ALGORITHM="AES_GCM_SIV_256"</code></p>
+</li>
+<li>
+<p>PDS_ENCRYPTION_SECRET_KEY - Take value from step 1<br>
+Example: <code>export PDS_ENCRYPTION_SECRET_KEY='RXhhbXBsZSBFeGFtcGxlIEV4YW1wbGUgRXhhbXBsZSA='</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Start the PDS solution / deploy in Kubernetes</p>
+</li>
+<li>
+<p>Verify: Check the logs.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you deploy with a new encryption key while jobs are running, these jobs cannot be processed any more.<br>
+  So you should stop the SecHub server&#8217;s scheduler so the PDS solution is idle before enabling/changing PDS encryption.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To disable encryption set the algorithm to "NONE".
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pds-solutions">3.2. PDS solutions</h3>
+<div class="paragraph">
+<p>There are ready-to-use PDS implementations available - we call them "PDS solutions".</p>
 </div>
 <div class="paragraph">
-<p>Every PDS solution does work out of the box and provide the possibility to start in following three flavors:</p>
+<p>Every PDS solution should work out of the box and provides the possibility to start in following three flavors:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>docker (single instance)</p>
+<p>Helm charts (Kubernetes)</p>
 </li>
 <li>
-<p>docker compose (cluster)</p>
+<p>Docker (single instance)</p>
 </li>
 <li>
-<p>helm charts (k8s cluster)</p>
+<p>Docker compose (cluster)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>The next sub chapters list the current implementations:</p>
 </div>
-<div class="sect4">
-<h5 id="gosec">3.1.2.1. GoSec</h5>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The list is growing permanently. Please check <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/</a> for all provided PDS solutions.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="gosec">3.2.1. GoSec</h4>
 <div class="paragraph">
 <p>The PDS integration of <a href="https://securego.io">GoSec</a> (SAST) can be found at
 <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec</a></p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="multi">3.1.2.2. Multi</h5>
+<div class="sect3">
+<h4 id="multi">3.2.2. Multi</h4>
 <div class="paragraph">
 <p>This solution does integrate multiple SAST tools:</p>
 </div>
@@ -3325,33 +3423,32 @@ into SecHub.</p>
 <p>It can be found at <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi</a></p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="owasp-zap">3.1.2.3. OWASP ZAP</h5>
+<div class="sect3">
+<h4 id="owasp-zap-dast">3.2.3. OWASP ZAP (DAST)</h4>
 <div class="paragraph">
 <p>This solution does integrate the <a href="https://www.zaproxy.org/" class="bare">https://www.zaproxy.org/</a> (web application scanner) - please look at
 <a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/" class="bare">https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owaspzap/</a></p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="pmd">3.1.2.4. PMD</h5>
+<div class="sect3">
+<h4 id="pmd">3.2.4. PMD</h4>
 <div class="paragraph">
-<p><a href="https://pmd.github.io/" class="bare">https://pmd.github.io/</a> stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
+<p><a href="https://pmd.github.io/" class="bare">https://pmd.github.io/</a> stands normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
 <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd</a></p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="scancode">3.1.2.5. ScanCode</h5>
+<div class="sect3">
+<h4 id="scancode">3.2.5. ScanCode</h4>
 <div class="paragraph">
 <p>Implements <a href="https://github.com/nexB/scancode-toolkit" class="bare">https://github.com/nexB/scancode-toolkit</a> as a license scan tool:
 <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode</a></p>
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="checkmarx-2">3.2. Checkmarx</h3>
+<h3 id="deprecated-checkmarx">3.3. DEPRECATED: Checkmarx</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do">3.2.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do">3.3.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3392,7 +3489,7 @@ into SecHub.</p>
 </ol>
 </div>
 <div class="sect4">
-<h5 id="what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</h5>
+<h5 id="what-must-be-done-on-checkmarx-ui">3.3.1.1. What must be done on Checkmarx UI</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3405,15 +3502,15 @@ into SecHub.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</h5>
+<h5 id="what-can-be-configured-for-sechub">3.3.1.2. What can be configured for SecHub ?</h5>
 <div class="sect5">
-<h6 id="environment">3.2.1.2.1. Environment</h6>
+<h6 id="environment">3.3.1.2.1. Environment</h6>
 <div class="paragraph">
 <p>Please look at <a href="#section-gen-config-scope-checkmarx">checkmarx config</a>  section.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="runtime">3.2.1.2.2. Runtime</h6>
+<h6 id="runtime">3.3.1.2.2. Runtime</h6>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -3458,7 +3555,7 @@ Standard properties (like base URL, user id etc.) are currently NOT used from
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary">3.2.2. Summary</h4>
+<h4 id="summary">3.3.2. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3489,9 +3586,9 @@ Fix team ID will change in future to provide grouping of results in
 </div>
 </div>
 <div class="sect2">
-<h3 id="netsparker">3.3. Netsparker</h3>
+<h3 id="deprecated-netsparker">3.4. DEPRECATED: Netsparker</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-2">3.3.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-2">3.4.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3567,9 +3664,9 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</h4>
+<h4 id="what-must-be-done-on-netsparker-ui">3.4.2. What must be done on Netsparker UI</h4>
 <div class="sect4">
-<h5 id="users">3.3.2.1. Users</h5>
+<h5 id="users">3.4.2.1. Users</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3587,7 +3684,7 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-2">3.3.3. Summary</h4>
+<h4 id="summary-2">3.4.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3615,9 +3712,9 @@ Currently Netsparker adapter will always use ONE team user (admin) to
 </div>
 </div>
 <div class="sect2">
-<h3 id="nessus">3.4. Nessus</h3>
+<h3 id="nessus">3.5. Nessus</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-3">3.4.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-3">3.5.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3657,7 +3754,7 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</h4>
+<h4 id="what-must-be-done-on-nessus-ui">3.5.2. What must be done on Nessus UI</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -3667,7 +3764,7 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-3">3.4.3. Summary</h4>
+<h4 id="summary-3">3.5.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3766,7 +3863,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.4.1 modified (commit eada480)<br>
+ Server 2.5.0<br>
 </div>
 </div>
 </body>
