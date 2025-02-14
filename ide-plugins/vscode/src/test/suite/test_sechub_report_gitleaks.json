@@ -1,0 +1,25 @@
+{
+   "result": {
+      "count": 1,
+      "findings": [
+         {
+            "id": 1,
+            "description": "generic-api-key has detected secret for file vulnerable-go/source/app/app.go.",
+            "name": "(?i)(?:key|api|token|secret|client|passwd|password|auth|access)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|']|[\\s|\"]){0,3}(?:=|>|:=|\\|\\|:|<=|=>|:)(?:'|\\\"|\\s|=|\\x60){0,5}([0-9a-z\\-_.=]{10,150})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)",
+            "severity": "MEDIUM",
+            "code": {
+               "location": "vulnerable-go/source/app/app.go",
+               "line": 76,
+               "column": 11,
+               "source": "21232f297a57a5a743894a0e4a801fc3"
+            },
+            "type": "secretScan"
+         }
+      ]
+   },
+   "status": "SUCCESS",
+   "reportVersion": "1.0",
+   "messages": [],
+   "trafficLight": "YELLOW",
+   "jobUUID": "90ac1309-c07d-43b0-86a2-f9d4dcbe0c96"
+}
