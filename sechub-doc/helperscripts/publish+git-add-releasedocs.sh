@@ -103,7 +103,7 @@ if [ "$BRANCH" != "$GIT_RELEASE_BRANCH" ] ; then
 fi
 
 echo "# SecHub website: Build and publish"
-"$WEBSITE_HOME"/build-sechub-website.sh
+"$WEBSITE_HOME"/build-sechub-website.sh || exit 1
 echo
 
 # Get list of changes files
