@@ -158,6 +158,74 @@
             margin: 0 10px;
             max-width: 280px;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-width: 0 0 1px 0;
+            border-radius: 0;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .modal input:focus {
+            border-color: #28a745;
+        }
+
+        .modal button {
+            background-color: #000;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #333;
+        }
     </style>
     <script>
         function switchTab(tab) {
@@ -169,6 +237,49 @@
             tab.classList.add('active');
             const index = Array.from(tabs).indexOf(tab);
             loginOptions[index].classList.add('active');
+        }
+
+        function openApiTokenModal() {
+            document.getElementById('forgetApiTokenModal').style.display = 'block';
+        }
+
+        function closeApiTokenModal() {
+            document.getElementById('forgetApiTokenModal').style.display = 'none';
+        }
+
+        function showAlert(message) {
+            const alertModal = document.getElementById('alertModal');
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            alertModal.style.display = 'block';
+        }
+
+        function closeAlert() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        async function submitEmail() {
+            const email = document.getElementById('email').value;
+            var message = "";
+            try {
+                const response = await fetch(`/api/anonymous/refresh/apitoken/${encodeURIComponent(email)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    message = 'A new API token has been sent to your email address.'
+                }else {
+                    closeApiTokenModal();
+                    message = 'An error occurred. Please try again.'
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                message = 'An error occurred. Please try again.'
+            }
+            closeApiTokenModal();
+            showAlert(message)
         }
     </script>
 </head>
@@ -202,6 +313,7 @@
 
             <div class="register">
                 <p>Don't have an account? <a href="/register">Register</a></p>
+                <p>Forgot API Token? <a href="#" onclick="openApiTokenModal()">Request new Token</a></p>
             </div>
         </div>
     </div>
@@ -210,6 +322,28 @@
         <img src="/sechub-logo.svg" alt="SecHub Logo">
         <h2>SecHub</h2>
         <p>One central and easy way to use different security tools with one API/Client.</p>
+    </div>
+</div>
+
+<!-- The forgetApiTokenModal Modal -->
+<div id="forgetApiTokenModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeApiTokenModal()">&times;</span>
+        <h2>Request New API Token</h2>
+        <form onsubmit="submitEmail()">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="alertModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAlert()">&times;</span>
+        <p id="alertMessage"></p>
+        <button onclick="closeAlert()">OK</button>
     </div>
 </div>
 </body>
