@@ -67,6 +67,8 @@ public class SchedulerCreateJobService {
         assertService.assertProjectAllowsWriteAccess(projectId);
         assertService.assertExecutionAllowed(configuration);
 
+        assertService.assertValidAtRuntime(configuration);
+
         ScheduleSecHubJob secHubJob = secHubJobFactory.createJob(configuration);
         jobRepository.save(secHubJob);
 

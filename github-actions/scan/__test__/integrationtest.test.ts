@@ -10,6 +10,7 @@ import { getFieldFromJson } from '../src/json-helper';
 import * as launcher from '../src/launcher';
 import { LaunchContext } from '../src/launcher';
 import { IntegrationTestContext } from './integrationtest/testframework';
+import { defineFalsePositives } from '../src/sechub-cli';
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
 
@@ -321,6 +322,40 @@ describe('integrationtest non-generated config', () => {
 
 });
 
+describe('integrationtest define-false-positives generated config', () => {
+    
+    test('codescan first red then result is green after define-false-positives is executed', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-7');
+        
+        /* execute */
+        const result1 = await launcher.launch();
+
+        /* test */
+        assertTrafficLight(result1, 'RED');
+        assertLastClientExitCode(result1, 1);
+        assertUploadDone();
+
+        /* prepare 2 */
+        const defineFalsePositivesFile = createDefineFalsePositivesFile(result1);
+        mockedInputMap.set(input.PARAM_DEFINE_FALSE_POSITIVES, defineFalsePositivesFile);
+
+        /* execute 2 */
+        const result2 = await launcher.launch();
+
+        /* test 2 */
+        assertLastClientExitCode(result2, 0);
+        assertTrafficLight(result2, 'GREEN');
+        assertUploadDone();
+
+        /* clean up */
+        deleteFile(defineFalsePositivesFile);
+    });
+
+});
 
 function assertActionIsMarkedAsFailed(){
     expect(setFailed).toHaveBeenCalledTimes(1);
@@ -375,4 +410,18 @@ function loadSpdxJsonReportAndAssertItContains(context: LaunchContext, textPart:
     const spdxJson = fs.readFileSync(spdxJsonPath, 'utf8');
 
     expect(spdxJson).toContain(textPart);
+}
+
+function createDefineFalsePositivesFile(context: LaunchContext): string {
+    const defineFalsePositivesJson = `{"apiVersion":"1.0","type":"falsePositiveDataList","jobData":[{"jobUUID":"${context.jobUUID}","findingId":1}]}`
+    const fileName = "defineFalsePositivesFile.json";
+    const filePath = `./${fileName}`;
+    fs.writeFileSync(filePath, defineFalsePositivesJson);
+    return filePath;
+}
+
+function deleteFile(file: string) {
+    if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+      }
 }

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import {extractJobUUID, getReport, scan} from '../src/sechub-cli';
+import {defineFalsePositives, extractJobUUID, getReport, scan} from '../src/sechub-cli';
 import {execFileSync} from 'child_process';
 import {sanitize} from "../src/shell-arg-sanitizer";
 
@@ -220,4 +220,47 @@ describe('getReport', function () {
         expect(sanitize).toBeCalledWith('json');
     });
 
+});
+
+describe('defineFalsePositives', function () {
+
+    it('sanitizes shell arguments', () => {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            projectName: 'project-name',
+            defineFalsePositivesFile: '/path/to/define-false-positive-file'
+        };
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
+
+        /* execute */
+        defineFalsePositives(context);
+
+        /* test */
+        expect(sanitize).toBeCalledTimes(3);
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('project-name');
+        expect(sanitize).toBeCalledWith('/path/to/define-false-positive-file');
+    });
+
+
+    it.each([null, undefined, ''])('context.lastClientExitCode is 0 when defineFalsePositivesFile is %s', (file) => {
+        /* prepare */
+        const context: any = {
+            defineFalsePositivesFile: file
+        };
+        (sanitize as jest.Mock).mockImplementation((arg) => {
+            return arg;
+        });
+
+        /* execute */
+        defineFalsePositives(context);
+
+        /* test */
+        expect(sanitize).toBeCalledTimes(0);
+        expect(context.lastClientExitCode).toBe(0);
+        expect(context.defineFalsePositivesFile).toBe(file);
+    });
 });

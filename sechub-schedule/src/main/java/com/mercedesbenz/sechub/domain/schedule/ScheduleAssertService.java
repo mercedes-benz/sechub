@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleUserAccessToProjectValidationService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerProjectConfigService;
@@ -39,6 +40,9 @@ public class ScheduleAssertService {
 
     @Autowired
     ProjectIdValidation projectIdValidation;
+
+    @Autowired
+    ScheduleSecHubConfigurationRuntimeValidation configurationRuntimeValidation;
 
     /**
      * Assert current logged in user has access to project
@@ -90,6 +94,23 @@ public class ScheduleAssertService {
         if (!projectConfigService.isWriteAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow write access.");
         }
+    }
+
+    /**
+     * Asserts given configuration is valid at runtime. This will check in deep, if
+     * the current runtime setup of SecHub accepts the configuration.<br>
+     * <br>
+     * For example: A user defines a web scan with a template configuration. The
+     * template configuration needs an mandatory parameter "param1" - but the given
+     * configuration does not contain this parameter. In this case the assertion
+     * will fail with a dedicated message.
+     *
+     * @param configuration
+     * @throws ResponseStatusException
+     */
+    public void assertValidAtRuntime(SecHubConfiguration configuration) {
+        configurationRuntimeValidation.assertConfigurationValidAtRuntime(configuration);
+
     }
 
 }
