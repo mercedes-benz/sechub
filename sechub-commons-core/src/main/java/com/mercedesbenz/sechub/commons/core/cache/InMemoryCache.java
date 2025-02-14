@@ -141,7 +141,6 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      */
     private class CacheData {
 
-        // TODO: static constant not possible because of T ?
         private final CryptoAccess<T> cryptoAccess = new CryptoAccess<>();
         private final SealedObject sealedValue;
         private final Duration duration;

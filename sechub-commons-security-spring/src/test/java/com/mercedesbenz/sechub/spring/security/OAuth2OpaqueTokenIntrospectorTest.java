@@ -61,10 +61,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @BeforeEach
     void beforeEach() {
         reset(restTemplate, userDetailsService);
-        /* reset the cache which is associated with each introspector instance */
-        /* @formatter:off */
+
+        /* reset the cache which is associated with each individual instance */
         introspectorToTest = createOAuth2OpaqueTokenIntrospector();
-        /* @formatter:on */
+
+        mockUserDetailsService();
     }
 
     /* @formatter:off */
@@ -96,11 +97,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     @Test
     void introspect_with_no_cached_opaque_calls_introspection_endpoint() {
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
-                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
-        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
+        mockIntrospectionResponse(introspectionResponse);
         verifyNoInteractions(restTemplate);
 
         /* execute */
@@ -113,11 +111,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_cached_opaque_token_returns_cached_opaque_token_introspection_response() {
         /* prepare */
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.TRUE);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
-                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
-        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
+        mockIntrospectionResponse(introspectionResponse);
         /* first introspection should cache the result */
         introspectorToTest.introspect(OPAQUE_TOKEN);
         verify(restTemplate).postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class));
@@ -134,7 +129,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_null_response_fails() {
         /* prepare */
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(null);
+        mockIntrospectionResponse(null);
 
         /* execute & assert */
         /* @formatter:off */
@@ -147,9 +142,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_inactive_token_fails() {
         /* prepare */
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse = createOpaqueTokenResponse(Boolean.FALSE);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class)))
-                .thenReturn(OAuth2OpaqueTokenIntrospectionResponse);
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.FALSE);
+        mockIntrospectionResponse(introspectionResponse);
 
         /* execute & assert */
         /* @formatter:off */
@@ -162,16 +156,13 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_valid_token_succeeds() {
         /* prepare */
-        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createOpaqueTokenResponse(Boolean.TRUE);
-        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(introspectionResponse);
-        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
+        mockIntrospectionResponse(introspectionResponse);
 
         /* execute */
         OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
 
         /* assert */
-        verify(restTemplate).postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class));
         assertThat(principal.getName()).isEqualTo(SUBJECT);
         Map<String, Object> attributes = principal.getAttributes();
         assertThat(attributes.get(OAuth2TokenIntrospectionClaimNames.ACTIVE)).isEqualTo(introspectionResponse.isActive());
@@ -192,11 +183,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
         })) {
             /* prepare */
             OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospector();
-            Instant now = Instant.now();
-            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createOpaqueTokenResponse(Boolean.TRUE, null);
-            when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(introspectionResponse);
-            Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-            when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+            Instant testStartTime = Instant.now();
+            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, null);
+            mockIntrospectionResponse(introspectionResponse);
 
             /* execute */
             OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
@@ -212,7 +201,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
             /* @formatter:on */
             Map<String, Object> attributes = principal.getAttributes();
             Instant expiresAtActual = truncate((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP));
-            Instant expiresAtExpected = truncate(now.plus(DEFAULT_TOKEN_EXPIRES_IN));
+            Instant expiresAtExpected = truncate(testStartTime.plus(DEFAULT_TOKEN_EXPIRES_IN));
             assertThat(expiresAtActual).isEqualTo(expiresAtExpected);
         }
     }
@@ -224,13 +213,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
         })) {
             /* prepare */
             OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospector();
-            Instant now = Instant.now();
+            Instant testStartTime = Instant.now();
             Duration expiresIn = Duration.ofDays(15);
-            Instant expiresAt = now.plus(expiresIn);
-            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createOpaqueTokenResponse(Boolean.TRUE, expiresAt.getEpochSecond());
-            when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(introspectionResponse);
-            Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
-            when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+            Instant expiresAt = testStartTime.plus(expiresIn);
+            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt.getEpochSecond());
+            mockIntrospectionResponse(introspectionResponse);
 
             /* execute */
             OAuth2AuthenticatedPrincipal principal = introspectorToTest.introspect(OPAQUE_TOKEN);
@@ -255,6 +242,41 @@ class OAuth2OpaqueTokenIntrospectorTest {
         }
     }
 
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    void introspect_with_expires_at_exceeding_max_cache_duration_uses_max_cache_duration() {
+        try (MockedConstruction<InMemoryCache> cacheConstruction = mockConstruction(InMemoryCache.class, (mock, context) -> {
+        })) {
+            /* prepare */
+            OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospector();
+            Instant expiresAt = Instant.MAX;
+            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt.getEpochSecond());
+            mockIntrospectionResponse(introspectionResponse);
+
+            /* execute */
+            introspectorToTest.introspect(OPAQUE_TOKEN);
+
+            /* assert */
+            InMemoryCache cache = cacheConstruction.constructed().get(0);
+            /* @formatter:off */
+            verify(cache).put(
+                    eq(OPAQUE_TOKEN),
+                    eq(introspectionResponse),
+                    assertArg(arg -> assertThat(arg).isEqualTo(MAX_CACHE_DURATION))
+            );
+            /* @formatter:on */
+        }
+    }
+
+    private static void mockIntrospectionResponse(OAuth2OpaqueTokenIntrospectionResponse introspectionResponse) {
+        when(restTemplate.postForObject(eq(INTROSPECTION_URI), any(), eq(OAuth2OpaqueTokenIntrospectionResponse.class))).thenReturn(introspectionResponse);
+    }
+
+    private static void mockUserDetailsService() {
+        Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
+        when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
+    }
+
     private static Duration truncate(Duration duration) {
         return duration.truncatedTo(ChronoUnit.SECONDS);
     }
@@ -268,12 +290,12 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 userDetailsService, applicationShutdownHandler);
     }
 
-    private static OAuth2OpaqueTokenIntrospectionResponse createOpaqueTokenResponse(Boolean isActive) {
-        return createOpaqueTokenResponse(isActive, Instant.MAX.getEpochSecond());
+    private static OAuth2OpaqueTokenIntrospectionResponse createIntrospectionResponse(Boolean isActive) {
+        return createIntrospectionResponse(isActive, Instant.MAX.getEpochSecond());
     }
 
     /* @formatter:off */
-    private static OAuth2OpaqueTokenIntrospectionResponse createOpaqueTokenResponse(Boolean isActive, Long expiresAt) {
+    private static OAuth2OpaqueTokenIntrospectionResponse createIntrospectionResponse(Boolean isActive, Long expiresAt) {
         return new OAuth2OpaqueTokenIntrospectionResponse(
                 isActive,
                 "scope",

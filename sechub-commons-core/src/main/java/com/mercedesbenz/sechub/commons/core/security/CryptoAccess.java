@@ -34,10 +34,6 @@ public class CryptoAccess<T extends Serializable> {
      */
     public static final CryptoAccess<char[]> CRYPTO_CHAR_ARRAY = new CryptoAccess<>();
 
-    /**
-     * Shared crypto access which can encrypt/decrypt generic objects
-     */
-
     public CryptoAccess() {
         secretKey = getkeyGen(transformation).generateKey();
     }
