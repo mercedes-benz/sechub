@@ -239,47 +239,41 @@
             loginOptions[index].classList.add('active');
         }
 
-        function openApiTokenModal() {
-            document.getElementById('forgetApiTokenModal').style.display = 'block';
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
         }
 
-        function closeApiTokenModal() {
-            document.getElementById('forgetApiTokenModal').style.display = 'none';
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
         }
 
         function showAlert(message) {
-            const alertModal = document.getElementById('alertModal');
-            const alertMessage = document.getElementById('alertMessage');
-            alertMessage.textContent = message;
-            alertModal.style.display = 'block';
-        }
-
-        function closeAlert() {
-            document.getElementById('alertModal').style.display = 'none';
+            document.getElementById('alertMessage').textContent = message;
+            openModal('alertModal');
         }
 
         async function submitEmail() {
             const email = document.getElementById('email').value;
-            var message = "";
+
+            let message = '';
             try {
-                const response = await fetch(`/api/anonymous/refresh/apitoken/${encodeURIComponent(email)}`, {
+                const response = await fetch(`/api/anonymous/refresh/apitoken/${email}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
                 if (response.ok) {
-                    message = 'A new API token has been sent to your email address.'
-                }else {
-                    closeApiTokenModal();
-                    message = 'An error occurred. Please try again.'
+                    message = 'A new API token has been sent to your email address, if you are a registered SecHub user.';
+                } else {
+                    message = 'An error occurred. Please try again.';
                 }
             } catch (error) {
                 console.error('Error:', error);
-                message = 'An error occurred. Please try again.'
+                message = 'An error occurred. Please try again.';
             }
-            closeApiTokenModal();
-            showAlert(message)
+            closeModal('forgetApiTokenModal');
+            showAlert(message);
         }
     </script>
 </head>
@@ -313,7 +307,7 @@
 
             <div class="register">
                 <p>Don't have an account? <a href="/register">Register</a></p>
-                <p>Forgot API Token? <a href="#" onclick="openApiTokenModal()">Request new Token</a></p>
+                <p>Forgot API Token? <a href="#" onclick="openModal('forgetApiTokenModal')">Request new Token</a></p>
             </div>
         </div>
     </div>
@@ -328,7 +322,7 @@
 <!-- The forgetApiTokenModal Modal -->
 <div id="forgetApiTokenModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeApiTokenModal()">&times;</span>
+        <span class="close" onclick="closeModal('forgetApiTokenModal')">&times;</span>
         <h2>Request New API Token</h2>
         <form onsubmit="submitEmail()">
             <label for="email">Email Address</label>
@@ -341,9 +335,9 @@
 <!-- Custom Alert Modal -->
 <div id="alertModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeAlert()">&times;</span>
+        <span class="close" onclick="closeModal('alertModal')">&times;</span>
         <p id="alertMessage"></p>
-        <button onclick="closeAlert()">OK</button>
+        <button onclick="closeModal('alertModal')">OK</button>
     </div>
 </div>
 </body>
