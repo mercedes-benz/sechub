@@ -128,7 +128,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         Map<String, Object> introspectionClaims = getIntrospectionClaims(introspectionResponse, now);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
-        return new OAuth2IntrospectionAuthenticatedPrincipal(subject, introspectionClaims, authorities);
+        String username = userDetails.getUsername();
+        return new OAuth2IntrospectionAuthenticatedPrincipal(username, introspectionClaims, authorities);
     }
 
     private OAuth2OpaqueTokenIntrospectionResponse getIntrospectionResponse(String opaqueToken, Instant now) {
