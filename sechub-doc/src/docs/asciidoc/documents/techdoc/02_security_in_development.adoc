@@ -68,13 +68,12 @@ sechub:
           introspection-uri: <introspection-uri-of-your-idp>
           client-id: <client-id>
           client-secret: <client-secret>
+          default-token-expires-in: 60m
+          max-cache-duration: 1d
 ----
 
 We recommend `Keycloak` as an IDP for testing purposes. It is easy to set up and provides a lot of features for free.
 But you are free to use any other IDP you like.
-
-
-
 
 ==== Certificates
 

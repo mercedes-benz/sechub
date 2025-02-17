@@ -490,6 +490,10 @@ spec:
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientId }}"
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientSecret }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_DEFAULTTOKENEXPIRESIN
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.defaultTokenExpiresIn }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.maxCacheDuration }}"
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.introspectionUri }}"
 {{- end }}

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Instant;
+import java.time.Duration;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -28,6 +28,8 @@ import com.jayway.jsonpath.JsonPath;
 
 class OAuth2OpaqueTokenIntrospectionResponseTest {
 
+    private static final Duration DEFAULT_EXPIRES_IN = Duration.ofDays(1);
+
     private static final String jsonResponse;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -41,9 +43,6 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
 
     @Test
     void construct_opaque_token_response_from_valid_json_is_successful() throws JsonProcessingException {
-        /* prepare */
-        Instant epoch = Instant.EPOCH;
-
         /* execute */
         OAuth2OpaqueTokenIntrospectionResponse response = objectMapper.readValue(jsonResponse, OAuth2OpaqueTokenIntrospectionResponse.class);
 
@@ -55,7 +54,8 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
         assertThat(response.getClientType()).isEqualTo(JsonPath.read(jsonResponse, "$.client_type"));
         assertThat(response.getUsername()).isEqualTo(JsonPath.read(jsonResponse, "$.username"));
         assertThat(response.getTokenType()).isEqualTo(JsonPath.read(jsonResponse, "$.token_type"));
-        assertThat(response.getExpiresAt()).isAfter(epoch);
+        assertThat(response.getIssuedAt()).isNotNull();
+        assertThat(response.getExpiresAt()).isNotNull();
         assertThat(response.getSubject()).isEqualTo(JsonPath.read(jsonResponse, "$.sub"));
         assertThat(response.getAudience()).isEqualTo(JsonPath.read(jsonResponse, "$.aud"));
         assertThat(response.getGroupType()).isEqualTo(JsonPath.read(jsonResponse, "$.group_type"));

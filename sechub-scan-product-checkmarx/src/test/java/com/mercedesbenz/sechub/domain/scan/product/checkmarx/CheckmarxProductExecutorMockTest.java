@@ -34,6 +34,7 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
@@ -221,6 +222,11 @@ public class CheckmarxProductExecutorMockTest {
         @Bean
         RestTemplate restTemplate() {
             return new RestTemplate();
+        }
+
+        @Bean
+        ApplicationShutdownHandler applicationShutdownHandler() {
+            return mock();
         }
     }
 

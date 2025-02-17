@@ -12,5 +12,7 @@ sechub:
           introspection-uri: https://example.org/introspection-uri
           client-id: example-client-id
           client-secret: example-client-secret
+          default-token-expires-in: 1h
+          max-cache-duration: 24h
     encryption:
       secret-key: test-test-test-test-test-test-32
