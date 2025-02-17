@@ -6,12 +6,49 @@ The files to create the Web UI container image.
 
 The Web UI is a Vue.js SPA build with nuxt.js.
 
-=== Starting the Web UI on localhost as docker container
+=== Local Web-UI Frontend and SecHub Server SetUp
 
-Following command will run the Web UI on localhost as docker container, with nginx as reverse proxy.
-Attention: currently only self-signed certificates are used.
+1. Please adjust the docker/nginx/nginx.conf file to your needs. +
+replace the redirect URL to your local sechub server: e.g. https://sechub:8443 +
+remove the root `redirect / to login page` if you do not have login enabled in the sechub server.
+
+2. Adjust the docker/nginx/config.json to your needs: +
++
+If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. +
++
+.ENV that can be set in the config.json file
+|===
+|Name |Default Value |Description
+
+|HOST
+|http://localhost
+|The URL of the Web-UI (used as API Endpoint to prevent CORS issues)
+
+|LOCAL_DEV
+|false
+|Sets Basic Auth for the Web-UI (only for development, username and password must be set)
+
+|USERNAME
+|''
+|Basic Auth username (only for development)
+
+|PASSWORD
+|''
+|Basic Auth password (only for development)
+|===
+
+3. Start the sechub server docker container in sechub/sechub-solution +
++
 ----
 ./01-start-single-docker-compose.sh
 ----
 
-The current webui is available at https://localhost
+4. Start the Web UI docker container in sechub-web-ui-solution +
++
+----
+./01-start-single-docker-compose.sh
+----
++
+The command will run the Web UI on localhost as docker container, with nginx as reverse proxy.
+
+5. Check out the webui at https://localhost +
