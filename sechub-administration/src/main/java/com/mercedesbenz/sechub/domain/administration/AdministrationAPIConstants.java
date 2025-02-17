@@ -72,6 +72,16 @@ public class AdministrationAPIConstants {
      */
     public static final String API_USER_DETAIL_INFO = API_MANAGEMENT + "user";
 
+    /**
+     * User updates his email address
+     */
+    public static final String API_USER_EMAIL = API_USER_DETAIL_INFO + "/email";
+
+    /**
+     * API anonymous user verifies his new email address.
+     */
+    public static final String API_ANONYMOUS_USER_VERIFY_EMAIL = API_ANONYMOUS + "email/verify";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Users (Admin) ............................+ */
     /* +-----------------------------------------------------------------------+ */

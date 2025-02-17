@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.EMAIL_ADDRESS;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +43,9 @@ public class UserRestControllerTest {
     @MockBean
     private UserDetailInformationService userDetailInformationService;
 
+    @MockBean
+    private UserEmailAddressUpdateService emailAddressUpdateService;
+
     @Test
     @WithMockUser(roles = RoleConstants.ROLE_USER)
     public void fetchUserDetailInformation__is_accessible_by_authenticated_user() throws Exception {
@@ -71,6 +75,40 @@ public class UserRestControllerTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).buildFetchUserDetailInformationUrl()))
+                .andExpect(status().isUnauthorized());
+        /* @formatter:on */
+    }
+
+    @Test
+    @WithMockUser(roles = RoleConstants.ROLE_USER)
+    public void updateUserEmailAddress__is_accessible_by_authenticated_user() throws Exception {
+        /* prepare */
+        String newEmailAddress = "test-user.new@example.org";
+        String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
+        doNothing().when(emailAddressUpdateService).userRequestUpdateMailAddress(newEmailAddress);
+
+        /* execute + test */
+        /* @formatter:off */
+        this.mockMvc.perform(
+                        post(apiEndpoint, newEmailAddress)
+                                .with(csrf()))
+                .andExpect(status().isNoContent());
+        /* @formatter:on */
+
+        verify(emailAddressUpdateService).userRequestUpdateMailAddress(newEmailAddress);
+    }
+
+    @Test
+    public void updateUserEmailAddress__is_not_accessible_by_unauthenticated_user() throws Exception {
+        /* prepare */
+        String newEmailAddress = "testuser.new@example.org";
+        String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
+
+        /* execute + test */
+        /* @formatter:off */
+        this.mockMvc.perform(
+                        post(apiEndpoint, newEmailAddress)
+                                .with(csrf()))
                 .andExpect(status().isUnauthorized());
         /* @formatter:on */
     }

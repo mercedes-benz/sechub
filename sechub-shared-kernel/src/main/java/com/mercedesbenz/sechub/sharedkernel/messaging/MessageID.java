@@ -181,6 +181,11 @@ public enum MessageID {
     USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
 
     /**
+     * Request a verification mail to the old mail address
+     */
+    USER_EMAIL_ADDRESS_CHANGE_REQUEST(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
+
+    /**
      * Inform that auto cleanup configuration has changed
      */
     AUTO_CLEANUP_CONFIGURATION_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
