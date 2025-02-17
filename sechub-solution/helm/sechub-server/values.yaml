@@ -173,6 +173,10 @@ security:
         clientId: insert_your_introspection_client_id_here
         # Client secret to use for token introspection.
         clientSecret: insert_your_introspection_client_secret_here
+        # The default expiration time for tokens. This is used when the IDP does not provide an expiration time.
+        defaultTokenExpiresIn: 1h
+        # The maximum time a token is cached on SecHub side. After this time, the token is introspected again.
+        maxCacheDuration: 24h
         # This is the introspection endpoint of the IDP. For every incoming request this endpoint will be called.
         introspectionUri: https://sso.example.org/introspect.oauth2
   # This config defines everything necessary for the application (or server) to be able to offer user authentication.
