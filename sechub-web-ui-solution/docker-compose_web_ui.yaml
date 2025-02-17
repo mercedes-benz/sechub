@@ -19,7 +19,8 @@ services:
     env_file:
       - .env
     networks:
-      - "internal"
+      - "sechub"
 
 networks:
-  internal:
+  sechub:
+    external: true
