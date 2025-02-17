@@ -259,15 +259,16 @@
 
         async function handleFormSubmit(event) {
             event.preventDefault(); // Prevent the default form submission
+
             const emailInput = document.getElementById('email');
             const email = emailInput.value.trim();
 
             if (!email) {
                 showAlert("Please enter a valid email address.");
-                return;  // Exit if no email entered
+                return;
             }
 
-            await submitEmail(email);  // Pass email to the submit function
+            await submitEmail(email);
         }
 
         async function submitEmail(email) {
@@ -281,7 +282,7 @@
                     }
                 });
                 if (response.ok) {
-                    message = 'A new API token has been sent to your email address, if you are a registered SecHub user.';
+                    message = 'You will receive an email soon, follow the instructions in the email to create a new API token.';
                 } else {
                     message = 'An error occurred. Please try again.';
                 }
