@@ -1,5 +1,0 @@
-// SPDX-License-Identifier: MIT
-include::launchconfig_common_server_header.adoc[]
-----
--Dspring.profiles.active=demomode
-----

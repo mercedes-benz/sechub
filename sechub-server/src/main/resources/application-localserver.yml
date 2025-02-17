@@ -17,6 +17,6 @@ sechub:
   security:
     server:
       modes:
-       - classic
+        - classic
     login:
       enabled: false
