@@ -43,7 +43,7 @@ jobs:
       with:
           name: test-results
           path: |
-            build/reports
+            ide-plugins/jetbrains/build/reports
             retention-days: 14
     - name: "Documentations"
       run: ./gradlew asciidoc
@@ -54,5 +54,5 @@ jobs:
       with:
           name: documentation
           path: |
-            build/docs/asciidoc
+            ide-plugins/jetbrains/build/docs/asciidoc
             retention-days: 14
