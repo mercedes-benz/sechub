@@ -115,7 +115,7 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     @Bean
-    @Conditional(LoginOAuth2EnabledCondition.class)
+    @Conditional(LoginModeOAuth2ActiveCondition.class)
     ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties secHubSecurityProperties) {
         SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();

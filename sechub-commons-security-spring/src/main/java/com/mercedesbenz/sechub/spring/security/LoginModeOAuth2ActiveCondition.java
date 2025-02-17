@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-public class LoginOAuth2EnabledCondition implements Condition {
+public class LoginModeOAuth2ActiveCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, @SuppressWarnings("NullableProblems") AnnotatedTypeMetadata metadata) {
@@ -17,7 +17,7 @@ public class LoginOAuth2EnabledCondition implements Condition {
             /* @formatter:off */
             mode = context
                     .getEnvironment()
-                    .getProperty("%s.modes[%d]".formatted(SecHubSecurityProperties.LoginProperties.PREFIX, index++));
+                    .getProperty("%s.%s[%d]".formatted(SecHubSecurityProperties.LoginProperties.PREFIX,SecHubSecurityProperties.LoginProperties.MODES, index++));
             /* @formatter:on */
 
             if (SecHubSecurityProperties.LoginProperties.OAUTH2_MODE.equals(mode)) {
