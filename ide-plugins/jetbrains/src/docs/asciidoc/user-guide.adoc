@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+:imagesdir: ./images
+:toc:
+:toc-title: Table of contents
+:toclevels: 5
+
+= image:sechub-logo.png[sechub] SecHub IntelliJ Plugin User Guide
+
+
+== About
+This is an IntelliJ plugin for a convenient IDE integration of https://github.com/mercedes-benz/sechub[SecHub]
+
+The project website can be found at https://github.com/mercedes-benz/sechub-plugin-intellij[SecHub Plugin IntelliJ]
+Marketplace entry available at https://plugins.jetbrains.com/plugin/23379-sechub[IntelliJ Plugin Page]
+
+== Features
+Here you will find all implemented features of the plugin. Planned features and ideas can be found at
+https://github.com/mercedes-benz/sechub-plugin-intellij/issues[GitHub issue tracker].
+
+=== Import an existing SecHub report
+
+You can either import an existing `SecHub` report file by using the import action at `Tools->Import SecHub report` or
+by dragging a report file from the file explorer into the report table (marked as [.small]#1.# in figure [.small]#1# ).
+
+.Overview of the SecHub tool window
+image::sechub-toolwindow-overview.png[]
+TIP: Since V0.4.0 the UI has been improved/changed a bit, but functionality is still as described
+
+
+=== Use call hierarchy view to traverse finding steps
+Double click on an entry inside the report table (marked as [.small]#1.# in figure [.small]#1# ).
+
+When you have done this, you will see the complete call hierarchy from entrypoint to data sink inside call hierarchy
+tree marked as [.small]#2.# in overview picture.
+
+Selecting an entry inside the call hierarchy will show the reported source code
+(marked as [.small]#3.# in figure [.small]#1#) with details about its location
+and open the editor, highlighting the reported line.
+
+If you have already changed your code and the report location does no longer match 100% to the finding location, the
+editor will still mark reported location - in this case please look at the origin reported source code and search for
+the origin part. If the file cannot be found by plugin, no editor will be opened.

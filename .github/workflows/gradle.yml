@@ -15,6 +15,7 @@ on:
       - '!sechub-doc/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
+      - '!ide-plugins/**'
       - '.github/workflows/gradle.yml'
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - '!sechub-doc/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
+      - '!ide-plugins/**'
       - '.github/workflows/gradle.yml'
 
   # enable manual triggering of workflow
