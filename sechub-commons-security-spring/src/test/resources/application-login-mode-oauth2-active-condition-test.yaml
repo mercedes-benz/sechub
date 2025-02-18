@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+sechub:
+  security:
+    login:
+      enabled: true
+      login-page: /login
+      redirect-uri: example.org/redirect-uri
+      modes:
+        - classic
+        - saml
+        - session
+        - ssh
+        - apiKey
+        - oauth2

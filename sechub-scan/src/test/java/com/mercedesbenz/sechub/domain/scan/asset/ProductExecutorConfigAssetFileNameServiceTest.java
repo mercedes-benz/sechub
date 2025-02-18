@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.asset;
 
 import static org.assertj.core.api.Assertions.*;

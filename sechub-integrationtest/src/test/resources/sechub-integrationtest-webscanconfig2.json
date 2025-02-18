@@ -5,7 +5,15 @@
     "project"   : "__projectname__",
 
     "webScan"   : {
-        "url": "__acceptedUri1__"
+        "url": "__acceptedUri1__",
+		
+		"login" : {
+			"templateData" : {
+			    "variables" : {
+					"mandatory-variable-1" : "value-1"
+			    }
+			}
+		}
     },
     
     "metaData": {

@@ -51,7 +51,7 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
-        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), true);
+        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), scanContext.getPacFilePath(), true);
         WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
 
         ScriptEngine scriptEngine = new GroovyScriptEngineFactory().getScriptEngine();

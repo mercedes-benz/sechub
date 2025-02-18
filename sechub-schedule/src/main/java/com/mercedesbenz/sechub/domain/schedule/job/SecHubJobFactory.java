@@ -63,7 +63,7 @@ public class SecHubJobFactory {
             job.owner = userId;
             job.created = LocalDateTime.now();
 
-            Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(configuration);
+            Set<ScanType> scanTypes = modelSupport.collectScanTypes(configuration);
             job.moduleGroup = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
 
         } catch (JSONConverterException e) {

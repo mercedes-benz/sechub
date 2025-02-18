@@ -5,6 +5,12 @@
     "project"   : "__projectname__",
 
     "webScan"   : {
-        "url": "__acceptedUri1__"
-    }
+        "url": "__acceptedUri1__",
+		
+		"login" : {
+			"templateData" : {
+				
+			}
+		}
+	}
 }

@@ -69,7 +69,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_WEBSITE') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="https://www.sechub.com" target="_blank">www.sechub.com</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a href="https://sechub.example.org" target="_blank">sechub.example.org</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
       <v-list-item>
@@ -87,7 +87,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_EMAIL') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="mailto:dw_415_sechub-foss@mercedes-benz.com">dw_415_sechub-foss@mercedes-benz.com</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a href="mailto:example@example.org">example@example.org</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
     </v-list>

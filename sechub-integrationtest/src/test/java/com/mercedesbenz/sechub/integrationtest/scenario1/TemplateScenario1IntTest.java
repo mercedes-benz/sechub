@@ -10,10 +10,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition.TemplateVariable;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateHealthCheckEntry;
@@ -22,7 +24,9 @@ import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckResult;
 import com.mercedesbenz.sechub.domain.scan.template.TemplatesHealthCheckStatus;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
 @ExtendWith(IntegrationTestExtension.class)
 @WithTestScenario(Scenario1.class)
@@ -41,33 +45,50 @@ public class TemplateScenario1IntTest {
     private TemplateDefinition definitionWithId;
     private TemplateDefinition updateDefinition;
 
+    private static TestProject project = Scenario1.PROJECT_1;
+
     @BeforeEach
     void beforeEach() {
 
-        templateId = "template-1_" + System.nanoTime();
+        templateId = "test-template-1";
 
         /* @formatter:off */
-        TemplateDefinition fullTemplateDefinition = TemplateDefinition.builder().
-                templateId(templateId).
-                templateType(TemplateType.WEBSCAN_LOGIN).
-                assetId("asset1").
-                build();
+        TemplateDefinition fullTemplateDefinition = TemplateDefinition.from("""
+                {
+                  "id" : "%s",
+                  "type" : "WEBSCAN_LOGIN",
+                  "variables" : [
+
+                      {
+                          "name" : "mandatory-variable-1",
+                          "optional" : false
+                      }
+
+                  ],
+                  "assetId" : "asset1"
+                }
+                """.formatted(templateId));
+
+        System.out.println(fullTemplateDefinition.toFormattedJSON());
+
         /* @formatter:on */
-        TemplateVariable usernameVariable = new TemplateVariable();
-        usernameVariable.setName("username");
-
-        TemplateVariable passwordVariable = new TemplateVariable();
-        passwordVariable.setName("password");
-
-        fullTemplateDefinition.getVariables().add(usernameVariable);
-        fullTemplateDefinition.getVariables().add(passwordVariable);
 
         String fullTemplateDefinitionJson = fullTemplateDefinition.toFormattedJSON();
         createDefinition = TemplateDefinition.from(fullTemplateDefinitionJson.replace(templateId, "does-not-matter-will-be-overriden"));
 
         definitionWithId = TemplateDefinition.from(fullTemplateDefinitionJson);
 
+        // update will try to change template id and add some new variables
         updateDefinition = TemplateDefinition.from(fullTemplateDefinitionJson.replace(templateId, "will-not-be-changed-by-update"));
+
+        TemplateVariable usernameVariable = new TemplateVariable();
+        usernameVariable.setName("username");
+
+        TemplateVariable passwordVariable = new TemplateVariable();
+        passwordVariable.setName("password");
+
+        updateDefinition.getVariables().add(usernameVariable); // important: user name is added before, keep this, otherwise test fails!
+        updateDefinition.getVariables().add(passwordVariable);
 
         /*
          * we need to clear old template data , to be able to restart the test for
@@ -80,8 +101,8 @@ public class TemplateScenario1IntTest {
     @Test
     void template_crud_and_healthcheck_test() {
         /* prepare */
-        as(SUPER_ADMIN).createProject(Scenario1.PROJECT_1, SUPER_ADMIN); // not done in this scenario automatically
-
+        as(SUPER_ADMIN).createProject(project, SUPER_ADMIN).assignUserToProject(SUPER_ADMIN, Scenario1.PROJECT_1); // not done in this scenario
+                                                                                                                   // automatically
         /* check preconditions */
         assertTemplateNotInsideTemplateList();
 
@@ -91,11 +112,23 @@ public class TemplateScenario1IntTest {
 
         assertTemplateCanBeCreated();
 
-        assertTemplateCanBeUpdated();
-
         assertTemplateHealthCheckSaysOkButInfoThatTemplateIsNotAssigned();
 
         assertTemplateCanBeAssignedToProject();
+
+        // will not work, because test template file has not mandatory variable defined
+        assertThatThrownBy(() -> as(SUPER_ADMIN).createWebScan(Scenario1.PROJECT_1, IntegrationTestTemplateFile.WEBSCAN_1))
+                .isInstanceOf(UnprocessableEntity.class).hasMessageContaining("mandatory-variable-1");
+        ;
+
+        as(SUPER_ADMIN).createWebScan(Scenario1.PROJECT_1, IntegrationTestTemplateFile.WEBSCAN_2); // will work, because here variable is defined
+
+        assertTemplateCanBeUpdated();
+
+        assertThatThrownBy(() -> as(SUPER_ADMIN).createWebScan(Scenario1.PROJECT_1, IntegrationTestTemplateFile.WEBSCAN_2))
+                .isInstanceOf(UnprocessableEntity.class).hasMessageContaining("username");
+
+        assertTemplateInsideProjectDetailsList();
 
         assertTemplateCanBeUnassignedFromProject();
 
@@ -106,6 +139,10 @@ public class TemplateScenario1IntTest {
                                                          // runtime problems!
 
         assertTemplateCanBeDeletedAndAssignmentIsPurged();
+
+        // final test that the project details also no longer contain the template
+        // information (other domain)
+        assertTemplateNotInsideProjectDetailsList();
 
         assertTemplateCanBeRecreatedWithSameId();
 
@@ -124,6 +161,20 @@ public class TemplateScenario1IntTest {
         // check cleanup worked
         assertTemplateNotInsideTemplateList();
 
+    }
+
+    private void assertTemplateInsideProjectDetailsList() {
+        ProjectDetailInformation details = as(SUPER_ADMIN).fetchProjectDetailInformation(project);
+        executeResilient(() -> {
+            assertThat(details.getTemplateIds()).contains(templateId);
+        });
+    }
+
+    private void assertTemplateNotInsideProjectDetailsList() {
+        ProjectDetailInformation details = as(SUPER_ADMIN).fetchProjectDetailInformation(project);
+        executeResilient(() -> {
+            assertThat(details.getTemplateIds()).doesNotContain(templateId);
+        });
     }
 
     private void assertTemplateHealthCheckSaysOKwithoutAnyEntries() {
@@ -191,9 +242,6 @@ public class TemplateScenario1IntTest {
     private void assertTemplateCanBeDeletedAndAssignmentIsPurged() {
         /* execute 5 - delete template */
         as(SUPER_ADMIN).deleteTemplate(templateId);
-
-        /* test 5.1 check delete unassigns template */
-        executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchProjectDetailInformation(Scenario1.PROJECT_1).getTemplateIds()).contains(templateId));
 
         /* test 5.2 check template no longer exists */
         executeResilient(() -> assertThat(as(SUPER_ADMIN).fetchTemplateDefinitionOrNull(templateId)).isNull());

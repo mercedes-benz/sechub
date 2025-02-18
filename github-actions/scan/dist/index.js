@@ -28120,6 +28120,7 @@ const PARAM_FAIL_JOB_ON_FINDING = 'fail-job-with-findings';
 const PARAM_TRUST_ALL = 'trust-all';
 const PARAM_SCAN_TYPES = 'scan-types';
 const PARAM_CONTENT_TYPE = 'content-type';
+const PARAM_DEFINE_FALSE_POSITIVES = 'define-false-positives';
 const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
@@ -28136,6 +28137,7 @@ const INPUT_DATA_DEFAULTS = {
     trustAll: '',
     scanTypes: '',
     contentType: '',
+    defineFalsePositives: '',
 };
 function resolveGitHubInputData() {
     return {
@@ -28154,6 +28156,7 @@ function resolveGitHubInputData() {
         trustAll: getParam(PARAM_TRUST_ALL),
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
+        defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
     };
 }
 /**
@@ -28397,6 +28400,40 @@ function getReport(jobUUID, reportFormat, context) {
     }
     catch (error) {
         core.error(`Error executing getReport command: ${error.message}`);
+        core.error(`Standard error: ${error.stderr}`);
+        context.lastClientExitCode = error.status;
+    }
+}
+/**
+ * Executes the defineFalsePositives method of the SecHub CLI. Sets the client exitcode inside context.
+ * @param context launch context
+ */
+function defineFalsePositives(context) {
+    if (!context.defineFalsePositivesFile) {
+        core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        context.lastClientExitCode = 0;
+        return;
+    }
+    const clientExecutablePath = sanitize(context.clientExecutablePath);
+    const projectIdValue = sanitize(context.projectName);
+    const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
+    try {
+        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
+            env: {
+                SECHUB_SERVER: process.env.SECHUB_SERVER,
+                SECHUB_USERID: process.env.SECHUB_USERID,
+                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
+                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
+                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
+                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
+            },
+            encoding: 'utf-8'
+        });
+        core.info('defineFalsePositives executed successfully');
+        context.lastClientExitCode = 0;
+    }
+    catch (error) {
+        core.error(`Error executing defineFalsePositives command: ${error.message}`);
         core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
     }
@@ -46125,6 +46162,7 @@ async function getRedirectUrl(url) {
 
 
 
+
 /**
  * Starts the launch process
  * @returns launch context
@@ -46132,6 +46170,12 @@ async function getRedirectUrl(url) {
 async function launch() {
     const context = await createContext();
     await init(context);
+    executeDefineFalsePositives(context);
+    if (context.lastClientExitCode > 0) {
+        // In case of an error during the defineFalsePositives step, we fail the action here!
+        failAction(context.lastClientExitCode);
+        return context;
+    }
     executeScan(context);
     await postScan(context);
     return context;
@@ -46151,7 +46195,8 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
-    trafficLight: 'OFF'
+    trafficLight: 'OFF',
+    defineFalsePositivesFile: '',
 };
 /**
  * Creates the initial launch context
@@ -46188,7 +46233,8 @@ async function createContext() {
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
-        debug: gitHubInputData.debug == 'true'
+        debug: gitHubInputData.debug == 'true',
+        defineFalsePositivesFile: gitHubInputData.defineFalsePositives,
     };
 }
 function createSafeBuilderData(gitHubInputData) {
@@ -46210,6 +46256,14 @@ async function init(context) {
  */
 function executeScan(context) {
     scan(context);
+    logExitCode(context.lastClientExitCode);
+}
+/**
+ * Executes defineFalsePositive action of the SecHub GO client.
+ * @param context launch context
+ */
+function executeDefineFalsePositives(context) {
+    defineFalsePositives(context);
     logExitCode(context.lastClientExitCode);
 }
 async function postScan(context) {

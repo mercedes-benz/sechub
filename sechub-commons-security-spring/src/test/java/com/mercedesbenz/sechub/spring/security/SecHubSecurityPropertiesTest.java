@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -281,9 +282,11 @@ class SecHubSecurityPropertiesTest {
         String redirectUri = "example.org/redirect-uri";
         Set<String> modes = Set.of("oauth2", "classic");
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
+        SecHubSecurityProperties.LoginProperties.ClassicAuthProperties classicAuth = mock();
 
         /* execute */
-        SecHubSecurityProperties.LoginProperties login = new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2);
+        SecHubSecurityProperties.LoginProperties login = new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2,
+                classicAuth);
 
         /* test */
         assertThat(login.isEnabled()).isEqualTo(enabled);
@@ -291,6 +294,7 @@ class SecHubSecurityPropertiesTest {
         assertThat(login.getRedirectUri()).isEqualTo(redirectUri);
         assertThat(login.getModes()).isEqualTo(modes);
         assertThat(login.getOAuth2Properties()).isEqualTo(oAuth2);
+        assertThat(login.getClassicAuthProperties()).isEqualTo(classicAuth);
     }
 
     @ParameterizedTest
@@ -302,11 +306,35 @@ class SecHubSecurityPropertiesTest {
                                                              Set<String> modes,
                                                              SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2,
                                                              String errMsg) {
+        /* prepare */
+        /* classic auth properties are nullable therefore not tested here */
+        SecHubSecurityProperties.LoginProperties.ClassicAuthProperties classicAuth = null;
+
         /* execute + test */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2, classicAuth))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
+    }
+
+    @Test
+    void construct_login_properties_with_null_classic_auth_properties_constructs_default_classic_auth_properties() {
+        /* prepare */
+        boolean enabled = true;
+        String loginPage = "/login";
+        String redirectUri = "example.org/redirect-uri";
+        Set<String> modes = Set.of("oauth2", "classic");
+        SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
+
+        /* execute */
+        SecHubSecurityProperties.LoginProperties login = new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2, null);
+
+        /* test */
+        Duration expectedCookieAge = Duration.ofHours(24);
+        SecHubSecurityProperties.LoginProperties.ClassicAuthProperties classicAuthProperties = login.getClassicAuthProperties();
+        assertThat(classicAuthProperties).isNotNull();
+        assertThat(classicAuthProperties.getCookieAge()).isEqualTo(expectedCookieAge);
+        assertThat(classicAuthProperties.getCookieAgeSeconds()).isEqualTo(expectedCookieAge.getSeconds());
     }
 
     @Test

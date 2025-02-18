@@ -171,7 +171,7 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void handleScanTypesAndModuleGroups(InternalValidationContext context) {
-        Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
+        Set<ScanType> scanTypes = modelSupport.collectScanTypes(context.model);
         handleScanTypes(context, scanTypes);
 
         handleModuleGroup(context, scanTypes);

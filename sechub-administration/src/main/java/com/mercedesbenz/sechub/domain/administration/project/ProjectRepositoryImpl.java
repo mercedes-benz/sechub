@@ -21,6 +21,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     private static final String QUERY_DELETE_PROJECT_TO_TEMPLATE = "delete from " + TABLE_NAME_PROJECT_TEMPLATES + " p2w where p2w." + Project.ASSOCIATE_PROJECT_TO_TEMPLATE_COLUMN_PROJECT_ID + " = ?1";
 
     private static final String QUERY_DELETE_PROJECT = "delete from " + TABLE_NAME + " p where p." + Project.COLUMN_PROJECT_ID + " = ?1";
+
+    private static final String QUERY_DELETE_TEMPLATE_FROM_PROJECTS = "delete from " + TABLE_NAME_PROJECT_TEMPLATES + " p2w where p2w." + Project.COLUMN_TEMPLATE_ID + " = ?1";
     /* @formatter:on */
 
     @Override
@@ -45,6 +47,13 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         deleteProject.setParameter(1, projectId);
         deleteProject.executeUpdate();
 
+    }
+
+    @Override
+    public void deleteTemplateAssignmentFromAnyProject(String templateId) {
+        Query deleteTemplatesFromProject = em.createNativeQuery(QUERY_DELETE_TEMPLATE_FROM_PROJECTS);
+        deleteTemplatesFromProject.setParameter(1, templateId);
+        deleteTemplatesFromProject.executeUpdate();
     }
 
 }
