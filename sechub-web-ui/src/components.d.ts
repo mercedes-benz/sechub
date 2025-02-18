@@ -9,6 +9,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
+    AsyncButton: typeof import('./components/AsyncButton.vue')['default']
+    EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
     Pagination: typeof import('./components/Pagination.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
     ProjectDetailsFab: typeof import('./components/ProjectDetailsFab.vue')['default']
@@ -19,7 +21,6 @@ declare module 'vue' {
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
     ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
     ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
-    AsyncButton: typeof import('./components/AsyncButton')['default']
     UserDetailInformation: typeof import('./components/UserDetailInformation.vue')['default']
   }
 }

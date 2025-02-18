@@ -87,7 +87,7 @@
                   <td>
                     <AsyncButton
                       v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
-                      :id=job.jobUUID
+                      :id="job.jobUUID"
                       color="error"
                       icon="mdi-close-circle-outline"
                       @button-clicked="cancelJob"
@@ -127,7 +127,7 @@
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
-import AsyncButton from './AsyncButton.vue'
+  import AsyncButton from './AsyncButton.vue'
 
   export default {
     name: 'ProjectComponent',

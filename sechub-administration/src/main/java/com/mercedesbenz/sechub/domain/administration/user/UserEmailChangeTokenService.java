@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -17,18 +15,14 @@ public class UserEmailChangeTokenService {
     private static final Base64.Encoder ENCODER = Base64.getUrlEncoder();
     private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
     private final AES256Encryption aes256Encryption;
-    private final Clock clock;
 
     public UserEmailChangeTokenService(AES256Encryption aes256Encryption) {
         this.aes256Encryption = aes256Encryption;
-        this.clock = Clock.systemUTC();
     }
 
-    public String generateToken(UserEmailChangeRecord userEmailChangeRecord, String baseUrl) {
-        validateString(baseUrl, "Base URL must not be null or blank!");
-
-        UserEmailChangeToken userEmailChangeToken = new UserEmailChangeToken(userEmailChangeRecord.userId(), userEmailChangeRecord.newEmail(),
-                clock.instant().toString());
+    public String generateToken(UserEmailChangeRequest userEmailChangeRequest) {
+        UserEmailChangeToken userEmailChangeToken = new UserEmailChangeToken(userEmailChangeRequest.userId(), userEmailChangeRequest.newEmail(),
+                Instant.now().toString());
         userEmailChangeToken.validate();
         String json = userEmailChangeToken.toJSON();
 
@@ -36,8 +30,7 @@ public class UserEmailChangeTokenService {
         return ENCODER.encodeToString(bytes);
     }
 
-    public UserEmailChangeRecord extractUserInfoFromToken(String token) {
-        validateString(token, "Token must not be null or blank!");
+    public UserEmailChangeRequest extractUserInfoFromToken(String token) {
 
         byte[] bytes = DECODER.decode(token);
         String decryptedToken = aes256Encryption.decrypt(bytes);
@@ -50,17 +43,10 @@ public class UserEmailChangeTokenService {
         userEmailChangeToken.validate();
 
         Instant instant = Instant.parse(userEmailChangeToken.getTimestamp());
-        if (instant.plusSeconds(EXPIRATION_TIME).isBefore(clock.instant())) {
+        if (instant.plusSeconds(EXPIRATION_TIME).isBefore(Instant.now())) {
             throw new BadRequestException("Token has expired!");
         }
 
-        return new UserEmailChangeRecord(userEmailChangeToken.getUserId(), userEmailChangeToken.getEmailAddress());
-    }
-
-    private void validateString(String string, String message) {
-        Objects.requireNonNull(string);
-        if (string.isBlank()) {
-            throw new BadRequestException(message);
-        }
+        return new UserEmailChangeRequest(userEmailChangeToken.getUserId(), userEmailChangeToken.getEmailAddress());
     }
 }

@@ -2794,8 +2794,12 @@ paths:
           schema:
             type: string
       responses:
-        "204":
-          description: "No content"
+        "402":
+          description: "Redirect"
+          content:
+            application/json:
+              schema:
+                type: string
         "400":
           description: "Bad request"
       tags:

@@ -653,7 +653,6 @@ public class TestAPI {
 
     public static void updateEmailByOneTimeTokenLink(URI uri) {
         as(ANONYMOUS).sendGetRequestToURI(uri);
-        // as(ANONYMOUS).getStringFromURL(uri.toString());
     }
 
     /**

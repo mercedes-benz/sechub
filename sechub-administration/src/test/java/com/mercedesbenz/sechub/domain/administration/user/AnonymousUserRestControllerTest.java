@@ -3,8 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.ONE_TIME_TOKEN;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
+import com.mercedesbenz.sechub.spring.security.SecHubSecurityProperties;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -37,19 +37,20 @@ public class AnonymousUserRestControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private UserEmailAddressUpdateService userEmailAddressUpdateService;
+    @MockBean
+    private SecHubSecurityProperties secHubSecurityProperties;
 
     @Test
     @WithAnonymousUser
     public void anonymous_user_verifies_new_mail_address_with_one_time_token() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAnonymousUserVerifiesMailAddress(ONE_TIME_TOKEN.pathElement());
-        doNothing().when(userEmailAddressUpdateService).userVerifiesUserEmailAddress(anyString());
 
         /* @formatter:off */
         /* execute + test */
         this.mockMvc.perform(
                         get(apiEndpoint,"token1"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().is3xxRedirection());
         /* @formatter:on */
     }
 

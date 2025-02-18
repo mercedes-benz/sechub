@@ -36,27 +36,13 @@ class UserEmailChangeTokenServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "", " ", "  " })
-    void generateToken_throws_not_acceptable_exception_basUrl_null_or_blank(String baseUrl) {
-        /* prepare */
-        String userId = "user1";
-        String email = "user1@email";
-        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
-
-        /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Base URL must not be null or blank!");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "", " ", "  " })
     void generateToken_throws_not_acceptable_exception_userId_blank(String userId) {
         /* prepare */
-        String baseUrl = "http://localhost:8080";
         String email = "user1@email";
-        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
+        UserEmailChangeRequest userEmailChangeRequest = new UserEmailChangeRequest(userId, email);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRequest)).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("User ID must not be null or blank!");
     }
 
@@ -64,12 +50,11 @@ class UserEmailChangeTokenServiceTest {
     @ValueSource(strings = { "", " ", "  " })
     void generateToken_throws_not_acceptable_exception_email_blank(String email) {
         /* prepare */
-        String baseUrl = "http://localhost:8080";
         String userId = "user1";
-        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
+        UserEmailChangeRequest userEmailChangeRequest = new UserEmailChangeRequest(userId, email);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRecord, baseUrl)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> serviceToTest.generateToken(userEmailChangeRequest)).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Email address must not be null or blank!");
     }
 
@@ -77,11 +62,10 @@ class UserEmailChangeTokenServiceTest {
     @CsvSource({ "user1, user1@email", "user2, user2@email", "user3, user3@email" })
     void generateToken_generates_token_from_input(String userId, String email) {
         /* prepare */
-        String baseUrl = "http://localhost:8080";
-        UserEmailChangeRecord userEmailChangeRecord = new UserEmailChangeRecord(userId, email);
+        UserEmailChangeRequest userEmailChangeRequest = new UserEmailChangeRequest(userId, email);
 
         /* execute */
-        String token = serviceToTest.generateToken(userEmailChangeRecord, baseUrl);
+        String token = serviceToTest.generateToken(userEmailChangeRequest);
 
         /* test */
         assertThat(token).isNotNull().isNotEmpty();
@@ -115,26 +99,11 @@ class UserEmailChangeTokenServiceTest {
         when(aes256Encryption.decrypt(ENCRYPTED_ACCESS_TOKEN_BYTES)).thenReturn(json);
 
         /* execute */
-        UserEmailChangeRecord userEmailChangeRecord = serviceToTest.extractUserInfoFromToken(BASE_64_ENCODED);
+        UserEmailChangeRequest userEmailChangeRequest = serviceToTest.extractUserInfoFromToken(BASE_64_ENCODED);
 
         /* test */
-        assertThat(userEmailChangeRecord).isNotNull();
-        assertThat(userEmailChangeRecord.userId()).isEqualTo(userId);
-        assertThat(userEmailChangeRecord.newEmail()).isEqualTo(email);
+        assertThat(userEmailChangeRequest).isNotNull();
+        assertThat(userEmailChangeRequest.userId()).isEqualTo(userId);
+        assertThat(userEmailChangeRequest.newEmail()).isEqualTo(email);
     }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "", " ", "  " })
-    void extractUserInfoFromJWTToken_throws_not_acceptable_exception_for_null_empty_token(String invalidToken) {
-        /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.extractUserInfoFromToken(invalidToken)).isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Token must not be null or blank!");
-    }
-
-    @Test
-    void generate_token_throws_null_pointer_when_baseUrl_is_null() {
-        /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.generateToken(new UserEmailChangeRecord("user1", "mail"), null)).isInstanceOf(NullPointerException.class);
-    }
-
 }

@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.domain.administration.user.UserEmailAddressUpdate
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAnonymousUserVerifiesEmailAddress;
+import com.mercedesbenz.sechub.spring.security.SecHubSecurityProperties;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -45,6 +46,8 @@ public class AnonymousUserControllerRestDocTest implements TestIsNecessaryForDoc
 
     @MockBean
     UserEmailAddressUpdateService emailAddressUpdateService;
+    @MockBean
+    SecHubSecurityProperties secHubSecurityProperties;
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseAnonymousUserVerifiesEmailAddress.class)
@@ -57,7 +60,7 @@ public class AnonymousUserControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test */
         this.mockMvc.perform(
                 get(apiEndpoint,"token1"))
-                .andExpect(status().isNoContent())
+                .andExpect(status().is3xxRedirection())
                 .andDo(defineRestService()
                         .with()
                         .useCaseData(useCase)
