@@ -59,6 +59,11 @@ Usage: ZapWrapper [options]
       Maximum number of times the wrapper tries to reach each URL. Including 
       each URL constructed from the sechub includes.
       Default: 3
+    --pacFilePath
+      PAC file the ZAP wrapper uses for script based authentication for the 
+      browsers profile, when templates are defined. You can also set the 
+      environment variable ZAP_LOGIN_PAC_FILE_PATH, instead of using this 
+      parameter. 
     --pdsEventFolder
       Folder where the ZAP wrapper listens for events of the PDS, like cancel 
       requests for the current job. You can also set the environment variable 
@@ -90,7 +95,7 @@ Usage: ZapWrapper [options]
       value cannot be less than 1000 milliseconds.
       Default: 1000
     --sechubConfigfile
-      The SecHub config file, containing additonal configurations for the 
+      The SecHub config file, containing additional configurations for the 
       scan. 
   * --targetURL
       Specifies the target url to be scanned.

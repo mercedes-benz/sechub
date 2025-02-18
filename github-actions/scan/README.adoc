@@ -79,6 +79,12 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # OPTIONAL: job (pipeline) will be marked as failed if SecHub finds something
     # DEFAULT: true
     fail-job-with-findings: true
+
+    # OPTIONAL: The file that defines false positives.
+    #           This step is executed before the scan.
+    #           The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file.
+    #           You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.
+    define-false-positives: 'sechub-false-positives.json'
 ----
 
 [IMPORTANT]

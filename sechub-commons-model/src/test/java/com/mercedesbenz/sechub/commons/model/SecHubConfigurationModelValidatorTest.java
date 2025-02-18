@@ -49,7 +49,7 @@ class SecHubConfigurationModelValidatorTest {
         validatorToTest = new SecHubConfigurationModelValidator();
         validatorToTest.modelSupport = modelSupport;
 
-        when(modelSupport.collectPublicScanTypes(any(SecHubConfigurationModel.class))).thenReturn(modelSupportCollectedScanTypes);
+        when(modelSupport.collectScanTypes(any(SecHubConfigurationModel.class))).thenReturn(modelSupportCollectedScanTypes);
     }
 
     @Test

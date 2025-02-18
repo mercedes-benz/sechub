@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model.template;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Template data for SecHub configuration model. Here users can define user
@@ -13,9 +13,15 @@ import java.util.Map;
  */
 public class TemplateData {
 
-    private Map<String, String> variables = new LinkedHashMap<>();
+    private SortedMap<String, String> variables = new TreeMap<>();
 
-    public Map<String, String> getVariables() {
+    /**
+     * Return a sorted map containing variable names as keys and variable values as
+     * values.
+     *
+     * @return sorted variable map
+     */
+    public SortedMap<String, String> getVariables() {
         return variables;
     }
 

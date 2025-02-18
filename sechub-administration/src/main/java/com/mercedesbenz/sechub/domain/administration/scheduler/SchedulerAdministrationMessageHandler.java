@@ -6,8 +6,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.domain.administration.project.ProjectTemplateService;
 import com.mercedesbenz.sechub.domain.administration.status.StatusEntry;
 import com.mercedesbenz.sechub.domain.administration.status.StatusEntryRepository;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
@@ -16,6 +18,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SchedulerMessage;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 
 @Component
 public class SchedulerAdministrationMessageHandler implements AsynchronMessageHandler {
@@ -24,6 +27,10 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
 
     @Autowired
     StatusEntryRepository repository;
+
+    @Autowired
+    @Lazy
+    ProjectTemplateService projectTemplateService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -40,9 +47,18 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
         case SCHEDULER_JOB_PROCESSING_ENABLED:
             handleSchedulerJobProcessingEnabled(request);
             break;
+        case TEMPLATE_DELETED:
+            handleTemplateDeleted(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.TEMPLATE_DELETED)
+    private void handleTemplateDeleted(DomainMessage request) {
+        SecHubProjectToTemplate projectToTemplate = request.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
+        projectTemplateService.unassignTemplateFromAllProjects(projectToTemplate.getTemplateId());
     }
 
     @IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED)

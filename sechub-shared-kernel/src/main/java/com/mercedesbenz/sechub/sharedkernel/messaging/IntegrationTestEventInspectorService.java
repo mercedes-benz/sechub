@@ -3,11 +3,14 @@ package com.mercedesbenz.sechub.sharedkernel.messaging;
 
 import java.util.Map;
 
+import javax.crypto.SealedObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 /**
@@ -101,7 +104,15 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
         Map<String, String> messageData = debug.getMessageData();
         if (messageData != null && request.parameters != null) {
-            messageData.putAll(request.parameters);
+            /*
+             * for integration testing we break the sealed object data, because we need this
+             * for event trace tests
+             */
+            for (Map.Entry<String, SealedObject> entry : request.parameters.entrySet()) {
+                String key = entry.getKey();
+                SealedObject val = entry.getValue();
+                messageData.put(key, CryptoAccess.CRYPTO_STRING.unseal(val));
+            }
         }
     }
 

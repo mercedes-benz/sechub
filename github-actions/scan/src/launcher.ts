@@ -13,6 +13,7 @@ import { initReportFormats, initSecHubJson } from './init-scan';
 import { collectReportData, reportOutputs, uploadArtifact } from './post-scan';
 import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
+import { defineFalsePositives } from './sechub-cli';
 import { getPlatform, getPlatformDirectory } from './platform-helper';
 import { split } from './input-helper';
 import { getClientVersion } from './client-version-helper';
@@ -26,6 +27,13 @@ export async function launch(): Promise<LaunchContext> {
     const context = await createContext();
 
     await init(context);
+
+    executeDefineFalsePositives(context);
+    if (context.lastClientExitCode > 0) {
+        // In case of an error during the defineFalsePositives step, we fail the action here!
+        failAction(context.lastClientExitCode);
+        return context;
+    }
 
     executeScan(context);
 
@@ -58,6 +66,8 @@ export interface LaunchContext {
 
     secHubReportJsonObject: object | undefined;
     secHubReportJsonFileName: string;
+
+    defineFalsePositivesFile: string;
 }
 
 export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
@@ -79,7 +89,8 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
-    trafficLight: 'OFF'
+    trafficLight: 'OFF',
+    defineFalsePositivesFile: '',
 };
 
 
@@ -130,7 +141,8 @@ async function createContext(): Promise<LaunchContext> {
         secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
-        debug: gitHubInputData.debug == 'true'
+        debug: gitHubInputData.debug == 'true',
+        defineFalsePositivesFile: gitHubInputData.defineFalsePositives,
     };
 }
 
@@ -158,6 +170,16 @@ async function init(context: LaunchContext) {
  */
 function executeScan(context: LaunchContext) {
     scan(context);
+
+    logExitCode(context.lastClientExitCode);
+}
+
+/**
+ * Executes defineFalsePositive action of the SecHub GO client.
+ * @param context launch context
+ */
+function executeDefineFalsePositives(context: LaunchContext) {
+    defineFalsePositives(context);
 
     logExitCode(context.lastClientExitCode);
 }

@@ -173,12 +173,12 @@ public class SecHubConfigurationModelSupport {
     }
 
     /**
-     * Collects scan types
+     * Collects scan types used inside given configuration model
      *
-     * @param model
+     * @param model configuration model to inspect
      * @return set with scan types, never <code>null</code>
      */
-    public Set<ScanType> collectPublicScanTypes(SecHubConfigurationModel model) {
+    public Set<ScanType> collectScanTypes(SecHubConfigurationModel model) {
         Set<ScanType> result = new LinkedHashSet<>();
         if (model.getCodeScan().isPresent()) {
             result.add(ScanType.CODE_SCAN);

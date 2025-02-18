@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
@@ -20,6 +21,12 @@ import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.template.SecHubProjectToTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsTemplateToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesOrUpdatesTemplate;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesTemplate;
@@ -41,12 +48,16 @@ public class TemplateService {
 
     private final UserInputAssertion inputAssertion;
 
+    private DomainMessageService eventBus;
+
+    @Lazy
     TemplateService(TemplateRepository repository, ScanProjectConfigService configService, UserInputAssertion inputAssertion,
-            TemplateTypeScanConfigIdResolver resolver) {
+            TemplateTypeScanConfigIdResolver resolver, DomainMessageService eventBus) {
         this.repository = repository;
         this.configService = configService;
         this.scanProjectConfigIdResolver = resolver;
         this.inputAssertion = inputAssertion;
+        this.eventBus = eventBus;
     }
 
     @UseCaseAdminCreatesOrUpdatesTemplate(@Step(number = 2, name = "Service creates or updates template"))
@@ -93,6 +104,7 @@ public class TemplateService {
     }
 
     @UseCaseAdminDeletesTemplate(@Step(number = 2, name = "Service removes all assignments and deletes template completely"))
+    @IsSendingAsyncMessage(MessageID.TEMPLATE_DELETED)
     public void deleteTemplate(String templateId) {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
@@ -101,6 +113,14 @@ public class TemplateService {
         configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 
         repository.deleteById(templateId);
+
+        DomainMessage message = new DomainMessage(MessageID.TEMPLATE_DELETED);
+        SecHubProjectToTemplate data = new SecHubProjectToTemplate();
+        data.setTemplateId(templateId);
+
+        message.set(MessageDataKeys.PROJECT_TO_TEMPLATE, data);
+        eventBus.sendAsynchron(message);
+
     }
 
     /**
