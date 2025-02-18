@@ -2,40 +2,83 @@
 include::launchconfig_common_server_header.adoc[]
 [source]
 ----
--Dspring.profiles.active=dev,h2,real_products <1>
--Dsechub.server.debug=true <2>
-...
--Dsechub.adapter.name.something.specific=${necessaryData} <3>
-...
--Dsechub.storage.sharedvolume.upload.dir=temp <4>
--Dsechub.initialadmin.userid=sechubadm <5>
--Dsechub.initialadmin.email=sechubadm@example.org<5>
--Dsechub.initialadmin.apitoken=pseudo-token-development-only<5>
+-Dspring.profiles.active=dev,h2,mocked_products,local <1>
 ----
-<1> Enables debug logging, localserver certificates, uses *real products*
-    and starts server with h2 database. +
+<1> Enables debug logging, localserver certificates, uses *mocked products*,
+    starts server with h2 database and uses custom configurations. +
     - Instead of `h2` profile you could also use profile `postgres` when you
     have a running postgres instance available+
-    - Also you could use `mocked_products` profile instead of `real_products`
-    and you will not have to define the adapter specifications.
-<2> When debug flag is set, rest call reponse error messages do also contains stacktraces.
-<3> This is just an example for a adapter specific setting. Please look into
-    <<link-gen-systemproperties,system property definitions>> and look for adapter parts.
-<4> We use `temp` which is a marker to create a temp folder for shared volume
-    (_necessary for source upload)_
-<5> _(Optional)_ If nothing is defined per default user with id: `sechubadm`, mail
-    address `sechubadm@example.org` and API token
-    `pseudo-token-development-only` will be created (see
-    `InitialAdminInitializer.java`). +
-     +
-    This is for developer convenience to reuse existing launch configurations and have not
-    always generated new initial apitokens, like done for profile `prod`. +
-     +
-    Developers are able to define their own to fix security token for started
-    develop servers. If so done, the started developer admin UI must use this
-    inside its launch configuration...
+    - Also you could use `real_products` profile instead of `mocked_products`
+      (Remark: for some legacy adapters you would have to additionally define adapter specifications 
+      in configurations)
+    - At the end the `local` profile is added which loads the next configuration
+      fil
 
+Create custom configuration file (assumed the the user has id: `johndoe`): 
 
-WARNING: Your server will not start if you forget any adapter key!
-TIP: (see `InitialAdminInitializer.java`).
+    
+[source,yaml, title='sechub-server/src/main/resources/application-local.johndoe.yml']
+----
+sechub: 
+   server:
+      debug: true #To have REST call reponse error messages do also contains stacktraces.
+   # Storage - just juse local file system and generated temp folder
+   storage:
+      sharedvolume:
+         upload:
+            dir: temp <1>   
+   # Only in DEV profile available: we can set the initial admin with wanted api token 
+   initialadmin:   
+      userid: sechub-developer  
+      email: sechub-developer@example.org    
+      apitoken: pseudo-token-development-only
+   # Web UI parts:   
+   # Provide here only the classic resource server + login mask (no oAuth2 here)
+   security:
+     server:
+       modes:
+         - classic
+     login:
+       enabled: true
+       login-page: /login # For ui development login will be at https://localhost:8443/login
+       redirect-uri: http://localhost:3000 #redirect to web ui <2>
+       modes:
+        - classic
+     encryption:
+       secret-key: example-key-32-byte-long-1234567
+----
 
+<1> We use `temp` which is a marker to create a temporary folder for shared volume.
+    This is also a marker that the storage is a NFS/local folder and {sechub} will not insist
+    an a `S3` storage setup. +
+    _Remark: It is also possible to define here an explicit path!_
+
+<2> For development with VITE, no TLS (https) is used. For development with VITE this is okay,
+    but *NEVER* for production! 
+
+[TIP]
+====
+Details about the user initialization process by using different profiles can be found at `InitialAdminInitializer.java`.
+====
+
+[WARNING]
+====
+
+The `sechub-web-ui` development uses a `.env` file contains variables for VITE server (VITE
+is only used for development).
+
+If you want to test the {sechub} server login page mechanism in combination with a
+sechub-web-ui in development mode, you can use former `application-local.johndoe.yml`
+but you have to ensure that the `sechub-web-ui/.env` file looks this way:
+
+[source, title="sechub-web-ui/.env"]
+----
+VITE_API_HOST=http://localhost:3000
+VITE_API_LOCAL_DEV=false
+----
+
+If `VITE_API_USER` or `VITE_API_PASSWORD` are defined inside this file, the web application
+will always use these credentials instead of the login form user input. This is for convenience for
+web ui developers (no login necessary for testing) but is irritating when testing the server login
+handling...
+====
