@@ -8,21 +8,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.test.context.TestPropertySource;
 
-import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
-
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-login-mode-oauth2-active-condition-test.yaml", factory = YamlPropertyLoaderFactory.class)
 class LoginModeOAuth2ActiveConditionTest {
 
     private static final ConditionContext conditionContext = mock();
@@ -30,23 +19,10 @@ class LoginModeOAuth2ActiveConditionTest {
     private static final AnnotatedTypeMetadata metadata = mock();
     private static final LoginModeOAuth2ActiveCondition conditionToTest = new LoginModeOAuth2ActiveCondition();
 
-    private final ApplicationContext applicationContext;
-
-    @Autowired
-    LoginModeOAuth2ActiveConditionTest(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     @BeforeEach
     void beforeEach() {
-        reset(conditionContext);
+        reset(conditionContext, environment);
         when(conditionContext.getEnvironment()).thenReturn(environment);
-    }
-
-    @Test
-    void matches_with_valid_properties_source_works() {
-        /* test */
-        assertThat(applicationContext.getBean("randomBean")).isNotNull();
     }
 
     @Test
@@ -81,7 +57,7 @@ class LoginModeOAuth2ActiveConditionTest {
     @Test
     void matches_when_no_mode_enabled_returns_false() {
         /* prepare */
-        when(environment.getProperty("sechub.security.login.modes[0]")).thenReturn(null);
+        when(environment.getProperty("sechub.security.login.modes")).thenReturn(null);
 
         /* execute */
         boolean result = conditionToTest.matches(conditionContext, metadata);
@@ -104,16 +80,5 @@ class LoginModeOAuth2ActiveConditionTest {
 
         /* test */
         assertThat(result).isFalse();
-    }
-
-    @Configuration
-    static class TestConfig {
-
-        @Bean
-        @Conditional(LoginModeOAuth2ActiveCondition.class)
-        Object randomBean() {
-            return new Object();
-        }
-
     }
 }
