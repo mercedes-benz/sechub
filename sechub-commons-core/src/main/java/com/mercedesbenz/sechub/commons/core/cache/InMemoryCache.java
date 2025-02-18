@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -43,20 +42,27 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
  */
 public class InMemoryCache<T extends Serializable> implements ShutdownListener {
 
-    private static final Duration CACHE_CLEAR_JOB_PERIOD_DEFAULT = Duration.ofMinutes(1);
+    private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
 
-    private final ConcurrentHashMap<String, CacheData> cache = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private final ConcurrentHashMap<String, CacheData> cacheMap = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final CryptoAccess<T> cryptoAccess = new CryptoAccess<>();
     private final ScheduledFuture<?> cacheClearJob;
     private final Duration cacheClearJobPeriod;
 
-    public InMemoryCache(ApplicationShutdownHandler applicationShutdownHandler) {
-        this(CACHE_CLEAR_JOB_PERIOD_DEFAULT, applicationShutdownHandler);
+    public InMemoryCache(ScheduledExecutorService scheduledExecutorService, ApplicationShutdownHandler applicationShutdownHandler) {
+        this(DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, applicationShutdownHandler);
     }
 
-    public InMemoryCache(Duration cacheClearJobPeriod, ApplicationShutdownHandler applicationShutdownHandler) {
+    /* @formatter:off */
+    public InMemoryCache(Duration cacheClearJobPeriod,
+                         ScheduledExecutorService scheduledExecutorService,
+                         ApplicationShutdownHandler applicationShutdownHandler) {
+        /* @formatter:on */
+        this.scheduledExecutorService = requireNonNull(scheduledExecutorService, "Property 'scheduledExecutorService' must not be null");
         this.cacheClearJobPeriod = requireNonNull(cacheClearJobPeriod, "Property 'cacheClearJobPeriod' must not be null");
         cacheClearJob = scheduleClearCacheJob();
+        requireNonNull(applicationShutdownHandler, "Property 'applicationShutdownHandler' must not be null");
         applicationShutdownHandler.register(this);
     }
 
@@ -74,7 +80,8 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      * @throws NullPointerException if the specified key, value or duration is null
      */
     public void put(String key, T value, Duration duration) {
-        cache.put(key, new CacheData(value, duration));
+        requireNonNull(key, "Argument 'key' must not be null");
+        cacheMap.put(key, new CacheData(value, duration));
     }
 
     /**
@@ -89,7 +96,9 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      * @throws NullPointerException if the specified key is null
      */
     public Optional<T> get(String key) {
-        CacheData cacheData = cache.get(key);
+        requireNonNull(key, "Argument 'key' must not be null");
+
+        CacheData cacheData = cacheMap.get(key);
 
         if (cacheData == null) {
             return Optional.empty();
@@ -121,12 +130,12 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
     private void clearCache() {
         Instant now = Instant.now();
 
-        cache.forEach((key, value) -> {
-            Instant cacheCreatedAt = value.getCreatedAt();
-            Duration cacheDuration = value.getDuration();
+        cacheMap.forEach((key, value) -> {
+            Instant cacheDataCreatedAt = value.getCreatedAt();
+            Duration cacheDataDuration = value.getDuration();
 
-            if (cacheCreatedAt.plus(cacheDuration).isBefore(now)) {
-                cache.remove(key);
+            if (cacheDataCreatedAt.plus(cacheDataDuration).isBefore(now)) {
+                cacheMap.remove(key);
             }
         });
     }
@@ -141,14 +150,13 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      */
     private class CacheData {
 
-        private final CryptoAccess<T> cryptoAccess = new CryptoAccess<>();
         private final SealedObject sealedValue;
         private final Duration duration;
         private final Instant createdAt = Instant.now();
 
         public CacheData(T value, Duration duration) {
             requireNonNull(value, "Property 'value' must not be null");
-            this.sealedValue = cryptoAccess.seal(value);
+            this.sealedValue = InMemoryCache.this.cryptoAccess.seal(value);
             this.duration = requireNonNull(duration, "Property 'duration' must not be null");
         }
 

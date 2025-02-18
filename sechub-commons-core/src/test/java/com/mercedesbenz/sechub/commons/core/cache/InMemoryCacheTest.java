@@ -2,28 +2,53 @@
 package com.mercedesbenz.sechub.commons.core.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 class InMemoryCacheTest {
 
-    private static final Duration CACHE_CLEAR_JOB_PERIOD_DEFAULT = Duration.ofMinutes(1);
+    private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
+    private static final ScheduledExecutorService scheduledExecutorService = mock();
+    private static final ScheduledFuture scheduledFuture = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
+
+    @BeforeEach
+    void beforeEach() {
+        reset(scheduledExecutorService, applicationShutdownHandler);
+        when(scheduledExecutorService.scheduleAtFixedRate(any(), anyLong(), anyLong(), any())).thenReturn(scheduledFuture);
+    }
 
     @Test
     void construct_with_default_cache_clear_job_period() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
-        assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(CACHE_CLEAR_JOB_PERIOD_DEFAULT);
+        assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(DEFAULT_CACHE_CLEAR_JOB_PERIOD);
+        verify(scheduledExecutorService).scheduleAtFixedRate(any(), eq(Duration.ZERO.toMillis()), eq(DEFAULT_CACHE_CLEAR_JOB_PERIOD.toMillis()),
+                eq(TimeUnit.MILLISECONDS));
+        verify(applicationShutdownHandler).register(inMemoryCacheToTest);
     }
 
     @Test
@@ -32,27 +57,67 @@ class InMemoryCacheTest {
         Duration cacheClearJobPeriod = Duration.ofSeconds(1);
 
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(cacheClearJobPeriod);
+        verify(applicationShutdownHandler).register(inMemoryCacheToTest);
+    }
+
+    @Test
+    void construct_with_null_scheduled_executor_service_throws_exception() {
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> new InMemoryCache<>(DEFAULT_CACHE_CLEAR_JOB_PERIOD, null, applicationShutdownHandler ))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Property 'scheduledExecutorService' must not be null");
+        /* @formatter:on */
+    }
+
+    @Test
+    void construct_with_null_cache_clear_job_period_throws_exception() {
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> new InMemoryCache<>(null, scheduledExecutorService, applicationShutdownHandler))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Property 'cacheClearJobPeriod' must not be null");
+        /* @formatter:on */
+    }
+
+    @Test
+    void construct_with_null_application_shutdown_handler_throws_exception() {
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> new InMemoryCache<>(DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Property 'applicationShutdownHandler' must not be null");
+        /* @formatter:on */
     }
 
     @Test
     void get_returns_empty_optional_when_cache_does_not_contain_key() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
-        assertThat(inMemoryCacheToTest.get("key")).isEmpty();
+        assertThat(inMemoryCacheToTest.get("not-existing-key")).isEmpty();
+    }
+
+    @Test
+    void get_throws_null_pointer_exception_when_key_is_null() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* test */
+        assertThatThrownBy(() -> inMemoryCacheToTest.get(null)).isInstanceOf(NullPointerException.class).hasMessage("Argument 'key' must not be null");
     }
 
     @Test
     void get_returns_value_when_cache_contains_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
         String key = "key";
-        String value = "result";
+        String value = "value";
         Duration duration = Duration.ofSeconds(1);
         inMemoryCacheToTest.put(key, value, duration);
 
@@ -66,7 +131,7 @@ class InMemoryCacheTest {
     @Test
     void put_overrides_existing_cache_data_with_same_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
         String key = "key";
         String oldValue = "old value";
         Duration duration = Duration.ofSeconds(1);
@@ -84,32 +149,68 @@ class InMemoryCacheTest {
     }
 
     @Test
+    void put_throws_null_pointer_exception_when_key_is_null() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> inMemoryCacheToTest.put(null, "value", Duration.ofSeconds(1)))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Argument 'key' must not be null");
+        /* @formatter:on */
+    }
+
+    @Test
+    void put_throws_null_pointer_exception_when_value_is_null() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> inMemoryCacheToTest.put("key", null, Duration.ofSeconds(1)))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Property 'value' must not be null");
+        /* @formatter:on */
+    }
+
+    @Test
+    void put_throws_null_pointer_exception_when_duration_is_null() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* test */
+        /* @formatter:off */
+        assertThatThrownBy(() -> inMemoryCacheToTest.put("key", "value", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Property 'duration' must not be null");
+        /* @formatter:on */
+    }
+
+    @Test
     void clearCache_removes_cache_data_after_is_has_expired() {
         /* prepare */
-        Duration cacheClearJobPeriod = Duration.ofSeconds(1);
+        Duration cacheClearJobPeriod = Duration.ofMillis(10);
         /* the cache clear job will run right away (point in time = 0s) */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, applicationShutdownHandler);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, Executors.newSingleThreadScheduledExecutor(),
+                applicationShutdownHandler);
         String key = "key";
         String value = "value";
-        Duration cacheDataDuration = Duration.ofSeconds(1);
+        Duration cacheDataDuration = Duration.ofMillis(100);
         inMemoryCacheToTest.put(key, value, cacheDataDuration);
 
         /* execute & test */
-        /* @formatter:off */
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
+
+        /* @formatter:off */
         Awaitility.await()
                 /*
-                    Given a cache data duration of 1 second, the cache data should expire shortly after 2 seconds
+                    Given a cache data duration of 100 milliseconds, the cache data should expire shortly after 100 milliseconds
                     including a small buffer for program execution.
-
-                    Explanation:
-                        - The first run (point in time = 0s) will not remove the cache data, as it occurs before the cache object is put.
-                        - The second run (point in time = 1s) will not remove the cache data, as the expiration time slightly exceeds this point in time.
-                        - The third run (point in time = 2s) will remove the expired cache data, as the expiration threshold has passed.
-
                  */
-                .atMost(Duration.ofMillis(2200))
-                .pollInterval(Duration.ofMillis(100))
+                .pollDelay(cacheDataDuration)
+                .pollInterval(Duration.ofMillis(10))
+                .atMost(Duration.ofMillis(120))
                 .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isEmpty());
         /* @formatter:on */
     }
@@ -117,27 +218,54 @@ class InMemoryCacheTest {
     @Test
     void clearCache_does_not_remove_cache_data_until_it_has_expired() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(applicationShutdownHandler);
+        Duration cacheClearJobPeriod = Duration.ofMillis(10);
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, Executors.newSingleThreadScheduledExecutor(),
+                applicationShutdownHandler);
         String key = "key";
         String value = "value";
-        /* the cache is valid for 2 seconds */
-        Duration cacheDataDuration = Duration.ofSeconds(2);
+        /* the cache is valid for 200 millis */
+        Duration cacheDataDuration = Duration.ofMillis(200);
         inMemoryCacheToTest.put(key, value, cacheDataDuration);
 
         /* execute & test */
-        /* @formatter:off */
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
+
+        Duration programExecutionBuffer = Duration.ofMillis(30);
+        Duration pollDelay = cacheDataDuration.minus(programExecutionBuffer);
+        Duration pollInterval = Duration.ofMillis(10);
+        Duration timeout = Duration.ofMillis(300);
+
+        /* @formatter:off */
+
+        /* assert that the cache data is still present right before it's expiration */
         Awaitility.await()
-                /* Ensure the cache remains valid for it's duration */
-                .pollDelay(cacheDataDuration)
-                .pollInterval(Duration.ofMillis(10))
-                .atMost(Duration.ofSeconds(3))
-                /*
-                    Even with a very often running cache clear job period there should always be a small window of time when the
-                    cache data is still valid after it's duration, because the clear job has a delay.
-                */
+                .pollDelay(pollDelay)
+                .pollInterval(pollInterval)
+                .atMost(timeout)
                 .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isPresent());
+
+        /* after the cache data has expired, it should be removed */
+        Awaitility.await()
+                .pollDelay(programExecutionBuffer)
+                .pollInterval(pollInterval)
+                .atMost(timeout)
+                .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isEmpty());
+
         /* @formatter:on */
+    }
+
+    @Test
+    void close_cancels_cache_clear_job_and_shuts_down_scheduled_executor_service() {
+        /* prepare */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* execute */
+        inMemoryCacheToTest.onShutdown();
+
+        /* test */
+        InOrder inOrder = inOrder(scheduledFuture, scheduledExecutorService);
+        inOrder.verify(scheduledFuture).cancel(true);
+        inOrder.verify(scheduledExecutorService).shutdownNow();
     }
 
 }

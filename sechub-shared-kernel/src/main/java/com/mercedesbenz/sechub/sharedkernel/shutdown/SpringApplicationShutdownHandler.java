@@ -45,7 +45,7 @@ public class SpringApplicationShutdownHandler implements ApplicationShutdownHand
         });
     }
 
-    public Collection<ShutdownListener> getShutdownListeners() {
+    Collection<ShutdownListener> getShutdownListeners() {
         return Collections.unmodifiableCollection(shutdownListeners);
     }
 }

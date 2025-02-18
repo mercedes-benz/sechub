@@ -10,6 +10,8 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.crypto.SealedObject;
 
@@ -101,7 +103,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         this.defaultTokenExpiresIn = requireNonNull(defaultTokenExpiresIn, "Parameter defaultTokenExpiresIn must not be null");
         this.maxCacheDuration = requireNonNull(maxCacheDuration, "Parameter maxCacheDuration must not be null");
         this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
-        this.cache = new InMemoryCache<>(maxCacheDuration, applicationShutdownHandler);
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        this.cache = new InMemoryCache<>(maxCacheDuration, scheduledExecutorService, applicationShutdownHandler);
     }
     /* @formatter:on */
 
@@ -122,7 +125,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         String subject = introspectionResponse.getSubject();
 
         if (subject == null || subject.isEmpty()) {
-            throw new BadOpaqueTokenException("Subject is null");
+            throw new BadOpaqueTokenException("Subject is null or empty");
         }
 
         Map<String, Object> introspectionClaims = getIntrospectionClaims(introspectionResponse, now);
@@ -177,7 +180,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         Duration cacheDuration = Duration.between(now, expiresAt);
 
         if (maxCacheDuration.compareTo(cacheDuration) < 0) {
-            log.debug("Opaque token cache duration exceeds the maximum cache duration. Using the maximum cache duration instead.");
+            log.debug("Opaque token cache duration of %s exceeds the maximum cache duration of %s. Using the maximum cache duration instead."
+                    .formatted(cacheDuration.toString(), maxCacheDuration.toString()));
             cacheDuration = maxCacheDuration;
         }
 

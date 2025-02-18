@@ -57,7 +57,7 @@ sechub:
           introspection-uri: <introspection-uri-of-your-idp>
           client-id: <client-id>
           client-secret: <client-secret>
-          default-token-expires-in: 60m # defaults to 1d
+          default-token-expires-in: 60m # default is '1d' if this property is not set
           max-cache-duration: 1d
 ----
 
