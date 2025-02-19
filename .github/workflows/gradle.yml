@@ -15,6 +15,7 @@ on:
       - '!sechub-doc/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
+      - '!sechub-web-ui-solution/**'
       - '!ide-plugins/**'
       - '.github/workflows/gradle.yml'
   pull_request:
@@ -25,6 +26,7 @@ on:
       - '!sechub-doc/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
+      - '!sechub-web-ui-solution/**'
       - '!ide-plugins/**'
       - '.github/workflows/gradle.yml'
 
