@@ -27,19 +27,19 @@ class LoginClassicSuccessHandlerTest {
     private static final String PASSWORD = "password";
     private static final String USERNAME_PASSWORD_ENCRYPTED = "encrypted";
     private static final String USERNAME_PASSWORD_ENCODED = Base64.getEncoder().encodeToString(USERNAME_PASSWORD_ENCRYPTED.getBytes(StandardCharsets.UTF_8));
-    private static final String REDIRECT_URI = "redirect-uri";
-    private static final Duration COOKIE_AGE = Duration.ofHours(24);
     private static final AES256Encryption aes256Encryption = mock();
+    private static final Duration COOKIE_AGE = Duration.ofHours(24);
+    private static final LoginRedirectHandler loginRedirectHandler = mock();
     private static final MockHttpServletRequest request = new MockHttpServletRequest();
     private static final MockHttpServletResponse response = mock();
     private static final Authentication authentication = mock();
-    private static final LoginClassicSuccessHandler handlerToTest = new LoginClassicSuccessHandler(aes256Encryption, COOKIE_AGE, REDIRECT_URI);
+    private static final LoginClassicSuccessHandler handlerToTest = new LoginClassicSuccessHandler(aes256Encryption, COOKIE_AGE, loginRedirectHandler);
 
     @BeforeEach
     void beforeEach() {
         request.addParameter(USERNAME, USERNAME);
         request.addParameter(PASSWORD, PASSWORD);
-        reset(response, authentication);
+        reset(response, authentication, loginRedirectHandler);
         when(aes256Encryption.encrypt("%s:%s".formatted(USERNAME, PASSWORD))).thenReturn(USERNAME_PASSWORD_ENCRYPTED.getBytes());
     }
 
@@ -49,16 +49,16 @@ class LoginClassicSuccessHandlerTest {
         handlerToTest.onAuthenticationSuccess(request, response, authentication);
 
         /* test */
-        verify(aes256Encryption).encrypt("%s:%s".formatted(USERNAME, PASSWORD));
 
-        InOrder inOrder = inOrder(response);
+        InOrder inOrder = inOrder(aes256Encryption, response, loginRedirectHandler);
+        inOrder.verify(aes256Encryption).encrypt("%s:%s".formatted(USERNAME, PASSWORD));
         inOrder.verify(response).addCookie(assertArg(cookie -> {
             assertThat(cookie.getName()).isEqualTo(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME);
             assertThat(cookie.getValue()).isEqualTo(USERNAME_PASSWORD_ENCODED);
             assertThat(cookie.getMaxAge()).isEqualTo(COOKIE_AGE.getSeconds());
             assertThat(cookie.getPath()).isEqualTo("/");
         }));
-        inOrder.verify(response).sendRedirect(REDIRECT_URI);
+        inOrder.verify(loginRedirectHandler).redirect(request, response);
     }
 
 }
