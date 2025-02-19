@@ -26,7 +26,7 @@ class LoginRedirectHandler {
         this.defaultRedirectUri = defaultRedirectUri;
     }
 
-    protected void redirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    void redirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String theme = request.getParameter(THEME_PARAMETER);
         String redirectUri = request.getParameter(REDIRECT_URI_PARAMETER);
         if (redirectUri == null) {

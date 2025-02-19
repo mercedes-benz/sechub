@@ -1,42 +1,36 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.mercedes-benz.sechub.sechub-plugin-intellij</id>
-    <name>SecHub</name>
-    <vendor>mercedes-benz-tech-innovation</vendor>
+  <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+  <id>com.mercedesbenz.sechub.sechub-plugins-intellij</id>
 
-    <description><![CDATA[
-    <a href="https://github.com/mercedes-benz/sechub-plugin-intellij">GitHub project page</a><br>
-    <h3>About</h3>
-    <a href="https://github.com/mercedes-benz/sechub">SecHub</a> intelliJ plugin. Provides a comfortable way to handle
-    SecHub reports inside IntelliJ
-    ]]></description>
+  <!-- Public plugin name should be written in Title Case.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+  <name>Sechub-plugins-intellij</name>
 
-    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <depends>com.intellij.modules.platform</depends>
+  <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+  <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-        <toolWindow id="SecHub" icon="/icons/toolWindowSecHub.svg" factoryClass="com.mercedesbenz.sechub.plugin.idea.window.SecHubToolWindowFactory" anchor="left"/>
+  <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+       Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+  <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+  ]]></description>
 
-        <!-- Extension for storing server credentials (package need to be in main/java) -->
-        <applicationService serviceImplementation="com.mercedesbenz.sechub.settings.SechubSettings"/>
+  <!-- Product and plugin compatibility requirements.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+  <depends>com.intellij.modules.platform</depends>
 
-        <applicationConfigurable parentId="tools" instance="com.mercedesbenz.sechub.settings.SechubSettingsConfigurable"
-                                 id="com.mercedesbenz.sechub.settings.SechubSettingsConfigurable"
-                                 displayName="SecHub"/>
-    </extensions>
+  <!-- Extension points defined by the plugin.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+  <extensions defaultExtensionNs="com.intellij">
 
-    <actions>
-        <!-- Add your actions here -->
-        <action id="com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystemAction" class="com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystemAction"
-                text="Import SecHub Report"
-                description="Import an SecHub Report JSON file into IDE"
+    <toolWindow factoryClass="com.mercedesbenz.sechub.sechubpluginsintellij.SecHubReportToolWindowFactory"
+                id="com.mercedesbenz.sechub.sechubpluginsintellij.SecHubReportToolWindowFactory"
+    />
+  </extensions>
+  <actions>
 
-        ><add-to-group group-id="ToolsMenu" anchor="first" />
-        </action>
-        <action id="com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction" class="com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction"
-                text="Reset SecHub Report"
-                description="Remove all existing SecHub report data"
-        ></action>
-    </actions>
+  </actions>
 </idea-plugin>
