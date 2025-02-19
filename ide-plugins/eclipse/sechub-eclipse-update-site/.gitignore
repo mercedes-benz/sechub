@@ -1,0 +1,6 @@
+!.metadata
+!.classpath
+!.project
+!.settings/
+*.jar
+*.zip

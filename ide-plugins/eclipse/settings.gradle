@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+
+include 'sechub-eclipse-plugin','sechub-eclipse-other' 
+		
