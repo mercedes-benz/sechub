@@ -100,6 +100,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
     @Autowired
     SignUpRequestedUserNotificationService signupRequestedUserNotificationService;
 
+    @Autowired
+    UserEmailAddressChangeRequestNotificationService userEmailAddressChangeRequestNotificationService;
+
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -155,7 +158,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
         case USER_EMAIL_ADDRESS_CHANGED:
             handleUserEmailChanged(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA));
             break;
-
+        case USER_EMAIL_ADDRESS_CHANGE_REQUEST:
+            handleUserEmailChangeRequest(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA));
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
@@ -164,6 +169,11 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
     @IsReceivingAsyncMessage(MessageID.USER_EMAIL_ADDRESS_CHANGED)
     private void handleUserEmailChanged(UserMessage userMessage) {
         userEmailAddressChangedNotificationService.notify(userMessage);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.USER_EMAIL_ADDRESS_CHANGE_REQUEST)
+    private void handleUserEmailChangeRequest(UserMessage userMessage) {
+        userEmailAddressChangeRequestNotificationService.notify(userMessage);
     }
 
     @IsReceivingAsyncMessage(MessageID.SCHEDULER_STARTED)

@@ -1,23 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.net.URI;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
@@ -27,9 +25,8 @@ import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(classes = { ProjectRepository.class, UserRepositoryDBTest.SimpleTestConfiguration.class })
 public class UserRepositoryDBTest {
@@ -43,15 +40,12 @@ public class UserRepositoryDBTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
-
     private User user1;
 
     private User user2;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         user1 = TestUserCreationFactory.createUser("db_test_testuser1");
         user1 = entityManager.persistAndFlush(user1);
 
@@ -60,46 +54,52 @@ public class UserRepositoryDBTest {
     }
 
     @Test
-    public void findOrFailUserByEmailAddress_user_found_by_email_address() {
+    void findOrFailUserByEmailAddress_user_found_by_email_address() {
         /* execute */
         User user = userRepository.findOrFailUserByEmailAddress("db_test_testuser1@example.org");
 
         /* test */
-        assertEquals(user1, user);
+        assertThat(user).isEqualTo(user1);
     }
 
     @Test
-    public void findOrFailUserByEmailAddress_user_NOT_found_by_email_address() {
+    void findOrFailUserByEmailAddress_user_NOT_found_by_email_address() {
+        /* execute + test */
+        assertThatThrownBy(() -> userRepository.findOrFailUserByEmailAddress("db_test_testuser_not_existing@example.org")).isInstanceOf(NotFoundException.class)
+                .hasMessage("No user with email address 'db_test_testuser_not_existing@example.org' found!");
+    }
+
+    @Test
+    void existByEmailAddress_returns_false_if_email_address_is_not_assigned() {
         /* execute */
-        NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> userRepository.findOrFailUserByEmailAddress("db_test_testuser_not_existing@example.org"));
+        boolean exists = userRepository.existsByEmailAddress("db_test_testuser_not_existing@example.org");
 
         /* test */
-        assertEquals("No user with email address 'db_test_testuser_not_existing@example.org' found!", exception.getMessage());
+        assertThat(exists).isFalse();
     }
 
     @Test
-    public void user_being_owner_of_project_can_NOT_be_deleted__instead_a_notaccetable_exception_is_thrown() {
-        /* test */
-        expected.expect(NotAcceptableException.class);
-        expected.expectMessage("still owner of a project");
+    void existByEmailAddress_returns_true_if_email_address_is_assigned() {
+        /* execute */
+        boolean exists = userRepository.existsByEmailAddress("db_test_testuser1@example.org");
 
+        /* test */
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void user_being_owner_of_project_can_NOT_be_deleted__instead_a_notaccetable_exception_is_thrown() {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test1", user1);
-
         entityManager.persist(project);
 
-        /* execute */
-        userRepository.deleteUserWithAssociations(user1.getName());
-
+        /* execute & test */
+        assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
+                .hasMessage("User db_test_testuser1 is 1 times still owner of a project! Move ownership before delete!");
     }
 
     @Test
-    public void user_being_owner_of_project_and_also_listed_as_user_can_NOT_be_deleted_instead_a_notacceptable_exception_is_thrown() {
-        /* test */
-        expected.expect(NotAcceptableException.class);
-        expected.expectMessage("still owner of a project");
-
+    void user_being_owner_of_project_and_also_listed_as_user_can_NOT_be_deleted_instead_a_notacceptable_exception_is_thrown() {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test2", user1);
 
@@ -108,13 +108,13 @@ public class UserRepositoryDBTest {
 
         prepareForDBTest();
 
-        /* execute */
-        userRepository.deleteUserWithAssociations(user1.getName());
-
+        /* execute & test */
+        assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
+                .hasMessage("User db_test_testuser1 is 1 times still owner of a project! Move ownership before delete!");
     }
 
     @Test
-    public void user_NOT_being_owner_of_project_but_listed_as_user_can_be_deleted__and_project_is_NOT_deleted() throws Exception {
+    void user_NOT_being_owner_of_project_but_listed_as_user_can_be_deleted__and_project_is_NOT_deleted() throws Exception {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test3", user2);
 
@@ -132,7 +132,6 @@ public class UserRepositoryDBTest {
         assertProjectFound(project);
 
         assertUserNotFound(user1);
-
     }
 
     /**
@@ -146,12 +145,12 @@ public class UserRepositoryDBTest {
 
     private void assertUserNotFound(User user) {
         Optional<User> userFound = userRepository.findById(user.getName());
-        assertFalse(userFound.isPresent());
+        assertThat(userFound).isNotPresent();
     }
 
     private void assertProjectFound(Project project) {
         Optional<Project> found = projectRepository.findById(project.getId());
-        assertTrue(found.isPresent());
+        assertThat(found).isPresent();
     }
 
     @TestConfiguration

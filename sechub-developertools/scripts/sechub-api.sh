@@ -92,6 +92,7 @@ template_delete <template-id> - Delete <template-id>
 template_details <template-id> - Show details of <template-id>
 template_list - List all existing templates
 user_change_email <user-id> <new email address> - Update the email of <user-id>
+user_change_own_email <new email address> - Update the own email address
 user_delete <user-id> - Delete <user-id>
 user_details <user-id or email> - List details of user <user-id or email> (json format)
 user_list - List all users (json format)
@@ -912,6 +913,9 @@ function sechub_user_change_email {
   curl_with_sechub_auth -i -X PUT "$SECHUB_SERVER/api/admin/user/$1/email/$2" | $CURL_FILTER
 }
 
+function sechub_user_change_own_email {
+  curl_with_sechub_auth -i -X POST "$SECHUB_SERVER/api/management/user/email/$1" | $CURL_FILTER
+}
 
 function sechub_user_delete {
   echo "User \"$1\" will be deleted. This cannot be undone."
@@ -1351,6 +1355,10 @@ case "$action" in
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
     SECHUB_NEW_EMAIL="$2" ; check_parameter SECHUB_NEW_EMAIL '<new email address>'
     $failed || sechub_user_change_email "$SECHUB_USER" "$SECHUB_NEW_EMAIL"
+    ;;
+  user_change_own_email)
+    SECHUB_NEW_EMAIL="$1" ; check_parameter SECHUB_NEW_EMAIL '<new email address>'
+    $failed || sechub_user_change_own_email "$SECHUB_NEW_EMAIL"
     ;;
   user_delete)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'

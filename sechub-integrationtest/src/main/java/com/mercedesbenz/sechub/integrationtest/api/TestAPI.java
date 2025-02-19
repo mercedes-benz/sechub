@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -650,6 +651,10 @@ public class TestAPI {
         return newToken;
     }
 
+    public static void updateEmailByOneTimeTokenLink(URI uri) {
+        as(ANONYMOUS).sendGetRequestToURI(uri);
+    }
+
     /**
      * Returns link to fetch a new api token, after a signup was acepted. Will use
      * last sent mail body to determine the token.
@@ -662,13 +667,7 @@ public class TestAPI {
         LOG.debug("Get link to fetch new api token after signup accepted for for user:{}", user.getUserId());
         MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(user, "SecHub user account created");
         String text = mail.text.trim(); // remove last \n if existing...
-        String[] lines = text.split("\n");
-
-        String linkOfOneApiToken = lines[lines.length - 1];
-        if (linkOfOneApiToken.isEmpty()) {
-            fail("empty link line, origin text mail was:\n" + text);
-        }
-        return linkOfOneApiToken;
+        return getLinkFromMail(text);
     }
 
     /**
@@ -683,6 +682,18 @@ public class TestAPI {
         LOG.debug("Get link to fetch new api token after change requested for user:{}", user.getUserId());
         MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(user, "Your request for a new SecHub API token");
         String text = mail.text.trim(); // remove last \n if existing...
+        return getLinkFromMail(text);
+    }
+
+    public static String getLinktToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
+        LOG.debug("Get link to verify email address after change requested for user:{}", user.getUserId());
+        MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(newMailAddress, "Verify new SecHub account email address");
+        String text = mail.text.trim();
+        String linkOfOneApiToken = getLinkFromMail(text);
+        return linkOfOneApiToken;
+    }
+
+    private static String getLinkFromMail(String text) {
         String[] lines = text.split("\n");
 
         String linkOfOneApiToken = lines[lines.length - 1];
