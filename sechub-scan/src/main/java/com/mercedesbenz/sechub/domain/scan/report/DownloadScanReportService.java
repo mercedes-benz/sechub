@@ -44,7 +44,6 @@ public class DownloadScanReportService {
         scanAssertService.assertUserHasAccessToProject(projectId);
         scanAssertService.assertProjectAllowsReadAccess(projectId);
 
-
         Optional<ScanReport> optReport = reportRepository.findTopByProjectIdOrderByStartedDesc(projectId);
 
         if (optReport.isEmpty()) {

@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import static com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder.DEFAULT_THEME;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
@@ -30,8 +29,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDow
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 
 import jakarta.annotation.security.RolesAllowed;
-
-import static com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder.DEFAULT_THEME;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * The rest API for job scheduling. It shall be same obvious like
@@ -92,7 +90,8 @@ public class ScanReportRestController {
                                                   @PathVariable("projectId") String projectId,
                                                   @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme)throws IOException {
         /* @formatter:on */
-        // ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId);
+        // ScanSecHubReport scanSecHubReport =
+        // fetchObfuscatedScanSecHubReport(projectId);
 
         ScanSecHubReport scanSecHubReport;
 
@@ -131,23 +130,23 @@ public class ScanReportRestController {
     }
 
     private static final String defaultReport = """
-                {
-                  "result" : {
-                    "count" : 0,
-                    "findings" : [ ]
-                  },
-                  "jobUUID" : "b1928324-b240-4e78-b8ac-7afe89ce421e",
-                  "reportVersion" : "1.0",
-                  "messages" : [ {
-                    "type" : "WARNING",
-                    "text" : "No results from a security product available for this job!"
-                  } ],
-                  "trafficLight" : "OFF",
-                  "metaData" : {
-                    "labels" : { },
-                    "summary" : { }
-                  },
-                  "status" : "SUCCESS"
-                }
-                """;
+            {
+              "result" : {
+                "count" : 0,
+                "findings" : [ ]
+              },
+              "jobUUID" : "b1928324-b240-4e78-b8ac-7afe89ce421e",
+              "reportVersion" : "1.0",
+              "messages" : [ {
+                "type" : "WARNING",
+                "text" : "No results from a security product available for this job!"
+              } ],
+              "trafficLight" : "OFF",
+              "metaData" : {
+                "labels" : { },
+                "summary" : { }
+              },
+              "status" : "SUCCESS"
+            }
+            """;
 }

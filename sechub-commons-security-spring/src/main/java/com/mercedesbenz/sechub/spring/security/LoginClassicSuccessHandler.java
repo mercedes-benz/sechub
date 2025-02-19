@@ -2,15 +2,12 @@
 package com.mercedesbenz.sechub.spring.security;
 
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
-
-import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
 
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -45,10 +42,10 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
     private final AES256Encryption aes256Encryption;
     private final Duration cookieAge;
 
-    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String redirectUri) {
-        this.defaultRedirectUri = requireNonNull(defaultRedirectUri, "Property defaultRedirectUri must not be null");
+    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String defaultRedirectUri) {
         this.aes256Encryption = aes256Encryption;
         this.cookieAge = cookieAge;
+        this.defaultRedirectUri = requireNonNull(defaultRedirectUri, "Property defaultRedirectUri must not be null");
     }
 
     @Override
@@ -69,7 +66,6 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
         }
     }
 
-    // TODO: extract common redirect component for this and login oauth2 success handler
     private static void sendRedirect(HttpServletResponse response, String redirectUri, String theme) {
         try {
             log.debug("Redirecting to {}", redirectUri);

@@ -5,16 +5,12 @@ import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfigurat
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
-import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Optional;
 
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
