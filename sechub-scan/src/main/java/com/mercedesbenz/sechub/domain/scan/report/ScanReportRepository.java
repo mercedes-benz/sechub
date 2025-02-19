@@ -17,7 +17,8 @@ public interface ScanReportRepository extends JpaRepository<ScanReport, UUID> {
 
     public ScanReport findBySecHubJobUUID(UUID secHubJobUUID);
 
-    Optional<ScanReport> findTopByProjectIdOrderByStartedDesc(String projectId);
+    @Query("SELECT s.secHubJobUUID FROM ScanReport s WHERE s.projectId = :projectId ORDER BY s.started DESC")
+    Optional<UUID> findLatestSecHubJobUUIDByProjectId(String projectId);
 
     @Modifying
     @Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)

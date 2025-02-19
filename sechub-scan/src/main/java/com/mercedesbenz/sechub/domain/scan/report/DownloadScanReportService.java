@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsLatestJobReport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -36,41 +37,37 @@ public class DownloadScanReportService {
     @Autowired
     private ScanReportSensitiveDataObfuscator scanReportSensitiveDataObfuscator;
 
-    @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
-    public ScanSecHubReport getObfuscatedScanSecHubReport(String projectId) {
-        /* validate */
+    // TODO: Write tests for this method
+
+    @UseCaseUserDownloadsLatestJobReport(@Step(number = 3, name = "Resolve latest scan report result"))
+    public ScanSecHubReport getLatestObfuscatedScanSecHubReport(String projectId) {
         assertion.assertIsValidProjectId(projectId);
 
         scanAssertService.assertUserHasAccessToProject(projectId);
         scanAssertService.assertProjectAllowsReadAccess(projectId);
 
-        Optional<ScanReport> optReport = reportRepository.findTopByProjectIdOrderByStartedDesc(projectId);
+        Optional<UUID> optJobUUID = reportRepository.findLatestSecHubJobUUIDByProjectId(projectId);
 
-        if (optReport.isEmpty()) {
+        if (optJobUUID.isEmpty()) {
             throw new NotFoundException("Report not found or you have no access to report!");
         }
 
-        /* audit */
-        auditLogService.log("starts download of report for job: {}", optReport.get().secHubJobUUID);
-
-        ScanReport report = optReport.get();
-
-        scanAssertService.assertUserHasAccessToReport(report);
-
-        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-        scanReportSensitiveDataObfuscator.obfuscate(scanSecHubReport);
-
-        return scanSecHubReport;
+        return internalGetObfuscatedScanSecHubReport(optJobUUID.get());
     }
 
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
     public ScanSecHubReport getObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
         /* validate */
         assertion.assertIsValidProjectId(projectId);
-        assertion.assertIsValidJobUUID(jobUUID);
 
         scanAssertService.assertUserHasAccessToProject(projectId);
         scanAssertService.assertProjectAllowsReadAccess(projectId);
+
+        return internalGetObfuscatedScanSecHubReport(jobUUID);
+    }
+
+    private ScanSecHubReport internalGetObfuscatedScanSecHubReport(UUID jobUUID) {
+        assertion.assertIsValidJobUUID(jobUUID);
 
         /* audit */
         auditLogService.log("starts download of report for job: {}", jobUUID);
@@ -80,6 +77,7 @@ public class DownloadScanReportService {
         if (report == null) {
             throw new NotFoundException("Report not found or you have no access to report!");
         }
+
         scanAssertService.assertUserHasAccessToReport(report);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);

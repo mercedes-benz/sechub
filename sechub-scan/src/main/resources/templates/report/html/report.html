@@ -11,6 +11,9 @@
 </head>
 <body>
 
+<!-- TODO: create if conditions to not include plugin source code when report is fetched normally -->
+
+<!-- TODO: clarify if NONCE is sufficient for secure inline scripts here (JAN) -->
 <script th:nonce="${nonce}">
     <!-- Doing this because inline event callbacks are blocked by Content Security Policy -->
 

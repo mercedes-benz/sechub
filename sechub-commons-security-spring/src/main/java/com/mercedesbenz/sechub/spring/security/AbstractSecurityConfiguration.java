@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -187,7 +186,7 @@ public abstract class AbstractSecurityConfiguration {
             throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
         }
 
-		LoginRedirectHandler loginRedirectHandler = new LoginRedirectHandler(loginProperties.getRedirectUri());
+        LoginRedirectHandler loginRedirectHandler = new LoginRedirectHandler(loginProperties.getRedirectUri());
 
         if (loginProperties.isOAuth2ModeEnabled()) {
             /*

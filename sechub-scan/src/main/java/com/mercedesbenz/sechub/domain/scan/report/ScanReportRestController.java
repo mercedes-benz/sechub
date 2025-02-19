@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsLatestJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 
@@ -44,6 +45,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class ScanReportRestController {
 
+    private static final String CONTENT_SECURITY_POLICY_HEADER = "Content-Security-Policy";
+    private static final String SCRIPT_SRC_NONCE_HEADER_VALUE_FORMAT = "script-src 'nonce-%s' 'strict-dynamic';";
+
     @Autowired
     private HTMLScanResultReportModelBuilder htmlModelBuilder;
 
@@ -52,6 +56,8 @@ public class ScanReportRestController {
 
     @Autowired
     private DownloadSpdxScanReportService serecoSpdxDownloadService;
+
+    // TODO: extend api tests to cover for themes etc.
 
     /* @formatter:off */
 	@UseCaseUserDownloadsJobReport(@Step(number=1, next= {3}, name="REST API call to get JSON report", needsRestDoc=true))
@@ -71,37 +77,42 @@ public class ScanReportRestController {
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
 	@ResponseBody
 	public ModelAndView getScanSecHubReportAsHTML(
+            HttpServletResponse response,
 			@PathVariable("projectId") String projectId,
 			@PathVariable("jobUUID") UUID jobUUID,
-            @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme
-			) {
+            @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme) {
 		/* @formatter:on */
         ScanSecHubReport scanSecHubReport = fetchObfuscatedScanSecHubReport(projectId, jobUUID);
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
+        String nonce = generateNumberUsedOnce();
+        setNonceHeader(response, nonce);
+        model.put("nonce", nonce);
         return new ModelAndView("report/html/report", model);
     }
 
     /* @formatter:off */
-    @UseCaseUserDownloadsJobReport(@Step(number=2, next= {3}, name="REST API call to get HTML report", needsRestDoc=true))
+    @UseCaseUserDownloadsLatestJobReport(@Step(number=2, next= {3}, name="REST API call to get latest HTML report", needsRestDoc=true))
     @RequestMapping(path = "/report", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
     @ResponseBody
-    public ModelAndView getScanSecHubReportAsHTML(HttpServletResponse response,
-                                                  @PathVariable("projectId") String projectId,
-                                                  @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme)throws IOException {
+    public ModelAndView getLatestScanSecHubReportAsHTML(HttpServletResponse response,
+                                                        @PathVariable("projectId") String projectId,
+                                                        @RequestParam(value = "theme", required = false, defaultValue = DEFAULT_THEME) String theme) throws IOException {
         /* @formatter:on */
         // ScanSecHubReport scanSecHubReport =
-        // fetchObfuscatedScanSecHubReport(projectId);
+        // fetchLatestObfuscatedScanSecHubReport(projectId);
 
-        ScanSecHubReport scanSecHubReport;
+        /**
+         * For testing purposes, we use a default report. This is only for testing
+         * FIXME: Remove this before merging
+         */
 
         File file = ResourceUtils.getFile("classpath:defaultFullReport.json");
-        scanSecHubReport = new ObjectMapper().readValue(file, ScanSecHubReport.class);
+        ScanSecHubReport scanSecHubReport = new ObjectMapper().readValue(file, ScanSecHubReport.class);
+
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
-
-        String nonce = UUID.randomUUID().toString().replace("-", ""); // Generate a unique nonce
-        response.setHeader("Content-Security-Policy", "script-src 'nonce-" + nonce + "' 'strict-dynamic';");
-
+        String nonce = generateNumberUsedOnce();
+        setNonceHeader(response, nonce);
         model.put("nonce", nonce);
 
         return new ModelAndView("report/html/report", model);
@@ -121,32 +132,27 @@ public class ScanReportRestController {
         return spdxDocument;
     }
 
-    private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId) {
-        return downloadReportService.getObfuscatedScanSecHubReport(projectId);
+    private ScanSecHubReport fetchLatestObfuscatedScanSecHubReport(String projectId) {
+        return downloadReportService.getLatestObfuscatedScanSecHubReport(projectId);
     }
 
     private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
         return downloadReportService.getObfuscatedScanSecHubReport(projectId, jobUUID);
     }
 
-    private static final String defaultReport = """
-            {
-              "result" : {
-                "count" : 0,
-                "findings" : [ ]
-              },
-              "jobUUID" : "b1928324-b240-4e78-b8ac-7afe89ce421e",
-              "reportVersion" : "1.0",
-              "messages" : [ {
-                "type" : "WARNING",
-                "text" : "No results from a security product available for this job!"
-              } ],
-              "trafficLight" : "OFF",
-              "metaData" : {
-                "labels" : { },
-                "summary" : { }
-              },
-              "status" : "SUCCESS"
-            }
-            """;
+    /**
+     * Sets the number-used-once (nonce) header for the CSP to allow only trusted
+     * inline scripts and styles.
+     */
+    private static void setNonceHeader(HttpServletResponse response, String nonce) {
+        response.setHeader(CONTENT_SECURITY_POLICY_HEADER, SCRIPT_SRC_NONCE_HEADER_VALUE_FORMAT.formatted(nonce));
+    }
+
+    /**
+     * Generates a number-used-once (nonce) for the CSP header using a random UUID.
+     * The UUID is converted to a string and the hyphens are removed.
+     */
+    private static String generateNumberUsedOnce() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 }

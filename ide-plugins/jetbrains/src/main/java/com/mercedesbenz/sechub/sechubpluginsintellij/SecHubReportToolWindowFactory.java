@@ -40,7 +40,10 @@ final class SecHubReportToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        /* this should always be jetbrain for intellij */
         String theme = "jetbrains";
+
+        /* TODO: somehow get the project name from user - e.g. get project name from UI (project explroer in intellij) */
         String projectId = "test";
 
         /* Create a WebView using JCEF */
@@ -138,6 +141,7 @@ final class SecHubReportToolWindowFactory implements ToolWindowFactory {
         ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("com.mercedesbenz.sechub.sechubpluginsintellij.SecHubReportToolWindowFactory");
         tw.stretchWidth((int)(Toolkit.getDefaultToolkit().getScreenSize().width * 0.3));
 
+        // TODO: Remove this or make configurable (.....)
         /* Add a Chrome DevTools WebView */
         CefBrowser devTools = cefBrowser.getDevTools();
         JBCefBrowser devToolsBrowser = JBCefBrowser.createBuilder()
