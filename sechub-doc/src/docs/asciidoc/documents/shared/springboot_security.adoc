@@ -42,7 +42,7 @@ In `Opaque Token` mode the server forwards the token to an introspection endpoin
 NOTE:  `Opaque Token` mode increases the load on the IDP server hence caching is very important. Adjust the caching settings to your
 IDPs needs. If you don't have high security requirements you can simply use `JWT` mode.
 
-Below is an example configuration with `Classic` mode and `OAuth2` in `Opaque Token` mode:
+Below is an example configuration with Classic mode and OAuth2 in `Opaque Token` mode:
 
 [source,yaml]
 ----
@@ -51,15 +51,18 @@ sechub:
     server:
       modes:
         - oauth2
-        - classic
       oauth2:
         mode: opaque-token
         opaque-token:
           introspection-uri: <introspection-uri-of-your-idp>
           client-id: <client-id>
           client-secret: <client-secret>
+          default-token-expires-in: 60m # default is '1d' if this property is not set
+          max-cache-duration: 1d
 ----
 
+- `default-token-expires-in`: The default expiration time for tokens. This is used when the IDP does not provide an expiration time.
+- `max-cache-duration`: The maximum time a token is cached on SecHub side. After this time, the token is introspected again.
 
 ==== Login
 

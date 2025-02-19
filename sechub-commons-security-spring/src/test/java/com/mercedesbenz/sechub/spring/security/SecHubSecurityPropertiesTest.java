@@ -240,15 +240,18 @@ class SecHubSecurityPropertiesTest {
         String introspectionUri = "https://example.org/introspection-uri";
         String clientId = "example-client-id";
         String clientSecret = "example-client-secret";
+        Duration defaultTokenExpiresIn = Duration.ofDays(1);
+        Duration maxCacheDuration = Duration.ofDays(30);
 
         /* execute */
         SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
-                introspectionUri, clientId, clientSecret);
+                introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration);
 
         /* test */
         assertThat(opaqueToken.getIntrospectionUri()).isEqualTo(introspectionUri);
         assertThat(opaqueToken.getClientId()).isEqualTo(clientId);
         assertThat(opaqueToken.getClientSecret()).isEqualTo(clientSecret);
+        assertThat(opaqueToken.getMaxCacheDuration()).isEqualTo(maxCacheDuration);
     }
 
     @ParameterizedTest
@@ -257,9 +260,15 @@ class SecHubSecurityPropertiesTest {
     void construct_opaque_token_properties_with_null_arguments_fails(String introspectionUri,
                                                                      String clientId,
                                                                      String clientSecret,
+                                                                     Duration maxCacheDuration,
                                                                      String errMsg) {
+        /* prepare */
+
+        /* 'defaultTokenExpiresIn' is nullable */
+        Duration defaultTokenExpiresIn = null;
+
         /* execute + test */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(introspectionUri, clientId, clientSecret))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -421,9 +430,10 @@ class SecHubSecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "example-client-id", "example-client-secret", "The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null")
+                    Arguments.of(null, "example-client-id", "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", null, "The property 'sechub.security.server.oauth2.opaque-token.max-cache-duration' must not be null")
             );
         }
         /* @formatter:on */
