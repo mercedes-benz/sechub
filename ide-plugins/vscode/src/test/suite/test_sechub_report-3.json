@@ -1,0 +1,38 @@
+{
+   "jobUUID": "091234b5-40aa-4dcf-81f8-7aa8f723b730",
+   "result": {
+      "count": 2,
+      "findings": [
+         {
+            "id": 1,
+            "name": "Unsafe Object Binding",
+            "severity": "CRITICAL",
+            "code": {
+               "location": "com/mercedesbenz/sechub/domain/administration/project/ProjectAdministrationRestController.java",
+               "line": 82,
+               "column": 0,
+               "calls": {
+                  "location": "com/mercedesbenz/sechub/domain/administration/project/ProjectJsonInput.java",
+                  "line": 36,
+                  "column": 0
+               }
+            },
+            "type": "codeScan",
+            "cweId": 915
+         },
+         {
+            "id": 2,
+            "name": "Use of Broken or Risky Cryptographic Algorithm",
+            "severity": "LOW",
+            "code": {
+               "location": "com/mercedesbenz/sechub/adapter/support/MessageDigestSupport.java",
+               "line": 12,
+               "column": 0
+            },
+            "type": "codeScan",
+            "cweId": 327
+         }
+      ]
+   },
+   "trafficLight": "YELLOW"
+}

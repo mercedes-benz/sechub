@@ -1,0 +1,124 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "sechub",
+	"displayName": "SecHub",
+	"description": "SecHub plugin for VSCode/VSCodium/Eclipse Theia",
+	"version": "1.0.1",
+	"license": "MIT",
+	"icon": "other/images/sechub-logo-big.png",
+	"galleryBanner": {
+		"color": "#ffca28",
+		"theme": "dark"
+	},
+	"publisher": "Mercedes-Benz",
+	"homepage": "https://github.com/mercedes-benz/sechub-plugin-vscode/",
+	"bugs": {
+		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/"
+	},
+	"engines": {
+		"vscode": "^1.77.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onView:sechubReportView"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "sechubReportView.importReportFile",
+				"title": "Import SecHub report file",
+				"icon": "media/sechub-import-report.svg"
+			},
+			{
+				"command": "sechubReportView.openCWEinBrowser",
+				"title": "CWE"
+			},
+			{
+				"command": "sechubCallHierarchyView.showInEditor",
+				"title": "Show"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "sechub-view-container",
+					"title": "SecHub",
+					"icon": "media/sechub-logo-vscode-styled.svg"
+				}
+			]
+		},
+		"views": {
+			"sechub-view-container": [
+				{
+					"id": "sechubReportView",
+					"name": "Report",
+					"icon": "media/sechub-logo-vscode-styled.svg",
+					"contextualTitle": "SecHub Report"
+				},
+				{
+					"id": "sechubCallHierarchyView",
+					"name": "Call Hierarchy",
+					"icon": "media/sechub-logo-vscode-styled.svg",
+					"contextualTitle": "SecHub Call Hierarchy"
+				},
+				{
+					"id": "sechubInfoView",
+					"name": "Info",
+					"icon": "media/sechub-logo-vscode-styled.svg",
+					"contextualTitle": "SecHub Call Hierarchy"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "sechubReportView",
+				"contents": "No report view data loaded"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "sechubReportView.importReportFile",
+					"when": "view == sechubReportView",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "sechubReportView.openCWEinBrowser",
+					"when": "view == sechubReportView && viewItem == reportItem",
+					"group": "inline"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^8.1.0",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "16",
+		"@types/vscode": "1.77.0",
+		"@typescript-eslint/eslint-plugin": "^5.59.9",
+		"@typescript-eslint/parser": "^5.59.9",
+		"@vscode/test-electron": "^2.3.2",
+		"eslint": "^8.42.0",
+		"glob": "^8.1.0",
+		"mocha": "^10.2.0",
+		"mocha-explorer-launcher-scripts": "^0.4.0",
+		"typescript": "^4.9.5"
+	}
+}
