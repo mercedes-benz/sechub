@@ -116,6 +116,42 @@ public class IntegrationTestExampleConstants {
     public static final String PATH_TO_TARFILE_WITH_DATA_SECTION_FOR_INCLUDE_EXCLUDES = "pds/codescan/upload/tarfile_with_data_being_included_and_excluded.tar";
 
     /**
+     * Tar file structure (without __data__ section, everything is inside root
+     * folder!)
+     *
+     * <pre>
+     * /
+     *      /files-a
+     *         file-a-1.txt (low finding)
+     *         file-a-2.txt (low finding)
+     *         subfolder-1/
+     *             file-a-3.txt ((medium finding)
+     *      /files-b/
+     *        /included-folder
+     *          file-b-1.txt (low finding)
+     *          file-b-2.txt (low finding)
+     *          excluded-1.txt (low finding)
+     *          subfolder-2/
+     *             file-b-3.txt (critical finding)
+     *          excluded-folder/
+     *             file-b-4.txt (critical finding)
+     *        /not-included-subfolder-3
+     *          file-b-5.txt (low finding)
+     * </pre>
+     *
+     * This file will be used with file filtering having
+     *
+     * <pre>
+     *
+     * includes: {@value IntegrationTestDefaultExecutorConfigurations#INCLUDES_1} and
+     * excludes: {@value IntegrationTestDefaultExecutorConfigurations#EXCLUDES_1}
+     *
+     * by using {@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES profile 10}.
+     * </pre>
+     */
+    public static final String PATH_TO_TARFILE_WITH_DATA_SECTION_FOR_INCLUDE_EXCLUDES__BINARIES_ARCHIVE_ROOT_USED = "pds/codescan/upload/tarfile_with_data_being_included_and_excluded_binaries_archive_root.tar";
+
+    /**
      * Zip file structure
      *
      * <pre>
