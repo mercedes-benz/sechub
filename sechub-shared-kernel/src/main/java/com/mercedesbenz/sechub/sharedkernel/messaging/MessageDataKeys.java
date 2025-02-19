@@ -56,6 +56,8 @@ public class MessageDataKeys {
     public static final MessageDataKey<String> EXECUTED_BY = createKey("common.executedby", STRING_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<String> REPORT_TRAFFIC_LIGHT = createKey("report.trafficlight", STRING_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<SecHubMessagesList> REPORT_MESSAGES = createKey("report.messages", SECHUB_MESSAGES_LIST_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<SecHubMessagesList> ERROR_MESSAGES = createKey("full.config.validation.result.messages",
+            SECHUB_MESSAGES_LIST_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", UID_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", UID_MESSAGE_DATA_PROVIDER);

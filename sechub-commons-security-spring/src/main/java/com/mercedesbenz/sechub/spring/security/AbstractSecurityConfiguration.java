@@ -38,6 +38,8 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
+
 /**
  * Abstract class that provides a base configuration for securing stateless web
  * applications inside the SecHub project using Spring Security.
@@ -93,7 +95,9 @@ public abstract class AbstractSecurityConfiguration {
 														  @Autowired(required = false) UserDetailsService userDetailsService,
 														  RestTemplate restTemplate,
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
-														  @Autowired(required = false) JwtDecoder jwtDecoder) throws Exception {
+														  @Autowired(required = false) JwtDecoder jwtDecoder,
+														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+
 		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
 
 		httpSecurity
@@ -109,14 +113,21 @@ public abstract class AbstractSecurityConfiguration {
 				.csrf(AbstractHttpConfigurer::disable)
 				.headers((headers) -> headers.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
 
-		configureResourceServerMode(httpSecurity, secHubSecurityProperties.getResourceServerProperties(), userDetailsService, aes256Encryption, jwtDecoder, restTemplate);
+		configureResourceServerMode(
+				httpSecurity,
+				secHubSecurityProperties.getResourceServerProperties(),
+				userDetailsService,
+				aes256Encryption,
+				jwtDecoder,
+				restTemplate,
+				applicationShutdownHandler);
 
         return httpSecurity.build();
     }
 	/* @formatter:on */
 
     @Bean
-    @Conditional(LoginOAuth2EnabledCondition.class)
+    @Conditional(LoginModeOAuth2ActiveCondition.class)
     ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties secHubSecurityProperties) {
         SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();
@@ -163,6 +174,8 @@ public abstract class AbstractSecurityConfiguration {
 				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+		LOG.info("Configure login mode: classic={}, oauth2={}", loginProperties.isClassicModeEnabled(), loginProperties.isOAuth2ModeEnabled());
+
 		if (!loginProperties.isOAuth2ModeEnabled() && !loginProperties.isClassicModeEnabled()) {
 			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
 					SecHubSecurityProperties.LoginProperties.PREFIX,
@@ -185,8 +198,6 @@ public abstract class AbstractSecurityConfiguration {
         if (loginProperties.isClassicModeEnabled()) {
             configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties);
         }
-
-        /* @formatter:on */
 
         return httpSecurity.build();
     }
@@ -223,7 +234,8 @@ public abstract class AbstractSecurityConfiguration {
 													UserDetailsService userDetailsService,
 													AES256Encryption aes256Encryption,
 													JwtDecoder jwtDecoder,
-													RestTemplate restTemplate) throws Exception {
+													RestTemplate restTemplate,
+													ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
 
 		if (resourceServerProperties == null) {
 			/*
@@ -234,6 +246,8 @@ public abstract class AbstractSecurityConfiguration {
 			LOG.warn("No resource server configuration detected. All requests to protected paths will be rejected.");
 			return;
 		}
+
+		LOG.info("Configure resource server mode: classic={}, oauth2={}", resourceServerProperties.isClassicModeEnabled(), resourceServerProperties.isOAuth2ModeEnabled());
 
 		if (!resourceServerProperties.isClassicModeEnabled() && !resourceServerProperties.isOAuth2ModeEnabled()) {
 			String exMsg = "At least one of 'classic' or 'oauth2' mode must be enabled by setting the '%s.%s' property".formatted(
@@ -250,8 +264,16 @@ public abstract class AbstractSecurityConfiguration {
         }
 
         if (resourceServerProperties.isOAuth2ModeEnabled()) {
-            configureResourceServerOAuth2Mode(httpSecurity, resourceServerProperties.getOAuth2Properties(), userDetailsService, aes256Encryption, jwtDecoder,
-                    restTemplate);
+            /* @formatter:off */
+            configureResourceServerOAuth2Mode(
+					httpSecurity,
+					resourceServerProperties.getOAuth2Properties(),
+					userDetailsService,
+					aes256Encryption,
+					jwtDecoder,
+                    restTemplate,
+					applicationShutdownHandler);
+			/* @formatter:on */
         }
     }
 
@@ -271,7 +293,10 @@ public abstract class AbstractSecurityConfiguration {
 														  UserDetailsService userDetailsService,
 														  AES256Encryption aes256Encryption,
 														  JwtDecoder jwtDecoder,
-														  RestTemplate restTemplate) throws Exception {
+														  RestTemplate restTemplate,
+														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+
+	    LOG.info("Configure oAuth2 mode: jwt={}, opaqueToken={}", oAuth2Properties.isJwtModeEnabled(), oAuth2Properties.isOpaqueTokenModeEnabled());
 
 		if (oAuth2Properties.isJwtModeEnabled() == oAuth2Properties.isOpaqueTokenModeEnabled()) {
 			String exMsg = "Either 'jwt' or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(
@@ -289,7 +314,7 @@ public abstract class AbstractSecurityConfiguration {
 		}
 
 		if (oAuth2Properties.isOpaqueTokenModeEnabled()) {
-			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption);
+			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler);
 		}
 	}
 	/* @formatter:on */
@@ -299,7 +324,6 @@ public abstract class AbstractSecurityConfiguration {
 															 UserDetailsService userDetailsService,
 															 JwtDecoder jwtDecoder,
 															 AES256Encryption aes256Encryption) throws Exception {
-
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
 		}
@@ -330,7 +354,8 @@ public abstract class AbstractSecurityConfiguration {
 																	 SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueTokenProperties,
 																	 UserDetailsService userDetailsService,
 																	 RestTemplate restTemplate,
-																	 AES256Encryption aes256Encryption) throws Exception {
+																	 AES256Encryption aes256Encryption,
+																	 ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
 
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
@@ -340,12 +365,19 @@ public abstract class AbstractSecurityConfiguration {
 			throw new NoSuchBeanDefinitionException(RestTemplate.class);
 		}
 
+		if (applicationShutdownHandler == null) {
+			throw new NoSuchBeanDefinitionException(ApplicationShutdownHandler.class);
+		}
+
 		OpaqueTokenIntrospector opaqueTokenIntrospector = new OAuth2OpaqueTokenIntrospector(
 				restTemplate,
 				opaqueTokenProperties.getIntrospectionUri(),
 				opaqueTokenProperties.getClientId(),
 				opaqueTokenProperties.getClientSecret(),
-				userDetailsService);
+				opaqueTokenProperties.getDefaultTokenExpiresAt(),
+				opaqueTokenProperties.getMaxCacheDuration(),
+				userDetailsService,
+				applicationShutdownHandler);
 
 		if (aes256Encryption == null) {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);

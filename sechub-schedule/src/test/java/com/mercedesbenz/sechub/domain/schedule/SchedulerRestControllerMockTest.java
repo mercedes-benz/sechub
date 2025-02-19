@@ -37,6 +37,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionResult;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
@@ -253,6 +254,11 @@ public class SchedulerRestControllerMockTest {
         @Bean
         RestTemplate restTemplate() {
             return mock(RestTemplate.class);
+        }
+
+        @Bean
+        ApplicationShutdownHandler applicationShutdownHandler() {
+            return mock();
         }
     }
 }

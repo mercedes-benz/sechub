@@ -2,6 +2,8 @@
 package com.mercedesbenz.sechub.spring.security;
 
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
+
+import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
@@ -43,10 +45,10 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
     private final AES256Encryption aes256Encryption;
     private final Duration cookieAge;
 
-    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String defaultRedirectUri) {
+    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String redirectUri) {
+        this.defaultRedirectUri = requireNonNull(defaultRedirectUri, "Property defaultRedirectUri must not be null");
         this.aes256Encryption = aes256Encryption;
         this.cookieAge = cookieAge;
-        this.defaultRedirectUri = requireNonNull(defaultRedirectUri, "Property defaultRedirectUri must not be null");
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
@@ -19,6 +20,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -75,6 +77,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     @Autowired
     TemplateService templateService;
 
+    @Autowired
+    ScanSecHubConfigurationRuntimeInspector configurationRuntimeInspector;
+
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -125,6 +130,8 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             return handleAssignTemplateToProjectRequest(request);
         case REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT:
             return handleUnassignTemplateFromProjectRequest(request);
+        case REQUEST_FULL_CONFIGURATION_VALIDATION:
+            return handleFullConfigurationValidation(request);
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
@@ -173,6 +180,20 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             LOG.error("Was not able to purge results for job {}", jobUUID, e);
             return purgeFailed(jobUUID, e);
         }
+    }
+
+    @IsRecevingSyncMessage(MessageID.REQUEST_FULL_CONFIGURATION_VALIDATION)
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_FULL_CONFIGURATION_VALIDATION, answeringTo = MessageID.REQUEST_FULL_CONFIGURATION_VALIDATION, branchName = "success")
+    private DomainMessageSynchronousResult handleFullConfigurationValidation(DomainMessage request) {
+        SecHubConfiguration config = request.get(MessageDataKeys.SECHUB_UNENCRYPTED_CONFIG);
+
+        /* start inspection */
+        SecHubMessagesList inspectionList = configurationRuntimeInspector.inspect(config);
+
+        /* return inspection messages inside result */
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_FULL_CONFIGURATION_VALIDATION);
+        result.set(MessageDataKeys.ERROR_MESSAGES, inspectionList);
+        return result;
     }
 
     @IsSendingSyncMessageAnswer(value = MessageID.JOB_RESULT_PURGE_FAILED, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "failed")

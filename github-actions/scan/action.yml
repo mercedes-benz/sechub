@@ -57,6 +57,9 @@ inputs:
     description: 'Job will be marked as failed if SecHub finds something'
     required: false
     default: true
+  define-false-positives:
+    description: 'The file that defines false positives. This step is executed before the scan. The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file. You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.'
+    required: false
 
 outputs:
   scan-trafficlight:
@@ -115,6 +118,7 @@ runs:
         trust-all: ${{ inputs.trust-all }}
         debug: ${{ inputs.debug }}
         fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
+        define-false-positives: ${{ inputs.define-false-positives }}
         ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
         ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
         ACTIONS_CACHE_URL: ${{ env.ACTIONS_CACHE_URL }}

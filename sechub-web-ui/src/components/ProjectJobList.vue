@@ -31,7 +31,7 @@
             <v-btn icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
 
-          <div v-if="jobs.length === 0 && !loading">
+          <div v-if="(!jobs || jobs.length === 0 && !loading)">
             <v-list bg-color="background_paper" lines="two">
               <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
               <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
@@ -87,7 +87,7 @@
                   <td>
                     <AsyncButton
                       v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
-                      :id=job.jobUUID
+                      :id="job.jobUUID || ''"
                       color="error"
                       icon="mdi-close-circle-outline"
                       @button-clicked="cancelJob"
@@ -127,7 +127,6 @@
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
-import AsyncButton from './AsyncButton.vue'
 
   export default {
     name: 'ProjectComponent',
