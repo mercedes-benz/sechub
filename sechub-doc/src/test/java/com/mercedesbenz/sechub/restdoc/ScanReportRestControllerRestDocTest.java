@@ -241,7 +241,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("metaData", null);
         map.put("reportHelper", new HTMLReportHelper());
         map.put("scanTypeSummaries", new ArrayList<>());
-        when(modelBuilder.build(any())).thenReturn(map);
+        when(modelBuilder.build(any(), theme)).thenReturn(map);
     }
 
 }

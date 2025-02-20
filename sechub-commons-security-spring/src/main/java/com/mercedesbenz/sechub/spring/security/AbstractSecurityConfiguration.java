@@ -76,13 +76,14 @@ public abstract class AbstractSecurityConfiguration {
 
     /* @formatter:off */
 	private static final Set<String> DEFAULT_PUBLIC_PATHS = Set.of(
-			"/css/**",
 			"/js/**",
 			"/images/**",
 			"/login/oauth2/**",
 			"/oauth2/**",
 			"/favicon.ico",
-			"/sechub-logo.svg"
+			"/sechub-logo.svg",
+			"/login-default.css",
+			"/login-jetbrains.css"
 	);
 	/* @formatter:on */
 
@@ -184,6 +185,9 @@ public abstract class AbstractSecurityConfiguration {
 
             throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
         }
+
+        LoginRedirectHandler loginRedirectHandler = new LoginRedirectHandler(loginProperties.getRedirectUri());
+
         if (loginProperties.isOAuth2ModeEnabled()) {
             /*
              * Note:
@@ -191,11 +195,11 @@ public abstract class AbstractSecurityConfiguration {
              * This will set the default login page to the oauth2 login page. Spring will
              * always use the default login page of the first configured login mode.
              */
-            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService);
+            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService, loginRedirectHandler);
         }
 
         if (loginProperties.isClassicModeEnabled()) {
-            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties);
+            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties, loginRedirectHandler);
         }
 
         return httpSecurity.build();
@@ -397,7 +401,8 @@ public abstract class AbstractSecurityConfiguration {
 												 SecHubSecurityProperties.LoginProperties loginProperties,
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
-												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
+												 LoginRedirectHandler loginRedirectHandler) throws Exception {
 		SecHubSecurityProperties.LoginProperties.OAuth2Properties loginOAuth2Properties = loginProperties.getOAuth2Properties();
 
 		if (restTemplate == null) {
@@ -414,8 +419,11 @@ public abstract class AbstractSecurityConfiguration {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
 		}
 
-		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
-				aes256Encryption, loginProperties.getRedirectUri());
+		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(
+				loginOAuth2Properties.getProvider(),
+				oAuth2AuthorizedClientService,
+				aes256Encryption,
+				loginRedirectHandler);
 
 		/* Enable OAuth2 */
 		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(loginProperties.getLoginPage())
@@ -425,7 +433,7 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
-            SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
+            SecHubSecurityProperties.LoginProperties loginProperties, LoginRedirectHandler loginRedirectHandler) throws Exception {
         if (aes256Encryption == null) {
             throw new NoSuchBeanDefinitionException(AES256Encryption.class);
         }
@@ -438,8 +446,7 @@ public abstract class AbstractSecurityConfiguration {
         AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(
 				aes256Encryption,
 				loginProperties.getClassicAuthProperties().getCookieAge(),
-				loginProperties.getRedirectUri()
-		);
+				loginRedirectHandler);
         String loginPage = loginProperties.getLoginPage();
 		httpSecurity.formLogin(form -> form
 				.loginPage(loginPage)

@@ -11,8 +11,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -44,24 +42,23 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoginOAuth2SuccessHandler.class);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final Duration DEFAULT_EXPIRY_ONE_HOUR = Duration.ofHours(1);
 
     private final String provider;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final AES256Encryption aes256Encryption;
-    private final String redirectUri;
+    private final LoginRedirectHandler loginRedirectHandler;
 
     /* @formatter:off */
     public LoginOAuth2SuccessHandler(String provider,
                                      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
                                      AES256Encryption aes256Encryption,
-                                     String redirectUri) {
+                                     LoginRedirectHandler loginRedirectHandler) {
         this.provider = requireNonNull(provider, "Property provider must not be null");
         this.oAuth2AuthorizedClientService = requireNonNull(oAuth2AuthorizedClientService, "Property oAuth2AuthorizedClientService must not be null");
         this.aes256Encryption = requireNonNull(aes256Encryption, "Property aes256Encryption must not be null");
-        this.redirectUri = requireNonNull(redirectUri, "Property redirectUri must not be null");
+        this.loginRedirectHandler = requireNonNull(loginRedirectHandler, "Property loginRedirectHandler must not be null");
     }
     /* @formatter:on */
 
@@ -78,8 +75,7 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String encryptedAccessTokenB64Encoded = ENCODER.encodeToString(encryptedAccessTokenBytes);
         Cookie cookie = CookieHelper.createCookie(OAUTH2_COOKIE_NAME, encryptedAccessTokenB64Encoded, expiryDuration, BASE_PATH);
         response.addCookie(cookie);
-        LOG.debug("Redirecting to {}", redirectUri);
-        response.sendRedirect(redirectUri);
+        loginRedirectHandler.redirect(request, response);
     }
 
     private OAuth2AccessToken getAccessTokenFromAuthentication(Authentication authentication) {

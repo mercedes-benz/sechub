@@ -11,6 +11,7 @@
         <table th:class="'findingsTable '+ ${trafficLightGroup.findingsTableCssClass}">
 	       <thead>
 	           <tr>
+	               <th>False Positive</th>
 	               <th>Id</th>
 	               <th>Severity</th>
 	               <th>Type</th>
@@ -26,10 +27,15 @@
     </div>
   </div>
     
-</th:block> 
+</th:block>
 
 <th:block th:fragment="renderFindings(finding,scanTypeFindingData)">
-<td th:text="${finding.id}" th:id="${reportHelper.createFindingAnkerId(finding)}">4711</td>
+<td>
+    <input type="checkbox" class="markFalsePositive" th:id="${finding.id}">
+</td>
+<td th:text="${finding.id}" th:id="${reportHelper.createFindingAnkerId(finding)}">
+    4711
+</td>
 <td th:text="${finding.severity.text}">High</td>
 <td>
      <div th:if="${scanTypeFindingData.isFirstLinkItem(finding)}" th:id ="${reportHelper.createFirstFindingAnkerId(finding)}" th:text="${finding.name}">Command injection</div>
@@ -67,7 +73,13 @@
 		</div>
 		<div class="rTableRow" th:if="${codeScanEntries.get(finding.id).size() - 1  == iterator.index}" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
 			<div class="rTableCell" th:text="${codeScanEntry.callNumber}" style="width:5%">1</div>
-			<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">the location</div>
+			<a th:data-location="${codeScanEntry.location}"
+               th:data-line="${codeScanEntry.line}"
+               th:data-column="${codeScanEntry.column}"
+               class="rTableCell codeScanEntryLocation"
+               th:text="${codeScanEntry.location}"
+               style="width:25%" href="javascript:void(0)">the location
+            </a>
 			<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">101</div>
 			<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">54</div>
 			<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">execute</div>
@@ -86,7 +98,7 @@
 	<div class="rTable" th:if="${finding.hasScanType('webScan')}">
         <div class="rTable">
             <div class="rTableRowHead">
-                <div class="rTableHead rLocationHead">Location</div>
+                <div class="rTableHead rLocationHead"><a th:data-finding="${finding}" class="findingLocation" href="javascript:void(0)">Location</a></div>
                 <div class="rTableHead rAttackVectorHead">Attack vector</div>
                 <div class="rTableHead rEvidenceHead">Evidence</div>
             </div>
@@ -119,7 +131,7 @@
 			</div>
 			<div class="rTableRow" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
 				<div class="rTableCell" th:text="${codeScanEntry.callNumber}" style="width:5%">1</div>
-				<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">the location</div>
+				<a th:data-location="${codeScanEntry.location}" class="rTableCell codeScanEntryLocation" th:text="${codeScanEntry.location}" style="width:25%" href="javascript:void(0)"></a>
 				<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">101</div>
 				<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">54</div>
 				<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">execute</div>

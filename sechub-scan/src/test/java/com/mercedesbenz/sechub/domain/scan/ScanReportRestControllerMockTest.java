@@ -139,9 +139,9 @@ class ScanReportRestControllerMockTest {
         scanReport.setResult(JSONConverter.get().toJSON(model));
 
         ScanSecHubReport report = new ScanSecHubReport(scanReport);
-        Map<String, Object> realModelBuilderResult = realBuilder.build(report);
+        Map<String, Object> realModelBuilderResult = realBuilder.build(report, theme);
 
-        when(modelBuilder.build(any())).thenReturn(realModelBuilderResult);
+        when(modelBuilder.build(any(), theme)).thenReturn(realModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -169,7 +169,7 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("redList", Arrays.asList(new SecHubFinding()));
         reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
 
-        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
+        when(modelBuilder.build(any(), theme)).thenReturn(reportModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -276,7 +276,7 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("codeScanSupport", new HTMLCodeScanDescriptionSupport());
         reportModelBuilderResult.put("scanTypeSummaries", new ArrayList<>());
 
-        when(modelBuilder.build(any())).thenReturn(reportModelBuilderResult);
+        when(modelBuilder.build(any(), theme)).thenReturn(reportModelBuilderResult);
     }
 
 }

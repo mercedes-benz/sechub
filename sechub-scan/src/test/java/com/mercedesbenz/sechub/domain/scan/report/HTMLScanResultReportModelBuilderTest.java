@@ -58,7 +58,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(null));
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
 
         /* test */
         @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(reportMetaData));
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
 
         /* test */
         @SuppressWarnings("unchecked")
@@ -93,7 +93,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
 
         /* test */
         assertSame(result, map.get("result"));
@@ -110,7 +110,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_red_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
         assertEquals(SHOW_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -120,7 +120,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_yellow_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(SHOW_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -130,7 +130,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_green_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.GREEN);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(SHOW_LIGHT, map.get("styleGreen"));
@@ -140,7 +140,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_off_set_all_display_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.OFF);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -164,7 +164,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(code1.getCalls()).thenReturn(subCode);
 
         /* execute */
-        Map<String, Object> buildResult = builderToTest.build(scanSecHubReport);
+        Map<String, Object> buildResult = builderToTest.build(scanSecHubReport, theme);
 
         /* test */
         assertNotNull(buildResult.get("codeScanEntries"));
@@ -185,7 +185,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
 
         /* test */
         assertNotNull(map.get("codeScanSupport"));

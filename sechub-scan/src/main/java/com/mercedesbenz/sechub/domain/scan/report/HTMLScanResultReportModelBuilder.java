@@ -20,8 +20,10 @@ public class HTMLScanResultReportModelBuilder {
 
     static final String SHOW_LIGHT = "opacity: 1.0";
     static final String HIDE_LIGHT = "opacity: 0.25";
+    static final String DEFAULT_THEME = "default";
+    static final String JETBRAINS_THEME = "jetbrains";
 
-    public Map<String, Object> build(ScanSecHubReport report) {
+    public Map<String, Object> build(ScanSecHubReport report, String theme) {
         TrafficLight trafficLight = report.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;
@@ -58,6 +60,7 @@ public class HTMLScanResultReportModelBuilder {
         List<HTMLTrafficlightFindingGroup> trafficLightGroups = createTrafficLightFindingGroups(findings);
 
         Map<String, Object> model = new HashMap<>();
+        model.put("theme", theme);
         model.put("result", report.getResult());
 
         model.put("trafficlight", trafficLight.name());
