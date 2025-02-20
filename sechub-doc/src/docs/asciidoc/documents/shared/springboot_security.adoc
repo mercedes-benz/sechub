@@ -42,7 +42,7 @@ In `Opaque Token` mode the server forwards the token to an introspection endpoin
 NOTE:  `Opaque Token` mode increases the load on the IDP server hence caching is very important. Adjust the caching settings to your
 IDPs needs. If you don't have high security requirements you can simply use `JWT` mode.
 
-Below is an example configuration with `Classic` mode and `OAuth2` in `Opaque Token` mode:
+Below is an example configuration with Classic mode and OAuth2 in `Opaque Token` mode:
 
 [source,yaml]
 ----
@@ -51,15 +51,18 @@ sechub:
     server:
       modes:
         - oauth2
-        - classic
       oauth2:
         mode: opaque-token
         opaque-token:
           introspection-uri: <introspection-uri-of-your-idp>
           client-id: <client-id>
           client-secret: <client-secret>
+          default-token-expires-in: 60m # default is '1d' if this property is not set
+          max-cache-duration: 1d
 ----
 
+- `default-token-expires-in`: The default expiration time for tokens. This is used when the IDP does not provide an expiration time.
+- `max-cache-duration`: The maximum time a token is cached on SecHub side. After this time, the token is introspected again.
 
 ==== Login
 
@@ -72,6 +75,9 @@ Like with the `Resource Server` mode you can choose between `Classic` and `OAuth
 
 NOTE: The authentication credentials are securely encrypted in the cookies. For that `AES 256 Encryption` is used. You
 have to configure a secret key for the encryption.
+
+NOTE: While the cookie age is defined by the IDP in `OAuth2` mode, in `Classic` mode you can configure the cookie age
+yourself. The default is 24 hours.
 
 Below is a full configuration example with `Login` enabled in `Classic` and `OAuth2` mode:
 
@@ -109,6 +115,12 @@ sechub:
         token-uri: <token-uri>
         user-info-uri: <user-info-uri>
         jwk-set-uri: <jwk-set-uri>
+      classic-auth:
+        cookie-age-seconds: 86400 # This is the default
     encryption:
-      secret-key: <aes-256-compatible-secret-key>
+      secret-key: <aes-256-compatible-secret-key> <1>
 ----
+<1> {sechub} uses `AES` encryption to provide temporary but still sensitive information in a secure way.
+    This is the secret key for the encryption. The key can be anything, but must 
+    have exactly a length of 32 bytes. For example: `example-key-32-byte-long-1234567`.
+    

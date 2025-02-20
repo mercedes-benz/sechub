@@ -2,7 +2,9 @@
 package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 
+import java.time.Duration;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -163,12 +165,22 @@ public class SecHubSecurityProperties {
                 private final String introspectionUri;
                 private final String clientId;
                 private final String clientSecret;
+                private final Duration defaultTokenExpiresIn;
+                private final Duration maxCacheDuration;
 
                 @ConstructorBinding
-                public OpaqueTokenProperties(String introspectionUri, String clientId, String clientSecret) {
+                /* @formatter:off */
+                public OpaqueTokenProperties(String introspectionUri,
+                                             String clientId,
+                                             String clientSecret,
+                                             Duration defaultTokenExpiresIn,
+                                             Duration maxCacheDuration) {
+                    /* @formatter:on */
                     this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
                     this.clientId = requireNonNull(clientId, ERR_MSG_FORMAT.formatted(PREFIX, "client-id"));
                     this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
+                    this.defaultTokenExpiresIn = defaultTokenExpiresIn == null ? Duration.ofDays(1) : defaultTokenExpiresIn;
+                    this.maxCacheDuration = requireNonNull(maxCacheDuration, ERR_MSG_FORMAT.formatted(PREFIX, "max-cache-duration"));
                 }
 
                 public String getIntrospectionUri() {
@@ -182,12 +194,22 @@ public class SecHubSecurityProperties {
                 public String getClientSecret() {
                     return clientSecret;
                 }
+
+                public Duration getDefaultTokenExpiresAt() {
+                    return defaultTokenExpiresIn;
+                }
+
+                public Duration getMaxCacheDuration() {
+                    return maxCacheDuration;
+                }
             }
         }
     }
 
     public static class LoginProperties {
         static final String PREFIX = "%s.login".formatted(SecHubSecurityProperties.PREFIX);
+        static final String CLASSIC_MODE = "classic";
+        static final String OAUTH2_MODE = "oauth2";
         static final String MODES = "modes";
 
         private final boolean isEnabled;
@@ -195,8 +217,16 @@ public class SecHubSecurityProperties {
         private final String redirectUri;
         private final Set<String> modes;
         private final OAuth2Properties oAuth2;
+        private final ClassicAuthProperties classicAuth;
 
-        public LoginProperties(Boolean enabled, String loginPage, String redirectUri, Set<String> modes, OAuth2Properties oAuth2) {
+        /* @formatter:off */
+        public LoginProperties(Boolean enabled,
+                               String loginPage,
+                               String redirectUri,
+                               Set<String> modes,
+                               OAuth2Properties oAuth2,
+                               ClassicAuthProperties classicAuth) {
+            /* @formatter:on */
             this.isEnabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
             this.loginPage = enabled ? requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page")) : loginPage;
             this.redirectUri = enabled ? requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri")) : redirectUri;
@@ -207,11 +237,13 @@ public class SecHubSecurityProperties {
             if (enabled && this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
                 throw new IllegalArgumentException("The property '%s.modes' allows only 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
-            /*
-             * Later we will differentiate between classic and oauth2 login. For now only
-             * oauth2 login is enabled
-             */
-            this.oAuth2 = enabled ? requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2")) : oAuth2;
+            this.oAuth2 = enabled && isOAuth2ModeEnabled() ? requireNonNull(oAuth2, ERR_MSG_FORMAT.formatted(PREFIX, "oauth2")) : oAuth2;
+
+            if (enabled && isClassicModeEnabled()) {
+                this.classicAuth = requireNonNullElseGet(classicAuth, ClassicAuthProperties::new);
+            } else {
+                this.classicAuth = classicAuth;
+            }
         }
 
         public boolean isEnabled() {
@@ -235,11 +267,15 @@ public class SecHubSecurityProperties {
         }
 
         public boolean isClassicModeEnabled() {
-            return modes.contains(CLASSIC_MODE);
+            return modes.contains(SecHubSecurityProperties.CLASSIC_MODE);
         }
 
         public OAuth2Properties getOAuth2Properties() {
             return oAuth2;
+        }
+
+        public ClassicAuthProperties getClassicAuthProperties() {
+            return classicAuth;
         }
 
         public static class OAuth2Properties {
@@ -305,6 +341,34 @@ public class SecHubSecurityProperties {
                 return jwkSetUri;
             }
 
+        }
+
+        public static class ClassicAuthProperties {
+            static final String PREFIX = "%s.classic".formatted(LoginProperties.PREFIX);
+
+            private static final Duration COOKIE_AGE_DEFAULT = Duration.ofHours(24);
+            private final Duration cookieAge;
+
+            public ClassicAuthProperties() {
+                this.cookieAge = COOKIE_AGE_DEFAULT;
+            }
+
+            @ConstructorBinding
+            public ClassicAuthProperties(Long cookieAgeSeconds) {
+                if (cookieAgeSeconds == null) {
+                    this.cookieAge = COOKIE_AGE_DEFAULT;
+                } else {
+                    this.cookieAge = Duration.ofSeconds(cookieAgeSeconds);
+                }
+            }
+
+            public Duration getCookieAge() {
+                return cookieAge;
+            }
+
+            public long getCookieAgeSeconds() {
+                return cookieAge.getSeconds();
+            }
         }
     }
 

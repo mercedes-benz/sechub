@@ -3,12 +3,15 @@ package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.crypto.SealedObject;
 
@@ -33,7 +36,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.mercedesbenz.sechub.commons.core.cache.InMemoryCache;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 /**
  * <p>
@@ -64,33 +69,42 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
  */
 class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OAuth2OpaqueTokenIntrospector.class);
-    private static final CryptoAccess<String> CRYPTO_STRING = CryptoAccess.CRYPTO_STRING;
+    private static final Logger log = LoggerFactory.getLogger(OAuth2OpaqueTokenIntrospector.class);
+    private static final CryptoAccess<String> cryptoString = CryptoAccess.CRYPTO_STRING;
     private static final String TOKEN = "token";
     private static final String BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT = "Basic %s";
     private static final String CLIENT_ID_CLIENT_SECRET_FORMAT = "%s:%s";
     private static final String TOKEN_TYPE_HINT = "token_type_hint";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String TOKEN_TYPE_HINT_VALUE = ACCESS_TOKEN;
-    private static final int DEFAULT_EXPIRES_IN_SECONDS = 60 * 60 * 24; /* 1 day */
 
     private final RestTemplate restTemplate;
     private final String introspectionUri;
     private final SealedObject clientIdSealed;
     private final SealedObject clientSecretSealed;
+    private final Duration defaultTokenExpiresIn;
+    private final Duration maxCacheDuration;
     private final UserDetailsService userDetailsService;
+    private final InMemoryCache<OAuth2OpaqueTokenIntrospectionResponse> cache;
 
     /* @formatter:off */
     OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
                                   String introspectionUri,
                                   String clientId,
                                   String clientSecret,
-                                  UserDetailsService userDetailsService) {
+                                  Duration defaultTokenExpiresIn,
+                                  Duration maxCacheDuration,
+                                  UserDetailsService userDetailsService,
+                                  ApplicationShutdownHandler applicationShutdownHandler) {
         this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
         this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
-        this.clientIdSealed = CRYPTO_STRING.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
-        this.clientSecretSealed = CRYPTO_STRING.seal(requireNonNull(clientSecret, "Parameter clientSecret must not be null"));
+        this.clientIdSealed = cryptoString.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
+        this.clientSecretSealed = cryptoString.seal(requireNonNull(clientSecret, "Parameter clientSecret must not be null"));
+        this.defaultTokenExpiresIn = requireNonNull(defaultTokenExpiresIn, "Parameter defaultTokenExpiresIn must not be null");
+        this.maxCacheDuration = requireNonNull(maxCacheDuration, "Parameter maxCacheDuration must not be null");
         this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        this.cache = new InMemoryCache<>(maxCacheDuration, scheduledExecutorService, applicationShutdownHandler);
     }
     /* @formatter:on */
 
@@ -100,43 +114,84 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             throw new BadOpaqueTokenException("Token is null or empty");
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set(HttpHeaders.AUTHORIZATION, getBasicAuthHeaderValue());
-        HttpEntity<MultiValueMap<String, String>> entity = getRequestParameters(opaqueToken, headers);
-
-        OAuth2OpaqueTokenIntrospectionResponse OAuth2OpaqueTokenIntrospectionResponse;
-        try {
-            OAuth2OpaqueTokenIntrospectionResponse = restTemplate.postForObject(introspectionUri, entity, OAuth2OpaqueTokenIntrospectionResponse.class);
-
-            if (OAuth2OpaqueTokenIntrospectionResponse == null) {
-                throw new RestClientException("Response is null");
-            }
-        } catch (RestClientException e) {
-            String errMsg = "Failed to perform token introspection";
-            LOG.error(errMsg, e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errMsg, e);
-        }
-
         Instant now = Instant.now();
 
-        if (!OAuth2OpaqueTokenIntrospectionResponse.isActive()) {
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = getIntrospectionResponse(opaqueToken, now);
+
+        if (!introspectionResponse.isActive()) {
             throw new BadOpaqueTokenException("Token is not active");
         }
 
-        String subject = OAuth2OpaqueTokenIntrospectionResponse.getSubject();
+        String subject = introspectionResponse.getSubject();
 
         if (subject == null || subject.isEmpty()) {
-            throw new BadOpaqueTokenException("Subject is null");
+            throw new BadOpaqueTokenException("Subject is null or empty");
         }
 
-        Map<String, Object> introspectionClaims = getIntrospectionClaims(now, OAuth2OpaqueTokenIntrospectionResponse);
+        Map<String, Object> introspectionClaims = getIntrospectionClaims(introspectionResponse, now);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
-        return new OAuth2IntrospectionAuthenticatedPrincipal(subject, introspectionClaims, authorities);
+        String username = userDetails.getUsername();
+        return new OAuth2IntrospectionAuthenticatedPrincipal(username, introspectionClaims, authorities);
     }
 
-    private static HttpEntity<MultiValueMap<String, String>> getRequestParameters(String opaqueToken, HttpHeaders headers) {
+    private OAuth2OpaqueTokenIntrospectionResponse getIntrospectionResponse(String opaqueToken, Instant now) {
+        /* @formatter:off */
+        return cache
+                .get(opaqueToken)
+                .orElseGet(() -> fetchAndCacheTokenIntrospectionResponse(opaqueToken, now));
+        /* @formatter:on */
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchAndCacheTokenIntrospectionResponse(String opaqueToken, Instant now) {
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetchTokenIntrospectionResponse(opaqueToken);
+        cacheIntrospectionResponse(opaqueToken, introspectionResponse, now);
+        return introspectionResponse;
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchTokenIntrospectionResponse(String opaqueToken) {
+        HttpEntity<MultiValueMap<String, String>> httpEntity = buildHttpEntity(opaqueToken);
+
+        try {
+            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = restTemplate.postForObject(introspectionUri, httpEntity,
+                    OAuth2OpaqueTokenIntrospectionResponse.class);
+
+            if (introspectionResponse == null) {
+                throw new RestClientException("Response is null");
+            }
+
+            return introspectionResponse;
+        } catch (RestClientException e) {
+            String errMsg = "Failed to perform token introspection";
+            log.error(errMsg, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errMsg, e);
+        }
+    }
+
+    private void cacheIntrospectionResponse(String opaqueToken, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
+        Instant expiresAt;
+
+        if (introspectionResponse.getExpiresAt() == null) {
+            expiresAt = now.plus(defaultTokenExpiresIn);
+        } else {
+            expiresAt = introspectionResponse.getExpiresAt();
+        }
+
+        Duration cacheDuration = Duration.between(now, expiresAt);
+
+        if (maxCacheDuration.compareTo(cacheDuration) < 0) {
+            log.debug("Opaque token cache duration of %s exceeds the maximum cache duration of %s. Using the maximum cache duration instead."
+                    .formatted(cacheDuration.toString(), maxCacheDuration.toString()));
+            cacheDuration = maxCacheDuration;
+        }
+
+        cache.put(opaqueToken, introspectionResponse, cacheDuration);
+    }
+
+    private HttpEntity<MultiValueMap<String, String>> buildHttpEntity(String opaqueToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set(HttpHeaders.AUTHORIZATION, getBasicAuthHeaderValue());
         MultiValueMap<String, String> formParameters = new LinkedMultiValueMap<>();
         formParameters.add(TOKEN, opaqueToken);
         formParameters.add(TOKEN_TYPE_HINT, TOKEN_TYPE_HINT_VALUE);
@@ -144,24 +199,27 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     }
 
     private String getBasicAuthHeaderValue() {
-        String clientId = CRYPTO_STRING.unseal(clientIdSealed);
-        String clientSecret = CRYPTO_STRING.unseal(clientSecretSealed);
+        String clientId = cryptoString.unseal(clientIdSealed);
+        String clientSecret = cryptoString.unseal(clientSecretSealed);
         String clientIdClientSecret = CLIENT_ID_CLIENT_SECRET_FORMAT.formatted(clientId, clientSecret);
         String clientIdClientSecretB64Encoded = Base64.getEncoder().encodeToString(clientIdClientSecret.getBytes());
         return BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT.formatted(clientIdClientSecretB64Encoded);
     }
 
     /* @formatter:off */
-    private static Map<String, Object> getIntrospectionClaims(Instant issuedAt, OAuth2OpaqueTokenIntrospectionResponse oAuth2OpaqueTokenIntrospectionResponse) {
+    private Map<String, Object> getIntrospectionClaims(OAuth2OpaqueTokenIntrospectionResponse oAuth2OpaqueTokenIntrospectionResponse, Instant now) {
         Map<String, Object> map = new HashMap<>();
         map.put(OAuth2TokenIntrospectionClaimNames.ACTIVE, oAuth2OpaqueTokenIntrospectionResponse.isActive());
         map.put(OAuth2TokenIntrospectionClaimNames.SCOPE, oAuth2OpaqueTokenIntrospectionResponse.getScope());
         map.put(OAuth2TokenIntrospectionClaimNames.CLIENT_ID, oAuth2OpaqueTokenIntrospectionResponse.getClientId());
         map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, oAuth2OpaqueTokenIntrospectionResponse.getUsername());
         map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, oAuth2OpaqueTokenIntrospectionResponse.getTokenType());
-        map.put(OAuth2TokenIntrospectionClaimNames.IAT, issuedAt);
+        map.put(OAuth2TokenIntrospectionClaimNames.IAT, oAuth2OpaqueTokenIntrospectionResponse.getIssuedAt());
         Instant expiresAt = oAuth2OpaqueTokenIntrospectionResponse.getExpiresAt();
-        map.put(OAuth2TokenIntrospectionClaimNames.EXP, expiresAt == null ? issuedAt.plusSeconds(DEFAULT_EXPIRES_IN_SECONDS) : expiresAt);
+        if (expiresAt == null) {
+            expiresAt = now.plus(defaultTokenExpiresIn);
+        }
+        map.put(OAuth2TokenIntrospectionClaimNames.EXP, expiresAt);
         map.put(OAuth2TokenIntrospectionClaimNames.SUB, oAuth2OpaqueTokenIntrospectionResponse.getSubject());
         map.put(OAuth2TokenIntrospectionClaimNames.AUD, oAuth2OpaqueTokenIntrospectionResponse.getAudience());
         return map;

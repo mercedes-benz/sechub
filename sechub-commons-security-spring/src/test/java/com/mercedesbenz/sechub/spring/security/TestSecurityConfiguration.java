@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
+
 /* @formatter:off */
 /**
  * The <code>TestSecurityConfiguration</code> class extends the {@link AbstractSecurityConfiguration} and provides
@@ -48,6 +50,11 @@ class TestSecurityConfiguration extends AbstractSecurityConfiguration {
          * check.
          */
         return new GrantedAuthorityDefaults("");
+    }
+
+    @Bean
+    ApplicationShutdownHandler applicationShutdownHandler() {
+        return mock();
     }
 
     @Override

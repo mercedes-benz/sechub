@@ -479,6 +479,10 @@ spec:
         # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
         - name: SECHUB_SECURITY_SERVER_MODES
           value: "{{ .Values.security.resourceServer.modes }}"
+{{- if contains "classic" .Values.security.resourceServer.modes }}
+        - name: SECHUB_SECURITY_LOGIN_CLASSICAUTH_COOKIEAGESECONDS
+          value: "{{ .Values.security.resourceServer.classic.cookieValidityInSeconds }}"
+{{- end }}
         - name: SECHUB_SECURITY_SERVER_OAUTH2_MODE
           value: "{{ .Values.security.resourceServer.oauth2.mode }}"
         # OAuth2 mode can be either 'jwt' or 'opaque-token'. Exactly one must be active.
@@ -490,6 +494,10 @@ spec:
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientId }}"
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientSecret }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_DEFAULTTOKENEXPIRESIN
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.defaultTokenExpiresIn }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.maxCacheDuration }}"
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.introspectionUri }}"
 {{- end }}
