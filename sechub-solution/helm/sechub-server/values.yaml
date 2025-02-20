@@ -161,7 +161,9 @@ security:
     # The authorization can be configured in 'classic' or 'oauth2' mode. While both are possible, at least
     # one must be active. Classic mode enables SecHub API Token authorization via basic auth.
     modes: classic,oauth2
-    # classic: ... (To be implemented)
+    classic:
+      # The max age (in seconds) of the cookie in classic mode. Default is 24h (or 86400s).
+      cookieValidityInSeconds: 86400
     oauth2:
       # OAuth2 authorization can be either 'jwt' or 'opaque-token'. Exactly one must be active.
       mode: jwt
