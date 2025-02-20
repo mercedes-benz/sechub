@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 2.5.0</span>
+<span id="revnumber"> Server 2.6.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -648,10 +648,15 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel3">
 <li><a href="#java-launch-configuration-setup">3.3.1. Java launch configuration setup</a>
 <ul class="sectlevel4">
-<li><a href="#launch-in-demo-mode">3.3.1.1. Launch in demo mode</a></li>
-<li><a href="#launch-in-dev-mode">3.3.1.2. Launch in DEV mode</a></li>
-<li><a href="#launch-in-integration-test-mode">3.3.1.3. Launch in INTEGRATION TEST mode</a></li>
-<li><a href="#launch-in-prod-mode">3.3.1.4. Launch in PROD mode</a></li>
+<li><a href="#launch-configuration-for-development">3.3.1.1. Launch configuration for development</a>
+<ul class="sectlevel5">
+<li><a href="#custom-configuration-files">3.3.1.1.1. Custom configuration files</a></li>
+<li><a href="#dev-profile">3.3.1.1.2. DEV profile</a></li>
+<li><a href="#example-for-dev-profile-combined-with-custom-configuration-file">3.3.1.1.3. Example for DEV profile combined with custom configuration file</a></li>
+</ul>
+</li>
+<li><a href="#launch-configuration-for-integration-tests">3.3.1.2. Launch configuration for integration tests</a></li>
+<li><a href="#launch-configurationfor-production">3.3.1.3. Launch configurationfor production</a></li>
 </ul>
 </li>
 </ul>
@@ -1711,7 +1716,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.5.0 - Build date: 2025-02-14 15:17 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.6.0 - Build date: 2025-02-20 14:38 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1964,7 +1969,7 @@ no running security suite&#8230;&#8203; but of course we have no real products a
 <div class="sect5">
 <h6 id="ide">2.2.1.1.1. IDE</h6>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -3648,7 +3653,7 @@ IDPs needs. If you don&#8217;t have high security requirements you can simply us
 </table>
 </div>
 <div class="paragraph">
-<p>Below is an example configuration with <code>Classic</code> mode and <code>OAuth2</code> in <code>Opaque Token</code> mode:</p>
+<p>Below is an example configuration with Classic mode and OAuth2 in <code>Opaque Token</code> mode:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3657,14 +3662,25 @@ IDPs needs. If you don&#8217;t have high security requirements you can simply us
     <span class="key">server</span>:
       <span class="key">modes</span>:
         - <span class="string"><span class="content">oauth2</span></span>
-        - <span class="string"><span class="content">classic</span></span>
       <span class="key">oauth2</span>:
         <span class="key">mode</span>: <span class="string"><span class="content">opaque-token</span></span>
         <span class="key">opaque-token</span>:
           <span class="key">introspection-uri</span>: <span class="string"><span class="content">&lt;introspection-uri-of-your-idp&gt;</span></span>
           <span class="key">client-id</span>: <span class="string"><span class="content">&lt;client-id&gt;</span></span>
-          <span class="key">client-secret</span>: <span class="string"><span class="content">&lt;client-secret&gt;</span></span></code></pre>
+          <span class="key">client-secret</span>: <span class="string"><span class="content">&lt;client-secret&gt;</span></span>
+          <span class="key">default-token-expires-in</span>: <span class="string"><span class="content">60m</span></span> <span class="comment"># default is '1d' if this property is not set</span>
+          <span class="key">max-cache-duration</span>: <span class="string"><span class="content">1d</span></span></code></pre>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>default-token-expires-in</code>: The default expiration time for tokens. This is used when the IDP does not provide an expiration time.</p>
+</li>
+<li>
+<p><code>max-cache-duration</code>: The maximum time a token is cached on SecHub side. After this time, the token is introspected again.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -3687,6 +3703,19 @@ authenticated in subsequent requests unless the cookies are cleared or the authe
 <td class="content">
 The authentication credentials are securely encrypted in the cookies. For that <code>AES 256 Encryption</code> is used. You
 have to configure a secret key for the encryption.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+While the cookie age is defined by the IDP in <code>OAuth2</code> mode, in <code>Classic</code> mode you can configure the cookie age
+yourself. The default is 24 hours.
 </td>
 </tr>
 </table>
@@ -3728,9 +3757,21 @@ have to configure a secret key for the encryption.
         <span class="key">token-uri</span>: <span class="string"><span class="content">&lt;token-uri&gt;</span></span>
         <span class="key">user-info-uri</span>: <span class="string"><span class="content">&lt;user-info-uri&gt;</span></span>
         <span class="key">jwk-set-uri</span>: <span class="string"><span class="content">&lt;jwk-set-uri&gt;</span></span>
+      <span class="key">classic-auth</span>:
+        <span class="key">cookie-age-seconds</span>: <span class="string"><span class="content">86400</span></span> <span class="comment"># This is the default</span>
     <span class="key">encryption</span>:
-      <span class="key">secret-key</span>: <span class="string"><span class="content">&lt;aes-256-compatible-secret-key&gt;</span></span></code></pre>
+      <span class="key">secret-key</span>: <span class="string"><span class="content">&lt;aes-256-compatible-secret-key&gt; </span></span><i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>SecHub uses <code>AES</code> encryption to provide temporary but still sensitive information in a secure way.
+This is the secret key for the encryption. The key can be anything, but must
+have exactly a length of 32 bytes. For example: <code>example-key-32-byte-long-1234567</code>.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -3768,12 +3809,52 @@ Some mocks have special options to change their behaviour at runtime.</p>
 <p>Please refer to <a href="#sechub-mock-options">Mock options</a> for details.</p>
 </div>
 <div class="sect4">
-<h5 id="launch-in-demo-mode">3.3.1.1. Launch in demo mode</h5>
+<h5 id="launch-configuration-for-development">3.3.1.1. Launch configuration for development</h5>
+<div class="sect5">
+<h6 id="custom-configuration-files">3.3.1.1.1. Custom configuration files</h6>
 <div class="paragraph">
-<p>Here an example for calling in demomode:</p>
+<p>If you want to have your own custom configuration do following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a file <code>sechub-server/src/main/resources/application-local.${user}.yml</code>.
+<code>${user}</code> is the value of your system user name (e.g. <code>application-local.johndoe.yml</code>)</p>
+</li>
+<li>
+<p>Use the spring profile <code>local</code> inside your launch configuration (it delegates to the file)</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+All <code>application-local.${user}.yml</code> files are ignored by git. So developers don&#8217;t have to
+     be aware about committing accidently changes.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dev-profile">3.3.1.1.2. DEV profile</h6>
+<div class="paragraph">
+<p>With activated <code>DEV</code> spring profile it is possible to define an api-token programmatically
+and it will not be generated by SecHub server on startup.</p>
 </div>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>It also enables debug logging and includes the <code>localserver</code> profile which
+automatically uses the generated local server certificates.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-for-dev-profile-combined-with-custom-configuration-file">3.3.1.1.3. Example for DEV profile combined with custom configuration file</h6>
+<div class="paragraph">
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -3781,38 +3862,15 @@ following arguments:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>-Dspring.profiles.active=demomode</pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="launch-in-dev-mode">3.3.1.2. Launch in DEV mode</h5>
-<div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
-following arguments:</p>
-</div>
-<div class="paragraph">
-<p>class: <code>com.mercedesbenz.sechub.SecHubServerApplication</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>-Dspring.profiles.active=dev,h2,real_products <i class="conum" data-value="1"></i><b>(1)</b>
--Dsechub.server.debug=true <i class="conum" data-value="2"></i><b>(2)</b>
-...
--Dsechub.adapter.name.something.specific=${necessaryData} <i class="conum" data-value="3"></i><b>(3)</b>
-...
--Dsechub.storage.sharedvolume.upload.dir=temp <i class="conum" data-value="4"></i><b>(4)</b>
--Dsechub.initialadmin.userid=sechubadm <i class="conum" data-value="5"></i><b>(5)</b>
--Dsechub.initialadmin.email=sechubadm@example.org<i class="conum" data-value="5"></i><b>(5)</b>
--Dsechub.initialadmin.apitoken=pseudo-token-development-only<i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+<pre class="CodeRay highlight"><code>-Dspring.profiles.active=dev,h2,mocked_products,local <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Enables debug logging, localserver certificates, uses <strong>real products</strong>
-and starts server with h2 database.<br>
+<td>Enables debug logging, localserver certificates, uses <strong>mocked products</strong>,
+starts server with h2 database and uses custom configurations.<br>
 <div class="ulist">
 <ul>
 <li>
@@ -3820,39 +3878,81 @@ and starts server with h2 database.<br>
 have a running postgres instance available+</p>
 </li>
 <li>
-<p>Also you could use <code>mocked_products</code> profile instead of <code>real_products</code>
-and you will not have to define the adapter specifications.</p>
+<p>Also you could use <code>real_products</code> profile instead of <code>mocked_products</code>
+(Remark: for some legacy adapters you would have to additionally define adapter specifications
+in configurations)</p>
+</li>
+<li>
+<p>At the end the <code>local</code> profile is added which loads the next configuration
+fil</p>
 </li>
 </ul>
 </div></td>
 </tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Create custom configuration file (assumed the the user has id: <code>johndoe</code>):</p>
+</div>
+<div class="listingblock">
+<div class="title">sechub-server/src/main/resources/application-local.johndoe.yml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">sechub</span>:
+   <span class="key">server</span>:
+      <span class="key">debug</span>: <span class="string"><span class="content">true</span></span> <span class="comment">#To have REST call reponse error messages do also contains stacktraces.</span>
+   <span class="comment"># Storage - just juse local file system and generated temp folder</span>
+   <span class="key">storage</span>:
+      <span class="key">sharedvolume</span>:
+         <span class="key">upload</span>:
+            <span class="key">dir</span>: <span class="string"><span class="content">temp</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+   <span class="comment"># Only in DEV profile available: we can set the initial admin with wanted api token</span>
+   <span class="key">initialadmin</span>:
+      <span class="key">userid</span>: <span class="string"><span class="content">sechub-developer</span></span>
+      <span class="key">email</span>: <span class="string"><span class="content">sechub-developer@example.org</span></span>
+      <span class="key">apitoken</span>: <span class="string"><span class="content">pseudo-token-development-only</span></span>
+   <span class="comment"># Web UI parts:</span>
+   <span class="comment"># Provide here only the classic resource server + login mask (no oAuth2 here)</span>
+   <span class="key">security</span>:
+     <span class="key">server</span>:
+       <span class="key">modes</span>:
+         - <span class="string"><span class="content">classic</span></span>
+     <span class="key">login</span>:
+       <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+       <span class="key">login-page</span>: <span class="string"><span class="content">/login</span></span> <span class="comment"># For ui development login will be at https://localhost:8443/login</span>
+       <span class="key">redirect-uri</span>: <span class="string"><span class="content">http://localhost:3000</span></span> <span class="comment">#redirect to web ui </span><i class="conum" data-value="2"></i><b>(2)</b>
+       <span class="key">modes</span>:
+        - <span class="string"><span class="content">classic</span></span>
+     <span class="key">encryption</span>:
+       <span class="key">secret-key</span>: <span class="string"><span class="content">example-key-32-byte-long-1234567</span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We use <code>temp</code> which is a marker to create a temporary folder for shared volume.
+This is also a marker that the storage is a NFS/local folder and SecHub will not insist
+an a <code>S3</code> storage setup.<br>
+<em>Remark: It is also possible to define here an explicit path!</em></td>
+</tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>When debug flag is set, rest call reponse error messages do also contains stacktraces.</td>
+<td>For development with VITE, no TLS (https) is used. For development with VITE this is okay,
+but <strong>NEVER</strong> for production!</td>
 </tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>This is just an example for a adapter specific setting. Please look into
-<a href="#link-gen-systemproperties">system property definitions</a> and look for adapter parts.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>We use <code>temp</code> which is a marker to create a temp folder for shared volume
-(<em>necessary for source upload)</em></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td><em>(Optional)</em> If nothing is defined per default user with id: <code>sechubadm</code>, mail
-address <code>sechubadm@example.org</code> and API token
-<code>pseudo-token-development-only</code> will be created (see
-<code>InitialAdminInitializer.java</code>).<br>
-<br>
-This is for developer convenience to reuse existing launch configurations and have not
-always generated new initial apitokens, like done for profile <code>prod</code>.<br>
-<br>
-Developers are able to define their own to fix security token for started
-develop servers. If so done, the started developer admin UI must use this
-inside its launch configuration&#8230;&#8203;</td>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Details about the user initialization process by using different profiles can be found at <code>InitialAdminInitializer.java</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -3863,17 +3963,38 @@ inside its launch configuration&#8230;&#8203;</td>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Your server will not start if you forget any adapter key!
-TIP: (see <code>InitialAdminInitializer.java</code>).
+<div class="paragraph">
+<p>The <code>sechub-web-ui</code> development uses a <code>.env</code> file contains variables for VITE server (VITE
+is only used for development).</p>
+</div>
+<div class="paragraph">
+<p>If you want to test the SecHub server login page mechanism in combination with a
+sechub-web-ui in development mode, you can use former <code>application-local.johndoe.yml</code>
+but you have to ensure that the <code>sechub-web-ui/.env</code> file looks this way:</p>
+</div>
+<div class="listingblock">
+<div class="title">sechub-web-ui/.env</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>VITE_API_HOST=http://localhost:3000
+VITE_API_LOCAL_DEV=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>VITE_API_USER</code> or <code>VITE_API_PASSWORD</code> are defined inside this file, the web application
+will always use these credentials instead of the login form user input. This is for convenience for
+web ui developers (no login necessary for testing) but is irritating when testing the server login
+handling&#8230;&#8203;</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 </div>
+</div>
 <div class="sect4">
-<h5 id="launch-in-integration-test-mode">3.3.1.3. Launch in INTEGRATION TEST mode</h5>
+<h5 id="launch-configuration-for-integration-tests">3.3.1.2. Launch configuration for integration tests</h5>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -3929,7 +4050,7 @@ stacktraces.</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="launch-in-prod-mode">3.3.1.4. Launch in PROD mode</h5>
+<h5 id="launch-configurationfor-production">3.3.1.3. Launch configurationfor production</h5>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -3943,7 +4064,7 @@ To run a local server like in production please refer <a href="#section-howto-st
 </table>
 </div>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -4347,7 +4468,7 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 <div class="sect2">
 <h3 id="start-server-in-dev-mode">4.2. Start server in DEV mode</h3>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -4355,23 +4476,15 @@ following arguments:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>-Dspring.profiles.active=dev,h2,real_products <i class="conum" data-value="1"></i><b>(1)</b>
--Dsechub.server.debug=true <i class="conum" data-value="2"></i><b>(2)</b>
-...
--Dsechub.adapter.name.something.specific=${necessaryData} <i class="conum" data-value="3"></i><b>(3)</b>
-...
--Dsechub.storage.sharedvolume.upload.dir=temp <i class="conum" data-value="4"></i><b>(4)</b>
--Dsechub.initialadmin.userid=sechubadm <i class="conum" data-value="5"></i><b>(5)</b>
--Dsechub.initialadmin.email=sechubadm@example.org<i class="conum" data-value="5"></i><b>(5)</b>
--Dsechub.initialadmin.apitoken=pseudo-token-development-only<i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+<pre class="CodeRay highlight"><code>-Dspring.profiles.active=dev,h2,mocked_products,local <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Enables debug logging, localserver certificates, uses <strong>real products</strong>
-and starts server with h2 database.<br>
+<td>Enables debug logging, localserver certificates, uses <strong>mocked products</strong>,
+starts server with h2 database and uses custom configurations.<br>
 <div class="ulist">
 <ul>
 <li>
@@ -4379,39 +4492,81 @@ and starts server with h2 database.<br>
 have a running postgres instance available+</p>
 </li>
 <li>
-<p>Also you could use <code>mocked_products</code> profile instead of <code>real_products</code>
-and you will not have to define the adapter specifications.</p>
+<p>Also you could use <code>real_products</code> profile instead of <code>mocked_products</code>
+(Remark: for some legacy adapters you would have to additionally define adapter specifications
+in configurations)</p>
+</li>
+<li>
+<p>At the end the <code>local</code> profile is added which loads the next configuration
+fil</p>
 </li>
 </ul>
 </div></td>
 </tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Create custom configuration file (assumed the the user has id: <code>johndoe</code>):</p>
+</div>
+<div class="listingblock">
+<div class="title">sechub-server/src/main/resources/application-local.johndoe.yml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">sechub</span>:
+   <span class="key">server</span>:
+      <span class="key">debug</span>: <span class="string"><span class="content">true</span></span> <span class="comment">#To have REST call reponse error messages do also contains stacktraces.</span>
+   <span class="comment"># Storage - just juse local file system and generated temp folder</span>
+   <span class="key">storage</span>:
+      <span class="key">sharedvolume</span>:
+         <span class="key">upload</span>:
+            <span class="key">dir</span>: <span class="string"><span class="content">temp</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+   <span class="comment"># Only in DEV profile available: we can set the initial admin with wanted api token</span>
+   <span class="key">initialadmin</span>:
+      <span class="key">userid</span>: <span class="string"><span class="content">sechub-developer</span></span>
+      <span class="key">email</span>: <span class="string"><span class="content">sechub-developer@example.org</span></span>
+      <span class="key">apitoken</span>: <span class="string"><span class="content">pseudo-token-development-only</span></span>
+   <span class="comment"># Web UI parts:</span>
+   <span class="comment"># Provide here only the classic resource server + login mask (no oAuth2 here)</span>
+   <span class="key">security</span>:
+     <span class="key">server</span>:
+       <span class="key">modes</span>:
+         - <span class="string"><span class="content">classic</span></span>
+     <span class="key">login</span>:
+       <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+       <span class="key">login-page</span>: <span class="string"><span class="content">/login</span></span> <span class="comment"># For ui development login will be at https://localhost:8443/login</span>
+       <span class="key">redirect-uri</span>: <span class="string"><span class="content">http://localhost:3000</span></span> <span class="comment">#redirect to web ui </span><i class="conum" data-value="2"></i><b>(2)</b>
+       <span class="key">modes</span>:
+        - <span class="string"><span class="content">classic</span></span>
+     <span class="key">encryption</span>:
+       <span class="key">secret-key</span>: <span class="string"><span class="content">example-key-32-byte-long-1234567</span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We use <code>temp</code> which is a marker to create a temporary folder for shared volume.
+This is also a marker that the storage is a NFS/local folder and SecHub will not insist
+an a <code>S3</code> storage setup.<br>
+<em>Remark: It is also possible to define here an explicit path!</em></td>
+</tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>When debug flag is set, rest call reponse error messages do also contains stacktraces.</td>
+<td>For development with VITE, no TLS (https) is used. For development with VITE this is okay,
+but <strong>NEVER</strong> for production!</td>
 </tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>This is just an example for a adapter specific setting. Please look into
-<a href="#link-gen-systemproperties">system property definitions</a> and look for adapter parts.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>We use <code>temp</code> which is a marker to create a temp folder for shared volume
-(<em>necessary for source upload)</em></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td><em>(Optional)</em> If nothing is defined per default user with id: <code>sechubadm</code>, mail
-address <code>sechubadm@example.org</code> and API token
-<code>pseudo-token-development-only</code> will be created (see
-<code>InitialAdminInitializer.java</code>).<br>
-<br>
-This is for developer convenience to reuse existing launch configurations and have not
-always generated new initial apitokens, like done for profile <code>prod</code>.<br>
-<br>
-Developers are able to define their own to fix security token for started
-develop servers. If so done, the started developer admin UI must use this
-inside its launch configuration&#8230;&#8203;</td>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Details about the user initialization process by using different profiles can be found at <code>InitialAdminInitializer.java</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -4422,8 +4577,28 @@ inside its launch configuration&#8230;&#8203;</td>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Your server will not start if you forget any adapter key!
-TIP: (see <code>InitialAdminInitializer.java</code>).
+<div class="paragraph">
+<p>The <code>sechub-web-ui</code> development uses a <code>.env</code> file contains variables for VITE server (VITE
+is only used for development).</p>
+</div>
+<div class="paragraph">
+<p>If you want to test the SecHub server login page mechanism in combination with a
+sechub-web-ui in development mode, you can use former <code>application-local.johndoe.yml</code>
+but you have to ensure that the <code>sechub-web-ui/.env</code> file looks this way:</p>
+</div>
+<div class="listingblock">
+<div class="title">sechub-web-ui/.env</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>VITE_API_HOST=http://localhost:3000
+VITE_API_LOCAL_DEV=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>VITE_API_USER</code> or <code>VITE_API_PASSWORD</code> are defined inside this file, the web application
+will always use these credentials instead of the login form user input. This is for convenience for
+web ui developers (no login necessary for testing) but is irritating when testing the server login
+handling&#8230;&#8203;</p>
+</div>
 </td>
 </tr>
 </table>
@@ -4445,7 +4620,7 @@ Please refer also
 <div class="sect2">
 <h3 id="start-server-in-prod-mode">4.3. Start server in PROD mode</h3>
 <div class="paragraph">
-<p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
+<p>To start Spring Boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
 </div>
 <div class="paragraph">
@@ -4731,7 +4906,9 @@ Tokens</code>, you have to configure the <code>mode</code> to <code>opaque-token
         <span class="key">opaque-token</span>:
           <span class="key">introspection-uri</span>: <span class="string"><span class="content">&lt;introspection-uri-of-your-idp&gt;</span></span>
           <span class="key">client-id</span>: <span class="string"><span class="content">&lt;client-id&gt;</span></span>
-          <span class="key">client-secret</span>: <span class="string"><span class="content">&lt;client-secret&gt;</span></span></code></pre>
+          <span class="key">client-secret</span>: <span class="string"><span class="content">&lt;client-secret&gt;</span></span>
+          <span class="key">default-token-expires-in</span>: <span class="string"><span class="content">60m</span></span>
+          <span class="key">max-cache-duration</span>: <span class="string"><span class="content">1d</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -19179,7 +19356,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/2ae31598-80f9-4a94-bc4c-7fca67cb5688' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/9cab40db-2fed-4bf6-9e97-d75f1f6e05c4' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -20344,7 +20521,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">59663cb6-f8e8-434e-acb4-b36ed906593b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-13T15:18:14.256960928</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:18:14.256985263</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">143f1995-e174-4698-983d-58934ef8b33f</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-19T14:38:20.332686197</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:38:20.332770654</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -21067,7 +21244,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f2d26de6-937b-489e-b852-b2a75366feae</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b1216c53-1ab8-4f2d-ab51-e0aa40de86f1</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21246,7 +21423,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">991860e6-c439-440f-a6d1-dfcdee48b495</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">964ccae5-aa00-4f81-8fa0-429c034df995</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21405,7 +21582,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2150e003-abf5-4cca-bccd-d545fc0cbaf6</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9264bf7c-449c-4cbf-a349-828a5e784588</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21564,7 +21741,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a969be5c-458b-432f-8c04-678bee6d7f7e</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">108031b6-9d7c-46c3-881e-019bb6a482d0</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21718,7 +21895,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0d6120f9-c72a-4bc4-b664-f2b2bfdbdf6e</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f0b6228e-8c5c-4fb4-a62a-76dfc68dc17d</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -21887,7 +22064,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6c038077-4e14-4be4-a02f-c2607f873b9e</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f8415073-bab6-4189-8e6f-cff0c3c5583d</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22051,7 +22228,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">09dfdb53-18b5-4cf0-9d70-61c20fd5b1e3</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0bb848e3-880c-47da-ad3a-09fd024f3f17</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22210,7 +22387,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">828aa507-caf0-44f6-8475-46160fd17f2b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5bc6b37e-51a3-4b89-ab70-006c73c5cd2f</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22384,7 +22561,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a3899ab3-7b30-40ab-a06e-60a2ed7dd09e</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c1d6e12f-2ef8-48f4-86e0-043e36d23deb</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22608,7 +22785,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">7d12521b-17c7-48d6-8c1d-cc2eb5f64d19</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">baa173e2-ae37-42ef-84e4-0b2718d9b4bc</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22772,7 +22949,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d13138db-8a07-4ab8-9568-3191522cf222</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6c30b4f4-20c4-41a5-bdc3-1b675cb1f7dd</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -22882,7 +23059,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/19e08e08-0de9-4351-aa26-d51971c9f8f7/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ecfc7446-38d3-4841-8776-36ee1fbf6819/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -22979,7 +23156,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/81ec402b-bed4-44b2-81b5-a7ee97844471/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/65ada4f5-d530-4921-90e8-66f7346382ca/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -23131,7 +23308,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/4b62b1e8-bbff-431e-98a7-47291203142c' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf58035b-dd4a-4f74-86c3-78fe228e1d0c' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -23140,7 +23317,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">4b62b1e8-bbff-431e-98a7-47291203142c</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:03:12.698374978</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:18:12.698403</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cf58035b-dd4a-4f74-86c3-78fe228e1d0c</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:23:18.631426836</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:38:18.63145047</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -23215,7 +23392,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/6506d073-add3-4174-9244-319007d9123b' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/bcf291d8-9e99-42af-9807-f75f043e0a2c' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -23287,7 +23464,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c416b85d-7c98-439c-95f2-086e849de37e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e83c835e-a668-42ff-940b-b83165956bae' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -23915,7 +24092,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d5c6f643-7cdf-4df1-bf73-a9e92c940c64/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2e7f53d0-41b1-4b12-a38c-cd536cff1c00/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -23996,7 +24173,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/0ac3edf3-373b-4c82-986f-3ba87a3f8a14' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/7ba1c646-7607-4da9-9640-cb06d0d15329' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -24720,7 +24897,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ff2d3321-1604-42ed-9d94-7201d7175f06</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:18:18.90559113</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6a1db11f-2ccc-482f-9b5b-cf929426703f</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:38:26.24173121</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -24804,7 +24981,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/360965bc-b8e2-4674-b6aa-9dee6be950a5' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/1ed378b7-f3f4-4a2d-ad12-cfe4d1ad5b82' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -24893,7 +25070,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/9d94b454-2a02-4dab-b8bf-e4e29f50db19' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/42bdbd82-d330-47ef-b9dc-392ace39c05b' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -24982,7 +25159,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/54f0d06c-39e0-4820-8fd2-2f0723b3b2c7' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/fbc93401-e66a-4442-bf38-2aa6fc1a97ea' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -25071,7 +25248,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/jobs/eebf97c8-4e9c-4c95-a839-1fa6509dcc2d/cancel' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/jobs/0a7444ba-c724-4cb7-bb8d-e5ce7f4ec03b/cancel' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -25604,7 +25781,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="plain">ed3cd7f9-317b-4eb7-9f43-9d8fe0dac5c7</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="plain">c3f9dd53-1cd6-4f37-85d0-3f4aa237d5e4</code></pre>
 </div>
 </div>
 </div>
@@ -25688,7 +25865,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/814c2b74-9add-4530-8bcf-7a0a86b6fe4e' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/767207c7-7094-4bbf-a883-8b643a43a0a8' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -25803,7 +25980,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0818c0cd-7a3a-4069-bfcb-7c69df0066db</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">974df99a-b7c6-4d5b-ba37-d2ab4618bf9f</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -25956,7 +26133,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/5b93aa34-f4c3-4a10-aa7a-81d9dcfd119b' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/77e45e97-288f-4eb3-a31a-1d54989d4e8c' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -25965,7 +26142,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5b93aa34-f4c3-4a10-aa7a-81d9dcfd119b</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">77e45e97-288f-4eb3-a31a-1d54989d4e8c</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
 </div>
 </div>
 </div>
@@ -26113,7 +26290,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/96d647a2-08ee-4178-acef-49b672c6b99a' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/9ceecd67-90c4-4a2e-987d-3232a97ea0ec' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -26457,7 +26634,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;eae91c96-040e-47a2-a72b-162019e55c73&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;7e2b9369-233e-4fd0-a2a6-540c7682b96d&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -26613,7 +26790,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c7610b80-ce4a-4308-ad62-b94157386099</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">447ab42a-3d61-4ff0-a692-5477a4658439</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
@@ -27129,7 +27306,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@66b6980f</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@2e5455bf</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>assetId</code></p></td>
@@ -27349,7 +27526,7 @@ The complete documentation about REST API is generated. If you want to change co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@67e23aae</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@3519de07</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
@@ -28984,7 +29161,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">60ef92d7-b3c9-43b7-815c-a51585dade60</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:01:12.869461101</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:03:12.869489996</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-14T15:18:12.869501467</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d3741f11-ad83-47e6-8a9e-1b8ca49326fa</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:21:18.822328292</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:23:18.822354852</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-02-20T14:38:18.822364821</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 </div>
@@ -30964,7 +31141,7 @@ one will be deleted.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.5.0<br>
+ Server 2.6.0<br>
 </div>
 </div>
 </body>
