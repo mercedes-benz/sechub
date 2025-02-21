@@ -2,6 +2,8 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -15,15 +17,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
 import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
@@ -483,6 +491,75 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertTrue(result.hasErrors());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER })
+    void model_referencing_archive_root_without_such_definition_in_data_section__results_in_no_error(String reserverdArchiveRootIdentifier) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+
+        model.getCodeScan().get().getNamesOfUsedDataConfigurationObjects().add(reserverdArchiveRootIdentifier);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ArchiveRootTestArgumentsProvider.class)
+    void model_with_archive_root_definition_in_data_section__results_in_error__codescan(List<SecHubDataConfigurationType> types, List<String> usages) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
+        model.setCodeScan(codeScan);
+
+        /* execute + test */
+        assertArchiveRootDefinitionInDataSectionFails(types, usages, model, codeScan);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ArchiveRootTestArgumentsProvider.class)
+    void model_with_archive_root_definition_in_data_section__results_in_error__secretscan(List<SecHubDataConfigurationType> types, List<String> usages) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
+        model.setSecretScan(secretScan);
+
+        /* execute + test */
+        assertArchiveRootDefinitionInDataSectionFails(types, usages, model, secretScan);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ArchiveRootTestArgumentsProvider.class)
+    void model_with_archive_root_definition_in_data_section__results_in_error__licensescan(List<SecHubDataConfigurationType> types, List<String> usages) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+        model.setLicenseScan(licenseScan);
+
+        /* execute + test */
+        assertArchiveRootDefinitionInDataSectionFails(types, usages, model, licenseScan);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ArchiveRootTestArgumentsProvider.class)
+    void model_with_archive_root_definition_in_data_section__results_in_error__webscan_clientcertifcate(List<SecHubDataConfigurationType> types,
+            List<String> usages) throws Exception {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+        webScan.setUrl(new URI("https://example.com/")); // necessary to avoid unwanted error entry
+        model.setWebScan(webScan);
+        ClientCertificateConfiguration clientCertificate = new ClientCertificateConfiguration();
+        webScan.setClientCertificate(Optional.of(clientCertificate));
+
+        /* execute + test */
+        assertArchiveRootDefinitionInDataSectionFails(types, usages, model, clientCertificate);
     }
 
     @Test
@@ -1958,6 +2035,64 @@ class SecHubConfigurationModelValidatorTest {
         sb.append(data.getError().name());
         sb.append(":");
         sb.append(data.getMessage());
+    }
+
+    private void assertArchiveRootDefinitionInDataSectionFails(List<SecHubDataConfigurationType> types, List<String> usages, SecHubConfigurationModel model,
+            SecHubDataConfigurationUsageByName usageByName) {
+        /* prepare */
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+
+        int expectedErrorCount = 0;
+        if (types.contains(SecHubDataConfigurationType.SOURCE)) {
+            SecHubSourceDataConfiguration sourceDataConfiguration = new SecHubSourceDataConfiguration();
+            sourceDataConfiguration.setUniqueName(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER);
+            data.getSources().add(sourceDataConfiguration);
+            expectedErrorCount++;
+        }
+        if (types.contains(SecHubDataConfigurationType.BINARY)) {
+            SecHubBinaryDataConfiguration binaryDataConfiguration = new SecHubBinaryDataConfiguration();
+            binaryDataConfiguration.setUniqueName(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER);
+            data.getBinaries().add(binaryDataConfiguration);
+            expectedErrorCount++;
+        }
+
+        /* sanity check */
+        assertThat(expectedErrorCount).isGreaterThan(0).isLessThan(3);
+
+        model.setData(data);
+
+        usageByName.getNamesOfUsedDataConfigurationObjects().addAll(usages);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION);
+        if (result.getErrors().size() != expectedErrorCount) {
+            fail("Expected errors: " + expectedErrorCount + " but was " + result.getErrors().size() + "\n" + result);
+        }
+    }
+
+    private static class ArchiveRootTestArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+              Arguments.of(List.of(SecHubDataConfigurationType.SOURCE), List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of(List.of(SecHubDataConfigurationType.SOURCE), List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of(List.of(SecHubDataConfigurationType.SOURCE), List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of(List.of(SecHubDataConfigurationType.BINARY), List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of(List.of(SecHubDataConfigurationType.BINARY), List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of(List.of(SecHubDataConfigurationType.BINARY), List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of(List.of(SecHubDataConfigurationType.SOURCE, SecHubDataConfigurationType.BINARY), List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of(List.of(SecHubDataConfigurationType.SOURCE, SecHubDataConfigurationType.BINARY), List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+              );
+        }
+        /* @formatter:on*/
     }
 
 }

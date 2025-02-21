@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
@@ -93,7 +94,12 @@ public class SecHubConfigurationModelValidator {
     private class InternalValidationContext {
         private Set<String> wellknownObjectNames = new HashSet<>();
         private SecHubConfigurationModelValidationResult result;
-        private SecHubConfigurationModel model;;
+        private SecHubConfigurationModel model;
+
+        private InternalValidationContext() {
+            wellknownObjectNames.addAll(CommonConstants.getAllRootArchiveReferenceIdentifiers());
+        }
+
     }
 
     private void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
@@ -566,6 +572,11 @@ public class SecHubConfigurationModelValidator {
             String uniqueName = configurationObject.getUniqueName();
             if (uniqueName == null) {
                 result.addError(DATA_CONFIG_OBJECT_NAME_IS_NULL);
+                continue;
+            }
+            if (CommonConstants.getAllRootArchiveReferenceIdentifiers().contains(uniqueName)) {
+                result.addError(RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION,
+                        "The reference id '" + uniqueName + "' is a reserved one and may not be used inside a data section!");
                 continue;
             }
             if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {

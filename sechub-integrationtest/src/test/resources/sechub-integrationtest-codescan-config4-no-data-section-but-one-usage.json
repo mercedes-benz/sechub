@@ -1,0 +1,10 @@
+{
+
+    "apiVersion": "1.0",
+
+    "project"   : "__projectname__",
+    
+    "codeScan": {
+        "use" : [ "__use1__" ]
+     }
+}

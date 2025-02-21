@@ -1,17 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -678,6 +686,239 @@ class SecHubConfigurationModelSupportTest {
         /* test */
         boolean needed = ScanType.SECRET_SCAN.equals(scanType);
         assertEquals(needed, result, "Needed must be: " + needed);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(SourceRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider.class)
+    void isSourceRequired_returns_true_when_scan_type_uses_sourcecode_archive_root(String variant, ScanType check, List<ScanType> defined, List<String> use) {
+        /* prepare */
+        SecHubConfigurationModel model = createConfigurationUsingArchiveRootReferenceInTypes(defined, use);
+
+        /* execute */
+        boolean required = supportToTest.isSourceRequired(check, model);
+
+        /* test */
+        if (!required) {
+            fail("Expected source required=true, but was not for configuration:\n" + JSONConverter.get().toJSON(model, true));
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(BinaryRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider.class)
+    void isBinaryRequired_returns_true_when_scan_type_uses_binaries_archive_root(String variant, ScanType check, List<ScanType> defined, List<String> use) {
+        /* prepare */
+        SecHubConfigurationModel model = createConfigurationUsingArchiveRootReferenceInTypes(defined, use);
+
+        /* execute */
+        boolean required = supportToTest.isBinaryRequired(check, model);
+
+        /* test */
+        if (!required) {
+            fail("Expected binaries required=true, but was not for configuration:\n" + JSONConverter.get().toJSON(model, true));
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(NoSourceRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider.class)
+    void isSourceRequired_returns_false_when_scan_type_not_uses_sourcecode_archive_root(String variant, ScanType check, List<ScanType> defined,
+            List<String> use) {
+        /* prepare */
+        SecHubConfigurationModel model = createConfigurationUsingArchiveRootReferenceInTypes(defined, use);
+
+        /* execute */
+        boolean required = supportToTest.isSourceRequired(check, model);
+
+        /* test */
+        if (required) {
+            fail("Expected source required=false, but was required for configuration:\n" + JSONConverter.get().toJSON(model, true));
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(NoBinaryRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider.class)
+    void isBinaryRequired_returns_false_when_scan_type_not_uses_binaries_archive_root(String variant, ScanType check, List<ScanType> defined,
+            List<String> use) {
+        /* prepare */
+        SecHubConfigurationModel model = createConfigurationUsingArchiveRootReferenceInTypes(defined, use);
+
+        /* execute */
+        boolean required = supportToTest.isBinaryRequired(check, model);
+
+        /* test */
+        if (required) {
+            fail("Expected binaries required=false, but was required for configuration:\n" + JSONConverter.get().toJSON(model, true));
+        }
+    }
+
+    private static class SourceRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    Arguments.of("C1", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER) ),
+                    Arguments.of("C2", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("C3", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER ) ),
+                    Arguments.of("C4", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S1", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S2", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S3", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S4", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W1", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W2", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W3", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W4", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+
+              );
+        }
+        /* @formatter:on*/
+    }
+
+    private static class BinaryRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+              Arguments.of("C1", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER) ),
+              Arguments.of("C2", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("C3", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER ) ),
+              Arguments.of("C4", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("S1", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("S2", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("S3", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("S4", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("W1", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("W2", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+              Arguments.of("W3", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+              Arguments.of("W4", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+
+              );
+        }
+        /* @formatter:on*/
+    }
+
+    private static class NoSourceRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    Arguments.of("C1", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER) ),
+                    Arguments.of("C2", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("C3", ScanType.CODE_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER ) ),
+                    Arguments.of("C4", ScanType.CODE_SCAN, List.of(ScanType.SECRET_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S1", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S2", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S3", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S4", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W1", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W2", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W3", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W4", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+
+                    );
+        }
+        /* @formatter:on*/
+    }
+
+    private static class NoBinaryRequiredConfigurationWithArchiveRootUsedByScanTypeArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    Arguments.of("C1", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER) ),
+                    Arguments.of("C2", ScanType.CODE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("C3", ScanType.CODE_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER ) ),
+                    Arguments.of("C4", ScanType.CODE_SCAN, List.of(ScanType.SECRET_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S1", ScanType.SECRET_SCAN, List.of(ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S2", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("S3", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN), List.of(BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S4", ScanType.SECRET_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(ScanType.CODE_SCAN, ScanType.SECRET_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W1", ScanType.WEB_SCAN, List.of(ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W2", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W3", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W4", ScanType.WEB_SCAN, List.of(ScanType.CODE_SCAN, ScanType.LICENSE_SCAN, ScanType.SECRET_SCAN), List.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+
+                    );
+        }
+        /* @formatter:on*/
+    }
+
+    private SecHubConfigurationModel createConfigurationUsingArchiveRootReferenceInTypes(List<ScanType> typesToHaveArchiveRootReference,
+            List<String> usedReferences) {
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        for (ScanType type : typesToHaveArchiveRootReference) {
+            switch (type) {
+            case CODE_SCAN:
+                model.setCodeScan(withReferences(new SecHubCodeScanConfiguration(), usedReferences));
+                break;
+            case INFRA_SCAN:
+                break;
+            case LICENSE_SCAN:
+                model.setLicenseScan(withReferences(new SecHubLicenseScanConfiguration(), usedReferences));
+                break;
+            case SECRET_SCAN:
+                model.setSecretScan(withReferences(new SecHubSecretScanConfiguration(), usedReferences));
+                break;
+            case WEB_SCAN:
+                SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
+                ClientCertificateConfiguration x = withReferences(new ClientCertificateConfiguration(), usedReferences);
+                webScan.setClientCertificate(Optional.of(x));
+                model.setWebScan(webScan);
+                break;
+            default:
+                throw new IllegalStateException(
+                        "Test corrupt! given scan type '" + type + "' does either not offer usage references or this is not implemented inside test data");
+            }
+        }
+        return model;
+    }
+
+    <T extends SecHubDataConfigurationUsageByName> T withReferences(T target, List<String> usedReferences) {
+        target.getNamesOfUsedDataConfigurationObjects().addAll(usedReferences);
+        return target;
     }
 
     static SecHubConfigurationModel loadModel(String testFileName) {

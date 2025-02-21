@@ -1,0 +1,2 @@
+# We accept tar filesl here inside GIT, because necessary for testing (and also very small)
+!*.tar
