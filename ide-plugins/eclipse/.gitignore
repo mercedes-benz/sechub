@@ -7,9 +7,9 @@ gen/
 src-gen/
 .metadata
 .lck
-.classpath
-.project
-.settings/
+!.classpath
+!.project
+!.settings/
 
 # intellij parts
 *.iml
