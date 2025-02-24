@@ -7,7 +7,6 @@ import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
  * @author hamidonos
  */
 @Component
-public class SpringApplicationShutdownHandler implements ApplicationShutdownHandler, ApplicationListener<ContextClosedEvent> {
+public class SpringApplicationShutdownHandler implements ApplicationShutdownHandler {
 
     private static final Logger log = LoggerFactory.getLogger(SpringApplicationShutdownHandler.class);
 
@@ -33,13 +32,12 @@ public class SpringApplicationShutdownHandler implements ApplicationShutdownHand
         shutdownListeners.add(shutdownListener);
     }
 
-    @Override
-    public void onApplicationEvent(ContextClosedEvent event) {
+    public void handleShutdown() {
         log.info("Spring application context closed - informing shutdown listeners");
         shutdownListeners.forEach(listener -> {
             try {
                 listener.onShutdown();
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error("Failed to notify shutdown listener {}", listener.getClass(), e);
             }
         });
