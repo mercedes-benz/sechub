@@ -76,4 +76,13 @@ public class SecHubConfigurationModelValidationResult {
 
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SecHubConfigurationModelValidationResult:\n");
+
+        errors.forEach((error) -> sb.append("- " + error.toString() + "\n"));
+        return sb.toString();
+    }
+
 }

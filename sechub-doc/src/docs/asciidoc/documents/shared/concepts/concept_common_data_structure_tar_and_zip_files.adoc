@@ -2,7 +2,7 @@
 [[data-structure-tar-and-zip-files]]
 
 The data structure inside `TAR` and `ZIP` files contains
-data configuration parts inside `__data__` folder.
+data configuration parts inside `\\__data__` folder.
 
 [NOTE]
 ====
@@ -13,14 +13,8 @@ Before we introduced the possibility to define referenceable <<sechub-config-dat
 For source scans this a more convenient way and we wanted to keep this possiblity - also for
 backward compatibility with existing {sechub} configuration files.
 
-So this is the reason, why <<sechub-config-data-section,data>> is contained inside `\__data__`
+So this is the reason, why <<sechub-config-data-section,data>> is contained inside `\\__data__`
 folder and there is still content inside the root folder as well.
-
-====
-
-[WARNING]
-====
-Only source code scan configuration files may be located inside the root folder!
 ====
 
 [source,shell]
@@ -84,3 +78,38 @@ __data__/
                         example-content.img
 ----
 
+*How to support custom archive uploads by Web UI?*
+
+Every scan configuration which relies on file data - except the `codeScan` legacy way - needs at least one 
+reference to sources or binaries inside the data section.
+
+With the `Web UI` users shall be able to upload custom source and/or binary archives and start a job directly.
+But most users just want to create a simple archive with their sources (or binaries) inside and do not want
+to bother with data sections. While creating a new {sechub} job, the `Web UI` generates a temporary {sechub} 
+configuration file which must reference files related to the root folder of the custom user archives.  
+
+To provide this in a convenient but still compatible way, following unique reference names/ids were introduced:
+
+- `\\__sourcecode_archive_root__`  +
+  _(for source code files at root level in a ZIP)_
+- `\\__binaries_archive_root__` + 
+  _(for binary files at root level in a TAR)_
+
+They can be used like any other reference name within a configuration.
+But they *cannot* be defined in a data section of a configuration, since their target, the root folder of the 
+respective archive, is always present anyway. The `Web UI` can now generate a temporary config file by using the 
+reserved reference names.
+
+[WARNING]
+====
+If a data section of a configuration contains a reserved reference name the configuration is invalid for the server.
+If the custom archive contains folders directly below `\\__data__` having the reserved name as folder name, they will be
+ignored at extraction time. 
+====
+
+[TIP]
+====
+The {sechub} go client will always produce archives with `\\__data__` inside the root folder. 
+The reserved reference names for archive root locations are only a workaround for custom created 
+archives where no `\\__data__` folder exists.
+====

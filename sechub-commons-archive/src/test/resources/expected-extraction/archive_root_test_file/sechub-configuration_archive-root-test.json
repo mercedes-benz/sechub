@@ -1,0 +1,13 @@
+{
+  "apiVersion" : "1.0",
+  
+  "codeScan" : {
+    "use" : [ "__sourcecode_archive_root__", "__binaries_archive_root__" ]
+  },
+  "licenseScan" : {
+    "use" : [ "__sourcecode_archive_root__", "__binaries_archive_root__" ]
+  },
+  "secretScan" : {
+    "use" : [ "__sourcecode_archive_root__", "__binaries_archive_root__" ]
+  }
+}
