@@ -17,6 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -106,33 +108,23 @@ class SecHubSecurityPropertiesTest {
     @Test
     void construct_server_properties_with_valid_arguments_succeeds() {
         /* prepare */
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
         SecHubSecurityProperties.ResourceServerProperties server = new SecHubSecurityProperties.ResourceServerProperties(modes, oAuth2);
 
         /* test */
-        assertThat(server.getModes()).isEqualTo(modes);
+        assertThat(server.getModes()).isEqualTo(Set.of("oauth2", "classic"));
         assertThat(server.isOAuth2ModeEnabled()).isTrue();
         assertThat(server.isClassicModeEnabled()).isTrue();
         assertThat(server.getOAuth2Properties()).isEqualTo(oAuth2);
     }
 
-    @Test
-    void construct_server_properties_with_null_modes_fails() {
-        /* execute + test */
-        /* @formatter:off */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties(null, mock()))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("The property 'sechub.security.server.modes' must not be null");
-        /* @formatter:on */
-    }
-
-    @Test
-    void construct_server_properties_with_empty_modes_fails() {
-        /* prepare */
-        Set<String> modes = Set.of();
+    @ParameterizedTest
+    @EmptySource
+    @NullSource
+    void construct_server_properties_with_non_existing_modes_fails(String modes) {
 
         /* execute + test */
         /* @formatter:off */
@@ -145,7 +137,7 @@ class SecHubSecurityPropertiesTest {
     @Test
     void construct_server_properties_with_invalid_modes_fails() {
         /* prepare */
-        Set<String> modes = Set.of("invalid");
+        String modes = "invalid";
 
         /* execute + test */
         /* @formatter:off */
@@ -280,7 +272,7 @@ class SecHubSecurityPropertiesTest {
         boolean enabled = true;
         String loginPage = "/login";
         String redirectUri = "example.org/redirect-uri";
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
         SecHubSecurityProperties.LoginProperties.ClassicAuthProperties classicAuth = mock();
 
@@ -292,7 +284,7 @@ class SecHubSecurityPropertiesTest {
         assertThat(login.isEnabled()).isEqualTo(enabled);
         assertThat(login.getLoginPage()).isEqualTo(loginPage);
         assertThat(login.getRedirectUri()).isEqualTo(redirectUri);
-        assertThat(login.getModes()).isEqualTo(modes);
+        assertThat(login.getModes()).isEqualTo(Set.of("oauth2", "classic"));
         assertThat(login.getOAuth2Properties()).isEqualTo(oAuth2);
         assertThat(login.getClassicAuthProperties()).isEqualTo(classicAuth);
     }
@@ -303,8 +295,9 @@ class SecHubSecurityPropertiesTest {
     void construct_login_properties_with_null_property_fails(Boolean enabled,
                                                              String loginPage,
                                                              String redirectUri,
-                                                             Set<String> modes,
+                                                             String modes,
                                                              SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2,
+                                                             Class<? extends Exception> exceptionClazz,
                                                              String errMsg) {
         /* prepare */
         /* classic auth properties are nullable therefore not tested here */
@@ -312,7 +305,7 @@ class SecHubSecurityPropertiesTest {
 
         /* execute + test */
         assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2, classicAuth))
-                .isInstanceOf(NullPointerException.class)
+                .isInstanceOf(exceptionClazz)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
     }
@@ -323,7 +316,7 @@ class SecHubSecurityPropertiesTest {
         boolean enabled = true;
         String loginPage = "/login";
         String redirectUri = "example.org/redirect-uri";
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
@@ -444,11 +437,11 @@ class SecHubSecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.enabled' must not be null"),
-                    Arguments.of(true, null, "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.login-page' must not be null"),
-                    Arguments.of(true, "/login", null, Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.redirect-uri' must not be null"),
-                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.modes' must not be null"),
-                    Arguments.of(true, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), null, "The property 'sechub.security.login.oauth2' must not be null")
+                    Arguments.of(null, "/login", "example.org/redirect-uri", "oauth2,classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), NullPointerException.class,"The property 'sechub.security.login.enabled' must not be null"),
+                    Arguments.of(true, null, "example.org/redirect-uri","oauth2,classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class),  NullPointerException.class, "The property 'sechub.security.login.login-page' must not be null"),
+                    Arguments.of(true, "/login", null, "oauth2, classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), NullPointerException.class, "The property 'sechub.security.login.redirect-uri' must not be null"),
+                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class),  IllegalArgumentException.class, "The property 'sechub.security.login.modes' must not be empty or null"),
+                    Arguments.of(true, "/login", "example.org/redirect-uri", "oauth2,classic", null,  NullPointerException.class,"The property 'sechub.security.login.oauth2' must not be null")
             );
         }
         /* @formatter:on */

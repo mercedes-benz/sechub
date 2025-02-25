@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
 import java.time.Duration;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -15,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 @ConfigurationProperties(prefix = SecHubSecurityProperties.PREFIX)
 public class SecHubSecurityProperties {
@@ -43,6 +45,13 @@ public class SecHubSecurityProperties {
 
     private final EncryptionProperties encryption;
 
+    private static Set<String> requireNonEmpy(Set<String> set, String message) {
+        if (set == null || set.isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+        return set;
+    }
+
     @ConstructorBinding
     public SecHubSecurityProperties(ResourceServerProperties server, LoginProperties login, EncryptionProperties encryption) {
         this.server = server;
@@ -69,17 +78,16 @@ public class SecHubSecurityProperties {
         public static final String MODES = "modes";
         public static final String OAUTH2 = "oauth2";
         public static final String CLASSIC = "classic";
-        static final String PREFIX = "%s.server".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".server";
 
         private final Set<String> modes;
         private final OAuth2Properties oAuth2;
 
         @ConstructorBinding
-        public ResourceServerProperties(Set<String> modes, OAuth2Properties oAuth2) {
-            this.modes = requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes"));
-            if (this.modes.isEmpty()) {
-                throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
-            }
+        public ResourceServerProperties(String modes, OAuth2Properties oAuth2) {
+            Set<String> modesParameterSet = new LinkedHashSet<>(SimpleStringUtils.createListForCommaSeparatedValues(modes));
+            this.modes = requireNonEmpy(modesParameterSet, "The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
+
             if (this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
                 throw new IllegalArgumentException("The property '%s.modes' allows only 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
@@ -106,7 +114,7 @@ public class SecHubSecurityProperties {
             public static final String MODE = "mode";
             public static final String OAUTH2_JWT_MODE = "jwt";
             public static final String OAUTH2_OPAQUE_TOKEN_MODE = "opaque-token";
-            static final String PREFIX = "%s.oauth2".formatted(ResourceServerProperties.PREFIX);
+            static final String PREFIX = ResourceServerProperties.PREFIX + ".oauth2";
             private static final Set<String> ALLOWED_MODES = Set.of(OAUTH2_JWT_MODE, OAUTH2_OPAQUE_TOKEN_MODE);
 
             private final String mode;
@@ -145,7 +153,7 @@ public class SecHubSecurityProperties {
             }
 
             public static class JwtProperties {
-                static final String PREFIX = "%s.jwt".formatted(OAuth2Properties.PREFIX);
+                static final String PREFIX = OAuth2Properties.PREFIX + ".jwt";
 
                 private final String jwkSetUri;
 
@@ -160,7 +168,7 @@ public class SecHubSecurityProperties {
             }
 
             public static class OpaqueTokenProperties {
-                static final String PREFIX = "%s.opaque-token".formatted(OAuth2Properties.PREFIX);
+                static final String PREFIX = OAuth2Properties.PREFIX + ".opaque-token";
 
                 private final String introspectionUri;
                 private final String clientId;
@@ -207,7 +215,7 @@ public class SecHubSecurityProperties {
     }
 
     public static class LoginProperties {
-        static final String PREFIX = "%s.login".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".login";
         static final String CLASSIC_MODE = "classic";
         static final String OAUTH2_MODE = "oauth2";
         static final String MODES = "modes";
@@ -223,14 +231,19 @@ public class SecHubSecurityProperties {
         public LoginProperties(Boolean enabled,
                                String loginPage,
                                String redirectUri,
-                               Set<String> modes,
+                               String modes,
                                OAuth2Properties oAuth2,
                                ClassicAuthProperties classicAuth) {
             /* @formatter:on */
             this.isEnabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
             this.loginPage = enabled ? requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page")) : loginPage;
+
             this.redirectUri = enabled ? requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri")) : redirectUri;
-            this.modes = enabled ? requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes")) : modes;
+
+            Set<String> modesParameterSet = new LinkedHashSet<>(SimpleStringUtils.createListForCommaSeparatedValues(modes));
+            this.modes = enabled ? requireNonEmpy(modesParameterSet, "The property '%s.%s' must not be empty or null".formatted(PREFIX, MODES))
+                    : modesParameterSet;
+
             if (enabled && this.modes.isEmpty()) {
                 throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
@@ -279,7 +292,7 @@ public class SecHubSecurityProperties {
         }
 
         public static class OAuth2Properties {
-            static final String PREFIX = "%s.oauth2".formatted(LoginProperties.PREFIX);
+            static final String PREFIX = LoginProperties.PREFIX + ".oauth2";
 
             private final String clientId;
             private final String clientSecret;
@@ -344,7 +357,7 @@ public class SecHubSecurityProperties {
         }
 
         public static class ClassicAuthProperties {
-            static final String PREFIX = "%s.classic".formatted(LoginProperties.PREFIX);
+            static final String PREFIX = LoginProperties.PREFIX + ".classic";
 
             private static final Duration COOKIE_AGE_DEFAULT = Duration.ofHours(24);
             private final Duration cookieAge;
@@ -373,7 +386,7 @@ public class SecHubSecurityProperties {
     }
 
     public static class EncryptionProperties {
-        static final String PREFIX = "%s.encryption".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".encryption";
         private static final int AES_256_SECRET_KEY_LENGTH = 32;
 
         private final SealedObject secretKey;

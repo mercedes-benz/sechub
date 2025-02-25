@@ -36,14 +36,12 @@ sechub:
    # Provide here only the classic resource server + login mask (no oAuth2 here)
    security:
      server:
-       modes:
-         - classic
+       modes: classic
      login:
        enabled: true
        login-page: /login # For ui development login will be at https://localhost:8443/login
        redirect-uri: http://localhost:3000 #redirect to web ui <2>
-       modes:
-        - classic
+       modes: classic
      encryption:
        secret-key: example-key-32-byte-long-1234567
 ----

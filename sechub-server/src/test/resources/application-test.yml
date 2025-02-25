@@ -20,9 +20,7 @@
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes:  oauth2, classic
       oauth2:
         mode: jwt
         jwt:
@@ -31,9 +29,7 @@ sechub:
       enabled: true
       login-page: /login
       redirect-uri: example.org/redirect-uri
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2, classic
       oauth2:
         client-id: example-client-id
         client-secret: example-client-secret
