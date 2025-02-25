@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class AnonymousUserRestController {
     private final UserEmailAddressUpdateService emailAddressUpdateService;
     private final SecHubSecurityProperties secHubSecurityProperties;
     private final String redirectUri;
+    // Frontend URI path to success hidden page
     private final String FRONTEND_REDIRECT_URI_PATH = "/user/email_verify";
 
     AnonymousUserRestController(UserEmailAddressUpdateService emailAddressUpdateService, SecHubSecurityProperties secHubSecurityProperties) {
@@ -59,6 +61,18 @@ public class AnonymousUserRestController {
             return "";
         }
 
-        return redirectBaseUri + FRONTEND_REDIRECT_URI_PATH;
+        redirectBaseUri = redirectBaseUri + FRONTEND_REDIRECT_URI_PATH;
+        assertUri(redirectBaseUri);
+
+        return redirectBaseUri;
     }
+
+    private void assertUri(String redirectBaseUri) {
+        try {
+            new URI(redirectBaseUri);
+        } catch (Exception e) {
+            throw new IllegalStateException("Redirect URI is not a valid URI: " + redirectBaseUri);
+        }
+    }
+
 }

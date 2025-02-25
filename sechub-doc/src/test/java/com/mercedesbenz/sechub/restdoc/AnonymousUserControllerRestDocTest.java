@@ -60,7 +60,7 @@ public class AnonymousUserControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test */
         this.mockMvc.perform(
                 get(apiEndpoint,"token1"))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isNoContent())
                 .andDo(defineRestService()
                         .with()
                         .useCaseData(useCase)
