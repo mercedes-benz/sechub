@@ -50,7 +50,7 @@ public class AnonymousUserRestControllerTest {
         /* execute + test */
         this.mockMvc.perform(
                         get(apiEndpoint,"token1"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isNoContent());
         /* @formatter:on */
     }
 

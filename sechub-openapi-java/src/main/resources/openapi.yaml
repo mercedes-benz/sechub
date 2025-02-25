@@ -2794,6 +2794,8 @@ paths:
           schema:
             type: string
       responses:
+        "204":
+          description: "No content"
         "302":
           description: "Redirect"
         "400":

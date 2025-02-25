@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -11,7 +12,7 @@ import com.mercedesbenz.sechub.spring.security.AES256Encryption;
 
 @Service
 public class UserEmailChangeTokenService {
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+    private static final long EXPIRATION_TIME_MILLIS = Duration.ofHours(24).toMillis();
     private static final Base64.Encoder ENCODER = Base64.getUrlEncoder();
     private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
     private final AES256Encryption aes256Encryption;
@@ -43,7 +44,7 @@ public class UserEmailChangeTokenService {
         userEmailChangeToken.validate();
 
         Instant instant = Instant.parse(userEmailChangeToken.getTimestamp());
-        if (instant.plusSeconds(EXPIRATION_TIME).isBefore(Instant.now())) {
+        if (instant.plusMillis(EXPIRATION_TIME_MILLIS).isBefore(Instant.now())) {
             throw new BadRequestException("Token has expired!");
         }
 
