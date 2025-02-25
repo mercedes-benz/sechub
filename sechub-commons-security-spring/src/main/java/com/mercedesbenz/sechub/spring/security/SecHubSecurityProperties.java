@@ -69,7 +69,7 @@ public class SecHubSecurityProperties {
         public static final String MODES = "modes";
         public static final String OAUTH2 = "oauth2";
         public static final String CLASSIC = "classic";
-        static final String PREFIX = "%s.server".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".server";
 
         private final Set<String> modes;
         private final OAuth2Properties oAuth2;
@@ -106,7 +106,7 @@ public class SecHubSecurityProperties {
             public static final String MODE = "mode";
             public static final String OAUTH2_JWT_MODE = "jwt";
             public static final String OAUTH2_OPAQUE_TOKEN_MODE = "opaque-token";
-            static final String PREFIX = "%s.oauth2".formatted(ResourceServerProperties.PREFIX);
+            static final String PREFIX = ResourceServerProperties.PREFIX + ".oauth2";
             private static final Set<String> ALLOWED_MODES = Set.of(OAUTH2_JWT_MODE, OAUTH2_OPAQUE_TOKEN_MODE);
 
             private final String mode;
@@ -145,7 +145,7 @@ public class SecHubSecurityProperties {
             }
 
             public static class JwtProperties {
-                static final String PREFIX = "%s.jwt".formatted(OAuth2Properties.PREFIX);
+                static final String PREFIX = OAuth2Properties.PREFIX + ".jwt";
 
                 private final String jwkSetUri;
 
@@ -160,7 +160,7 @@ public class SecHubSecurityProperties {
             }
 
             public static class OpaqueTokenProperties {
-                static final String PREFIX = "%s.opaque-token".formatted(OAuth2Properties.PREFIX);
+                static final String PREFIX = OAuth2Properties.PREFIX + ".opaque-token";
 
                 private final String introspectionUri;
                 private final String clientId;
@@ -207,7 +207,7 @@ public class SecHubSecurityProperties {
     }
 
     public static class LoginProperties {
-        static final String PREFIX = "%s.login".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".login";
         static final String CLASSIC_MODE = "classic";
         static final String OAUTH2_MODE = "oauth2";
         static final String MODES = "modes";
@@ -279,7 +279,7 @@ public class SecHubSecurityProperties {
         }
 
         public static class OAuth2Properties {
-            static final String PREFIX = "%s.oauth2".formatted(LoginProperties.PREFIX);
+            static final String PREFIX = LoginProperties.PREFIX + ".oauth2";
 
             private final String clientId;
             private final String clientSecret;
@@ -344,7 +344,7 @@ public class SecHubSecurityProperties {
         }
 
         public static class ClassicAuthProperties {
-            static final String PREFIX = "%s.classic".formatted(LoginProperties.PREFIX);
+            static final String PREFIX = LoginProperties.PREFIX + ".classic";
 
             private static final Duration COOKIE_AGE_DEFAULT = Duration.ofHours(24);
             private final Duration cookieAge;
@@ -373,7 +373,7 @@ public class SecHubSecurityProperties {
     }
 
     public static class EncryptionProperties {
-        static final String PREFIX = "%s.encryption".formatted(SecHubSecurityProperties.PREFIX);
+        static final String PREFIX = SecHubSecurityProperties.PREFIX + ".encryption";
         private static final int AES_256_SECRET_KEY_LENGTH = 32;
 
         private final SealedObject secretKey;
