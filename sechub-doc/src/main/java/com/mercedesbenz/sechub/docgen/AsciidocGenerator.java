@@ -355,8 +355,10 @@ public class AsciidocGenerator implements Generator {
 
     private Map<String, SortedSet<SystemPropertiesDescriptionGenerator.TableRow>> createCustomPropertiesMap() {
         /*
-         * currently no custom properties are supported - reason : non generated parts
-         * will be out dated soon and no reliable
+         * Currently no custom properties are supported - reason : non generated parts
+         * will be outdated soon and not reliable. Please add only manual parts for
+         * which a test ensures the doc would be always valid when adding here manual
+         * parts!
          */
         return new HashMap<>();
     }

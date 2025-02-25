@@ -14,7 +14,7 @@ import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class LoginModeOAuth2ActiveCondition implements Condition {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginOAuth2AccessTokenClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginModeOAuth2ActiveCondition.class);
 
     private static final String SEARCH_PROPERTY = SecHubSecurityProperties.LoginProperties.PREFIX + "." + SecHubSecurityProperties.LoginProperties.MODES;
 
@@ -28,9 +28,9 @@ public class LoginModeOAuth2ActiveCondition implements Condition {
 
         List<String> list = SimpleStringUtils.createListForCommaSeparatedValues(value);
 
-        boolean isOAuth2ModeEnabled = list.contains(SecHubSecurityProperties.LoginProperties.OAUTH2_MODE);
+        boolean isOAuth2LoginEnabled = list.contains(SecHubSecurityProperties.LoginProperties.OAUTH2_MODE);
 
-        logger.debug("isAuth2ModeEnabled={}", isOAuth2ModeEnabled);
-        return isOAuth2ModeEnabled;
+        logger.debug("isOAuth2LoginEnabled={}", isOAuth2LoginEnabled);
+        return isOAuth2LoginEnabled;
     }
 }

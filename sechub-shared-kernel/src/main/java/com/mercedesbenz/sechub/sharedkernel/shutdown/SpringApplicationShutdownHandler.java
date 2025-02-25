@@ -33,12 +33,12 @@ public class SpringApplicationShutdownHandler implements ApplicationShutdownHand
     }
 
     public void handleShutdown() {
-        log.info("Spring application context closed - informing shutdown listeners");
+        log.info("Start handling shutdown - informing shutdown listeners");
         shutdownListeners.forEach(listener -> {
             try {
                 listener.onShutdown();
             } catch (RuntimeException e) {
-                log.error("Failed to notify shutdown listener {}", listener.getClass(), e);
+                log.error("Notified shutdown listener failed: {}", listener.getClass(), e);
             }
         });
     }
