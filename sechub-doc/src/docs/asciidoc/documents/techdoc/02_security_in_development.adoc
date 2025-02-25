@@ -28,6 +28,16 @@ SecHub Server supports two different _modes_ when it comes to security.
 - 1) **Classic Mode**: This is the standard SecHub authentication mode. In this mode `Basic Auth` is available for authentication.
 Whenever we speak of `Basic Auth`, we refer to this mode.
 
+It is the default, but if you want to define it explicit you can use:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes: classic
+----
+
 - 2) **OAuth2 Mode**: Like the name suggests, this mode enables `OAuth2` for authentication.
 
 Both modes can be enabled at the same time, but at least one of them must be enabled.
@@ -43,8 +53,7 @@ If you want to test `OAuth2` integration with IDPs (Identity Providers) like `Ke
 sechub:
   security:
     server:
-      modes:
-        - oauth2
+      modes: oauth2
       oauth2:
         mode: jwt
         jwt:
@@ -60,8 +69,7 @@ Tokens`, you have to configure the `mode` to `opaque-token` instead of `jwt`:
 sechub:
   security:
     server:
-      modes:
-        - oauth2
+      modes: oauth2
       oauth2:
         mode: opaque-token
         opaque-token:
@@ -74,6 +82,23 @@ sechub:
 
 We recommend `Keycloak` as an IDP for testing purposes. It is easy to set up and provides a lot of features for free.
 But you are free to use any other IDP you like.
+
+- 3) **OAuth2 + Classic Mode**
+
+It is possible to use both modes at same time - for example:
+
+[source,yaml]
+----
+sechub:
+  security:
+    server:
+      modes: oauth2, classic
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: <jwk-set-uri-of-your-idp>
+----
+
 
 ==== Certificates
 

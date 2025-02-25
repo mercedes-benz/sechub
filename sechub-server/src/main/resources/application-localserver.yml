@@ -16,7 +16,6 @@ sechub:
     baseurl: "https://localhost:${server.port}"
   security:
     server:
-      modes:
-        - classic
+      modes: classic
     login:
       enabled: false

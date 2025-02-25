@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
 import java.time.Duration;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -15,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 @ConfigurationProperties(prefix = SecHubSecurityProperties.PREFIX)
 public class SecHubSecurityProperties {
@@ -42,6 +44,13 @@ public class SecHubSecurityProperties {
     private final LoginProperties login;
 
     private final EncryptionProperties encryption;
+
+    private static Set<String> requireNonEmpy(Set<String> set, String message) {
+        if (set == null || set.isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+        return set;
+    }
 
     @ConstructorBinding
     public SecHubSecurityProperties(ResourceServerProperties server, LoginProperties login, EncryptionProperties encryption) {
@@ -75,11 +84,10 @@ public class SecHubSecurityProperties {
         private final OAuth2Properties oAuth2;
 
         @ConstructorBinding
-        public ResourceServerProperties(Set<String> modes, OAuth2Properties oAuth2) {
-            this.modes = requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes"));
-            if (this.modes.isEmpty()) {
-                throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
-            }
+        public ResourceServerProperties(String modes, OAuth2Properties oAuth2) {
+            Set<String> modesParameterSet = new LinkedHashSet<>(SimpleStringUtils.createListForCommaSeparatedValues(modes));
+            this.modes = requireNonEmpy(modesParameterSet, "The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
+
             if (this.modes.stream().noneMatch(ALLOWED_MODES::contains)) {
                 throw new IllegalArgumentException("The property '%s.modes' allows only 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
@@ -223,14 +231,19 @@ public class SecHubSecurityProperties {
         public LoginProperties(Boolean enabled,
                                String loginPage,
                                String redirectUri,
-                               Set<String> modes,
+                               String modes,
                                OAuth2Properties oAuth2,
                                ClassicAuthProperties classicAuth) {
             /* @formatter:on */
             this.isEnabled = requireNonNull(enabled, ERR_MSG_FORMAT.formatted(PREFIX, "enabled"));
             this.loginPage = enabled ? requireNonNull(loginPage, ERR_MSG_FORMAT.formatted(PREFIX, "login-page")) : loginPage;
+
             this.redirectUri = enabled ? requireNonNull(redirectUri, ERR_MSG_FORMAT.formatted(PREFIX, "redirect-uri")) : redirectUri;
-            this.modes = enabled ? requireNonNull(modes, ERR_MSG_FORMAT.formatted(PREFIX, "modes")) : modes;
+
+            Set<String> modesParameterSet = new LinkedHashSet<>(SimpleStringUtils.createListForCommaSeparatedValues(modes));
+            this.modes = enabled ? requireNonEmpy(modesParameterSet, "The property '%s.%s' must not be empty or null".formatted(PREFIX, MODES))
+                    : modesParameterSet;
+
             if (enabled && this.modes.isEmpty()) {
                 throw new IllegalArgumentException("The property '%s.modes' must at least include 'oauth2' or 'classic' mode".formatted(PREFIX));
             }
