@@ -92,7 +92,7 @@ It is possible to use both modes at same time - for example:
 sechub:
   security:
     server:
-      modes: oauth2, classic
+      modes: oauth2,classic
       oauth2:
         mode: jwt
         jwt:

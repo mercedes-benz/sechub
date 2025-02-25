@@ -28,7 +28,7 @@ Below is an example configuration with `Classic` mode and `OAuth2` in `JWT` mode
 sechub:
   security:
     server:
-      modes: oauth2, classic <1>
+      modes: oauth2,classic <1>
       oauth2:
         mode: jwt
         jwt:
@@ -85,7 +85,7 @@ Below is a full configuration example with `Login` enabled in `Classic` and `OAu
 sechub:
   security:
     server:
-      modes: oauth2, classic <1>
+      modes: oauth2,classic <1>
       oauth2:
         mode: jwt
         jwt:
@@ -97,7 +97,7 @@ sechub:
       login-page: /login
       # Here you can configure the target application where the user will be redirected after successful login
       redirect-uri: <your-target-application>
-      modes: oauth2, classic
+      modes: oauth2,classic
       oauth2:
         client-id: <client-id>
         client-secret: <client-secret>
