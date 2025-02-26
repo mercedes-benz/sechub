@@ -44,6 +44,8 @@ public enum TestSecHubConfigExampleFile {
 
     WEBSCAN_FORM_BASED_SCRIPT_AUTH_WITH_TOTP("src/docs/asciidoc/documents/shared/configuration/sechub_config_example21_webscan_login_form_with_totp.json"),
 
+    WEBSCAN_LOGOUT_CONFIGURATION("src/docs/asciidoc/documents/shared/configuration/sechub_config_example24_logout_config.json"),
+
     ;
 
     private String path;

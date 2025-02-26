@@ -263,6 +263,30 @@ include::sechub_config_example4_webscan_login_clientcertificate.json[]
     In the example above the SecHub GO client will substitute the value of `"{{ .CERT_PASSWORD }}"` with the value of the environment variable `CERT_PASSWORD`.
 <3> web scan uses the referenced <<sechub-config-data-section,data>> configuration "client-certificate-file-reference", to obtain the client certificate file.
 
+====== Example authentication via webscan template
+This can be used to handle complex authentication steps that can be handled in a template e.g. with a login script. The template must be assigned to the project.
+Any other part of the webscan configuration can be combined with the template section of the webscan configuration, e.g. TOTP or avoiding logout.
+[source,json,title="authentication via webscan template"]
+----
+include::sechub_config_example22_webscan_with_template.json[]
+----
+<1> `templateData` contains all the data relevant to make use of the template. The template itself must be configured and saved and managed on the {sechub} server.
+    Please have a look at the `concept_templates_and_assets.adoc` for more details on how the templates work.
+<2> `variables` for the template that shall be used. These are defined by the template, in this case this template for the webscan requires a `username` and a `password`.
+    Only if users know which template is assigned to their project, they will be able to configure the template correctly.
+
+====== Example logout configuration
+This is onyl relevant if scanning a frontend, since this logout specification tries to find certain HTML elements.
+When scanning a web API this section can be omitted. For URLs to exclude from the scan see <<sechub-config-example-webscan-anonymous>>.
+[source,json,title="logout configuration"]
+----
+include::sechub_config_example24_logout_config.json[]
+----
+<1> `logout` section to avoid logout during scan. A button or any other HTML element can be specified here,
+    to avoid a logout during the scan. To specify an URL to avoid during scan please use <<sechub-config-example-webscan-anonymous>>
+<2> `xpath` to locate the HTML element that shall be avoided during the scan
+<3> `htmlElementType` to locate the HTML element that shall be avoided during the scan
+
 ====== Example form based login by script
 WARNING: This example [.underline]#currently# [.underline]#only# works with the `Netsparker` DAST module. We deprecated the `Netsparker` integration because it is not developed any further from our side. We use and develop the `Zaproxy` integration. As soon as this feature is available for our actively maintained `Zaproxy` DAST module, we will remove this warning. If you host SecHub yourself with a `Netsparker` module, this does not affect you. You can use this configuration as before.
 
