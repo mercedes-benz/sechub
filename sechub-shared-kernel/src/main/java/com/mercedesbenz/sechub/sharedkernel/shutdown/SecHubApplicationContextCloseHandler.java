@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.shutdown;
 
 import org.springframework.context.ApplicationListener;
