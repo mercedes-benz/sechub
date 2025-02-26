@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.6.0</span>
+<span id="revnumber"> Server 2.7.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -788,7 +788,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.6.0 - Build date: 2025-02-20 14:38 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.7.0 - Build date: 2025-02-26 09:16 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1230,50 +1230,8 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-oauth2-jwt" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'oauth2-jwt'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.jwt.jwk-set-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The URI to the JWK set of the identity provider. Required in 'JWT' mode.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The OAuth2 mode to use for authentication. Must be either 'JWT' or 'OPAQUE_TOKEN'.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.introspection-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Opaque token introspection endpoint of the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-configuration-scope-pdsinstall" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'pdsinstall'</caption>
+<caption class="title">Table 11. Scope 'pdsinstall'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1300,7 +1258,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-pdsresilience" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'pdsresilience'</caption>
+<caption class="title">Table 12. Scope 'pdsresilience'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1347,7 +1305,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'scan'</caption>
+<caption class="title">Table 13. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1384,7 +1342,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-schedule" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'schedule'</caption>
+<caption class="title">Table 14. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1412,7 +1370,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'scheduler'</caption>
+<caption class="title">Table 15. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1474,7 +1432,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'sec'</caption>
+<caption class="title">Table 16. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1541,7 +1499,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'security'</caption>
+<caption class="title">Table 17. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1563,7 +1521,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'server'</caption>
+<caption class="title">Table 18. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1585,7 +1543,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-smtpserver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'smtpserver'</caption>
+<caption class="title">Table 19. Scope 'smtpserver'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1627,7 +1585,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'storage'</caption>
+<caption class="title">Table 20. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1714,7 +1672,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'system'</caption>
+<caption class="title">Table 21. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1746,7 +1704,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'target'</caption>
+<caption class="title">Table 22. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1778,7 +1736,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Scope 'administration'</caption>
+<caption class="title">Table 23. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1800,7 +1758,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Scope 'scan'</caption>
+<caption class="title">Table 24. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1822,7 +1780,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Scope 'schedule'</caption>
+<caption class="title">Table 25. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -2488,7 +2446,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. PDS executor configuration parameters</caption>
+<caption class="title">Table 26. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3863,7 +3821,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.6.0<br>
+ Server 2.7.0<br>
 </div>
 </div>
 </body>

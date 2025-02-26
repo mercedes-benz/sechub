@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
 import org.eclipse.jface.resource.ImageDescriptor;

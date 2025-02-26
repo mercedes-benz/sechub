@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.access;
 
 import org.eclipse.equinox.security.storage.StorageException;
