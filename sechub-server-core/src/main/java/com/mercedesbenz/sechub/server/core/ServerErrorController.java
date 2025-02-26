@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server.core;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
+
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +28,7 @@ public class ServerErrorController implements ErrorController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerErrorController.class);
 
-    @MustBeDocumented("When debug flag is set, rest call reponse error messages do also contain stacktraces.")
+    @MustBeDocumented(value = "When debug flag is set, rest call reponse error messages do also contain stacktraces.", scope = SCOPE_DEVELOPMENT_ONLY)
     @Value("${sechub.server.debug:false}")
     boolean debug;
 

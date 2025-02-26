@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 
@@ -31,7 +32,7 @@ public class MockEmailService implements EmailService {
     @Autowired
     private SimpleMailMessageSupport mailMessageSupport;
 
-    @MustBeDocumented("When email mock shall cache the mails this must be configured to true, per default disabled!")
+    @MustBeDocumented(value = "When email mock shall cache the mails this must be configured to true, per default disabled!", scope = DocumentationScopeConstants.SCOPE_DEVELOPMENT_ONLY)
     @Value("${sechub.notification.email.mock.cache.enabled:false}")
     private boolean cacheEmailsEnabled;
 

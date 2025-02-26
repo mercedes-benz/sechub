@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.domain.administration.APITokenGenerator;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogService;
@@ -38,7 +39,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
     private static final Logger LOG = LoggerFactory.getLogger(AnonymousUserGetAPITokenByOneTimeTokenService.class);
 
     @Value("${sechub.user.onetimetoken.outdated.millis:86400000}")
-    @MustBeDocumented(value = "One time token time when outdating")
+    @MustBeDocumented(value = "One time token time when outdating", scope = DocumentationScopeConstants.SCOPE_API_TOKEN)
     long oneTimeOutDatedMillis = DEFAULT_OUTDATED_TIME_MILLIS;
 
     @Autowired

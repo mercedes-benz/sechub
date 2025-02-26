@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.job;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,12 +18,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleAssertService;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationMetaDataMapTransformer;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
@@ -59,11 +61,11 @@ public class SecHubJobInfoForUserService {
     SecHubConfigurationModelAccessService configurationModelAccess;
 
     @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
-    @MustBeDocumented("Maximum limit for job information list entries per page")
+    @MustBeDocumented(value = "Maximum limit for job information list entries per page", scope = SCOPE_JOB)
     int maximumSize = DEFAULT_MAXIMUM_LIMIT;
 
     @Value("${sechub.project.joblist.page.max:" + DEFAULT_MAXIMUM_PAGE + "}")
-    @MustBeDocumented
+    @MustBeDocumented(scope = SCOPE_JOB)
     int maximumPage = DEFAULT_MAXIMUM_PAGE;
 
     @PostConstruct

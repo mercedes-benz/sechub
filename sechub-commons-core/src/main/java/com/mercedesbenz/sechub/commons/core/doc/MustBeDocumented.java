@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.commons.core.doc;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,7 +43,8 @@ public @interface MustBeDocumented {
      *
      * @return scope
      */
-    String scope() default DocumentationScopeConstants.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED;
+    String scope();// default "definingClassNameToLowercase";
+                   // //DocumentationScopeConstants.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED;
 
     /**
      * When <code>true</code> the information of this annotation must be handled

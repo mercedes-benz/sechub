@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.domain.notification.NotificationConfiguration;
 import com.mercedesbenz.sechub.domain.notification.email.EmailService;
 import com.mercedesbenz.sechub.domain.notification.email.MailMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart;
@@ -23,7 +23,7 @@ public class InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationServi
     private static final Logger LOG = LoggerFactory.getLogger(InformAdminsThatNewSchedulerInstanceHasBeenStartedNotificationService.class);
 
     @Value("${sechub.notification.scheduler.startup.enabled:true}")
-    @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_ADMINISTRATION, value = "When enabled, administrators will be informed by notification "
+    @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_NOTIFICATION, value = "When enabled, administrators will be informed by notification "
             + "when new scheduler instances are started. " + "Those notifications will also contain information about potential zombie jobs.\n\n"
             + " When disabled, incoming events will be ignored and no notification sent.")
     boolean notificationEnabled;
