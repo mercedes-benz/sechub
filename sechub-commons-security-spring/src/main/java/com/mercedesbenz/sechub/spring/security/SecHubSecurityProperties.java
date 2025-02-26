@@ -360,13 +360,13 @@ public class SecHubSecurityProperties {
             @ConstructorBinding
             /* @formatter:off */
             public OAuth2Properties(
-                    @Description("The client id used for auth2 login handling")
+                    @Description("The client id used for oauth2 login handling")
                     String clientId,
 
-                    @Description("The client secret used for auth2 login handling")
+                    @Description("The client secret used for oauth2 login handling")
                     String clientSecret,
 
-                    @Description("Name of the provider. For example 'keycloak'")
+                    @Description("Name of the oauth2 provider. For example 'keycloak'")
                     String provider,
 
                     @Description("This is the callback URI where the IDP will redirect the user after successful login; 'https://<sechub-server-host>/login/oauth2/code/<provider>'. For most IDPs this URI has to be configured inside the IDP client")

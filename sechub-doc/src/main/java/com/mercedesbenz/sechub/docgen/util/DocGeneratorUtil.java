@@ -24,6 +24,9 @@ public class DocGeneratorUtil {
     }
 
     public static String convertCamelCaseToKebabCase(String camelCase) {
+        if (camelCase == null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
 
         int pos = 0;
@@ -44,6 +47,35 @@ public class DocGeneratorUtil {
         }
 
         return sb.toString().toLowerCase();
+
+    }
+
+    /**
+     * Converts a spring boot system property to a environment variable name
+     *
+     * @param systemPropert property name
+     * @return environment variable name or <code>null</code> if systemProperty
+     *         parameter was <code>null</code>
+     */
+    public static String convertSystemPropertyToEnvironmentVariable(String systemProperty) {
+        if (systemProperty == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : systemProperty.toCharArray()) {
+
+            switch (c) {
+            case '.':
+                sb.append("_");
+                break;
+            case '-':
+                /* - will not be appended */
+                break;
+            default:
+                sb.append(c);
+            }
+        }
+        return sb.toString().toUpperCase();
 
     }
 
