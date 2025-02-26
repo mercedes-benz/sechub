@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="40.481251mm"
+   height="14.552083mm"
+   viewBox="0 0 40.481251 14.552083"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="cwe.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="323.53808"
+     inkscape:cy="-66.96395"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="3440"
+     inkscape:window-height="1375"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-55.354614,-41.015625)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.64062309px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;stroke-width:0.26601559"
+       x="64.222366"
+       y="52.041306"
+       id="text4582"
+       transform="scale(0.98890399,1.0112205)"><tspan
+         sodipodi:role="line"
+         id="tspan4580"
+         x="64.222366"
+         y="52.041306"
+         style="fill:#000080;stroke-width:0.26601559">CWE</tspan></text>
+    <path
+       style="fill:#0000ff;stroke-width:0.32018125"
+       d="M 75.934096,40.065888 A 19.109787,8.7530297 0 0 0 56.824721,48.81947 19.109787,8.7530297 0 0 0 75.934096,57.572403 19.109787,8.7530297 0 0 0 95.044074,48.81947 19.109787,8.7530297 0 0 0 75.934096,40.065888 Z m -0.0775,1.515343 A 17.944556,7.1539186 0 0 1 93.801034,48.73485 17.944556,7.1539186 0 0 1 75.856594,55.889121 17.944556,7.1539186 0 0 1 57.912152,48.73485 17.944556,7.1539186 0 0 1 75.856594,41.581231 Z"
+       id="path4584"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

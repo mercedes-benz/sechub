@@ -3,9 +3,7 @@
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2,classic
       oauth2:
         mode: jwt
         jwt:

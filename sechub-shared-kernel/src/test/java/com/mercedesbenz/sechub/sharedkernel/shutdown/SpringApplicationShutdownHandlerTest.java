@@ -48,13 +48,13 @@ class SpringApplicationShutdownHandlerTest {
     }
 
     @Test
-    void onApplicationEvent_informs_shutdown_listeners() {
+    void handleShutdown_informs_shutdown_listeners() {
         /* prepare */
         Collection<ShutdownListener> shutdownListeners = List.of(mock(), mock(), mock());
         shutdownListeners.forEach(shutdownHandlerToTest::register);
 
         /* execute */
-        shutdownHandlerToTest.onApplicationEvent(mock());
+        shutdownHandlerToTest.handleShutdown();
 
         /* test */
         Collection<ShutdownListener> actualShutdownListener = shutdownHandlerToTest.getShutdownListeners();
@@ -67,7 +67,7 @@ class SpringApplicationShutdownHandlerTest {
     }
 
     @Test
-    void onApplicationEvent_informs_every_shutdown_listener_even_if_one_throws_exception() {
+    void handleShutdown_informs_every_shutdown_listener_even_if_one_throws_exception() {
         /* prepare */
         ShutdownListener throwingListener = mock();
         doThrow(new RuntimeException("Shutdown failed")).when(throwingListener).onShutdown();
@@ -77,7 +77,7 @@ class SpringApplicationShutdownHandlerTest {
         shutdownHandlerToTest.register(nonThrowingListener);
 
         /* execute */
-        shutdownHandlerToTest.onApplicationEvent(mock());
+        shutdownHandlerToTest.handleShutdown();
 
         /* test */
         verify(throwingListener).onShutdown();
