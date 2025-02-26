@@ -7,6 +7,7 @@ package com.mercedesbenz.sechub.commons.model;
 public interface JSONValidatable {
     /**
      * Validates the object's state after deserialization
+     *
      * @throws JSONValidationException if validation fails
      */
     void validate() throws JSONValidationException;

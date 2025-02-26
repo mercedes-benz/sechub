@@ -71,16 +71,18 @@ public class JSONConverter {
         try {
             byte[] bytes = string.getBytes();
             T result = mapper.readValue(bytes, clazz);
-            
+
             // Validate the object if it implements JSONValidatable
             if (result instanceof JSONValidatable) {
                 try {
                     ((JSONValidatable) result).validate();
                 } catch (JSONValidationException e) {
                     throw new JSONConverterException("Validation failed for " + clazz.getSimpleName(), e);
+                } catch (Exception e) {
+                    throw new JSONConverterException("Unexpected error during validation of " + clazz.getSimpleName(), e);
                 }
             }
-            
+
             return result;
         } catch (IOException e) {
             LOG.debug("JSON conversion failed, origin JSON:\n{}", json);
