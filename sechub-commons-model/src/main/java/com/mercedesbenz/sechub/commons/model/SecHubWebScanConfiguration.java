@@ -13,6 +13,7 @@ public class SecHubWebScanConfiguration {
 
     public static final String PROPERTY_URL = "url";
     public static final String PROPERTY_LOGIN = "login";
+    public static final String PROPERTY_LOGOUT = "logout";
     public static final String PROPERTY_MAX_SCAN_DURATION = "maxScanDuration";
     public static final String PROPERTY_API = "api";
     public static final String PROPERTY_INCLUDES = "includes";
@@ -23,6 +24,7 @@ public class SecHubWebScanConfiguration {
     public static final String WEBSCAN_URL_WILDCARD_SYMBOL = "<*>";
 
     Optional<WebLoginConfiguration> login = Optional.empty();
+    WebLogoutConfiguration logout;
     Optional<WebScanDurationConfiguration> maxScanDuration = Optional.empty();
 
     Optional<SecHubWebScanApiConfiguration> api = Optional.empty();
@@ -94,6 +96,14 @@ public class SecHubWebScanConfiguration {
 
     public void setClientCertificate(Optional<ClientCertificateConfiguration> clientCertificate) {
         this.clientCertificate = clientCertificate;
+    }
+
+    public WebLogoutConfiguration getLogout() {
+        return logout;
+    }
+
+    public void setLogout(WebLogoutConfiguration logout) {
+        this.logout = logout;
     }
 
 }

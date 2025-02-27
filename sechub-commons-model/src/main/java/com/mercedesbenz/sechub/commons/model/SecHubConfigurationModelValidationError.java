@@ -46,6 +46,8 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID("The TOTP configuration inside the webscan config login section is invalid!"),
 
+    WEB_SCAN_LOGOUT_CONFIGURATION_INVALID("The logout configuration inside the webscan config is invalid!"),
+
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!"),

@@ -25,6 +25,7 @@ import org.zaproxy.clientapi.core.ClientApiException;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.WebLogoutConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -317,6 +318,105 @@ class ZapScannerTest {
         // make sure this method is only called for includes without wildcards
         verify(clientApiWrapper, times(includesWithoutWildcards)).accessUrlViaZap(any(), anyBoolean());
         verify(clientApiWrapper, times(excludes.size())).addExcludeUrlPatternToContext(any(), any());
+    }
+
+    @Test
+    void add_ajax_spider_avoid_logout_exclude_with_logout_configured_client_wrapper_is_called_once() throws ClientApiException {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "xpath": "//*[@id=\\"loginButton\\"]",
+                      "htmlElement": "button"
+                    }
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+        WebLogoutConfiguration logout = sechubWebScanConfig.getLogout();
+
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        /* execute */
+        scannerToTest.addAjaxSpiderAvoidLogoutExclude();
+
+        /* test */
+        verify(clientApiWrapper).addAjaxSpiderAvoidLogoutExclude(scanContext.getContextName(), "avoid-logout", logout);
+    }
+
+    @Test
+    void add_ajax_spider_avoid_logout_exclude_without_logout_html_element_configured_throws_exception() throws ClientApiException {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "xpath": "//*[@id=\\"loginButton\\"]"
+                    }
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        /* execute */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> scannerToTest.addAjaxSpiderAvoidLogoutExclude());
+
+        /* test */
+        assertTrue(exception.getMessage().contains("HtmlElement"));
+        verify(clientApiWrapper, never()).addAjaxSpiderAvoidLogoutExclude(anyString(), anyString(), any());
+    }
+
+    @Test
+    void add_ajax_spider_avoid_logout_exclude_without_logout_xpath_configured_throws_exception() throws ClientApiException {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "htmlElement": "button"
+                    }
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        /* execute */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> scannerToTest.addAjaxSpiderAvoidLogoutExclude());
+
+        /* test */
+        assertTrue(exception.getMessage().contains("XPath"));
+        verify(clientApiWrapper, never()).addAjaxSpiderAvoidLogoutExclude(anyString(), anyString(), any());
+    }
+
+    @Test
+    void add_ajax_spider_avoid_logout_exclude_without_logout_configured_client_wrapper_is_never_called() throws ClientApiException {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org"
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(json).getWebScan().get();
+
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+
+        /* execute */
+        scannerToTest.addAjaxSpiderAvoidLogoutExclude();
+
+        /* test */
+        verify(clientApiWrapper, never()).addAjaxSpiderAvoidLogoutExclude(anyString(), anyString(), any());
     }
 
     @Test
