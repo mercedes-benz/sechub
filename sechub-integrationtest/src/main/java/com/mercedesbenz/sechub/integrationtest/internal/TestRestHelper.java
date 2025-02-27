@@ -4,11 +4,13 @@ package com.mercedesbenz.sechub.integrationtest.internal;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
+import static org.springframework.http.HttpEntity.*;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +40,7 @@ import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
+
     public static enum RestHelperTarget {
         SECHUB_SERVER, SECHUB_PDS,
     }
@@ -232,7 +235,7 @@ public class TestRestHelper {
 
     public void post(String url) {
         markLastURL(url);
-        getTemplate().postForLocation(url, HttpEntity.EMPTY);
+        getTemplate().postForLocation(url, EMPTY);
     }
 
     public HttpHeaders head(String url) {
@@ -258,6 +261,11 @@ public class TestRestHelper {
     public String getStringFromURL(String link) {
         markLastURL(link);
         return template.getForEntity(link, String.class).getBody();
+    }
+
+    public void sendGetRequestToURI(URI uri) {
+        markLastURL(uri.toString());
+        template.getForEntity(uri, String.class);
     }
 
     public String headStringFromURL(String url) {
