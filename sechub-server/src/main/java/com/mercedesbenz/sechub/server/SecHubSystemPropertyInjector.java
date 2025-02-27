@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 import jakarta.annotation.PostConstruct;
 

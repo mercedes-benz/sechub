@@ -11,23 +11,24 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.domain.administration.user.InternalInitialDataService;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 @Component
 public class InitialAdminInitializer {
 
     @Value("${sechub.initialadmin.userid}")
-    @MustBeDocumented(value = "Userid of initial administrator")
+    @MustBeDocumented(value = "Userid of initial administrator", scope = DocumentationScopeConstants.SCOPE_ADMINISTRATION)
     String initialAdminUserid;
 
     @Value("${sechub.initialadmin.email}")
-    @MustBeDocumented(value = "Mail of initial administrator")
+    @MustBeDocumented(value = "Mail of initial administrator", scope = DocumentationScopeConstants.SCOPE_ADMINISTRATION)
     String initialAdminEmailAddress;
 
     @Value("${sechub.initialadmin.apitoken:}") // : so default is empty, making this optional.
-    @MustBeDocumented(value = "An apitoken for initial admin, will only be used in DEV and INTEGRATIONTEST profiles and is optional!")
+    @MustBeDocumented(value = "An apitoken for initial admin, will only be used in DEV and INTEGRATIONTEST profiles and is optional!", scope = DocumentationScopeConstants.SCOPE_ADMINISTRATION)
     String initialAdminApiToken;
 
     @Autowired

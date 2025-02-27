@@ -17,12 +17,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface PDSMustBeDocumented {
 
     /**
-     * If this scope is used, it shall be replaced in generated output by lower
-     * cased class name of class where annotation is used
-     */
-    String SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED = "definingClassNameToLowercase";
-
-    /**
      * A description what the documented part is used for
      *
      * @return description
@@ -36,7 +30,7 @@ public @interface PDSMustBeDocumented {
      *
      * @return scope
      */
-    String scope() default SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED;
+    String scope();
 
     /**
      * When <code>true</code> the information of this annotation must be handled

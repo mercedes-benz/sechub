@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.domain.schedule.encryption.ScheduleEncryptionService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemResumesSuspendedJobs;
 
@@ -31,7 +31,7 @@ public class SchedulerNextJobResolver {
     SchedulerStrategyProvider schedulerStrategyProvider;
 
     @Value("${sechub.schedule.nextjob.suspend.miniumum-duration.milliseconds:" + DEFAULT_MIN_SUSPEND_DURATION_MILLISECONDS + "}")
-    @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_SCHEDULE, value = """
+    @MustBeDocumented(scope = DocumentationScopeConstants.SCOPE_JOB, value = """
             The scheduler automatically restarts the next suspended jobs, regardless of the defined schedule strategy.
             This is done to get suspended jobs of another shut down instance back up and running as quickly as possible.
 
