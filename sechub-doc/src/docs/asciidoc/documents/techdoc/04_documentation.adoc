@@ -28,10 +28,91 @@ only used as a marker for important code parts but also is used by an automatic
 generation of an `.adoc` file which are included in `asciidoc` documentation.
 
 [[section-documentation-configuration-properties]]
-==== Automated description of configuration properties
-With usage of `@MustBeDocumented` at Spring annotation `@Value`
-the <<section-infrastructure-setup-springboot, infrastructure properties>> can be documented
+==== Automated description of configurations
+With usage of `@MustBeDocumented` at Spring annotation `@Value` or `@ConfigurationProperties`
+the <<section-infrastructure-setup-springboot, infrastructure properties>> will be documented
 automatically.
+
+[IMPORTANT]
+====
+Do *not forget* to annotate configuration parts - otherwise they will NOT appear inside documentation!
+====
+
+===== Example for SpringBoot @Value annotation
+
+[source,java]
+----
+      @Value("${sechub.demo.autodoc.field1:default-field1}")
+      @MustBeDocumented(value = "The description for field1", scope = "Test scope1")
+      private string field1;
+      
+      @Value("${sechub.demo.autodoc.field2}")
+      @MustBeDocumented(value = "The description for field2", scope = "Test scope1")
+      private string someField2;
+----
+
+The `AsciidocGenerator` will generate following something similar like this for system properties:
+
+Table with id `test_scope1` :
+[options="header"]
+|===
+|Key   |Default   |Description   
+//----------------------
+|sechub.demo.autodoc.field1        |default-field1   |The description for field1   
+|sechub.demo.autodoc.some-field2   |                 |The description for field2   
+|===
+
+TIP: Look into existing code for further examples
+
+===== Example for SpringBoot @ConfigurationProperties annotation
+
+[source,java]
+----
+@MustBeDocumented(scope=“Test scope2”)
+@ConfigurationProperties(prefix=PREFIX)
+public class ExampleProperties{
+
+   private static final String PREFIX = “sechub.demo.autodoc.example”;
+   public ExampleProperties(
+           @Description("Description of parameter name...")
+           String name,
+
+           @Description("Description of postal code parameter...")
+           Integer postalCode,
+
+           Details details) { 
+              // implementation...
+           }     
+   ) 
+   public static class Details {
+           public Details(
+              @Description("If true, the person loves dogs")
+              Boolean lovesDogs,
+
+              @Description("If true the person loves cats")
+              Boolean lovesCats){ 
+              	// implementation...
+              }
+           }
+   } 
+----
+
+The `AsciidocGenerator` will generate following something like this for system properties:
+
+Table with id `test_scope2` :
+[options="header"]
+|===
+|Key   |Default   |Description   
+//----------------------
+|sechub.demo.autodoc.example.name        |   |Description of parameter name...  
+|sechub.demo.autodoc.example.postal-code |   |Description of postal code parameter...  
+|sechub.demo.autodoc.example.details |   |
+|sechub.demo.autodoc.example.details.loves-dogs |   |If true, the person loves dogs
+|sechub.demo.autodoc.example.details.loves-dogs |   |If true the person loves cats
+  
+|===
+
+TIP: Look into existing code for further examples - e.g. `SecHubSecurityProperties`
 
 [[section-documentation-usecases]]
 ==== Automated description of use cases
@@ -39,8 +120,31 @@ With usage of special usecase annotations which itself are marked with `@UseCase
 to create an automated use case description. It contains also generated
 <<section-documentation-usecase-event-overview, Usecase event trace overview>> diagrams.
 
+==== How to test documentation generation
+Some documentation generators needs existing data - e.g. from integration test runs.
+But the complete documentation gradle build takes a long time - this would make it cumbersome to test 
+something when maintaining documentation generators or checking if new configuration setup
+works with documentation build.
+
+To handle this, we have a special manual test: `AsciidocGeneratorManualTest`.
+
+Start the test with system property `sechub.manual.test.by.developer=true` and after 2 seconds (
+when using IDE internal builds) all generated documentation output is available inside the folder: +
+`sechub-doc/src/docs/asciidoc/documents/gen/`
+
+[TIP]
+====
+The test will execute the complete generation by `AsciidocGenerator` - like in documentation build,
+but with one exception: if one of the sub generators fails (e.g. some test output data is missing), 
+the others will be executed anyway and a sum up exception will shown at the end (it describes which generator
+part failed and the log will contain details)
+====
+
+
 ==== Automated Diagrams
 [[section-documentation-messaging-overview]]
+
+
 
 ===== Domain messaging overview
 Using Annotations, which are itself tagged with `@DomainMessaging` annotation, those parts will automatically
