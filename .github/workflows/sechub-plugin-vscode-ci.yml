@@ -28,7 +28,7 @@ jobs:
       run:
         working-directory: ide-plugins/vscode
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.2.2
     - uses: actions/setup-node@v3
       with:
         # Matrix test using LTS (Long Term Support) versions
