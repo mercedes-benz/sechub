@@ -214,4 +214,11 @@ public class CommandLineSettings {
     public String getPacFilePath() {
         return pacFilePath;
     }
+
+    @Parameter(names = { "--no-headless" }, description = "Set this option to disable headless mode.", required = false)
+    private boolean noHeadless;
+
+    public boolean isNoHeadless() {
+        return noHeadless;
+    }
 }

@@ -66,8 +66,8 @@ public class ZapWrapperGroovyScriptExecutor {
     }
 
     public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
-        boolean headless = true;
-        
+        boolean headless = !scanContext.isNoHeadless();
+
         FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), scanContext.getPacFilePath(), headless);
         WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
 
@@ -95,7 +95,7 @@ public class ZapWrapperGroovyScriptExecutor {
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
             try {
-                hooks.forEach((hook) -> hook.afterLoginScriptHasBeenExecuted(firefox, loginResult));
+                hooks.forEach((hook) -> hook.afterScriptHasBeenExecuted(firefox, loginResult));
             } catch (Exception e) {
                 LOG.error("Hook handling for afterLoginScriptHasBeenExecuted(..) has failed!", e);
             } finally {
@@ -169,12 +169,12 @@ public class ZapWrapperGroovyScriptExecutor {
 
         /**
          * Script has been executed and result is available. Given web driver is still
-         * active at this moment and can be used inside listener
+         * active at this moment and can be used inside hook
          *
          * @param webdriver
          * @param loginResult
          */
-        public void afterLoginScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult);
+        public void afterScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult);
     }
 
 }

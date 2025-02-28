@@ -59,6 +59,9 @@ Usage: ZapWrapper [options]
       Maximum number of times the wrapper tries to reach each URL. Including 
       each URL constructed from the sechub includes.
       Default: 3
+    --no-headless
+      Set this option to disable headless mode.
+      Default: false
     --pacFilePath
       PAC file the ZAP wrapper uses for script based authentication for the 
       browsers profile, when templates are defined. You can also set the 

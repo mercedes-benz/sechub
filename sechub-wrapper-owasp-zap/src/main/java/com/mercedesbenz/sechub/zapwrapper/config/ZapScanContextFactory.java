@@ -111,6 +111,7 @@ public class ZapScanContextFactory {
 												.setGroovyScriptLoginFile(groovyScriptFile)
 												.setTemplateVariables(templateVariables)
 												.setPacFilePath(fetchPacFilePath(settings))
+												.setNoHeadless(settings.isNoHeadless())
 											  .build();
 		/* @formatter:on */
         return scanContext;

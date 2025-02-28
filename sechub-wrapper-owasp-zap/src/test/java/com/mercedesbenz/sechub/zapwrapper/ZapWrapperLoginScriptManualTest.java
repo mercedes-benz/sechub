@@ -61,9 +61,22 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
     }
 
     /**
+     *
+     * <h2>How to use the test</h2>
+     *
+     * <pre>
+     * You have to set following system properties:
+     * - {@value TestConstants#MANUAL_TEST_BY_DEVELOPER} = true
+     * - {@value ZapWrapperLoginScriptManualTest#ZAP_LOGINSCRIPT_MANUALTEST_PATH_TO_FILE} = path to script file
+     * - {@value ZapWrapperLoginScriptManualTest#ZAP_LOGINSCRIPT_MANUALTEST_PATH_TO_PARAMETER_FILE} = path to parameters file (in java properties format, will contain variables by key=value lines...)
+     * </pre>
+     *
+     * <h2>Details</h2>
+     *
      * This test will
      *
      * <pre>
+     * - uses parameter "no-headless" mode -> start will show up web driver
      * - load a custom groovy login script file (configurable) and a file with parameter properties (configurable)
      * - generate a temporary sechub configuration file (will be auto deleted after test)
      * - use  a ZAP wrapper script login executor to start the script and do the login operations.
@@ -71,17 +84,10 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
      *   has been reached via GET with wanted (configurable) HTTP status code.
      * </pre>
      *
-     * How to use it?
-     *
-     * <pre>
-     * You have to set following system properties:
-     * - {@value TestConstants#MANUAL_TEST_BY_DEVELOPER} = true
-     * - {@value ZAP_LOGINSCRIPT_MANUALTEST_PATH_TO_FILE} = path to script file
-     * - {@value ZAP_LOGINSCRIPT_MANUALTEST_PATH_TO_PARAMETER_FILE} = path to parameters file (in java properties format, will contain variables by key=value lines...)
-     * </pre>
-     *
-     * Start the test with "-Dsechub.manual.test.by.developer=true". The output show
-     * you which system properties must be set to execute.
+     * <h2>Debugging</h2> You can set a breakpoint into
+     * {@link LoginVerificationTestScriptExecutionHook#afterScriptExecutedCalled} -
+     * and start the test in debug mode. This will keep the web driver window open
+     * and you can see what the result of the login script was on browser UI.
      *
      * @throws Exception
      */
@@ -159,6 +165,7 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
         when(settings.getPDSEventFolder()).thenReturn(ZapWrapperManualTestUtil.getEventsFolder().getAbsolutePath());
         when(settings.getSecHubConfigFile()).thenReturn(temporarySechubConfigFile);
         when(settings.getGroovyLoginScriptFile()).thenReturn(pathToScriptFile);
+        when(settings.isNoHeadless()).thenReturn(true);
 
         ZapScanContext scanContext = factory.create(settings);
         return scanContext;
@@ -171,7 +178,7 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
         private boolean afterScriptExecutedCalled;
 
         @Override
-        public void afterLoginScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult) {
+        public void afterScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult) {
             afterScriptExecutedCalled = true; // for internal health check - we can test listener has been called...
 
             String url = webdriver.getCurrentUrl();

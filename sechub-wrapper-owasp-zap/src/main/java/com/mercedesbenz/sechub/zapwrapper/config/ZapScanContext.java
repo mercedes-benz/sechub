@@ -50,6 +50,7 @@ public class ZapScanContext {
     private File groovyScriptLoginFile;
     private Map<String, String> templateVariables = new LinkedHashMap<>();
     private File pacFilePath;
+    private boolean noHeadless;
 
     private ZapScanContext() {
     }
@@ -84,6 +85,10 @@ public class ZapScanContext {
 
     public URL getTargetUrl() {
         return targetUrl;
+    }
+
+    public boolean isNoHeadless() {
+        return noHeadless;
     }
 
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
@@ -210,6 +215,8 @@ public class ZapScanContext {
         private Map<String, String> templateVariables = new LinkedHashMap<>();
 
         private File pacFilePath;
+
+        private boolean noHeadless;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -343,7 +350,14 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder setNoHeadless(boolean noHeadless) {
+            this.noHeadless = noHeadless;
+            return this;
+        }
+
         public ZapScanContext build() {
+            BrowserIdTransformationSupport transformBrowserIdSupport = new BrowserIdTransformationSupport();
+
             ZapScanContext zapScanContext = new ZapScanContext();
             zapScanContext.serverConfig = this.serverConfig;
             zapScanContext.verboseOutput = this.verboseOutput;
@@ -377,7 +391,8 @@ public class ZapScanContext {
 
             zapScanContext.headerValueFiles = this.headerValueFiles;
 
-            zapScanContext.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
+            zapScanContext.noHeadless = this.noHeadless;
+            zapScanContext.ajaxSpiderBrowserId = transformBrowserIdSupport.transformBrowserIdWhenNoHeadless(this.noHeadless, this.ajaxSpiderBrowserId);
 
             zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
             zapScanContext.templateVariables = this.templateVariables;
