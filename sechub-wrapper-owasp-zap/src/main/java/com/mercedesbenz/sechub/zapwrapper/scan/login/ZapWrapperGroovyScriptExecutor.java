@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.Bindings;
@@ -15,6 +17,7 @@ import javax.script.ScriptException;
 
 import org.codehaus.groovy.jsr223.GroovyScriptEngineFactory;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -41,17 +44,31 @@ public class ZapWrapperGroovyScriptExecutor {
 
     private int webdriverTimeoutInSeconds;
 
+    private List<ScriptExecutionHook> hooks = new ArrayList<>(0);
+
     public ZapWrapperGroovyScriptExecutor() {
         this(new ZapScriptLoginWebDriverFactory(), WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS);
     }
 
+    /**
+     * Constructor for mocking approaches
+     *
+     * @param webDriverFactory          factory
+     * @param webdriverTimeoutInSeconds timeout
+     */
     ZapWrapperGroovyScriptExecutor(ZapScriptLoginWebDriverFactory webDriverFactory, int webdriverTimeoutInSeconds) {
         this.webDriverFactory = webDriverFactory;
         this.webdriverTimeoutInSeconds = webdriverTimeoutInSeconds;
     }
 
+    public List<ScriptExecutionHook> getHooks() {
+        return hooks;
+    }
+
     public ScriptLoginResult executeScript(File scriptFile, ZapScanContext scanContext) {
-        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), scanContext.getPacFilePath(), true);
+        boolean headless = true;
+        
+        FirefoxDriver firefox = webDriverFactory.createFirefoxWebdriver(scanContext.getProxyInformation(), scanContext.getPacFilePath(), headless);
         WebDriverWait wait = new WebDriverWait(firefox, Duration.ofSeconds(webdriverTimeoutInSeconds));
 
         ScriptEngine scriptEngine = new GroovyScriptEngineFactory().getScriptEngine();
@@ -77,7 +94,14 @@ public class ZapWrapperGroovyScriptExecutor {
             loginResult.setLoginFailed(true);
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
-            firefox.quit();
+            try {
+                hooks.forEach((hook) -> hook.afterLoginScriptHasBeenExecuted(firefox, loginResult));
+            } catch (Exception e) {
+                LOG.error("Hook handling for afterLoginScriptHasBeenExecuted(..) has failed!", e);
+            } finally {
+                firefox.quit();
+            }
+
         }
         return loginResult;
     }
@@ -102,14 +126,19 @@ public class ZapWrapperGroovyScriptExecutor {
         Map<String, String> templateVariables = scanContext.getTemplateVariables();
 
         Bindings bindings = scriptEngine.createBindings();
+
+        /* web driver */
         bindings.put(FIREFOX_WEBDRIVER_KEY, firefox);
         bindings.put(FIREFOX_WEBDRIVER_WAIT_KEY, wait);
         bindings.put(JAVASCRIPTEXECUTOR_KEY, firefox);
-        bindings.put(SECHUB_WEBSCAN_CONFIG_KEY, secHubWebScanConfiguration);
-        bindings.put(TOTP_GENERATOR_KEY, totpGenerator);
 
+        /* credentials */
+        bindings.put(TOTP_GENERATOR_KEY, totpGenerator);
         bindings.put(USER_KEY, templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY));
         bindings.put(PASSWORD_KEY, templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY));
+
+        /* SecHub configuration */
+        bindings.put(SECHUB_WEBSCAN_CONFIG_KEY, secHubWebScanConfiguration);
         if (webLoginConfiguration.getUrl() != null) {
             bindings.put(LOGIN_URL_KEY, webLoginConfiguration.getUrl().toString());
         } else {
@@ -135,4 +164,17 @@ public class ZapWrapperGroovyScriptExecutor {
         Map<String, String> storage = (Map<String, String>) jsExecutor.executeScript(script);
         return storage;
     }
+
+    public interface ScriptExecutionHook {
+
+        /**
+         * Script has been executed and result is available. Given web driver is still
+         * active at this moment and can be used inside listener
+         *
+         * @param webdriver
+         * @param loginResult
+         */
+        public void afterLoginScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult);
+    }
+
 }
