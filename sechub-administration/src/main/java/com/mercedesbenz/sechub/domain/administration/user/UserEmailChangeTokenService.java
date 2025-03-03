@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.spring.security.AES256Encryption;
 
 @Service
-class UserEmailChangeTokenService {
+public class UserEmailChangeTokenService {
     private static final long EXPIRATION_TIME_MILLIS = Duration.ofHours(24).toMillis();
     private static final Base64.Encoder ENCODER = Base64.getUrlEncoder();
     private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
