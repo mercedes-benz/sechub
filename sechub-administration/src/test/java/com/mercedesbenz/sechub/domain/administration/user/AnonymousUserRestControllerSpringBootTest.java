@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,7 +30,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @ContextConfiguration(classes = { AnonymousUserRestController.class })
 @ActiveProfiles({ Profiles.TEST })
 @Import(TestAdministrationSecurityConfiguration.class)
-public class AnonymousUserRestControllerTest {
+public class AnonymousUserRestControllerSpringBootTest {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
@@ -52,6 +53,24 @@ public class AnonymousUserRestControllerTest {
                         get(apiEndpoint,"token1"))
                 .andExpect(status().isNoContent());
         /* @formatter:on */
+
+        verify(userEmailAddressUpdateService).changeUserEmailAddressByUser("token1");
+    }
+
+    @Test
+    @WithMockUser
+    public void verified_user_verifies_new_mail_address_with_one_time_token() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAnonymousUserVerifiesMailAddress(ONE_TIME_TOKEN.pathElement());
+
+        /* @formatter:off */
+        /* execute + test */
+        this.mockMvc.perform(
+                        get(apiEndpoint,"token1"))
+                .andExpect(status().isNoContent());
+        /* @formatter:on */
+
+        verify(userEmailAddressUpdateService).changeUserEmailAddressByUser("token1");
     }
 
 }

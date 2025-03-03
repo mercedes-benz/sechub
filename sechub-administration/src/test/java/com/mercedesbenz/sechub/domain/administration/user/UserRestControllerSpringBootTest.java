@@ -33,7 +33,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WebMvcTest
 @ContextConfiguration(classes = { UserRestController.class })
 @ActiveProfiles({ Profiles.TEST })
-public class UserRestControllerTest {
+public class UserRestControllerSpringBootTest {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
@@ -85,7 +85,6 @@ public class UserRestControllerTest {
         /* prepare */
         String newEmailAddress = "test-user.new@example.org";
         String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
-        doNothing().when(emailAddressUpdateService).userRequestUpdateMailAddress(newEmailAddress);
 
         /* execute + test */
         /* @formatter:off */
@@ -101,7 +100,7 @@ public class UserRestControllerTest {
     @Test
     public void updateUserEmailAddress__is_not_accessible_by_unauthenticated_user() throws Exception {
         /* prepare */
-        String newEmailAddress = "testuser.new@example.org";
+        String newEmailAddress = "test-user.new@example.org";
         String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
 
         /* execute + test */
@@ -111,6 +110,8 @@ public class UserRestControllerTest {
                                 .with(csrf()))
                 .andExpect(status().isUnauthorized());
         /* @formatter:on */
+
+        verify(emailAddressUpdateService, never()).userRequestUpdateMailAddress(newEmailAddress);
     }
 
     private static User createUser() {

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,6 +43,7 @@ class UserEmailAddressUpdateServiceTest {
     private UserInputAssertion assertion;
     private UserContextService userContextService;
     private UserEmailChangeTokenService userEmailChangeTokenService;
+    private UserTransactionService userTransactionService;
     private SecHubEnvironment environment;
 
     @BeforeEach
@@ -53,11 +56,12 @@ class UserEmailAddressUpdateServiceTest {
         userContextService = mock(UserContextService.class);
         userEmailChangeTokenService = mock(UserEmailChangeTokenService.class);
         environment = mock(SecHubEnvironment.class);
+        userTransactionService = mock(UserTransactionService.class);
 
         when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
 
         serviceToTest = new UserEmailAddressUpdateService(eventBusService, userRepository, auditLogService, logSanitizer, assertion, userContextService,
-                userEmailChangeTokenService, environment);
+                userEmailChangeTokenService, environment, userTransactionService);
     }
 
     @Test
@@ -66,7 +70,7 @@ class UserEmailAddressUpdateServiceTest {
         when(logSanitizer.sanitize(knownUser1.getName(), 30)).thenReturn("sanitized-userid");
 
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
+        serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         verify(auditLogService).log(any(String.class), eq("sanitized-userid"));
@@ -78,7 +82,7 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findOrFailUser("notfound")).thenThrow(TestCanaryException.class);
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
 
         /* test */
         verify(auditLogService, never()).log(any(String.class), any());
@@ -87,7 +91,7 @@ class UserEmailAddressUpdateServiceTest {
     @Test
     void asserts_email_address_parameter() {
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
+        serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         verify(assertion).assertIsValidEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM);
@@ -96,7 +100,7 @@ class UserEmailAddressUpdateServiceTest {
     @Test
     void asserts_user_id_parameter() {
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
+        serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         verify(assertion).assertIsValidUserId(KNOWN_USER1);
@@ -109,7 +113,7 @@ class UserEmailAddressUpdateServiceTest {
         doThrow(TestCanaryException.class).when(assertion).assertIsValidUserId(any());
 
         /* execute + test */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("novalid", FORMER_USER_1_EXAMPLE_COM));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin("novalid", FORMER_USER_1_EXAMPLE_COM));
     }
 
     @Test
@@ -119,7 +123,7 @@ class UserEmailAddressUpdateServiceTest {
         doThrow(TestCanaryException.class).when(assertion).assertIsValidEmailAddress(any());
 
         /* execute + test */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-address"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin("notfound", "not-a-valid-email-address"));
     }
 
     @Test
@@ -128,7 +132,7 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findOrFailUser(null)).thenThrow(TestCanaryException.class);
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress(null, "something"));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin(null, "something"));
     }
 
     @Test
@@ -137,14 +141,14 @@ class UserEmailAddressUpdateServiceTest {
         User user = createKnownUser1();
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.updateUserEmailAddress(user.getName(), null)).isInstanceOf(BadRequestException.class)
+        assertThatThrownBy(() -> serviceToTest.updateUserEmailAddressAsAdmin(user.getName(), null)).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Email must not be empty");
     }
 
     @Test
     void throws_bad_request_when_same_email_address_as_before() {
         /* execute + test (exception ) */
-        assertThrows(BadRequestException.class, () -> serviceToTest.updateUserEmailAddress(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
+        assertThrows(BadRequestException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
     }
 
     @Test
@@ -153,25 +157,25 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findOrFailUser(any())).thenThrow(NotFoundException.class);
 
         /* execute + test (exception ) */
-        assertThrows(NotFoundException.class, () -> serviceToTest.updateUserEmailAddress("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
+        assertThrows(NotFoundException.class, () -> serviceToTest.updateUserEmailAddressAsAdmin("notfound", NEW_MAIL_USER1_EXAMPLE_COM));
     }
 
     @Test
     void saves_user_when_parameters_are_valid() {
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
+        serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         // check the user object has new mail address when saved:
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
+        verify(userTransactionService).saveInOwnTransaction(userCaptor.capture());
         assertEquals(NEW_MAIL_USER1_EXAMPLE_COM, userCaptor.getValue().getEmailAddress());
     }
 
     @Test
     void sends_event_with_user_data_when_parameters_are_valid() {
         /* execute */
-        serviceToTest.updateUserEmailAddress(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
+        serviceToTest.updateUserEmailAddressAsAdmin(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM);
 
         /* test */
         // check event is sent with expected data
@@ -235,10 +239,10 @@ class UserEmailAddressUpdateServiceTest {
     void user_verifies_user_email_address_throws_BadRequestException_when_user_has_already_this_email_address() {
         /* prepare */
         when(userEmailChangeTokenService.extractUserInfoFromToken(any())).thenReturn(new UserEmailChangeRequest(KNOWN_USER1, FORMER_USER_1_EXAMPLE_COM));
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
+        when(userRepository.findById(KNOWN_USER1)).thenReturn(Optional.of(knownUser1));
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userVerifiesUserEmailAddress("token"))
+        assertThatThrownBy(() -> serviceToTest.changeUserEmailAddressByUser("token"))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Token has already been used!");
     }
@@ -247,11 +251,11 @@ class UserEmailAddressUpdateServiceTest {
     void user_verifies_user_email_address_sends_event() {
         /* prepare */
         when(userEmailChangeTokenService.extractUserInfoFromToken(any())).thenReturn(new UserEmailChangeRequest(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
-        when(userRepository.findOrFailUser(KNOWN_USER1)).thenReturn(knownUser1);
+        when(userRepository.findById(KNOWN_USER1)).thenReturn(Optional.of(knownUser1));
         assertThat(knownUser1.getEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
 
         /* execute */
-        serviceToTest.userVerifiesUserEmailAddress("token");
+        serviceToTest.changeUserEmailAddressByUser("token");
 
         /* test */
         ArgumentCaptor<DomainMessage> messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
@@ -272,7 +276,7 @@ class UserEmailAddressUpdateServiceTest {
     void when_email_requested_to_change_already_in_use_throws_BadRequestException() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
-        when(userRepository.existsByEmailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(true);
+        when(userRepository.existsByEmailIgnoreCase(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(true);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)
@@ -283,7 +287,7 @@ class UserEmailAddressUpdateServiceTest {
     @ValueSource(strings = { "", " ", "  " })
     void userVerifiesUserEmailAddress_throws_bad_request_exception_for_null_empty_token(String invalidToken) {
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userVerifiesUserEmailAddress(invalidToken)).isInstanceOf(BadRequestException.class)
+        assertThatThrownBy(() -> serviceToTest.changeUserEmailAddressByUser(invalidToken)).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Token must not be null or blank!");
     }
 

@@ -70,24 +70,6 @@ public class UserRepositoryDBTest {
     }
 
     @Test
-    void existByEmailAddress_returns_false_if_email_address_is_not_assigned() {
-        /* execute */
-        boolean exists = userRepository.existsByEmailAddress("db_test_testuser_not_existing@example.org");
-
-        /* test */
-        assertThat(exists).isFalse();
-    }
-
-    @Test
-    void existByEmailAddress_returns_true_if_email_address_is_assigned() {
-        /* execute */
-        boolean exists = userRepository.existsByEmailAddress("db_test_testuser1@example.org");
-
-        /* test */
-        assertThat(exists).isTrue();
-    }
-
-    @Test
     void user_being_owner_of_project_can_NOT_be_deleted__instead_a_notaccetable_exception_is_thrown() {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test1", user1);
@@ -132,6 +114,28 @@ public class UserRepositoryDBTest {
         assertProjectFound(project);
 
         assertUserNotFound(user1);
+    }
+
+    @Test
+    void existsByEmailIgnoreCase_returns_false_when_email_not_in_database() {
+        assertThat(userRepository.existsByEmailIgnoreCase("very_new_email@mail.com")).isFalse();
+    }
+
+    @Test
+    void existsByEmailIgnoreCase_returns_true_when_email_exists_in_database() {
+        /* prepare */
+        String mail1 = user1.getEmailAddress();
+        String mail2 = user2.getEmailAddress();
+        String mail3 = mail1.toUpperCase();
+        String mail4 = mail2.toUpperCase();
+        String mail5 = mail1.replace("example", "exaMplE");
+
+        /* execute + test */
+        assertThat(userRepository.existsByEmailIgnoreCase(mail1)).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase(mail2)).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase(mail3)).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase(mail4)).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase(mail5)).isTrue();
     }
 
     /**

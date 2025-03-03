@@ -42,8 +42,8 @@ public class UserRestController {
                     needsRestDoc = true))
     @RequestMapping (value = AdministrationAPIConstants.API_USER_EMAIL+ "/{emailAddress}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUserEmailAddress(@PathVariable(name="emailAddress") String emailAddress) {
+    public void updateUserEmailAddress(@PathVariable(name="emailAddress") String newEmailAddress) {
         /* @formatter:on */
-        emailAddressUpdateService.userRequestUpdateMailAddress(emailAddress);
+        emailAddressUpdateService.userRequestUpdateMailAddress(newEmailAddress);
     }
 }

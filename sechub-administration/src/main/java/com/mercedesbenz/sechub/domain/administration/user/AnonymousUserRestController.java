@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +23,13 @@ public class AnonymousUserRestController {
     private final UserEmailAddressUpdateService emailAddressUpdateService;
     private final SecHubSecurityProperties secHubSecurityProperties;
     private final String redirectUri;
-    // Frontend URI path to success hidden page
+    /* Frontend URI path to success hidden page */
     private final String FRONTEND_REDIRECT_URI_PATH = "/user/email_verify";
 
     AnonymousUserRestController(UserEmailAddressUpdateService emailAddressUpdateService, SecHubSecurityProperties secHubSecurityProperties) {
         this.emailAddressUpdateService = emailAddressUpdateService;
         this.secHubSecurityProperties = secHubSecurityProperties;
-        redirectUri = getRedirectUri(secHubSecurityProperties);
+        redirectUri = createRedirectUri(secHubSecurityProperties);
     }
 
     /* @formatter:off*/
@@ -42,36 +43,51 @@ public class AnonymousUserRestController {
     @RequestMapping(value = AdministrationAPIConstants.API_ANONYMOUS_USER_VERIFY_EMAIL + "/{oneTimeToken}", method = RequestMethod.GET)
     public void verifyEmailAddress(@PathVariable(name = "oneTimeToken") String oneTimeToken, HttpServletResponse response) throws IOException {
         /* @formatter:on */
-        emailAddressUpdateService.userVerifiesUserEmailAddress(oneTimeToken);
-        if (redirectUri == null || redirectUri.isEmpty()) {
+        emailAddressUpdateService.changeUserEmailAddressByUser(oneTimeToken);
+        if (redirectUri == null || redirectUri.isBlank()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         } else {
             response.sendRedirect(redirectUri);
         }
     }
 
-    private String getRedirectUri(SecHubSecurityProperties secHubSecurityProperties) {
+    private String createRedirectUri(SecHubSecurityProperties secHubSecurityProperties) {
         SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
         if (loginProperties == null) {
-            return "";
+            return null;
         }
 
-        String redirectBaseUri = loginProperties.getRedirectUri();
-        if (redirectBaseUri == null || redirectBaseUri.isBlank()) {
-            return "";
+        String redirectUri = loginProperties.getRedirectUri();
+        if (redirectUri == null || redirectUri.isBlank()) {
+            return null;
         }
-
-        redirectBaseUri = redirectBaseUri + FRONTEND_REDIRECT_URI_PATH;
+        String redirectBaseUri = getBaseUriFromRedirectUri(redirectUri);
         assertUri(redirectBaseUri);
 
         return redirectBaseUri;
     }
 
-    private void assertUri(String redirectBaseUri) {
+    private String getBaseUriFromRedirectUri(String redirectUri) {
         try {
-            new URI(redirectBaseUri);
+            URI uri = new URI(redirectUri);
+            var schema = uri.getScheme();
+            var host = uri.getHost();
+            var port = uri.getPort();
+            return schema + "://" + host + (port > 0 ? ":" + port : "") + FRONTEND_REDIRECT_URI_PATH;
         } catch (Exception e) {
-            throw new IllegalStateException("Redirect URI is not a valid URI: " + redirectBaseUri);
+            LOG.error("Could not parse redirect URI: {}", redirectUri);
+            return null;
+        }
+    }
+
+    private void assertUri(String uri) {
+        if (uri == null || uri.isBlank()) {
+            throw new IllegalStateException("Redirect URI is not set!");
+        }
+        try {
+            URI baseUri = new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Redirect URI is not set or invalid", e);
         }
     }
 

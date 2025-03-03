@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.JSONable;
 
-public class UserEmailChangeToken {
+public class UserEmailChangeToken implements JSONable<UserEmailChangeToken> {
 
+    private static final UserEmailChangeToken IMPORTER = new UserEmailChangeToken();
     private String emailAddress;
     private String userId;
     private String timestamp;
@@ -13,9 +14,15 @@ public class UserEmailChangeToken {
         this.userId = userId;
         this.emailAddress = emailAddress;
         this.timestamp = timestamp;
+        assertFields();
     }
 
     public UserEmailChangeToken() {
+        /* only for json import */
+    }
+
+    public static UserEmailChangeToken createFromJSON(String json) {
+        return IMPORTER.fromJSON(json);
     }
 
     public String getEmailAddress() {
@@ -30,15 +37,12 @@ public class UserEmailChangeToken {
         return timestamp;
     }
 
-    public String toJSON() {
-        return JSONConverter.get().toJSON(this);
+    @Override
+    public Class<UserEmailChangeToken> getJSONTargetClass() {
+        return UserEmailChangeToken.class;
     }
 
-    public static UserEmailChangeToken fromJSON(String json) {
-        return JSONConverter.get().fromJSON(UserEmailChangeToken.class, json);
-    }
-
-    public void validate() {
+    private void assertFields() {
         if (this.emailAddress == null || this.emailAddress.isBlank()) {
             throw new IllegalStateException("Email address must not be null or blank!");
         }

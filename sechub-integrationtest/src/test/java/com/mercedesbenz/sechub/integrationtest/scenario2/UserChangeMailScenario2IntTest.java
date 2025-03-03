@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class UserChangeMailScenario2IntTest {
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
     @Test
-    public void user_request_change_mail_address() {
+    public void user_request_change_mail_address() throws URISyntaxException {
         /* prepare */
         String email = USER_1.getEmail();
         String newEmail = "new_user1@example.org";
@@ -37,12 +38,7 @@ public class UserChangeMailScenario2IntTest {
         assertThat(link).isNotNull();
 
         // workaround to avoid double encoding of the link
-        URI uri = null;
-        try {
-            uri = new URI(link);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        URI uri = new URI(link);
 
         updateEmailByOneTimeTokenLink(uri);
         TestUserDetailInformation testUserDetailInformation = as(SUPER_ADMIN).fetchUserDetails(USER_1);

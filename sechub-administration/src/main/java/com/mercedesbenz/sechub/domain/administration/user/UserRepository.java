@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.domain.administration.user;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 
@@ -29,5 +31,7 @@ public interface UserRepository extends JpaRepository<User, String>, UserReposit
         return foundUser.get();
     }
 
-    boolean existsByEmailAddress(String emailAddress);
+    @Query("select case when count(u) > 0 then true else false end from User u where lower(u.emailAddress) = lower(:email) ")
+    boolean existsByEmailIgnoreCase(@Param("email") String email);
+
 }
