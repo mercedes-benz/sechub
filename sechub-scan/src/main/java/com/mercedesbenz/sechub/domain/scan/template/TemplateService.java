@@ -109,6 +109,11 @@ public class TemplateService {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
         }
+        Optional<Template> templateOpt = repository.findById(templateId);
+        if (templateOpt.isEmpty()) {
+            throw new NotFoundException("Template with templateId: " + templateId + " does not exist!");
+        }
+
         Set<String> allTemplateConfigIds = scanProjectConfigIdResolver.resolveAllPossibleConfigIds();
         configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 

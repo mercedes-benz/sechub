@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
@@ -190,6 +191,16 @@ class TemplateServiceTest {
         SecHubProjectToTemplate data = sentMessage.get(MessageDataKeys.PROJECT_TO_TEMPLATE);
         assertThat(data).isNotNull();
         assertThat(data.getTemplateId()).isEqualTo(templateId);
+    }
+
+    @Test
+    void delete_non_existing_template_id_throws_exception() {
+        /* prepare */
+        String templateId = "non-existing-template-id";
+        when(repository.findById(templateId)).thenReturn(Optional.empty());
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteTemplate(templateId)).isInstanceOf(NotFoundException.class).hasMessageContaining(templateId);
     }
 
     @Test
