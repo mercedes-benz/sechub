@@ -29,11 +29,11 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
-import com.mercedesbenz.sechub.zapwrapper.config.ZapTemplateDataVariableKeys;
 import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator;
 
 public class ZapWrapperGroovyScriptExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ZapWrapperGroovyScriptExecutor.class);
+    private static final Logger scriptLogger = LoggerFactory.getLogger("groovy-script-logger");
 
     private static final int WEBDRIVER_TIMEOUT_PER_STEP_IN_SECONDS = 30;
 
@@ -95,7 +95,7 @@ public class ZapWrapperGroovyScriptExecutor {
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, e.getMessage()));
         } finally {
             try {
-                hooks.forEach((hook) -> hook.afterScriptHasBeenExecuted(firefox, loginResult));
+                hooks.forEach((hook) -> hook.afterScriptHasBeenExecuted(firefox, wait, loginResult));
             } catch (Exception e) {
                 LOG.error("Hook handling for afterLoginScriptHasBeenExecuted(..) has failed!", e);
             } finally {
@@ -123,29 +123,34 @@ public class ZapWrapperGroovyScriptExecutor {
             }
         }
 
+        /* json data from web configuration - fetch variables */
         Map<String, String> templateVariables = scanContext.getTemplateVariables();
 
         Bindings bindings = scriptEngine.createBindings();
 
-        /* web driver */
-        bindings.put(FIREFOX_WEBDRIVER_KEY, firefox);
-        bindings.put(FIREFOX_WEBDRIVER_WAIT_KEY, wait);
-        bindings.put(JAVASCRIPTEXECUTOR_KEY, firefox);
+        /* Custom bindings by user */
+        bindings.putAll(templateVariables);
 
-        /* credentials */
-        bindings.put(TOTP_GENERATOR_KEY, totpGenerator);
-        bindings.put(USER_KEY, templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY));
-        bindings.put(PASSWORD_KEY, templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY));
+        /* Web driver */
+        bindings.put(WEBDRIVER, firefox);
+        bindings.put(WEBDRIVER_WAIT, wait);
+
+        /* Script engine */
+        bindings.put(JAVASCRIPT_EXECUTOR, firefox);
 
         /* SecHub configuration */
-        bindings.put(SECHUB_WEBSCAN_CONFIG_KEY, secHubWebScanConfiguration);
+        bindings.put(SECHUB_WEBSCAN_CONFIG, secHubWebScanConfiguration);
         if (webLoginConfiguration.getUrl() != null) {
-            bindings.put(LOGIN_URL_KEY, webLoginConfiguration.getUrl().toString());
+            bindings.put(LOGIN_URL, webLoginConfiguration.getUrl().toString());
         } else {
             // if no dedicated login URL is set we assume an automated redirect
-            bindings.put(LOGIN_URL_KEY, scanContext.getTargetUrlAsString());
+            bindings.put(LOGIN_URL, scanContext.getTargetUrlAsString());
         }
-        bindings.put(TARGET_URL_KEY, scanContext.getTargetUrlAsString());
+        bindings.put(TARGET_URL, scanContext.getTargetUrlAsString());
+
+        /* Additional */
+        bindings.put(TOTP_GENERATOR, totpGenerator);
+        bindings.put(LOGGER, scriptLogger);
 
         return bindings;
     }
@@ -174,7 +179,7 @@ public class ZapWrapperGroovyScriptExecutor {
          * @param webdriver
          * @param loginResult
          */
-        public void afterScriptHasBeenExecuted(WebDriver webdriver, ScriptLoginResult loginResult);
+        public void afterScriptHasBeenExecuted(WebDriver webdriver, WebDriverWait webDriverWait, ScriptLoginResult loginResult);
     }
 
 }

@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.FileUtilities;
 
-public class CommandLineSettings {
+public class CommandLineSettings implements ZapWrapperConfiguration {
     @Parameter(names = { "--help" }, description = "Shows help and provides information on how to use the wrapper.", help = true)
     private boolean help;
 

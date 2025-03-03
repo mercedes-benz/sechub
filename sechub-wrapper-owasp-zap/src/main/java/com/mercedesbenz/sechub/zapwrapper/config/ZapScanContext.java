@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
@@ -48,7 +50,6 @@ public class ZapScanContext {
     private String ajaxSpiderBrowserId;
 
     private File groovyScriptLoginFile;
-    private Map<String, String> templateVariables = new LinkedHashMap<>();
     private File pacFilePath;
     private boolean noHeadless;
 
@@ -158,7 +159,19 @@ public class ZapScanContext {
     }
 
     public Map<String, String> getTemplateVariables() {
-        return Collections.unmodifiableMap(templateVariables);
+        if (secHubWebScanConfiguration == null) {
+            return Collections.emptyMap();
+        }
+        Optional<WebLoginConfiguration> optLogin = secHubWebScanConfiguration.getLogin();
+        if (optLogin.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        WebLoginConfiguration login = optLogin.get();
+        TemplateData templateData = login.getTemplateData();
+        if (templateData == null) {
+            return Collections.emptyMap();
+        }
+        return templateData.getVariables();
     }
 
     public File getPacFilePath() {
@@ -211,8 +224,6 @@ public class ZapScanContext {
         private File groovyScriptLoginFile;
 
         private List<String> zapRuleIDsToDeactivate = new LinkedList<>();
-
-        private Map<String, String> templateVariables = new LinkedHashMap<>();
 
         private File pacFilePath;
 
@@ -338,13 +349,6 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setTemplateVariables(Map<String, String> templateVariables) {
-            if (templateVariables != null) {
-                this.templateVariables = new LinkedHashMap<>(templateVariables);
-            }
-            return this;
-        }
-
         public ZapScanContextBuilder setPacFilePath(File pacFilePath) {
             this.pacFilePath = pacFilePath;
             return this;
@@ -395,7 +399,6 @@ public class ZapScanContext {
             zapScanContext.ajaxSpiderBrowserId = transformBrowserIdSupport.transformBrowserIdWhenNoHeadless(this.noHeadless, this.ajaxSpiderBrowserId);
 
             zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
-            zapScanContext.templateVariables = this.templateVariables;
 
             zapScanContext.pacFilePath = this.pacFilePath;
 

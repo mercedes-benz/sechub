@@ -544,39 +544,7 @@ class ZapScanContextFactoryTest {
         CommandLineSettings settings = createSettingsMock();
         String groovyScriptFile = "script.groovy";
         when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
-        String expectedErrorMessage = "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
-                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
-
-        /* execute */
-        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
-
-        /* test */
-        assertEquals(expectedErrorMessage, exception.getMessage());
-    }
-
-    @Test
-    void script_login_file_not_set_but_template_definition_in_sechub_config_is_set_throws_exception() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMock();
-        when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
-        String expectedErrorMessage = "When no groovy login script is defined, no template data variables must be defined!";
-
-        /* execute */
-        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
-
-        /* test */
-        assertEquals(expectedErrorMessage, exception.getMessage());
-    }
-
-    @Test
-    void script_login_file_and_template_definition_in_sechub_config_set_but_with_wrong_variables_throws_exception() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMock();
-        when(settings.getSecHubConfigFile()).thenReturn(INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
-        String groovyScriptFile = "script.groovy";
-        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
-        String expectedErrorMessage = "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY
-                + "' and '" + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
+        String expectedErrorMessage = "When a groovy login script is defined, some variables - e.g. for username, password etc - must be set inside webscan template data. But found nothing.";
 
         /* execute */
         ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
