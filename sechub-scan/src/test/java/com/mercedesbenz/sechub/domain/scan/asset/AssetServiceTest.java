@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFile.AssetFileCompositeKey;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -250,6 +252,34 @@ class AssetServiceTest {
 
         verify(assetStorage, never()).store(anyString(), any(InputStream.class), anyLong());
 
+    }
+
+    @Test
+    void delete_non_existing_single_asset_file_throws_exception() throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+        String fileName = "file1.txt";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        doNothing().when(assetStorage).delete(fileName);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteAssetFile(assetId, fileName)).isInstanceOf(NotFoundException.class).hasMessageContaining(assetId)
+                .hasMessageContaining(fileName);
+    }
+
+    @Test
+    void delete_non_existing_asset_throws_exception() throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        doNothing().when(assetStorage).deleteAll();
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteAsset(assetId)).isInstanceOf(NotFoundException.class).hasMessageContaining(assetId);
     }
 
     private AssetFile createAssetFileMock(String fileName, String checksum) {
