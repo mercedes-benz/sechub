@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -194,16 +195,6 @@ class TemplateServiceTest {
     }
 
     @Test
-    void delete_non_existing_template_id_throws_exception() {
-        /* prepare */
-        String templateId = "non-existing-template-id";
-        when(repository.findById(templateId)).thenReturn(Optional.empty());
-
-        /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.deleteTemplate(templateId)).isInstanceOf(NotFoundException.class).hasMessageContaining(templateId);
-    }
-
-    @Test
     void fetch_returns_definition_from_repo() {
         /* prepare */
         TemplateDefinition def = new TemplateDefinition();
@@ -291,6 +282,19 @@ class TemplateServiceTest {
         assertThat(result).isNotNull();
         assertThat(result).contains("p1", "p2");
 
+    }
+
+    @Test
+    void delete_non_existing_template_id_throws_exception() {
+        /* prepare */
+        String templateId = "non-existing-template-id";
+        when(repository.findById(templateId)).thenReturn(Optional.empty());
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteTemplate(templateId)).isInstanceOf(NotFoundException.class).hasMessageContaining(templateId);
+
+        verify(repository).findById(templateId);
+        verify(repository, never()).deleteById(templateId);
     }
 
 }
