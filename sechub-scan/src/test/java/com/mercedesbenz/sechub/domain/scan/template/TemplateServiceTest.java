@@ -1,14 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.template;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -157,13 +152,14 @@ class TemplateServiceTest {
         when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
 
         when(repository.findById(templateId)).thenReturn(Optional.of(template));
+        when(repository.deleteTemplateById(templateId)).thenReturn(1);
 
         /* execute */
         serviceToTest.deleteTemplate(templateId);
 
         /* test */
         verify(configService).deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
-        verify(repository).deleteById(templateId);
+        verify(repository).deleteTemplateById(templateId);
     }
 
     @Test
@@ -179,6 +175,7 @@ class TemplateServiceTest {
         when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
 
         when(repository.findById(templateId)).thenReturn(Optional.of(template));
+        when(repository.deleteTemplateById(templateId)).thenReturn(1);
 
         /* execute */
         serviceToTest.deleteTemplate(templateId);
@@ -288,13 +285,9 @@ class TemplateServiceTest {
     void delete_non_existing_template_id_throws_exception() {
         /* prepare */
         String templateId = "non-existing-template-id";
-        when(repository.findById(templateId)).thenReturn(Optional.empty());
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.deleteTemplate(templateId)).isInstanceOf(NotFoundException.class).hasMessageContaining(templateId);
-
-        verify(repository).findById(templateId);
-        verify(repository, never()).deleteById(templateId);
     }
 
 }
