@@ -240,10 +240,12 @@ public class ZapScanner implements ZapScan {
             return;
         }
         if (logout.getHtmlElement() == null) {
-            throw new ZapWrapperRuntimeException("HtmlElement must be present inside the webscan configuration!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            throw new ZapWrapperRuntimeException("HtmlElement must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         if (logout.getXpath() == null) {
-            throw new ZapWrapperRuntimeException("XPath must be present inside the webscan configuration!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            throw new ZapWrapperRuntimeException("XPath must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         LOG.info("For scan {}: Adding ajax spider exclude.", scanContext.getContextName());
         String description = "avoid-logout";
