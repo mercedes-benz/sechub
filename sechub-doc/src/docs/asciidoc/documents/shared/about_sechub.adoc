@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 **About {sechub}**
 
-{sechub} is an acronym for "Security Hub" and is first of
-all *one API to scan for different security problems*. Users of {sechub} do not
-care about which exact product is doing the real scan on server side, but only
-configure their wanted aim.
+{sechub} stands for "Security Hub" and serves as an unified API
+to scan for various security issues.
+With {sechub}, users don't need to worry about the specific scanning product
+used on the server side; they simply configure their desired security goals.
 
 [IMPORTANT]
 ====
