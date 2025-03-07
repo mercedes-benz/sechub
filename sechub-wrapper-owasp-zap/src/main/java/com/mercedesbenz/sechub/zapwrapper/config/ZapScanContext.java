@@ -50,8 +50,17 @@ public class ZapScanContext {
     private File groovyScriptLoginFile;
     private Map<String, String> templateVariables = new LinkedHashMap<>();
     private File pacFilePath;
+    private int zapContextId;
 
     private ZapScanContext() {
+    }
+
+    public int getZapContextId() {
+        return zapContextId;
+    }
+
+    public void setZapContextId(int zapContextId) {
+        this.zapContextId = zapContextId;
     }
 
     public ZapServerConfiguration getServerConfig() {

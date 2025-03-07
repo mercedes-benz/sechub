@@ -78,6 +78,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     private static final String VARIANT_WEB_SCAN_HEADERS = "Web Scan headers";
     private static final String VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED = "Web Scan login form scripted";
     private static final String VARIANT_WEB_SCAN_LOGIN_BASIC = "Web Scan login basic";
+    private static final String VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION = "Web Scan login basic with login verification";
     private static final String VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION = "Web scan with client certificate definition";
     private static final String VARIANT_WEB_SCAN_WITH_API_DEFINITION = "Web scan with api definition";
     private static final String VARIANT_WEB_SCAN_ANONYMOUS = "Web scan anonymous";
@@ -800,7 +801,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_BASIC)
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION)
     public void restDoc_userCreatesNewJob_webscan_login_basic_and_verification() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -830,7 +831,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                 andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
                 andDo(defineRestService().
                         with().
-                        useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_BASIC).
+                        useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION).
                         tag(RestDocFactory.extractTag(apiEndpoint)).
                         requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
                         responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
