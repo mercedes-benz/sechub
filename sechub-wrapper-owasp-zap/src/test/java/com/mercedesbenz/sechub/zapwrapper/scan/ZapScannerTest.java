@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
@@ -909,6 +910,8 @@ class ZapScannerTest {
                 }
                 """;
         SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(config).getWebScan().get();
+        WebLoginVerificationConfiguration verificationConfiguration = sechubWebScanConfig.getLogin().get().getVerification();
+        when(scanContext.getVerificationFromConfig()).thenReturn(verificationConfiguration);
         when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
         when(scanContext.getTargetUrl()).thenReturn(new URL("https://productfailure.demo.example.org"));
 
