@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.*;
 
 import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
+import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
@@ -913,6 +915,10 @@ public class ClientApiWrapper {
     private boolean verifyStatus(ApiResponseList apiResponse, int expectedStatusCode) {
         /* Workaround because of ZAP API */
         List<ApiResponse> itemList = apiResponse.getItems();
+        if (itemList.isEmpty()) {
+            LOG.error("No items in the accessUrlViaZap response list.");
+            throw new ZapWrapperRuntimeException("No items in the accessUrlViaZap response list.", ZapWrapperExitCode.INVALID_ZAP_RESPONSE);
+        }
         /* API returns a list of items, but there is only one item */
         ApiResponseSet firstItem = (ApiResponseSet) itemList.get(0);
         /*
@@ -920,6 +926,11 @@ public class ClientApiWrapper {
          * always the first
          */
         String responseHeader = firstItem.getStringValue("responseHeader");
+        if (responseHeader == null) {
+            LOG.error("No response header in the accessUrlViaZap response.");
+            throw new ZapWrapperRuntimeException("No response header in the accessUrlViaZap response.", ZapWrapperExitCode.INVALID_ZAP_RESPONSE);
+        }
+        // the substring httpStatus looks like this: "HTTP/1.1 200 Ok"
         String httpStatus = responseHeader.substring(0, responseHeader.indexOf("\r\n"));
         /* Check if the httpStatus contains is the expected one */
         return httpStatus.contains(Integer.toString(expectedStatusCode));

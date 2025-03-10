@@ -625,7 +625,7 @@ public class ZapScanner implements ZapScan {
      */
     void waitForSpiderResults(int scanId) throws ClientApiException {
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
-        WebLoginVerificationConfiguration verification = getVerificationFromConfig();
+        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int progressSpider = 0;
         while (progressSpider < 100) {
@@ -665,7 +665,7 @@ public class ZapScanner implements ZapScan {
     void runAndWaitForPassiveScan() throws ClientApiException {
         LOG.info("For scan {}: Starting passive scan.", scanContext.getContextName());
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
-        WebLoginVerificationConfiguration verification = getVerificationFromConfig();
+        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int numberOfRecords = clientApiWrapper.getNumberOfPassiveScannerRecordsToScan();
         while (numberOfRecords > 0) {
@@ -688,7 +688,7 @@ public class ZapScanner implements ZapScan {
      */
     void waitForActiveScanResults(int scanId) throws ClientApiException {
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
-        WebLoginVerificationConfiguration verification = getVerificationFromConfig();
+        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int progressActive = 0;
         while (progressActive < 100) {
@@ -713,19 +713,6 @@ public class ZapScanner implements ZapScan {
         }
         clientApiWrapper.stopActiveScan(scanId);
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
-    }
-
-    private WebLoginVerificationConfiguration getVerificationFromConfig() {
-        SecHubWebScanConfiguration config = scanContext.getSecHubWebScanConfiguration();
-        if (config == null) {
-            return null;
-        }
-        Optional<WebLoginConfiguration> login = scanContext.getSecHubWebScanConfiguration().getLogin();
-        if (login.isEmpty()) {
-            return null;
-        }
-        WebLoginConfiguration webLoginConfiguration = login.get();
-        return webLoginConfiguration.getVerification();
     }
 
     private UserInformation initBasicAuthentication(BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {
