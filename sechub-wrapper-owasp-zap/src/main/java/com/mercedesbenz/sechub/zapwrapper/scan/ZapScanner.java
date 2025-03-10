@@ -665,7 +665,6 @@ public class ZapScanner implements ZapScan {
     void runAndWaitForPassiveScan() throws ClientApiException {
         LOG.info("For scan {}: Starting passive scan.", scanContext.getContextName());
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
-        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int numberOfRecords = clientApiWrapper.getNumberOfPassiveScannerRecordsToScan();
         while (numberOfRecords > 0) {
