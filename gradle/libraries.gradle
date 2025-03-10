@@ -86,7 +86,7 @@ ext {
       httpmime:                                "4.3.1",
 
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.14.0",
+      owaspzap_client_api:                     "1.16.0",
       jcommander:                              "1.82",
       selenium_firefox_driver:                 "4.26.0",
       selenium_support:                        "4.26.0",
