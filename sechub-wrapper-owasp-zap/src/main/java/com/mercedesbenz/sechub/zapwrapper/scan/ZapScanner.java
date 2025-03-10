@@ -31,6 +31,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.*;
+import com.mercedesbenz.sechub.zapwrapper.util.Counter;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -53,6 +54,7 @@ public class ZapScanner implements ZapScan {
     private final UrlUtil urlUtil;
 
     private final SystemUtil systemUtil;
+    private final Counter loginCounter;
 
     public ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext) {
         this.clientApiWrapper = clientApiWrapper;
@@ -62,9 +64,11 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = new SystemUtil();
 
         this.scriptLogin = new ZapScriptLogin();
+        this.loginCounter = new Counter();
     }
 
-    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin) {
+    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin,
+            Counter counter) {
         this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
 
@@ -72,6 +76,7 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = systemUtil;
 
         this.scriptLogin = scriptLogin;
+        this.loginCounter = counter;
     }
 
     @Override
@@ -331,6 +336,7 @@ public class ZapScanner implements ZapScan {
                 runAndWaitActiveScan();
             }
         }
+        informUserAboutReLogins();
     }
 
     /**
@@ -367,6 +373,8 @@ public class ZapScanner implements ZapScan {
             LOG.info("For scan {}: No login section detected.", scanContext.getContextName());
             return null;
         }
+
+        loginCounter.increment();
 
         WebLoginConfiguration webLoginConfiguration = scanContext.getSecHubWebScanConfiguration().getLogin().get();
         if (webLoginConfiguration.getBasic().isPresent()) {
@@ -736,6 +744,29 @@ public class ZapScanner implements ZapScan {
         }
         clientApiWrapper.stopActiveScan(scanId);
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
+    }
+
+    private void informUserAboutReLogins() {
+        int count = loginCounter.getCount();
+        if (count == 0) {
+            return;
+        }
+
+        SecHubMessage message;
+        if (count == 1) {
+            /* no re-login was performed and user was logged in once */
+            LOG.info("For scan: {}. The user was logged in once during the scan.", scanContext.getContextName());
+            message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once during the scan.");
+        } else {
+            /* at least one re-login was performed */
+            LOG.warn("For scan: {}. The user was logged in {} times during the scan. This could be a sign of a misconfiguration.", scanContext.getContextName(),
+                    count);
+            message = new SecHubMessage(SecHubMessageType.WARNING,
+                    "The configured user was logged in " + count + " times during the scan. This could be a sign of a misconfiguration.");
+        }
+
+        /* inform user about amount of logins */
+        scanContext.getZapProductMessageHelper().writeSingleProductMessage(message);
     }
 
     private UserInformation initBasicAuthentication(BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {
