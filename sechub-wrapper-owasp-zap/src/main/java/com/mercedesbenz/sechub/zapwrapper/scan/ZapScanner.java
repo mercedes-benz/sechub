@@ -336,7 +336,7 @@ public class ZapScanner implements ZapScan {
                 runAndWaitActiveScan();
             }
         }
-        informUserAboutReLogins();
+        informUserAboutAmountOfLogins();
     }
 
     /**
@@ -746,7 +746,7 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
     }
 
-    private void informUserAboutReLogins() {
+    private void informUserAboutAmountOfLogins() {
         int count = loginCounter.getCount();
         if (count == 0) {
             return;
@@ -755,14 +755,15 @@ public class ZapScanner implements ZapScan {
         SecHubMessage message;
         if (count == 1) {
             /* no re-login was performed and user was logged in once */
-            LOG.info("For scan: {}. The user was logged in once during the scan.", scanContext.getContextName());
-            message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once during the scan.");
+            LOG.info("For scan: {}. The user was logged in once before the scan.", scanContext.getContextName());
+            message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once before the scan.");
         } else {
             /* at least one re-login was performed */
-            LOG.warn("For scan: {}. The user was logged in {} times during the scan. This could be a sign of a misconfiguration.", scanContext.getContextName(),
-                    count);
+            count--; // the first login is not counted as re-login
+            LOG.warn("For scan: {}. The user was re-logged in {} times during the scan. This could be a sign of a misconfiguration.",
+                    scanContext.getContextName(), count);
             message = new SecHubMessage(SecHubMessageType.WARNING,
-                    "The configured user was logged in " + count + " times during the scan. This could be a sign of a misconfiguration.");
+                    "The configured user was re-logged in " + count + " times during the scan. This could be a sign of a misconfiguration.");
         }
 
         /* inform user about amount of logins */
