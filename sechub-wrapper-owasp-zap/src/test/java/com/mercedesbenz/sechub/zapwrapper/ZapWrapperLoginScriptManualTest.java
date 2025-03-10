@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper;
 
+import java.io.File;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,20 @@ import com.mercedesbenz.sechub.test.ManualTest;
 import com.mercedesbenz.sechub.test.TestConstants;
 
 class ZapWrapperLoginScriptManualTest implements ManualTest {
+
+    private static File baseFolder = new File("./build/manual-test");
+
+    private static File userMessagesFolder = new File(baseFolder, "user-messages");
+
+    private static File eventsFolder = new File(baseFolder, "events");
+
+    private static File tempFolder = new File(baseFolder, "temp");
+
+    static {
+        userMessagesFolder.mkdirs();
+        eventsFolder.mkdirs();
+        tempFolder.mkdirs();
+    }
 
     private static final String DEFAULT_PARAMETERS_PROPERTIES_PATH = "./src/test/resources/manual-test/example-parameters.properties";
 
@@ -68,8 +84,8 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
                     + SYSTEM_PROPERTY_LOGINSCRIPT_MANUALTEST_CONFIGFILE + "=/location-path/your-parameters.properties");
         }
 
-        String testUserMessagesFolder = ZapWrapperManualTestUtil.getUserMessagesFolder().getAbsolutePath();
-        String testEventsFolder = ZapWrapperManualTestUtil.getEventsFolder().getAbsolutePath();
+        String testUserMessagesFolder = userMessagesFolder.getAbsolutePath();
+        String testEventsFolder = eventsFolder.getAbsolutePath();
         TestLoginScriptAssertionSupport assertionSupport = new TestLoginScriptAssertionSupport(testUserMessagesFolder, testEventsFolder, true);
         assertionSupport.assertConfiguredLoginScriptCanLogin(testConfigurationFilePath);
 
