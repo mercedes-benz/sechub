@@ -1801,7 +1801,7 @@ class SecHubConfigurationModelValidatorTest {
         /* test */
         assertHasError(result, WebLogoutConfiguration.PROPERTY_HTML_ELEMENT, WEB_SCAN_LOGOUT_CONFIGURATION_INVALID);
     }
-    
+
     @Test
     void valid_webscan_login_verification_configuration_result_has_no_errors() throws MalformedURLException {
         /* prepare */

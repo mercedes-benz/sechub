@@ -861,7 +861,7 @@ public class ClientApiWrapper {
      *
      * @param contextName zap context name
      * @param description description of the ajax spider exclude
-     * @param logout logout section of the SecHub webscan config
+     * @param logout      logout section of the SecHub webscan config
      * @return
      * @throws ClientApiException
      */
