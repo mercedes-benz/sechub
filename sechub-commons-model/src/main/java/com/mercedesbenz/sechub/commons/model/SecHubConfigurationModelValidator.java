@@ -301,6 +301,7 @@ public class SecHubConfigurationModelValidator {
         handleApi(context, webScan);
         handleHTTPHeaders(context, webScan);
         handleLoginData(context, webScan);
+        handleLogout(context, webScan);
 
     }
 
@@ -515,6 +516,23 @@ public class SecHubConfigurationModelValidator {
         handleTOTP(context, login);
         handleLoginVerification(context, login);
 
+    }
+
+    private void handleLogout(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        WebLogoutConfiguration logout = webScan.getLogout();
+        if (logout == null) {
+            return;
+        }
+
+        if (logout.getXpath() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_XPATH + "' must be present if logout was configured!");
+        }
+
+        if (logout.getHtmlElement() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_HTML_ELEMENT + "' must be present if logout was configured!");
+        }
     }
 
     private void handleTOTP(InternalValidationContext context, WebLoginConfiguration login) {

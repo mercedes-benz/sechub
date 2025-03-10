@@ -93,6 +93,7 @@ public class ZapScanner implements ZapScan {
             // URLs or the URLs from the API definitions.
             importClientCertificate();
             addIncludedAndExcludedUrlsToContext();
+            addAjaxSpiderAvoidLogoutExclude();
             loadApiDefinitions();
 
             /* ZAP scan */
@@ -230,6 +231,29 @@ public class ZapScanner implements ZapScan {
         }
     }
 
+    void addAjaxSpiderAvoidLogoutExclude() throws ClientApiException {
+        SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
+        if (secHubWebScanConfiguration == null) {
+            return;
+        }
+        WebLogoutConfiguration logout = secHubWebScanConfiguration.getLogout();
+        if (logout == null) {
+            LOG.info("For scan {}: No logout section was defined in SecHub webscan config.", scanContext.getContextName());
+            return;
+        }
+        if (logout.getHtmlElement() == null) {
+            throw new ZapWrapperRuntimeException("HtmlElement must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        if (logout.getXpath() == null) {
+            throw new ZapWrapperRuntimeException("XPath must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        LOG.info("For scan {}: Adding ajax spider exclude.", scanContext.getContextName());
+        String description = "avoid-logout";
+        clientApiWrapper.addAjaxSpiderAvoidLogoutExclude(scanContext.getContextName(), description, logout);
+    }
+
     void loadApiDefinitions() throws ClientApiException {
         Optional<SecHubWebScanApiConfiguration> apiConfig = scanContext.getSecHubWebScanConfiguration().getApi();
         if (!apiConfig.isPresent()) {
@@ -288,20 +312,21 @@ public class ZapScanner implements ZapScan {
     void executeScan() throws ClientApiException {
         UserInformation userInfo = setupLoginInsideZapContext();
         if (userInfo != null) {
+            // This order follows the automation framework full scan order
             runAndWaitForSpiderAsUser(userInfo.zapuserId);
-            runAndWaitForPassiveScan();
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAndWaitForAjaxSpiderAsUser(userInfo.userName);
             }
+            runAndWaitForPassiveScan();
             if (scanContext.isActiveScanEnabled()) {
                 runActiveScanAsUser(userInfo.zapuserId);
             }
         } else {
             runAndWaitForSpider();
-            runAndWaitForPassiveScan();
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAndWaitAjaxSpider();
             }
+            runAndWaitForPassiveScan();
             if (scanContext.isActiveScanEnabled()) {
                 runAndWaitActiveScan();
             }
@@ -321,18 +346,17 @@ public class ZapScanner implements ZapScan {
      * <pre>
      * {@code
      * // Example how to set up one user with a specific session
+     * @formatter:off
      *
      * String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
      * String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
-     * LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.",
-     * scanContext.getContextName()); StringBuilder authCredentialsConfigParams =
-     * new StringBuilder();
-     * authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username))
-     * .append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
-     * clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(),
-     * "^.*"+scanContext.getTargetUrl().getHost()+".*"); UserInformation userInfo =
-     * setupScanUserForZapContext(zapContextId, username,
-     * authCredentialsConfigParams.toString()); }
+     * LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.", scanContext.getContextName());
+     * StringBuilder authCredentialsConfigParams = new StringBuilder();
+     * authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username)).append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
+     * clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(), "^.*"+scanContext.getTargetUrl().getHost()+".*");
+     * UserInformation userInfo = setupScanUserForZapContext(zapContextId, username, authCredentialsConfigParams.toString());
+     *
+     * @formatter:on
      *
      * @return UserInformation containing userName and zapUserId or
      *         <code>null</code> if nothing could be configured.

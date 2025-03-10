@@ -1730,6 +1730,79 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
+    void valid_logout_section_results_in_no_errors() {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "xpath": "//*[@id=\\"loginButton\\"]",
+                      "htmlElement": "button"
+                    }
+                  }
+                }
+                """;
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void invalid_logout_section_does_not_contain_xpath_results_in_expected_error() {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "htmlElement": "button"
+                    }
+                  }
+                }
+                """;
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, WebLogoutConfiguration.PROPERTY_XPATH, WEB_SCAN_LOGOUT_CONFIGURATION_INVALID);
+    }
+
+    @Test
+    void invalid_logout_section_does_not_contain_htmlElementType_results_in_expected_error() {
+        /* prepare */
+        String json = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://example.org",
+                    "logout": {
+                      "xpath": "//*[@id=\\"loginButton\\"]"
+                    }
+                  }
+                }
+                """;
+        SecHubScanConfiguration sechubConfiguration = SecHubScanConfiguration.createFromJSON(json);
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, WebLogoutConfiguration.PROPERTY_HTML_ELEMENT, WEB_SCAN_LOGOUT_CONFIGURATION_INVALID);
+    }
+
+    @Test
     void valid_webscan_login_verification_configuration_result_has_no_errors() throws MalformedURLException {
         /* prepare */
         SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();

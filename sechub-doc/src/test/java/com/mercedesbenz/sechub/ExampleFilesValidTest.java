@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.WebLogoutConfiguration;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.*;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
@@ -386,6 +387,26 @@ class ExampleFilesValidTest {
         assertEquals("fileChecksum", assetData.getChecksum());
         assertEquals("fileName", assetData.getFileName());
 
+    }
+
+    @Test
+    void webscan_logout_config_can_be_read_and_contains_expected_config() {
+        /* prepare */
+        String json = TestFileReader.readTextFromFile(TestSecHubConfigExampleFile.WEBSCAN_LOGOUT_CONFIGURATION.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        SecHubWebScanConfiguration webScanConfig = config.getWebScan().get();
+        assertEquals("https://example.org", webScanConfig.getUrl().toString());
+
+        WebLoginConfiguration login = webScanConfig.getLogin().get();
+        assertEquals("https://example.org/login", login.getUrl().toString());
+
+        WebLogoutConfiguration logout = webScanConfig.getLogout();
+        assertEquals("//*[@id=\"loginButton\"]", logout.getXpath());
+        assertEquals("button", logout.getHtmlElement());
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {

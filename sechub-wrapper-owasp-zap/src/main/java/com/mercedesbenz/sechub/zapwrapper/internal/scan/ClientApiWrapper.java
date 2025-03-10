@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.*;
 
+import com.mercedesbenz.sechub.commons.model.WebLogoutConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
@@ -851,6 +852,26 @@ public class ClientApiWrapper {
     public ApiResponse removeHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
         LOG.info("Remove session token: {} for url: {} if it exists.", sessionTokenIdentifier, targetUrl);
         return clientApi.httpSessions.removeSessionToken(targetUrl, sessionTokenIdentifier);
+    }
+
+    /**
+     * Add an exclude for the ajax spider with the given description to the given
+     * context to avoid logout during the scan. The html element identifier is
+     * always lowercased for ZAP.
+     *
+     * @param contextName zap context name
+     * @param description description of the ajax spider exclude
+     * @param logout      logout section of the SecHub webscan config
+     * @return
+     * @throws ClientApiException
+     */
+    public ApiResponse addAjaxSpiderAvoidLogoutExclude(String contextName, String description, WebLogoutConfiguration logout) throws ClientApiException {
+        String text = null;
+        String attributename = null;
+        String attributevalue = null;
+        String enabled = Boolean.toString(true);
+        return clientApi.ajaxSpider.addExcludedElement(contextName, description, logout.getHtmlElement().toLowerCase(), logout.getXpath(), text, attributename,
+                attributevalue, enabled);
     }
 
     /**
