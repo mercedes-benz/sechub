@@ -176,8 +176,9 @@ public class ZapWrapperGroovyScriptExecutor {
          * Script has been executed and result is available. Given web driver is still
          * active at this moment and can be used inside hook
          *
-         * @param webdriver
-         * @param loginResult
+         * @param webdriver     web driver used for login
+         * @param webDriverWait web driver wait object used for login
+         * @param loginResult   the result
          */
         public void afterScriptHasBeenExecuted(WebDriver webdriver, WebDriverWait webDriverWait, ScriptLoginResult loginResult);
     }

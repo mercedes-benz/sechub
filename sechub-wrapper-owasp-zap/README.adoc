@@ -1,4 +1,11 @@
 // SPDX-License-Identifier: MIT
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
 == Zap Wrapper
 
 Zap Wrapper CLI for PDS
@@ -140,13 +147,15 @@ The groovy authentication scripts have access to certain data from the wrapper a
 - An initialized selenium `JavascriptExecutor` object, which on default is the previously introduced `FirefoxDriver` 
 - The `SecHubWebScanConfiguration` that was used to configure the scan
 - The `TOTPGenerator` that can be used for two-factor-authentication
-- The `user` configured for the authentication
-- The `password` of the `user`
 - The `loginUrl` necessary to authenticate.
 - The `targetUrl`, which is the base URL specified for the scan.
+- All user variables from SecHub configuration file template data section
 
-The example script below shows how these bindings can be accessed and used. In the example script all bindings are listed, even the ones not used by the script.
-The script can also be created completely without using anything of the pre-defined data.
+An example login script can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/resources/login-script-examples/example-script.groovy.
+
+The example login script shows how these bindings can be accessed and used. In the example script all bindings are listed, even the ones not used by the script.
+A script can also be created completely without using anything of the pre-defined data.
 
 The `TOTPGenerator` is an easy to use implementation of TOTP for two-factor-authentication if necessary. Using `totpGenerator.now()` returns the currently valid TOTP.
 To make use of the script authentication the wrapper application expects a SecHub configuration json for the scan, which contains a template data definition and optionally a TOTP configuration.
@@ -154,6 +163,10 @@ See web scan example configurations for details.
 
 WARNING: **The script should always ensure that the target URL is loaded in the browser at the end after the authentication because the caller needs to access the session data.**
 
-An example login script can be found at
-https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/resources/login-script-examples/example-script.groovy
+[TIP]
+====
+It is possible to test login scripts outside ZAP or SecHub easily by calling `ZapWrapperLoginScriptManualTest`.
 
+For details look into javadoc of 
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/java/com/mercedesbenz/sechub/zapwrapper/ZapWrapperLoginScriptManualTest.java
+====

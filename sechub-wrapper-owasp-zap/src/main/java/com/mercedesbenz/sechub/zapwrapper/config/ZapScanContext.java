@@ -64,7 +64,7 @@ public class ZapScanContext {
 
     private ZapScanContext() {
     }
-    
+
     public int getZapContextId() {
         return zapContextId;
     }
@@ -72,7 +72,6 @@ public class ZapScanContext {
     public void setZapContextId(int zapContextId) {
         this.zapContextId = zapContextId;
     }
-
 
     public ZapServerConfiguration getServerConfig() {
         return serverConfig;
@@ -195,7 +194,7 @@ public class ZapScanContext {
     public File getPacFilePath() {
         return pacFilePath;
     }
-    
+
     public WebLoginVerificationConfiguration getVerificationFromConfig() {
         SecHubWebScanConfiguration config = this.getSecHubWebScanConfiguration();
         if (config == null) {
