@@ -38,7 +38,7 @@ public class SpringApplicationShutdownHandler implements ApplicationShutdownHand
             try {
                 listener.onShutdown();
             } catch (RuntimeException e) {
-                log.error("Notified shutdown listener failed: {}", listener.getClass(), e);
+                log.error("Shutdown: Notified listener {} failed", listener.getClass(), e);
             }
         });
     }

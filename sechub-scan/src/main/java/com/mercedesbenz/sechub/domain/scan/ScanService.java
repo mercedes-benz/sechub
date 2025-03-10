@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
@@ -27,7 +28,7 @@ import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportException;
 import com.mercedesbenz.sechub.domain.scan.template.TemplateService;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -84,7 +85,7 @@ public class ScanService implements SynchronMessageHandler {
     @Autowired
     TemplateService templateService;
 
-    @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
+    @MustBeDocumented(value = "Define delay in milliseconds, for before next job cancellation check will be executed.", scope = DocumentationScopeConstants.SCOPE_SCAN)
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
     private int millisecondsToWaitBeforeCancelCheck = DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS;
 

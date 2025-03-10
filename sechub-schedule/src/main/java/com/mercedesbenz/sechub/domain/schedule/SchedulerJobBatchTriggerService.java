@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
 import static com.mercedesbenz.sechub.sharedkernel.logging.AlertLogReason.*;
 import static com.mercedesbenz.sechub.sharedkernel.logging.AlertLogType.*;
 
@@ -14,11 +15,11 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.model.job.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.cluster.ClusterEnvironmentService;
 import com.mercedesbenz.sechub.sharedkernel.logging.AlertLogService;
@@ -41,30 +42,30 @@ public class SchedulerJobBatchTriggerService {
 
     private static final boolean DEFAULT_HEALTHCHECK_ENABLED = true;
 
-    @MustBeDocumented("Inside a cluster the next job fetching can lead to concurrent access. " + "When this happens a retry can be done for the 'looser'. "
-            + "This value defines the amount of *tries*"
+    @MustBeDocumented(value = "Inside a cluster the next job fetching can lead to concurrent access. "
+            + "When this happens a retry can be done for the 'looser'. " + "This value defines the amount of *tries*"
             + "If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. "
-            + "Values lower than 2 will lead to one try of execution only.")
+            + "Values lower than 2 will lead to one try of execution only.", scope = SCOPE_JOB)
     @Value("${sechub.config.trigger.nextjob.retries:" + DEFAULT_TRIES + "}")
     private int markNextJobRetries = DEFAULT_TRIES;
 
-    @MustBeDocumented("When retry mechanism is enabled by `sechub.config.trigger.nextjob.retries`, and a retry is necessary, "
+    @MustBeDocumented(value = "When retry mechanism is enabled by `sechub.config.trigger.nextjob.retries`, and a retry is necessary, "
             + "this value is used to define the maximum time period in millis which will be waited before retry. "
             + "Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. "
             + "So having here a max value will result in a randomized wait time: means cluster members will do "
-            + "fetch operations time shifted and this automatically reduces collisions!")
+            + "fetch operations time shifted and this automatically reduces collisions!", scope = SCOPE_JOB)
     @Value("${sechub.config.trigger.nextjob.maxwaitretry:" + DEFAULT_RETRY_MAX_MILLIS + "}")
     private int markNextJobWaitBeforeRetryMillis = DEFAULT_RETRY_MAX_MILLIS;
 
-    @MustBeDocumented("Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.")
+    @MustBeDocumented(value = "Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.", scope = SCOPE_JOB)
     @Value("${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
-    @MustBeDocumented("Define delay for next job execution trigger after last executed.")
+    @MustBeDocumented(value = "Define delay for next job execution trigger after last executed.", scope = SCOPE_JOB)
     @Value("${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
-    @MustBeDocumented("When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
+    @MustBeDocumented(value = "When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!", scope = SCOPE_JOB)
     @Value("${sechub.config.trigger.healthcheck.enabled:" + DEFAULT_HEALTHCHECK_ENABLED + "}")
     private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED;
 
@@ -101,7 +102,7 @@ public class SchedulerJobBatchTriggerService {
     // default 10 seconds delay and 5 seconds initial
     @MustBeDocumented(value = "Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. "
             + "For initial delay " + DEFAULT_INITIAL_DELAY_MILLIS
-            + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.", scope = DocumentationScopeConstants.SCOPE_SCHEDULE)
+            + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.", scope = DocumentationScopeConstants.SCOPE_JOB)
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @UseCaseSchedulerStartsJob(@Step(number = 1, name = "Scheduling", description = "Fetches next schedule job from queue and trigger execution."))

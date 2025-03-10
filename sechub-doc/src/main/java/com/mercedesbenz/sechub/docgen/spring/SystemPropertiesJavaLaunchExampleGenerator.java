@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import com.mercedesbenz.sechub.docgen.Generator;
+import com.mercedesbenz.sechub.docgen.util.DocGeneratorUtil;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 public class SystemPropertiesJavaLaunchExampleGenerator extends SystemPropertiesDescriptionGenerator implements Generator {
@@ -37,8 +38,7 @@ public class SystemPropertiesJavaLaunchExampleGenerator extends SystemProperties
 
             for (TableRow row : table) {
                 if (!row.hasDefaultValue) {
-                    String envEntryName = row.propertyKey.toUpperCase();
-                    envEntryName = envEntryName.replaceAll("\\.", "_");
+                    String envEntryName = DocGeneratorUtil.convertSystemPropertyToEnvironmentVariable(row.propertyKey);
                     sb.append("\nexport ").append(envEntryName).append("=value");
                 }
             }

@@ -46,6 +46,8 @@ public enum TestSecHubConfigExampleFile {
 
     WEBSCAN_LOGOUT_CONFIGURATION("src/docs/asciidoc/documents/shared/configuration/sechub_config_example24_logout_config.json"),
 
+    WEBSCAN_LOGIN_VALIDATION("src/docs/asciidoc/documents/shared/configuration/sechub_config_example24_webscan_login_form_with_verification.json"),
+
     ;
 
     private String path;

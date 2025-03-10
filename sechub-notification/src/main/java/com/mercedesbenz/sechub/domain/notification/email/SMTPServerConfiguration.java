@@ -13,7 +13,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 /**
@@ -36,23 +37,23 @@ public class SMTPServerConfiguration {
 
     private SMTPConfigStringToMapConverter configConverter = new SMTPConfigStringToMapConverter();
 
-    @MustBeDocumented("Hostname of SMPTP server")
+    @MustBeDocumented(value = "Hostname of SMPTP server", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.smtp.hostname}")
     String hostname;
 
-    @MustBeDocumented("Username on SMPTP server, empty value means no username")
+    @MustBeDocumented(value = "Username on SMPTP server, empty value means no username", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.smtp.credential.username:}")
     String username;
 
-    @MustBeDocumented("Password on SMPTP server, empty value means no password")
+    @MustBeDocumented(value = "Password on SMPTP server, empty value means no password", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.smtp.credential.password:}")
     String password;
 
-    @MustBeDocumented("Port of SMPTP server, per default:" + DEFAULT_SMTP_SERVER_PORT)
+    @MustBeDocumented(value = "Port of SMPTP server, per default:" + DEFAULT_SMTP_SERVER_PORT, scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.smtp.port:" + DEFAULT_SMTP_SERVER_PORT + "}")
     int hostPort = DEFAULT_SMTP_SERVER_PORT;
 
-    @MustBeDocumented("SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: `mail.smtp.auth=false,mail.smtp.timeout=4000`. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html for configuration mapping")
+    @MustBeDocumented(value = "SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: `mail.smtp.auth=false,mail.smtp.timeout=4000`. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html for configuration mapping", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.smtp.config:" + DEFAULT_SMTP_CONFIG + "}")
     String smtpConfigString = DEFAULT_SMTP_CONFIG;
 

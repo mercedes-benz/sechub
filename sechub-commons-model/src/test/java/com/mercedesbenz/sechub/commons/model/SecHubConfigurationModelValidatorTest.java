@@ -9,7 +9,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -37,6 +39,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.S
 import com.mercedesbenz.sechub.commons.model.login.TOTPHashAlgorithm;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SecHubConfigurationModelValidatorTest {
@@ -1797,6 +1800,57 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertHasError(result, WebLogoutConfiguration.PROPERTY_HTML_ELEMENT, WEB_SCAN_LOGOUT_CONFIGURATION_INVALID);
+    }
+    
+    @Test
+    void valid_webscan_login_verification_configuration_result_has_no_errors() throws MalformedURLException {
+        /* prepare */
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfiguration.getWebScan().get();
+        WebLoginVerificationConfiguration verification = new WebLoginVerificationConfiguration();
+        URL url = new URL("https://example.com");
+        verification.setUrl(url);
+        verification.setResponseCode(204);
+
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        login.setVerification(verification);
+        secHubWebScanConfiguration.setLogin(Optional.of(login));
+        sechubConfiguration.setWebScan(secHubWebScanConfiguration);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void valid_webscan_login_verification_result_has_two_errors() throws MalformedURLException {
+        /* prepare */
+        SecHubScanConfiguration sechubConfiguration = createSecHubConfigurationWithWebScanPart();
+        SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfiguration.getWebScan().get();
+        WebLoginVerificationConfiguration verification = new WebLoginVerificationConfiguration();
+        verification.setResponseCode(401);
+
+        WebLoginConfiguration login = new WebLoginConfiguration();
+        login.setVerification(verification);
+        secHubWebScanConfiguration.setLogin(Optional.of(login));
+        sechubConfiguration.setWebScan(secHubWebScanConfiguration);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(sechubConfiguration);
+
+        /* test */
+        assertHasError(result, 0,
+                "The verification configuration inside the webscan config login section is invalid! The verification 'url' must never be null if verification shall be used!",
+                WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID);
+        assertHasError(result, 1,
+                "The verification configuration inside the webscan config login section is invalid! The verification 'responseCode' must be between 199 and 399!",
+                WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID);
     }
 
     @Test

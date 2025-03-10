@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
@@ -16,11 +17,11 @@ public class ScanMappingConfigurationRefreshTriggerService {
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 0;
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 5000;
 
-    @MustBeDocumented("Define initial delay (in milliseconds) for scan config refresh check operation.")
+    @MustBeDocumented(value = "Define initial delay (in milliseconds) for scan config refresh check operation.", scope = DocumentationScopeConstants.SCOPE_SCAN)
     @Value("${sechub.config.scan.scanconfig.refresh.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String initialDelay; // here only for logging - used in scheduler annotation as well!
 
-    @MustBeDocumented("Define delay (in milliseconds) for next job execution trigger after last executed.")
+    @MustBeDocumented(value = "Define delay (in milliseconds) for next job execution trigger after last executed.", scope = DocumentationScopeConstants.SCOPE_SCAN)
     @Value("${sechub.config.scan.scanconfig.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String fixedDelay; // here only for logging - used in scheduler annotation as well!
 

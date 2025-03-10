@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: Release
+name: Release Plugin for VSCode
 
 on: 
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
         working-directory: ide-plugins/vscode
     steps:
     - name: Checkout master
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.2.2
       with:
         ref: master
 

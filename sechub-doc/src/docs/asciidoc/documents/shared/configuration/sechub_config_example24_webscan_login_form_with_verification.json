@@ -1,0 +1,18 @@
+{
+  "apiVersion": "1.0",
+  "webScan": {
+    "url": "https://productfailure.demo.example.org",
+    "login": {
+      "url": "https://productfailure.demo.example.org/login",
+      "basic": {
+        "user": "{{ .LOGIN_USER }}",
+        "password": "{{ .LOGIN_PWD }}",
+        "realm": "{{ .LOGIN_REALM }}"
+      },
+      "verification": { // <1>
+        "url": "https://productfailure.demo.example.org/verify", //<2>
+        "responseCode": 204 //<3>
+      }
+    }
+  }
+}

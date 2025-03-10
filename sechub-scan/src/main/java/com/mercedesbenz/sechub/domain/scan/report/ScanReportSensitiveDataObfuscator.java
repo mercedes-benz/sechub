@@ -8,17 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 
 @Component
 public class ScanReportSensitiveDataObfuscator {
 
     @Value("${sechub.report.sensitivedata.max.nonobfuscated.characters:0}")
-    @MustBeDocumented("Define the amount of visible characters which are NOT obfuscated.")
+    @MustBeDocumented(value = "Define the amount of visible characters which are NOT obfuscated.", scope = DocumentationScopeConstants.SCOPE_SCAN)
     int sourceVisibleLength;
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanReportSensitiveDataObfuscator.class);
