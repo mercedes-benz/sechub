@@ -36,9 +36,9 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
      *
      * <h3>Details</h2>
      *
-     * This test will use {@link LoginScriptAssertionSupport} and a given
+     * This test will use {@link TestLoginScriptAssertionSupport} and a given
      * configuration file. For properties format and settings look into
-     * {@link LoginScriptAssertionSupport#assertConfiguredLoginScriptCanLogin(String)}
+     * {@link TestLoginScriptAssertionSupport#assertConfiguredLoginScriptCanLogin(String)}
      *
      * @throws Exception
      */
@@ -70,7 +70,7 @@ class ZapWrapperLoginScriptManualTest implements ManualTest {
 
         String testUserMessagesFolder = ZapWrapperManualTestUtil.getUserMessagesFolder().getAbsolutePath();
         String testEventsFolder = ZapWrapperManualTestUtil.getEventsFolder().getAbsolutePath();
-        LoginScriptAssertionSupport assertionSupport = new LoginScriptAssertionSupport(testUserMessagesFolder, testEventsFolder, true);
+        TestLoginScriptAssertionSupport assertionSupport = new TestLoginScriptAssertionSupport(testUserMessagesFolder, testEventsFolder, true);
         assertionSupport.assertConfiguredLoginScriptCanLogin(testConfigurationFilePath);
 
     }

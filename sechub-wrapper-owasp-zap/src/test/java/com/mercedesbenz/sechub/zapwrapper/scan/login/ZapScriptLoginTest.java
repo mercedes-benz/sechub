@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.zapwrapper.scan.login;
 
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -12,6 +13,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
@@ -38,6 +41,70 @@ class ZapScriptLoginTest {
         clientApiWrapper = mock();
 
         scriptLoginToTest = new ZapScriptLogin(groovyScriptExecutor, sessionConfigurator);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2 })
+    void when_script_is_NOT_failing_only_one_execution_and_no_failure(Integer retries) throws Exception {
+        /* prepare */
+        ScriptLoginResult loginResult1 = mock();
+        when(loginResult1.isLoginFailed()).thenReturn(false);
+
+        ZapScanContext scanContext = createValidZapScanContext();
+        when(groovyScriptExecutor.executeScript(scanContext.getGroovyScriptLoginFile(), scanContext)).thenReturn(loginResult1);
+
+        /* execute + test */
+        scriptLoginToTest.login(scanContext, clientApiWrapper);
+
+        verify(groovyScriptExecutor, times(1)).executeScript(any(File.class), eq(scanContext));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3 })
+    void when_script_is_failing_and_retries_are_done_but_also_fail_then_script_fails_with_wrapper_runtime_exception(Integer retries) throws Exception {
+        /* prepare */
+        ScriptLoginResult loginResult1 = mock();
+        when(loginResult1.isLoginFailed()).thenReturn(true);
+
+        ScriptLoginResult loginResult2 = mock();
+        when(loginResult2.isLoginFailed()).thenReturn(true);
+
+        ScriptLoginResult loginResult3 = mock();
+        when(loginResult3.isLoginFailed()).thenReturn(true);
+
+        ScriptLoginResult loginResult4 = mock();
+        when(loginResult4.isLoginFailed()).thenReturn(true);
+
+        ZapScanContext scanContext = createValidZapScanContext(retries);
+        when(groovyScriptExecutor.executeScript(scanContext.getGroovyScriptLoginFile(), scanContext)).thenReturn(loginResult1, loginResult2, loginResult3,
+                loginResult4);
+
+        /* execute + test */
+        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class, () -> scriptLoginToTest.login(scanContext, clientApiWrapper));
+
+        assertTrue(exception.getMessage().contains("An error happened during script login"));
+        verify(groovyScriptExecutor, times(retries + 1)).executeScript(any(File.class), eq(scanContext));
+
+    }
+
+    @Test
+    void when_script_is_failing_first_time_but_not_second_time_no_wrapper_runtime_exception() throws Exception {
+        /* prepare */
+        ScriptLoginResult loginResult1 = mock();
+        when(loginResult1.isLoginFailed()).thenReturn(true);
+
+        ScriptLoginResult loginResult2 = mock();
+        when(loginResult2.isLoginFailed()).thenReturn(false);
+
+        ZapScanContext scanContext = createValidZapScanContext(1);
+        when(groovyScriptExecutor.executeScript(scanContext.getGroovyScriptLoginFile(), scanContext)).thenReturn(loginResult1, loginResult2);
+
+        /* execute */
+        scriptLoginToTest.login(scanContext, clientApiWrapper);
+
+        /* test */
+        verify(groovyScriptExecutor, times(2)).executeScript(any(File.class), eq(scanContext));
     }
 
     @Test
@@ -111,6 +178,10 @@ class ZapScriptLoginTest {
     }
 
     private ZapScanContext createValidZapScanContext() throws MalformedURLException, URISyntaxException {
+        return createValidZapScanContext(0);
+    }
+
+    private ZapScanContext createValidZapScanContext(int maxAllowedLoginScriptRetries) throws MalformedURLException, URISyntaxException {
         URL targetUrl = new URL("http://example.com");
 
         WebLoginConfiguration login = new WebLoginConfiguration();
@@ -125,6 +196,7 @@ class ZapScriptLoginTest {
                 .setSecHubWebScanConfiguration(webScanConfig)
                 .setGroovyScriptLoginFile(scriptFile)
                 .setTargetUrl(targetUrl)
+                .setMaxGroovyScriptLoginFailureRetries(maxAllowedLoginScriptRetries)
                 .build();
         /* @formatter:on */
     }

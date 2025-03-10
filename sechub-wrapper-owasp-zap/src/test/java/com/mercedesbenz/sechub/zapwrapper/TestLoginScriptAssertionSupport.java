@@ -40,7 +40,10 @@ import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapWrapperGroovyScriptExecu
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableToSystemPropertyConverter;
 
-public class LoginScriptAssertionSupport {
+/**
+ * A support class to assert login script behavior.
+ */
+public class TestLoginScriptAssertionSupport {
 
     public static final String PREFIX_VARIABLES = "variables.";
     public static final String TOTP_SEED = "test.login.totp.seed";
@@ -51,7 +54,7 @@ public class LoginScriptAssertionSupport {
     public static final String LOGIN_VERIFICATION_CSS_SELECTOR = "test.login.verification.css-selector";
     public static final String LOGIN_VERIFICATION_EXPECTED_VALUE = "test.login.verification.expected-value";
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginScriptAssertionSupport.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestLoginScriptAssertionSupport.class);
 
     private String verificationCssSelector;
 
@@ -61,17 +64,18 @@ public class LoginScriptAssertionSupport {
     private boolean noHeadless;
 
     /**
-     * A support class to assert login script behavior.
+     * Creates login script assertion support
      *
      * @param userMessagesFolder the local user messages folder which can be used by
      *                           scripts (for testing)
      * @param eventsFolder       the local events folder which can be used by
      *                           scripts (for testing)
      * @param noHeadless         when <code>true</code> the user interface will be
-     *                           visible, when <code>false</code> there will be no
-     *                           visible browser available
+     *                           visible (not headless), when <code>false</code>
+     *                           there will be no visible browser available (still
+     *                           headless)
      */
-    public LoginScriptAssertionSupport(String userMessagesFolder, String eventsFolder, boolean noHeadless) {
+    public TestLoginScriptAssertionSupport(String userMessagesFolder, String eventsFolder, boolean noHeadless) {
         this.userMessagesFolder = userMessagesFolder;
         this.eventsFolder = eventsFolder;
         this.noHeadless = noHeadless;

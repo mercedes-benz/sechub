@@ -32,6 +32,9 @@ import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 public class ZapScanContextFactory {
+    private static final int MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES = 5;
+    private static final int MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES = 0;
+
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanContextFactory.class);
 
     private final EnvironmentVariableReader environmentVariableReader;
@@ -65,6 +68,8 @@ public class ZapScanContextFactory {
         /* Wrapper settings */
         ZapServerConfiguration serverConfig = createZapServerConfig(configuration);
         ProxyInformation proxyInformation = createProxyInformation(configuration);
+
+        int loginScriptFailureRetries = resolveLoginScriptFailureRetries();
 
         /* SecHub settings */
         URL targetUrl = targetUriFactory.create(configuration.getTargetURL());
@@ -120,11 +125,27 @@ public class ZapScanContextFactory {
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
 												.setGroovyScriptLoginFile(groovyScriptFile)
+												.setMaxGroovyScriptLoginFailureRetries(loginScriptFailureRetries)
 												.setPacFilePath(fetchPacFilePath(configuration))
 												.setNoHeadless(configuration.isNoHeadless())
 											  .build();
 		/* @formatter:on */
         return scanContext;
+    }
+
+    private int resolveLoginScriptFailureRetries() {
+        int loginScriptFailureRetries = environmentVariableReader.readAsInt(EnvironmentVariableConstants.WRAPPER_LOGINSCRIPT_FAILURE_RETRIES);
+        if (loginScriptFailureRetries > MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES) {
+            loginScriptFailureRetries = MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES;
+            LOG.warn("Configured login script failure retries was bigger than maximum: {} - set back to: {}", MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES,
+                    loginScriptFailureRetries);
+        }
+        if (loginScriptFailureRetries < MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES) {
+            loginScriptFailureRetries = MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES;
+            LOG.warn("Configured login script failure retries was smaler than minimum: {} - set back to: {}", MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES,
+                    loginScriptFailureRetries);
+        }
+        return loginScriptFailureRetries;
     }
 
     private List<String> fetchZapRuleIDsToDeactivate(ZapWrapperConfiguration configuration) {

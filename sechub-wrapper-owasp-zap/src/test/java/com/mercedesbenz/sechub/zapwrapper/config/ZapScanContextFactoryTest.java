@@ -8,7 +8,11 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +37,6 @@ class ZapScanContextFactoryTest {
     private File tempDir;
 
     private static final File VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/template-example.json");
-    private static final File INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/invalid-template-example.json");
 
     @BeforeEach
     void beforeEach() {
@@ -45,6 +48,57 @@ class ZapScanContextFactoryTest {
 
         when(envVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
         when(envVariableReader.readAsString(PDS_JOB_EVENTS_FOLDER)).thenReturn("");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4, 5 })
+    void loginscript_retries_valid_value_from_env_is_used_for_context(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(value.intValue(), result.getMaximumLoginScriptFailureRetries());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -1, -200 })
+    void loginscript_retries_too_low_value_from_env_is_resulting_0(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(0, result.getMaximumLoginScriptFailureRetries());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 6, 10, 200 })
+    void loginscript_retries_too_high_value_from_env_is_resulting_5(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(5, result.getMaximumLoginScriptFailureRetries());
     }
 
     @Test

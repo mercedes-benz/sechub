@@ -61,6 +61,7 @@ public class ZapScanContext {
     private File pacFilePath;
     private boolean noHeadless;
     private int zapContextId;
+    public int maximumLoginScriptFailureRetries;
 
     private ZapScanContext() {
     }
@@ -208,6 +209,10 @@ public class ZapScanContext {
         return webLoginConfiguration.getVerification();
     }
 
+    public int getMaximumLoginScriptFailureRetries() {
+        return maximumLoginScriptFailureRetries;
+    }
+
     public static ZapScanContextBuilder builder() {
         return new ZapScanContextBuilder();
     }
@@ -258,6 +263,8 @@ public class ZapScanContext {
         private File pacFilePath;
 
         private boolean noHeadless;
+
+        private int loginScriptFailureMaximumRetries;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -389,6 +396,11 @@ public class ZapScanContext {
             return this;
         }
 
+        public ZapScanContextBuilder setMaxGroovyScriptLoginFailureRetries(int loginScriptFailureMaximumRetries) {
+            this.loginScriptFailureMaximumRetries = loginScriptFailureMaximumRetries;
+            return this;
+        }
+
         public ZapScanContext build() {
             BrowserIdTransformationSupport transformBrowserIdSupport = new BrowserIdTransformationSupport();
 
@@ -432,8 +444,9 @@ public class ZapScanContext {
 
             zapScanContext.pacFilePath = this.pacFilePath;
 
+            zapScanContext.maximumLoginScriptFailureRetries = loginScriptFailureMaximumRetries;
+
             return zapScanContext;
         }
-
     }
 }
