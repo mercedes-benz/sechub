@@ -661,7 +661,20 @@ components:
         password:
           description: password
           type: string
-          
+
+    WebLoginVerificationConfiguration:
+      title: WebLoginVerificationConfiguration
+      description: Verification definition for web login
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/URI'
+        responseCode:
+          type: int
+          default: 200
+      required:
+        - url
+
     WebLoginTOTPConfiguration:
       title: WebLoginTOTPConfiguration
       description: TOTP definition
@@ -720,6 +733,8 @@ components:
           $ref: '#/components/schemas/URI'
         totp:
           $ref: '#/components/schemas/WebLoginTOTPConfiguration'
+        verification:
+            $ref: '#/components/schemas/WebLoginVerificationConfiguration'
       required:
         - url
 

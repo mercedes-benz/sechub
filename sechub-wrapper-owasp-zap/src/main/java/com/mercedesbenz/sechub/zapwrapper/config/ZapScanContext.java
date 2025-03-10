@@ -4,10 +4,18 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
@@ -52,9 +60,19 @@ public class ZapScanContext {
     private File groovyScriptLoginFile;
     private File pacFilePath;
     private boolean noHeadless;
+    private int zapContextId;
 
     private ZapScanContext() {
     }
+    
+    public int getZapContextId() {
+        return zapContextId;
+    }
+
+    public void setZapContextId(int zapContextId) {
+        this.zapContextId = zapContextId;
+    }
+
 
     public ZapServerConfiguration getServerConfig() {
         return serverConfig;
@@ -176,6 +194,19 @@ public class ZapScanContext {
 
     public File getPacFilePath() {
         return pacFilePath;
+    }
+    
+    public WebLoginVerificationConfiguration getVerificationFromConfig() {
+        SecHubWebScanConfiguration config = this.getSecHubWebScanConfiguration();
+        if (config == null) {
+            return null;
+        }
+        Optional<WebLoginConfiguration> login = this.getSecHubWebScanConfiguration().getLogin();
+        if (login.isEmpty()) {
+            return null;
+        }
+        WebLoginConfiguration webLoginConfiguration = login.get();
+        return webLoginConfiguration.getVerification();
     }
 
     public static ZapScanContextBuilder builder() {

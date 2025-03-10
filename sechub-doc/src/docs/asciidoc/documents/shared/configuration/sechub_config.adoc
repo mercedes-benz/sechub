@@ -338,6 +338,17 @@ The default value is `AUTODETECT` where {sechub} tries to detect the encoding of
 - `PLAIN`
 - `AUTODETECT`
 
+====== Example form based login with Login Verification
+The login verification can be configured to verify the login was successful and the DAST module is logged in during the scan.
+
+[source,json,title="Login Verification"]
+----
+include::sechub_config_example24_webscan_login_form_with_verification.json[]
+----
+<1> Start of login verification configuration. (Optional)
+<2> The url of a page which can only be visited if the login was successful. (Mandatory)
+<3> The response code which is expected when visiting the verification page. (Optional, default is 200)
+
 [[sechub-config-example-webscan-openapi]]
 ====== Example OpenAPI scan
 [source,json,title="Open API scan"]

@@ -154,9 +154,6 @@ See web scan example configurations for details.
 
 WARNING: **The script should always ensure that the target URL is loaded in the browser at the end after the authentication because the caller needs to access the session data.**
 
-The following example contains all available bindings, even if they are unused in the script below:
+An example login script can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/resources/login-script-examples/example-script.groovy
 
-[source,groovy, title="example-script.groovy"]
-----
-include::src/test/resources/login-script-examples/example-script.groovy[]
-----

@@ -1,29 +1,26 @@
 // SPDX-License-Identifier: MIT
 **About {sechub}**
 
-{sechub} is an acronym for `Security Hub` and is first of
-all *one API to scan for different security problems*. Users of {sechub} do not
-care about which exact product is doing the real scan on server side, but only
-configure their wanted aim.
+{sechub} stands for "Security Hub" and serves as an unified API
+to scan for various security issues.
+With {sechub}, users don't need to worry about the specific scanning product
+used on the server side; they simply configure their desired security goals.
 
 [IMPORTANT]
 ====
-{sechub} does *NOT* provide a security infrastructure but does orchestrate
-different security products/tools.
+The {sechub} server alone does *NOT* provide a security infrastructure but orchestrates different security products/tools.
 
-So *you still need an existing security infrastructure* behind {sechub} !
+Please check our ready to use security open source tools: *https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions[PDS solutions]* for integration with {sechub} server.
 ====
 
-
-
-It was designed to be very easy to integrate into any existing
-build pipeline / contionus integration (CI) and helps to provide
+It was designed to be very easy to integrate into existing
+build / contionus integration (CI) pipelines and helps to provide
 **SecDevOps**.
 
 [TIP]
 ====
 
-You can get more information about from {webPage}[{sechub} web page]  .
+You can get more documentation from the {webPage}[{sechub} web page]  .
 
 The project is hosted at {projectSite}
 ====
