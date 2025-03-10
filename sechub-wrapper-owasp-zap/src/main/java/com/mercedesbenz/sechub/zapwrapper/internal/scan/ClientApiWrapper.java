@@ -859,9 +859,9 @@ public class ClientApiWrapper {
      * context to avoid logout during the scan. The html element identifier is
      * always lowercased for ZAP.
      *
-     * @param contextName
-     * @param description
-     * @param logout
+     * @param contextName zap context name
+     * @param description description of the ajax spider exclude
+     * @param logout logout section of the SecHub webscan config
      * @return
      * @throws ClientApiException
      */

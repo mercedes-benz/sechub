@@ -280,12 +280,12 @@ This is onyl relevant if scanning a frontend, since this logout specification tr
 When scanning a web API this section can be omitted. For URLs to exclude from the scan see <<sechub-config-example-webscan-anonymous>>.
 [source,json,title="logout configuration"]
 ----
-include::sechub_config_example24_logout_config.json[]
+include::sechub_config_example25_logout_config.json[]
 ----
 <1> `logout` section to avoid logout during scan. A button or any other HTML element can be specified here,
     to avoid a logout during the scan. To specify an URL to avoid during scan please use <<sechub-config-example-webscan-anonymous>>
-<2> `xpath` to locate the HTML element that shall be avoided during the scan
-<3> `htmlElementType` to locate the HTML element that shall be avoided during the scan
+<2> `xpath` to locate the HTML element that shall be avoided during the scan. In the example the `xpath` points to a button.
+<3> `htmlElement` to locate the HTML element that shall be avoided during the scan. In this example the logout is done via a `button`. The button will be found by the `xpath` above, but the element type is still required, to avoid interaction with this element successfully.
 
 ====== Example form based login by script
 WARNING: This example [.underline]#currently# [.underline]#only# works with the `Netsparker` DAST module. We deprecated the `Netsparker` integration because it is not developed any further from our side. We use and develop the `Zaproxy` integration. As soon as this feature is available for our actively maintained `Zaproxy` DAST module, we will remove this warning. If you host SecHub yourself with a `Netsparker` module, this does not affect you. You can use this configuration as before.
