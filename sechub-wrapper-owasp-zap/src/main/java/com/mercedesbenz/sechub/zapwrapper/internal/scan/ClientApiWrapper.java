@@ -4,12 +4,16 @@ package com.mercedesbenz.sechub.zapwrapper.internal.scan;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.*;
 
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
+import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapAuthenticationType;
 import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
@@ -163,8 +167,6 @@ public class ClientApiWrapper {
      * Disable the given rule by ID inside the default policy.
      *
      * @param ruleId id of the rule that will be disabled
-     * @param policy specifies the policy that will be configured. Configuring
-     *               <code>null</code> configures the default policy.
      * @return <code>true</code> if the rule was a passive rule and was deactivated,
      *         <code>false</code> if the rule was not a passive rule and was not
      *         deactivated
@@ -501,7 +503,6 @@ public class ClientApiWrapper {
     /**
      * Get the number of records left to scan for the passive scan.
      *
-     * @param scanId passive scan Id
      * @return api response of ZAP
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
@@ -639,10 +640,10 @@ public class ClientApiWrapper {
      * @return api response of ZAP the ID of the started active scan
      * @throws ClientApiException when anything goes wrong communicating with ZAP
      */
-    public int startActiveScanAsUser(String url, int contextId, int userId, boolean recurse, String scanpolicyname, String method, String postdata)
+    public int startActiveScanAsUser(String url, int contextId, int userId, boolean recurse, String scanpolicyname, String method, String postData)
             throws ClientApiException {
         ApiResponse response = clientApi.ascan.scanAsUser(url, Integer.toString(contextId), Integer.toString(userId), Boolean.toString(recurse), scanpolicyname,
-                method, postdata);
+                method, postData);
         return Integer.parseInt(getIdOfApiResponseElement((ApiResponseElement) response));
     }
 
@@ -843,13 +844,96 @@ public class ClientApiWrapper {
      * ZAP.
      *
      * @param targetUrl
-     * @param sessionIdentifier
+     * @param sessionTokenIdentifier
      * @return api response of ZAP
      * @throws ClientApiException
      */
     public ApiResponse removeHTTPSessionToken(String targetUrl, String sessionTokenIdentifier) throws ClientApiException {
         LOG.info("Remove session token: {} for url: {} if it exists.", sessionTokenIdentifier, targetUrl);
         return clientApi.httpSessions.removeSessionToken(targetUrl, sessionTokenIdentifier);
+    }
+
+    /**
+     * Pause the spider scan with the given scan ID.
+     *
+     * @param scanId scan Id
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse pauseSpiderScan(int scanId) throws ClientApiException {
+        return clientApi.spider.pause(Integer.toString(scanId));
+    }
+
+    /**
+     * Resume the spider scan with the given scan ID.
+     *
+     * @param scanId scan Id
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse resumeSpiderScan(int scanId) throws ClientApiException {
+        return clientApi.spider.resume(Integer.toString(scanId));
+    }
+
+    /**
+     * Pause the active scan with the given scan ID.
+     *
+     * @param scanId scan Id
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse pauseActiveScan(int scanId) throws ClientApiException {
+        return clientApi.ascan.pause(Integer.toString(scanId));
+    }
+
+    /**
+     * Resume the active scan with the given scan ID.
+     *
+     * @param scanId scan Id
+     * @return api response of ZAP
+     * @throws ClientApiException
+     */
+    public ApiResponse resumeActiveScan(int scanId) throws ClientApiException {
+        return clientApi.ascan.resume(Integer.toString(scanId));
+    }
+
+    /**
+     * Check if the ZAP is still logged in and can access a specific URL
+     *
+     * @param verification the configuration for the login verification
+     * @return <code>true</code> if the ZAP is still logged in and can access the
+     *         URL, <code>false</code> otherwise
+     */
+    public boolean isZapLoggedIn(WebLoginVerificationConfiguration verification) {
+        ApiResponseList apiResponse = (ApiResponseList) accessUrlViaZap(verification.getUrl().toString(), false);
+        if (apiResponse == null) {
+            return false;
+        }
+        return verifyStatus(apiResponse, verification.getResponseCode());
+    }
+
+    private boolean verifyStatus(ApiResponseList apiResponse, int expectedStatusCode) {
+        /* Workaround because of ZAP API */
+        List<ApiResponse> itemList = apiResponse.getItems();
+        if (itemList.isEmpty()) {
+            LOG.error("No items in the accessUrlViaZap response list.");
+            throw new ZapWrapperRuntimeException("No items in the accessUrlViaZap response list.", ZapWrapperExitCode.INVALID_ZAP_RESPONSE);
+        }
+        /* API returns a list of items, but there is only one item */
+        ApiResponseSet firstItem = (ApiResponseSet) itemList.get(0);
+        /*
+         * The response header contains exactly one string with all headers, the HTTP is
+         * always the first
+         */
+        String responseHeader = firstItem.getStringValue("responseHeader");
+        if (responseHeader == null) {
+            LOG.error("No response header in the accessUrlViaZap response.");
+            throw new ZapWrapperRuntimeException("No response header in the accessUrlViaZap response.", ZapWrapperExitCode.INVALID_ZAP_RESPONSE);
+        }
+        // the substring httpStatus looks like this: "HTTP/1.1 200 Ok"
+        String httpStatus = responseHeader.substring(0, responseHeader.indexOf("\r\n"));
+        /* Check if the httpStatus contains is the expected one */
+        return httpStatus.contains(Integer.toString(expectedStatusCode));
     }
 
     private String getIdOfApiResponseElement(ApiResponseElement apiResponseElement) {
@@ -877,5 +961,4 @@ public class ClientApiWrapper {
 
         return safeMap;
     }
-
 }
