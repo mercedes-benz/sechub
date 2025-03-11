@@ -67,6 +67,11 @@
             "key": "wrapper.retry.waittime.milliseconds",
             "description": "The time to wait between connection checks to the same URL. The value cannot be less than 1000 milliseconds.",
             "default": 1000
+          },
+          {
+            "key": "wrapper.loginscript.failure.retries",
+            "description": "Maximum amount of retries the wrapper does when loginscript execution fails. This is for resilience - e.g. when a custom login mask would have a race condition problem at runtime",
+            "default": 1
           }
         ]
       },
@@ -142,6 +147,11 @@
             "key": "wrapper.retry.waittime.milliseconds",
             "description": "The time to wait between connection checks to the same URL. The value cannot be less than 1000 milliseconds.",
             "default": 1000
+          },
+           {
+            "key": "wrapper.loginscript.failure.retries",
+            "description": "Maximum amount of retries the wrapper does when loginscript execution fails. This is for resilience - e.g. when a custom login mask would have a race condition problem at runtime",
+            "default": 1
           }
         ]
       }

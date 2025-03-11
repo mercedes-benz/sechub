@@ -2,15 +2,20 @@
 package com.mercedesbenz.sechub.zapwrapper.scan.login;
 
 public class ZapScriptBindingKeys {
-    public static final String FIREFOX_WEBDRIVER_KEY = "WEBDRIVER";
-    public static final String FIREFOX_WEBDRIVER_WAIT_KEY = "WEBDRIVER_WAIT_KEY";
-    public static final String JAVASCRIPTEXECUTOR_KEY = "JAVASCRIPTEXECUTOR";
-    public static final String SECHUB_WEBSCAN_CONFIG_KEY = "SECHUB_WEBSCAN_CONFIG";
-    public static final String TOTP_GENERATOR_KEY = "TOTP_GENERATOR";
 
-    public static final String USER_KEY = "USER";
-    public static final String PASSWORD_KEY = "PASSWORD";
-    public static final String LOGIN_URL_KEY = "LOGIN_URL";
-    public static final String TARGET_URL_KEY = "TARGET_URL";
+    /* Web driver */
+    public static final String WEBDRIVER = "webdriver";
+    public static final String WEBDRIVER_WAIT = "webdriver.wait";
 
+    /* Script engine */
+    public static final String JAVASCRIPT_EXECUTOR = "javascript.executor";
+
+    /* SecHub configuration file */
+    public static final String SECHUB_WEBSCAN_CONFIG = "sechub.webscan.config";
+    public static final String LOGIN_URL = "login.url";
+    public static final String TARGET_URL = "target.url";
+
+    /* Additional */
+    public static final String LOGGER = "logger";
+    public static final String TOTP_GENERATOR = "totp.generator";
 }
