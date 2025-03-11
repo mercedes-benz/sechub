@@ -106,8 +106,8 @@ public class ZapScanner implements ZapScan {
 
             /* After scan */
             generateZapReport();
-            informUserAboutAmountOfLogins();
             cleanUp();
+            informUserAboutAmountOfLogins();
         } catch (ClientApiException | ZapWrapperRuntimeException e) {
             informUserAboutAmountOfLogins();
             cleanUp();
