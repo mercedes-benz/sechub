@@ -106,8 +106,10 @@ public class ZapScanner implements ZapScan {
 
             /* After scan */
             generateZapReport();
+            informUserAboutAmountOfLogins();
             cleanUp();
         } catch (ClientApiException | ZapWrapperRuntimeException e) {
+            informUserAboutAmountOfLogins();
             cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
@@ -336,7 +338,6 @@ public class ZapScanner implements ZapScan {
                 runAndWaitActiveScan();
             }
         }
-        informUserAboutAmountOfLogins();
     }
 
     /**
@@ -374,12 +375,12 @@ public class ZapScanner implements ZapScan {
             return null;
         }
 
-        loginCounter.increment();
-
         WebLoginConfiguration webLoginConfiguration = scanContext.getSecHubWebScanConfiguration().getLogin().get();
         if (webLoginConfiguration.getBasic().isPresent()) {
             LOG.info("For scan {}: Applying basic authentication config.", scanContext.getContextName());
-            return initBasicAuthentication(webLoginConfiguration.getBasic().get());
+            UserInformation userInformation = initBasicAuthentication(webLoginConfiguration.getBasic().get());
+            loginCounter.increment();
+            return userInformation;
         }
 
         if (scriptLoginConfigured()) {
@@ -394,6 +395,7 @@ public class ZapScanner implements ZapScan {
             // multiple users with different sessions must be used
             // See the JavaDoc for an example if this use case appears.
             scriptLogin.login(scanContext, clientApiWrapper);
+            loginCounter.increment();
             return null;
         }
         return null;
@@ -759,11 +761,9 @@ public class ZapScanner implements ZapScan {
             message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once before the scan.");
         } else {
             /* at least one re-login was performed */
-            count--; // the first login is not counted as re-login
-            LOG.warn("For scan: {}. The user was re-logged in {} times during the scan. This could be a sign of a misconfiguration.",
-                    scanContext.getContextName(), count);
-            message = new SecHubMessage(SecHubMessageType.WARNING,
-                    "The configured user was re-logged in " + count + " times during the scan. This could be a sign of a misconfiguration.");
+            LOG.warn("For scan: {}. The user was logged in {} times during the scan.", scanContext.getContextName(), count);
+            message = new SecHubMessage(SecHubMessageType.WARNING, "The configured user was logged in " + count
+                    + " times during the scan. If the number of login attempts is large, consider configuring excludes and/or a logout section in the SecHub configuration file to avoid any logout.");
         }
 
         /* inform user about amount of logins */
