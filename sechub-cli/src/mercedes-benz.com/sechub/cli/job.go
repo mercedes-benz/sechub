@@ -243,3 +243,14 @@ func printLatestJobsOfProject(context *Context) {
 			(item.Ended + "                   ")[0:19])
 	}
 }
+
+func cancelSecHubJob(context *Context) {
+	// request cancel of scan job on SecHub server
+	response := sendWithDefaultHeader("POST", buildCancelSecHubJobAPICall(context), context)
+
+	data, err := io.ReadAll(response.Body)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+	if context.config.debug {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Cancel job status :%s", string(data)))
+	}
+}
