@@ -5,7 +5,7 @@ public class ZapScriptBindingKeys {
 
     /* Web driver */
     public static final String WEBDRIVER = "webdriver";
-    public static final String WEBDRIVER_WAIT = "webdriver.wait.key";
+    public static final String WEBDRIVER_WAIT = "webdriver.wait";
 
     /* Script engine */
     public static final String JAVASCRIPT_EXECUTOR = "javascript.executor";
