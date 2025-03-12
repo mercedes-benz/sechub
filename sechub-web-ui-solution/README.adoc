@@ -14,26 +14,23 @@ remove the root `redirect / to login page` if you do not have login enabled in t
 
 2. Adjust the docker/nginx/config.json to your needs: +
 +
-If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. +
+If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. in docker/nginx/ +
+The values can be changed at runtime +
 +
 .ENV that can be set in the config.json file
 |===
 |Name |Default Value |Description
 
-|HOST
-|http://localhost
-|The URL of the Web-UI (used as API Endpoint to prevent CORS issues)
-
-|LOCAL_DEV
+|BASIC_AUTH_DEV
 |false
 |Sets Basic Auth for the Web-UI (only for development, username and password must be set)
 
 |USERNAME
-|''
+|undefined
 |Basic Auth username (only for development)
 
 |PASSWORD
-|''
+|undefined
 |Basic Auth password (only for development)
 |===
 

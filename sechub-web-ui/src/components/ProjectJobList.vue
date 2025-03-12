@@ -186,7 +186,6 @@
 
         if (!error.value) {
           const delayMillis = baseDelay * Math.pow(1.5, attemptCount)
-          console.log(delayMillis)
           timeOutId = setTimeout(() => pollProjectJobs(attemptCount + 1), delayMillis)
         }
       }
