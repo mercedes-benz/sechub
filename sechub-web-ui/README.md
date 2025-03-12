@@ -3,7 +3,7 @@
 
 This project is a web application that provides a user interface for the SecHub API. It is built with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), and [Vuetify](https://vuetifyjs.com/en/).
 
-## Usage
+## Prequisites
 
 ### Installation
 
@@ -24,17 +24,6 @@ Install the project dependencies:
 npm install
 ```
 
-### Create a local configuration (.env)
-
-Create a `.env` file in the sechub-webui directory
-
-```bash
-VITE_API_HOST=http://localhost:3000
-VITE_API_USER=<your-api-user>
-VITE_API_PASSWORD=<your-api-password>
-VITE_API_LOCAL_DEV=true
-```
-
 ### Building openAPI SecHub Client
 
 To generate the SecHub openAPI Client use:
@@ -43,7 +32,21 @@ To generate the SecHub openAPI Client use:
 npm run generate-api-client
  ```
 
-### Starting the Development Server
+## Usage
+
+### Running local development server with SecHub Integrationtest Server
+
+#### Create a local configuration (.env) with Basic Auth 
+
+Create a `.env` file in the sechub-webui directory
+
+```bash
+VITE_API_USER=<your-api-user>
+VITE_API_PASSWORD=<your-api-password>
+VITE_API_BASIC_AUTH_DEV=true
+```
+
+#### Start the Development Server
 
 To start the development server with hot-reload, run the following command. The server will be accessible at [http://localhost:3000](http://localhost:3000):
 
@@ -51,14 +54,20 @@ To start the development server with hot-reload, run the following command. The 
 npm run dev
 ```
 
-#### Running in Development mode with SecHub Integrationtest Server and PDS Integrationtest Server (using Mocked scan products)
+#### Start SecHub Integrationtest Server
+
+If you want to get Server responses, start the SecHub integrationtest Server e.g. via your IDE see the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide) for instructions.
+Use the SecHub user and password for your basic auth .env file.
+You can use the sechub-api.sh script to manage your user and project.
+
+### Running local development server with SecHub Integrationtest Server and PDS Integrationtest Server (Mocked Products)
 > Only useful If you want to get mocked scan results
 1. Follow the steps above
 2. Start the integration test PDS  
 (for the correct run configuration follow the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide))
-3. (Optional) Initial setup: execute /test-setups/setup-integration-test-server.sh
+3. (Optional) Initial setup: execute /test-setups/setup-integration-test-server.sh. Make sure the .env file contains the correct values for basic auth.
 
-#### Running in Development mode with SecHub Server and PDS as Docker Container
+### Running local development server with SecHub Docker Container and PDS Docker Container (Real Products)
 > Only useful If you want to get real scan results
 1. Start the SecHub Server as Docker Container (see sechub-solution/01-...)
 2. Start the required PDS as Docker (e.g. sechub-pds-solutions/gosec/05-...)

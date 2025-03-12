@@ -4,10 +4,9 @@ import { ref } from 'vue'
 
 const config = ref({
   // New ENV must be defined in global.d.ts
-  HOST: import.meta.env.VITE_API_HOST || 'http://localhost:3000',
-  USERNAME: import.meta.env.VITE_API_USER || '',
-  PASSWORD: import.meta.env.VITE_API_PASSWORD || '',
-  LOCAL_DEV: import.meta.env.VITE_API_LOCAL_DEV === true || false,
+  USERNAME: import.meta.env.VITE_API_USER || undefined,
+  PASSWORD: import.meta.env.VITE_API_PASSWORD || undefined,
+  BASIC_AUTH_DEV: import.meta.env.VITE_API_BASIC_AUTH_DEV === "true" || false,
 })
 
 // Overrides local environment variables after project compilation
