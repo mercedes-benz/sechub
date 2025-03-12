@@ -57,7 +57,7 @@ class TemplateRepositoryDBTest {
         int numberOfDeletedEntries = repositoryToTest.deleteTemplateById("no-existing-template");
 
         /* test */
-        assertThat(numberOfDeletedEntries).isEqualTo(1);
+        assertThat(numberOfDeletedEntries).isEqualTo(0);
     }
 
     @Test
