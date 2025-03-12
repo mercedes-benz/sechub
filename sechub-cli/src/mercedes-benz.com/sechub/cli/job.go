@@ -244,13 +244,19 @@ func printLatestJobsOfProject(context *Context) {
 	}
 }
 
-func cancelSecHubJob(context *Context) {
-	// request cancel of scan job on SecHub server
+func cancelSecHubJob(context *Context, fireAndForget bool) {
+	sechubUtil.PrintIfNotSilent(
+		"Requesting cancel of scan job " + context.config.secHubJobUUID + " on SecHub server\n",
+		context.config.quiet,
+	)
+
 	response := sendWithDefaultHeader("POST", buildCancelSecHubJobAPICall(context), context)
 
-	data, err := io.ReadAll(response.Body)
-	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
-	if context.config.debug {
-		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Cancel job status :%s", string(data)))
+	if ! fireAndForget {
+		data, err := io.ReadAll(response.Body)
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+		if context.config.debug {
+			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Cancel job status :%s", string(data)))
+		}
 	}
 }

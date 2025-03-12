@@ -275,10 +275,11 @@ func assertValidConfig(context *Context) {
 			// Try to get latest secHubJobUUID from server if not provided
 			if fieldname == "secHubJobUUID" && context.config.secHubJobUUID == "" {
 				switch context.config.action {
-				case cancelAction:
-					// Do NOT fetch the latest job UUID in case of "cancel" action
-				case getReportAction:
-					// Get job UUID from latest ended job
+					case cancelAction:
+						// Do NOT fetch the latest job UUID automatically in case of "cancel" action
+						// So we do nothing here :-)
+					case getReportAction:
+						// Get job UUID from latest ended job
 						context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
 						sechubUtil.Log("Using latest finished job: "+context.config.secHubJobUUID, context.config.quiet)
 					default:
