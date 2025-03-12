@@ -58,13 +58,13 @@ public class PDSCancelService {
         List<PDSJob> potentialOrphaned = new ArrayList<>();
 
         for (PDSJob jobToCancel : jobsWhereCancelIsRequested) {
-
             CancelResult result = executionService.cancel(jobToCancel.getUUID());
 
             switch (result) {
             case JOB_FOUND_JOB_ALREADY_DONE:
             case JOB_FOUND_CANCEL_WAS_DONE:
                 break;
+            /* when not handled here, it is a potential orphan */
             case JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE:
             case JOB_NOT_FOUND:
                 potentialOrphaned.add(jobToCancel);
@@ -89,9 +89,13 @@ public class PDSCancelService {
         LOG.info("Inspect potential orphaned cancel requests: {}", potentialOrphaned.size());
         int amountOfOrphansfound = 0;
         int amountOfOrpahnsStillExisiting = 0;
+
         for (PDSJob potentialOrphan : potentialOrphaned) {
+
             if (isOrphaned(potentialOrphan, lastAccepted)) {
+
                 amountOfOrphansfound++;
+
                 if (!hardSetJobStateToCanceledIfpossible(potentialOrphan.getUUID())) {
                     amountOfOrpahnsStillExisiting++;
                 }
@@ -110,6 +114,7 @@ public class PDSCancelService {
                     "PDS job:{} has been hard marked as canceled. This was only a cleanup in database! The origin PDS server launcher script process was not really stopped.");
 
             return true;
+
         } catch (ConcurrencyFailureException ce) {
             Optional<PDSJob> jobReadAgainOpt = repository.findById(pdsJobUUID);
             if (!jobReadAgainOpt.isPresent()) {
@@ -129,6 +134,12 @@ public class PDSCancelService {
         }
     }
 
+    /*
+     * Returns true when the given PDS job is older than the accepted amount of
+     * time. Means: no other cluster member will execute this orphaned job any
+     * longer, false when not orphaned
+     *
+     */
     private boolean isOrphaned(PDSJob job, Instant lastAccepted) {
         LocalDateTime creationTime = job.getCreated();
         if (creationTime == null) {

@@ -188,6 +188,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return result;
     }
 
+    public UUID getPdsJobUUID() {
+        return pdsJobUUID;
+    }
+
     private long calculateTimeToWaitForProductInMinutes() {
         ProcessHandlingDataFactory processHandlingDataFactory = serviceCollection.getProcessHandlingDataFactory();
         ProductLaunchProcessHandlingData launchProcessdata = processHandlingDataFactory.createForLaunchOperation(config);
@@ -249,7 +253,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.setResult("Product time out.");
             result.setExitCode(1);
 
-            prepareForCancel(true);
+            prepareForCancel(true); // here we just reuse cancel operation to ensure process will be terminated same
+                                    // way as done for canceling
         }
 
         streamDatawatcherRunnable.stop();
@@ -497,15 +502,24 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      */
     @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancellation", description = "process created by job will be destroyed. If configured, a given time in seconds will be waited, to give the process the chance handle some cleanup and to end itself.", number = 4))
     boolean prepareForCancel(boolean mayInterruptIfRunning) {
-        if (process == null || !process.isAlive()) {
+        LOG.info("Prepare cancel of PDS job: {}: starting", pdsJobUUID);
+
+        if (process == null) {
+            LOG.info("Skip cancellation of PDS job {} because process was null.", pdsJobUUID);
             return true;
         }
+
+        if (!process.isAlive()) {
+            LOG.info("Skip cancellation of PDS job {} because process already no longer alive.", pdsJobUUID);
+            return true;
+        }
+
         cancelOperationsHasBeenStarted = true;
 
         ProductCancellationProcessHandlingData processHandlingData = null;
 
         if (config == null) {
-            LOG.warn("No configuration available for job:{}. Cannot create dedicated process handling data. No process wait possible.", pdsJobUUID);
+            LOG.warn("No configuration available for job: {}. Cannot create dedicated process handling data. No process wait possible.", pdsJobUUID);
         } else {
             ProcessHandlingDataFactory processHandlingDataFactory = serviceCollection.getProcessHandlingDataFactory();
             processHandlingData = processHandlingDataFactory.createForCancelOperation(config);
@@ -547,27 +561,29 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             while (processHandlingData.isStillWaitingForProcessAccepted()) {
                 if (process.isAlive()) {
                     try {
-
-                        LOG.debug("Cancel job: {}: wait {} milliseconds before next process alive check.", pdsJobUUID, millisecondsToWaitForNextCheck);
+                        LOG.debug("Cancel PDS job: {}: wait {} milliseconds before next process alive check.", pdsJobUUID, millisecondsToWaitForNextCheck);
                         Thread.sleep(millisecondsToWaitForNextCheck);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 } else {
-                    LOG.info("Process of job: {} is no longer alive", pdsJobUUID);
+                    LOG.info("Cancel PDS job: {}: process is no longer alive", pdsJobUUID);
                     break;
                 }
             }
-            LOG.info("Cancel job: {}: waited {} milliseconds at all", pdsJobUUID, System.currentTimeMillis() - processHandlingData.getProcessStartTimeStamp());
+            LOG.info("Cancel PDS job: {}: waited {} milliseconds at all", pdsJobUUID,
+                    System.currentTimeMillis() - processHandlingData.getProcessStartTimeStamp());
 
         } else {
-            LOG.info("Cancel job: {}: will not wait.", pdsJobUUID);
+            LOG.info("Cancel PDS job: {}: will not wait.", pdsJobUUID);
         }
+
+        /* Ensure process is terminated */
         if (process.isAlive()) {
-            LOG.info("Cancel job: {}: still alive, will destroy underlying process forcibly.", pdsJobUUID);
-            process.destroyForcibly();
+            LOG.info("Cancel PDS job: {}: still alive, will destroy underlying process forcibly.", pdsJobUUID);
+            process.destroyForcibly(); // SIGKILL by JVM
         } else {
-            LOG.info("Cancel job: {}: has terminated itself.", pdsJobUUID);
+            LOG.info("Cancel PDS job: {}: has terminated itself.", pdsJobUUID);
         }
     }
 

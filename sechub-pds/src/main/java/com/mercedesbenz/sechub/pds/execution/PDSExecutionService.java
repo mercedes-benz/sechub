@@ -152,7 +152,7 @@ public class PDSExecutionService {
                     Future<PDSExecutionResult> future = entry.getValue();
                     if (future.isDone()) {
                         /* already done or canceled */
-                        LOG.info("cancellation of job with uuid:{} skipped, because already done", jobUUID);
+                        LOG.info("Cancellation of PDS job with uuid:{} skipped, because already done", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
                     LOG.debug("Found PDS job: {} running at this cluster member", jobUUID);
@@ -189,12 +189,25 @@ public class PDSExecutionService {
     }
 
     public enum CancelResult {
+        /**
+         * Job exists in database, and was inside this cluster member running and the
+         * cancellation was done here
+         */
         JOB_FOUND_CANCEL_WAS_DONE,
 
+        /**
+         * Job exists in database, and was inside this cluster member running, but is
+         * already done. Means non cancel operation was necessary
+         */
         JOB_FOUND_JOB_ALREADY_DONE,
 
+        /**
+         * Job exists in database and was inside this cluster member running, but the
+         * cancellation was not possible/failed
+         */
         JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE,
 
+        /** Job exists in database but was not inside this cluster member running */
         JOB_NOT_FOUND,
 
     }
@@ -210,10 +223,11 @@ public class PDSExecutionService {
     public void addToExecutionQueueAsynchron(UUID jobUUID) {
         Future<?> former = null;
         synchronized (jobsInQueue) {
-            LOG.debug("add job to execution queue:{}", jobUUID);
+            LOG.debug("Add job to execution queue:{}", jobUUID);
             int size = jobsInQueue.size();
+
             if (size >= queueMax) {
-                LOG.warn("execution queue overload:{}/{}", size, queueMax);
+                LOG.warn("Execution queue overload:{}/{}", size, queueMax);
             }
             PDSExecutionFutureTask task = new PDSExecutionFutureTask(executionCallableFactory.createCallable(jobUUID));
             workers.execute(task);
