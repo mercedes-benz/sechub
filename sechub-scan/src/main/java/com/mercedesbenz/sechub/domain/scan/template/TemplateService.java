@@ -115,6 +115,12 @@ public class TemplateService {
         configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 
         int numberOfDeletedEntries = repository.deleteTemplateById(templateId);
+        if (numberOfDeletedEntries == 0) {
+            // we can throw an exception here, without being aware about the transaction
+            // rollback
+            // because nothing was deleted, so rollback does not matter
+            throw new NotFoundException("No template data available for template id:" + templateId);
+        }
 
         DomainMessage message = new DomainMessage(MessageID.TEMPLATE_DELETED);
         SecHubProjectToTemplate data = new SecHubProjectToTemplate();
@@ -123,12 +129,6 @@ public class TemplateService {
         message.set(MessageDataKeys.PROJECT_TO_TEMPLATE, data);
         eventBus.sendAsynchron(message);
 
-        if (numberOfDeletedEntries == 0) {
-            // we can throw an exception here, without being aware about the transaction
-            // rollback
-            // because nothing was deleted, so rollback does not matter
-            throw new NotFoundException("No template data available for template id:" + templateId);
-        }
     }
 
     /**

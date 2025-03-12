@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.template;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -43,6 +42,7 @@ class TemplateRepositoryDBTest {
         Template template2 = new Template("template2");
         template2.setDefinition("tempalte2-definition");
         entityManager.persist(template2);
+        entityManager.flush();
 
         /* execute */
         List<String> result = repositoryToTest.findAllTemplateIds();
@@ -57,7 +57,7 @@ class TemplateRepositoryDBTest {
         int numberOfDeletedEntries = repositoryToTest.deleteTemplateById("no-existing-template");
 
         /* test */
-        assertEquals(0, numberOfDeletedEntries);
+        assertThat(numberOfDeletedEntries).isEqualTo(1);
     }
 
     @Test
@@ -71,11 +71,18 @@ class TemplateRepositoryDBTest {
         templateB.setDefinition("tempalteB-definition");
         entityManager.persist(templateB);
 
+        /* check preconditions */
+        entityManager.flush();
+        List<Template> templatesPreCondition = repositoryToTest.findAll();
+        assertThat(templatesPreCondition.size()).isEqualTo(2);
+
         /* execute */
         int numberOfDeletedEntries = repositoryToTest.deleteTemplateById(templateB.getId());
 
         /* test */
-        assertEquals(1, numberOfDeletedEntries);
+        assertThat(numberOfDeletedEntries).isEqualTo(1);
+        List<Template> existingTemplates = repositoryToTest.findAll();
+        assertThat(existingTemplates.size()).isEqualTo(1);
     }
 
     @TestConfiguration
