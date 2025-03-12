@@ -148,8 +148,8 @@
         owner: '',
       })
 
-      const maxAttempts = 4 // Maximum number of retries for backoff
-      const baseDelay = 1000 // Initial delay in milliseconds
+      const maxAttempts = 6 // exponent limit
+      const baseDelay = 1000 // initial delay in milliseconds
       let timeOutId: number | undefined
 
       const currentRequestParameters: UserListsJobsForProjectRequest = {
@@ -181,11 +181,12 @@
       async function pollProjectJobs (attemptCount = 1) {
         await fetchProjectJobs(currentRequestParameters)
         if (attemptCount > maxAttempts) {
-          attemptCount = 1
+          attemptCount = maxAttempts
         }
 
         if (!error.value) {
           const delayMillis = baseDelay * Math.pow(1.5, attemptCount)
+          console.log(delayMillis)
           timeOutId = setTimeout(() => pollProjectJobs(attemptCount + 1), delayMillis)
         }
       }
