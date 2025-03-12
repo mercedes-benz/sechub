@@ -65,7 +65,7 @@ You can use the sechub-api.sh script to manage your user and project.
 1. Follow all steps above
 2. Start the integration test PDS  
 (for the correct run configuration follow the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide))
-3. (Optional) Initial setup: execute /test-setups/setup-integration-test-server.sh. Make sure the .env file contains the correct values for basic auth.
+3. (Optional) Initial setup: execute `test-setups/setup-integration-test-server.sh`. Make sure the .env file contains the correct values for basic auth.
 
 ### Running local development server with SecHub Docker Container and PDS Docker Container (Real Products)
 > Only useful If you want to get real scan results

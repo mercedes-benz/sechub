@@ -44,7 +44,7 @@ function applySPDXline {
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching the pattern, but skip some patterns like generated files
     find . -type f -iname \*.$fileEnding \
-    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat\|sechub-cli/pkg/mod\|sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/' \
+    | grep -v '^./.git\|/build/\|/node_modules/\|/\.gradle/\|gradlew.bat\|sechub-cli/pkg/mod\|sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/' \
     | while read file ; do
       if ! is_excluded "$file"; then
         if ! grep -q "$SPDX_TEXT" $file ; then
@@ -52,7 +52,7 @@ function applySPDXline {
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
         fi
       else
-         echo "Skipping $file"
+          echo "Skipping excluded file: $file"
       fi
     done
 }
