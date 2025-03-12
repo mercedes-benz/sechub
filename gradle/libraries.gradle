@@ -110,8 +110,7 @@ ext {
       // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
       bouncy_castle_bcprov_jdk8:                "1.78.1",
 
-      jakarta_servlet_api:                      "6.0.0",
-
+      jakarta_servlet_api:                      "6.0.0"
    ]    
    
    library = [
@@ -235,7 +234,6 @@ ext {
         httpmime:                               "org.apache.httpcomponents:httpmime:${libraryVersion.httpmime}",
 
         jakarta_servlet_api:                   "jakarta.servlet:jakarta.servlet-api:${libraryVersion.jakarta_servlet_api}",
-           
    ]
    
 

@@ -20,8 +20,7 @@ public class UserEmailChangeTokenService {
     private final AES256Encryption aes256Encryption;
 
     public UserEmailChangeTokenService(AES256Encryption aes256Encryption) {
-        requireNonNull(aes256Encryption);
-        this.aes256Encryption = aes256Encryption;
+        this.aes256Encryption = requireNonNull(aes256Encryption);
     }
 
     public String generateToken(UserEmailChangeRequest userEmailChangeRequest) {

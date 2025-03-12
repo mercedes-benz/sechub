@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.mercedesbenz.sechub.commons.model.JSONable;
 
 public class UserEmailChangeToken implements JSONable<UserEmailChangeToken> {
@@ -17,7 +18,8 @@ public class UserEmailChangeToken implements JSONable<UserEmailChangeToken> {
         assertFields();
     }
 
-    public UserEmailChangeToken() {
+    @JsonCreator
+    private UserEmailChangeToken() {
         /* only for json import */
     }
 

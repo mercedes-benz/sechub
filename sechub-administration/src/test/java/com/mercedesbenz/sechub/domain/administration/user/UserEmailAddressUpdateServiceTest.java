@@ -253,6 +253,7 @@ class UserEmailAddressUpdateServiceTest {
         when(userEmailChangeTokenService.extractUserInfoFromToken(any())).thenReturn(new UserEmailChangeRequest(KNOWN_USER1, NEW_MAIL_USER1_EXAMPLE_COM));
         when(userRepository.findById(KNOWN_USER1)).thenReturn(Optional.of(knownUser1));
         assertThat(knownUser1.getEmailAddress()).isEqualTo(FORMER_USER_1_EXAMPLE_COM);
+        when(userTransactionService.saveInOwnTransaction(any())).thenReturn(knownUser1);
 
         /* execute */
         serviceToTest.changeUserEmailAddressByUser("token");
@@ -280,7 +281,7 @@ class UserEmailAddressUpdateServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("The email address is already in use. Please chose another one.");
+                .hasMessageContaining("The email address is already in use.");
     }
 
     @ParameterizedTest

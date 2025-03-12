@@ -19,11 +19,12 @@ public class UserTransactionService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveInOwnTransaction(User user) {
+    public User saveInOwnTransaction(User user) {
         requireNonNull(user);
 
-        userRepository.save(user);
+        User result = userRepository.save(user);
 
         logger.debug("Saved user: {}", user.getName());
+        return result;
     }
 }

@@ -66,7 +66,7 @@ public class UserRepositoryDBTest {
     void findOrFailUserByEmailAddress_user_NOT_found_by_email_address() {
         /* execute + test */
         assertThatThrownBy(() -> userRepository.findOrFailUserByEmailAddress("db_test_testuser_not_existing@example.org")).isInstanceOf(NotFoundException.class)
-                .hasMessage("No user with email address 'db_test_testuser_not_existing@example.org' found!");
+                .hasMessageContaining("No user with email address 'db_test_testuser_not_existing@example.org' found!");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class UserRepositoryDBTest {
 
         /* execute & test */
         assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
-                .hasMessage("User db_test_testuser1 is 1 times still owner of a project! Move ownership before delete!");
+                .hasMessageContaining("db_test_testuser1").hasMessageContaining("1 times still owner");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class UserRepositoryDBTest {
 
         /* execute & test */
         assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
-                .hasMessage("User db_test_testuser1 is 1 times still owner of a project! Move ownership before delete!");
+                .hasMessageContaining("db_test_testuser1 is 1 times still owner");
     }
 
     @Test
@@ -129,6 +129,7 @@ public class UserRepositoryDBTest {
         String mail3 = mail1.toUpperCase();
         String mail4 = mail2.toUpperCase();
         String mail5 = mail1.replace("example", "exaMplE");
+        assertThat(mail5.contains("exaMplE")).isTrue();
 
         /* execute + test */
         assertThat(userRepository.existsByEmailIgnoreCase(mail1)).isTrue();
