@@ -31,6 +31,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.*;
+import com.mercedesbenz.sechub.zapwrapper.util.Counter;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -53,6 +54,7 @@ public class ZapScanner implements ZapScan {
     private final UrlUtil urlUtil;
 
     private final SystemUtil systemUtil;
+    private final Counter loginCounter;
 
     public ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext) {
         this.clientApiWrapper = clientApiWrapper;
@@ -62,9 +64,11 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = new SystemUtil();
 
         this.scriptLogin = new ZapScriptLogin();
+        this.loginCounter = new Counter();
     }
 
-    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin) {
+    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin,
+            Counter counter) {
         this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
 
@@ -72,6 +76,7 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = systemUtil;
 
         this.scriptLogin = scriptLogin;
+        this.loginCounter = counter;
     }
 
     @Override
@@ -102,7 +107,9 @@ public class ZapScanner implements ZapScan {
             /* After scan */
             generateZapReport();
             cleanUp();
+            informUserAboutAmountOfLogins();
         } catch (ClientApiException | ZapWrapperRuntimeException e) {
+            informUserAboutAmountOfLogins();
             cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
@@ -371,7 +378,9 @@ public class ZapScanner implements ZapScan {
         WebLoginConfiguration webLoginConfiguration = scanContext.getSecHubWebScanConfiguration().getLogin().get();
         if (webLoginConfiguration.getBasic().isPresent()) {
             LOG.info("For scan {}: Applying basic authentication config.", scanContext.getContextName());
-            return initBasicAuthentication(webLoginConfiguration.getBasic().get());
+            UserInformation userInformation = initBasicAuthentication(webLoginConfiguration.getBasic().get());
+            loginCounter.increment();
+            return userInformation;
         }
 
         if (scriptLoginConfigured()) {
@@ -386,6 +395,7 @@ public class ZapScanner implements ZapScan {
             // multiple users with different sessions must be used
             // See the JavaDoc for an example if this use case appears.
             scriptLogin.login(scanContext, clientApiWrapper);
+            loginCounter.increment();
             return null;
         }
         return null;
@@ -736,6 +746,28 @@ public class ZapScanner implements ZapScan {
         }
         clientApiWrapper.stopActiveScan(scanId);
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
+    }
+
+    private void informUserAboutAmountOfLogins() {
+        int count = loginCounter.getCount();
+        if (count == 0) {
+            return;
+        }
+
+        SecHubMessage message;
+        if (count == 1) {
+            /* no re-login was performed and user was logged in once */
+            LOG.info("For scan: {}. The user was logged in once before the scan.", scanContext.getContextName());
+            message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once before the scan.");
+        } else {
+            /* at least one re-login was performed */
+            LOG.warn("For scan: {}. The user was logged in {} times during the scan.", scanContext.getContextName(), count);
+            message = new SecHubMessage(SecHubMessageType.WARNING, "The configured user was logged in " + count
+                    + " times during the scan. If the number of login attempts is large, consider configuring excludes and/or a logout section in the SecHub configuration file to avoid any logout.");
+        }
+
+        /* inform user about amount of logins */
+        scanContext.getZapProductMessageHelper().writeSingleProductMessage(message);
     }
 
     private UserInformation initBasicAuthentication(BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {

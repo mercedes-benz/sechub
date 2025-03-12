@@ -4,11 +4,19 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 
@@ -50,9 +58,10 @@ public class ZapScanContext {
     private String ajaxSpiderBrowserId;
 
     private File groovyScriptLoginFile;
-    private Map<String, String> templateVariables = new LinkedHashMap<>();
     private File pacFilePath;
+    private boolean noHeadless;
     private int zapContextId;
+    public int maximumLoginScriptFailureRetries;
 
     private ZapScanContext() {
     }
@@ -95,6 +104,10 @@ public class ZapScanContext {
 
     public URL getTargetUrl() {
         return targetUrl;
+    }
+
+    public boolean isNoHeadless() {
+        return noHeadless;
     }
 
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
@@ -164,7 +177,19 @@ public class ZapScanContext {
     }
 
     public Map<String, String> getTemplateVariables() {
-        return Collections.unmodifiableMap(templateVariables);
+        if (secHubWebScanConfiguration == null) {
+            return Collections.emptyMap();
+        }
+        Optional<WebLoginConfiguration> optLogin = secHubWebScanConfiguration.getLogin();
+        if (optLogin.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        WebLoginConfiguration login = optLogin.get();
+        TemplateData templateData = login.getTemplateData();
+        if (templateData == null) {
+            return Collections.emptyMap();
+        }
+        return templateData.getVariables();
     }
 
     public File getPacFilePath() {
@@ -182,6 +207,10 @@ public class ZapScanContext {
         }
         WebLoginConfiguration webLoginConfiguration = login.get();
         return webLoginConfiguration.getVerification();
+    }
+
+    public int getMaximumLoginScriptFailureRetries() {
+        return maximumLoginScriptFailureRetries;
     }
 
     public static ZapScanContextBuilder builder() {
@@ -231,9 +260,11 @@ public class ZapScanContext {
 
         private List<String> zapRuleIDsToDeactivate = new LinkedList<>();
 
-        private Map<String, String> templateVariables = new LinkedHashMap<>();
-
         private File pacFilePath;
+
+        private boolean noHeadless;
+
+        private int loginScriptFailureMaximumRetries;
 
         public ZapScanContextBuilder setServerConfig(ZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -355,19 +386,24 @@ public class ZapScanContext {
             return this;
         }
 
-        public ZapScanContextBuilder setTemplateVariables(Map<String, String> templateVariables) {
-            if (templateVariables != null) {
-                this.templateVariables = new LinkedHashMap<>(templateVariables);
-            }
-            return this;
-        }
-
         public ZapScanContextBuilder setPacFilePath(File pacFilePath) {
             this.pacFilePath = pacFilePath;
             return this;
         }
 
+        public ZapScanContextBuilder setNoHeadless(boolean noHeadless) {
+            this.noHeadless = noHeadless;
+            return this;
+        }
+
+        public ZapScanContextBuilder setMaxGroovyScriptLoginFailureRetries(int loginScriptFailureMaximumRetries) {
+            this.loginScriptFailureMaximumRetries = loginScriptFailureMaximumRetries;
+            return this;
+        }
+
         public ZapScanContext build() {
+            BrowserIdTransformationSupport transformBrowserIdSupport = new BrowserIdTransformationSupport();
+
             ZapScanContext zapScanContext = new ZapScanContext();
             zapScanContext.serverConfig = this.serverConfig;
             zapScanContext.verboseOutput = this.verboseOutput;
@@ -401,15 +437,16 @@ public class ZapScanContext {
 
             zapScanContext.headerValueFiles = this.headerValueFiles;
 
-            zapScanContext.ajaxSpiderBrowserId = this.ajaxSpiderBrowserId;
+            zapScanContext.noHeadless = this.noHeadless;
+            zapScanContext.ajaxSpiderBrowserId = transformBrowserIdSupport.transformBrowserIdWhenNoHeadless(this.noHeadless, this.ajaxSpiderBrowserId);
 
             zapScanContext.groovyScriptLoginFile = this.groovyScriptLoginFile;
-            zapScanContext.templateVariables = this.templateVariables;
 
             zapScanContext.pacFilePath = this.pacFilePath;
 
+            zapScanContext.maximumLoginScriptFailureRetries = loginScriptFailureMaximumRetries;
+
             return zapScanContext;
         }
-
     }
 }

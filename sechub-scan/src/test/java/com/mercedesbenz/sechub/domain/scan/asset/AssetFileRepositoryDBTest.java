@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.asset;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 import java.util.List;
@@ -95,6 +96,92 @@ class AssetFileRepositoryDBTest {
 
         assertThat(assetFile2a.getChecksum()).isEqualTo(file2a.getChecksum());
         assertThat(assetFile2b.getChecksum()).isEqualTo(file2b.getChecksum());
+    }
+
+    @Test
+    void deleteAssetFilesHavingAssetId_when_asset_does_not_exist() {
+        /* execute */
+        int numberOfDeletedEntries = repositoryToTest.deleteAssetFilesHavingAssetId("not-existing-asset-id");
+
+        /* test */
+        assertEquals(0, numberOfDeletedEntries);
+    }
+
+    @Test
+    void deleteAssetFilesHavingAssetId() {
+        /* prepare */
+        AssetFile file1 = new AssetFile(AssetFileCompositeKey.builder().assetId("asset1").fileName("file1").build());
+        file1.setChecksum("pseudo-checksum1");
+        file1.setData("testdata1".getBytes());
+        entityManager.persist(file1);
+
+        String assetId2 = "asset2";
+        AssetFile file2a = new AssetFile(AssetFileCompositeKey.builder().assetId(assetId2).fileName("file2a").build());
+        file2a.setChecksum("pseudo-checksum2a");
+        file2a.setData("testdata2a".getBytes());
+        entityManager.persist(file2a);
+
+        AssetFile file2b = new AssetFile(AssetFileCompositeKey.builder().assetId(assetId2).fileName("file2b").build());
+        file2b.setChecksum("pseudo-checksum2b");
+        file2b.setData("testdata2b".getBytes());
+        entityManager.persist(file2b);
+
+        /* check preconditions */
+        entityManager.flush();
+        List<AssetFile> assetFilesPreCondition = repositoryToTest.findAll();
+        assertThat(assetFilesPreCondition.size()).isEqualTo(3);
+
+        /* execute */
+        int numberOfDeletedEntries = repositoryToTest.deleteAssetFilesHavingAssetId(assetId2);
+
+        /* test */
+        assertEquals(2, numberOfDeletedEntries);
+        List<AssetFile> assetFiles = repositoryToTest.findAll();
+        assertThat(assetFiles.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    void deleteSingleAssetFileHavingAssetId_when_asset_does_not_exist() {
+        /* execute */
+        int numberOfDeletedEntries = repositoryToTest.deleteSingleAssetFileHavingAssetId("file-does-not_exist", "not-existing-asset-id");
+
+        /* test */
+        assertEquals(0, numberOfDeletedEntries);
+    }
+
+    @Test
+    void deleteSingleAssetFileHavingAssetId() {
+        /* prepare */
+        AssetFile file1 = new AssetFile(AssetFileCompositeKey.builder().assetId("asset1").fileName("file1").build());
+        file1.setChecksum("pseudo-checksum1");
+        file1.setData("testdata1".getBytes());
+        entityManager.persist(file1);
+
+        String assetId2 = "asset2";
+        String fileName2a = "file2a";
+        AssetFile file2a = new AssetFile(AssetFileCompositeKey.builder().assetId(assetId2).fileName(fileName2a).build());
+        file2a.setChecksum("pseudo-checksum2a");
+        file2a.setData("testdata2a".getBytes());
+        entityManager.persist(file2a);
+
+        AssetFile file2b = new AssetFile(AssetFileCompositeKey.builder().assetId(assetId2).fileName("file2b").build());
+        file2b.setChecksum("pseudo-checksum2b");
+        file2b.setData("testdata2b".getBytes());
+        entityManager.persist(file2b);
+
+        /* check preconditions */
+        entityManager.flush();
+        List<AssetFile> assetFilesPreCondition = repositoryToTest.findAll();
+        assertThat(assetFilesPreCondition.size()).isEqualTo(3);
+
+        /* execute */
+        int numberOfDeletedEntries = repositoryToTest.deleteSingleAssetFileHavingAssetId(fileName2a, assetId2);
+
+        /* test */
+        assertEquals(1, numberOfDeletedEntries);
+        List<AssetFile> assetFiles = repositoryToTest.findAll();
+        assertThat(assetFiles.size()).isEqualTo(2);
     }
 
     @TestConfiguration

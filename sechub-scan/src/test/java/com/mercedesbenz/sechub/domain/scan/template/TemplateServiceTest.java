@@ -6,15 +6,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
@@ -23,6 +27,7 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateType;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
@@ -155,13 +160,14 @@ class TemplateServiceTest {
         when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
 
         when(repository.findById(templateId)).thenReturn(Optional.of(template));
+        when(repository.deleteTemplateById(templateId)).thenReturn(1);
 
         /* execute */
         serviceToTest.deleteTemplate(templateId);
 
         /* test */
         verify(configService).deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
-        verify(repository).deleteById(templateId);
+        verify(repository).deleteTemplateById(templateId);
     }
 
     @Test
@@ -177,6 +183,7 @@ class TemplateServiceTest {
         when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
 
         when(repository.findById(templateId)).thenReturn(Optional.of(template));
+        when(repository.deleteTemplateById(templateId)).thenReturn(1);
 
         /* execute */
         serviceToTest.deleteTemplate(templateId);
@@ -280,6 +287,45 @@ class TemplateServiceTest {
         assertThat(result).isNotNull();
         assertThat(result).contains("p1", "p2");
 
+    }
+
+    @Test
+    void delete_non_existing_template_id_throws_exception() {
+        /* prepare */
+        String templateId = "non-existing-template-id";
+        when(repository.deleteTemplateById(templateId)).thenReturn(0);
+        Set<String> allTemplateConfigIds = new HashSet<>();
+        allTemplateConfigIds.add(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN.getId());
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteTemplate(templateId)).isInstanceOf(NotFoundException.class).hasMessageContaining(templateId);
+
+        /* test */
+        verify(resolver).resolveAllPossibleConfigIds();
+        verify(configService).deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
+        verify(repository).deleteTemplateById(templateId);
+        verify(domainMessageService, never()).sendAsynchron(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 10, 231 })
+    void delete_existing_template_id_does_not_throw_exception(int numberOfDeletedEntries) {
+        /* prepare */
+        String templateId = "non-existing-template-id";
+        when(repository.deleteTemplateById(templateId)).thenReturn(numberOfDeletedEntries);
+        Set<String> allTemplateConfigIds = new HashSet<>();
+        allTemplateConfigIds.add(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN.getId());
+        when(resolver.resolveAllPossibleConfigIds()).thenReturn(allTemplateConfigIds);
+
+        /* execute */
+        serviceToTest.deleteTemplate(templateId);
+
+        /* test */
+        verify(resolver).resolveAllPossibleConfigIds();
+        verify(configService).deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
+        verify(repository).deleteTemplateById(templateId);
+        verify(domainMessageService).sendAsynchron(any());
     }
 
 }

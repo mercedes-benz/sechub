@@ -8,7 +8,11 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +37,6 @@ class ZapScanContextFactoryTest {
     private File tempDir;
 
     private static final File VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/template-example.json");
-    private static final File INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE = new File("src/test/resources/sechub-config-examples/invalid-template-example.json");
 
     @BeforeEach
     void beforeEach() {
@@ -45,6 +48,57 @@ class ZapScanContextFactoryTest {
 
         when(envVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
         when(envVariableReader.readAsString(PDS_JOB_EVENTS_FOLDER)).thenReturn("");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4, 5 })
+    void loginscript_retries_valid_value_from_env_is_used_for_context(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(value.intValue(), result.getMaximumLoginScriptFailureRetries());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -1, -200 })
+    void loginscript_retries_too_low_value_from_env_is_resulting_0(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(0, result.getMaximumLoginScriptFailureRetries());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 6, 10, 200 })
+    void loginscript_retries_too_high_value_from_env_is_resulting_5(Integer value) throws Exception {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMock();
+        when(envVariableReader.readAsInt(WRAPPER_LOGINSCRIPT_FAILURE_RETRIES)).thenReturn(value);
+
+        String jobUUID = "12345";
+        when(settings.getJobUUID()).thenReturn(jobUUID);
+
+        /* execute */
+        ZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(5, result.getMaximumLoginScriptFailureRetries());
     }
 
     @Test
@@ -544,39 +598,7 @@ class ZapScanContextFactoryTest {
         CommandLineSettings settings = createSettingsMock();
         String groovyScriptFile = "script.groovy";
         when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
-        String expectedErrorMessage = "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
-                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
-
-        /* execute */
-        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
-
-        /* test */
-        assertEquals(expectedErrorMessage, exception.getMessage());
-    }
-
-    @Test
-    void script_login_file_not_set_but_template_definition_in_sechub_config_is_set_throws_exception() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMock();
-        when(settings.getSecHubConfigFile()).thenReturn(VALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
-        String expectedErrorMessage = "When no groovy login script is defined, no template data variables must be defined!";
-
-        /* execute */
-        ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));
-
-        /* test */
-        assertEquals(expectedErrorMessage, exception.getMessage());
-    }
-
-    @Test
-    void script_login_file_and_template_definition_in_sechub_config_set_but_with_wrong_variables_throws_exception() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMock();
-        when(settings.getSecHubConfigFile()).thenReturn(INVALID_SECHUB_TEMPLATE_WEBSCAN_CONFIG_FILE);
-        String groovyScriptFile = "script.groovy";
-        when(envVariableReader.readAsString(ZAP_GROOVY_LOGIN_SCRIPT_FILE)).thenReturn(groovyScriptFile);
-        String expectedErrorMessage = "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY
-                + "' and '" + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!";
+        String expectedErrorMessage = "When a groovy login script is defined, some variables - e.g. for username, password etc - must be set inside webscan template data. But found nothing.";
 
         /* execute */
         ZapWrapperContextCreationException exception = assertThrows(ZapWrapperContextCreationException.class, () -> factoryToTest.create(settings));

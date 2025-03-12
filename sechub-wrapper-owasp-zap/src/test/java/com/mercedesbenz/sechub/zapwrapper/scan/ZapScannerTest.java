@@ -44,6 +44,7 @@ import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.ZapScanner.UserInformation;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptLogin;
+import com.mercedesbenz.sechub.zapwrapper.util.Counter;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -57,6 +58,7 @@ class ZapScannerTest {
     private SystemUtil systemUtil;
     private ZapScriptLogin scriptLogin;
     private ZapProductMessageHelper messageHelper;
+    private Counter counter;
 
     private static final String BROWSER_ID = ZAPAcceptedBrowserId.FIREFOX_HEADLESS.getBrowserId();
     private static final String CONTEXT_NAME = "context-name";
@@ -69,6 +71,7 @@ class ZapScannerTest {
         systemUtil = mock();
         scriptLogin = mock();
         messageHelper = mock();
+        counter = mock();
 
         // create scanner to test
         /* @formatter:off */
@@ -76,7 +79,8 @@ class ZapScannerTest {
                                        scanContext,
                                        new UrlUtil(),
                                        systemUtil,
-                                       scriptLogin);
+                                       scriptLogin,
+                                        counter);
         /* @formatter:on */
 
         // set global behavior
@@ -1036,6 +1040,60 @@ class ZapScannerTest {
         verify(clientApiWrapper, times(2)).resumeSpiderScan(scanId);
         verify(clientApiWrapper, times(2)).pauseActiveScan(scanId);
         verify(clientApiWrapper, times(2)).resumeActiveScan(scanId);
+        verify(counter, times(4)).increment();
+    }
+
+    @Test
+    void run_scans_and_verify_zap_login_is_never_re_logged_in_when_zap_always_logged_in() throws ClientApiException, MalformedURLException {
+        /* prepare */
+        int scanId = 111111;
+        String config = """
+                {
+                  "apiVersion": "1.0",
+                  "webScan": {
+                    "url": "https://productfailure.demo.example.org",
+                    "login": {
+                      "url": "https://productfailure.demo.example.org/login",
+                      "basic": {
+                        "user": "user1",
+                        "password": "password1",
+                        "realm": "realm1"
+                      },
+                      "verification": {
+                        "url": "https://productfailure.demo.example.org/verify",
+                        "responseCode": 200
+                      }
+                    }
+                  }
+                }
+                """;
+        SecHubWebScanConfiguration sechubWebScanConfig = SecHubScanConfiguration.createFromJSON(config).getWebScan().get();
+        WebLoginVerificationConfiguration verificationConfiguration = sechubWebScanConfig.getLogin().get().getVerification();
+        when(scanContext.getVerificationFromConfig()).thenReturn(verificationConfiguration);
+        when(scanContext.getSecHubWebScanConfiguration()).thenReturn(sechubWebScanConfig);
+        when(scanContext.getTargetUrl()).thenReturn(new URL("https://productfailure.demo.example.org"));
+
+        when(clientApiWrapper.getSpiderStatusForScan(scanId)).thenReturn(42).thenReturn(100);
+        when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
+        when(clientApiWrapper.logFullSpiderResults(scanId)).thenReturn(0L);
+        when(clientApiWrapper.startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean())).thenReturn(scanId);
+
+        when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(42).thenReturn(100);
+        when(clientApiWrapper.startActiveScan(any(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt())).thenReturn(scanId);
+        when(clientApiWrapper.atLeastOneURLDetected()).thenReturn(true);
+
+        when(clientApiWrapper.isZapLoggedIn(any())).thenReturn(true);
+
+        /* execute */
+        scannerToTest.runAndWaitActiveScan();
+        scannerToTest.runAndWaitForSpider();
+
+        /* test */
+        verify(clientApiWrapper, never()).pauseSpiderScan(scanId);
+        verify(clientApiWrapper, never()).resumeSpiderScan(scanId);
+        verify(clientApiWrapper, never()).pauseActiveScan(scanId);
+        verify(clientApiWrapper, never()).resumeActiveScan(scanId);
+        verify(counter, never()).increment();
     }
 
     static Stream<Arguments> headerPartWithoutOnlyForUrlsTestNamedArguments() {

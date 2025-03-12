@@ -2,20 +2,25 @@
 package com.mercedesbenz.sechub.domain.scan.asset;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.core.ConfigurationFailureException;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetFile.AssetFileCompositeKey;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -250,6 +255,83 @@ class AssetServiceTest {
 
         verify(assetStorage, never()).store(anyString(), any(InputStream.class), anyLong());
 
+    }
+
+    @Test
+    void delete_non_existing_single_asset_file_throws_exception() throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+        String fileName = "file1.txt";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        when(repository.deleteSingleAssetFileHavingAssetId(fileName, assetId)).thenReturn(0);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteAssetFile(assetId, fileName)).isInstanceOf(NotFoundException.class).hasMessageContaining(assetId)
+                .hasMessageContaining(fileName);
+
+        /* test */
+        verify(repository).deleteSingleAssetFileHavingAssetId(fileName, assetId);
+        verify(storageService).createAssetStorage(assetId);
+        verify(assetStorage).delete(fileName);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 10, 231 })
+    void when_given_file_for_given_assetid_was_deleted_no_exception_is_thrown(int numberOfDeletedEntries) throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+        String fileName = "file1.txt";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        when(repository.deleteSingleAssetFileHavingAssetId(fileName, assetId)).thenReturn(numberOfDeletedEntries);
+
+        /* execute */
+        serviceToTest.deleteAssetFile(assetId, fileName);
+
+        /* test */
+        verify(repository).deleteSingleAssetFileHavingAssetId(fileName, assetId);
+        verify(storageService).createAssetStorage(assetId);
+        verify(assetStorage).delete(fileName);
+    }
+
+    @Test
+    void delete_non_existing_asset_throws_exception() throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        when(repository.deleteAssetFilesHavingAssetId(assetId)).thenReturn(0);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.deleteAsset(assetId)).isInstanceOf(NotFoundException.class).hasMessageContaining(assetId);
+
+        /* test */
+        verify(repository).deleteAssetFilesHavingAssetId(assetId);
+        verify(storageService).createAssetStorage(assetId);
+        verify(assetStorage).deleteAll();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 10, 231 })
+    void when_at_least_one_file_for_given_assetid_was_deleted_no_exception_is_thrown(int numberOfDeletedEntries) throws IOException {
+        /* prepare */
+        String assetId = "asset1";
+
+        AssetStorage assetStorage = mock();
+        when(storageService.createAssetStorage(assetId)).thenReturn(assetStorage);
+        when(repository.deleteAssetFilesHavingAssetId(assetId)).thenReturn(numberOfDeletedEntries);
+
+        /* execute + test */
+        serviceToTest.deleteAsset(assetId);
+
+        /* test */
+        verify(repository).deleteAssetFilesHavingAssetId(assetId);
+        verify(storageService).createAssetStorage(assetId);
+        verify(assetStorage).deleteAll();
     }
 
     private AssetFile createAssetFileMock(String fileName, String checksum) {
