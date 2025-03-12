@@ -6,7 +6,7 @@
       "url": "https://example.org/login"
     },
     "logout": { //<1>
-      "xpath": "//*[@id=\"loginButton\"]", //<2>
+      "xpath": "//*[@id=\"logoutButton\"]", //<2>
       "htmlElement": "button" //<3>
     }
   }
