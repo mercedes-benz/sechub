@@ -126,11 +126,19 @@ class AssetFileRepositoryDBTest {
         file2b.setData("testdata2b".getBytes());
         entityManager.persist(file2b);
 
+        /* check preconditions */
+        entityManager.flush();
+        List<AssetFile> assetFilesPreCondition = repositoryToTest.findAll();
+        assertThat(assetFilesPreCondition.size()).isEqualTo(3);
+
         /* execute */
         int numberOfDeletedEntries = repositoryToTest.deleteAssetFilesHavingAssetId(assetId2);
 
         /* test */
         assertEquals(2, numberOfDeletedEntries);
+        List<AssetFile> assetFiles = repositoryToTest.findAll();
+        assertThat(assetFiles.size()).isEqualTo(1);
+
     }
 
     @Test
@@ -162,11 +170,18 @@ class AssetFileRepositoryDBTest {
         file2b.setData("testdata2b".getBytes());
         entityManager.persist(file2b);
 
+        /* check preconditions */
+        entityManager.flush();
+        List<AssetFile> assetFilesPreCondition = repositoryToTest.findAll();
+        assertThat(assetFilesPreCondition.size()).isEqualTo(3);
+
         /* execute */
         int numberOfDeletedEntries = repositoryToTest.deleteSingleAssetFileHavingAssetId(fileName2a, assetId2);
 
         /* test */
         assertEquals(1, numberOfDeletedEntries);
+        List<AssetFile> assetFiles = repositoryToTest.findAll();
+        assertThat(assetFiles.size()).isEqualTo(2);
     }
 
     @TestConfiguration
