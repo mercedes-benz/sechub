@@ -13,7 +13,7 @@ echo "Using VITE .env to setup your user and apitoken"
 
 # Export additional variables
 export SECHUB_APITOKEN=${VITE_API_PASSWORD}
-export SECHUB_USERID=${VITE_API_USER}
+export SECHUB_USERID=${VITE_API_USERNAME}
 export SECHUB_SERVER=https://localhost:8443
 export TEST_PROJECT_NAME="test-gosec"
 

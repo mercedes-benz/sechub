@@ -5,10 +5,10 @@ import { Configuration } from '@/generated-sources/openapi'
 let apiConfig: Configuration
 const config = useConfig()
 
-if (config.value.LOCAL_DEV) {
+if (config.value.BASIC_AUTH_DEV) {
   // api configuration for local development with basic auth
   apiConfig = new Configuration({
-    basePath: config.value.HOST,
+    basePath: '',
     username: config.value.USERNAME,
     password: config.value.PASSWORD,
     headers: {
@@ -17,7 +17,7 @@ if (config.value.LOCAL_DEV) {
   })
 } else {
   apiConfig = new Configuration({
-    basePath: config.value.HOST,
+    basePath: '',
     headers: {
       'Content-Type': 'application/json',
     },
