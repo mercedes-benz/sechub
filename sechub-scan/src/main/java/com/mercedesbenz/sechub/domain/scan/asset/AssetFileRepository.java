@@ -22,6 +22,10 @@ public interface AssetFileRepository extends JpaRepository<AssetFile, AssetFileC
 
     @Modifying
     @Query(value = "DELETE from " + TABLE_NAME + " WHERE " + COLUMN_ASSET_ID + "=:assetId", nativeQuery = true)
-    void deleteAssetFilesHavingAssetId(@Param("assetId") String assetId);
+    int deleteAssetFilesHavingAssetId(@Param("assetId") String assetId);
+
+    @Modifying
+    @Query(value = "DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_FILE_NAME + "=:fileName AND " + COLUMN_ASSET_ID + "=:assetId", nativeQuery = true)
+    int deleteSingleAssetFileHavingAssetId(@Param("fileName") String fileName, @Param("assetId") String assetId);
 
 }
