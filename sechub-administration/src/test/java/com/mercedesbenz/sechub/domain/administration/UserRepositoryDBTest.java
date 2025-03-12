@@ -75,7 +75,7 @@ public class UserRepositoryDBTest {
         Project project = TestProjectCreationFactory.createProject("project_repo_test1", user1);
         entityManager.persist(project);
 
-        /* execute & test */
+        /* execute + test */
         assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
                 .hasMessageContaining("db_test_testuser1").hasMessageContaining("1 times still owner");
     }
@@ -90,7 +90,7 @@ public class UserRepositoryDBTest {
 
         prepareForDBTest();
 
-        /* execute & test */
+        /* execute + test */
         assertThatThrownBy(() -> userRepository.deleteUserWithAssociations(user1.getName())).isInstanceOf(NotAcceptableException.class)
                 .hasMessageContaining("db_test_testuser1 is 1 times still owner");
     }
@@ -117,12 +117,12 @@ public class UserRepositoryDBTest {
     }
 
     @Test
-    void existsByEmailIgnoreCase_returns_false_when_email_not_in_database() {
-        assertThat(userRepository.existsByEmailIgnoreCase("very_new_email@mail.com")).isFalse();
+    void existsByEmailAddressIgnoreCase_returns_false_when_email_not_in_database() {
+        assertThat(userRepository.existsByEmailAddressIgnoreCase("very_new_email@mail.com")).isFalse();
     }
 
     @Test
-    void existsByEmailIgnoreCase_returns_true_when_email_exists_in_database() {
+    void existsByEmailAddressIgnoreCase_returns_true_when_email_exists_in_database() {
         /* prepare */
         String mail1 = user1.getEmailAddress();
         String mail2 = user2.getEmailAddress();
@@ -132,11 +132,11 @@ public class UserRepositoryDBTest {
         assertThat(mail5.contains("exaMplE")).isTrue();
 
         /* execute + test */
-        assertThat(userRepository.existsByEmailIgnoreCase(mail1)).isTrue();
-        assertThat(userRepository.existsByEmailIgnoreCase(mail2)).isTrue();
-        assertThat(userRepository.existsByEmailIgnoreCase(mail3)).isTrue();
-        assertThat(userRepository.existsByEmailIgnoreCase(mail4)).isTrue();
-        assertThat(userRepository.existsByEmailIgnoreCase(mail5)).isTrue();
+        assertThat(userRepository.existsByEmailAddressIgnoreCase(mail1)).isTrue();
+        assertThat(userRepository.existsByEmailAddressIgnoreCase(mail2)).isTrue();
+        assertThat(userRepository.existsByEmailAddressIgnoreCase(mail3)).isTrue();
+        assertThat(userRepository.existsByEmailAddressIgnoreCase(mail4)).isTrue();
+        assertThat(userRepository.existsByEmailAddressIgnoreCase(mail5)).isTrue();
     }
 
     /**

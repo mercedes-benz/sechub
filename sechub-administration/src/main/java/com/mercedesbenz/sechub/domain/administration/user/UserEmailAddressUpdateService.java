@@ -169,10 +169,10 @@ public class UserEmailAddressUpdateService {
 
         /* update */
         user.emailAddress = emailToUse;
-        User savedUser = userTransactionService.saveInOwnTransaction(user);
+        User storedUser = userTransactionService.saveInOwnTransaction(user);
 
         /* inform */
-        UserMessage message = createUserMessage(savedUser, formerEmailAddress);
+        UserMessage message = createUserMessage(storedUser, formerEmailAddress);
         message.setSubject("Your SecHub email address has been changed");
         informUserEmailAddressUpdated(message);
     }
@@ -203,7 +203,7 @@ public class UserEmailAddressUpdateService {
     }
 
     private void assertEmailUnique(String email) {
-        if (userRepository.existsByEmailIgnoreCase(email)) {
+        if (userRepository.existsByEmailAddressIgnoreCase(email)) {
             throw new BadRequestException("The email address is already in use. Please choose another one.");
         }
     }

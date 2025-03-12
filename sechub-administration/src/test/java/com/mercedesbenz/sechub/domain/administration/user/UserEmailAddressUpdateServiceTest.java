@@ -277,7 +277,7 @@ class UserEmailAddressUpdateServiceTest {
     void when_email_requested_to_change_already_in_use_throws_BadRequestException() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
-        when(userRepository.existsByEmailIgnoreCase(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(true);
+        when(userRepository.existsByEmailAddressIgnoreCase(NEW_MAIL_USER1_EXAMPLE_COM)).thenReturn(true);
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)
