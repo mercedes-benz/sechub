@@ -8,13 +8,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
 import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.NewAPITokenAppliedUserNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedUserNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.UserDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService;
+import com.mercedesbenz.sechub.domain.notification.user.*;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
@@ -33,6 +27,7 @@ public class NotificationMessageHandlerTest {
     private InformOwnerThatProjectHasBeenDeletedNotificationService mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
     private InformUsersThatProjectHasBeenDeletedNotificationService mockedInformUsersThatProjectHasBeenDeletedNotificationService;
     private UserEmailAddressChangedNotificationService mockedUserEmailAddressChangedNotificationService;
+    UserEmailAddressChangeRequestNotificationService mockedUserEmailAddressChangeRequestNotificationService;
 
     @Before
     public void before() throws Exception {
@@ -45,6 +40,7 @@ public class NotificationMessageHandlerTest {
         mockedInformOwnerThatProjectHasBeenDeletedNotificationService = mock(InformOwnerThatProjectHasBeenDeletedNotificationService.class);
         mockedInformUsersThatProjectHasBeenDeletedNotificationService = mock(InformUsersThatProjectHasBeenDeletedNotificationService.class);
         mockedUserEmailAddressChangedNotificationService = mock(UserEmailAddressChangedNotificationService.class);
+        mockedUserEmailAddressChangeRequestNotificationService = mock(UserEmailAddressChangeRequestNotificationService.class);
 
         handlerToTest = new NotificationMessageHandler();
         handlerToTest.signupRequestedAdminNotificationService = mockedSignUpRequestedAdminNotificationService;
@@ -53,6 +49,7 @@ public class NotificationMessageHandlerTest {
         handlerToTest.newApiTokenRequestedUserNotificationService = mockedNewApiTokenRequestedUserNotificationService;
         handlerToTest.userDeletedNotificationService = mockedUserDeletedNotificationService;
         handlerToTest.userEmailAddressChangedNotificationService = mockedUserEmailAddressChangedNotificationService;
+        handlerToTest.userEmailAddressChangeRequestNotificationService = mockedUserEmailAddressChangeRequestNotificationService;
 
         /* project deleted */
         handlerToTest.informAdminsThatProjectHasBeenDeletedService = mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
@@ -153,6 +150,21 @@ public class NotificationMessageHandlerTest {
 
         /* test */
         verify(mockedUserEmailAddressChangedNotificationService).notify(userMessage);
+    }
+
+    @Test
+    public void user_email_change_request_triggers_UserEmailAddressChangedNotificationService() {
+        /* prepare */
+        UserMessage userMessage = mock(UserMessage.class);
+        DomainMessage request = mock(DomainMessage.class);
+        when(request.getMessageId()).thenReturn(MessageID.USER_EMAIL_ADDRESS_CHANGE_REQUEST);
+        when(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA)).thenReturn(userMessage);
+
+        /* execute */
+        handlerToTest.receiveAsyncMessage(request);
+
+        /* test */
+        verify(mockedUserEmailAddressChangeRequestNotificationService).notify(userMessage);
     }
 
 }

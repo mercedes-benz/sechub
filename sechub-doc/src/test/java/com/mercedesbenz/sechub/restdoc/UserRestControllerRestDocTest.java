@@ -2,8 +2,9 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.EMAIL_ADDRESS;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
@@ -23,11 +24,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.user.UserDetailInformationService;
+import com.mercedesbenz.sechub.domain.administration.user.UserEmailAddressUpdateService;
 import com.mercedesbenz.sechub.domain.administration.user.UserRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserFetchesUserDetailInformation;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseUserUpdatesEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -48,6 +51,8 @@ public class UserRestControllerRestDocTest implements TestIsNecessaryForDocument
 
     @MockBean
     private UserDetailInformationService userDetailInformationService;
+    @MockBean
+    private UserEmailAddressUpdateService emailAddressUpdateService;
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserFetchesUserDetailInformation.class)
@@ -70,4 +75,27 @@ public class UserRestControllerRestDocTest implements TestIsNecessaryForDocument
         /* @formatter:on */
     }
 
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserUpdatesEmailAddress.class)
+    public void restDoc__userUpdatesEmailAddress() throws Exception {
+        /* prepare */
+        String newMailAddress = "new.user1@email.com";
+        String apiEndpoint = https(PORT_USED).buildUserRequestUpdatesEmailUrl(EMAIL_ADDRESS.pathElement());
+
+        Class<? extends Annotation> useCase = UseCaseUserUpdatesEmailAddress.class;
+
+        /* execute + test */
+        /* @formatter:off */
+        this.mockMvc.perform(
+                post(apiEndpoint, newMailAddress)
+                        .header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue()))
+                .andExpect(status().isNoContent())
+                .andDo(defineRestService()
+                        .with()
+                        .useCaseData(useCase)
+                        .tag(RestDocFactory.extractTag(apiEndpoint))
+                        .and()
+                        .document());
+        /* @formatter:on */
+    }
 }
