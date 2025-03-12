@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario1;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.SUPER_ADMIN;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.executeResilient;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.fetchScanProjectConfigurations;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -166,7 +162,7 @@ public class TemplateScenario1IntTest {
         assertTemplateNotInsideTemplateList();
 
         /* expect HTTP 404 when deleting a template which does not exist anymore */
-        TestAPI.expectHttpFailure(() -> as(SUPER_ADMIN).deleteTemplate(templateId), HttpStatus.NOT_FOUND);
+        expectHttpFailure(() -> as(SUPER_ADMIN).deleteTemplate(templateId), HttpStatus.NOT_FOUND);
 
     }
 
