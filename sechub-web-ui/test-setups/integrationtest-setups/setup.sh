@@ -11,7 +11,7 @@ cd $srcdir
 
 
 # Copy the .env file to the current directory
-if [ -e x.txt ]
+if [ -e .env ]
 then
     echo "Using existsing .env file"
 else
@@ -25,6 +25,8 @@ source ./.env
 set +a
 
 echo "Using VITE .env to setup your user and apitoken"
+
+# Export additional variables
 
 # Export additional variables
 export SECHUB_APITOKEN=${VITE_API_PASSWORD}
