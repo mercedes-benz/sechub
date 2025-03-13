@@ -98,6 +98,7 @@
   import { SecHubConfiguration } from '@/generated-sources/openapi'
   import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
+import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
 
   export default defineComponent({
 
@@ -151,7 +152,7 @@
         }
 
         if (selectedFile.value !== null) {
-          configuration.value = buildSecHubConfiguration(selectedScanOptions.value, selectedFile.value, selectedFileType.value, projectId.value)
+          configuration.value = buildSecHubConfiguration(selectedScanOptions.value, selectedFileType.value, projectId.value)
           createScan()
         }
       }
@@ -172,7 +173,7 @@
 
       return {
         projectId,
-        scanOptions: [t('SCAN_CREATE_CODE_SCAN'), t('SCAN_CREATE_SECRET_SCAN')] as string[],
+        scanOptions: [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER] as string[],
         selectedScanOptions,
         validateScanReady,
         selectedFile,

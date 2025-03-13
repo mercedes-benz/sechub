@@ -7,7 +7,7 @@ const config = ref({
   HOST: import.meta.env.VITE_API_HOST || 'http://localhost:3000',
   USERNAME: import.meta.env.VITE_API_USER || '',
   PASSWORD: import.meta.env.VITE_API_PASSWORD || '',
-  LOCAL_DEV: import.meta.env.VITE_API_LOCAL_DEV === true || false,
+  LOCAL_DEV: import.meta.env.VITE_API_LOCAL_DEV === "true" || false,
 })
 
 // Overrides local environment variables after project compilation

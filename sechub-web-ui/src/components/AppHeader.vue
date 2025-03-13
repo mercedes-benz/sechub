@@ -7,7 +7,7 @@
       <img
         alt="Logo"
         class="logo ma-2 pa-1"
-        src="@/assets/sechub-logo.svg"
+        src="@/assets/sechub-logo-shield.png"
       >
     </router-link>
 

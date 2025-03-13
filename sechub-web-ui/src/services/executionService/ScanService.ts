@@ -9,6 +9,10 @@ import executionApi from './executionService'
 import { createSha256Checksum } from '../../utils/cryptoUtils'
 import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'
 import i18n from '@/i18n'
+import {
+  UPLOAD_BINARIES_IDENTIFIER,
+  UPLOAD_SOURCE_CODE_IDENTIFIER
+} from '@/utils/applicationConstants'
 
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {
@@ -47,7 +51,7 @@ class ScanService {
   private async uploadData (configuration: SecHubConfiguration, jobId: string, file: File, errorMessages: string[]) {
     const checksum: string = await createSha256Checksum(file)
 
-    if (configuration.data?.sources) {
+    if(this.containsString(configuration, UPLOAD_SOURCE_CODE_IDENTIFIER)){
       const requestParameters: UserUploadSourceCodeWorkaroundRequest = {
         projectId: configuration.projectId,
         jobUUID: jobId,
@@ -61,7 +65,9 @@ class ScanService {
         console.error('Source code upload failed:', error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED'))
       }
-    } else if (configuration.data?.binaries) {
+    }
+
+    else if(this.containsString(configuration, UPLOAD_BINARIES_IDENTIFIER)){
       const size: string = file.size.toString()
       const requestParameters: UserUploadsBinariesWorkaroundRequest = {
         projectId: configuration.projectId,
@@ -77,9 +83,16 @@ class ScanService {
         console.error('Binary upload failed:', error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED'))
       }
-    } else {
-      errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_NO_DATA_SECTION'))
+    } 
+
+    else {
+      errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_CONFIGURATION_ERROR'))
     }
+  }
+
+  private  containsString(config: SecHubConfiguration, searchString: string): boolean {
+    const jsonString = JSON.stringify(config);
+    return jsonString.includes(searchString);
   }
 
   private async approveJob (projectId: string, jobId: string, errorMessages: string[]) {
