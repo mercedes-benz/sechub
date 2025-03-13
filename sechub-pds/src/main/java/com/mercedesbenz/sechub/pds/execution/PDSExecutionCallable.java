@@ -555,8 +555,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (isWaitOnCancelOperationAccepted(processHandlingData)) {
             int millisecondsToWaitForNextCheck = processHandlingData.getMillisecondsToWaitForNextCheck();
-            LOG.info("Cancel PDS job: {}: give process chance to cancel. Will wait a maximum time of {} seconds. The check intervall is: {} milliseconds",
-                    pdsJobUUID, processHandlingData.getSecondsToWaitForProcess(), millisecondsToWaitForNextCheck);
+            LOG.info("Cancel PDS job: {}: give process a chance to terminate. Will wait up to {} seconds. The check intervall is {} milliseconds", pdsJobUUID,
+                    processHandlingData.getSecondsToWaitForProcess(), millisecondsToWaitForNextCheck);
 
             while (processHandlingData.isStillWaitingForProcessAccepted()) {
                 if (process.isAlive()) {
