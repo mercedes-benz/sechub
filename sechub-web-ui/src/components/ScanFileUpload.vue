@@ -54,6 +54,7 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { FILETYPE_BINARIES, FILETYPE_SOURCES } from '@/utils/applicationConstants'
 
   export default defineComponent({
     emits: ['onFileUpdate'],
@@ -77,12 +78,12 @@
 
         switch (selectedRadio.value) {
           case 1:
-            fileType = 'sources'
+            fileType = FILETYPE_SOURCES
             validType = file.value?.type === 'application/zip'
             errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
             break
           case 2:
-            fileType = 'binaries'
+            fileType = FILETYPE_BINARIES
             validType = file.value?.type === 'application/x-tar'
             errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
             break

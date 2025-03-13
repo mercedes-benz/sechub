@@ -6,7 +6,7 @@ const config = ref({
   // New ENV must be defined in global.d.ts
   USERNAME: import.meta.env.VITE_API_USERNAME || undefined,
   PASSWORD: import.meta.env.VITE_API_PASSWORD || undefined,
-  BASIC_AUTH_DEV: import.meta.env.VITE_API_BASIC_AUTH_DEV === "true" || false,
+  BASIC_AUTH_DEV: import.meta.env.VITE_API_BASIC_AUTH_DEV === 'true' || false,
 })
 
 // Overrides local environment variables after project compilation

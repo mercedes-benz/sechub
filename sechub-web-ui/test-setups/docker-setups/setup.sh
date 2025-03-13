@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 echo "Start executing helper script"
-echo "Please make sure you have started the Docker server and PDS Gosec and Gitleaks"
+echo "Please make sure you have started the Docker SecHub Server and Docker PDS Gosec and Gitleaks"
 echo "Setting up Gosec and Gitleaks Project for Docker Server with real Products"
 
 srcdir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )

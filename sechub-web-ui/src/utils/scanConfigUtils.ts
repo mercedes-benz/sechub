@@ -7,6 +7,8 @@ import {
 
 import {
   CODE_SCAN_IDENTIFIER,
+  FILETYPE_BINARIES,
+  FILETYPE_SOURCES,
   SECRET_SCAN_IDENTIFER,
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
@@ -36,9 +38,9 @@ export function buildSecHubConfiguration (scanTypes: string[], fileType: string,
 }
 
 function getUniqueName (fileType: string): string {
-  if (fileType === 'binaries') {
+  if (fileType === FILETYPE_BINARIES) {
     return UPLOAD_BINARIES_IDENTIFIER
-  } else if (fileType === 'sources') {
+  } else if (fileType === FILETYPE_SOURCES) {
     return UPLOAD_SOURCE_CODE_IDENTIFIER
   } else {
     throw new Error(`Unknown fileType: ${fileType}`)
