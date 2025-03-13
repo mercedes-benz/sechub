@@ -405,7 +405,7 @@ class ExampleFilesValidTest {
         assertEquals("https://example.org/login", login.getUrl().toString());
 
         WebLogoutConfiguration logout = webScanConfig.getLogout();
-        assertEquals("//*[@id=\"loginButton\"]", logout.getXpath());
+        assertEquals("//*[@id=\"logoutButton\"]", logout.getXpath());
         assertEquals("button", logout.getHtmlElement());
     }
 
