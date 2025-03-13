@@ -75,21 +75,31 @@ func buildGetSecHubJobListAPICall(context *Context, size int) string {
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
-// https://localhost:8081/api/project/testproject/false-positives
+// https://sechub.example.com/api/project/testproject/false-positives
 func buildFalsePositivesAPICall(context *Context) string {
 	apiPart := fmt.Sprintf("project/%s/false-positives", context.config.projectID)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
-// https://localhost:8081/api/project/testproject/false-positive
+// https://sechub.example.com/api/project/testproject/false-positive
 func buildFalsePositiveAPICall(context *Context) string {
 	apiPart := fmt.Sprintf("project/%s/false-positive", context.config.projectID)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
+// https://sechub.example.com/api/project/testproject/false-positive/project-data
 func buildFalsePositiveProjectDataAPICall(context *Context) string {
 	apiPart := fmt.Sprintf("project/%s/false-positive/project-data", context.config.projectID)
 	return buildAPIUrl(&context.config.server, &apiPart)	
+}
+
+// https://sechub.example.com/api/management/jobs/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/cancel
+func buildCancelSecHubJobAPICall(context *Context) string {
+	context.contentToSend = nil // Do not send content
+	context.inputForContentProcessing = nil
+
+	apiPart := fmt.Sprintf("management/jobs/%s/cancel", context.config.secHubJobUUID)
+	return buildAPIUrl(&context.config.server, &apiPart)		
 }
 
 func buildAPIUrl(server *string, apiPart *string) string {

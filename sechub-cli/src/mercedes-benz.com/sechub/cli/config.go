@@ -60,12 +60,13 @@ var configFromInit Config = Config{
 }
 
 var missingFieldHelpTexts = map[string]string{
-	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable " + SechubServerEnvVar + " or in config file.",
-	"user":           "User id is missing. Can be defined with option '-user' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
+	"server":         "Server URL is missing. Can be defined with option '-" + serverOption + "' or in environment variable " + SechubServerEnvVar + " or in config file.",
+	"user":           "User id is missing. Can be defined with option '-" + userOption + "' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
 	"apiToken":       "API Token is missing. Can be defined in environment variable " + SechubApitokenEnvVar + ".",
-	"projectID":      "Project id is missing. Can be defined with option '-project' or in environment variable " + SechubProjectEnvVar + " or in config file.",
+	"projectID":      "Project id is missing. Can be defined with option '-" + projectOption + "' or in environment variable " + SechubProjectEnvVar + " or in config file.",
 	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
-	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
+	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-" + fileOption + "'.",
+	"secHubJobUUID":  "SecHub job-UUID is missing. Please use option '-" + jobUUIDOption + "'.",
 }
 
 // Global Go initialization (is called before main())
@@ -226,6 +227,7 @@ func assertValidConfig(context *Context) {
 	checklist := map[string][]string{
 		scanAction:                            {"server", "user", "apiToken", "projectID", "configFileRead"},
 		scanAsynchronAction:                   {"server", "user", "apiToken", "projectID", "configFileRead"},
+		cancelAction:                          {"secHubJobUUID"},
 		getStatusAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
@@ -273,13 +275,16 @@ func assertValidConfig(context *Context) {
 			// Try to get latest secHubJobUUID from server if not provided
 			if fieldname == "secHubJobUUID" && context.config.secHubJobUUID == "" {
 				switch context.config.action {
-				case getReportAction:
-					// Get job UUID from latest ended job
-					context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
-					sechubUtil.Log("Using latest finished job: "+context.config.secHubJobUUID, context.config.quiet)
-				default:
-					// Get job UUID from latest job (any state)
-					context.config.secHubJobUUID = getLatestSecHubJobUUID(context)
+					case cancelAction:
+						// Do NOT fetch the latest job UUID automatically in case of "cancel" action
+						// So we do nothing here :-)
+					case getReportAction:
+						// Get job UUID from latest ended job
+						context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
+						sechubUtil.Log("Using latest finished job: "+context.config.secHubJobUUID, context.config.quiet)
+					default:
+						// Get job UUID from latest job (any state)
+						context.config.secHubJobUUID = getLatestSecHubJobUUID(context)
 				}
 			}
 

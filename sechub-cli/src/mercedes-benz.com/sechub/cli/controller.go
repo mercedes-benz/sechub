@@ -45,6 +45,8 @@ func Execute() {
 
 	context := InitializeContext()
 
+	initSignalHandler(context)
+
 	switch context.config.action {
 	case scanAction:
 		prepareCreateApproveJob(context)
@@ -54,6 +56,8 @@ func Execute() {
 	case scanAsynchronAction:
 		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
+	case cancelAction:
+		cancelSecHubJob(context, false)
 	case getStatusAction:
 		jsonData := getSecHubJobStatus(context)
 		fmt.Println(jsonData)
