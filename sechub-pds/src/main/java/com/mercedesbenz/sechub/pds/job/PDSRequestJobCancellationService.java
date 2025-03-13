@@ -49,7 +49,7 @@ public class PDSRequestJobCancellationService {
     @UseCaseUserRequestsJobCancellation(@PDSStep(name = "service call", description = "marks job status as cancel requested", number = 2))
     public void requestJobCancellation(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
-        LOG.info("Request job cancellation for PDS job: {}", jobUUID);
+        LOG.info("Cancel of PDS job: {} was requested", jobUUID);
 
         PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
@@ -63,12 +63,14 @@ public class PDSRequestJobCancellationService {
                 return;
             }
             switch (jobState) {
+            // when job already has ended:
             case CANCELED:
             case CANCEL_REQUESTED:
             case DONE:
             case FAILED:
                 LOG.info("PDS job: {} is already in state: {} - so skip cancellation request", jobUUID, jobState);
                 return;
+            // for all other variants:
             case QUEUED:
             case READY_TO_START:
             case CREATED:

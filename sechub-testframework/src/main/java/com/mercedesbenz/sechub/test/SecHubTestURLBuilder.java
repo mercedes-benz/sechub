@@ -782,4 +782,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/templates/clear-all");
     }
 
+    public String buildIntegrationTestFetchAllJobInformationEntriesFromAdministration() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/administration/jobinformation");
+    }
+
 }

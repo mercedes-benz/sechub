@@ -42,6 +42,7 @@ import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.domain.administration.job.JobInformation;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
@@ -1729,4 +1730,18 @@ public class TestAPI {
         getSuperAdminRestHelper().post(url);
 
     }
+
+    public static List<JobInformation> fetchAllJobInformationEntriesFromAdministration() {
+        String url = getURLBuilder().buildIntegrationTestFetchAllJobInformationEntriesFromAdministration();
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        ObjectMapper mapper = TestJSONHelper.get().getMapper();
+        ObjectReader readerForListOf = mapper.readerForListOf(JobInformation.class);
+        try {
+            return readerForListOf.readValue(json);
+        } catch (Exception e) {
+            throw new IllegalStateException("was not able to fetch security logs", e);
+        }
+    }
+
 }

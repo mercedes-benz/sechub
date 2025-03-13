@@ -106,7 +106,7 @@ public class JobScenario2IntTest {
     @Test
     public void job_list_for_done_job__and_encryption_and_cleanup_are_working() {
         /* step 1 : job list entries */
-        UUID doneJobUUID = assertAlreadyDoneJobIsNotListedInAdminJobList();
+        UUID doneJobUUID = assertAlreadyDoneJobIsNotListedInRuningJobAdminJobList();
         int scheduleDataSizeBeforeRotate = assertEncryptionStatus().domain("schedule").hasData().getDataSize();
 
         /* step 2 : rotate encryption for job */
@@ -168,7 +168,7 @@ public class JobScenario2IntTest {
 		/* @formatter:on */
     }
 
-    private UUID assertAlreadyDoneJobIsNotListedInAdminJobList() {
+    private UUID assertAlreadyDoneJobIsNotListedInRuningJobAdminJobList() {
         /* @formatter:off */
         /* prepare */
         as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
@@ -184,6 +184,9 @@ public class JobScenario2IntTest {
 			onJobScheduling(PROJECT_1).
 			    canFindJob(jobUUID).
 			    havingExecutionState(TestExecutionState.INITIALIZING).
+			and().
+			onJobAdministration().
+			    canFindCreatedJob(jobUUID).
 			and().
 			canApproveJob(PROJECT_1, jobUUID);
 
