@@ -28,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, String>, UserReposit
         }
         return foundUser.get();
     }
+
+    boolean existsByEmailAddressIgnoreCase(String email);
+
 }

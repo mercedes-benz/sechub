@@ -209,3 +209,24 @@ func TestBuildGetSecHubJobListAPICallWithLabels(t *testing.T) {
 	sechubTestUtil.AssertStringContains(result, "&metadata.labels.key1=value1", t)
 	sechubTestUtil.AssertStringContains(result, "&metadata.labels.key2=Non+alphnumeric+character%24+%21", t)
 }
+
+// https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625
+func Example_CancelSecHubJobAPICall() {
+	/* prepare */
+	context := new(Context)
+	config := new(Config)
+
+	context.config = config
+	config.projectID = "testproject"
+	config.server = "https://localhost:8443"
+
+	config.secHubJobUUID = "e21b13fc-591e-4abd-b119-755d473c5625"
+
+	/* execute */
+	result := buildCancelSecHubJobAPICall(context)
+
+	/* test*/
+	fmt.Println(result)
+	// Output:
+	// https://localhost:8443/api/management/jobs/e21b13fc-591e-4abd-b119-755d473c5625/cancel
+}

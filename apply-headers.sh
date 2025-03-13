@@ -3,6 +3,21 @@
 
 SPDX_TEXT="SPDX-License-Identifier: MIT"
 
+# List of files to exclude
+exclude_files=("auto-imports.d.ts" "components.d.ts" "typed-router.d.ts")
+
+# Function to check if a file is in the exclude list
+function is_excluded() {
+  local file=$1
+  filename=$(basename "$file")
+  for excluded in "${exclude_files[@]}"; do
+    if [[ "$filename" == "$excluded" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 function isColoredTerminal(){
     # check if stdout is a terminal...
     if test -t 1; then
@@ -29,12 +44,16 @@ function applySPDXline {
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching the pattern, but skip some patterns like generated files
     find . -type f -iname \*.$fileEnding \
-    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat\|sechub-cli/pkg/mod\|sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/' \
+    | grep -v '^./.git\|/build/\|/node_modules/\|/\.gradle/\|gradlew.bat\|sechub-cli/pkg/mod\|sechub-cli/src/mercedes-benz.com/sechub/pkg/mod/' \
     | while read file ; do
+      if ! is_excluded "$file"; then
         if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spdxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
         fi
+      else
+          echo "Skipping excluded file: $file"
+      fi
     done
 }
 
@@ -98,7 +117,6 @@ applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
 applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
 applySPDXonFirstLine "yml" "# $SPDX_TEXT"
 applySPDXonFirstLine "ts" "// $SPDX_TEXT"
-applySPDXonFirstLine "d.ts" "// $SPDX_TEXT"
 applySPDXonFirstLine "vue" "<!-- $SPDX_TEXT -->"
 
 
