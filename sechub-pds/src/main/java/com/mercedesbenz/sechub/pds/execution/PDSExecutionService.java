@@ -152,7 +152,7 @@ public class PDSExecutionService {
                     Future<PDSExecutionResult> future = entry.getValue();
                     if (future.isDone()) {
                         /* already done or canceled */
-                        LOG.info("Cancellation of PDS job with uuid:{} skipped, because already done", jobUUID);
+                        LOG.info("Cancellation of PDS job: {} skipped, because already done", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
                     LOG.debug("Found PDS job: {} running at this cluster member", jobUUID);
