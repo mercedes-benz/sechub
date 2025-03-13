@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -28,7 +29,8 @@ public class JobInformationCreateService {
 
     @Validated
     @UseCaseSchedulerStartsJob(@Step(number = 4, name = "Store admin job info", description = "Fetches event about started job and store info in admin domain."))
-    public void createByMessage(JobMessage message, JobStatus status) {
+    @UseCaseUserCreatesNewJob(@Step(number = 3, name = "Store admin job info", description = "Fetches event about created job and store info in admin domain."))
+    public void createOrUpdateByMessage(JobMessage message, JobStatus status) {
         String projectId = message.getProjectId();
         UUID jobUUID = message.getJobUUID();
 

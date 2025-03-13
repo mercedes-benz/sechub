@@ -3,7 +3,12 @@ package com.mercedesbenz.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.UUID;
+
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.domain.administration.job.JobInformation;
+import com.mercedesbenz.sechub.domain.administration.job.JobStatus;
 
 public class AssertJobInformationAdministration<R> extends AbstractAssert {
 
@@ -81,6 +86,54 @@ public class AssertJobInformationAdministration<R> extends AbstractAssert {
         public R and() {
             return AssertJobInformation.this.and();
         }
+    }
+
+    public AssertJobInformationAdministration<R> canFindCreatedJob(UUID jobUUID) {
+        /*
+         * this is done different - the productive "listRunningJobs" REST call which is
+         * used by existing asserts here would not list the CREATED parts! So we
+         * implement this here special
+         */
+        assertJobFoundAndInStatus(jobUUID, JobStatus.CREATED);
+        return this;
+    }
+
+    private void assertJobFoundAndInStatus(UUID jobUUID, JobStatus expectedJobStatus) {
+        TestAPI.executeResilient(() -> {
+            JobInformation found = tryToFindJobInformation(jobUUID);
+            if (found == null) {
+                failWithJobInformationList("Expected status " + expectedJobStatus + " but job information was generally not found for SecHub job:" + jobUUID);
+            }
+            JobStatus foundStatus = found.getStatus();
+            if (!expectedJobStatus.equals(foundStatus)) {
+                failWithJobInformationList("Expected status " + expectedJobStatus + " but was " + foundStatus + " for SecHub job:" + jobUUID);
+            }
+        });
+    }
+
+    private void failWithJobInformationList(String message) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(message);
+        sb.append("\nHere the current job information list:\n");
+
+        List<JobInformation> list = TestAPI.fetchAllJobInformationEntriesFromAdministration();
+        String json = JSONConverter.get().toJSON(list, true);
+        sb.append(json);
+
+        fail(sb.toString());
+    }
+
+    private JobInformation tryToFindJobInformation(UUID jobUUID) {
+        List<JobInformation> list = TestAPI.fetchAllJobInformationEntriesFromAdministration();
+        for (JobInformation info : list) {
+            if (jobUUID.equals(info.getJobUUID())) {
+                /* found entry */
+                return info;
+            }
+        }
+        return null;
+
     }
 
 }
