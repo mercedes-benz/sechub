@@ -27,7 +27,7 @@
       :value="2"
     />
   </v-radio-group>
-  
+
   <v-file-input
     v-model="file"
     :accept="fileAccept"

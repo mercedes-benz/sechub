@@ -94,17 +94,15 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
-  import { useI18n } from 'vue-i18n'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
   import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
-import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
+  import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
 
   export default defineComponent({
 
     setup () {
       // routing and translation methods
-      const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
       const projectId = ref('')

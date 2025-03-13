@@ -3,7 +3,7 @@
 
 echo "Start executing helper script"
 echo "Please make sure you have started the integrationtest server with the IDE"
-echo "Setting up CODE_SCAN Project for integrationtest server with mocked Products"
+echo "Setting up CODE_SCAN Project for integrationtest server with mocked GOSEC Product"
 
 srcdir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )
 
@@ -11,7 +11,13 @@ cd $srcdir
 
 
 # Copy the .env file to the current directory
-cp ../../.env .
+if [ -e x.txt ]
+then
+    echo "Using existsing .env file"
+else
+    echo "Coping .env file from web-ui directory"
+    cp ../../.env .
+fi
 
 # Source the .env file to load environment variables
 set -a

@@ -6,7 +6,7 @@
     <router-link to="/projects">
       <img
         alt="Logo"
-        class="logo ma-2 pa-1"
+        class="logo ma-2 pa-2"
         src="@/assets/sechub-logo-shield.png"
       >
     </router-link>

@@ -2,15 +2,14 @@
 import {
   SecHubCodeScanConfiguration,
   SecHubConfiguration,
-  SecHubFileSystemConfiguration,
   SecHubSecretScanConfiguration,
 } from '@/generated-sources/openapi'
 
-import { 
-  UPLOAD_BINARIES_IDENTIFIER, 
-  UPLOAD_SOURCE_CODE_IDENTIFIER,
+import {
   CODE_SCAN_IDENTIFIER,
-  SECRET_SCAN_IDENTIFER
+  SECRET_SCAN_IDENTIFER,
+  UPLOAD_BINARIES_IDENTIFIER,
+  UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from './applicationConstants'
 
 export function buildSecHubConfiguration (scanTypes: string[], fileType: string, projectId: string): SecHubConfiguration {
@@ -31,19 +30,17 @@ export function buildSecHubConfiguration (scanTypes: string[], fileType: string,
     const secretScanConfiguration: SecHubSecretScanConfiguration = {}
     secretScanConfiguration.use = [UNIQUE_NAME]
     config.secretScan = secretScanConfiguration
-
   }
 
   return config
 }
 
-function getUniqueName(fileType: string): string {
-
-  if (fileType === "binaries") {
-    return UPLOAD_BINARIES_IDENTIFIER;
-  } else if (fileType === "sources") {
-    return UPLOAD_SOURCE_CODE_IDENTIFIER;
+function getUniqueName (fileType: string): string {
+  if (fileType === 'binaries') {
+    return UPLOAD_BINARIES_IDENTIFIER
+  } else if (fileType === 'sources') {
+    return UPLOAD_SOURCE_CODE_IDENTIFIER
   } else {
-    throw new Error(`Unknown fileType: ${fileType}`);
+    throw new Error(`Unknown fileType: ${fileType}`)
   }
 }
