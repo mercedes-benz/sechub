@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
@@ -105,6 +106,7 @@ public class TemplateService {
 
     @UseCaseAdminDeletesTemplate(@Step(number = 2, name = "Service removes all assignments and deletes template completely"))
     @IsSendingAsyncMessage(MessageID.TEMPLATE_DELETED)
+    @Transactional
     public void deleteTemplate(String templateId) {
         if (templateId == null) {
             throw new IllegalArgumentException("Template id may not be null!");
@@ -112,7 +114,13 @@ public class TemplateService {
         Set<String> allTemplateConfigIds = scanProjectConfigIdResolver.resolveAllPossibleConfigIds();
         configService.deleteAllConfigurationsOfGivenConfigIdsAndValue(allTemplateConfigIds, templateId);
 
-        repository.deleteById(templateId);
+        int numberOfDeletedEntries = repository.deleteTemplateById(templateId);
+        if (numberOfDeletedEntries == 0) {
+            // we can throw an exception here, without being aware about the transaction
+            // rollback
+            // because nothing was deleted, so rollback does not matter
+            throw new NotFoundException("No template data available for template id:" + templateId);
+        }
 
         DomainMessage message = new DomainMessage(MessageID.TEMPLATE_DELETED);
         SecHubProjectToTemplate data = new SecHubProjectToTemplate();

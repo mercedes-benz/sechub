@@ -133,7 +133,7 @@ public class UserAdministrationRestController {
     @RequestMapping(path = AdministrationAPIConstants.API_UPDATE_USER_EMAIL_ADDRESS, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
     public void updateUserEmailAddress(@PathVariable(name="userId") String userId,@PathVariable(name="newEmailAddress") String newEmailAddress) {
         /* @formatter:on */
-        userEmailAddressUpdateService.updateUserEmailAddress(userId, newEmailAddress);
+        userEmailAddressUpdateService.updateUserEmailAddressAsAdmin(userId, newEmailAddress);
     }
 
 }

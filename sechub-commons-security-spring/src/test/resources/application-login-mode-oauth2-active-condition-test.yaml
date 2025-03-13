@@ -5,10 +5,4 @@ sechub:
       enabled: true
       login-page: /login
       redirect-uri: example.org/redirect-uri
-      modes:
-        - classic
-        - saml
-        - session
-        - ssh
-        - apiKey
-        - oauth2
+      modes:  classic, saml, session, ssh, apikey, oauth2

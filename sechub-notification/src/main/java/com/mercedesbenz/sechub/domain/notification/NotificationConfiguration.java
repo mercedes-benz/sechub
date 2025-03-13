@@ -4,7 +4,8 @@ package com.mercedesbenz.sechub.domain.notification;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 
 /**
  * For examples see http://www.baeldung.com/spring-email
@@ -15,15 +16,15 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class NotificationConfiguration {
 
-    @MustBeDocumented(value = "Single email address used for emails to administrators. This should be a NPM (non personalized mailbox)")
+    @MustBeDocumented(value = "Single email address used for emails to administrators. This should be a NPM (non personalized mailbox)", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.email.administrators}")
     private String emailAdministrators;
 
-    @MustBeDocumented(value = "Address used for emails sent by sechub system")
+    @MustBeDocumented(value = "Address used for emails sent by sechub system", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.email.from}")
     private String emailFrom;
 
-    @MustBeDocumented(value = "Address used for reply when email was sent by sechub system")
+    @MustBeDocumented(value = "Address used for reply when email was sent by sechub system", scope = DocumentationScopeConstants.SCOPE_NOTIFICATION)
     @Value("${sechub.notification.email.replyto:}")
     private String emailReplyTo;
 

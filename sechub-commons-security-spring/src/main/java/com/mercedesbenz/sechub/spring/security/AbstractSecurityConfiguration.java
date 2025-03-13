@@ -96,7 +96,7 @@ public abstract class AbstractSecurityConfiguration {
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
 														  @Autowired(required = false) JwtDecoder jwtDecoder,
 														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
-
+        LOG.debug("Setup security filter chain for ressource server");
 		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
 
 		httpSecurity
@@ -131,6 +131,7 @@ public abstract class AbstractSecurityConfiguration {
         SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();
 
+        LOG.debug("Provide oauth2 client registry");
         /* @formatter:off */
 		ClientRegistration clientRegistration = ClientRegistration
 				.withRegistrationId(oAuth2.getProvider())
@@ -160,7 +161,9 @@ public abstract class AbstractSecurityConfiguration {
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
 												 @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
-		SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
+        LOG.debug("Setup security filter chain for login");
+
+        SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
 
 		Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
 		publicPaths.add(loginProperties.getLoginPage());
@@ -294,8 +297,10 @@ public abstract class AbstractSecurityConfiguration {
 														  JwtDecoder jwtDecoder,
 														  RestTemplate restTemplate,
 														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
-
-	    LOG.info("Configure oAuth2 mode: jwt={}, opaqueToken={}", oAuth2Properties.isJwtModeEnabled(), oAuth2Properties.isOpaqueTokenModeEnabled());
+	    if (oAuth2Properties==null) {
+	        throw new BeanInstantiationException(SecurityFilterChain.class, "The oauth2 resource server properties must not be null! You have to configure: "+SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX);
+	    }
+	    LOG.info("Configure resource server oAuth2 mode: jwt={}, opaqueToken={}", oAuth2Properties.isJwtModeEnabled(), oAuth2Properties.isOpaqueTokenModeEnabled());
 
 		if (oAuth2Properties.isJwtModeEnabled() == oAuth2Properties.isOpaqueTokenModeEnabled()) {
 			String exMsg = "Either 'jwt' or opaque token mode must be enabled by setting the '%s.%s' property to either '%s' or '%s'".formatted(

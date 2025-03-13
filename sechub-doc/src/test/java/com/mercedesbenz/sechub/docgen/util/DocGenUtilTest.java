@@ -9,12 +9,12 @@ import java.lang.reflect.AnnotatedElement;
 import org.junit.Test;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.docgen.spring.SpringValueFilter;
 import com.mercedesbenz.sechub.domain.notification.email.SMTPServerConfiguration;
 import com.mercedesbenz.sechub.domain.scan.product.checkmarx.SecHubDirectCheckmarxResilienceConfiguration;
 import com.mercedesbenz.sechub.domain.scan.product.pds.PDSResilienceConsultant;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 public class DocGenUtilTest {
 

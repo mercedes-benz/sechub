@@ -63,17 +63,30 @@ public class AssetService {
     public void deleteAsset(String assetId) throws IOException {
         inputAssertion.assertIsValidAssetId(assetId);
 
-        repository.deleteAssetFilesHavingAssetId(assetId);
+        int numberOfDeletedEntries = repository.deleteAssetFilesHavingAssetId(assetId);
         storageService.createAssetStorage(assetId).deleteAll();
+        if (numberOfDeletedEntries == 0) {
+            // we can throw an exception here, without being aware about the transaction
+            // rollback
+            // because nothing was deleted, so rollback does not matter
+            throw new NotFoundException("No asset data available for asset id:" + assetId);
+        }
     }
 
     @UseCaseAdminDeletesOneFileFromAsset(@Step(number = 2, name = "Services deletes file from asset"))
+    @Transactional
     public void deleteAssetFile(String assetId, String fileName) throws IOException {
         inputAssertion.assertIsValidAssetId(assetId);
         inputAssertion.assertIsValidAssetFileName(fileName);
 
-        repository.deleteById(AssetFileCompositeKey.builder().assetId(assetId).fileName(fileName).build());
+        int numberOfDeletedEntries = repository.deleteSingleAssetFileHavingAssetId(fileName, assetId);
         storageService.createAssetStorage(assetId).delete(fileName);
+        if (numberOfDeletedEntries == 0) {
+            // we can throw an exception here, without being aware about the transaction
+            // rollback
+            // because nothing was deleted, so rollback does not matter
+            throw new NotFoundException("For asset:" + assetId + " no file with name:" + fileName + " exists!");
+        }
     }
 
     @UseCaseAdminDownloadsAssetFile(@Step(number = 2, name = "Service downloads asset file from database"))

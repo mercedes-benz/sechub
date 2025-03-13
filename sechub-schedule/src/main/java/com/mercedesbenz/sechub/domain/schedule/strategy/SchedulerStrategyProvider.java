@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.strategy;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 
 @Component
 public class SchedulerStrategyProvider {
@@ -23,9 +25,9 @@ public class SchedulerStrategyProvider {
     @Autowired
     OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy onlyOneScanPerProjectAndModuleGroupStrategy;
 
-    @MustBeDocumented("Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:"
+    @MustBeDocumented(value = "Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:"
             + SchedulerStrategyConstants.FIRST_COME_FIRST_SERVE + "," + SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AT_A_TIME + " and "
-            + SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP)
+            + SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP, scope = SCOPE_JOB)
     @Value("${sechub.scheduler.strategy.id:}")
     private String strategyIdentifier;
 

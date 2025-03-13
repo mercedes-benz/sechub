@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.preferences;
 
 import org.eclipse.equinox.security.storage.ISecurePreferences;

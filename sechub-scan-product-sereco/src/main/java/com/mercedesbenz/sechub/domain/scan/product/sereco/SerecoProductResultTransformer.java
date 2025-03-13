@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
@@ -49,7 +50,6 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @Component

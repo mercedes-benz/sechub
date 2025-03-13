@@ -122,11 +122,14 @@ const ExitCodeCanceled = 10
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
 
-// scanAction - name of synchron scan action
+// scanAction - name of synchronous scan action
 const scanAction = "scan"
 
-// scanAsynchronAction - name of asynchron scan action
+// scanAsynchronAction - name of asynchronous scan action
 const scanAsynchronAction = "scanAsync"
+
+// cancelAction - name of the job cancel action
+const cancelAction = "cancel"
 
 // getStatusAction - name of action to get status of Job
 const getStatusAction = "getStatus"
@@ -165,6 +168,7 @@ const showVersionAction = "version"
 var actionlist = []string{
 	scanAction,
 	scanAsynchronAction,
+	cancelAction,
 	getStatusAction,
 	getReportAction,
 	getFalsePositivesAction,

@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 
 public class SimpleStringUtils {
 
+    public static final String EMPTY = "";
     private static final String TRUNCATE_POSTFIX = "...";
     private static final String OBFUSCATE_POSTFIX = "*****";
 
     private static final Logger LOG = LoggerFactory.getLogger(SimpleStringUtils.class);
-    private static final String EMPTY = "";
 
     private SimpleStringUtils() {
     }
@@ -204,12 +204,13 @@ public class SimpleStringUtils {
     }
 
     /**
-     * Creates a list for comma separated string.<br>
+     * Creates a list for comma separated string. Values will be automatically
+     * trimmed.<br>
      * <br>
      * Example:
      *
      * <pre>
-     * The string "a,b,c,de,f" will be transformed to a list containing strings:
+     * The string "a,b,c,de, f" will be transformed to a list containing strings:
      *
      *  -"a"
      *  -"b"

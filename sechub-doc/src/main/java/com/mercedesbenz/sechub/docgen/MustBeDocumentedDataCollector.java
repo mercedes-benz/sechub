@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.docgen.reflections.Reflections;
 import com.mercedesbenz.sechub.docgen.util.DocGeneratorUtil;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 /**
  * Collector - inspired by

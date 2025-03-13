@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
+import static com.mercedesbenz.sechub.pds.usecase.PDSDocumentationScopeConstants.*;
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.time.LocalDateTime;
@@ -37,15 +38,15 @@ public class PDSGetJobExecutionDataContentService {
     private static final long DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS = 500;
     private static final int DEFAULT_WATCH_PERIOD_MAX_RETRIES = 10;
 
-    @PDSMustBeDocumented("Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)")
+    @PDSMustBeDocumented(value = "Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)", scope = SCOPE_JOB)
     @Value("${pds.config.job.stream.check.retries:" + DEFAULT_WATCH_PERIOD_MAX_RETRIES + "}")
     int maximumRefreshCheckRetries = DEFAULT_WATCH_PERIOD_MAX_RETRIES;
 
-    @PDSMustBeDocumented("Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh")
+    @PDSMustBeDocumented(value = "Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh", scope = SCOPE_JOB)
     @Value("${pds.config.job.stream.check.timetowait:" + DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS + "}")
     long timeToWaitForNextCheckInMilliseconds = DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS;
 
-    @PDSMustBeDocumented("Maximum amount of retries to mark job stream data refresh")
+    @PDSMustBeDocumented(value = "Maximum amount of retries to mark job stream data refresh", scope = SCOPE_JOB)
     @Value("${pds.config.job.stream.mark.retries:" + DEFAULT_RESILIENCE_MAX_RETRIES + "}")
     int maximumRefreshRequestRetries = DEFAULT_RESILIENCE_MAX_RETRIES;
 

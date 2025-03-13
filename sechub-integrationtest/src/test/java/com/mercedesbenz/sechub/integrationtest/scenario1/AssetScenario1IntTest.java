@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.integrationtest.scenario1;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
@@ -13,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
@@ -106,6 +106,11 @@ public class AssetScenario1IntTest {
 
         assertThat(as(SUPER_ADMIN).fetchAllAssetIds()).doesNotContain(assetId);
         assertThatThrownBy(() -> as(SUPER_ADMIN).fetchAssetDetails(assetId)).isInstanceOf(NotFound.class);
+
+        /* expect HTTP 404 when deleting an asset which does not exist anymore */
+        expectHttpFailure(() -> as(SUPER_ADMIN).deleteAsset(assetId), HttpStatus.NOT_FOUND);
+        /* expect HTTP 404 when deleting an asset file which does not exist anymore */
+        expectHttpFailure(() -> as(SUPER_ADMIN).deleteAssetFile(assetId, expectedInfo2Canged.getFileName()), HttpStatus.NOT_FOUND);
     }
 
 }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.pds.usecase.PDSDocumentationScopeConstants.*;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -29,7 +31,7 @@ public class PDSCancelService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSCancelService.class);
     private static final int DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL = 60;
 
-    @PDSMustBeDocumented("The time in minutes after which a cancel job request is treated as orphaned.")
+    @PDSMustBeDocumented(value = "The time in minutes after which a cancel job request is treated as orphaned.", scope = SCOPE_JOB)
     @Value("${pds.config.cancelrequest.minutes.before.treated.orphaned:" + DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL + "}")
     int minutesToWaitBeforeTreatedAsOrphaned = DEFAULT_TIME_IN_MINUTES_BEFORE_TREATED_AS_ORPHANED_CANCEL;
 

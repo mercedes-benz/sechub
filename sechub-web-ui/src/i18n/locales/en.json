@@ -64,5 +64,6 @@
     "SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED": "Could not upload binaries. Your Tar file might be too big or is not correctly packed. We recommend using the cli client for large files.",
     "SCAN_ERROR_ALERT_JOB_NOT_APPROVED": "Could not approve Job.",
     "SCAN_ERROR_ALERT_NO_DATA_SECTION": "Could not get data section from configuration. Internal Error.",
-    "SCAN_ERROR_ALERT_GENERIC": "An internal error ocurred."
+    "SCAN_ERROR_ALERT_GENERIC": "An internal error ocurred.",
+    "CHANGE_USER_MAIL_SUCCESS": "You have changed your Email successfully!"
 }
