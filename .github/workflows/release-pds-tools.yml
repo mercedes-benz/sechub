@@ -57,7 +57,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
         with:
-          cache-read-only: false
+          # To prevent a fill-up of the actions cache:
+          # Only write to the cache for builds on the 'master' branch.
+          # Builds on other branches will only read existing entries from the cache.
+          cache-read-only: ${{ github.ref != 'refs/heads/master' }}
 
       # ----------------------
       # Create pull request if license headers are missing
