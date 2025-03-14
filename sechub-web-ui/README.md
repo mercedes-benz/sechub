@@ -3,7 +3,7 @@
 
 This project is a web application that provides a user interface for the SecHub API. It is built with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), and [Vuetify](https://vuetifyjs.com/en/).
 
-## Prequisites
+## Prerequisites
 
 ### Installation
 
@@ -65,14 +65,14 @@ You can use the sechub-api.sh script to manage your user and project.
 1. Follow all steps above
 2. Start the integration test PDS  
 (for the correct run configuration follow the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide))
-3. (Optional) Initial setup: execute `test-setups/setup-integration-test-server.sh`. Make sure the .env file contains the correct values for basic auth.
+3. (Optional) Initial setup: execute `test-setups/integrationtest-setups/setup.sh`. Make sure the .env file contains the correct values for basic auth.
 
 ### Running local development server with SecHub Docker Container and PDS Docker Container (Real Products)
 > Only useful If you want to get real scan results
 1. Start the SecHub Server as Docker Container (see sechub-solution/01-...)
-2. Start the required PDS as Docker Container (e.g. sechub-pds-solutions/gosec/05-...)
-3. Set up PDS in sechub-solution/setups/ e.g. setup-gosec.sh
-4. Make sure your user is assigned to the project you want to scan
+2. Start the required PDS as Docker (e.g. sechub-pds-solutions/gosec/05-...)
+3. (Optional) Initial setup: execute `/test-setups/docker/setup.sh` for gosec and gitleaks (Make sure PDS are running)
+
 
 Now you can test your web-ui with sechub and real scans!
 
