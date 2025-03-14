@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.monitoring;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
+
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -12,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 
 import jakarta.annotation.PostConstruct;
 
@@ -47,15 +49,15 @@ public class SystemMonitorService {
     private OperatingSystemMXBean osMBean;
 
     @Value("${sechub.monitoring.accepted.cpu.average.max:" + DEFAULT_MAX_ACCEPTED_CPU_LOAD_AVERAGE + "}")
-    @MustBeDocumented(value = "Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.")
+    @MustBeDocumented(value = "Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.", scope = SCOPE_MONITORING)
     private double maximumAcceptedCPULoadAverage = DEFAULT_MAX_ACCEPTED_CPU_LOAD_AVERAGE;
 
     @Value("${sechub.monitoring.accepted.memory.usage.max:" + DEFAULT_MAX_ACCEPTED_MEM_AVERAGE + "}")
-    @MustBeDocumented(value = "Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%")
+    @MustBeDocumented(value = "Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%", scope = SCOPE_MONITORING)
     private double maximumAcceptedMemoryUsage = DEFAULT_MAX_ACCEPTED_MEM_AVERAGE;
 
     @Value("${sechub.monitoring.cache.time.millis:" + DEFAULT_CACHE_TIME + "}")
-    @MustBeDocumented(value = "Time in milliseconds monitoring fetch results are cached before fetching again")
+    @MustBeDocumented(value = "Time in milliseconds monitoring fetch results are cached before fetching again", scope = SCOPE_MONITORING)
     private long cacheTimeInMilliseconds = DEFAULT_CACHE_TIME;
 
     private MemoryUsageMonitor memoryUsageMonitor;

@@ -15,7 +15,7 @@ Recommended: Install the plugin from the Open-VSX marketplace from within [VSCod
 
 For VS Code you need to download the [plugin](https://open-vsx.org/extension/mercedes-benz/sechub) and install it manually. It is also possible to install the plugin manually in VSCodium and Eclipse Theia.
 
-NOTE: Please use the new plugin from Mercedes-Benz: https://open-vsx.org/extension/mercedes-benz/sechub. The old Daimler plugin will be deprecated. The reason for the deprecation is the rebranding of Daimler to Mercedes-Benz.
+NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extension/mercedes-benz/sechub>. The old Daimler plugin will be deprecated. The reason for the deprecation is the rebranding of Daimler to Mercedes-Benz.
 
 ## Development
 
@@ -104,4 +104,3 @@ Please visit https://www.mercedes-benz-techinnovation.com/en/imprint/ for inform
 Notice: Before you use the program in productive use, please take all necessary precautions,
 e.g. testing and verifying the program with regard to your specific use.
 The program was tested solely for our own use cases, which might differ from yours.
-

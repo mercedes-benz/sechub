@@ -37,7 +37,7 @@ class JobInformationCreateServiceTest {
     }
 
     @Test
-    void createByMessage_no_existing_entity_new_entry_will_be_created_and_saved() {
+    void createOrUpdateByMessage_no_existing_entity_new_entry_will_be_created_and_saved() {
         /* prepare */
 
         when(repository.findById(jobUUID)).thenReturn(Optional.empty());
@@ -53,7 +53,7 @@ class JobInformationCreateServiceTest {
         JobStatus status = JobStatus.RUNNING;
 
         /* execute */
-        serviceToTest.createByMessage(message, status);
+        serviceToTest.createOrUpdateByMessage(message, status);
 
         /* test */
         verify(repository).findById(jobUUID);
@@ -74,10 +74,8 @@ class JobInformationCreateServiceTest {
     }
 
     @Test
-    void createByMessage_an_existing_entity_entry_will_be_reused_and_saved() {
+    void createOrUpdateByMessage_an_existing_entity_entry_will_be_reused_and_saved() {
         /* prepare */
-        String configuration = "{ dummy }";
-
         JobInformation existingJobInfo = new JobInformation(jobUUID);
         existingJobInfo.version = Integer.valueOf(42);
 
@@ -94,7 +92,7 @@ class JobInformationCreateServiceTest {
         JobStatus status = JobStatus.RUNNING;
 
         /* execute */
-        serviceToTest.createByMessage(message, status);
+        serviceToTest.createOrUpdateByMessage(message, status);
 
         /* test */
         verify(repository).findById(jobUUID);

@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.sharedkernel.storage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.storage.sharevolume.spring.AbstractSharedVolumePropertiesSetup;
 
 @Component

@@ -2,48 +2,47 @@
 import {
   SecHubCodeScanConfiguration,
   SecHubConfiguration,
-  SecHubDataConfiguration,
-  SecHubFileSystemConfiguration,
   SecHubSecretScanConfiguration,
 } from '@/generated-sources/openapi'
 
-export function buildSecHubConfiguration (scanTypes: string[], uploadFile: File, fileType: string, projectId: string): SecHubConfiguration {
-  const UNIQUE_NAME = 'web-ui-upload'
+import {
+  CODE_SCAN_IDENTIFIER,
+  FILETYPE_BINARIES,
+  FILETYPE_SOURCES,
+  SECRET_SCAN_IDENTIFER,
+  UPLOAD_BINARIES_IDENTIFIER,
+  UPLOAD_SOURCE_CODE_IDENTIFIER,
+} from './applicationConstants'
 
-  const fileSystemConfig: SecHubFileSystemConfiguration = {
-    files: [uploadFile.name],
-  }
-
-  const dataConfiguration: SecHubDataConfiguration = {
-    sources: fileType === 'sources' ? [{ name: UNIQUE_NAME, fileSystem: fileSystemConfig }] : undefined,
-    binaries: fileType === 'binaries' ? [{ name: UNIQUE_NAME, fileSystem: fileSystemConfig }] : undefined,
-  }
-
-  const codeScanConfiguration: SecHubCodeScanConfiguration = {}
-  const secretScanConfiguration: SecHubSecretScanConfiguration = {}
-
-  if (scanTypes.includes('codeScan')) {
-    codeScanConfiguration.use = [UNIQUE_NAME]
-  }
-
-  if (scanTypes.includes('secretScan')) {
-    secretScanConfiguration.use = [UNIQUE_NAME]
-  }
+export function buildSecHubConfiguration (scanTypes: string[], fileType: string, projectId: string): SecHubConfiguration {
+  const UNIQUE_NAME : string = getUniqueName(fileType)
 
   const config: SecHubConfiguration = {
     apiVersion: '1.0',
     projectId,
-    data: dataConfiguration,
   }
 
-  // adding scan types to configuration
-  if (codeScanConfiguration.use) {
+  if (scanTypes.includes(CODE_SCAN_IDENTIFIER)) {
+    const codeScanConfiguration: SecHubCodeScanConfiguration = {}
+    codeScanConfiguration.use = [UNIQUE_NAME]
     config.codeScan = codeScanConfiguration
   }
 
-  if (secretScanConfiguration.use) {
+  if (scanTypes.includes(SECRET_SCAN_IDENTIFER)) {
+    const secretScanConfiguration: SecHubSecretScanConfiguration = {}
+    secretScanConfiguration.use = [UNIQUE_NAME]
     config.secretScan = secretScanConfiguration
   }
 
   return config
+}
+
+function getUniqueName (fileType: string): string {
+  if (fileType === FILETYPE_BINARIES) {
+    return UPLOAD_BINARIES_IDENTIFIER
+  } else if (fileType === FILETYPE_SOURCES) {
+    return UPLOAD_SOURCE_CODE_IDENTIFIER
+  } else {
+    throw new Error(`Unknown fileType: ${fileType}`)
+  }
 }

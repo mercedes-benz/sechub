@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.nessus;
 
+import static com.mercedesbenz.sechub.domain.scan.product.nessus.NessusConstants.*;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapter;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
@@ -25,7 +28,6 @@ import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
@@ -36,19 +38,19 @@ public class NessusProductExecutor extends AbstractProductExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(NessusProductExecutor.class);
 
     @Value("${sechub.adapter.nessus.proxy.hostname:}")
-    @MustBeDocumented("Proxy hostname for nessus server connection, when empty no proxy is used. When not empty proxy port must be set too!")
+    @MustBeDocumented(value = "Proxy hostname for nessus server connection, when empty no proxy is used. When not empty proxy port must be set too!", scope = SCOPE_NESSUS)
     String proxyHostname;
 
     @Value("${sechub.adapter.nessus.proxy.port:0}")
-    @MustBeDocumented("Proxy port for nessus server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly")
+    @MustBeDocumented(value = "Proxy port for nessus server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly", scope = SCOPE_NESSUS)
     int proxyPort;
 
     @Value("${sechub.adapter.nessus.scanresultcheck.period.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
+    @MustBeDocumented(value = AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES, scope = SCOPE_NESSUS)
     private int scanResultCheckPeriodInMinutes;
 
     @Value("${sechub.adapter.nessus.scanresultcheck.timeout.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
+    @MustBeDocumented(value = AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES, scope = SCOPE_NESSUS)
     private int scanResultCheckTimeOutInMinutes;
 
     @Autowired

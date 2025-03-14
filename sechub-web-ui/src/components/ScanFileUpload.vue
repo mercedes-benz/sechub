@@ -21,26 +21,13 @@
       :label="$t('SCAN_CREATE_SOURCE_CODE')"
       :value="1"
     />
-    <!--
     <v-radio
       color="primary"
       :label="$t('SCAN_CREATE_BINARIES')"
       :value="2"
     />
-    -->
   </v-radio-group>
-  <v-alert
-    class="pa-2, mb-5"
-    color="info"
-    max-width="1000px"
-    :title="$t('SCAN_CREATE_FILE_UPLOAD_NOTE_TITLE')"
-    type="info"
-    variant="tonal"
-  >
-    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_ONE') }} <br>
-    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_TWO') }} <br>
-    {{ $t('SCAN_CREATE_FILE_UPLOAD_NOTE_THREE') }}
-  </v-alert>
+
   <v-file-input
     v-model="file"
     :accept="fileAccept"
@@ -67,6 +54,7 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { FILETYPE_BINARIES, FILETYPE_SOURCES } from '@/utils/applicationConstants'
 
   export default defineComponent({
     emits: ['onFileUpdate'],
@@ -90,15 +78,14 @@
 
         switch (selectedRadio.value) {
           case 1:
-            fileType = 'sources'
+            fileType = FILETYPE_SOURCES
             validType = file.value?.type === 'application/zip'
             errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
             break
           case 2:
-            // binary upload currently not needed
-            // fileType = 'binaries'
-            // validType = file.value?.type === 'application/x-tar'
-            // errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
+            fileType = FILETYPE_BINARIES
+            validType = file.value?.type === 'application/x-tar'
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
             break
         }
 

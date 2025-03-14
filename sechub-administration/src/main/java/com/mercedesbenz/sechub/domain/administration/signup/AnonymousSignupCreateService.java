@@ -57,17 +57,18 @@ public class AnonymousSignupCreateService {
         String emailAddress = userSelfRegistrationInput.getEmailAddress();
 
         LOG.debug("user tries to register himself:{},mail:{}", userId, emailAddress);
+        String emailAddressToUse = emailAddress.toLowerCase();
 
         assertion.assertIsValidUserId(userId);
-        assertion.assertIsValidEmailAddress(emailAddress);
+        assertion.assertIsValidEmailAddress(emailAddressToUse);
 
-        assertNotAlreadySignedIn(userId, emailAddress);
-        assertUsernameNotUsedAlready(userId, emailAddress);
-        assertEmailAddressNotUsedAlready(userId, emailAddress);
+        assertNotAlreadySignedIn(userId, emailAddressToUse);
+        assertUsernameNotUsedAlready(userId, emailAddressToUse);
+        assertEmailAddressNotUsedAlready(userId, emailAddressToUse);
 
         Signup entity = new Signup();
 
-        entity.setEmailAddress(emailAddress);
+        entity.setEmailAddress(emailAddressToUse);
         entity.setUserId(userId);
         userSelfRegistrationRepository.save(entity);
         LOG.debug("Added registration entry for user:{},mail:{}", entity.getUserId(), entity.getEmailAddress());
@@ -90,9 +91,7 @@ public class AnonymousSignupCreateService {
     }
 
     private void assertEmailAddressNotUsedAlready(String userId, String emailAddress) {
-        Optional<User> foundUserByMail = userRepository.findByEmailAddress(emailAddress);
-
-        if (foundUserByMail.isPresent()) {
+        if (userRepository.existsByEmailAddressIgnoreCase(emailAddress)) {
             LOG.warn("Self registration coming in for email address:{} and user:{} but an existing user does already have this email address. So not accepted",
                     emailAddress, userId);
             handleRegistrationNotPossible();

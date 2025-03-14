@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 
 class ZapWrapperGroovyScriptExecutorTest {
@@ -95,6 +97,9 @@ class ZapWrapperGroovyScriptExecutorTest {
 
         WebLoginConfiguration login = new WebLoginConfiguration();
         login.setUrl(new URL("http://example.com/login"));
+        TemplateData templateData = new TemplateData();
+        templateData.getVariables().putAll(Map.of("custom-username", "user1", "custom-password", "pwd1"));
+        login.setTemplateData(templateData);
         webScanConfig.setLogin(Optional.of(login));
 
         ZapScanContext zapScanContext = ZapScanContext.builder().setSecHubWebScanConfiguration(webScanConfig).setTargetUrl(webScanConfig.getUrl().toURL())

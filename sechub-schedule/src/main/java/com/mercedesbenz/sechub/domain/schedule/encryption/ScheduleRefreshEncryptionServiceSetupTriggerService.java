@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.encryption.UseCaseScheduleEncryptionPoolRefresh;
 
@@ -36,7 +37,7 @@ public class ScheduleRefreshEncryptionServiceSetupTriggerService {
     @Autowired
     ScheduleEncryptionService encryptionService;
 
-    @MustBeDocumented("Defines the initial and also the fixed delay for the refresh interval. These values are also used for calculation of remaining run time of outdated encrytion pools (when refresh fails)")
+    @MustBeDocumented(value = "Defines the initial and also the fixed delay for the refresh interval. These values are also used for calculation of remaining run time of outdated encrytion pools (when refresh fails)", scope = DocumentationScopeConstants.SCOPE_ENCRYPTION)
     @Scheduled(initialDelayString = SPRING_VALUE_INITIAL_DELAY_MILLISECONDS, fixedDelayString = SPRING_VALUE_FIXED_DELAY_MILLISECONDS)
     @UseCaseScheduleEncryptionPoolRefresh(@Step(number = 1, name = "Encryption pool data refresh trigger", description = DESCRIPTION))
     public void triggerEncryptionSetupRefresh() {

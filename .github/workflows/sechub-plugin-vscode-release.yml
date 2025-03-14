@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
-name: Release
+name: Release Plugin for VSCode
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       milestone-number:
@@ -15,68 +15,68 @@ jobs:
     strategy:
       matrix:
         node: [ 16, 18 ]
-        
+
     defaults:
       run:
         working-directory: ide-plugins/vscode
     steps:
     - name: Checkout master
-      uses: actions/checkout@v3
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         ref: master
 
     # Build
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
       with:
         # Matrix test using LTS (Long Term Support) versions
         node-version: ${{ matrix.node }}
     # Takes the package information from the packages-lock.json file
     - run: npm ci
     # https://code.visualstudio.com/api/working-with-extensions/continuous-integration#github-actions
-    
+
     - run: xvfb-run -a npm test
       if: runner.os == 'Linux'
-   
+
     - run: npm test
       if: runner.os != 'Linux'
 
     - name: Fetch version from package.json
       id: version
       uses: notiz-dev/github-action-json-property@release
-      with: 
+      with:
           path: 'package.json'
           prop_path: 'version'
     # Create local tags, so we can build documentation for this tag...
     - name: "Show version: v${{ steps.version.outputs.prop }}"
       run: echo v${{ steps.version.outputs.prop }}
-    
+
     # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
     - name: Inspect GIT status
       if: always()
       run: git status > git-status.txt
-      
+
     # -----------------------------------------
-    # Upload Build Artifacts  
-    # -----------------------------------------  
+    # Upload Build Artifacts
+    # -----------------------------------------
     - name: Archive GIT status
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
       with:
           name: git-status.txt
           path: git-status.txt
-          retention-days: 14 
-     
+          retention-days: 14
+
     - name: Archive plugin package
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
       with:
           name: sechub
           path: dist/sechub.vsix
           retention-days: 14
-          
-    # ******************************************     
+
+    # ******************************************
     # Now let's create a new release
-    # ******************************************     
+    # ******************************************
     - name: Create plugin release
       id: create_server_release
       uses: actions/create-release@v1
@@ -89,17 +89,17 @@ jobs:
         body: |
           Changes in this Release
           - Some minor changes on plugin implementation
-          
+
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/mercedes-benz/foss/milestones/${{github.event.inputs.milestone-number}}?closed=1)
         draft: true
         prerelease: false
     - name: Upload release asset
-      id: upload-release-asset 
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_plugin_release.outputs.upload_url }}  
+        upload_url: ${{ steps.create_plugin_release.outputs.upload_url }}
         asset_path: ./dist/sechub.vsix
         asset_name: sechub.vsix
         asset_content_type: application/zip

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule.encryption;
 
+import static com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.SystemTimeProvider;
 
 @Component
@@ -22,7 +24,7 @@ public class SecHubOutdatedEncryptionPoolSupport {
     private static final int MAX_REFRESH_INTERVAL_ADDITIONAL_TIME_BUFFER_MILLISECONDS = 500;
     private static final int DEFAULT_ACCEPT_OUTDATED_POOL_IN_MILLISECONDS = 30 * 60 * 1000; // 30 minutes
 
-    @MustBeDocumented("The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase")
+    @MustBeDocumented(value = "The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase", scope = SCOPE_ENCRYPTION)
     @Value("${sechub.schedule.encryption.refresh.accept-outdated.milliseconds:" + DEFAULT_ACCEPT_OUTDATED_POOL_IN_MILLISECONDS + "}")
     long acceptOutdatedEncryptionPoolInMilliseconds;
 

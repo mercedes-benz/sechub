@@ -1,4 +1,11 @@
 // SPDX-License-Identifier: MIT
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
 == Zap Wrapper
 
 Zap Wrapper CLI for PDS
@@ -59,6 +66,9 @@ Usage: ZapWrapper [options]
       Maximum number of times the wrapper tries to reach each URL. Including 
       each URL constructed from the sechub includes.
       Default: 3
+    --no-headless
+      Set this option to disable headless mode.
+      Default: false
     --pacFilePath
       PAC file the ZAP wrapper uses for script based authentication for the 
       browsers profile, when templates are defined. You can also set the 
@@ -137,13 +147,15 @@ The groovy authentication scripts have access to certain data from the wrapper a
 - An initialized selenium `JavascriptExecutor` object, which on default is the previously introduced `FirefoxDriver` 
 - The `SecHubWebScanConfiguration` that was used to configure the scan
 - The `TOTPGenerator` that can be used for two-factor-authentication
-- The `user` configured for the authentication
-- The `password` of the `user`
 - The `loginUrl` necessary to authenticate.
 - The `targetUrl`, which is the base URL specified for the scan.
+- All user variables from SecHub configuration file template data section
 
-The example script below shows how these bindings can be accessed and used. In the example script all bindings are listed, even the ones not used by the script.
-The script can also be created completely without using anything of the pre-defined data.
+An example login script can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/resources/login-script-examples/example-script.groovy.
+
+The example login script shows how these bindings can be accessed and used. In the example script all bindings are listed, even the ones not used by the script.
+A script can also be created completely without using anything of the pre-defined data.
 
 The `TOTPGenerator` is an easy to use implementation of TOTP for two-factor-authentication if necessary. Using `totpGenerator.now()` returns the currently valid TOTP.
 To make use of the script authentication the wrapper application expects a SecHub configuration json for the scan, which contains a template data definition and optionally a TOTP configuration.
@@ -151,50 +163,10 @@ See web scan example configurations for details.
 
 WARNING: **The script should always ensure that the target URL is loaded in the browser at the end after the authentication because the caller needs to access the session data.**
 
-The following example contains all available bindings, even if they are unused in the script below:
+[TIP]
+====
+It is possible to test login scripts outside ZAP or SecHub easily by calling `ZapWrapperLoginScriptManualTest`.
 
-[source,groovy]
-----
-import static com.mercedesbenz.sechub.zapwrapper.scan.login.ZapScriptBindingKeys.*
-
-import com.mercedesbenz.sechub.zapwrapper.util.TOTPGenerator
-import com.mercedesbenz.sechub.zapwrapper.scan.login.MissingMandatoryBindingException
-
-import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
-import org.openqa.selenium.By
-import org.openqa.selenium.support.ui.WebDriverWait
-import org.openqa.selenium.JavascriptExecutor
-
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration
-
-// all available bindings
-final FirefoxDriver firefox = binding.getVariable(FIREFOX_WEBDRIVER_KEY)
-final WebDriverWait webdriverWait = binding.getVariable(FIREFOX_WEBDRIVER_WAIT_KEY)
-final JavascriptExecutor javaScriptExecutor = binding.getVariable(JAVASCRIPTEXECUTOR_KEY)
-final SecHubWebScanConfiguration sechubWebScanConfig = binding.getVariable(SECHUB_WEBSCAN_CONFIG_KEY)
-final TOTPGenerator totpGenerator = binding.getVariable(TOTP_GENERATOR_KEY)
-
-final String user = binding.getVariable(USER_KEY)
-final String password = binding.getVariable(PASSWORD_KEY)
-final String loginUrl = binding.getVariable(LOGIN_URL_KEY)
-final String targetUrl = binding.getVariable(TARGET_URL_KEY)
-
-// This is an example on how to use custom exceptions inside authentication scripts
-// Exceptions of the type UserInfoScriptException are a channel back to the caller of the script,
-// since they are caught by the ZAP wrapper executing this script.
-// The message of the exception is sent in a SecHubMessage back to the client that pulls the results of the SecHub job.
-if (totpGenerator == null) {
-    throw new UserInfoScriptException("The authentication requires TOTP but no TOTP generator is available in bindings. Normally this means that no TOTP configuration is defined inside the SecHub configuration");
-}
-
-// example authentication script steps
-firefox.get(loginUrl)
-
-webdriverWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".close-dialog"))).click()
-webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("email"))).sendKeys(user)
-webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("password"))).sendKeys(password)
-webdriverWait.until(ExpectedConditions.elementToBeClickable(By.id("loginButton"))).click()
-webdriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp"))).sendKeys(totpGenerator.now())
-webdriverWait.until(ExpectedConditions.elementToBeClickable(By.id("submitOtp"))).click()
-----
+For details look into javadoc of 
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/test/java/com/mercedesbenz/sechub/zapwrapper/ZapWrapperLoginScriptManualTest.java
+====

@@ -16,11 +16,12 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zaproxy.clientapi.core.ClientApiException;
+import org.zaproxy.clientapi.core.*;
 
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ProxyInformation;
@@ -30,6 +31,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
 import com.mercedesbenz.sechub.zapwrapper.internal.scan.ClientApiWrapper;
 import com.mercedesbenz.sechub.zapwrapper.scan.login.*;
+import com.mercedesbenz.sechub.zapwrapper.util.Counter;
 import com.mercedesbenz.sechub.zapwrapper.util.SystemUtil;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
@@ -52,6 +54,7 @@ public class ZapScanner implements ZapScan {
     private final UrlUtil urlUtil;
 
     private final SystemUtil systemUtil;
+    private final Counter loginCounter;
 
     public ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext) {
         this.clientApiWrapper = clientApiWrapper;
@@ -61,9 +64,11 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = new SystemUtil();
 
         this.scriptLogin = new ZapScriptLogin();
+        this.loginCounter = new Counter();
     }
 
-    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin) {
+    ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext, UrlUtil urlUtil, SystemUtil systemUtil, ZapScriptLogin scriptLogin,
+            Counter counter) {
         this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
 
@@ -71,6 +76,7 @@ public class ZapScanner implements ZapScan {
         this.systemUtil = systemUtil;
 
         this.scriptLogin = scriptLogin;
+        this.loginCounter = counter;
     }
 
     @Override
@@ -81,6 +87,7 @@ public class ZapScanner implements ZapScan {
             deactivateRules();
             setupAdditonalProxyConfiguration(scanContext.getProxyInformation());
             int zapContextId = createContext();
+            scanContext.setZapContextId(zapContextId);
             addXSecHubDASTHeader();
             addReplacerRulesForHeaders();
             addDefaultExcludes();
@@ -91,15 +98,18 @@ public class ZapScanner implements ZapScan {
             // URLs or the URLs from the API definitions.
             importClientCertificate();
             addIncludedAndExcludedUrlsToContext();
-            loadApiDefinitions(zapContextId);
+            addAjaxSpiderAvoidLogoutExclude();
+            loadApiDefinitions();
 
             /* ZAP scan */
-            executeScan(zapContextId);
+            executeScan();
 
             /* After scan */
             generateZapReport();
             cleanUp();
+            informUserAboutAmountOfLogins();
         } catch (ClientApiException | ZapWrapperRuntimeException e) {
+            informUserAboutAmountOfLogins();
             cleanUp();
             throw new ZapWrapperRuntimeException("For scan: " + scanContext.getContextName() + ". An error occured while scanning!", e,
                     ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
@@ -228,7 +238,30 @@ public class ZapScanner implements ZapScan {
         }
     }
 
-    void loadApiDefinitions(int zapContextId) throws ClientApiException {
+    void addAjaxSpiderAvoidLogoutExclude() throws ClientApiException {
+        SecHubWebScanConfiguration secHubWebScanConfiguration = scanContext.getSecHubWebScanConfiguration();
+        if (secHubWebScanConfiguration == null) {
+            return;
+        }
+        WebLogoutConfiguration logout = secHubWebScanConfiguration.getLogout();
+        if (logout == null) {
+            LOG.info("For scan {}: No logout section was defined in SecHub webscan config.", scanContext.getContextName());
+            return;
+        }
+        if (logout.getHtmlElement() == null) {
+            throw new ZapWrapperRuntimeException("HtmlElement must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        if (logout.getXpath() == null) {
+            throw new ZapWrapperRuntimeException("XPath must be present inside the webscan configuration logout section!",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
+        LOG.info("For scan {}: Adding ajax spider exclude.", scanContext.getContextName());
+        String description = "avoid-logout";
+        clientApiWrapper.addAjaxSpiderAvoidLogoutExclude(scanContext.getContextName(), description, logout);
+    }
+
+    void loadApiDefinitions() throws ClientApiException {
         Optional<SecHubWebScanApiConfiguration> apiConfig = scanContext.getSecHubWebScanConfiguration().getApi();
         if (!apiConfig.isPresent()) {
             LOG.info("For scan {}: No API definition was found!", scanContext.getContextName());
@@ -240,10 +273,10 @@ public class ZapScanner implements ZapScan {
         case OPEN_API:
             URL apiDefinitionUrl = secHubWebScanApiConfiguration.getApiDefinitionUrl();
             if (apiDefinitionUrl != null) {
-                clientApiWrapper.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), zapContextId);
+                clientApiWrapper.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
             }
             for (File apiFile : scanContext.getApiDefinitionFiles()) {
-                clientApiWrapper.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), zapContextId);
+                clientApiWrapper.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
             }
             break;
         default:
@@ -283,25 +316,26 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.enableClientCertificate();
     }
 
-    void executeScan(int zapContextId) throws ClientApiException {
-        UserInformation userInfo = setupLoginInsideZapContext(zapContextId);
+    void executeScan() throws ClientApiException {
+        UserInformation userInfo = setupLoginInsideZapContext();
         if (userInfo != null) {
-            runAndWaitForSpiderAsUser(zapContextId, userInfo.zapuserId);
-            runAndWaitForPassiveScan();
+            // This order follows the automation framework full scan order
+            runAndWaitForSpiderAsUser(userInfo.zapuserId);
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAndWaitForAjaxSpiderAsUser(userInfo.userName);
             }
+            runAndWaitForPassiveScan();
             if (scanContext.isActiveScanEnabled()) {
-                runActiveScanAsUser(zapContextId, userInfo.zapuserId);
+                runActiveScanAsUser(userInfo.zapuserId);
             }
         } else {
             runAndWaitForSpider();
-            runAndWaitForPassiveScan();
             if (scanContext.isAjaxSpiderEnabled()) {
                 runAndWaitAjaxSpider();
             }
+            runAndWaitForPassiveScan();
             if (scanContext.isActiveScanEnabled()) {
-                runAndWaitActiveScan(zapContextId);
+                runAndWaitActiveScan();
             }
         }
     }
@@ -319,25 +353,23 @@ public class ZapScanner implements ZapScan {
      * <pre>
      * {@code
      * // Example how to set up one user with a specific session
+     * @formatter:off
      *
      * String zapAuthSessionName = scriptLogin.login(scanContext, clientApiWrapper);
      * String username = scanContext.getTemplateVariables().get(ZapTemplateDataVariableKeys.USERNAME_KEY);
-     * LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.",
-     * scanContext.getContextName()); StringBuilder authCredentialsConfigParams =
-     * new StringBuilder();
-     * authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username))
-     * .append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
-     * clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(),
-     * "^.*"+scanContext.getTargetUrl().getHost()+".*"); UserInformation userInfo =
-     * setupScanUserForZapContext(zapContextId, username,
-     * authCredentialsConfigParams.toString()); }
+     * LOG.info("For scan {}: Setup scan user in ZAP to use authenticated session.", scanContext.getContextName());
+     * StringBuilder authCredentialsConfigParams = new StringBuilder();
+     * authCredentialsConfigParams.append("username=").append(urlEncodeUTF8(username)).append("&sessionName=").append(urlEncodeUTF8(zapAuthSessionName));
+     * clientApiWrapper.addIncludeUrlPatternToContext(scanContext.getContextName(), "^.*"+scanContext.getTargetUrl().getHost()+".*");
+     * UserInformation userInfo = setupScanUserForZapContext(zapContextId, username, authCredentialsConfigParams.toString());
      *
-     * @param zapContextId
+     * @formatter:on
+     *
      * @return UserInformation containing userName and zapUserId or
      *         <code>null</code> if nothing could be configured.
      * @throws ClientApiException
      */
-    UserInformation setupLoginInsideZapContext(int zapContextId) throws ClientApiException {
+    UserInformation setupLoginInsideZapContext() throws ClientApiException {
         if (scanContext.getSecHubWebScanConfiguration().getLogin().isEmpty()) {
             LOG.info("For scan {}: No login section detected.", scanContext.getContextName());
             return null;
@@ -346,12 +378,14 @@ public class ZapScanner implements ZapScan {
         WebLoginConfiguration webLoginConfiguration = scanContext.getSecHubWebScanConfiguration().getLogin().get();
         if (webLoginConfiguration.getBasic().isPresent()) {
             LOG.info("For scan {}: Applying basic authentication config.", scanContext.getContextName());
-            return initBasicAuthentication(zapContextId, webLoginConfiguration.getBasic().get());
+            UserInformation userInformation = initBasicAuthentication(webLoginConfiguration.getBasic().get());
+            loginCounter.increment();
+            return userInformation;
         }
 
         if (scriptLoginConfigured()) {
             LOG.info("For scan {}: Setting up authentcation and session management method for script authentication.", scanContext.getContextName());
-            setupAuthenticationAndSessionManagementMethodForScriptLogin(zapContextId);
+            setupAuthenticationAndSessionManagementMethodForScriptLogin();
 
             LOG.info("For scan {}: Performing script authentication.", scanContext.getContextName());
             // we only want to scan with one valid session
@@ -361,6 +395,7 @@ public class ZapScanner implements ZapScan {
             // multiple users with different sessions must be used
             // See the JavaDoc for an example if this use case appears.
             scriptLogin.login(scanContext, clientApiWrapper);
+            loginCounter.increment();
             return null;
         }
         return null;
@@ -475,7 +510,7 @@ public class ZapScanner implements ZapScan {
      *
      * @throws ClientApiException
      */
-    void runAndWaitActiveScan(int contextId) throws ClientApiException {
+    void runAndWaitActiveScan() throws ClientApiException {
         // Necessary otherwise the active scanner exits with an exception,
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!clientApiWrapper.atLeastOneURLDetected()) {
@@ -501,7 +536,7 @@ public class ZapScanner implements ZapScan {
                                         scanPolicyName,
                                         method,
                                         postData,
-                                        contextId);
+                                        scanContext.getZapContextId());
 		/* @formatter:on */
         waitForActiveScanResults(scanId);
     }
@@ -510,11 +545,10 @@ public class ZapScanner implements ZapScan {
      * Runs the spider with the given user for the given context and waits for the
      * scan to be completed or cancelled.
      *
-     * @param contextId
      * @param userId
      * @throws ClientApiException
      */
-    void runAndWaitForSpiderAsUser(int contextId, int userId) throws ClientApiException {
+    void runAndWaitForSpiderAsUser(int userId) throws ClientApiException {
         String url = scanContext.getTargetUrlAsString();
         String maxchildren = null;
         boolean recurse = true;
@@ -523,7 +557,7 @@ public class ZapScanner implements ZapScan {
         /* @formatter:off */
         int scanId =
                 clientApiWrapper.startSpiderScanAsUser(
-                                            contextId,
+                                            scanContext.getZapContextId(),
                                             userId,
                                             url,
                                             maxchildren,
@@ -559,11 +593,10 @@ public class ZapScanner implements ZapScan {
      * Runs the active scanner with the given user for the given context and waits
      * for the scan to be completed or cancelled.
      *
-     * @param contextId
      * @param userId
      * @throws ClientApiException
      */
-    void runActiveScanAsUser(int contextId, int userId) throws ClientApiException {
+    void runActiveScanAsUser(int userId) throws ClientApiException {
         // Necessary otherwise the active scanner exits with an exception,
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!clientApiWrapper.atLeastOneURLDetected()) {
@@ -583,7 +616,7 @@ public class ZapScanner implements ZapScan {
         int scanId =
                 clientApiWrapper.startActiveScanAsUser(
                                                 url,
-                                                contextId,
+                                                scanContext.getZapContextId(),
                                                 userId,
                                                 recurse,
                                                 scanpolicyname,
@@ -626,6 +659,7 @@ public class ZapScanner implements ZapScan {
      */
     void waitForSpiderResults(int scanId) throws ClientApiException {
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
+        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int progressSpider = 0;
         while (progressSpider < 100) {
@@ -635,6 +669,16 @@ public class ZapScanner implements ZapScan {
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             progressSpider = clientApiWrapper.getSpiderStatusForScan(scanId);
+
+            // if verification is set, check if the scan is still logged in
+            if (verification != null) {
+                if (!clientApiWrapper.isZapLoggedIn(verification)) {
+                    LOG.info("For scan {}: Performing a re-login.", scanContext.getContextName());
+                    clientApiWrapper.pauseSpiderScan(scanId);
+                    setupLoginInsideZapContext();
+                    clientApiWrapper.resumeSpiderScan(scanId);
+                }
+            }
             LOG.info("For scan {}: Spider progress {}%", scanContext.getContextName(), progressSpider);
         }
         /* stop spider - otherwise running in background */
@@ -672,11 +716,12 @@ public class ZapScanner implements ZapScan {
      * Wait for the results of the active scan. Periodically checks the progress of
      * the active scan.
      *
-     * @param scanId
+     * @param scanId the scan id of the active scan
      * @throws ClientApiException
      */
     void waitForActiveScanResults(int scanId) throws ClientApiException {
         ZapPDSEventHandler zapPDSEventHandler = scanContext.getZapPDSEventHandler();
+        WebLoginVerificationConfiguration verification = scanContext.getVerificationFromConfig();
 
         int progressActive = 0;
         while (progressActive < 100) {
@@ -686,6 +731,16 @@ public class ZapScanner implements ZapScan {
             }
             systemUtil.waitForMilliseconds(CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS);
             progressActive = clientApiWrapper.getActiveScannerStatusForScan(scanId);
+
+            // if verification is set, check if the scan is still logged in
+            if (verification != null) {
+                if (!clientApiWrapper.isZapLoggedIn(verification)) {
+                    LOG.info("For scan {}: Performing a re-login.", scanContext.getContextName());
+                    clientApiWrapper.pauseActiveScan(scanId);
+                    setupLoginInsideZapContext();
+                    clientApiWrapper.resumeActiveScan(scanId);
+                }
+            }
             LOG.info("For scan {}: Active scan progress {}%", scanContext.getContextName(), progressActive);
 
         }
@@ -693,7 +748,29 @@ public class ZapScanner implements ZapScan {
         LOG.info("For scan {}: Active scan completed.", scanContext.getContextName());
     }
 
-    private UserInformation initBasicAuthentication(int zapContextId, BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {
+    private void informUserAboutAmountOfLogins() {
+        int count = loginCounter.getCount();
+        if (count == 0) {
+            return;
+        }
+
+        SecHubMessage message;
+        if (count == 1) {
+            /* no re-login was performed and user was logged in once */
+            LOG.info("For scan: {}. The user was logged in once before the scan.", scanContext.getContextName());
+            message = new SecHubMessage(SecHubMessageType.INFO, "The user was logged in once before the scan.");
+        } else {
+            /* at least one re-login was performed */
+            LOG.warn("For scan: {}. The user was logged in {} times during the scan.", scanContext.getContextName(), count);
+            message = new SecHubMessage(SecHubMessageType.WARNING, "The configured user was logged in " + count
+                    + " times during the scan. If the number of login attempts is large, consider configuring excludes and/or a logout section in the SecHub configuration file to avoid any logout.");
+        }
+
+        /* inform user about amount of logins */
+        scanContext.getZapProductMessageHelper().writeSingleProductMessage(message);
+    }
+
+    private UserInformation initBasicAuthentication(BasicLoginConfiguration basicLoginConfiguration) throws ClientApiException {
         String realm = "";
         if (basicLoginConfiguration.getRealm().isPresent()) {
             realm = basicLoginConfiguration.getRealm().get();
@@ -707,14 +784,14 @@ public class ZapScanner implements ZapScan {
 		/* @formatter:on */
         LOG.info("For scan {}: Setting basic authentication.", scanContext.getContextName());
         String authMethodName = ZapAuthenticationType.HTTP_BASIC_AUTHENTICATION.getZapAuthenticationMethod();
-        clientApiWrapper.setAuthenticationMethod(zapContextId, authMethodName, authMethodConfigParams.toString());
+        clientApiWrapper.setAuthenticationMethod(scanContext.getZapContextId(), authMethodName, authMethodConfigParams.toString());
 
         String methodName = ZapSessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getZapSessionManagementMethod();
 
         // methodconfigparams in case of http basic auth is null, because it is
         // configured automatically
         String methodconfigparams = null;
-        clientApiWrapper.setSessionManagementMethod(zapContextId, methodName, methodconfigparams);
+        clientApiWrapper.setSessionManagementMethod(scanContext.getZapContextId(), methodName, methodconfigparams);
 
         /* @formatter:off */
         String username = new String(basicLoginConfiguration.getUser());
@@ -724,27 +801,27 @@ public class ZapScanner implements ZapScan {
                                    .append("&password=").append(urlEncodeUTF8(password));
         /* @formatter:on */
 
-        return setupScanUserForZapContext(zapContextId, username, authCredentialsConfigParams.toString());
+        return setupScanUserForZapContext(username, authCredentialsConfigParams.toString());
     }
 
-    private UserInformation setupScanUserForZapContext(int zapContextId, String username, String authCredentialsConfigParams) throws ClientApiException {
-        int userId = clientApiWrapper.createNewUser(zapContextId, username);
+    private UserInformation setupScanUserForZapContext(String username, String authCredentialsConfigParams) throws ClientApiException {
+        int userId = clientApiWrapper.createNewUser(scanContext.getZapContextId(), username);
 
         LOG.info("For scan {}: Setting up user.", scanContext.getContextName());
-        clientApiWrapper.configureAuthenticationCredentials(zapContextId, userId, authCredentialsConfigParams.toString());
+        clientApiWrapper.configureAuthenticationCredentials(scanContext.getZapContextId(), userId, authCredentialsConfigParams.toString());
         boolean enabled = true;
-        clientApiWrapper.setUserEnabled(zapContextId, userId, enabled);
+        clientApiWrapper.setUserEnabled(scanContext.getZapContextId(), userId, enabled);
 
-        clientApiWrapper.setForcedUser(zapContextId, userId);
+        clientApiWrapper.setForcedUser(scanContext.getZapContextId(), userId);
         clientApiWrapper.setForcedUserModeEnabled(true);
 
         UserInformation userInfo = new UserInformation(username, userId);
         return userInfo;
     }
 
-    private void setupAuthenticationAndSessionManagementMethodForScriptLogin(int zapContextId) throws ClientApiException {
-        clientApiWrapper.setManualAuthenticationMethod(zapContextId);
-        clientApiWrapper.setCookieBasedSessionManagementMethod(zapContextId);
+    private void setupAuthenticationAndSessionManagementMethodForScriptLogin() throws ClientApiException {
+        clientApiWrapper.setManualAuthenticationMethod(scanContext.getZapContextId());
+        clientApiWrapper.setCookieBasedSessionManagementMethod(scanContext.getZapContextId());
     }
 
     private boolean isAjaxSpiderStopped(String status) {

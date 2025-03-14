@@ -17,7 +17,7 @@ tags:
   - name: User Administration
     description: Operations relevant to user administration
   - name: Project Administration
-    description: Operations relevant to project administration
+    description: Operations relevant to project administration by administrators
   - name: User Self Service
     description: Operations relevant to the authenticated user
   - name: SecHub Execution
@@ -25,7 +25,7 @@ tags:
   - name: Sign Up
     description: Operations relevant to user registration
   - name: Job Administration
-    description: Operations relevant to job administration
+    description: Operations relevant to job administration by administrators
   - name: Testing
     description: Operations relevant to testing
   - name: Configuration
@@ -35,7 +35,7 @@ tags:
   - name: Other
     description: All other use cases
   - name: Job Management
-    description: Operations relevant to manage jobs
+    description: Operations relevant to manage jobs by an user
 
 components:
   securitySchemes:
@@ -661,7 +661,20 @@ components:
         password:
           description: password
           type: string
-          
+
+    WebLoginVerificationConfiguration:
+      title: WebLoginVerificationConfiguration
+      description: Verification definition for web login
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/URI'
+        responseCode:
+          type: int
+          default: 200
+      required:
+        - url
+
     WebLoginTOTPConfiguration:
       title: WebLoginTOTPConfiguration
       description: TOTP definition
@@ -720,6 +733,8 @@ components:
           $ref: '#/components/schemas/URI'
         totp:
           $ref: '#/components/schemas/WebLoginTOTPConfiguration'
+        verification:
+            $ref: '#/components/schemas/WebLoginVerificationConfiguration'
       required:
         - url
 
@@ -2761,6 +2776,47 @@ paths:
           description: "200"
       tags:
         - User Self Service
+  /api/management/user/email/{emailAddress}:
+    post:
+      summary: User updates his email address
+      description: The authenticated user updates his email address
+      operationId: userUpdatesEmailAddress
+      parameters:
+        - name: emailAddress
+          description: The new email address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "No content"
+        "400":
+          description: "Bad request"
+      tags:
+        - User Self Service
+
+  /api/anonymous/email/verify/{token}:
+    get:
+      summary: Anonymous user verifies new email address
+      description: The unauthenticated user verifies new email address in token
+      operationId: anonymousUserVerifiesEmailAddress
+      parameters:
+        - name: token
+          description: The token to verify the email address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "No content"
+        "302":
+          description: "Redirect"
+        "400":
+          description: "Bad request"
+      tags:
+        - User Self Service
 
   ######################
   ## SecHub Execution ##
@@ -4293,3 +4349,4 @@ paths:
       tags:
         - Job Management
       x-accepts: application/json
+

@@ -37,6 +37,9 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
         LOG.debug("received domain request: {}", request);
 
         switch (messageId) {
+        case JOB_CREATED:
+            handleJobCreated(request);
+            break;
         case JOB_STARTED:
             handleJobStarted(request);
             break;
@@ -76,7 +79,13 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
     @IsReceivingAsyncMessage(MessageID.JOB_STARTED)
     private void handleJobStarted(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_STARTED_DATA);
-        createService.createByMessage(message, JobStatus.RUNNING);
+        createService.createOrUpdateByMessage(message, JobStatus.RUNNING);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_CREATED)
+    private void handleJobCreated(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_CREATED_DATA);
+        createService.createOrUpdateByMessage(message, JobStatus.CREATED);
     }
 
     @IsReceivingAsyncMessage(MessageID.JOB_DONE)

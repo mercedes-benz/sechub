@@ -64,7 +64,7 @@ public class JobCancelService {
         userInputAssertion.assertIsValidUserId(userId);
 
         auditLogService.log("User {} requested cancellation of job {}", userId, jobUUID);
-        assertUserAllowedCancelJob(jobUUID, userId);
+        assertUserIsAllowedToCancelJob(jobUUID, userId);
 
         JobMessage message = buildMessage(jobUUID);
 
@@ -72,7 +72,7 @@ public class JobCancelService {
         informCancelJobRequested(message);
     }
 
-    private void assertUserAllowedCancelJob(UUID jobUUID, String userId) {
+    private void assertUserIsAllowedToCancelJob(UUID jobUUID, String userId) {
         JobInformation jobInfo = jobInformationRepository.findById(jobUUID).orElseThrow(() -> {
             LOG.debug("Job not found: {}", jobUUID);
             return new NotFoundException("Job not found: " + jobUUID);

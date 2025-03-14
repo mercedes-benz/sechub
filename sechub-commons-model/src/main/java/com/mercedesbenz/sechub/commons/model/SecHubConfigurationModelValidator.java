@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 
 public class SecHubConfigurationModelValidator {
 
@@ -300,6 +301,7 @@ public class SecHubConfigurationModelValidator {
         handleApi(context, webScan);
         handleHTTPHeaders(context, webScan);
         handleLoginData(context, webScan);
+        handleLogout(context, webScan);
 
     }
 
@@ -512,7 +514,25 @@ public class SecHubConfigurationModelValidator {
         }
         WebLoginConfiguration login = loginOpt.get();
         handleTOTP(context, login);
+        handleLoginVerification(context, login);
 
+    }
+
+    private void handleLogout(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        WebLogoutConfiguration logout = webScan.getLogout();
+        if (logout == null) {
+            return;
+        }
+
+        if (logout.getXpath() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_XPATH + "' must be present if logout was configured!");
+        }
+
+        if (logout.getHtmlElement() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_HTML_ELEMENT + "' must be present if logout was configured!");
+        }
     }
 
     private void handleTOTP(InternalValidationContext context, WebLoginConfiguration login) {
@@ -531,6 +551,20 @@ public class SecHubConfigurationModelValidator {
         }
         if (totp.getHashAlgorithm() == null) {
             context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'hashAlgorithm' must never be null if TOTP shall be used!");
+        }
+    }
+
+    private void handleLoginVerification(InternalValidationContext context, WebLoginConfiguration login) {
+        WebLoginVerificationConfiguration verification = login.getVerification();
+        if (verification == null) {
+            return;
+        }
+        if (verification.getUrl() == null) {
+            context.result.addError(WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID,
+                    "The verification 'url' must never be null if verification shall be used!");
+        }
+        if (verification.getResponseCode() < 199 || verification.getResponseCode() > 399) {
+            context.result.addError(WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID, "The verification 'responseCode' must be between 199 and 399!");
         }
     }
 

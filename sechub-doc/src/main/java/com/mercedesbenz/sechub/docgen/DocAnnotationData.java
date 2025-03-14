@@ -53,6 +53,7 @@ public class DocAnnotationData implements Comparable<DocAnnotationData> {
      * Here we can add some additional options - if necessary
      */
     public Map<String, String> options = new TreeMap<>();
+    public ConfigurationPropertiesData propertiesData;
 
     @Override
     public int hashCode() {

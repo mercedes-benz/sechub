@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.pds.usecase.PDSDocumentationScopeConstants.*;
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.time.Duration;
@@ -19,7 +20,7 @@ public class PDSStreamContentUpdateChecker {
 
     private static final int DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
 
-    @PDSMustBeDocumented("PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid")
+    @PDSMustBeDocumented(value = "PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid", scope = SCOPE_JOB)
     @Value("${pds.config.job.stream.cachetime:" + DEFAULT_CACHE_REFRESH_IN_MILLISECONDS + "}")
     private int streamDataCacheTimeMilliseconds = DEFAULT_CACHE_REFRESH_IN_MILLISECONDS;
 

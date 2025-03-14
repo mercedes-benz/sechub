@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.zapwrapper.config.ZAPAcceptedBrowserId;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.FileUtilities;
 
-public class CommandLineSettings {
+public class CommandLineSettings implements ZapWrapperConfiguration {
     @Parameter(names = { "--help" }, description = "Shows help and provides information on how to use the wrapper.", help = true)
     private boolean help;
 
@@ -213,5 +213,12 @@ public class CommandLineSettings {
 
     public String getPacFilePath() {
         return pacFilePath;
+    }
+
+    @Parameter(names = { "--no-headless" }, description = "Set this option to disable headless mode.", required = false)
+    private boolean noHeadless;
+
+    public boolean isNoHeadless() {
+        return noHeadless;
     }
 }

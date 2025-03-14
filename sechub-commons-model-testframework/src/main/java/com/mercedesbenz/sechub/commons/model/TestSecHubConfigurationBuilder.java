@@ -148,6 +148,11 @@ public class TestSecHubConfigurationBuilder {
             TestSecHubConfigurationBuilder.this.testData.webConfig.clientCertificate = Optional.ofNullable(clientCertificateConfig);
             return this;
         }
+
+        public TestWebConfigurationBuilder logout(WebLogoutConfiguration logoutConfig) {
+            TestSecHubConfigurationBuilder.this.testData.webConfig.logout = logoutConfig;
+            return this;
+        }
     }
 
     public TestSecretScanConfigurationBuilder secretScanConfig() {

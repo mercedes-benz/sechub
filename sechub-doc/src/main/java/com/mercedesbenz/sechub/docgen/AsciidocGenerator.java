@@ -3,7 +3,9 @@ package com.mercedesbenz.sechub.docgen;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -35,6 +37,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 public class AsciidocGenerator implements Generator {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AsciidocGenerator.class);
 
     ClasspathDataCollector collector;
     DocGenTextFileWriter writer = new DocGenTextFileWriter();
@@ -80,7 +84,7 @@ public class AsciidocGenerator implements Generator {
         String path = args[0];
 
         AsciidocGenerator asciidocGenerator = new AsciidocGenerator();
-        asciidocGenerator.generate(path);
+        asciidocGenerator.generate(path, new AsciidocGeneratorExecutor(false)); // throws directly all exceptions
 
     }
 
@@ -112,37 +116,97 @@ public class AsciidocGenerator implements Generator {
         public SecureEnvironmentVariableKeyValueRegistry pdsEnvVariableRegistry;
     }
 
-    private void generate(String path) throws IOException {
+    void generate(String path, AsciidocGeneratorExecutor executor) throws IOException {
         GenContext context = initContext(path);
 
         /* SECHUB */
-        generateUseCaseEventData(context); // must be done initial
+        executor.execute("usecase-eventdat", () -> generateUseCaseEventData(context)); // must be done initial
 
-        generateExampleFiles(context);
-        generateClientParts(context);
-        fetchMustBeDocumentParts();
-        generateSecHubSystemPropertiesDescription(context);
-        generateSecHubJavaLaunchExample(context);
-        generateSecHubScheduleDescription(context);
-        generateSecHubMockPropertiesDescription(context);
+        executor.execute("example-files", () -> generateExampleFiles(context));
+        executor.execute("client-parts", () -> generateClientParts(context));
+        executor.execute("fetch-must-be-documented", () -> fetchMustBeDocumentParts());
+        executor.execute("system-properties-description", () -> generateSecHubSystemPropertiesDescription(context));
+        executor.execute("java-launch-examples", () -> generateSecHubJavaLaunchExample(context));
+        executor.execute("schedule-description", () -> generateSecHubScheduleDescription(context));
+        executor.execute("mock-properties-description", () -> generateSecHubMockPropertiesDescription(context));
 
-        generateSecHubProfilesOverview(context);
+        executor.execute("profiles-overview", () -> generateSecHubProfilesOverview(context));
 
-        generateSecHubModuleAndModuleGroupFiles(context);
+        executor.execute("module-and-modulegroup-files", () -> generateSecHubModuleAndModuleGroupFiles(context));
 
         /* PDS */
-        generatePDSUseCaseFiles(context);
-        generatePDSSystemPropertiesDescription(context);
-        generatePDSExecutorConfigurationParamters(context);
+        executor.execute("pds-usecase-files", () -> generatePDSUseCaseFiles(context));
+        executor.execute("pds-system-properties-description", () -> generatePDSSystemPropertiesDescription(context));
+        executor.execute("pds-executor-configuration-parameters", () -> generatePDSExecutorConfigurationParamters(context));
 
         /* PDS-solution */
-        generateCheckmarxPDSSolutionParts(context);
+        executor.execute("checkmarx-pds-solutionparts", () -> generateCheckmarxPDSSolutionParts(context));
 
         /* Parts necessary to have special integration tests run */
-        generateMessagingFiles(context);
-        generateUseCaseFiles(context);
+        executor.execute("messaging-files (needs integration tests)", () -> generateMessagingFiles(context));
+        executor.execute("usecase-files (needs integration tests)", () -> generateUseCaseFiles(context));
 
-        generateAndCopySystemTestsDocFiles(context);
+        executor.execute("systemtest-doc-files (needs system integration tests)", () -> generateAndCopySystemTestsDocFiles(context));
+
+        int countOfFailures = executor.getCountOfFailures();
+
+        if (countOfFailures > 0) {
+            throw new IllegalStateException(executor.getFailureDescription());
+        }
+    }
+
+    interface AsciidcGeneratorCall {
+        public void generate() throws IOException;
+    }
+
+    static class AsciidocGeneratorExecutor {
+
+        private boolean onlyCountFailures;
+        private List<String> problems = new ArrayList<>();
+
+        AsciidocGeneratorExecutor(boolean onlyCountFailures) {
+            this.onlyCountFailures = onlyCountFailures;
+        }
+
+        private void execute(String name, AsciidcGeneratorCall generatorCall) throws IOException {
+            try {
+                generatorCall.generate();
+            } catch (Exception e) {
+                handleError(name, e);
+            }
+        }
+
+        private void handleError(String name, Exception e) throws IOException {
+            String message = "Generation of '" + name + "' failed:" + e.getMessage();
+            if (onlyCountFailures) {
+                logger.error(message, e);
+                problems.add(message);
+            } else {
+                if (e instanceof IOException) {
+                    throw (IOException) e;
+                }
+                throw new IOException(message, e);
+            }
+        }
+
+        public int getCountOfFailures() {
+            return problems.size();
+        }
+
+        public String getFailureDescription() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Following ");
+            sb.append(getCountOfFailures());
+            sb.append(" failure(s) happened at generation time:\n");
+            for (String problem : problems) {
+                sb.append("- ");
+                sb.append(problem);
+                sb.append("\n");
+            }
+            sb.append("\nFor more details look at the log output");
+
+            return sb.toString();
+        }
     }
 
     private void generateAndCopySystemTestsDocFiles(GenContext context) throws IOException {
