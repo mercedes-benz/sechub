@@ -2,6 +2,7 @@
 ![Java build (no eclipse parts)](https://github.com/mercedes-benz/sechub-plugin-eclipse/workflows/Java%20build%20(no%20eclipse%20parts)/badge.svg)
 
 # SecHub Eclipse Plugin
+
 ![SecHub Logo](https://github.com/mercedes-benz/sechub-plugin-eclipse/blob/master/sechub-eclipse-other/images/sechub-logo-big.png)
 
 ## Intended Usage
