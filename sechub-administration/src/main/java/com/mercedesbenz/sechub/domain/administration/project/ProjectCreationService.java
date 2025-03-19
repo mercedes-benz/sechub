@@ -94,6 +94,8 @@ public class ProjectCreationService {
 
         User ownerUser = foundOwner.get();
         project.owner = ownerUser;
+        project.getUsers().add(ownerUser); // we always add the owner as user - means directly accessible
+
         /* add only accepted/valid URIs - sanitize */
         whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
