@@ -39,6 +39,8 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
     private ProjectAccessLevel newAccessLevel;
 
+    private String projectOwnerUserId;
+
     @Override
     public Class<ProjectMessage> getJSONTargetClass() {
         return ProjectMessage.class;
@@ -92,6 +94,10 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
         this.whitelist = whitelist;
     }
 
+    public void setProjectOwnerUserId(String projectOwnerUserId) {
+        this.projectOwnerUserId = projectOwnerUserId;
+    }
+
     public Set<URI> getWhitelist() {
         return whitelist;
     }
@@ -118,6 +124,10 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
     public ProjectAccessLevel getNewAccessLevel() {
         return newAccessLevel;
+    }
+
+    public String getProjectOwnerUserId() {
+        return projectOwnerUserId;
     }
 
 }

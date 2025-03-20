@@ -406,13 +406,14 @@ public class AsUser {
     }
 
     /**
-     * Assigns owner to a project
+     * Changes owner of a project - existing owner will still have access to
+     * project, but only as a normal user
      *
      * @param targetUser
      * @param project
      * @return this
      */
-    public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
+    public AsUser changeProjectOwnerOfProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
         getRestHelper().postJson(getUrlBuilder().buildAdminChangesProjectOwnerUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;

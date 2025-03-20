@@ -94,6 +94,7 @@ public class ProjectCreationService {
 
         User ownerUser = foundOwner.get();
         project.owner = ownerUser;
+
         /* add only accepted/valid URIs - sanitize */
         whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
@@ -105,23 +106,27 @@ public class ProjectCreationService {
         /* store */
         persistenceService.saveInOwnTransaction(project);
 
-        sendProjectCreatedEvent(projectId, whitelist);
-        sendRefreshUserAuth(ownerUser);
+        sendProjectCreatedEvent(projectId, whitelist, ownerUser);
+        sendAssignOwnerAsUserOfProjectEvent(ownerUser, project); // the assignment will trigger owner role calculation afterwards, so we do not
+                                                                 // need to send a recalculation event here
 
     }
 
-    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-    private void sendRefreshUserAuth(User ownerUser) {
-        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
+    @IsSendingAsyncMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT)
+    private void sendAssignOwnerAsUserOfProjectEvent(User owner, Project project) {
+
+        DomainMessage request = DomainMessageFactory.createAssignOwnerAsUserToProject(owner.getName(), project.getId());
+
+        eventBus.sendAsynchron(request);
     }
 
     @IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
-    private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
+    private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist, User ownerUser) {
         DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
         ProjectMessage message = new ProjectMessage();
         message.setProjectId(projectId);
         message.setWhitelist(whitelist);
-
+        message.setProjectOwnerUserId(ownerUser.getName());
         request.set(MessageDataKeys.PROJECT_CREATION_DATA, message);
 
         eventBus.sendAsynchron(request);

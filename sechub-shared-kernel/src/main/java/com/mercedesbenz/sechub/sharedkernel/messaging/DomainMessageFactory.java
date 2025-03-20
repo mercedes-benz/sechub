@@ -21,6 +21,16 @@ public class DomainMessageFactory {
 
     }
 
+    public static DomainMessage createAssignOwnerAsUserToProject(String ownerUserId, String projectId) {
+        DomainMessage request = new DomainMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT);
+        UserMessage message = new UserMessage();
+        message.setProjectId(projectId);
+        message.setUserId(ownerUserId);
+        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, message);
+
+        return request;
+    }
+
     public static DomainMessage createRequestRoleCalculation(String userId) {
         DomainMessage roleChangeRequest = new DomainMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION);
         UserMessage userMessage = new UserMessage();

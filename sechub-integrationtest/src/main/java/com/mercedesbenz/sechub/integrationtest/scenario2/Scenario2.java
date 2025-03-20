@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
  * <pre>
  * USER_1, is automatically registered, created and ready to go... but not assigned to any project
  * USER_2, is automatically registered, created and ready to go... but not assigned to any project
+ * OWNER_1, is automatically registered, created and owner of each project
  *
  * PROJECT_1
  *      - is automatically created
@@ -33,10 +34,13 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
  * PROJECT_2
  *   - is automatically created
  *   - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *   - has OWNER_1 as owner
  *
  * PROJECT_3
  *   - is automatically created
  *   - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *   - has OWNER_1 as owner
+ *
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -45,7 +49,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
 public class Scenario2 extends AbstractGrowingSecHubServerTestScenario {
 
     /**
-     * Owner 1 is registered on startup and is default owner for created projects
+     * Owner 1 is registered on startup and is owner for all created projects inside
+     * this scenario
      */
     static final TestUser OWNER_1 = createTestUser(Scenario2.class, "owner1");
 
@@ -60,17 +65,18 @@ public class Scenario2 extends AbstractGrowingSecHubServerTestScenario {
     static final TestUser USER_2 = createTestUser(Scenario2.class, "user2");
 
     /**
-     * Project 1 is created on startup, but has no users
+     * Project 1 is created on startup, but has no users - except owner
      */
     static final TestProject PROJECT_1 = createTestProject(Scenario2.class, "project1");
 
     /**
-     * Project 2 is created on startup, but has no users
+     * Project 2 is created on startup, but has no users- except owner
      */
     public static final TestProject PROJECT_2 = createTestProject(Scenario2.class, "project2");
 
     /**
-     * Project 3 is created on startup, but has no users and also NO whitelist!
+     * Project 3 is created on startup, but has no users - except owner - and also
+     * NO whitelist!
      */
     public static final TestProject PROJECT_3 = createTestProject(Scenario2.class, "project3", false);
 

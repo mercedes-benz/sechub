@@ -29,8 +29,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.StaticTestScenario;
  * <pre>
  * PROJECT_1_ is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ * - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to project1
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -56,7 +57,6 @@ public class Scenario4 extends AbstractSecHubServerTestScenario implements Stati
 		initializer().
 			createUser(USER_1).
 			createProject(PROJECT_1, USER_1).
-			assignUserToProject(PROJECT_1,USER_1).
 			addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_1)
 			;
 		/* @formatter:on */

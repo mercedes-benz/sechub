@@ -41,14 +41,17 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST profile 12}, {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_2
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY profile 14}, {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_3
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES profile 15} assigned (we do NOT use {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} here, because the scripts inside DOES NEED sources uploaded!)
+ *  - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1, PROJECT_2, PROJECT_3
+ * USER_1, is automatically registered, created and owner of PROJECT_1, PROJECT_2, PROJECT_3
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -96,16 +99,13 @@ public class Scenario17 extends AbstractGrowingSecHubServerTestScenario implemen
             createProject(PROJECT_1, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST,PROJECT_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1).
 
             createProject(PROJECT_2, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY, PROJECT_2).
             addProjectIdsToDefaultExecutionProfile(PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT, PROJECT_2).
-            assignUserToProject(PROJECT_2,USER_1).
 
             createProject(PROJECT_3, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES, PROJECT_3).
-            assignUserToProject(PROJECT_3,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES, PROJECT_3)
             ;
         /* @formatter:on */
     }

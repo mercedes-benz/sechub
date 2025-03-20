@@ -33,24 +33,31 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS profile 28}
+ *  - has USER_1 as owner
  *
  * PROJECT_2
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS profile 28}, {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST profile 12} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_3
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_29_PDS_PREPARE_FAILING profile 29 (failing preparation)}, {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST profile 12} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_4
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_30_PDS_PREPARE_SCRIPT_EXIT_5 profile 30 (exit 5 preparation)}, {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST profile 12} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_5
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS profile 31} assigned
+ *  - has USER_1 as owner
  *
  * PROJECT_6
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS profile 32}, {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile 2} assigned
  *  - Info: The executor configuration has `pds.add.scriptlog.to.pdslog.enabled=true` here, so log output in PDS script is given back to PDS log automatically
+ *  - has USER_2 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1, PROJECT_2 and PROJECT_3
+ * USER_1, is automatically registered, created and owner of PROJECT_1, PROJECT_2, PROJECT_3, PROJECT_4 and PROJECT_5
+ * USER_2, is automatically registered, created and owner of PROJECT_6
  *
  * </pre>
  *
@@ -129,31 +136,25 @@ public class Scenario22 extends AbstractGrowingSecHubServerTestScenario implemen
 
                 createProject(PROJECT_1, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS, PROJECT_1).
-                assignUserToProject(PROJECT_1,USER_1).
 
                 createProject(PROJECT_2, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS, PROJECT_2).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_2).
-                assignUserToProject(PROJECT_2, USER_1).
 
                 createProject(PROJECT_3, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_29_PDS_PREPARE_FAILING, PROJECT_3).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_3).
-                assignUserToProject(PROJECT_3, USER_1).
 
                 createProject(PROJECT_4, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_30_PDS_PREPARE_EXIT_5, PROJECT_4).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_4).
-                assignUserToProject(PROJECT_4, USER_1).
 
                 createProject(PROJECT_5, USER_1).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS, PROJECT_5).
-                assignUserToProject(PROJECT_5, USER_1).
 
                 createProject(PROJECT_6, USER_2).
                 addProjectIdsToDefaultExecutionProfile(PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS, PROJECT_6).
-                addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN, PROJECT_6).
-                assignUserToProject(PROJECT_6, USER_2);
+                addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN, PROJECT_6);
         ;
         /* @formatter:on */
     }

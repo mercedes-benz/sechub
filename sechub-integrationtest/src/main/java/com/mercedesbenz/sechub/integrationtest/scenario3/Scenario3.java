@@ -24,10 +24,11 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
  * <pre>
  * PROJECT_1 is automatically created
  *    - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *    - has USER_1 as owner
  *
  * PROJECT_2 is automatically created
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  * USER_2, is automatically registered, and created
  * USER_3, is automatically registered, and created
  * </pre>
@@ -40,7 +41,8 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
     public static final String PREFIX_MAIN_ID = "s03";
 
     /**
-     * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
+     * User 1 is registered on startup, also owner of {@link #PROJECT_1} and
+     * {@link #PROJECT_2}
      */
     public static final TestUser USER_1 = createTestUser(Scenario3.class, "user1");
     public static final TestUser USER_2 = createTestUser(Scenario3.class, "user2");
@@ -61,7 +63,6 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
 			createUser(USER_3).
 			createProject(PROJECT_1, USER_1).
 			createProject(PROJECT_2, USER_1).
-			assignUserToProject(PROJECT_1, USER_1).
 			addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_1)
 			;
 

@@ -101,8 +101,8 @@ public class TemplateScenario1IntTest {
     @Test
     void template_crud_and_healthcheck_test() {
         /* prepare */
-        as(SUPER_ADMIN).createProject(project, SUPER_ADMIN).assignUserToProject(SUPER_ADMIN, Scenario1.PROJECT_1); // not done in this scenario
-                                                                                                                   // automatically
+        as(SUPER_ADMIN).createProject(project, SUPER_ADMIN);
+
         /* check preconditions */
         assertTemplateNotInsideTemplateList();
 

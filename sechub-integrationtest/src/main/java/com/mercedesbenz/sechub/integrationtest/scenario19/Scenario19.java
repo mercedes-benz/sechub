@@ -21,12 +21,11 @@ import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
  * In this scenario following is automatically initialized:
  *
  * <pre>
- * USER_1, is automatically registered, created and ready to go
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  *
  * PROJECT_1
  *      - is automatically created
- *      - Owner is USER_1
- *      - USER_1 is assigned to this project
+ *      - has USER_1 as owner
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -49,9 +48,7 @@ public class Scenario19 extends AbstractGrowingSecHubServerTestScenario {
         /* @formatter:off */
 		initializer().
 			createUser(USER_1).
-			createProject(PROJECT_1, USER_1).
-			assignUserToProject(PROJECT_1, USER_1)
-
+			createProject(PROJECT_1, USER_1)
 			;
 		/* @formatter:on */
     }

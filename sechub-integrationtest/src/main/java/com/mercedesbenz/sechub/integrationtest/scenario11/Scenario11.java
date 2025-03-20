@@ -33,8 +33,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1 is automatically created
  *    - has execution {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS profile 5} assigned
+ *    - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  * </pre>
  *
  * c) The error and input streams will contain additional data. Those
@@ -63,8 +64,7 @@ public class Scenario11 extends AbstractGrowingSecHubServerTestScenario implemen
         initializer().
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,PROJECT_1)
             ;
         /* @formatter:on */
     }
