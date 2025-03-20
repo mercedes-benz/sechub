@@ -60,8 +60,8 @@ public class ProjectChangeOwnerService {
 					description = "The service will set the user as the owner of the project. If user does not have ROLE_OWNER it will obtain it. The old owner will loose project ownership."))
 	/* @formatter:on */
     public void changeProjectOwner(String newOnwerUserId, String projectId) {
-        LOG.info("User {} triggers project owner change - user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(newOnwerUserId, 30),
-                logSanitizer.sanitize(projectId, 30));
+        LOG.info("User {} triggers project owner change - user {} shall become owner of project {}", userContextService.getUserId(),
+                logSanitizer.sanitize(newOnwerUserId, 30), logSanitizer.sanitize(projectId, 30));
 
         assertion.assertIsValidUserId(newOnwerUserId);
         assertion.assertIsValidProjectId(projectId);

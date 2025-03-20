@@ -79,9 +79,11 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser isAssignedToProject(TestProject project) {
-        if (!internalIsAssignedToProject(project)) {
-            fail("User " + user.getUserId() + " is NOT assigned to project " + project.getProjectId());
-        }
+        executeResilient(() -> {
+            if (!internalIsAssignedToProject(project)) {
+                fail("User " + user.getUserId() + " is NOT assigned to project " + project.getProjectId());
+            }
+        });
         return this;
     }
 

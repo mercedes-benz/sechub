@@ -43,7 +43,7 @@ public class ProjectAdministrationMessageHandler implements AsynchronMessageHand
         String userId = message.getUserId();
         String projectId = message.getProjectId();
 
-        assignUserService.assignUserToProject(userId, projectId);
+        assignUserService.assignUserToProject(userId, projectId, false); // we do not fail if owner is already assigned to project!
     }
 
 }
