@@ -53,7 +53,8 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
         }
 
         createProjects(context);
-        assignAdminAsUserToProjects(context);
+        // owner has now also access to project, means no user to project assignment
+        // necessary any longer
 
         Map<String, List<UUID>> profileIdsToExecutorUUIDs = createExecutorConfigurationsAndMapToProfileIds(context);
         createProfilesAndAssignToProjects(context);
@@ -303,24 +304,6 @@ public class SystemTestRuntimeLocalSecHubProductConfigurator {
             productExecutionProfile.setConfigurations(productExecutorConfigs);
 
             client.withConfigurationApi().adminUpdateExecutionProfile(profileId, productExecutionProfile);
-        }
-    }
-
-    private void assignAdminAsUserToProjects(SystemTestRuntimeContext context) throws ApiException {
-        SecHubConfigurationDefinition config = context.getLocalSecHubConfigurationOrFail();
-        if (config.getProjects().isEmpty()) {
-            return;
-        }
-
-        SecHubClient client = context.getLocalAdminSecHubClient();
-        String userId = client.getUserId();
-        for (ProjectDefinition projectDefinition : config.getProjects().get()) {
-            String projectId = projectDefinition.getName();
-            if (context.isDryRun()) {
-                LOG.info("Dry run: assign user '{}' to project '{}' is skipped", userId, projectId);
-                continue;
-            }
-            client.withProjectAdministrationApi().adminAssignUserToProject(projectId, userId);
         }
     }
 

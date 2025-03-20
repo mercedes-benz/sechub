@@ -19,12 +19,12 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.AlreadyExistsException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
-import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
@@ -107,19 +107,15 @@ public class ProjectCreationService {
         persistenceService.saveInOwnTransaction(project);
 
         sendProjectCreatedEvent(projectId, whitelist, ownerUser);
-        sendAssignOwnerAsUserOfProjectEvent(projectId, ownerUser); // the assignment will trigger owner role calculation afterwards, so we do not
-                                                                   // need to send a recalculation event here
+        sendAssignOwnerAsUserOfProjectEvent(ownerUser, project); // the assignment will trigger owner role calculation afterwards, so we do not
+                                                                 // need to send a recalculation event here
 
     }
 
     @IsSendingAsyncMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT)
-    private void sendAssignOwnerAsUserOfProjectEvent(String projectId, User owner) {
+    private void sendAssignOwnerAsUserOfProjectEvent(User owner, Project project) {
 
-        DomainMessage request = new DomainMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT);
-        UserMessage message = new UserMessage();
-        message.setProjectId(projectId);
-        message.setUserId(owner.getName());
-        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, message);
+        DomainMessage request = DomainMessageFactory.createAssignOwnerAsUserToProject(owner.getName(), project.getId());
 
         eventBus.sendAsynchron(request);
     }

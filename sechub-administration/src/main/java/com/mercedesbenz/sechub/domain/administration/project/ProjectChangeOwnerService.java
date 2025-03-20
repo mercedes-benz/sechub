@@ -78,8 +78,8 @@ public class ProjectChangeOwnerService {
         transactionService.saveInOwnTransaction(project, newOwner, previousOwner);
 
         sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
-        sendRequestOwnerRoleRecalculation(newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
+        sendAssignOwnerAsUserToProject(newOwner, project);
     }
 
     private User changeProjectOwnerAndReturnPreviousOwner(Project project, User newOwner) {
@@ -89,6 +89,12 @@ public class ProjectChangeOwnerService {
         newOwner.getOwnedProjects().add(project);
         previousOwner.getOwnedProjects().remove(project);
         return previousOwner;
+    }
+
+    @IsSendingAsyncMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT)
+    private void sendAssignOwnerAsUserToProject(User owner, Project project) {
+        DomainMessage request = DomainMessageFactory.createAssignOwnerAsUserToProject(owner.getName(), project.getId());
+        eventBus.sendAsynchron(request);
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)

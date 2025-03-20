@@ -4,16 +4,16 @@ package com.mercedesbenz.sechub.integrationtest.scenario3;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
 
+@ExtendWith(IntegrationTestExtension.class)
+@WithTestScenario(Scenario3.class)
 public class ProjectAdministrationScenario3IntTest {
-
-    @Rule
-    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
     /**
      * Why is this test method testing so much? It was settled inside 4 different
@@ -23,9 +23,10 @@ public class ProjectAdministrationScenario3IntTest {
      */
     @Test
     /* @formatter:off */
-    public void super_admin_changes_owner_of_a_project() {
+    void super_admin_changes_owner_of_a_project() {
         /* check precondition */
         assertUser(USER_1).
+            isAssignedToProject(PROJECT_1).
             isOwnerOf(PROJECT_1);
 
         assertUser(USER_2).
@@ -45,6 +46,7 @@ public class ProjectAdministrationScenario3IntTest {
         assertUser(USER_1).
             isNotOwnerOf(PROJECT_1).
             isOwnerOf(PROJECT_2).
+            isAssignedToProject(PROJECT_1).
             hasOwnerRole();
 
         String subject = "Owner of project .* changed";
