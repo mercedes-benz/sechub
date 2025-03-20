@@ -250,7 +250,11 @@ public enum MessageID {
      */
     RESULT_FULL_CONFIGURATION_VALIDATION(MessageDataKeys.ERROR_MESSAGES),
 
-    ;
+    /**
+     * Assign the owner as a user of the project. This can be sent at project
+     * creation time but also on ownership changes.
+     */
+    ASSIGN_OWNER_AS_USER_TO_PROJECT(MessageDataKeys.PROJECT_TO_USER_DATA),;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

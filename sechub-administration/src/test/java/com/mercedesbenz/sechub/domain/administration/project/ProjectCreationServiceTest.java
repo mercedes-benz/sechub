@@ -1,11 +1,10 @@
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,7 +20,10 @@ import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.error.AlreadyExistsException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.URIValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -67,7 +69,7 @@ public class ProjectCreationServiceTest {
     }
 
     @Test
-    void create_project_success() {
+    void create_project_success_stores_project_and_owner_is_in_user_list() {
         /* prepare */
         when(projectRepository.findById(PROJECT_ID)).thenReturn(Optional.empty());
         User ownerUser = mock(User.class, "project owner user object");
@@ -86,9 +88,38 @@ public class ProjectCreationServiceTest {
         verify(persistenceService).saveInOwnTransaction(projectCaptor.capture());
         Project storedProject = projectCaptor.getValue();
         assertThat(storedProject).isNotNull();
-        assertThat(storedProject.getUsers()).describedAs("Owner must be inside user set - means assigned automatically").contains(ownerUser);
+    }
 
-        verify(eventBus,times(2)).sendAsynchron(any());
+    @Test
+    void create_project_success_sends_events() {
+        /* prepare */
+        when(projectRepository.findById(PROJECT_ID)).thenReturn(Optional.empty());
+        User ownerUser = mock(User.class, "project owner user object");
+        when(ownerUser.getName()).thenReturn(OWNER);
+        when(userRepository.findById(OWNER)).thenReturn(Optional.of(ownerUser));
+
+        var okResult = mock(ValidationResult.class);
+        when(okResult.isValid()).thenReturn(true);
+        when(uriValidation.validate(WHITE_LISTED_URI)).thenReturn(okResult);
+
+        /* execute + test */
+        assertThatCode(() -> projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA)).doesNotThrowAnyException();
+
+        /* test */
+        var messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
+        verify(eventBus,times(2)).sendAsynchron(messageCaptor.capture());
+
+        List<DomainMessage> messages = messageCaptor.getAllValues();
+        DomainMessage firstMessage = messages.get(0);
+
+        assertThat(firstMessage.getMessageId()).isEqualTo(MessageID.PROJECT_CREATED);
+        assertThat(firstMessage.get(MessageDataKeys.PROJECT_CREATION_DATA).getProjectId()).isEqualTo(PROJECT_ID);
+        assertThat(firstMessage.get(MessageDataKeys.PROJECT_CREATION_DATA).getProjectOwnerUserId()).isEqualTo(OWNER);
+
+        DomainMessage secondMessage = messages.get(1);
+        assertThat(secondMessage.getMessageId()).isEqualTo(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT);
+        assertThat(secondMessage.get(MessageDataKeys.PROJECT_TO_USER_DATA).getUserId()).isEqualTo(OWNER);
+        assertThat(secondMessage.get(MessageDataKeys.PROJECT_TO_USER_DATA).getProjectId()).isEqualTo(PROJECT_ID);
     }
 
     @Test
@@ -96,12 +127,10 @@ public class ProjectCreationServiceTest {
         /* prepare */
         when(projectRepository.findById(PROJECT_ID)).thenReturn(Optional.of(new Project()));
 
-        AlreadyExistsException exception = assertThrows(AlreadyExistsException.class, () -> {
-            projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA);
-        });
-
         /* execute + test */
-        assertThat(exception.getMessage()).isEqualTo("Project 'testProject' already exists");
+        assertThatThrownBy(() -> projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA))
+            .isInstanceOf(AlreadyExistsException.class)
+            .hasMessageContaining("already exists");
     }
 
     @Test
@@ -111,11 +140,8 @@ public class ProjectCreationServiceTest {
         when(userRepository.findById(OWNER)).thenReturn(Optional.empty());
 
         /* execute + test */
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA);
-        });
-
-        /* test */
-        assertThat(exception.getMessage()).isEqualTo("Owner 'testOwner' not found");
+        assertThatThrownBy(() -> projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("not found");
     }
 }

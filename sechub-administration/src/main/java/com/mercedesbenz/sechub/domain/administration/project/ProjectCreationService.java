@@ -19,12 +19,12 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.AlreadyExistsException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
-import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
@@ -94,7 +94,6 @@ public class ProjectCreationService {
 
         User ownerUser = foundOwner.get();
         project.owner = ownerUser;
-        project.getUsers().add(ownerUser); // we always add the owner as user - means directly accessible
 
         /* add only accepted/valid URIs - sanitize */
         whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
@@ -107,23 +106,31 @@ public class ProjectCreationService {
         /* store */
         persistenceService.saveInOwnTransaction(project);
 
-        sendProjectCreatedEvent(projectId, whitelist);
-        sendRefreshUserAuth(ownerUser);
+        sendProjectCreatedEvent(projectId, whitelist, ownerUser);
+        sendAssignOwnerAsUserOfProjectEvent(projectId, ownerUser); // the assignment will trigger owner role calculation afterwards, so we do not
+                                                                   // need to send a recalculation event here
 
     }
 
-    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-    private void sendRefreshUserAuth(User ownerUser) {
-        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
+    @IsSendingAsyncMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT)
+    private void sendAssignOwnerAsUserOfProjectEvent(String projectId, User owner) {
+
+        DomainMessage request = new DomainMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT);
+        UserMessage message = new UserMessage();
+        message.setProjectId(projectId);
+        message.setUserId(owner.getName());
+        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, message);
+
+        eventBus.sendAsynchron(request);
     }
 
     @IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
-    private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
+    private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist, User ownerUser) {
         DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
         ProjectMessage message = new ProjectMessage();
         message.setProjectId(projectId);
         message.setWhitelist(whitelist);
-
+        message.setProjectOwnerUserId(ownerUser.getName());
         request.set(MessageDataKeys.PROJECT_CREATION_DATA, message);
 
         eventBus.sendAsynchron(request);

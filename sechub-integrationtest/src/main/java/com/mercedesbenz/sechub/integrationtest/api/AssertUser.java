@@ -209,7 +209,7 @@ public class AssertUser extends AbstractAssert {
      * @param project
      * @return this
      */
-    public AssertUser canCreateProject(TestProject project, String owner) {
+    public AssertUser canCreateProject(TestProject project, TestUser owner) {
         assertProject(project).doesNotExist();
         as(user).createProject(project, owner);
         assertProject(project).doesExist();
