@@ -92,7 +92,7 @@ class SkopeoInputValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "password", "password123", "password_123", "password-123", "password-123_456", "password1234567890123456789003890123456",
-            "dXNlckBleGFtcGxlLmNvbTpzZWNyZXQexample", "Z2hjcl9wczpzc2VjcmV0example", "NEEf05SZ3lmP3SGUe34KW7DvXzuxJlmiBopiEii/Oj+EXAMPLE"})
+            "dXNlckBleGFtcGxlLmNvbTpzZWNyZXQexample", "Z2hjcl9wczpzc2VjcmV0example", "NEEf05SZ3lmP3SGUe34KW7DvXzuxJlmiBopiEii/Oj+EXAMPLE" })
     void validate_does_not_throw_exception_for_valid_passwords(String password) {
         /* prepare */
         initRemoteDataWithCredentials(VALID_DOCKER_URL, VALID_USERNAME, password);

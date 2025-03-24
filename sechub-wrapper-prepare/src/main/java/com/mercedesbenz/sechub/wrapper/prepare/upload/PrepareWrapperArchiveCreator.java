@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;

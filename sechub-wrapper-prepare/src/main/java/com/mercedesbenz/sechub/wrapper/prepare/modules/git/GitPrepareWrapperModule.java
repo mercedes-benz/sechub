@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +51,8 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     private final PDSLogSanitizer pdsLogSanitizer;
     private final GitLocationConverter gitLocationConverter;
 
-    public GitPrepareWrapperModule(GitWrapper gitWrapper, GitPrepareInputValidator gitPrepareInputValidator, PrepareWrapperUploadService uploadService, FileNameSupport filesSupport, PDSLogSanitizer pdsLogSanitizer, GitLocationConverter gitLocationConverter) {
+    public GitPrepareWrapperModule(GitWrapper gitWrapper, GitPrepareInputValidator gitPrepareInputValidator, PrepareWrapperUploadService uploadService,
+            FileNameSupport filesSupport, PDSLogSanitizer pdsLogSanitizer, GitLocationConverter gitLocationConverter) {
         this.gitWrapper = gitWrapper;
         this.gitPrepareInputValidator = gitPrepareInputValidator;
         this.uploadService = uploadService;

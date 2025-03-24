@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,8 @@ public class SkopeoWrapper extends AbstractToolWrapper {
     private final ProcessBuilderFactory processBuilderFactory;
     private final SkopeoLocationConverter locationConverter;
 
-    public SkopeoWrapper(PDSProcessAdapterFactory processAdapterFactory, PDSLogSanitizer logSanitizer, ProcessBuilderFactory processBuilderFactory, SkopeoLocationConverter locationConverter) {
+    public SkopeoWrapper(PDSProcessAdapterFactory processAdapterFactory, PDSLogSanitizer logSanitizer, ProcessBuilderFactory processBuilderFactory,
+            SkopeoLocationConverter locationConverter) {
         this.processAdapterFactory = processAdapterFactory;
         this.logSanitizer = logSanitizer;
         this.processBuilderFactory = processBuilderFactory;

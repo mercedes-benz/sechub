@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +30,12 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     private final PrepareWrapperDefaultExitService exitService;
 
-    public PrepareWrapperCLI(PrepareWrapperPreparationService preparationService, PrepareWrapperResultService resultService, PrepareWrapperDefaultExitService exitService) {
+    public PrepareWrapperCLI(PrepareWrapperPreparationService preparationService, PrepareWrapperResultService resultService,
+            PrepareWrapperDefaultExitService exitService) {
         this.preparationService = preparationService;
         this.resultService = resultService;
         this.exitService = exitService;
     }
-
 
     @Override
     public void run(String... args) {

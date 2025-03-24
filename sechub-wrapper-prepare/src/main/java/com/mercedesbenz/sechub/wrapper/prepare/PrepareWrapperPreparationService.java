@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
@@ -30,7 +29,8 @@ public class PrepareWrapperPreparationService {
     List<PrepareWrapperModule> modules = new ArrayList<>();
     private final PrepareWrapperProxySupport proxySupport;
 
-    public PrepareWrapperPreparationService(PrepareWrapperEnvironment environment, PrepareWrapperContextFactory contextFactory, List<PrepareWrapperModule> modules, PrepareWrapperProxySupport proxySupport) {
+    public PrepareWrapperPreparationService(PrepareWrapperEnvironment environment, PrepareWrapperContextFactory contextFactory,
+            List<PrepareWrapperModule> modules, PrepareWrapperProxySupport proxySupport) {
         this.environment = environment;
         this.contextFactory = contextFactory;
         this.modules = modules;

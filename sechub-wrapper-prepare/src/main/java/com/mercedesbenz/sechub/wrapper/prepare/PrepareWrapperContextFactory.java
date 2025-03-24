@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;

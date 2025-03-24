@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;

@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
@@ -25,7 +24,8 @@ public class PrepareWrapperUploadService {
     private final FileNameSupport fileNameSupport;
     private final CheckSumSupport checkSumSupport;
 
-    public PrepareWrapperUploadService(PrepareWrapperArchiveCreator archiveCreator, PrepareWrapperFileUploadService fileUploadService, PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport, FileNameSupport fileNameSupport, CheckSumSupport checkSumSupport) {
+    public PrepareWrapperUploadService(PrepareWrapperArchiveCreator archiveCreator, PrepareWrapperFileUploadService fileUploadService,
+            PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport, FileNameSupport fileNameSupport, CheckSumSupport checkSumSupport) {
         this.archiveCreator = archiveCreator;
         this.fileUploadService = fileUploadService;
         this.sechubConfigurationSupport = sechubConfigurationSupport;

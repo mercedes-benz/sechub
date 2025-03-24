@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,8 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
     private final PrepareWrapperUploadService uploadService;
     private final PDSLogSanitizer pdsLogSanitizer;
 
-    public SkopeoPrepareWrapperModule(SkopeoPrepareInputValidator inputValidator, SkopeoWrapper skopeoWrapper, FileNameSupport filesSupport, PrepareWrapperUploadService uploadService, PDSLogSanitizer pdsLogSanitizer) {
+    public SkopeoPrepareWrapperModule(SkopeoPrepareInputValidator inputValidator, SkopeoWrapper skopeoWrapper, FileNameSupport filesSupport,
+            PrepareWrapperUploadService uploadService, PDSLogSanitizer pdsLogSanitizer) {
         this.inputValidator = inputValidator;
         this.skopeoWrapper = skopeoWrapper;
         this.filesSupport = filesSupport;
