@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
@@ -23,7 +24,7 @@ public class ProjectAdministrationScenario3IntTest {
      */
     @Test
     /* @formatter:off */
-    public void super_admin_changes_owner_of_a_project() {
+    public void change_project_ownership_by_admin_and_owners() {
         /* check precondition */
         assertUser(USER_1).
             isOwnerOf(PROJECT_1);
@@ -32,12 +33,12 @@ public class ProjectAdministrationScenario3IntTest {
             isNotOwnerOf(PROJECT_1).
             hasNotOwnerRole();
 
-        /* execute 1 - change project 1*/
+        /* execute 1.1 - change project 1*/
         as(SUPER_ADMIN).
             assignUserToProject(USER_3, PROJECT_1).
             assignOwnerToProject(USER_2, PROJECT_1);
 
-        /* test 1*/
+        /* test 1.1*/
         assertUser(USER_2).
             isOwnerOf(PROJECT_1).
             hasOwnerRole();
@@ -53,6 +54,20 @@ public class ProjectAdministrationScenario3IntTest {
         assertUser(USER_2).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
         assertUser(USER_1).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
 
+        /* execute + test 1.2*/
+
+        /* USER_1 is no longer the owner of project 1 - so not allowed to change owner ship!*/
+        expectHttpFailure(()->as(USER_1).assignOwnerToProject(USER_3, PROJECT_1), HttpStatus.FORBIDDEN);
+
+        /* execute 1.3*/
+        executeResilient(()->as(USER_2).
+            assignOwnerToProject(USER_3, PROJECT_1));
+
+        /* test 1.3 - ownership has been transfered by former owner (USER_2) itself */
+        assertUser(USER_3).
+            isOwnerOf(PROJECT_1).
+            hasOwnerRole();
+
         /* execute 2 - change project 2 ownership as well - so User1 looses owner role*/
         as(SUPER_ADMIN).
             assignOwnerToProject(USER_2, PROJECT_2);
@@ -60,6 +75,7 @@ public class ProjectAdministrationScenario3IntTest {
         /* test 2*/
         assertUser(USER_2).
             isOwnerOf(PROJECT_2).
+            isNotOwnerOf(PROJECT_1).
             hasOwnerRole();
 
         assertUser(USER_1).

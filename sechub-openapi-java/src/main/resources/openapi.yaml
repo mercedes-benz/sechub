@@ -2570,34 +2570,6 @@ paths:
       tags:
         - Project Administration
 
-  /api/admin/project/{projectId}/owner/{userId}:
-    post:
-      summary: Admin changes owner of a project
-      description: An administrator changes the owner of an existing sechub project.
-      operationId: adminChangeProjectOwner
-      parameters:
-        - name: projectId
-          description: The id for project
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: userId
-          description: The user id of the user to assign to project as the owner
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: "Ok"
-        "404":
-          description: "Not found"
-        "406":
-          description: "Not acceptable"
-      tags:
-        - Project Administration
-
   /api/admin/project/{projectId}/whitelist:
     post:
       summary: Update project whitelist
@@ -2757,7 +2729,37 @@ paths:
           description: "Not acceptable"
       tags:
         - Project Administration
- 
+        
+  /api/management/project/{projectId}/owner/{userId}:
+    post:
+      summary: Admin or owner changes owner of a project
+      description: An administrator or the current project owner changes the ownership of an existing sechub project.
+      operationId: adminOrOwnerChangesProjectOwner
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to assign to project as the owner
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "403":
+          description: "Access denied"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+        
   #######################
   ## User Self Service ##
   #######################
@@ -2795,7 +2797,7 @@ paths:
           description: "Bad request"
       tags:
         - User Self Service
-
+        
   /api/anonymous/email/verify/{token}:
     get:
       summary: Anonymous user verifies new email address
