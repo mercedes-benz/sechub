@@ -13,11 +13,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 @Component
 public class PrepareWrapperPDSUserMessageSupportFactory {
 
-    @Autowired
-    PrepareWrapperEnvironment environment;
+    private final PrepareWrapperEnvironment environment;
+    private final TextFileWriter writer;
 
-    @Autowired
-    TextFileWriter writer;
+    public PrepareWrapperPDSUserMessageSupportFactory(PrepareWrapperEnvironment environment, TextFileWriter writer) {
+        this.environment = environment;
+        this.writer = writer;
+    }
 
     @Bean
     @Lazy // lazy, to have possibility to mock environment in spring boot tests

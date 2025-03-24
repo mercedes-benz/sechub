@@ -14,10 +14,12 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 @Component
 public class PrepareWrapperContextFactory {
 
-    @Autowired
-    PrepareWrapperRemoteConfigurationExtractor extractor;
-
+    private final PrepareWrapperRemoteConfigurationExtractor extractor;
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperContextFactory.class);
+
+    public PrepareWrapperContextFactory(PrepareWrapperRemoteConfigurationExtractor extractor) {
+        this.extractor = extractor;
+    }
 
     public PrepareWrapperContext create(PrepareWrapperEnvironment environment) {
         SecHubConfigurationModel secHubConfigModel = createSecHubConfigModel(environment.getSechubConfigurationModelAsJson());

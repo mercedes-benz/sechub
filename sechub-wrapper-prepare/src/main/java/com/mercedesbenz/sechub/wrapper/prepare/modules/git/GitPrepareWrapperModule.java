@@ -45,23 +45,21 @@ public class GitPrepareWrapperModule extends AbstractPrepareWrapperModule {
     @Value("${" + KEY_PDS_PREPARE_MODULE_GIT_ENABLED + ":true}")
     boolean enabled;
 
-    @Autowired
-    GitWrapper gitWrapper;
+    private final GitWrapper gitWrapper;
+    private final GitPrepareInputValidator gitPrepareInputValidator;
+    private final PrepareWrapperUploadService uploadService;
+    private final FileNameSupport filesSupport;
+    private final PDSLogSanitizer pdsLogSanitizer;
+    private final GitLocationConverter gitLocationConverter;
 
-    @Autowired
-    GitPrepareInputValidator gitPrepareInputValidator;
-
-    @Autowired
-    PrepareWrapperUploadService uploadService;
-
-    @Autowired
-    FileNameSupport filesSupport;
-
-    @Autowired
-    PDSLogSanitizer pdsLogSanitizer;
-
-    @Autowired
-    GitLocationConverter gitLocationConverter;
+    public GitPrepareWrapperModule(GitWrapper gitWrapper, GitPrepareInputValidator gitPrepareInputValidator, PrepareWrapperUploadService uploadService, FileNameSupport filesSupport, PDSLogSanitizer pdsLogSanitizer, GitLocationConverter gitLocationConverter) {
+        this.gitWrapper = gitWrapper;
+        this.gitPrepareInputValidator = gitPrepareInputValidator;
+        this.uploadService = uploadService;
+        this.filesSupport = filesSupport;
+        this.pdsLogSanitizer = pdsLogSanitizer;
+        this.gitLocationConverter = gitLocationConverter;
+    }
 
     @Override
     public boolean isEnabled() {

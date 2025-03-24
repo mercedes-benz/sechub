@@ -21,8 +21,11 @@ public class PrepareWrapperProxySupport {
     @Value("${" + KEY_PDS_PREPARE_PROXY_ENABLED + ":false}")
     boolean proxyEnabled;
 
-    @Autowired
-    PrepareWrapperSystemPropertySupport propertySupport;
+    private final PrepareWrapperSystemPropertySupport propertySupport;
+
+    public PrepareWrapperProxySupport(PrepareWrapperSystemPropertySupport propertySupport) {
+        this.propertySupport = propertySupport;
+    }
 
     public void setUpProxy() {
         if (!proxyEnabled) {

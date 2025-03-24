@@ -29,17 +29,17 @@ public class SkopeoWrapper extends AbstractToolWrapper {
     @Value("${" + KEY_PDS_PREPARE_MODULE_SKOPEO_AUTHENTICATION_FILENAME + ":" + AUTHENTICATION_DEFAULT_FILENAME + "}")
     String skopeoAuthenticationFilename = AUTHENTICATION_DEFAULT_FILENAME;// when not initialized by spring (e.g. in tests)
 
-    @Autowired
-    PDSProcessAdapterFactory processAdapterFactory;
+    private final PDSProcessAdapterFactory processAdapterFactory;
+    private final PDSLogSanitizer logSanitizer;
+    private final ProcessBuilderFactory processBuilderFactory;
+    private final SkopeoLocationConverter locationConverter;
 
-    @Autowired
-    PDSLogSanitizer logSanitizer;
-
-    @Autowired
-    ProcessBuilderFactory processBuilderFactory;
-
-    @Autowired
-    SkopeoLocationConverter locationConverter;
+    public SkopeoWrapper(PDSProcessAdapterFactory processAdapterFactory, PDSLogSanitizer logSanitizer, ProcessBuilderFactory processBuilderFactory, SkopeoLocationConverter locationConverter) {
+        this.processAdapterFactory = processAdapterFactory;
+        this.logSanitizer = logSanitizer;
+        this.processBuilderFactory = processBuilderFactory;
+        this.locationConverter = locationConverter;
+    }
 
     /**
      * Downloads docker image via skopeo. If credentials are defined, a login is

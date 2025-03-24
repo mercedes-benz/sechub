@@ -14,11 +14,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 @Component
 public class PrepareWrapperArchiveCreator {
 
-    @Autowired
-    ArchiveSupport archiveSupport;
+    private final ArchiveSupport archiveSupport;
+    private final PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
-    @Autowired
-    PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
+    public PrepareWrapperArchiveCreator(ArchiveSupport archiveSupport, PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport) {
+        this.archiveSupport = archiveSupport;
+        this.sechubConfigurationSupport = sechubConfigurationSupport;
+    }
 
     public void create(PrepareWrapperContext context, PrepareToolContext abstractToolContext) throws IOException {
         // replace remote with file system entry in configuration model, this

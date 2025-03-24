@@ -21,13 +21,16 @@ import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 @Component
 public class JGitAdapter {
 
-    @Autowired
-    PDSLogSanitizer logSanitizer;
+    private final PDSLogSanitizer logSanitizer;
 
-    @Autowired
-    GitLocationConverter urlConverter;
+    private final GitLocationConverter urlConverter;
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitAdapter.class);
+
+    public JGitAdapter(PDSLogSanitizer logSanitizer, GitLocationConverter urlConverter) {
+        this.logSanitizer = logSanitizer;
+        this.urlConverter = urlConverter;
+    }
 
     public void clone(GitContext gitContext) {
 

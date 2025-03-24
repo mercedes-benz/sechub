@@ -15,14 +15,17 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractToolWrapper;
 @Component
 public class GitWrapper extends AbstractToolWrapper {
 
-    @Autowired
-    JGitAdapter jGitAdapter;
+    private final JGitAdapter jGitAdapter;
 
-    @Autowired
-    PDSProcessAdapterFactory processAdapterFactory;
+    private final PDSProcessAdapterFactory processAdapterFactory;
 
-    @Autowired
-    DirectoryAndFileSupport directoryAndFileSupport;
+    private final DirectoryAndFileSupport directoryAndFileSupport;
+
+    public GitWrapper(JGitAdapter jGitAdapter, PDSProcessAdapterFactory processAdapterFactory, DirectoryAndFileSupport directoryAndFileSupport) {
+        this.jGitAdapter = jGitAdapter;
+        this.processAdapterFactory = processAdapterFactory;
+        this.directoryAndFileSupport = directoryAndFileSupport;
+    }
 
     public void downloadRemoteData(GitContext gitContext) {
         jGitAdapter.clone(gitContext);

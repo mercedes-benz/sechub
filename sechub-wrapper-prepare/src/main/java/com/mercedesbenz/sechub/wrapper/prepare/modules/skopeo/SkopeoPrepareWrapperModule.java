@@ -36,20 +36,19 @@ public class SkopeoPrepareWrapperModule extends AbstractPrepareWrapperModule {
     @Value("${" + KEY_PDS_PREPARE_MODULE_SKOPEO_ENABLED + ":true}")
     boolean enabled;
 
-    @Autowired
-    SkopeoPrepareInputValidator inputValidator;
+    private final SkopeoPrepareInputValidator inputValidator;
+    private final SkopeoWrapper skopeoWrapper;
+    private final FileNameSupport filesSupport;
+    private final PrepareWrapperUploadService uploadService;
+    private final PDSLogSanitizer pdsLogSanitizer;
 
-    @Autowired
-    SkopeoWrapper skopeoWrapper;
-
-    @Autowired
-    FileNameSupport filesSupport;
-
-    @Autowired
-    PrepareWrapperUploadService uploadService;
-
-    @Autowired
-    PDSLogSanitizer pdsLogSanitizer;
+    public SkopeoPrepareWrapperModule(SkopeoPrepareInputValidator inputValidator, SkopeoWrapper skopeoWrapper, FileNameSupport filesSupport, PrepareWrapperUploadService uploadService, PDSLogSanitizer pdsLogSanitizer) {
+        this.inputValidator = inputValidator;
+        this.skopeoWrapper = skopeoWrapper;
+        this.filesSupport = filesSupport;
+        this.uploadService = uploadService;
+        this.pdsLogSanitizer = pdsLogSanitizer;
+    }
 
     @Override
     public boolean isEnabled() {

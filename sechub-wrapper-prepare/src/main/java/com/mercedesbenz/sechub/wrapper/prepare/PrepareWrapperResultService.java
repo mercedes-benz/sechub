@@ -15,14 +15,15 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 @Service
 public class PrepareWrapperResultService {
 
-    @Autowired
-    PrepareWrapperEnvironment environment;
+    private final PrepareWrapperEnvironment environment;
+    private final TextFileWriter writer;
+    private final PDSUserMessageSupport messageSupport;
 
-    @Autowired
-    TextFileWriter writer;
-
-    @Autowired
-    PDSUserMessageSupport messageSupport;
+    public PrepareWrapperResultService(PrepareWrapperEnvironment environment, TextFileWriter writer, PDSUserMessageSupport messageSupport) {
+        this.environment = environment;
+        this.writer = writer;
+        this.messageSupport = messageSupport;
+    }
 
     public void store(AdapterExecutionResult adapterResult) throws IOException {
         writeProductMessages(adapterResult);

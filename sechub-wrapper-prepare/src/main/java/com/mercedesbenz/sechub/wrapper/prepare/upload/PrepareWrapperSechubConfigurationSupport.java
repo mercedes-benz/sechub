@@ -17,10 +17,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 @Component
 public class PrepareWrapperSechubConfigurationSupport {
 
-    @Autowired
-    FileNameSupport fileNameSupport;
+    private final FileNameSupport fileNameSupport;
 
     private static Logger LOG = LoggerFactory.getLogger(PrepareWrapperSechubConfigurationSupport.class);
+
+    public PrepareWrapperSechubConfigurationSupport(FileNameSupport fileNameSupport) {
+        this.fileNameSupport = fileNameSupport;
+    }
 
     public SecHubConfigurationModel replaceRemoteDataWithFilesystem(PrepareWrapperContext context, PrepareToolContext toolContext) {
         SecHubConfigurationModel modifiedModel = context.getSecHubConfiguration();

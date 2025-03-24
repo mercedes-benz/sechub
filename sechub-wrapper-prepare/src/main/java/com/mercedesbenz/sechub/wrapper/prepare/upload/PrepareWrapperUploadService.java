@@ -19,20 +19,19 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 @Service
 public class PrepareWrapperUploadService {
 
-    @Autowired
-    PrepareWrapperArchiveCreator archiveCreator;
+    private final PrepareWrapperArchiveCreator archiveCreator;
+    private final PrepareWrapperFileUploadService fileUploadService;
+    private final PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
+    private final FileNameSupport fileNameSupport;
+    private final CheckSumSupport checkSumSupport;
 
-    @Autowired
-    PrepareWrapperFileUploadService fileUploadService;
-
-    @Autowired
-    PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
-
-    @Autowired
-    FileNameSupport fileNameSupport;
-
-    @Autowired
-    CheckSumSupport checkSumSupport;
+    public PrepareWrapperUploadService(PrepareWrapperArchiveCreator archiveCreator, PrepareWrapperFileUploadService fileUploadService, PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport, FileNameSupport fileNameSupport, CheckSumSupport checkSumSupport) {
+        this.archiveCreator = archiveCreator;
+        this.fileUploadService = fileUploadService;
+        this.sechubConfigurationSupport = sechubConfigurationSupport;
+        this.fileNameSupport = fileNameSupport;
+        this.checkSumSupport = checkSumSupport;
+    }
 
     public void upload(PrepareWrapperContext context, PrepareToolContext abstractToolContext) throws IOException {
 

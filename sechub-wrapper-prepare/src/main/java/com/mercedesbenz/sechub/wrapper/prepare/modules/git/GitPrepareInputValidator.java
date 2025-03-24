@@ -30,10 +30,9 @@ public class GitPrepareInputValidator implements PrepareInputValidator, LogSanit
 
     private PrepareInputValidationSupport support;
 
-    @Autowired
-    PDSLogSanitizer logSanitizer;
+    private final PDSLogSanitizer logSanitizer;
 
-    public GitPrepareInputValidator() {
+    public GitPrepareInputValidator(PDSLogSanitizer logSanitizer) {
         /* @formatter:off */
         this.support = PrepareInputValidationSupport.builder().
                 setType(TYPE).
@@ -43,6 +42,7 @@ public class GitPrepareInputValidator implements PrepareInputValidator, LogSanit
                 setPasswordPattern(GIT_PASSWORD_PATTERN).
                 build();
         /* @formatter:on */
+        this.logSanitizer = logSanitizer;
     }
 
     @Override

@@ -25,17 +25,17 @@ public class PrepareWrapperPreparationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperPreparationService.class);
 
-    @Autowired
-    PrepareWrapperEnvironment environment;
-
-    @Autowired
-    PrepareWrapperContextFactory contextFactory;
-
-    @Autowired
+    private final PrepareWrapperEnvironment environment;
+    private final PrepareWrapperContextFactory contextFactory;
     List<PrepareWrapperModule> modules = new ArrayList<>();
+    private final PrepareWrapperProxySupport proxySupport;
 
-    @Autowired
-    PrepareWrapperProxySupport proxySupport;
+    public PrepareWrapperPreparationService(PrepareWrapperEnvironment environment, PrepareWrapperContextFactory contextFactory, List<PrepareWrapperModule> modules, PrepareWrapperProxySupport proxySupport) {
+        this.environment = environment;
+        this.contextFactory = contextFactory;
+        this.modules = modules;
+        this.proxySupport = proxySupport;
+    }
 
     public AdapterExecutionResult startPreparation() throws IOException {
 

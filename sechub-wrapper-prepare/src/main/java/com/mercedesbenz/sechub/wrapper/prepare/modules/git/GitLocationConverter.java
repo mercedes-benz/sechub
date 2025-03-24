@@ -27,8 +27,11 @@ public class GitLocationConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitLocationConverter.class);
 
-    @Autowired
-    PDSLogSanitizer pdsLogSanitizer;
+    private final PDSLogSanitizer pdsLogSanitizer;
+
+    public GitLocationConverter(PDSLogSanitizer pdsLogSanitizer) {
+        this.pdsLogSanitizer = pdsLogSanitizer;
+    }
 
     public String convertLocationToRepositoryName(String location) {
         String[] parts = location.split("/");

@@ -23,8 +23,11 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 public class PrepareWrapperFileUploadService {
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperFileUploadService.class);
 
-    @Autowired
-    PrepareWrapperStorageService storageService;
+    private final PrepareWrapperStorageService storageService;
+
+    public PrepareWrapperFileUploadService(PrepareWrapperStorageService storageService) {
+        this.storageService = storageService;
+    }
 
     public void uploadFile(String projectId, UUID jobUUID, File file, String checkSum) {
         assertUploadParams(projectId, jobUUID, file, checkSum);

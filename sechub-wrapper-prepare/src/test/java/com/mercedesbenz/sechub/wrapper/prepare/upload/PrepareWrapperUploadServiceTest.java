@@ -31,19 +31,13 @@ class PrepareWrapperUploadServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        uploadServiceToTest = new PrepareWrapperUploadService();
-
         fileUploadService = mock(PrepareWrapperFileUploadService.class);
         sechubConfigurationSupport = mock(PrepareWrapperSechubConfigurationSupport.class);
         PrepareWrapperArchiveCreator archiveCreator = mock(PrepareWrapperArchiveCreator.class);
         FileNameSupport fileNameSupport = mock(FileNameSupport.class);
         CheckSumSupport checkSumSupport = mock(CheckSumSupport.class);
 
-        uploadServiceToTest.archiveCreator = archiveCreator;
-        uploadServiceToTest.fileUploadService = fileUploadService;
-        uploadServiceToTest.sechubConfigurationSupport = sechubConfigurationSupport;
-        uploadServiceToTest.fileNameSupport = fileNameSupport;
-        uploadServiceToTest.checkSumSupport = checkSumSupport;
+        uploadServiceToTest = new PrepareWrapperUploadService(archiveCreator, fileUploadService, sechubConfigurationSupport, fileNameSupport, checkSumSupport);
     }
 
     @Test
