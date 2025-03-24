@@ -4,6 +4,7 @@ import * as core from '@actions/core';
 import { SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
 import * as fs from 'fs';
+import { addDefaultExcludesToSecHubConfig } from './configuration-model-default-helper';
 
 /**
  * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be 
@@ -27,6 +28,14 @@ export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFil
 
     } else {
         createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
+        configFilePath = secHubJsonFilePath;
+    }
+    if (fs.existsSync(configFilePath)) {
+        core.debug('Adding default excludes to SecHub configuration file.')
+        const jsonString = fs.readFileSync(configFilePath, 'utf8');
+        const jsonData: any = JSON.parse(jsonString);
+        const updatedConfig = addDefaultExcludesToSecHubConfig(jsonData);
+        fs.writeFileSync(secHubJsonFilePath, JSON.stringify(updatedConfig, null, 2));
         configFilePath = secHubJsonFilePath;
     }
     core.endGroup();
