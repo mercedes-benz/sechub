@@ -1,0 +1,201 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    background-image: url('/images/background_image_login.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    width: 25%;
+    min-width: 250px;
+    height: auto;
+    background-color: var(--background-paper);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    overflow: hidden;
+    padding: 20px;
+    margin: 80px;
+    color: white;
+}
+
+.login-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tabs {
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    color: var(--text-color);
+    background-color: var(--background-default);
+    border: 1px solid var(--layer-01);
+    border-radius: 10px 10px 0 0;
+    transition: var(--background-default) 0.3s;
+}
+
+.tab.active {
+    background-color: var(--background-paper);
+    color: var(--text-color);
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.login-option {
+    display: none;
+}
+
+.login-option.active {
+    display: block;
+}
+
+.login-option .button-space {
+    margin-top: 15px;
+}
+
+.login-option .register {
+    margin-top: 30px;
+}
+
+.login-section h1 {
+    font-size: 1.8em;
+    color: var(--text-color);
+    margin-bottom: 50px;
+}
+
+.login-section label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+}
+
+.login-section input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-width: 0 0 1px 0;
+    border-radius: 0;
+    font-size: 0.9em;
+    box-sizing: border-box;
+    outline: none;
+    background-color: var(--background-paper);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+}
+
+.login-section input:focus {
+    border-color: var(--primary-color);
+}
+
+.login-section button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+.login-section button:hover {
+    background-color: var(--primary-color-dark);
+}
+
+.login-section a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.login-section a:hover {
+    text-decoration: underline;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--background-default);
+}
+
+.modal-content {
+    background-color: var(--background-paper);
+    color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid var(--background-paper);
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.close {
+    color: var(--layer-01);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--text-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-width: 0 0 1px 0;
+    border-radius: 0;
+    font-size: 0.9em;
+    box-sizing: border-box;
+    outline: none;
+    background-color: var(--background-default);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+}
+
+.modal input:focus {
+    border-color: var(--primary-color);
+}
+
+.modal button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+.modal button:hover {
+    background-color: var(--primary-color-dark);
+}

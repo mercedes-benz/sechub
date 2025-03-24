@@ -82,7 +82,7 @@ public abstract class AbstractSecurityConfiguration {
 			"/login/oauth2/**",
 			"/oauth2/**",
 			"/favicon.ico",
-			"/sechub-logo.svg"
+			"/background_image_login.jpg"
 	);
 	/* @formatter:on */
 
