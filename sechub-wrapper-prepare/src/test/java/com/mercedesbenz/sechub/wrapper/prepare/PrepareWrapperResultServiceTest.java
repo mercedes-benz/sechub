@@ -32,11 +32,7 @@ class PrepareWrapperResultServiceTest {
         writer = mock(TextFileWriter.class);
         messageSupport = mock(PDSUserMessageSupport.class);
 
-        serviceToTest = new PrepareWrapperResultService();
-
-        serviceToTest.environment = environment;
-        serviceToTest.writer = writer;
-        serviceToTest.messageSupport = messageSupport;
+        serviceToTest = new PrepareWrapperResultService(environment, writer, messageSupport);
 
         // prepare output directories
         File directory = TestUtil.createTempDirectoryInBuildFolder("wrapper-storage-service").toFile();

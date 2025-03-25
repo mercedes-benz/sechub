@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +24,24 @@ public class PrepareWrapperCLI implements CommandLineRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperCLI.class);
 
-    @Autowired
-    PrepareWrapperPreparationService preparationService;
+    private final PrepareWrapperPreparationService preparationService;
 
-    @Autowired
-    PrepareWrapperResultService resultService;
+    private final PrepareWrapperResultService resultService;
+
+    private final PrepareWrapperDefaultExitService exitService;
+
+    public PrepareWrapperCLI(PrepareWrapperPreparationService preparationService, PrepareWrapperResultService resultService,
+            PrepareWrapperDefaultExitService exitService) {
+        this.preparationService = preparationService;
+        this.resultService = resultService;
+        this.exitService = exitService;
+    }
 
     @Override
     public void run(String... args) {
         LOG.debug("Prepare wrapper is starting.");
         AdapterExecutionResult result;
+        boolean isPreparationSuccessful = true;
 
         try {
             result = preparationService.startPreparation();
@@ -42,19 +49,28 @@ public class PrepareWrapperCLI implements CommandLineRunner {
         } catch (PrepareWrapperUploadException e) {
             LOG.error("Preparation of remote data has failed. Could not upload data to shared storage. ExitCode: {}", e.getExitCode(), e);
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal storage error.");
+            isPreparationSuccessful = false;
 
         } catch (PrepareWrapperUsageException e) {
             /* Usage exception messages will be added to sechub messages */
             LOG.error("Preparation of remote data has failed, because of wrong usage. ExitCode: {}", e.getExitCode(), e);
             result = getAdapterExecutionResultFailed(e.getMessage());
+            isPreparationSuccessful = false;
 
         } catch (Exception e) {
             LOG.error("Preparation of remote data has failed.", e);
             result = getAdapterExecutionResultFailed("Could not prepare remote data, because of an internal error.");
+            isPreparationSuccessful = false;
         }
 
         storeResultOrFail(result);
-        LOG.info("Prepare wrapper has finished successfully.");
+
+        if (!isPreparationSuccessful) {
+            LOG.error("Prepare wrapper has finished with errors.");
+            exitService.exitWithCode(1);
+        } else {
+            LOG.info("Prepare wrapper has finished successfully.");
+        }
     }
 
     private static AdapterExecutionResult getAdapterExecutionResultFailed(String message) {

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -17,10 +16,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 @Component
 public class PrepareWrapperSechubConfigurationSupport {
 
-    @Autowired
-    FileNameSupport fileNameSupport;
+    private final FileNameSupport fileNameSupport;
 
     private static Logger LOG = LoggerFactory.getLogger(PrepareWrapperSechubConfigurationSupport.class);
+
+    public PrepareWrapperSechubConfigurationSupport(FileNameSupport fileNameSupport) {
+        this.fileNameSupport = fileNameSupport;
+    }
 
     public SecHubConfigurationModel replaceRemoteDataWithFilesystem(PrepareWrapperContext context, PrepareToolContext toolContext) {
         SecHubConfigurationModel modifiedModel = context.getSecHubConfiguration();

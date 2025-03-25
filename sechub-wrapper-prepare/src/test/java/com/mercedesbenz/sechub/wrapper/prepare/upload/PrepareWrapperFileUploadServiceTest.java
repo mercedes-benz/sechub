@@ -25,13 +25,11 @@ class PrepareWrapperFileUploadServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        uploadServiceToTest = new PrepareWrapperFileUploadService();
         jobStorage = mock(JobStorage.class);
         PrepareWrapperStorageService storageService = mock(PrepareWrapperStorageService.class);
         when(storageService.createJobStorageForPath(anyString(), any(UUID.class))).thenReturn(jobStorage);
 
-        uploadServiceToTest.storageService = storageService;
-
+        uploadServiceToTest = new PrepareWrapperFileUploadService(storageService);
         writer = new TestFileWriter();
     }
 

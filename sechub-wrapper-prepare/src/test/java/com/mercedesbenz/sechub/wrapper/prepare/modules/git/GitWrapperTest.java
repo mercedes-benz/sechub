@@ -28,7 +28,6 @@ class GitWrapperTest {
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
-        wrapperToTest = new GitWrapper();
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         ProcessAdapter processAdapter = mock(ProcessAdapter.class);
         jGitAdapter = mock(JGitAdapter.class);
@@ -38,9 +37,7 @@ class GitWrapperTest {
         when(processAdapter.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
         doNothing().when(jGitAdapter).clone(any());
 
-        wrapperToTest.processAdapterFactory = processAdapterFactory;
-        wrapperToTest.jGitAdapter = jGitAdapter;
-        wrapperToTest.directoryAndFileSupport = directoryAndFileSupport;
+        wrapperToTest = new GitWrapper(jGitAdapter, processAdapterFactory, directoryAndFileSupport);
     }
 
     @ParameterizedTest

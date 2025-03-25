@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.modules.git;
 
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
@@ -30,10 +29,9 @@ public class GitPrepareInputValidator implements PrepareInputValidator, LogSanit
 
     private PrepareInputValidationSupport support;
 
-    @Autowired
-    PDSLogSanitizer logSanitizer;
+    private final PDSLogSanitizer logSanitizer;
 
-    public GitPrepareInputValidator() {
+    public GitPrepareInputValidator(PDSLogSanitizer logSanitizer) {
         /* @formatter:off */
         this.support = PrepareInputValidationSupport.builder().
                 setType(TYPE).
@@ -43,6 +41,7 @@ public class GitPrepareInputValidator implements PrepareInputValidator, LogSanit
                 setPasswordPattern(GIT_PASSWORD_PATTERN).
                 build();
         /* @formatter:on */
+        this.logSanitizer = logSanitizer;
     }
 
     @Override
