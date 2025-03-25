@@ -138,18 +138,24 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: var(--background-default);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
     background-color: var(--background-paper);
-    color: white;
+    color: var(--text-color);
     margin: 15% auto;
     padding: 20px;
     border: 1px solid var(--background-paper);
     width: 80%;
     max-width: 400px;
     border-radius: 10px;
+}
+
+.modal label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: var(--primary-color);
 }
 
 .close {
@@ -175,7 +181,7 @@ body {
     font-size: 0.9em;
     box-sizing: border-box;
     outline: none;
-    background-color: var(--background-default);
+    background-color: var(--background-paper);
     color: var(--text-color);
     border-color: var(--primary-color);
 }

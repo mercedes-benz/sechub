@@ -81,8 +81,7 @@ public abstract class AbstractSecurityConfiguration {
 			"/images/**",
 			"/login/oauth2/**",
 			"/oauth2/**",
-			"/favicon.ico",
-			"/background_image_login.jpg"
+			"/favicon.ico"
 	);
 	/* @formatter:on */
 
