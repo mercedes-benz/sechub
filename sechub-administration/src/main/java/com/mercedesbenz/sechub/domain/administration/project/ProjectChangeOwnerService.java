@@ -60,8 +60,8 @@ public class ProjectChangeOwnerService {
 					description = "The service will set the user as the owner of the project. If user does not have ROLE_OWNER it will obtain it. The old owner will loose project ownership."))
 	/* @formatter:on */
     public void changeProjectOwner(String newOnwerUserId, String projectId) {
-        LOG.info("User {} triggers project owner change - user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(newOnwerUserId, 30),
-                logSanitizer.sanitize(projectId, 30));
+        LOG.info("User {} triggers project owner change - user {} shall become owner of project {}", userContextService.getUserId(),
+                logSanitizer.sanitize(newOnwerUserId, 30), logSanitizer.sanitize(projectId, 30));
 
         assertion.assertIsValidUserId(newOnwerUserId);
         assertion.assertIsValidProjectId(projectId);
@@ -78,8 +78,8 @@ public class ProjectChangeOwnerService {
         transactionService.saveInOwnTransaction(project, newOwner, previousOwner);
 
         sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
-        sendRequestOwnerRoleRecalculation(newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
+        sendAssignOwnerAsUserToProject(newOwner, project);
     }
 
     private User changeProjectOwnerAndReturnPreviousOwner(Project project, User newOwner) {
@@ -89,6 +89,12 @@ public class ProjectChangeOwnerService {
         newOwner.getOwnedProjects().add(project);
         previousOwner.getOwnedProjects().remove(project);
         return previousOwner;
+    }
+
+    @IsSendingAsyncMessage(MessageID.ASSIGN_OWNER_AS_USER_TO_PROJECT)
+    private void sendAssignOwnerAsUserToProject(User owner, Project project) {
+        DomainMessage request = DomainMessageFactory.createAssignOwnerAsUserToProject(owner.getName(), project.getId());
+        eventBus.sendAsynchron(request);
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
