@@ -91,22 +91,26 @@ export function getFiles(pattern: string): string[] {
 
 /**
  * Delete a directory, but restore the file to keep.
- * This means anyhting but the specified fileToKeep inside the directoryToCleanUp is removed.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
  * 
- * @param directoryToCleanUp The directory to delete.
- * @param fileToKeep The path that must be kept.
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ * 
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
  */
 export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): void {
     const absoluteFileToKeep = path.resolve(fileToKeep);
-    if (fs_extra.existsSync(absoluteFileToKeep)) {
-        const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}'/'${path.basename(absoluteFileToKeep)}`;
-        // Move the file to a temporary location
-        fs_extra.moveSync(absoluteFileToKeep, tempFile);
-        // Remove the entire directory
-        fs_extra.removeSync(directoryToCleanUp);
-        // Recreate the directory
-        fs_extra.ensureDirSync(path.dirname(absoluteFileToKeep));
-        // Move the file back to its original location
-        fs_extra.moveSync(tempFile, absoluteFileToKeep);
+    const absoluteDirectoryToCleanUp = path.resolve(directoryToCleanUp);
+    if (!absoluteFileToKeep.includes(absoluteDirectoryToCleanUp)) {
+        return;
     }
+    const tempFile = `${path.dirname(absoluteDirectoryToCleanUp)}/${path.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    fs_extra.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    fs_extra.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    fs_extra.ensureDirSync(path.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    fs_extra.moveSync(tempFile, absoluteFileToKeep);
 }

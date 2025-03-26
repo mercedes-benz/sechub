@@ -9,7 +9,7 @@ jest.mock('fs-extra');
 describe('deleteDirectoryExceptGivenFile', () => {
     const directoryToCleanUp = '/path/to/directory';
     const fileToKeep = '/path/to/directory/fileToKeep.txt';
-    const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}'/'${path.basename(path.resolve(fileToKeep))}`;
+    const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}/${path.basename(path.resolve(fileToKeep))}`;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -17,7 +17,6 @@ describe('deleteDirectoryExceptGivenFile', () => {
 
     it('should move the file to a temporary location, delete the directory, recreate it, and move the file back', async () => {
         /* prepare */
-        (fs_extra.existsSync as jest.Mock).mockReturnValue(true);
         (fs_extra.moveSync as jest.Mock).mockResolvedValue(undefined);
         (fs_extra.removeSync as jest.Mock).mockResolvedValue(undefined);
         (fs_extra.ensureDirSync as jest.Mock).mockResolvedValue(undefined);
@@ -32,12 +31,9 @@ describe('deleteDirectoryExceptGivenFile', () => {
         expect(fs_extra.moveSync).toHaveBeenCalledWith(tempFile, path.resolve(fileToKeep));
     });
 
-    it('should not perform any operations if the file to keep does not exist', async () => {
-        /* prepare */
-        (fs_extra.existsSync as jest.Mock).mockReturnValue(false);
-
+    it('should not perform any operations if the file is not inside the given directory', async () => {
         /* execute */
-        deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
+        deleteDirectoryExceptGivenFile('/does/not/contain/fileToKeep', fileToKeep);
 
         /* test */
         expect(fs_extra.moveSync).not.toHaveBeenCalled();

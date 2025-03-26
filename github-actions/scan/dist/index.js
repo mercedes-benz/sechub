@@ -27861,24 +27861,28 @@ function getFiles(pattern) {
 }
 /**
  * Delete a directory, but restore the file to keep.
- * This means anyhting but the specified fileToKeep inside the directoryToCleanUp is removed.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
  *
- * @param directoryToCleanUp The directory to delete.
- * @param fileToKeep The path that must be kept.
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ *
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
  */
-async function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
+function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
     const absoluteFileToKeep = external_path_.resolve(fileToKeep);
-    if (lib.existsSync(absoluteFileToKeep)) {
-        const tempFile = `${external_path_.dirname(external_path_.resolve(directoryToCleanUp))}'/'${external_path_.basename(absoluteFileToKeep)}`;
-        // Move the file to a temporary location
-        await lib.move(absoluteFileToKeep, tempFile);
-        // Remove the entire directory
-        await lib.remove(directoryToCleanUp);
-        // Recreate the directory
-        await lib.ensureDir(external_path_.dirname(absoluteFileToKeep));
-        // Move the file back to its original location
-        await lib.move(tempFile, absoluteFileToKeep);
+    const absoluteDirectoryToCleanUp = external_path_.resolve(directoryToCleanUp);
+    if (!absoluteFileToKeep.includes(absoluteDirectoryToCleanUp)) {
+        return;
     }
+    const tempFile = `${external_path_.dirname(absoluteDirectoryToCleanUp)}/${external_path_.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    lib.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    lib.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    lib.ensureDirSync(external_path_.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    lib.moveSync(tempFile, absoluteFileToKeep);
 }
 
 ;// CONCATENATED MODULE: ./src/client-download.ts
@@ -27889,6 +27893,8 @@ async function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
 
 /**
  * Downloads release for the SecHub CLI if not already loaded.
+ * Ensure only the used client version is kept locally.
+ * This way the Github action cache can be kept lean and constant.
  *
  * @param context launch context
  */
@@ -27896,8 +27902,6 @@ async function downloadClientRelease(context) {
     const clientVersion = context.clientVersion;
     if (external_fs_.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
-        const parentDirectory = external_path_.dirname(context.clientDownloadFolder);
-        await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
         return;
     }
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
@@ -27908,9 +27912,10 @@ async function downloadClientRelease(context) {
     await downloadFile(zipDownloadUrl, secHubZipFilePath);
     await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
     chmodSync(context.clientExecutablePath);
-    /* remove all unused client versions from Github cache */
+    // remove all unused client versions/platforms from Github cache
+    // currently this is only done after a new download was performed
     const parentDirectory = external_path_.dirname(context.clientDownloadFolder);
-    await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
+    deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 
 ;// CONCATENATED MODULE: ./src/configuration-model.ts

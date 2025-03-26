@@ -9,6 +9,8 @@ import { LaunchContext } from './launcher';
 
 /**
  * Downloads release for the SecHub CLI if not already loaded.
+ * Ensure only the used client version is kept locally.
+ * This way the Github action cache can be kept lean and constant.
  *
  * @param context launch context
  */
@@ -17,8 +19,6 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
 
     if (fs.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
-        const parentDirectory = path.dirname(context.clientDownloadFolder);
-        deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
         return;
     }
 
@@ -33,8 +33,8 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
     await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
     chmodSync(context.clientExecutablePath);
 
-    /* remove all unused client versions from Github cache */
+    // remove all unused client versions/platforms from Github cache
+    // currently this is only done after a new download was performed
     const parentDirectory = path.dirname(context.clientDownloadFolder);
     deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
-
