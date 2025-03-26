@@ -1,0 +1,179 @@
+<template>
+    <v-card class="mr-auto" color="background_paper">
+        <v-toolbar color="background_paper">
+            <v-toolbar-title>
+                {{ jobUUID }}
+                <v-icon 
+                icon="mdi-circle"
+                class="ma-2"
+                :class="getTrafficLightClass(report.trafficLight || '')">
+                </v-icon>
+                <v-btn 
+                class="ma-2"
+                variant="tonal"
+                :color="getButtonColor(report.status || '')"
+                @click="routeTo('status')"
+                >
+                    {{ report.status }}
+                    <v-icon end icon="mdi-information-outline" />
+                </v-btn>
+            </v-toolbar-title>
+            <v-btn icon="mdi-reply" @click="routerGoBack" />       
+        </v-toolbar>
+
+        <div v-if="(!report || report.status === 'FAILED' || scanTypeMap.size === 0)">
+            <v-list bg-color="background_paper" lines="two">
+              <v-list-item>{{ $t('REPORT_SCAN_NOT_SUCCESSFUL') }}</v-list-item>
+            </v-list>
+        </div>
+
+        <div v-else>
+
+            <v-table
+                class="background-color"
+                fixed-header
+                height="90%"
+                >
+                <thead>
+                    <tr>
+                    <th class="background-color">{{ $t('REPORT_SCAN_TYPE') }}</th>
+                    <th class="background-color">{{ $t('REPORT_TOTAL_FINDINGS') }}</th>
+                    <th class="background-color">{{ $t('REPORT_CRITICAL_FINDINGS') }}</th>
+                    <th class="background-color">{{ $t('REPORT_HIGH_FINDINGS') }}</th>
+                    <th class="background-color">{{ $t('REPORT_LOW_FINDINGS') }}</th>
+                    <th class="background-color">{{ $t('REPORT_INFO_FINDINGS') }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-for="[key, scanType] in scanTypeMap" 
+                    :key="key"
+                    class="background-color"
+                    @click="routeTo(key)">
+                        <td>{{ key }}</td>
+                        <td>{{ scanType.critical }}</td>
+                        <td>{{ scanType.high }}</td>
+                        <td>{{ scanType.medium }}</td>
+                        <td>{{ scanType.low }}</td>
+                        <td>{{ scanType.info }}</td>
+                    </tr>
+                </tbody>
+            </v-table>
+        </div>
+    </v-card>
+
+</template>
+<script lang="ts">
+  import { useRoute, useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
+  import defaultClient from '@/services/defaultClient'
+  import { SecHubReport, SecHubReportScanTypeSummary } from '@/generated-sources/openapi'
+  import { getTrafficLightClass } from '@/utils/projectUtils'
+  import { useReportStore } from '../stores/reportStore'
+  import '@/styles/sechub.scss'
+
+  export default {
+    name: 'JobDetail',
+
+    setup () {
+      const { t } = useI18n()
+      const route = useRoute()
+      const router = useRouter()
+      const store = useReportStore()
+
+      const projectId = ref('')
+      const jobUUID = ref('')
+
+      const report = ref<SecHubReport>({})
+      const scanTypeMap = new Map<string, SecHubReportScanTypeSummary>();
+
+      if ('id' in route.params) {
+        projectId.value = route.params.id
+      }
+
+      if ('jobId' in route.params){
+        jobUUID.value = route.params.jobId
+      }
+
+      function routerGoBack () {
+        router.go(-1)
+      }
+
+      function getButtonColor(title: string) {
+        return title === 'FAILED' ? 'error' : 'primary';
+    }
+
+    function collectSummaries(){
+        let metaData = report.value.metaData;
+        if(!metaData) {
+            return
+        }
+
+        if(metaData.summary?.codeScan){
+            scanTypeMap.set("codescan", metaData.summary.codeScan)
+        }
+
+        if(metaData.summary?.webScan){
+            scanTypeMap.set("webscan", metaData.summary.webScan)
+        }
+
+        if(metaData.summary?.infraScan){
+            scanTypeMap.set("infrascan", metaData.summary.infraScan)
+        }
+
+        if(metaData.summary?.licenseScan){
+            scanTypeMap.set("licensescan", metaData.summary.licenseScan)
+        }
+
+        if(metaData.summary?.secretScan){
+            scanTypeMap.set("secretscan", metaData.summary.secretScan)
+        }
+    }
+
+    function routeTo(route: string){
+        let basePath = `/projects/${projectId.value}/jobs/${jobUUID.value}/`
+        if(route === 'status') {
+            router.push({
+                path: basePath + `status`
+            });
+        }
+        else if(route === "webscan"){
+            router.push({
+                path: basePath + `webscanreport`
+            });
+        } else {
+            router.push({
+                path: basePath + `scanreport`
+            });
+        }
+    }
+
+      onMounted(async () => {
+      try {
+            report.value = await defaultClient.withExecutionApi.userDownloadJobReport({
+            projectId: projectId.value,
+            jobUUID: jobUUID.value,
+          })
+          collectSummaries()
+          store.storeReport(report.value)
+
+        } catch (err) {
+          const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
+          console.error(errMsg, err)
+        }
+
+    })
+
+      return {
+        projectId,
+        jobUUID,
+        report,
+        scanTypeMap,
+        routeTo,
+        routerGoBack,
+        getTrafficLightClass,
+        getButtonColor
+      }
+    },
+  }
+</script>

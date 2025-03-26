@@ -22,6 +22,7 @@
     "JOB_ERROR_CANCEL_JOB_FAILED": "Could not cancel Job: ",
     "JOB_ERROR_FETCHING_JOBS_FOR_PROJECT": "Could not fetch Jobs for Project.",
     "USER_TITLE": "User Profile",
+    "USER_PROFILE_SETTINGS": "User Profile and Settings",
     "USER_ID": "User ID",
     "USER_EMAIL": "Email",
     "USER_SETTINGS": "Settings",
@@ -59,5 +60,14 @@
     "SCAN_ERROR_ALERT_JOB_NOT_APPROVED": "Could not approve Job.",
     "SCAN_ERROR_ALERT_NO_DATA_SECTION": "Could not get type section from configuration. Internal Error.",
     "SCAN_ERROR_ALERT_GENERIC": "An internal error occurred.",
-    "CHANGE_USER_MAIL_SUCCESS": "You have changed your Email successfully!"
+    "CHANGE_USER_MAIL_SUCCESS": "You have changed your Email successfully!",
+    "REPORT_SCAN_TYPE": "Scan type",
+    "REPORT_TOTAL_FINDINGS": "Total findings",
+    "REPORT_CRITICAL_FINDINGS": "Critical findings",
+    "REPORT_HIGH_FINDINGS": "High findings",
+    "REPORT_LOW_FINDINGS": "Low findings",
+    "REPORT_INFO_FINDINGS": "Info findings",
+    "REPORT_SCAN_NOT_SUCCESSFUL": "Executed scan was not successful!",
+    "REPORT_METADATA_SCAN_STATUS": "Scan status",
+    "REPORT_METADATA_MESSAGES": "SecHub Report Messages"
 }

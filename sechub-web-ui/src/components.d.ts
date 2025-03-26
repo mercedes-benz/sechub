@@ -10,6 +10,8 @@ declare module 'vue' {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
+    JobDetails: typeof import('./components/JobDetails.vue')['default']
+    JobDetailsStatus: typeof import('./components/JobDetailsStatus.vue')['default']
     Pagination: typeof import('./components/Pagination.vue')['default']
     ProjectDetails: typeof import('./components/ProjectDetails.vue')['default']
     ProjectDetailsFab: typeof import('./components/ProjectDetailsFab.vue')['default']

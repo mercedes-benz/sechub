@@ -1,0 +1,15 @@
+.background-color {
+    background-color: rgb(var(--v-theme-layer_01)) !important;
+  }
+  .traffic-light-none {
+    color: rgb(var(--v-theme-layer_01)) !important;
+  }
+  .traffic-light-red {
+    color: rgb(var(--v-theme-error)) !important;
+  }
+  .traffic-light-green {
+    color: rgb(var(--v-theme-success)) !important;
+  }
+  .traffic-light-yellow {
+    color: rgb(var(--v-theme-warning)) !important;
+  }

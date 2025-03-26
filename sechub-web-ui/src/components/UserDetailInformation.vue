@@ -1,5 +1,13 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+      <v-card class="mr-auto" color="background_paper">
+        <v-toolbar color="background_paper">
+            <v-toolbar-title>
+              {{ $t('USER_PROFILE_SETTINGS') }}
+            </v-toolbar-title>
+            <v-btn icon="mdi-reply" @click="routerGoBack" />
+        </v-toolbar>
+    </v-card>
   <v-card>
     <v-card-item>
       <v-card-title>{{ $t('USER_TITLE') }}</v-card-title>
@@ -33,14 +41,19 @@
     <v-list lines="one">
       <v-list-item v-if="false">
         <v-container>
-          <v-btn variant="tonal">
+          <v-btn variant="tonal"
+          class="custom-btn">
             {{ $t('USER_SETTINGS_CHANGE_PASSWORD') }}
           </v-btn>
         </v-container>
       </v-list-item>
       <v-list-item>
         <v-container>
-          <v-btn :loading="isRefreshingApiToken" variant="tonal" @click="refreshApiToken()">
+          <v-btn 
+          class="custom-btn"
+          :loading="isRefreshingApiToken" variant="tonal"
+          color="primary"
+          @click="refreshApiToken()">
             {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN') }}
           </v-btn>
 
@@ -49,7 +62,7 @@
               <v-card-title>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TITLE') }}</v-card-title>
               <v-card-text>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TEXT') }}</v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="refreshApiTokenDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
+                <v-btn class="custom-btn" color="primary" @click="refreshApiTokenDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -98,11 +111,13 @@
   import defaultClient from '@/services/defaultClient'
   import { defineComponent } from 'vue'
   import type { UserDetailInformation } from '@/generated-sources/openapi'
+  import { useRouter } from 'vue-router'
 
   export default defineComponent({
     name: 'UserDetailInformation',
 
     setup () {
+      const router = useRouter()
       const userId = ref('')
       const email = ref('')
       const isRefreshingApiToken = ref(false)
@@ -136,12 +151,17 @@
         }
       }
 
+      function routerGoBack () {
+        router.go(-1)
+      }
+
       return {
         userId,
         email,
         refreshApiToken,
         isRefreshingApiToken,
         refreshApiTokenDialog,
+        routerGoBack
       }
     },
   })
@@ -156,7 +176,7 @@
   .v-card {
     margin-top: 25px;
 
-    .v-btn {
+    .custom-btn {
       width: 300px;
     }
   }
