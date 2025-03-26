@@ -8,16 +8,26 @@ import * as cm from './configuration-model';
 /**
  * Creates the sechub.json configuration file with the given user input values.
  *
- * @param secHubJsonFilePath The path where the sechub.json file should be created
+ * @param secHubJsonTargetFilePath The path where the sechub.json file should be created
  * @param data The value to build the json from
  */
-export function createSecHubConfigJsonFile(secHubJsonFilePath: string, data: SecHubConfigurationModelBuilderData) {
-    core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
-    const secHubJson = createSecHubConfigurationModel(data);
-    const stringifiedSecHubJson = JSON.stringify(secHubJson);
+export function createSecHubConfigJsonFile(secHubJsonTargetFilePath: string, data: SecHubConfigurationModelBuilderData) {
+    core.info('Config-Path was not found. Config will be created at ' + secHubJsonTargetFilePath);
+    const stringifiedSecHubJson = createSecHubConfigJsonString(data);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
 
-    shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
+    shell.ShellString(stringifiedSecHubJson).to(secHubJsonTargetFilePath);
+}
+
+/**
+ * Creates the SecHub configuration as JSON string.
+ * 
+ * @param data The value to build the json from.
+ * @returns  The SecHub configuration as JSON string.
+ */
+export function createSecHubConfigJsonString(data: SecHubConfigurationModelBuilderData): string{
+    const secHubJson = createSecHubConfigurationModel(data);
+    return JSON.stringify(secHubJson);
 }
 
 

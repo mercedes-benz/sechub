@@ -1,46 +1,41 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile as createSecHubConfigJsonFile } from './configuration-builder';
+import { SecHubConfigurationModelBuilderData, createSecHubConfigJsonString } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
 import * as fs from 'fs';
-import { addDefaultExcludesToSecHubConfig } from './configuration-model-default-helper';
+import { addAdditonalExcludes } from './configuration-model-default-helper';
 
 /**
- * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be 
- * generated from the input parameters and this path will be returned.
+ * Create a SecHub config JSON file at 'secHubJsonTargetFilePath'. If no custom config-path is defined, a config file will be 
+ * generated from the input parameters.
  * 
+ * @param secHubJsonTargetFilePath The target Sechub config file that will be created for the scan.
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param builderData contains builder data which is used when no custom sechub configuration file is defined by user
- * 
- * @returns resulting configuration file path
  */
-export function initSecHubJson(secHubJsonFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): string {
+export function initSecHubJson(secHubJsonTargetFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): void {
     core.startGroup('Set config');
 
-    let configFilePath = customSecHubConfigFilePath;
-    if (configFilePath) {
-        if (fs.existsSync(configFilePath)) {
-            core.info(`Config-Path was found: ${configFilePath}`);
+    let jsonString = "";
+    if (customSecHubConfigFilePath) {
+        core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
+        if (fs.existsSync(customSecHubConfigFilePath)) {
+             core.debug(`Reading custom config file as json`);
+             jsonString = fs.readFileSync(customSecHubConfigFilePath, 'utf8');
         } else {
-            throw new Error(`Config-Path was defined, but no file exists at: ${configFilePath}`);
+            throw new Error(`Config-Path was defined, but no file exists at: ${customSecHubConfigFilePath}`);
         }
-
     } else {
-        createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
-        configFilePath = secHubJsonFilePath;
+        jsonString = createSecHubConfigJsonString(builderData);
     }
-    if (fs.existsSync(configFilePath)) {
-        core.debug('Adding default excludes to SecHub configuration file.')
-        const jsonString = fs.readFileSync(configFilePath, 'utf8');
-        const jsonData: any = JSON.parse(jsonString);
-        const updatedConfig = addDefaultExcludesToSecHubConfig(jsonData);
-        fs.writeFileSync(secHubJsonFilePath, JSON.stringify(updatedConfig, null, 2));
-        configFilePath = secHubJsonFilePath;
-    }
-    core.endGroup();
+    /* additional post processing of defined/generated config file :*/
+    core.debug(`Additional post processing of SecHub configuration model`);
+    const jsonData: any = JSON.parse(jsonString);
+    addAdditonalExcludes(jsonData);
+    fs.writeFileSync(secHubJsonTargetFilePath, JSON.stringify(jsonData, null, 2));
 
-    return configFilePath;
+    core.endGroup();
 }
 
 /**

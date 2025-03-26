@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-import { addDefaultExcludesToSecHubConfig, DEFAULT_EXCLUDES } from "../src/configuration-model-default-helper";
+import { addAdditonalExcludes } from "../src/configuration-model-default-helper";
 
 
-describe('addDefaultExcludes', function () {
+describe('addAdditonalExcludes', function () {
+    const EXPECTED_ADDITIONAL_EXCLUDES: string[] = ['**/.sechub-gha/**'];
+
     it('data section entries updated correctly', function () {
         /* prepare */
-        const sampleJson = {
+        let sampleJson = {
             "apiVersion": "1.0",
             "data": {
               "sources": [
@@ -34,16 +36,16 @@ describe('addDefaultExcludes', function () {
           };
 
         /* execute */
-        const updatedJson = addDefaultExcludesToSecHubConfig(sampleJson);
+        addAdditonalExcludes(sampleJson);
 
         /* test */
-        updatedJson.data.sources.forEach((entry: { excludes?: string[]; }) => {
-            DEFAULT_EXCLUDES.forEach((exclude) => {
+        sampleJson.data.sources.forEach((entry: { excludes?: string[]; }) => {
+          EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
                 expect(entry.excludes).toContain(exclude);
             });
         });
-        updatedJson.data.binaries.forEach((entry: { excludes?: string[]; }) => {
-            DEFAULT_EXCLUDES.forEach((exclude) => {
+        sampleJson.data.binaries.forEach((entry: { excludes?: string[]; }) => {
+          EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
                 expect(entry.excludes).toContain(exclude);
             });
         });
@@ -51,7 +53,7 @@ describe('addDefaultExcludes', function () {
 
     it('deprecated way with existing excludes entries updated correctly', function () {
         /* prepare */
-        const sampleJson = {
+        let sampleJson = {
             "apiVersion": "1.0",
             "codeScan": {
               "fileSystem": {
@@ -68,17 +70,17 @@ describe('addDefaultExcludes', function () {
           };
 
         /* execute */
-        const updatedJson = addDefaultExcludesToSecHubConfig(sampleJson);
+        addAdditonalExcludes(sampleJson);
 
         /* test */
-        DEFAULT_EXCLUDES.forEach((exclude) => {
-            expect(updatedJson.codeScan.excludes).toContain(exclude);
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+            expect(sampleJson.codeScan.excludes).toContain(exclude);
         });
     });
 
     it('deprecated way no excludes entries updated correctly', function () {
         /* prepare */
-        const sampleJson = {
+        let sampleJson = {
             "apiVersion": "1.0",
             "codeScan": {
               "fileSystem": {
@@ -88,20 +90,28 @@ describe('addDefaultExcludes', function () {
                 ]
               }
             }
-          };
+          } as {
+            apiVersion: string;
+            codeScan: {
+                fileSystem: {
+                    folders: string[];
+                };
+                excludes?: string[]; // Add the optional excludes property
+            };
+        };
 
         /* execute */
-        const updatedJson = addDefaultExcludesToSecHubConfig(sampleJson);
+        addAdditonalExcludes(sampleJson);
 
         /* test */
-        DEFAULT_EXCLUDES.forEach((exclude) => {
-            expect(updatedJson.codeScan.excludes).toContain(exclude);
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+            expect(sampleJson.codeScan.excludes).toContain(exclude);
         });
     });
 
     it('invalid config no entries updated', function () {
         /* prepare */
-        const sampleJson = {
+        let sampleJson = {
             "apiVersion": "1.0",
             "licenseScan": {
               "fileSystem": {
@@ -113,11 +123,69 @@ describe('addDefaultExcludes', function () {
             }
           };
 
+        let expectedJson = JSON.parse(JSON.stringify(sampleJson));;
+
         /* execute */
-        const updatedJson = addDefaultExcludesToSecHubConfig(sampleJson);
+        addAdditonalExcludes(sampleJson);
 
         /* test */
-        expect(updatedJson).toEqual(sampleJson);
+        expect(expectedJson).toEqual(sampleJson);
     });
+
+
+    it('combination of deprecated way and data section is updated correctly', function () {
+      /* prepare */
+      let sampleJson = {
+          "apiVersion": "1.0",
+          "codeScan": {
+            "fileSystem": {
+              "folders": [
+                "gamechanger-android/src/main/java",
+                "gamechanger-server/src/main/java"
+              ],
+            },
+            "excludes": [
+              "**/mytestcode/**",
+              "*.config"
+            ]
+          },
+          "data": {
+            "sources": [
+              {
+                "excludes": [ 
+                  "**/mytestcode/**",
+                  "*.config"
+                ]
+              }
+            ],
+            "binaries": [
+              {
+                "excludes": [ 
+                    "**/test/**"
+                ]
+              }
+            ]
+          }
+        }
+
+      /* execute */
+      addAdditonalExcludes(sampleJson);
+
+      /* test */
+      EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+          expect(sampleJson.codeScan.excludes).toContain(exclude);
+      });
+
+      sampleJson.data.sources.forEach((entry: { excludes?: string[]; }) => {
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
+      });
+      sampleJson.data.binaries.forEach((entry: { excludes?: string[]; }) => {
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
+      });
+  });
 
 });
