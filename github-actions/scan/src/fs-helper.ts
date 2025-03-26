@@ -96,17 +96,17 @@ export function getFiles(pattern: string): string[] {
  * @param directoryToCleanUp The directory to delete.
  * @param fileToKeep The path that must be kept.
  */
-export async function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): Promise<void> {
+export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): void {
     const absoluteFileToKeep = path.resolve(fileToKeep);
     if (fs_extra.existsSync(absoluteFileToKeep)) {
         const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}'/'${path.basename(absoluteFileToKeep)}`;
         // Move the file to a temporary location
-        await fs_extra.move(absoluteFileToKeep, tempFile);
+        fs_extra.moveSync(absoluteFileToKeep, tempFile);
         // Remove the entire directory
-        await fs_extra.remove(directoryToCleanUp);
+        fs_extra.removeSync(directoryToCleanUp);
         // Recreate the directory
-        await fs_extra.ensureDir(path.dirname(absoluteFileToKeep));
+        fs_extra.ensureDirSync(path.dirname(absoluteFileToKeep));
         // Move the file back to its original location
-        await fs_extra.move(tempFile, absoluteFileToKeep);
+        fs_extra.moveSync(tempFile, absoluteFileToKeep);
     }
 }

@@ -18,7 +18,7 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
     if (fs.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
         const parentDirectory = path.dirname(context.clientDownloadFolder);
-        await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
+        deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
         return;
     }
 
@@ -35,6 +35,6 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
 
     /* remove all unused client versions from Github cache */
     const parentDirectory = path.dirname(context.clientDownloadFolder);
-    await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
+    deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 
