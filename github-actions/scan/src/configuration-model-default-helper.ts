@@ -5,7 +5,7 @@ export const DEFAULT_EXCLUDES: string[] = ['**/.sechub-gha/**']
 /**
  * Adds default exclude patterns to the provided JSON data, without altering the original JSON data.
  * 
- * If a 'data' section is present the default exclude patterns will be aded to each entry's 'excludes' array (sources and binaries).
+ * If a 'data' section is present the default exclude patterns will be added to each entry's 'excludes' array (sources and binaries).
  * In case the 'data' section is not present, the deprecated 'codeScan.excludes' will be checked instead.
  * If no sources or binaries are specified at all, no default exclude patterns will be added.
  * 
