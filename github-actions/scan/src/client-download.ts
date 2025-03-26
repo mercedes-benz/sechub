@@ -2,7 +2,9 @@
 
 import * as core from '@actions/core';
 import * as fs from 'fs';
-import { ensureDirectorySync, downloadFile, unzipFile, chmodSync } from './fs-helper';
+import * as path from 'path';
+import * as shell from 'shelljs';
+import { ensureDirectorySync, downloadFile, unzipFile, chmodSync, deleteDirectoryExceptGivenFile } from './fs-helper';
 import { LaunchContext } from './launcher';
 
 /**
@@ -15,6 +17,8 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
 
     if (fs.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        const parentDirectory = path.dirname(context.clientDownloadFolder);
+        await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
         return;
     }
 
@@ -28,5 +32,9 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
     await downloadFile(zipDownloadUrl, secHubZipFilePath);
     await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
     chmodSync(context.clientExecutablePath);
+
+    /* remove all unused client versions from Github cache */
+    const parentDirectory = path.dirname(context.clientDownloadFolder);
+    await deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 

@@ -88,3 +88,25 @@ export function getFiles(pattern: string): string[] {
 
     return reportFiles;
 }
+
+/**
+ * Delete a directory, but restore the file to keep.
+ * This means anyhting but the specified fileToKeep inside the directoryToCleanUp is removed.
+ * 
+ * @param directoryToCleanUp The directory to delete.
+ * @param fileToKeep The path that must be kept.
+ */
+export async function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): Promise<void> {
+    const absoluteFileToKeep = path.resolve(fileToKeep);
+    if (fs_extra.existsSync(absoluteFileToKeep)) {
+        const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}'/'${path.basename(absoluteFileToKeep)}`;
+        // Move the file to a temporary location
+        await fs_extra.move(absoluteFileToKeep, tempFile);
+        // Remove the entire directory
+        await fs_extra.remove(directoryToCleanUp);
+        // Recreate the directory
+        await fs_extra.ensureDir(path.dirname(absoluteFileToKeep));
+        // Move the file back to its original location
+        await fs_extra.move(tempFile, absoluteFileToKeep);
+    }
+}
