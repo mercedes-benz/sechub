@@ -23,7 +23,7 @@ describe('deleteDirectoryExceptGivenFile', () => {
         (fs_extra.ensureDirSync as jest.Mock).mockResolvedValue(undefined);
 
         /* execute */
-        await deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
+        deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
 
         /* test */
         expect(fs_extra.moveSync).toHaveBeenCalledWith(path.resolve(fileToKeep), tempFile);
@@ -37,7 +37,7 @@ describe('deleteDirectoryExceptGivenFile', () => {
         (fs_extra.existsSync as jest.Mock).mockReturnValue(false);
 
         /* execute */
-        await deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
+        deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
 
         /* test */
         expect(fs_extra.moveSync).not.toHaveBeenCalled();
