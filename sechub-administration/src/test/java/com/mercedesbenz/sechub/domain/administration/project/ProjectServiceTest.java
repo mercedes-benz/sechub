@@ -24,6 +24,15 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 class ProjectServiceTest {
 
+    private static final String PROJECT_ID_1 = "project1";
+    private static final String PROJECT_ID_2 = "project2";
+    private static final String PROJECT_ID_3 = "project3";
+
+    private static final String USER_ID_1 = "user1";
+    private static final String USER_ID_2 = "user2";
+    private static final String USER_ID_3 = "user3";
+    private static final String USER_ID_4 = "user4";
+
     private static final UserRepository userRepository = mock();
     private static final UserInputAssertion userInputAssertion = mock();
     private static final ProjectService serviceToTest = new ProjectService(userRepository, userInputAssertion);
@@ -58,7 +67,7 @@ class ProjectServiceTest {
     @Test
     void user2_sees_assigned_and_owned_projects_with_users() {
         /* prepare */
-        String userId = "user2";
+        String userId = USER_ID_2;
 
         /* execute */
         List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
@@ -68,8 +77,8 @@ class ProjectServiceTest {
         assertThat(projects.get(1).getAssignedUsers()).isNotNull();
 
         // List of projects is unsorted
-        assertThat(projects.get(0).getProjectId()).isIn("project2", "project3");
-        assertThat(projects.get(1).getProjectId()).isIn("project2", "project3");
+        assertThat(projects.get(0).getProjectId()).isIn(PROJECT_ID_2, PROJECT_ID_3);
+        assertThat(projects.get(1).getProjectId()).isIn(PROJECT_ID_2, PROJECT_ID_3);
 
         assertThat(projects.get(0).getAssignedUsers().size()).isGreaterThan(0);
         assertThat(projects.get(1).getAssignedUsers().size()).isGreaterThan(0);
@@ -78,41 +87,42 @@ class ProjectServiceTest {
     @Test
     void user3_sees_assigned_project_without_users() {
         /* prepare */
-        String userId = "user3";
+        String userId = USER_ID_3;
 
         /* execute */
         List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
         /* test */
-        assertThat(projects.get(0).getProjectId()).isEqualTo("project2");
+        assertThat(projects.get(0).getProjectId()).isEqualTo(PROJECT_ID_2);
         assertThat(projects.get(0).getAssignedUsers()).isNull();
     }
 
     @Test
     void user4_is_admin_and_sees_assigned_project_with_users() {
         /* prepare */
-        String userId = "user4";
+        String userId = USER_ID_4;
 
         /* execute */
         List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
         /* test */
-        assertThat(projects.get(0).getProjectId()).isEqualTo("project2");
-        assertThat(projects.get(0).getAssignedUsers().size()).isEqualTo(3);
+        ProjectData project2Data = projects.get(0);
+        assertThat(project2Data.getProjectId()).isEqualTo(PROJECT_ID_2);
+        assertThat(project2Data.getAssignedUsers().size()).isEqualTo(3);
 
         ProjectUserData user2 = new ProjectUserData();
         user2.setEmailAddress("user2@example.org");
-        user2.setUserId("user2");
+        user2.setUserId(USER_ID_2);
 
         ProjectUserData user3 = new ProjectUserData();
-        user2.setEmailAddress("user3@example.org");
-        user2.setUserId("user3");
+        user3.setEmailAddress("user3@example.org");
+        user3.setUserId(USER_ID_3);
 
         ProjectUserData user4 = new ProjectUserData();
-        user2.setEmailAddress("user4@example.org");
-        user2.setUserId("user4");
+        user4.setEmailAddress("user4@example.org");
+        user4.setUserId(USER_ID_4);
 
-        assertThat(projects.get(0).getAssignedUsers()).contains(user2, user3, user4);
+        assertThat(project2Data.getAssignedUsers()).contains(user2, user3, user4);
     }
 
     private void setUpTestCase() {
@@ -122,14 +132,14 @@ class ProjectServiceTest {
         // user3 is assigned to project2
         // user4 is assigned to project2 and is super admin
 
-        Project project1 = createProject("project1");
-        Project project2 = createProject("project2");
-        Project project3 = createProject("project3");
+        Project project1 = createProject(PROJECT_ID_1);
+        Project project2 = createProject(PROJECT_ID_2);
+        Project project3 = createProject(PROJECT_ID_3);
 
-        User user1 = createProjectUser("user1", Set.of(), false);
-        User user2 = createProjectUser("user2", Set.of(project2, project3), false);
-        User user3 = createProjectUser("user3", Set.of(project2), false);
-        User user4 = createProjectUser("user4", Set.of(project2), true);
+        User user1 = createProjectUser(USER_ID_1, Set.of(), false);
+        User user2 = createProjectUser(USER_ID_2, Set.of(project2, project3), false);
+        User user3 = createProjectUser(USER_ID_3, Set.of(project2), false);
+        User user4 = createProjectUser(USER_ID_4, Set.of(project2), true);
 
         project1.owner = user1;
 
@@ -139,10 +149,10 @@ class ProjectServiceTest {
         project3.owner = user2;
         project3.users = Set.of(user2);
 
-        when(userRepository.findOrFailUser("user1")).thenReturn(user1);
-        when(userRepository.findOrFailUser("user2")).thenReturn(user2);
-        when(userRepository.findOrFailUser("user3")).thenReturn(user3);
-        when(userRepository.findOrFailUser("user4")).thenReturn(user4);
+        when(userRepository.findOrFailUser(USER_ID_1)).thenReturn(user1);
+        when(userRepository.findOrFailUser(USER_ID_2)).thenReturn(user2);
+        when(userRepository.findOrFailUser(USER_ID_3)).thenReturn(user3);
+        when(userRepository.findOrFailUser(USER_ID_4)).thenReturn(user4);
     }
 
     private Project createProject(String projectId) {
@@ -157,10 +167,11 @@ class ProjectServiceTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             /* @formatter:off */
             return Stream.of(
-                    Arguments.of("user1", 0, true, "user1", "user1@example.org"),
-                    Arguments.of("user2", 2, true, "user2", "user2@example.org"),
-                    Arguments.of("user3", 1, false, "user2", "user2@example.org"),
-                    Arguments.of("user4", 1, false, "user2", "user2@example.org"));
+                    /* user id, expectedProjects, isOwner, expectedOwnerId, expectedOwnerMailAddress*/
+                    Arguments.of(USER_ID_1, 0, true, USER_ID_1, "user1@example.org"),
+                    Arguments.of(USER_ID_2, 2, true, USER_ID_2, "user2@example.org"),
+                    Arguments.of(USER_ID_3, 1, false, USER_ID_2, "user2@example.org"),
+                    Arguments.of(USER_ID_4, 1, false, USER_ID_2, "user2@example.org"));
         }
         /* @formatter:on */
     }

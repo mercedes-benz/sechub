@@ -60,4 +60,9 @@ public class ProjectUserData implements Comparable<ProjectUserData> {
 
         return userId.compareTo(o.userId);
     }
+
+    @Override
+    public String toString() {
+        return "ProjectUserData [" + (userId != null ? "userId=" + userId + ", " : "") + (emailAddress != null ? "emailAddress=" + emailAddress : "") + "]";
+    }
 }
