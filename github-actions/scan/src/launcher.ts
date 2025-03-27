@@ -62,7 +62,6 @@ export interface LaunchContext {
 
     lastClientExitCode: number;
     workspaceFolder: string;
-    secHubJsonFilePath: string;
 
     secHubReportJsonObject: object | undefined;
     secHubReportJsonFileName: string;
@@ -84,8 +83,7 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     clientExecutablePath: '',
 
     lastClientExitCode: -1,
-
-    secHubJsonFilePath: '',
+    
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
@@ -116,9 +114,9 @@ async function createContext(): Promise<LaunchContext> {
 
     const builderData = createSafeBuilderData(gitHubInputData);
 
-    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
+    initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
 
-    const projectName = projectNameResolver.resolveProjectName(gitHubInputData, configFileLocation);
+    const projectName = projectNameResolver.resolveProjectName(gitHubInputData, generatedSecHubJsonFilePath);
 
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
@@ -127,7 +125,7 @@ async function createContext(): Promise<LaunchContext> {
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
         secHubReportJsonFileName: '',
 
-        configFileLocation: configFileLocation,
+        configFileLocation: generatedSecHubJsonFilePath,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientVersion: clientVersion,
@@ -138,7 +136,6 @@ async function createContext(): Promise<LaunchContext> {
 
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
 
-        secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
         debug: gitHubInputData.debug == 'true',

@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare;
 
 import static com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperKeyConstants.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +20,11 @@ public class PrepareWrapperProxySupport {
     @Value("${" + KEY_PDS_PREPARE_PROXY_ENABLED + ":false}")
     boolean proxyEnabled;
 
-    @Autowired
-    PrepareWrapperSystemPropertySupport propertySupport;
+    private final PrepareWrapperSystemPropertySupport propertySupport;
+
+    public PrepareWrapperProxySupport(PrepareWrapperSystemPropertySupport propertySupport) {
+        this.propertySupport = propertySupport;
+    }
 
     public void setUpProxy() {
         if (!proxyEnabled) {

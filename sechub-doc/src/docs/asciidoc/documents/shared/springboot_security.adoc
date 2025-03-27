@@ -122,4 +122,23 @@ sechub:
 <3> {sechub} uses `AES` encryption to provide temporary but still sensitive information in a secure way.
     This is the secret key for the encryption. The key can be anything, but must 
     have exactly a length of 32 bytes. For example: `example-key-32-byte-long-1234567`.
-    
+
+===== Customizing the Login Mask
+
+The static content of the login mask can be customized by providing a custom background image, custom logo and custom colors.
+This can be done by using the following property:
+
+[source,yaml]
+----
+spring:
+  web:
+    resources:
+      static-locations: file:/custom/static, classpath:/static
+----
+
+The files in your custom static location will be served before the default static files are served,
+as long as they follow the same structure as the default files. +
+See the 'sechub-commons-security-spring' module for more information about the static file structure.
+
+Example: +
+`/custom/static/login/css/main.css` will be served before `/static/login/css/main.css` which allows you to override the default colors.

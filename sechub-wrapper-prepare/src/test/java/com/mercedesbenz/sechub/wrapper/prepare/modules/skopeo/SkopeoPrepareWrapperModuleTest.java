@@ -38,23 +38,19 @@ class SkopeoPrepareWrapperModuleTest {
 
     @BeforeEach
     void beforeEach() {
-        moduleToTest = new SkopeoPrepareWrapperModule();
         inputValidator = mock(SkopeoPrepareInputValidator.class);
         writer = new TestFileWriter();
         skopeoWrapper = mock(SkopeoWrapper.class);
         fileNameSupport = mock(FileNameSupport.class);
         PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
 
-        ReflectionTestUtils.setField(moduleToTest, "enabled", true);
+        moduleToTest = new SkopeoPrepareWrapperModule(inputValidator, skopeoWrapper, fileNameSupport, uploadService, mock());
 
-        moduleToTest.inputValidator = inputValidator;
-        moduleToTest.skopeoWrapper = skopeoWrapper;
-        moduleToTest.filesSupport = fileNameSupport;
-        moduleToTest.uploadService = uploadService;
+        ReflectionTestUtils.setField(moduleToTest, "enabled", true);
     }
 
     @Test
-    void when_inputValidator_throws_InputValidatorException_prepare_rethrows_it() throws IOException, PrepareWrapperInputValidatorException {
+    void when_inputValidator_throws_InputValidatorException_prepare_rethrows_it() throws IOException {
         /* prepare */
         PrepareWrapperContext context = createContext();
 
@@ -70,7 +66,7 @@ class SkopeoPrepareWrapperModuleTest {
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void module_isResponsible_returns_result_from_input_validator_is_accepted(boolean accepting) throws IOException {
+    void module_isResponsible_returns_result_from_input_validator_is_accepted(boolean accepting) {
         /* prepare */
         PrepareWrapperContext context = createContext();
 
@@ -86,7 +82,7 @@ class SkopeoPrepareWrapperModuleTest {
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void module_isEnabled_returns_result_from_field(boolean enabled) throws IOException {
+    void module_isEnabled_returns_result_from_field(boolean enabled) {
         /* prepare */
         moduleToTest.enabled = enabled;
 

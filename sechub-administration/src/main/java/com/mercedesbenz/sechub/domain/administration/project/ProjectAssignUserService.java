@@ -28,7 +28,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import jakarta.annotation.security.RolesAllowed;
 
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+@RolesAllowed({ RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
 public class ProjectAssignUserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignUserService.class);
@@ -61,7 +61,7 @@ public class ProjectAssignUserService {
 					name = "Assign user",
 					description = "The service will add the user to the project. If user does not have ROLE_USER it will obtain it"))
 	/* @formatter:on */
-    public void assignUserToProject(String userId, String projectId) {
+    public void assignUserToProject(String userId, String projectId, boolean failOnExistingAssignment) {
         LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
@@ -70,15 +70,20 @@ public class ProjectAssignUserService {
 
         Project project = projectRepository.findOrFailProject(projectId);
         User user = userRepository.findOrFailUser(userId);
-        if (!project.getUsers().add(user)) {
-            throw new AlreadyExistsException("User already assigned to this project!");
+        if (project.getUsers().add(user)) {
+            user.getProjects().add(project);
+
+            transactionService.saveInOwnTransaction(project, user);
+
+            sendUserAddedToProjectEvent(projectId, user);
+        } else {
+            if (failOnExistingAssignment) {
+                throw new AlreadyExistsException("User already assigned to this project!");
+            }
+            LOG.info("User {} is already assigned to project {} - but not handled as failure", user.getName(), project.getId());
         }
-        user.getProjects().add(project);
-        project.getUsers().add(user);
 
-        transactionService.saveInOwnTransaction(project, user);
-
-        sendUserAddedToProjectEvent(projectId, user);
+        /* in any case which does not lead to a failure we request a recalculation */
         sendRequestUserRoleRecalculation(user);
 
     }

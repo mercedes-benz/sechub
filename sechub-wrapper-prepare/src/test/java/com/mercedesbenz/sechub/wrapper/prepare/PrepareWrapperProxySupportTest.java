@@ -15,10 +15,8 @@ class PrepareWrapperProxySupportTest {
 
     @BeforeEach
     void beforeEach() {
-        supportToTest = new PrepareWrapperProxySupport();
         propertySupport = mock(PrepareWrapperSystemPropertySupport.class);
-
-        supportToTest.propertySupport = propertySupport;
+        supportToTest = new PrepareWrapperProxySupport(propertySupport);
         supportToTest.proxyEnabled = true;
     }
 

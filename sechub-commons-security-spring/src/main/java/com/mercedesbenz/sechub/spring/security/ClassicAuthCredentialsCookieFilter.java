@@ -51,7 +51,6 @@ class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
     }
 
     @Override
-    @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         Optional<Cookie> optOAuth2Cookie = CookieHelper.getCookie(request, AbstractSecurityConfiguration.OAUTH2_COOKIE_NAME);
@@ -61,7 +60,7 @@ class ClassicAuthCredentialsCookieFilter extends OncePerRequestFilter {
          * Skip this filter if no Classic Auth cookie is present
          */
         if (optClassicAuthCookie.isEmpty()) {
-            logger.debug("No Classic Auth cookie found. Skipping this filter.");
+            logger.trace("No Classic Auth cookie found. Skipping this filter.");
             filterChain.doFilter(request, response);
             return;
         }

@@ -12,7 +12,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.commons.core.PDSLogSanitizer;
@@ -21,13 +20,16 @@ import com.mercedesbenz.sechub.wrapper.prepare.PrepareWrapperUsageException;
 @Component
 public class JGitAdapter {
 
-    @Autowired
-    PDSLogSanitizer logSanitizer;
+    private final PDSLogSanitizer logSanitizer;
 
-    @Autowired
-    GitLocationConverter urlConverter;
+    private final GitLocationConverter urlConverter;
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitAdapter.class);
+
+    public JGitAdapter(PDSLogSanitizer logSanitizer, GitLocationConverter urlConverter) {
+        this.logSanitizer = logSanitizer;
+        this.urlConverter = urlConverter;
+    }
 
     public void clone(GitContext gitContext) {
 
