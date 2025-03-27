@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.administration.project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
@@ -20,13 +21,13 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
 
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+@RolesAllowed({ RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
 public class ProjectChangeOwnerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectChangeOwnerService.class);
@@ -53,11 +54,11 @@ public class ProjectChangeOwnerService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdminChangesProjectOwner(
+	@UseCaseAdminOrOwnerChangesProjectOwner(
 			@Step(
 					number = 2,
 					name = "Change project owner",
-					description = "The service will set the user as the owner of the project. If user does not have ROLE_OWNER it will obtain it. The old owner will loose project ownership."))
+					description = "The service will set the given user as the owner of the project. If the user does not already has the the role ROLE_OWNER it will obtain it. The old owner will loose the project ownership."))
 	/* @formatter:on */
     public void changeProjectOwner(String newOnwerUserId, String projectId) {
         LOG.info("User {} triggers project owner change - user {} shall become owner of project {}", userContextService.getUserId(),
@@ -67,10 +68,13 @@ public class ProjectChangeOwnerService {
         assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
+
+        assertAllowedToChangeProjectOwnership(project);
+
         User newOwner = userRepository.findOrFailUser(newOnwerUserId);
 
         if (project.owner.equals(newOwner)) {
-            throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
+            throw new AlreadyExistsException("User is already assigned as owner to this project!");
         }
 
         User previousOwner = changeProjectOwnerAndReturnPreviousOwner(project, newOwner);
@@ -80,6 +84,22 @@ public class ProjectChangeOwnerService {
         sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
         sendAssignOwnerAsUserToProject(newOwner, project);
+    }
+
+    private void assertAllowedToChangeProjectOwnership(Project project) {
+        if (userContextService.isSuperAdmin()) {
+            /* super admin is always allowed... */
+            return;
+        }
+        String currentUserId = userContextService.getUserId();
+        String projectOwnerId = project.getOwner().getName();
+
+        if (projectOwnerId.equals(currentUserId)) {
+            /* current project owner is also allowed */
+            return;
+        }
+
+        throw new AccessDeniedException("You are not allowed to change ownership for project " + project.getId() + " !");
     }
 
     private User changeProjectOwnerAndReturnPreviousOwner(Project project, User newOwner) {

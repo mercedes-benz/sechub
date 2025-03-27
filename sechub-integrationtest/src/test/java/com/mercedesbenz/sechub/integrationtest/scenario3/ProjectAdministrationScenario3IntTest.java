@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
@@ -23,65 +24,73 @@ public class ProjectAdministrationScenario3IntTest {
      */
     @Test
     /* @formatter:off */
-    void super_admin_changes_owner_of_a_project() {
+    void change_project_ownership_by_admin_and_owners() {
         /* check precondition */
         assertUser(USER_1).
             isAssignedToProject(PROJECT_1).
-            isOwnerOf(PROJECT_1);
+            isOwnerOf(PROJECT_1).
+            isOwnerOf(PROJECT_2);
 
         assertUser(USER_2).
             isNotOwnerOf(PROJECT_1).
             isNotAssignedToProject(PROJECT_2).
             hasNotOwnerRole();
 
-        /* execute 1 - change project 1*/
+        /* execute 1 - assign user 3 and change ownership of project 1*/
         as(SUPER_ADMIN).
-            assignUserToProject(USER_3, PROJECT_1).
+            assignUserToProject(USER_3, PROJECT_1). // do this to have this user assigned before ownership change later
             changeProjectOwnerOfProject(USER_2, PROJECT_1);
 
         /* test 1*/
-        assertUser(USER_2).
-            isOwnerOf(PROJECT_1).
-            isAssignedToProject(PROJECT_1). //because of owner change now assigned
-            hasOwnerRole();
-
-        assertUser(USER_1).
-            isNotOwnerOf(PROJECT_1).
-            isOwnerOf(PROJECT_2).
-            isAssignedToProject(PROJECT_1).
-            hasOwnerRole();
-
         String subject = "Owner of project .* changed";
 
-        assertUser(USER_3).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
-        assertUser(USER_2).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
-        assertUser(USER_1).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
+        assertUser(USER_1).
+            hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON).
+            isNotOwnerOf(PROJECT_1). // lost ownership
+            isAssignedToProject(PROJECT_1). // still assigned after ownership loss
+            isOwnerOf(PROJECT_2). // still owner of project2
+            hasOwnerRole(); // has still owner role
 
-        /* prepare 2 - assign user 2 already to project 2, means the following
-         * owner change to user2 for project 2 must handle the situation that the assignment
-         * already exists*/
-        as(SUPER_ADMIN).assignUserToProject(USER_2, PROJECT_2);
-
-        /* check precondition */
-        assertUser(USER_2).isAssignedToProject(PROJECT_2);
-
-        /* execute 2 - change project 2 ownership as well - so USER_1 looses owner role, also
-         * it ensures the already existing assignment does not make problems (ownership change
-         * tries also to assign owner to project)*/
-        as(SUPER_ADMIN).
-            changeProjectOwnerOfProject(USER_2, PROJECT_2);
-
-        /* test 2*/
         assertUser(USER_2).
-            isOwnerOf(PROJECT_2).
-            isAssignedToProject(PROJECT_2).
+            hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON).
+            isOwnerOf(PROJECT_1). // owner changed
+            isAssignedToProject(PROJECT_1). //because of owner change now assigned
+            hasOwnerRole(); // is now role owner
+
+        assertUser(USER_3).
+            hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON).
+            isAssignedToProject(PROJECT_1);
+
+        /* test + execute 2 : check user 1 is no longer able to change owner ship of project 1*/
+        expectHttpFailure(()->as(USER_1).changeProjectOwnerOfProject(USER_3, PROJECT_1), HttpStatus.FORBIDDEN);
+
+        /* test + execute 2 : check user 2 is able to change owner ship of project 1*/
+        as(USER_2).
+            changeProjectOwnerOfProject(USER_3, PROJECT_1);// user3 was already assigned, here we test ownership change is possible for already assigned users
+
+        /* test 3 - ownership has been transfered by former owner (USER_2) itself to USER 3*/
+        assertUser(USER_3).
+            isOwnerOf(PROJECT_1).
+            isAssignedToProject(PROJECT_1).
+            isNotAssignedToProject(PROJECT_2).
             hasOwnerRole();
 
-        assertUser(USER_1).
+        assertUser(USER_2).
             isNotOwnerOf(PROJECT_1).
             isNotOwnerOf(PROJECT_2).
-            isAssignedToProject(PROJECT_1).
-            hasNotOwnerRole();
+            isAssignedToProject(PROJECT_1). // still assigned
+            isNotAssignedToProject(PROJECT_2). // still not assigned
+            hasNotOwnerRole(); // no longer a role owner
+
+        /* super admin can remove ower from project */
+        as(SUPER_ADMIN).
+            unassignUserFromProject(USER_1, PROJECT_2);
+
+        assertUser(USER_1).
+            isOwnerOf(PROJECT_2). // lost ownership
+            isNotAssignedToProject(PROJECT_2). // still assigned after ownership loss
+            hasOwnerRole(); // has still owner role
+
 
     }
     /* @formatter:on */

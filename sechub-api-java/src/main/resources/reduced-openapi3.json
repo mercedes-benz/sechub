@@ -1057,6 +1057,20 @@
                                     }
                                 }
                             },
+                            "logout": {
+                                "type": "object",
+                                "properties": {
+                                    "xpath": {
+                                        "type": "string",
+                                        "description": "xpathto locate the element to avoid on the frontend."
+                                    },
+                                    "htmlElement": {
+                                        "type": "string",
+                                        "description": "'htmlElement' to locate the element to avoid on the frontend."
+                                    }
+                                },
+                                "description": "Webscan 'logout' section to avoid logout for webscans of a frontend."
+                            },
                             "excludes": {
                                 "type": "array",
                                 "description": "Exclude URL sub-paths to scan. Example: /admin",
@@ -1182,6 +1196,20 @@
                                         },
                                         "description": "basic login definition"
                                     },
+                                    "verification": {
+                                        "type": "object",
+                                        "properties": {
+                                            "url": {
+                                                "type": "string",
+                                                "description": "Verification URL"
+                                            },
+                                            "responseCode": {
+                                                "type": "number",
+                                                "description": "Expected HTTP status code"
+                                            }
+                                        },
+                                        "description": "login verification definition"
+                                    },
                                     "url": {
                                         "type": "string",
                                         "description": "Login URL"
@@ -1273,7 +1301,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@24ae091b"
+                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@5060f389"
                     }
                 }
             },
@@ -1376,7 +1404,7 @@
             "api-admin-encryption-rotate-638361826": {
                 "type": "object"
             },
-            "api-admin-template-templateId1476369005": {
+            "api-admin-template-templateId1116126976": {
                 "type": "object",
                 "properties": {
                     "variables": {
@@ -1423,7 +1451,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@5372b370"
+                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@6c1a65d"
                     }
                 }
             },
@@ -1447,14 +1475,130 @@
                     ]
                 }
             },
-            "api-projects-387937430": {
+            "api-admin-templates-healthcheck-860051898": {
+                "type": "object",
+                "properties": {
+                    "entries": {
+                        "type": "array",
+                        "description": "A list of healthcheck status entries. Each entry represents a problem or an information.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "executorConfigUUID": {
+                                    "type": "string",
+                                    "description": "The uuid of the product executor config where the problem/info is related to (in combination with template)"
+                                },
+                                "fileName": {
+                                    "type": "string",
+                                    "description": "The name of the file inside the asset"
+                                },
+                                "projects": {
+                                    "type": "array",
+                                    "description": "A list of projects which have the template assigned",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            },
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "number"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "solution": {
+                                    "type": "string",
+                                    "description": "A solution how to fix/resolve the problem"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "The asset identifier which is used to locate the file"
+                                },
+                                "hints": {
+                                    "type": "array",
+                                    "description": "A list of hints which gives additinal information. E.g. A disabled executor configuration which leads to problems will lead to a WARNING, but not to an ERROR. In this case a hint 'At least one executor config is not enabled' would be added.",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            },
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "number"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "profiles": {
+                                    "type": "array",
+                                    "description": "A list of the invovled profiles, means using executor config and being assigned to projects",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            },
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "number"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "A description about the the entry"
+                                },
+                                "templateId": {
+                                    "type": "string",
+                                    "description": "The template id for the template where the problem/information is related to"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "description": "Type of this entry. Can be one of : [INFO, WARNING, ERROR]"
+                                }
+                            }
+                        }
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Represents overall healthcheck status. Can be one of : [OK, WARNING, ERROR]"
+                    }
+                }
+            },
+            "api-projects100677202": {
                 "type": "array",
                 "items": {
                     "type": "object",
                     "properties": {
                         "owner": {
-                            "type": "string",
-                            "description": "Name of owner of the Project"
+                            "type": "object",
+                            "properties": {
+                                "emailAddress": {
+                                    "type": "string",
+                                    "description": "Email address of owner"
+                                },
+                                "userId": {
+                                    "type": "string",
+                                    "description": "Name of owner"
+                                }
+                            },
+                            "description": "Owner of the Project"
                         },
                         "isOwned": {
                             "type": "boolean",
@@ -1464,20 +1608,17 @@
                             "type": "array",
                             "description": "Optional: Assigned users (only viewable by owner or admin)",
                             "items": {
-                                "oneOf": [
-                                    {
-                                        "type": "object"
+                                "type": "object",
+                                "properties": {
+                                    "emailAddress": {
+                                        "type": "string",
+                                        "description": "Email address of assigned user"
                                     },
-                                    {
-                                        "type": "boolean"
-                                    },
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "number"
+                                    "userId": {
+                                        "type": "string",
+                                        "description": "Name of assigned user"
                                     }
-                                ]
+                                }
                             }
                         },
                         "projectId": {
@@ -3350,7 +3491,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-template-templateId1476369005"
+                                    "$ref": "#/components/schemas/api-admin-template-templateId1116126976"
                                 }
                             }
                         }
@@ -3451,6 +3592,35 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/api-admin-templates-753726831"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/admin/templates/healthcheck": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin executes templates healthcheck or updates a template",
+                "description": "An administrator creates or updates a template",
+                "operationId": "adminExecutesTemplateHealthcheck",
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-admin-templates-healthcheck-860051898"
                                 }
                             }
                         }
@@ -3776,6 +3946,32 @@
                 }
             }
         },
+        "/api/anonymous/email/verify/{oneTimeToken}": {
+            "get": {
+                "tags": [
+                    "anonymous"
+                ],
+                "summary": "Anonymous user verifies new email address",
+                "description": "The unauthenticated user verifies his new email address by link containing JWT token.",
+                "operationId": "anonymousUserVerifiesEmailAddress",
+                "parameters": [
+                    {
+                        "name": "oneTimeToken",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "204"
+                    }
+                }
+            }
+        },
         "/api/anonymous/refresh/apitoken/{emailAddress}": {
             "post": {
                 "tags": [
@@ -3826,7 +4022,7 @@
                 }
             }
         },
-        "/api/management/jobs/cancel/{jobUUID}": {
+        "/api/management/jobs/{jobUUID}/cancel": {
             "post": {
                 "tags": [
                     "management"
@@ -3839,6 +4035,103 @@
                         "name": "jobUUID",
                         "in": "path",
                         "description": "The job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "204"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/management/project/{projectId}/owner/{userId}": {
+            "post": {
+                "tags": [
+                    "management"
+                ],
+                "summary": "Admin or owner changes owner of a project",
+                "description": "An administrator or the current project owner changes the ownership of an existing sechub project.",
+                "operationId": "adminOrOwnerChangesProjectOwner",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "description": "The project id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The user id of the user to assign to project as the owner",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/management/user": {
+            "get": {
+                "tags": [
+                    "management"
+                ],
+                "summary": "User fetches his user details",
+                "description": "The authenticated user fetches his user details",
+                "operationId": "userFetchUserDetailInformation",
+                "responses": {
+                    "200": {
+                        "description": "200"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/management/user/email/{emailAddress}": {
+            "post": {
+                "tags": [
+                    "management"
+                ],
+                "summary": "User updates his own email address",
+                "description": "The authenticated user updates his own email address",
+                "operationId": "userUpdatesEmailAddress",
+                "parameters": [
+                    {
+                        "name": "emailAddress",
+                        "in": "path",
+                        "description": "",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -4469,12 +4762,12 @@
                     "200": {
                         "description": "200",
                         "content": {
-                            "text/html;charset=UTF-8": {
+                            "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SecHubReport"
                                 }
                             },
-                            "application/json": {
+                            "text/html;charset=UTF-8": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SecHubReport"
                                 }
@@ -4505,7 +4798,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-projects-387937430"
+                                    "$ref": "#/components/schemas/api-projects100677202"
                                 }
                             }
                         }

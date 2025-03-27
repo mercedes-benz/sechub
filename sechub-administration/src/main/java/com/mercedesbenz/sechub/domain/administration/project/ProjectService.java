@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.springframework.stereotype.Service;
 
@@ -33,33 +35,47 @@ public class ProjectService {
 
         List<ProjectData> projectDataList = new ArrayList<>();
         for (Project project : user.getProjects()) {
-            ProjectData projectData = createProjectDataForProject(project);
 
-            boolean isOwner = user.equals(project.getOwner());
-
-            projectData.setOwned(isOwner);
-
-            if (user.isSuperAdmin() || isOwner) {
-                addAssignedUsersToProjectData(project, projectData);
-            }
-
+            ProjectData projectData = createProjectDataForProject(user, project);
             projectDataList.add(projectData);
+
         }
 
         return projectDataList;
     }
 
-    private static void addAssignedUsersToProjectData(Project project, ProjectData projectData) {
-        List<String> assignedUsers = new ArrayList<>(project.getUsers().size());
-        project.getUsers().forEach(projectUser -> assignedUsers.add(projectUser.getEmailAddress()));
-        projectData.setAssignedUsers(assignedUsers.toArray(new String[0]));
-    }
+    private static ProjectData createProjectDataForProject(User user, Project project) {
 
-    private static ProjectData createProjectDataForProject(Project project) {
         ProjectData projectData = new ProjectData();
-
         projectData.setProjectId(project.getId());
-        projectData.setOwner(project.getOwner().getEmailAddress());
+
+        /* project ownership */
+        ProjectUserData ownerUserData = new ProjectUserData();
+        ownerUserData.setUserId(project.getOwner().getName());
+        ownerUserData.setEmailAddress(project.getOwner().getEmailAddress());
+
+        projectData.setOwner(ownerUserData);
+
+        boolean isOwner = user.equals(project.getOwner());
+        projectData.setOwned(isOwner);
+
+        /* additional users - role shall have this information as well */
+        if (user.isSuperAdmin() || isOwner) {
+            addAssignedUsersToProjectData(project, projectData);
+        }
         return projectData;
     }
+
+    private static void addAssignedUsersToProjectData(Project project, ProjectData projectData) {
+        SortedSet<ProjectUserData> assignedUsers = new TreeSet<>(); // we use a tree set to have it sorted
+
+        project.getUsers().forEach(projectUser -> {
+            ProjectUserData assignedUserData = new ProjectUserData();
+            assignedUserData.setUserId(projectUser.getName());
+            assignedUserData.setEmailAddress(projectUser.getEmailAddress());
+            assignedUsers.add(assignedUserData);
+        });
+        projectData.setAssignedUsers(new ArrayList<>(assignedUsers));
+    }
+
 }

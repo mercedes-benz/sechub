@@ -15,12 +15,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_OWNER,
+		id=UseCaseIdentifier.UC_ADMIN_OR_OWNER_CHANGES_PROJECT_OWNER,
 		group=UseCaseGroup.USER_ADMINISTRATION,
-		apiName="adminChangesProjectOwner",
-		title="Admin changes owner of a project",
-		description="An administrator changes the owner of an existing sechub project.")
-public @interface UseCaseAdminChangesProjectOwner {
+		apiName="adminOrOwnerChangesProjectOwner",
+		title="Admin or owner changes owner of a project",
+		description="An administrator or the current project owner changes the ownership of an existing sechub project.")
+public @interface UseCaseAdminOrOwnerChangesProjectOwner {
 
 	Step value();
 }

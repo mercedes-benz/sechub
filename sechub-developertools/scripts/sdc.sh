@@ -79,6 +79,10 @@ function showHelp () {
     echo ""                                            
     echo "  -syg, --start-systemtest-sanity-check-gosec : start systemtest 'sanity-check' for gosec with local build pds tools (0.0.0)" 
     echo ""                                            
+    echo "  -wsi, --webui-test-setup-integrationtest-srv: executes test setup for local web ui frontend + new started interation test server"
+    echo "  -wsd, --webui-test-setup-docker             : executes test setup for local web ui frontend + docker"
+    echo "  -wg,  --webui-generate                      : generates parts for web ui (openapi rest client)"
+    echo ""                                            
     echo "  -h,   --help                                : show this help"
 
 }
@@ -236,6 +240,18 @@ do
         START_SYSTEMTEST_SANITYCHECK_GOSEC="YES"
         shift # past argument
         ;;
+        -wsi|--webui-test-setup-integrationtest-srv)
+        WEBUI_TESTSETUP_INTEGRATION_TESTSERVER="YES"
+        shift # past argument
+        ;;
+        -wsd|--webui-test-setup-docker)
+        WEBUI_TESTSETUP_DOCKER="YES"
+        shift # past argument
+        ;;
+        -wg|--webui-generate)
+        WEBUI_GENERATE="YES"
+        shift # past argument
+        ;;
         -x|--xsearchpath)
         SEARCHPATH="$2"
         shift # past argument
@@ -314,8 +330,12 @@ fi
 
 if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then
     startJob "Format all sourcecode"
+    cd $SECHUB_ROOT_DIR
     ./gradlew spotlessApply
     
+    cd sechub-web-ui
+    npm run lint
+    cd $SECHUB_ROOT_DIR
 fi
 
 if [[ "$UNIT_TESTS" = "YES" ]]; then
@@ -393,6 +413,28 @@ if [[ "$START_SYSTEMTEST_SANITYCHECK_GOSEC" = "YES" ]]; then
     #java -Djdk.httpclient.HttpClient.log=requests,headers,errors -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     java -jar $SECHUB_ROOT_DIR/sechub-pds-tools/build/libs/sechub-pds-tools-cli-0.0.0.jar systemtest --file systemtest_local.json --pds-solutions-rootfolder ../../ --sechub-solution-rootfolder ../../../sechub-solution --run-tests sanity-check
     cd $SECHUB_ROOT_DIR 
+fi
+
+if [[ "$WEBUI_TESTSETUP_INTEGRATION_TESTSERVER" = "YES" ]]; then
+    startJob "Execute Web UI test setup for integration test server"
+    cd $SECHUB_ROOT_DIR
+    ./sechub-web-ui/test-setups/integrationtest-setups/setup.sh
+    cd $SECHUB_ROOT_DIR
+fi
+
+if [[ "$WEBUI_TESTSETUP_DOCKER" = "YES" ]]; then
+    startJob "Execute Web UI test setup for docker"
+    cd $SECHUB_ROOT_DIR
+    ./sechub-web-ui/test-setups/docker-setups/setup.sh
+    cd $SECHUB_ROOT_DIR
+fi
+
+if [[ "$WEBUI_GENERATE" = "YES" ]]; then
+    startJob "Generate Web UI parts"
+    cd $SECHUB_ROOT_DIR
+    cd sechub-web-ui
+    npm run generate-api-client
+    cd $SECHUB_ROOT_DIR
 fi
 
 if [[ "$GITHUB_ACTION_PREPARE_INTEGRATIONTEST" = "YES" ]]; then

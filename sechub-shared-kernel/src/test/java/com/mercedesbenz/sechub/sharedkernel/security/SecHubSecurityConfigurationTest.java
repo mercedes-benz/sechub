@@ -44,7 +44,6 @@ import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
  *
  * @author hamidonos
  */
-@SuppressWarnings("JavadocReference")
 @WebMvcTest
 class SecHubSecurityConfigurationTest {
 

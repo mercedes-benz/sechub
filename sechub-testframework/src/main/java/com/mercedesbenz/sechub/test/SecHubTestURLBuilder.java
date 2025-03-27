@@ -342,7 +342,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildAdminChangesProjectOwnerUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+        return buildUrl(API_MANAGEMENT, "project", projectId, "owner", userId);
     }
 
     public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
