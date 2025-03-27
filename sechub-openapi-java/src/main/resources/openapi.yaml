@@ -288,7 +288,7 @@ components:
 
     ProjectData:
       title: ProjectData
-      description: "The project names with information according to the call"
+      description: "Project information according to the call"
       type: object
       required:
         - projectId
@@ -299,16 +299,31 @@ components:
           description: The name of the project.
           type: string
         owner:
-          description: Username of the owner of this project. An owner is the person
-            in charge.
-          type: string
+          description: Project user data of the owner of this project. An owner is the person in charge.
+          $ref: '#/components/schemas/ProjectUserData'
         isOwned:
           description: True, when project is owned by the user
           type: boolean
         assignedUsers:
-          description: List of usernames assigned to the project
+          description: List of project user data of users assigned to the project
           type: array
-
+          items:
+            $ref: '#/components/schemas/ProjectUserData'
+          
+    ProjectUserData:
+      title: ProjectUserData
+      description: "A reduced user information in scope of project data"
+      type: object
+      required:
+        - userId
+        - emailAddress
+      properties:
+        userId:
+          description: The name of the user (which is also the identifier).
+          type: string
+        emailAddress:
+          description: The email address of the user
+          type: string
 
     ######################
     ## SecHub Execution ##

@@ -36,7 +36,8 @@ class ProjectServiceTest {
 
     @ParameterizedTest
     @ArgumentsSource(ProjectServiceArgumentsProvider.class)
-    void users_receive_expected_number_of_projects(String userId, int expectedProjects, boolean isOwner, String expectedOwner) {
+    void users_receive_expected_number_of_projects(String userId, int expectedProjects, boolean isOwner, String expectedOwnerUserId,
+            String expectedOwnerEmailAddress) {
         /* execute */
         List<ProjectData> projects = serviceToTest.getAssignedProjectDataList(userId);
 
@@ -45,8 +46,12 @@ class ProjectServiceTest {
         assertThat(projects.size()).isEqualTo(expectedProjects);
 
         for (ProjectData project : projects) {
+            ProjectUserData expectedOwnerData = new ProjectUserData();
+            expectedOwnerData.setUserId(expectedOwnerUserId);
+            expectedOwnerData.setEmailAddress(expectedOwnerEmailAddress);
+
             assertThat(project.isOwned()).isEqualTo(isOwner);
-            assertThat(project.getOwner()).isEqualTo(expectedOwner);
+            assertThat(project.getOwner()).isEqualTo(expectedOwnerData);
         }
     }
 
@@ -66,8 +71,8 @@ class ProjectServiceTest {
         assertThat(projects.get(0).getProjectId()).isIn("project2", "project3");
         assertThat(projects.get(1).getProjectId()).isIn("project2", "project3");
 
-        assertThat(projects.get(0).getAssignedUsers().length).isGreaterThan(0);
-        assertThat(projects.get(1).getAssignedUsers().length).isGreaterThan(0);
+        assertThat(projects.get(0).getAssignedUsers().size()).isGreaterThan(0);
+        assertThat(projects.get(1).getAssignedUsers().size()).isGreaterThan(0);
     }
 
     @Test
@@ -93,8 +98,21 @@ class ProjectServiceTest {
 
         /* test */
         assertThat(projects.get(0).getProjectId()).isEqualTo("project2");
-        assertThat(projects.get(0).getAssignedUsers().length).isEqualTo(3);
-        assertThat(projects.get(0).getAssignedUsers()).contains("user2@example.org", "user3@example.org", "user4@example.org");
+        assertThat(projects.get(0).getAssignedUsers().size()).isEqualTo(3);
+
+        ProjectUserData user2 = new ProjectUserData();
+        user2.setEmailAddress("user2@example.org");
+        user2.setUserId("user2");
+
+        ProjectUserData user3 = new ProjectUserData();
+        user2.setEmailAddress("user3@example.org");
+        user2.setUserId("user3");
+
+        ProjectUserData user4 = new ProjectUserData();
+        user2.setEmailAddress("user4@example.org");
+        user2.setUserId("user4");
+
+        assertThat(projects.get(0).getAssignedUsers()).contains(user2, user3, user4);
     }
 
     private void setUpTestCase() {
@@ -139,10 +157,10 @@ class ProjectServiceTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             /* @formatter:off */
             return Stream.of(
-                    Arguments.of("user1", 0, true, "user1@example.org"),
-                    Arguments.of("user2", 2, true, "user2@example.org"),
-                    Arguments.of("user3", 1, false, "user2@example.org"),
-                    Arguments.of("user4", 1, false, "user2@example.org"));
+                    Arguments.of("user1", 0, true, "user1", "user1@example.org"),
+                    Arguments.of("user2", 2, true, "user2", "user2@example.org"),
+                    Arguments.of("user3", 1, false, "user2", "user2@example.org"),
+                    Arguments.of("user4", 1, false, "user2", "user2@example.org"));
         }
         /* @formatter:on */
     }

@@ -107,6 +107,7 @@
       <v-col v-if="showProjectsDetails" cols="12" md="4">
         <ProjectDetails
           :project-data="projectData"
+          :selected-user-data="undefined"
         />
       </v-col>
     </v-row>
@@ -141,11 +142,15 @@
       }
 
       const store = useProjectStore()
+
       const projectData = ref<ProjectData>({
         projectId: '',
         isOwned: false,
         assignedUsers: [],
-        owner: '',
+        owner: {
+          userId: '',
+          emailAddress: '',
+        },
       })
 
       const maxAttempts = 6 // exponent limit
