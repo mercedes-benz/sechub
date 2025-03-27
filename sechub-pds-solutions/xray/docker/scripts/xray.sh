@@ -75,12 +75,27 @@ echo "---------"
 skopeo list-tags "docker-archive:$UPLOAD_FILE" > "$PDS_JOB_WORKSPACE_LOCATION/tags.json"
 IMAGE=$(jq '.Tags[0]' "$PDS_JOB_WORKSPACE_LOCATION/tags.json"| tr --delete \")
 
+# Check if the IMAGE variable is empty
+if [[ -z "$IMAGE" || "$IMAGE" == "@0" ]]; then
+
+  # Generate checksum as image name if no tag is found to avoid empty image name
+  CHECKSUM=$(md5sum "$UPLOAD_FILE" | awk '{print $1}')
+  IMAGE="checksum-$CHECKSUM:latest"
+  echo "No tag found in tags.json. Generated checksum as image name: $IMAGE"
+else
+  echo "Extracted image tag: $IMAGE"
+fi
+
 # copy local docker archive as docker image to artifactory register
 skopeo copy "docker-archive:${UPLOAD_FILE}" "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/$SKOPEO_AUTH"
 
 # get checksum from the docker image
 skopeo inspect "docker://${XRAY_ARTIFACTORY}/${REGISTRY}/${IMAGE}" --authfile "$PDS_JOB_WORKSPACE_LOCATION/auth.json" > "$PDS_JOB_WORKSPACE_LOCATION/inspect.json"
 SHA256=$(jq '.Digest' "$PDS_JOB_WORKSPACE_LOCATION/inspect.json" | tr --delete \")
+
+echo "---------"
+echo "Running Xray scan for image ${IMAGE} with SHA256 checksum ${SHA256}"
+echo "---------"
 
 java -jar $options "$TOOL_FOLDER/wrapper-xray.jar" "--name" "$IMAGE" "--checksum" "$SHA256" "--scantype" "docker" "--outputfile" "$PDS_JOB_RESULT_FILE" "--workspace" "$PDS_JOB_WORKSPACE_LOCATION"
 

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -686,12 +687,24 @@ public class TestAPI {
         return getLinkFromMail(text);
     }
 
-    public static String getLinktToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
-        LOG.debug("Get link to verify email address after change requested for user:{}", user.getUserId());
+    public static URI assertAndFetchLinkToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
+        URI result = null;
+
         MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(newMailAddress, "Verify new SecHub account email address");
         String text = mail.text.trim();
-        String linkOfOneApiToken = getLinkFromMail(text);
-        return linkOfOneApiToken;
+        String link = getLinkFromMail(text);
+
+        if (link == null || link.isBlank()) {
+            fail("No verify link sent to mail address:" + newMailAddress);
+        }
+
+        try {
+            result = new URI(link);
+        } catch (URISyntaxException e) {
+            fail("Link sent to " + newMailAddress + " was not an an URI:" + link + "\n" + e.getMessage());
+        }
+
+        return result;
     }
 
     private static String getLinkFromMail(String text) {

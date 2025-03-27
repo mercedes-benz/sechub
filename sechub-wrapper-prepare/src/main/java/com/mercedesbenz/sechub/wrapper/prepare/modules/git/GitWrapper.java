@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.archive.DirectoryAndFileSupport;
@@ -15,14 +14,17 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.AbstractToolWrapper;
 @Component
 public class GitWrapper extends AbstractToolWrapper {
 
-    @Autowired
-    JGitAdapter jGitAdapter;
+    private final JGitAdapter jGitAdapter;
 
-    @Autowired
-    PDSProcessAdapterFactory processAdapterFactory;
+    private final PDSProcessAdapterFactory processAdapterFactory;
 
-    @Autowired
-    DirectoryAndFileSupport directoryAndFileSupport;
+    private final DirectoryAndFileSupport directoryAndFileSupport;
+
+    public GitWrapper(JGitAdapter jGitAdapter, PDSProcessAdapterFactory processAdapterFactory, DirectoryAndFileSupport directoryAndFileSupport) {
+        this.jGitAdapter = jGitAdapter;
+        this.processAdapterFactory = processAdapterFactory;
+        this.directoryAndFileSupport = directoryAndFileSupport;
+    }
 
     public void downloadRemoteData(GitContext gitContext) {
         jGitAdapter.clone(gitContext);

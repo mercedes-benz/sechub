@@ -6,11 +6,11 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
@@ -18,30 +18,24 @@ import org.springframework.web.client.HttpClientErrorException.NotFound;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.AbstractTestExecutable;
 import com.mercedesbenz.sechub.integrationtest.api.ExecutionConstants;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.JSonMessageHttpStatusExceptionTestValidator;
 import com.mercedesbenz.sechub.integrationtest.api.TestDataConstants;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
+@ExtendWith(IntegrationTestExtension.class)
+@WithTestScenario(Scenario3.class)
+@Timeout(unit = TimeUnit.SECONDS, value = 60)
 public class ProjectChangeAccessLevelScenario3IntTest {
-
-    @Rule
-    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
-
-    @Rule
-    public Timeout timeOut = Timeout.seconds(60);
-
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
 
     /* @formatter:off */
     @Test
-    public void none__test_delete_removes_former_access_level_settings() throws Exception {
+    void none__test_delete_removes_former_access_level_settings() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
@@ -55,9 +49,8 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
         // now we create a new project with same name etc.
         as(SUPER_ADMIN).
-            createProject(project, USER_1.getUserId()).
-            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, project).
-            assignUserToProject(USER_1, project);
+            createProject(project, USER_1).
+            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, project);
 
         // now we test that the acces level is full... and not NONE as before the delete...
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
@@ -80,7 +73,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
 	@Test
-	public void get_job_status__existing_job_read_access_level_changing_test_different_access_levels() throws Exception {
+	void get_job_status__existing_job_read_access_level_changing_test_different_access_levels() throws Exception {
         /* prepare + test preconditions */
 	    TestProject project = PROJECT_1;
 
@@ -113,7 +106,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
     @Test
-    public void get_job_report__existing_job_read_access_level_changing_test_different_access_levels() throws Exception {
+    void get_job_report__existing_job_read_access_level_changing_test_different_access_levels() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
 
@@ -157,7 +150,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
     @Test
-    public void read_only___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
+    void read_only___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);
@@ -183,7 +176,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
     @Test
-    public void none___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
+    void none___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);

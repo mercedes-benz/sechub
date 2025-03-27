@@ -157,7 +157,7 @@ public class ProjectAdministrationRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void assignUserToProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
 		/* @formatter:on */
-        assignUserToProjectService.assignUserToProject(userId, projectId);
+        assignUserToProjectService.assignUserToProject(userId, projectId, true);
     }
 
     /* @formatter:off */

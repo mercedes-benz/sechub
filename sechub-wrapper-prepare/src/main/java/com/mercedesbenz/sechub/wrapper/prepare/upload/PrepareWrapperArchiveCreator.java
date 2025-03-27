@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare.upload;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
@@ -14,11 +13,13 @@ import com.mercedesbenz.sechub.wrapper.prepare.modules.PrepareToolContext;
 @Component
 public class PrepareWrapperArchiveCreator {
 
-    @Autowired
-    ArchiveSupport archiveSupport;
+    private final ArchiveSupport archiveSupport;
+    private final PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
 
-    @Autowired
-    PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport;
+    public PrepareWrapperArchiveCreator(ArchiveSupport archiveSupport, PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport) {
+        this.archiveSupport = archiveSupport;
+        this.sechubConfigurationSupport = sechubConfigurationSupport;
+    }
 
     public void create(PrepareWrapperContext context, PrepareToolContext abstractToolContext) throws IOException {
         // replace remote with file system entry in configuration model, this

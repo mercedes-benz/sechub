@@ -43,7 +43,7 @@ public class ScanUserAccessToProjectValidationService {
         ProjectAccessCompositeKey key = new ProjectAccessCompositeKey(userId, projectId);
         Optional<ScanAccess> project = accessRepository.findById(key);
         if (!project.isPresent()) {
-            securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION, "Denied user access in domain 'scan'. userId={},projectId={}", userId,
+            securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION, "Denied access for user '{}' at project '{}' in domain 'scan'.", userId,
                     logSanitizer.sanitize(projectId, 30));
             // we say "... or you have no access - just to obfuscate... so it's not clear to
             // bad guys they got a target...

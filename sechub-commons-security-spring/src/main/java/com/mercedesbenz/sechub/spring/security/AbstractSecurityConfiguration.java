@@ -76,13 +76,8 @@ public abstract class AbstractSecurityConfiguration {
 
     /* @formatter:off */
 	private static final Set<String> DEFAULT_PUBLIC_PATHS = Set.of(
-			"/css/**",
-			"/js/**",
-			"/images/**",
-			"/login/oauth2/**",
-			"/oauth2/**",
-			"/favicon.ico",
-			"/sechub-logo.svg"
+			"/login/**",
+			"/oauth2/**"
 	);
 	/* @formatter:on */
 

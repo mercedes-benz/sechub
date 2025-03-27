@@ -34,8 +34,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION profile 13} assigned
+ *  - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -60,8 +61,7 @@ public class Scenario18 extends AbstractGrowingSecHubServerTestScenario implemen
         initializer().
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_13_PDS_CANCELLATION,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_13_PDS_CANCELLATION,PROJECT_1)
             ;
         /* @formatter:on */
     }

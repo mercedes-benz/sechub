@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
@@ -25,17 +24,18 @@ public class PrepareWrapperPreparationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperPreparationService.class);
 
-    @Autowired
-    PrepareWrapperEnvironment environment;
-
-    @Autowired
-    PrepareWrapperContextFactory contextFactory;
-
-    @Autowired
+    private final PrepareWrapperEnvironment environment;
+    private final PrepareWrapperContextFactory contextFactory;
     List<PrepareWrapperModule> modules = new ArrayList<>();
+    private final PrepareWrapperProxySupport proxySupport;
 
-    @Autowired
-    PrepareWrapperProxySupport proxySupport;
+    public PrepareWrapperPreparationService(PrepareWrapperEnvironment environment, PrepareWrapperContextFactory contextFactory,
+            List<PrepareWrapperModule> modules, PrepareWrapperProxySupport proxySupport) {
+        this.environment = environment;
+        this.contextFactory = contextFactory;
+        this.modules = modules;
+        this.proxySupport = proxySupport;
+    }
 
     public AdapterExecutionResult startPreparation() throws IOException {
 
