@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecHub Login</title>
-    <link th:href="@{/css/main.css}" rel="stylesheet" />
-    <link th:href="@{/css/login.css}" rel="stylesheet"/>
+    <link th:href="@{/login/css/main.css}" rel="stylesheet" />
+    <link th:href="@{/login/css/login.css}" rel="stylesheet"/>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('requestApiTokenForm');
             form.addEventListener('submit', handleFormSubmit);
         });
     </script>
-    <script type="text/javascript" th:src="@{/js/login.js}"></script>
+    <script type="text/javascript" th:src="@{/login/js/login.js}"></script>
 </head>
 <body>
 <div class="container">
