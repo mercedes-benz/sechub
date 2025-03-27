@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 import { SecHubConfigurationModelBuilderData, createSecHubConfigJsonString } from './configuration-builder';
 import { getValidFormatsFromInput } from './report-formats';
 import * as fs from 'fs';
-import { addAdditonalExcludes } from './configuration-model-default-helper';
+import { addAdditonalExcludes } from './configuration-model-customizer';
 
 /**
  * Create a SecHub config JSON file at 'secHubJsonTargetFilePath'. If no custom config-path is defined, a config file will be 

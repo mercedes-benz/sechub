@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import { addAdditonalExcludes } from "../src/configuration-model-default-helper";
+import { addAdditonalExcludes } from "../src/configuration-model-customizer";
 
 
 describe('addAdditonalExcludes', function () {
