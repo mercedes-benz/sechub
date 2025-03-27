@@ -23,9 +23,7 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
-            <!-- alternative to floating button ProjectDetailsFab
-            <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
-            -->
+
             <v-btn icon="mdi-plus" @click="openNewScanPage()" />
             <v-btn icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
             <v-btn icon="mdi-reply" @click="backToProjectsList" />
@@ -52,6 +50,7 @@
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_TRAFFIC_LIGHT') }}</th>
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_REPORT') }}</th>
                   <th class="background-color">{{ $t('JOB_TABLE_DOWNLOAD_JOBUUID') }}</th>
+                  <th class="background-color"></th>
                 </tr>
               </thead>
               <tbody>
@@ -67,9 +66,14 @@
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
                     <v-menu>
                       <template #activator="{ props }">
-                        <v-btn class="ma-2" v-bind="props">
+                        <v-btn 
+                        class="ma-2"
+                        v-bind="props"
+                        >
                           {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                          <v-icon end icon="mdi-arrow-down" />
+                          <v-icon end icon="mdi-download-circle-outline" 
+                          color="primary"
+                          />
                         </v-btn>
                       </template>
                       <v-list>
@@ -83,7 +87,15 @@
                     </v-menu>
                   </span>
                   </td>
-                  <td>{{ job.jobUUID }}</td>
+                  <td><v-btn
+                    @click="viewJobReport(job.jobUUID || '')"
+                    >
+                    {{ job.jobUUID }}
+                    <v-icon end icon="mdi-eye-circle-outline"
+                    color="primary"
+                    />
+                    </v-btn>
+                  </td>
                   <td>
                     <AsyncButton
                       v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
@@ -127,6 +139,7 @@
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
+  import '@/styles/sechub.scss'
 
   export default {
     name: 'ProjectComponent',
@@ -267,6 +280,12 @@
         })
       }
 
+      function viewJobReport (jobId: string) {
+        router.push({
+          path: `/projects/${projectId.value}/jobs/${jobId}`
+        });
+      }
+
       function backToProjectsList () {
         router.go(-1)
       }
@@ -309,6 +328,7 @@
         onPageChange,
         openNewScanPage,
         backToProjectsList,
+        viewJobReport,
       }
     },
 
@@ -321,21 +341,3 @@
     },
   }
 </script>
-
-<style scoped>
-.background-color {
-  background-color: rgb(var(--v-theme-layer_01)) !important;
-}
-.traffic-light-none {
-  color: rgb(var(--v-theme-layer_01)) !important;
-}
-.traffic-light-red {
-  color: rgb(var(--v-theme-error)) !important;
-}
-.traffic-light-green {
-  color: rgb(var(--v-theme-success)) !important;
-}
-.traffic-light-yellow {
-  color: rgb(var(--v-theme-warning)) !important;
-}
-</style>

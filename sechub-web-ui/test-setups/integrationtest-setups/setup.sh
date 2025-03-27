@@ -41,8 +41,8 @@ echo 'Starting test setup...'
 ../../../sechub-developertools/scripts/sechub-api.sh project_assign_user $TEST_PROJECT_NAME $SECHUB_USERID
 
 # Create and assign a mocked executor, the result will always be RED
-../../sechub-developertools/scripts/sechub-api.sh executor_create gosec-executor.json
-../../sechub-developertools/scripts/sechub-api.sh profile_create gosec-profile pds-gosec
-../../sechub-developertools/scripts/sechub-api.sh project_assign_profile $TEST_PROJECT_NAME gosec-profile
+../../../sechub-developertools/scripts/sechub-api.sh executor_create gosec-executor.json
+../../../sechub-developertools/scripts/sechub-api.sh profile_create gosec-profile pds-gosec
+../../../sechub-developertools/scripts/sechub-api.sh project_assign_profile $TEST_PROJECT_NAME gosec-profile
 
 echo "Finished setting up CODE_SCAN Project for integrationtest server with mocked Products"
