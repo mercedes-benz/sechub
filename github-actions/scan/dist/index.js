@@ -27871,7 +27871,8 @@ function getFiles(pattern) {
 function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
     const absoluteFileToKeep = external_path_.resolve(fileToKeep);
     const absoluteDirectoryToCleanUp = external_path_.resolve(directoryToCleanUp);
-    if (!absoluteFileToKeep.includes(absoluteDirectoryToCleanUp)) {
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
         return;
     }
     const tempFile = `${external_path_.dirname(absoluteDirectoryToCleanUp)}/${external_path_.basename(absoluteFileToKeep)}`;

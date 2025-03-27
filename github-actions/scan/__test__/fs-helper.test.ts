@@ -1,43 +1,63 @@
 // SPDX-License-Identifier: MIT
 
 import * as fs_extra from 'fs-extra';
-import * as path from 'path';
 import { deleteDirectoryExceptGivenFile } from '../src/fs-helper';
 
-jest.mock('fs-extra');
-
 describe('deleteDirectoryExceptGivenFile', () => {
-    const directoryToCleanUp = '/path/to/directory';
-    const fileToKeep = '/path/to/directory/fileToKeep.txt';
-    const tempFile = `${path.dirname(path.resolve(directoryToCleanUp))}/${path.basename(path.resolve(fileToKeep))}`;
+    const tempTestDirectory = '__test__/tmp-test-dir';
+    const testDataDirectory = '__test__/data/delete-resources-1/folder-to-cleanup';
+
+    const validFileToKeep = tempTestDirectory+'/file-to-keep.txt';
+    const fileToDelete1 = tempTestDirectory+'/file-to-delete.txt';
+    const folderToDelete = tempTestDirectory+'/folder-to-delete';
+    const fileToDelete2 = tempTestDirectory+'/folder-to-delete/file-to-delete.txt';
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        // copy test data to temporary directory
+        fs_extra.copySync(testDataDirectory, tempTestDirectory);
+
+        // check precoditions that all files where copied
+        expect(fs_extra.existsSync(tempTestDirectory)).toBe(true);
+        expect(fs_extra.existsSync(validFileToKeep)).toBe(true);
+        expect(fs_extra.existsSync(fileToDelete1)).toBe(true);
+        expect(fs_extra.existsSync(folderToDelete)).toBe(true);
+        expect(fs_extra.existsSync(fileToDelete2)).toBe(true);
     });
 
-    it('should move the file to a temporary location, delete the directory, recreate it, and move the file back', async () => {
+    afterEach(() =>{
+        // delete temporary directory after test
+        fs_extra.removeSync(tempTestDirectory);
+        // check after the test everything is deleted from the temporary test directory
+        expect(fs_extra.existsSync(tempTestDirectory)).toBe(false);
+        expect(fs_extra.existsSync(validFileToKeep)).toBe(false);
+        expect(fs_extra.existsSync(fileToDelete1)).toBe(false);
+        expect(fs_extra.existsSync(folderToDelete)).toBe(false);
+        expect(fs_extra.existsSync(fileToDelete2)).toBe(false);
+    });
+   
+    it('if the file to keep is not in the directory to clean nothing is done', async () => {
         /* prepare */
-        (fs_extra.moveSync as jest.Mock).mockResolvedValue(undefined);
-        (fs_extra.removeSync as jest.Mock).mockResolvedValue(undefined);
-        (fs_extra.ensureDirSync as jest.Mock).mockResolvedValue(undefined);
+        const invalidFileToKeep = '__test__/data/delete-resources-1/folder-to-cleanup/file-to-keep.txt';
+        expect(fs_extra.existsSync(invalidFileToKeep)).toBe(true);
 
         /* execute */
-        deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep);
+        deleteDirectoryExceptGivenFile(tempTestDirectory, invalidFileToKeep);
 
         /* test */
-        expect(fs_extra.moveSync).toHaveBeenCalledWith(path.resolve(fileToKeep), tempFile);
-        expect(fs_extra.removeSync).toHaveBeenCalledWith(directoryToCleanUp);
-        expect(fs_extra.ensureDirSync).toHaveBeenCalledWith(path.dirname(path.resolve(fileToKeep)));
-        expect(fs_extra.moveSync).toHaveBeenCalledWith(tempFile, path.resolve(fileToKeep));
+        expect(fs_extra.existsSync(invalidFileToKeep)).toBe(true);
+        expect(fs_extra.existsSync(fileToDelete1)).toBe(true);
+        expect(fs_extra.existsSync(folderToDelete)).toBe(true);
+        expect(fs_extra.existsSync(fileToDelete2)).toBe(true);
     });
 
-    it('should not perform any operations if the file is not inside the given directory', async () => {
+    it('deleting everything inside the directory to clean up except the given file', async () => {
         /* execute */
-        deleteDirectoryExceptGivenFile('/does/not/contain/fileToKeep', fileToKeep);
+        deleteDirectoryExceptGivenFile(tempTestDirectory, validFileToKeep);
 
         /* test */
-        expect(fs_extra.moveSync).not.toHaveBeenCalled();
-        expect(fs_extra.removeSync).not.toHaveBeenCalled();
-        expect(fs_extra.ensureDirSync).not.toHaveBeenCalled();
+        expect(fs_extra.existsSync(validFileToKeep)).toBe(true);
+        expect(fs_extra.existsSync(fileToDelete1)).toBe(false);
+        expect(fs_extra.existsSync(folderToDelete)).toBe(false);
+        expect(fs_extra.existsSync(fileToDelete2)).toBe(false);
     });
 });

@@ -101,7 +101,8 @@ export function getFiles(pattern: string): string[] {
 export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): void {
     const absoluteFileToKeep = path.resolve(fileToKeep);
     const absoluteDirectoryToCleanUp = path.resolve(directoryToCleanUp);
-    if (!absoluteFileToKeep.includes(absoluteDirectoryToCleanUp)) {
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
         return;
     }
     const tempFile = `${path.dirname(absoluteDirectoryToCleanUp)}/${path.basename(absoluteFileToKeep)}`;
