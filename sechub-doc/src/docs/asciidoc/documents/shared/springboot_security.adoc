@@ -141,4 +141,4 @@ as long as they follow the same structure as the default files. +
 See the 'sechub-commons-security-spring' module for more information about the static file structure.
 
 Example: +
-`/custom/static/css/main.css` will be served before `/static/css/main.css` which allows you to override the default colors.
+`/custom/static/login/css/main.css` will be served before `/static/login/css/main.css` which allows you to override the default colors.
