@@ -88,3 +88,30 @@ export function getFiles(pattern: string): string[] {
 
     return reportFiles;
 }
+
+/**
+ * Delete a directory, but restore the file to keep.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
+ * 
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ * 
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
+ */
+export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): void {
+    const absoluteFileToKeep = path.resolve(fileToKeep);
+    const absoluteDirectoryToCleanUp = path.resolve(directoryToCleanUp);
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
+        return;
+    }
+    const tempFile = `${path.dirname(absoluteDirectoryToCleanUp)}/${path.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    fs_extra.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    fs_extra.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    fs_extra.ensureDirSync(path.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    fs_extra.moveSync(tempFile, absoluteFileToKeep);
+}
