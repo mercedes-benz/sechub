@@ -4,36 +4,36 @@ import { defineStore } from 'pinia'
 
 const STORE_NAME = 'reportStore'
 
-const getReports = () => {
+const getReports = (): SecHubReport[] => {
   const reports = localStorage.getItem(STORE_NAME)
-  return reports ? JSON.parse(reports) : new Map<string, SecHubReport>()
+  return reports ? JSON.parse(reports) : []
 }
 
 export const useReportStore = defineStore(STORE_NAME, {
   state: () => ({
-    reports: getReports() as Map<string, SecHubReport>
+    reports: getReports() as SecHubReport[],
   }),
 
   actions: {
     storeReport(newReport: SecHubReport) {
-        const uuid = newReport.jobUUID;
-        if (!uuid){
-            return
-        }
-        console.log(uuid)
-        const existingReport = this.reports.get(uuid);
-        console.log(existingReport)
+      const uuid = newReport.jobUUID
+      if (!uuid) {
+        return
+      }
+      const existingReportIndex = this.reports.findIndex(report => report.jobUUID === uuid)
 
-        if (!existingReport || (JSON.stringify(existingReport) !== JSON.stringify(newReport))) {
-            this.reports.set(uuid, newReport);
-            console.log("stored")
-        }
+      if (existingReportIndex === -1) {
+        this.reports.push(newReport)
+      } else if (JSON.stringify(this.reports[existingReportIndex]) !== JSON.stringify(newReport)) {
+        this.reports[existingReportIndex] = newReport
+      }
+      localStorage.setItem(STORE_NAME, JSON.stringify(this.reports))
     },
   },
 
   getters: {
     getReportByUUID: state => {
-        return (uuid: string) => state.reports.get(uuid) || undefined
+      return (uuid: string) => state.reports.find(report => report.jobUUID === uuid) || undefined
     }
   },
 })

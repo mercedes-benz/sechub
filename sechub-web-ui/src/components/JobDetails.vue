@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
     <v-card class="mr-auto" color="background_paper">
         <v-toolbar color="background_paper">
@@ -30,7 +31,7 @@
         <div v-else>
 
             <v-table
-                class="background-color"
+                class="background-color clickable-column"
                 fixed-header
                 height="90%"
                 >
@@ -48,7 +49,7 @@
                 <tbody>
                     <tr v-for="[key, scanType] in scanTypeMap" 
                     :key="key"
-                    class="background-color"
+                    class="background-color clickable-column"
                     @click="routeTo(key)">
                         <td>{{ key }}</td>
                         <td>{{ scanType.critical }}</td>
@@ -100,7 +101,7 @@
       }
 
       function getButtonColor(title: string) {
-        return title === 'FAILED' ? 'error' : 'primary';
+        return title === 'FAILED' ? 'error' : 'layer-01';
     }
 
     function collectSummaries(){
@@ -177,3 +178,8 @@
     },
   }
 </script>
+<style scoped>
+.clickable-column:hover {
+    background-color: rgb(var(--v-theme-layer_02)) !important;
+}
+</style>

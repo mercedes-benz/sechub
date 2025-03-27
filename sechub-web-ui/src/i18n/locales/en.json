@@ -69,5 +69,16 @@
     "REPORT_INFO_FINDINGS": "Info findings",
     "REPORT_SCAN_NOT_SUCCESSFUL": "Executed scan was not successful!",
     "REPORT_METADATA_SCAN_STATUS": "Scan status",
-    "REPORT_METADATA_MESSAGES": "SecHub Report Messages"
+    "REPORT_METADATA_MESSAGES": "SecHub Report Messages",
+    "REPORT_DESCRIPTION_SEVERITY": "Severity",
+    "REPORT_DESCRIPTION_TYPE": "Type",
+    "REPORT_DESCRIPTION_DESCRIPTION": "Description",
+    "REPORT_DESCRIPTION_CALL": "Call",
+    "REPORT_DESCRIPTION_LOCATION": "Location",
+    "REPORT_DESCRIPTION_LINE": "Line",
+    "REPORT_DESCRIPTION_COLUMN": "Column",
+    "REPORT_DESCRIPTION_RELEVANT_PART": "Relevant part",
+    "REPORT_DESCRIPTION_SOURCE": "Source",
+    "REPORT_DESCRIPTION_SOLUTION": "Solution",
+    "REPORT_DESCRIPTION_SOLUTION_EMPTY": "There is no dedicated solution. Please have a look at the proposed solutions and examples at Mitre CWE description."
 }

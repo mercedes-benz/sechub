@@ -1,17 +1,8 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
-    <v-card class="mr-auto" color="background_paper">
-        <v-toolbar color="background_paper">
-            <v-toolbar-title>
-                {{ jobUUID }}
-                <v-icon 
-                icon="mdi-circle"
-                class="ma-2"
-                :class="getTrafficLightClass(report.trafficLight || '')">
-                </v-icon>
-            </v-toolbar-title>
-            <v-btn icon="mdi-reply" @click="routerGoBack" />
-        </v-toolbar>
-    </v-card>
+    <JobDetaillsToolBar
+    :job-u-u-i-d="jobUUID"
+    :traffic-light="report.trafficLight || ''" />
 
     <v-card>
         <v-card-item>
@@ -47,7 +38,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { SecHubReport } from '@/generated-sources/openapi'
-  import { getTrafficLightClass, getIcon, getIconColor } from '@/utils/projectUtils'
+  import { getIcon, getIconColor } from '@/utils/projectUtils'
   import { useReportStore } from '../stores/reportStore'
   import '@/styles/sechub.scss'
 
@@ -73,10 +64,6 @@
         jobUUID.value = route.params.jobId
       }
 
-      function routerGoBack () {
-        router.go(-1)
-      }
-
       onMounted(async () => {
         const reportFromStore = await store.getReportByUUID(jobUUID.value)
         if (!reportFromStore) {
@@ -92,8 +79,6 @@
         projectId,
         jobUUID,
         report,
-        routerGoBack,
-        getTrafficLightClass,
         getIconColor,
         getIcon
       }
