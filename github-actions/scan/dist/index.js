@@ -28240,13 +28240,13 @@ function getValidFormatsFromInput(inputFormats) {
     return formats.filter((item) => availableFormats.includes(item));
 }
 
-;// CONCATENATED MODULE: ./src/configuration-model-default-helper.ts
+;// CONCATENATED MODULE: ./src/configuration-model-customizer.ts
 // SPDX-License-Identifier: MIT
 const ADDITIONAL_EXCLUDES = ['**/.sechub-gha/**'];
 /**
- * Adds default exclude patterns to the provided JSON data.
+ * Adds additional exclude patterns to the provided JSON data.
  *
- * If a 'data' section is present the default exclude patterns will be added to each entry's 'excludes' array (sources and binaries).
+ * If a 'data' section is present the additional exclude patterns will be added to each entry's 'excludes' array (sources and binaries).
  * In case the 'data' section is not present, the deprecated 'codeScan.excludes' will be checked instead.
  * If no sources or binaries are specified at all, no default exclude patterns will be added.
  *
@@ -28257,7 +28257,7 @@ function addAdditonalExcludes(sechubConfigJson) {
     handleLegacyCodeScanSection(sechubConfigJson.codeScan);
 }
 function handleDataSection(dataSection) {
-    if (dataSection === undefined) {
+    if (dataSection == undefined) {
         return;
     }
     const processEntries = (entries) => {
@@ -28274,10 +28274,10 @@ function handleDataSection(dataSection) {
     }
 }
 function handleLegacyCodeScanSection(codeScan) {
-    if (codeScan === undefined) {
+    if (codeScan == undefined) {
         return;
     }
-    if (codeScan.fileSystem === undefined) {
+    if (codeScan.fileSystem == undefined) {
         return;
     }
     codeScan.excludes = codeScan.excludes || [];

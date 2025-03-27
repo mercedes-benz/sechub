@@ -8,6 +8,8 @@ describe('addAdditonalExcludes', function () {
 
     it('data section entries updated correctly', function () {
         /* prepare */
+        const ORIGINAL_SOURCE_EXCLUDES = ["**/mytestcode/**", "*.config"];
+        const ORIGINAL_BINARY_EXCLUDES = ["**/test/**"];
         let sampleJson = {
             "apiVersion": "1.0",
             "data": {
@@ -17,9 +19,6 @@ describe('addAdditonalExcludes', function () {
                     "**/mytestcode/**",
                     "*.config"
                   ]
-                },
-                {
-                   "name": "gamechanger-sources"
                 }
               ],
               "binaries": [
@@ -27,9 +26,6 @@ describe('addAdditonalExcludes', function () {
                   "excludes": [ 
                     "**/test/**"
                   ]
-                },
-                {
-                  "name": "gamechanger-binaries"
                 }
               ]
             }
@@ -43,13 +39,71 @@ describe('addAdditonalExcludes', function () {
           EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
                 expect(entry.excludes).toContain(exclude);
             });
+          ORIGINAL_SOURCE_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
+
         });
         sampleJson.data.binaries.forEach((entry: { excludes?: string[]; }) => {
           EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
                 expect(entry.excludes).toContain(exclude);
-            });
+          });
+          ORIGINAL_BINARY_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
         });
     });
+
+    it('data section excludes created and updated correctly', function () {
+      /* prepare */
+      let sampleJson = {
+          "apiVersion": "1.0",
+          "data": {
+            "sources": [
+              {
+                 "name": "gamechanger-sources"
+              }
+            ],
+            "binaries": [
+              {
+                "name": "gamechanger-binaries"
+              }
+            ]
+          }
+        } as {
+          apiVersion: string;
+          data: {
+            sources: [
+              {
+                 name: string;
+                 excludes?: string[]; // Add the optional excludes property
+              }
+            ];
+            binaries: [
+              {
+                name: string;
+                excludes?: string[]; // Add the optional excludes property
+              }
+            ];
+          };
+        };
+
+      /* execute */
+      addAdditonalExcludes(sampleJson);
+
+      /* test */
+      sampleJson.data.sources.forEach((entry: { excludes?: string[]; }) => {
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
+
+      });
+      sampleJson.data.binaries.forEach((entry: { excludes?: string[]; }) => {
+        EXPECTED_ADDITIONAL_EXCLUDES.forEach((exclude) => {
+              expect(entry.excludes).toContain(exclude);
+          });
+      });
+  });
 
     it('deprecated way with existing excludes entries updated correctly', function () {
         /* prepare */

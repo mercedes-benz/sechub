@@ -17,7 +17,7 @@ export function addAdditonalExcludes(sechubConfigJson: any): void {
 }
 
 function handleDataSection(dataSection: any) {
-    if (dataSection === undefined) {
+    if (dataSection == undefined) {
         return;
     }
     const processEntries = (entries: { excludes?: string[] }[]) => {
@@ -37,10 +37,10 @@ function handleDataSection(dataSection: any) {
 }
 
 function handleLegacyCodeScanSection(codeScan: any){
-    if (codeScan === undefined) {
+    if (codeScan == undefined) {
         return;
     }
-    if (codeScan.fileSystem === undefined) {
+    if (codeScan.fileSystem == undefined) {
         return;
     }
     codeScan.excludes = codeScan.excludes || [];

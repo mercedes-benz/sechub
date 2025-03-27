@@ -40,7 +40,7 @@ describe('initSecHubJson', function () {
         expect(() => initSecHubJson('somewhere/runtime/sechub.json', customConfigPath, builderData)).toThrow(Error);
     });
 
-    it('returns parameter if configPath is set and file exists', function () {
+    it('target config file is created - when custom config file exists', function () {
         /* prepare */
         const customConfigPath = '__test__/test-resources/test-config.json';
         
@@ -53,7 +53,7 @@ describe('initSecHubJson', function () {
         expect(fs.existsSync(testTargetConfigFilePath)).toBe(true);
     });
 
-    it('creates sechub.json if configPath is not set', function () {
+    it('target config file is created - when custom config path is empty', function () {
         /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
         (createSecHubConfigJsonString as jest.Mock).mockReturnValue('{}');
