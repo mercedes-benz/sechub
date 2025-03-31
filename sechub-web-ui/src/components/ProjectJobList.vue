@@ -26,10 +26,10 @@
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="openSettingsDialog()" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="openSettingsDialog()" />
           </v-toolbar>
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">
@@ -37,36 +37,14 @@
               <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
               <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
             </v-list>
-            <v-dialog v-model="settingsDialog" max-height="400" max-width="500">
-              <v-alert
-                v-if="settingsError!=undefined"
-                type="error"
-              >
-                {{ settingsError }}
-              </v-alert>
-              <v-card>
-                <v-card-title>
-                  <v-icon left size="small">mdi-pencil</v-icon>
-                  {{ $t('PROJECT_SETTINGS_DIALOG_TITLE') }}
-                </v-card-title>
-                <v-card>
-                  <v-responsive class="mx-auto" max-width="80%">
-                    <v-text-field
-                      v-model="settingsOwnerUserId"
-                      :append-icon="settingsOwnerFieldIcon"
-                      hide-details="auto"
-                      :label="$t('PROJECT_SETTINGS_PROJECT_OWNER_LABEL')"
-                      @click:append="onSettingsChangeOwnerClicked"
-                      @vue:updated="onSettingsOwnerFieldChanged"
-                    />
-                  </v-responsive>
-                </v-card>
+            <ProjectSettingsDialog
+              :current-owner-user-id="projectData.owner.userId"
+              :project-id="projectData.projectId"
+              :visible="settingsDialog"
+              @close="settingsDialog=false"
+              @project-owner-changed="onProjectOwnerChanged"
+            />
 
-                <v-card-actions>
-                  <v-btn color="primary" @click="settingsDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </div>
 
           <div v-else>
@@ -160,6 +138,8 @@
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
 
+  import { useFetchProjects } from '@/composables/useProjects'
+
   export default {
     name: 'ProjectComponent',
 
@@ -201,9 +181,6 @@
       const showProjectsDetails = ref(true)
 
       const settingsDialog = ref(false)
-      const settingsOwnerUserId = ref('')
-      const settingsOwnerFieldIcon = ref('')
-      const settingsError = ref<string | undefined>(undefined)
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
@@ -317,53 +294,21 @@
         console.error(errMsg, err)
       }
 
-      function handleSettingsError (errMsg: string, err : unknown) {
-        settingsError.value = errMsg
-        console.error(errMsg, err)
-
-        setTimeout(() => {
-          settingsError.value = undefined
-        }, 2000)
-      }
-
-      function clearSettingsErrors () {
-        settingsError.value = undefined
-      }
-
       function openSettingsDialog () {
-        // setup settings variables to current state of project
-        settingsOwnerFieldIcon.value = 'mdi-check'
-        settingsOwnerUserId.value = projectData.value.owner.userId
-
-        // show dialog
         settingsDialog.value = true
       }
 
-      async function onSettingsOwnerFieldChanged () {
-        if (settingsOwnerUserId.value === projectData.value.owner.userId) {
-          settingsOwnerFieldIcon.value = 'mdi-check'
-        } else {
-          settingsOwnerFieldIcon.value = 'mdi-send'
-        }
-      }
+      async function onProjectOwnerChanged (newOwnerUserId: String) {
+        console.debug('Project owner for project', projectId.value, 'changed to', newOwnerUserId)
 
-      async function onSettingsChangeOwnerClicked () {
-        if (settingsOwnerUserId.value === projectData.value.owner.userId) {
-          return
-        }
-        try {
-          await defaultClient.withProjectApi.adminOrOwnerChangesProjectOwner({
-            projectId: projectId.value,
-            userId: settingsOwnerUserId.value,
-          })
-          // change was successful so update in web ui:
-          projectData.value.owner.userId = settingsOwnerUserId.value
-          onSettingsOwnerFieldChanged()
-          clearSettingsErrors()
-        } catch (err) {
-          const errMsg = t('PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED')
-          handleSettingsError(errMsg, err)
-          settingsOwnerUserId.value = projectData.value.owner.userId
+        // We know the new owner id, but not the new owner email address.
+        // Because of missing other REST API endpoints, we must reload all projects data
+        useFetchProjects()
+
+        const newLoadedProject = store.getProjectById(projectId.value)
+        if (newLoadedProject !== undefined) {
+          projectData.value.owner.userId = newLoadedProject.owner.userId
+          projectData.value.owner.emailAddress = newLoadedProject.owner.emailAddress
         }
       }
 
@@ -401,11 +346,7 @@
         backToProjectsList,
         settingsDialog,
         openSettingsDialog,
-        settingsOwnerUserId,
-        onSettingsOwnerFieldChanged,
-        settingsOwnerFieldIcon,
-        onSettingsChangeOwnerClicked,
-        settingsError,
+        onProjectOwnerChanged,
       }
     },
 

@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.USER_ADMINISTRATION,
 		apiName="adminOrOwnerChangesProjectOwner",
 		title="Admin or owner changes owner of a project",
-		description="An administrator or the current project owner changes the ownership of an existing sechub project.")
+		description="An administrator or the current project owner changes the ownership of an existing SecHub project. If the new owner is not already assigned to the project, the new owner will be assigned automatically. The old owner will still be assigned to the project, but can be removed later by the owner if necessary.")
 public @interface UseCaseAdminOrOwnerChangesProjectOwner {
 
 	Step value();

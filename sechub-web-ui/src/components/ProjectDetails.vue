@@ -8,7 +8,7 @@
       <v-card-title>{{ $t('PROJECT_DETAILS_OWNER') }}</v-card-title>
     </v-card-item>
     <v-card-text>
-      <v-btn v-tooltip="project.owner.emailAddress" variant="text">{{ project.owner.userId }}</v-btn>
+      <span v-tooltip="project.owner.emailAddress" variant="text">{{ project.owner.userId }}</span>
     </v-card-text>
     <div v-if="project.assignedUsers">
       <v-card-item>
@@ -16,7 +16,7 @@
       </v-card-item>
       <v-card-text>
         <div v-for="(member, i) in project.assignedUsers" :key="i">
-          <v-btn v-tooltip="member.emailAddress" variant="text">{{ member.userId }}</v-btn>
+          <span v-tooltip="member.emailAddress" variant="text">{{ member.userId }}</span>
         </div>
       </v-card-text>
     </div>
@@ -30,11 +30,10 @@
 </template>
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
-  import { ProjectData, ProjectUserData } from '@/generated-sources/openapi'
+  import { ProjectData } from '@/generated-sources/openapi'
 
   interface Props {
     projectData: ProjectData,
-    selectedUserData: ProjectUserData|undefined,
   }
 
   export default defineComponent({
@@ -44,21 +43,15 @@
         required: true,
       },
 
-      selectedUserData: {
-        type: Object,
-        required: false,
-      },
     },
 
     setup (props: Props) {
       const { projectData } = toRefs(props)
-      const { selectedUserData } = toRefs(props)
 
       const project = projectData
-      const selectedUser = selectedUserData
 
       return {
-        project, selectedUser,
+        project,
       }
     },
   })

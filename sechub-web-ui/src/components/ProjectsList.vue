@@ -49,33 +49,16 @@
 </template>
 
 <script lang="ts">
-  import defaultClient from '@/services/defaultClient'
-  import { useRouter } from 'vue-router'
-  import { ref } from 'vue'
-  import { useProjectStore } from '@/stores/projectStore'
+  import { useFetchProjects } from '@/composables/useProjects'
   import { ProjectData } from '@/generated-sources/openapi'
+  import { useRouter } from 'vue-router'
 
   export default {
     name: 'ProjectListComponent',
 
     setup () {
-      const projects = ref<ProjectData[]>([])
-      const loading = ref(true)
-      const error = ref<string | undefined>(undefined)
       const router = useRouter()
-      const store = useProjectStore()
-
-      onMounted(async () => {
-        try {
-          projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
-          store.storeProjects(projects.value)
-        } catch (err) {
-          error.value = 'ProjectAPI error fetching assigned projects.'
-          console.error('ProjectAPI error fetching assigned projects:', err)
-        } finally {
-          loading.value = false
-        }
-      })
+      const { projects, error, loading } = useFetchProjects()
 
       const openProjectPage = (project: ProjectData) => {
         router.push({
