@@ -168,7 +168,7 @@ public class ZapWrapperGroovyScriptExecutor {
                   result.error = error.toString();
                 }
                 return result;
-                """.formatted(storageType, storageType, storageType, storageType);
+                """.formatted(storageType, storageType, storageType);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) jsExecutor.executeScript(script);
