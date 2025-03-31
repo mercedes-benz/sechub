@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,8 +85,8 @@ public class ZapWrapperGroovyScriptExecutor {
 
             LOG.info("Execution successful, preparing login result with session data.");
             loginResult.setSessionCookies(firefox.manage().getCookies());
-            loginResult.setSessionStorage(retrieveStorage(firefox, SESSION_STORAGE));
-            loginResult.setLocalStorage(retrieveStorage(firefox, LOCAL_STORAGE));
+            loginResult.setSessionStorage(retrieveBrowserStorage(firefox, SESSION_STORAGE));
+            loginResult.setLocalStorage(retrieveBrowserStorage(firefox, LOCAL_STORAGE));
         } catch (IOException | ScriptException e) {
             LOG.error("An error happened while executing the script file.", e);
             loginResult.setLoginFailed(true);
@@ -155,19 +156,32 @@ public class ZapWrapperGroovyScriptExecutor {
         return bindings;
     }
 
-    private Map<String, String> retrieveStorage(JavascriptExecutor jsExecutor, String storageType) {
+    private Map<String, String> retrieveBrowserStorage(JavascriptExecutor jsExecutor, String storageType) {
         String script = """
-                let items = {};
-                for (let i = 0; i < %s.length; i++) {
-                  let key = %s.key(i);
-                  items[key] = %s.getItem(key);
+                let result = { items: {}, error: null };
+                try {
+                  for (let i = 0; i < %s.length; i++) {
+                    let key = %s.key(i);
+                    result.items[key] = %s.getItem(key);
+                  }
+                } catch (error) {
+                  result.error = error.toString();
                 }
-                return items;
-                """.formatted(storageType, storageType, storageType);
+                return result;
+                """.formatted(storageType, storageType, storageType, storageType);
 
         @SuppressWarnings("unchecked")
-        Map<String, String> storage = (Map<String, String>) jsExecutor.executeScript(script);
-        return storage;
+        Map<String, Object> result = (Map<String, Object>) jsExecutor.executeScript(script);
+        String errorMessage = (String) result.get("error");
+
+        if (errorMessage != null) {
+            LOG.warn("Trying to access browser {} an error happened during JavaScript execution: {}.", storageType, errorMessage);
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> storageItems = (Map<String, String>) result.getOrDefault("items", new HashMap<>());
+        LOG.info("'{}' entries retrieved from browser {}.", storageItems.size(), storageType);
+        return storageItems;
     }
 
     public interface ScriptExecutionHook {
