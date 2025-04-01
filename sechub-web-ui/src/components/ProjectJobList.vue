@@ -26,7 +26,7 @@
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="openSettingsDialog()" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
@@ -116,7 +116,6 @@
       <v-col v-if="showProjectsDetails" cols="12" md="4">
         <ProjectDetails
           :project-data="projectData"
-          :selected-user-data="undefined"
         />
       </v-col>
     </v-row>
@@ -294,21 +293,31 @@
         console.error(errMsg, err)
       }
 
-      function openSettingsDialog () {
-        settingsDialog.value = true
-      }
-
       async function onProjectOwnerChanged (newOwnerUserId: String) {
         console.debug('Project owner for project', projectId.value, 'changed to', newOwnerUserId)
 
         // We know the new owner id, but not the new owner email address.
         // Because of missing other REST API endpoints, we must reload all projects data
-        useFetchProjects()
+        const { loading } = useFetchProjects();
 
-        const newLoadedProject = store.getProjectById(projectId.value)
-        if (newLoadedProject !== undefined) {
-          projectData.value.owner.userId = newLoadedProject.owner.userId
-          projectData.value.owner.emailAddress = newLoadedProject.owner.emailAddress
+        let fetchTimeOutId : number | undefined = undefined
+        updateData(loading, fetchTimeOutId)
+      }
+
+      function updateData(loading: any, fetchTimeOutId: any, count = 0){
+        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
+        if(count >= 10){
+          return
+        }
+
+        if(loading.value){
+          fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
+
+        }else{
+          const newLoadedProject = store.getProjectById(projectId.value);
+          if (newLoadedProject !== undefined) {
+            projectData.value = newLoadedProject
+          }
         }
       }
 
@@ -345,7 +354,6 @@
         openNewScanPage,
         backToProjectsList,
         settingsDialog,
-        openSettingsDialog,
         onProjectOwnerChanged,
       }
     },
