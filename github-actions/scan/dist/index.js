@@ -27774,8 +27774,11 @@ axios.default = axios;
 
 // EXTERNAL MODULE: ./node_modules/extract-zip/index.js
 var extract_zip = __nccwpck_require__(460);
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -27875,7 +27878,7 @@ function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
     if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
         return;
     }
-    const tempFile = `${external_path_.dirname(absoluteDirectoryToCleanUp)}/${external_path_.basename(absoluteFileToKeep)}`;
+    const tempFile = `${external_os_.tmpdir()}/${external_path_.basename(absoluteFileToKeep)}`;
     // Move the file to a temporary location
     lib.moveSync(absoluteFileToKeep, tempFile);
     // Remove the entire directory
@@ -28896,8 +28899,6 @@ function projectname_resolver_asJsonObject(text) {
     }
 }
 
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
 // SPDX-License-Identifier: MIT
 
