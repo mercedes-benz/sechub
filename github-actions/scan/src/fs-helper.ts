@@ -7,6 +7,7 @@ import * as fs_extra from 'fs-extra';
 import axios from 'axios';
 import * as util from 'util';
 import * as extract from 'extract-zip';
+import * as os from 'os';
 
 const writeFile = util.promisify(fs_extra.writeFile);
 
@@ -105,7 +106,7 @@ export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileT
     if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
         return;
     }
-    const tempFile = `${path.dirname(absoluteDirectoryToCleanUp)}/${path.basename(absoluteFileToKeep)}`;
+    const tempFile = `${os.tmpdir()}/${path.basename(absoluteFileToKeep)}`;
     // Move the file to a temporary location
     fs_extra.moveSync(absoluteFileToKeep, tempFile);
     // Remove the entire directory
