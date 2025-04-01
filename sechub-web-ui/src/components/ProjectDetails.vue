@@ -8,17 +8,16 @@
       <v-card-title>{{ $t('PROJECT_DETAILS_OWNER') }}</v-card-title>
     </v-card-item>
     <v-card-text>
-      {{ project.owner }}
+      <span v-tooltip="project.owner.emailAddress" variant="text">{{ project.owner.userId }}</span>
     </v-card-text>
     <div v-if="project.assignedUsers">
       <v-card-item>
         <v-card-title>{{ $t('PROJECT_DETAILS_MEMBERS') }}</v-card-title>
       </v-card-item>
       <v-card-text>
-        <div
-          v-for="(member,i) in project.assignedUsers"
-          :key="i"
-        >{{ member }}</div>
+        <div v-for="(member, i) in project.assignedUsers" :key="i">
+          <span v-tooltip="member.emailAddress" variant="text">{{ member.userId }}</span>
+        </div>
       </v-card-text>
     </div>
     <div v-else>
@@ -34,7 +33,7 @@
   import { ProjectData } from '@/generated-sources/openapi'
 
   interface Props {
-    projectData: ProjectData
+    projectData: ProjectData,
   }
 
   export default defineComponent({
@@ -43,10 +42,12 @@
         type: Object,
         required: true,
       },
+
     },
 
     setup (props: Props) {
       const { projectData } = toRefs(props)
+
       const project = projectData
 
       return {

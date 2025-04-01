@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.domain.notification.email.EmailService;
 import com.mercedesbenz.sechub.domain.notification.email.MailMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ProjectMessage;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerChangesProjectOwner;
 
 @Service
 public class InformThatProjectHasNewOwnerNotificationService {
@@ -28,7 +28,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InformThatProjectHasNewOwnerNotificationService.class);
 
-    @UseCaseAdminChangesProjectOwner(@Step(number = 4, name = "Inform new and previous project owners that the project owner ship has changed"))
+    @UseCaseAdminOrOwnerChangesProjectOwner(@Step(number = 4, name = "Inform new and previous project owners that the project owner ship has changed"))
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 
