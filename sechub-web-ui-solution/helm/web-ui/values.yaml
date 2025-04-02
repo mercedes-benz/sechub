@@ -34,6 +34,9 @@ web_ui:
     #     Inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl key and certificate to use
     #   - `keystore_password`
+  # Define a static location. This is used to serve static files. (e.g. for custom login pages).
+  spring:
+    staticLocations: "file:/sechub-web-ui/web-resources/static,classpath:/login/static"
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.
@@ -74,3 +77,8 @@ go_mmproxy:
   enabled: false
   # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
   image: "example.org/go-mmproxy:2.1.0"
+
+configMaps:
+  enabled: false
+  backgroundImageBase64: ""
+  mainCssBase: ""
