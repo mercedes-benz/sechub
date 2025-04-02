@@ -22670,10 +22670,10 @@ function handleError(error) {
 
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
-// EXTERNAL MODULE: ./node_modules/shelljs/shell.js
-var shelljs_shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+// EXTERNAL MODULE: ./node_modules/shelljs/shell.js
+var shelljs_shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(5630);
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/bind.js
@@ -24863,7 +24863,7 @@ function combineURLs(baseURL, relativeURL) {
  */
 function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
-  if (baseURL && isRelativeUrl || allowAbsoluteUrls == false) {
+  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
     return combineURLs(baseURL, requestedURL);
   }
   return requestedURL;
@@ -24882,7 +24882,7 @@ var follow_redirects = __nccwpck_require__(7707);
 // EXTERNAL MODULE: external "zlib"
 var external_zlib_ = __nccwpck_require__(9796);
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/env/data.js
-const VERSION = "1.8.3";
+const VERSION = "1.8.4";
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/parseProtocol.js
 
 
@@ -27774,8 +27774,11 @@ axios.default = axios;
 
 // EXTERNAL MODULE: ./node_modules/extract-zip/index.js
 var extract_zip = __nccwpck_require__(460);
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -27859,14 +27862,43 @@ function getFiles(pattern) {
     });
     return reportFiles;
 }
+/**
+ * Delete a directory, but restore the file to keep.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
+ *
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ *
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
+ */
+function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
+    const absoluteFileToKeep = external_path_.resolve(fileToKeep);
+    const absoluteDirectoryToCleanUp = external_path_.resolve(directoryToCleanUp);
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
+        return;
+    }
+    const tempFile = `${external_os_.tmpdir()}/${external_path_.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    lib.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    lib.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    lib.ensureDirSync(external_path_.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    lib.moveSync(tempFile, absoluteFileToKeep);
+}
 
 ;// CONCATENATED MODULE: ./src/client-download.ts
 // SPDX-License-Identifier: MIT
 
 
 
+
 /**
  * Downloads release for the SecHub CLI if not already loaded.
+ * Ensure only the used client version is kept locally.
+ * This way the Github action cache can be kept lean and constant.
  *
  * @param context launch context
  */
@@ -27884,6 +27916,10 @@ async function downloadClientRelease(context) {
     await downloadFile(zipDownloadUrl, secHubZipFilePath);
     await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
     chmodSync(context.clientExecutablePath);
+    // remove all unused client versions/platforms from Github cache
+    // currently this is only done after a new download was performed
+    const parentDirectory = external_path_.dirname(context.clientDownloadFolder);
+    deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 
 ;// CONCATENATED MODULE: ./src/configuration-model.ts
@@ -28863,8 +28899,6 @@ function projectname_resolver_asJsonObject(text) {
     }
 }
 
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
 // SPDX-License-Identifier: MIT
 
