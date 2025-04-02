@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
 
-    <JobDetaillsToolBar
+    <JobReportToolBar
     :scan-type="scantype"
     :project-id="projectId"
     :job-u-u-i-d="jobUUID"
@@ -16,7 +16,6 @@
     show-expand
   >
   
-  <!-- START Optional grouping -->
   <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
       <tr>
         <td :colspan="columns.length">
@@ -45,7 +44,6 @@
         </td>
       </tr>
     </template>
-     <!-- END Optional grouping -->
 
   <template v-slot:item.severity="{ value }">
     <div>
@@ -59,13 +57,18 @@
     </div>
     </template>
 
+    <template v-slot:item.cweId="{ value }">
+    <div>
+      <a :href="`https://cwe.mitre.org/data/definitions/${value}.html`">CWE-{{ value }}</a>
+    </div>
+    </template>
+
   <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
       <v-btn
         :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        :text="isExpanded(internalItem) ? 'Collapse' : 'More info'"
+        :text="isExpanded(internalItem) ? $t('REPORT_COLLAPS_FINDING') : $t('REPORT_SHOW_FINDING')"
         class="text-none"
         color="primary"
-        size="small"
         variant="text"
         @click="toggleExpand(internalItem)"
       ></v-btn>
@@ -110,10 +113,10 @@
 
       const headers = [
         { title: 'ID', key: 'id', sortable: true },
-        { title: 'Severity', key: 'severity' },
+        { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity' },
         { title: 'CWE', key: 'cweId' },
-        { title: 'Type', key: 'type' },
-        { title: 'Description', key: 'description', sortable: false },
+        { title: t('REPORT_DESCRIPTION_TYPE'), key: 'type' },
+        { title: t('REPORT_DESCRIPTION_DESCRIPTION'), key: 'description', sortable: false },
     ]
     const sortById = ref([{ key: 'id', order: true }])
     const groupBy = ref([{ key: 'severity', order: false }])

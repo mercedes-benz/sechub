@@ -11,7 +11,7 @@
                 icon="mdi-arrow-left" 
                 @click="backToProjectOverview()" />
              </template>
-            </v-toolbar>
+          </v-toolbar>
           <div class="background-color">
             <v-sheet class="background-color">
               <h2 class="background-color text-h5 pa-5">{{ $t('SCAN_CREATE_TITLE') }}</h2>
@@ -32,7 +32,7 @@
 
             <v-card
               class="background-color ma-5"
-              variant="plain"
+              variant="flat"
             >
               <v-card-title>{{ $t('SCAN_CREATE_SELECT_SCAN_TYPE') }}</v-card-title>
               <ScanTypeSelect
@@ -44,26 +44,25 @@
 
             <v-card
               class="background-color ma-5"
-              variant="plain"
+              variant="flat"
             >
               <v-card-title>{{ $t('SCAN_CREATE_FILE_UPLOAD') }}</v-card-title>
               <ScanFileUpload
                 @on-file-update="updateFileselection"
               />
               <v-card-text v-if="isLoading">
-                Uploading your data
+                {{ $t('SCAN_CREATE_FILE_UPLOAD_PROGRESS') }}
               </v-card-text>
-              <v-progress-linear
-                v-if="isLoading"
+              <v-progress-circular
+              v-if="isLoading"
                 color="primary"
-                :height="10"
                 indeterminate
-              />
+              ></v-progress-circular>
             </v-card>
 
             <v-card
               class="background-color ma-5"
-              variant="plain"
+              variant="flat"
             >
 
               <template #append>
@@ -101,6 +100,7 @@
   import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
+  import '@/styles/sechub.scss'
 
   export default defineComponent({
 
@@ -200,8 +200,3 @@
     },
   })
 </script>
-<style scoped>
-.background-color{
-  background-color: rgb(var(--v-theme-layer_01)) !important;
-}
-</style>

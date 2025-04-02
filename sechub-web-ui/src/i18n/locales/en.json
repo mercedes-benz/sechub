@@ -88,5 +88,19 @@
     "REPORT_DESCRIPTION_RELEVANT_PART": "Relevant part",
     "REPORT_DESCRIPTION_SOURCE": "Source",
     "REPORT_DESCRIPTION_SOLUTION": "Solution",
-    "REPORT_DESCRIPTION_SOLUTION_EMPTY": "There is no dedicated solution. Please have a look at the proposed solutions and examples at Mitre CWE description."
+    "REPORT_DESCRIPTION_SOLUTION_EMPTY": "There is no dedicated solution. Please have a look at the proposed solutions and examples at Mitre CWE description.",
+    "REPORT_DESCRIPTION_ATTACK_VECTOR": "Attck vector",
+    "REPORT_DESCRIPTION_EVIDENCE": "Evidence",
+    "REPORT_DETAILS_WEBSCAN_REQUEST": "Request",
+    "REPORT_DETAILS_WEBSCAN_METHOD": "Method",
+    "REPORT_DETAILS_WEBSCAN_HEADERS": "Headers",
+    "REPORT_DETAILS_WEBSCAN_BODY": "Body",
+    "REPORT_DETAILS_WEBSCAN_RESPONSE": "Response",
+    "REPORT_SOLUTION_HIDE": "Hide Solution",
+    "REPORT_SOLUTION_SHOW": "Show Solution",
+    "REPORT_DETAILS_HIDE": "Hide Details",
+    "REPORT_DETAILS_SHOW": "Show Details",
+    "REPORT_COLLAPS_FINDING": "Collapse",
+    "REPORT_SHOW_FINDING": "More Info",
+    "REPORT_DESCRIPTION_NAME": "Attack"
 }

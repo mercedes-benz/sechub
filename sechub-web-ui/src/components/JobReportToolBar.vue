@@ -8,12 +8,13 @@
             <v-toolbar-title>
                 {{ scanType }}
                 {{ jobUUID }}
-                <v-icon 
+            </v-toolbar-title>
+              <v-icon 
                 icon="mdi-circle"
                 class="ma-2"
+                size="x-large"
                 :class="getTrafficLightClass(trafficLight)">
-                </v-icon>
-            </v-toolbar-title>
+              </v-icon>
         </v-toolbar>
     </v-card>
 </template>

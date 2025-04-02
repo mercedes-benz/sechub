@@ -8,11 +8,6 @@
         <v-toolbar color="background_paper">
             <v-toolbar-title>
                 {{ jobUUID }}
-                <v-icon 
-                icon="mdi-circle"
-                class="ma-2"
-                :class="getTrafficLightClass(report.trafficLight || '')">
-                </v-icon>
                 <v-btn 
                 class="ma-2"
                 variant="tonal"
@@ -23,6 +18,12 @@
                     <v-icon end icon="mdi-information-outline" />
                 </v-btn>
             </v-toolbar-title>   
+            <v-icon 
+                icon="mdi-circle"
+                class="ma-2"
+                size="x-large"
+                :class="getTrafficLightClass(report.trafficLight || '')">
+            </v-icon>
         </v-toolbar>
 
         <div v-if="(!report || report.status === 'FAILED' || scanTypeMap.size === 0)">

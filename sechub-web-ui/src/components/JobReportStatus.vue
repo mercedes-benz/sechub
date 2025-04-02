@@ -1,6 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <JobDetaillsToolBar
+    <JobReportToolBar
     :scan-type="''"
     :project-id="projectId"
     :job-u-u-i-d="jobUUID"
