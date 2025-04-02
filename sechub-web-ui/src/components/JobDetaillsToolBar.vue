@@ -6,6 +6,7 @@
         />
         <v-toolbar color="background_paper">
             <v-toolbar-title>
+                {{ scanType }}
                 {{ jobUUID }}
                 <v-icon 
                 icon="mdi-circle"
@@ -21,6 +22,7 @@
   import { getTrafficLightClass } from '@/utils/projectUtils'
 
 interface Props {
+  scanType: string
   jobUUID: string
   trafficLight: string
   projectId: string
@@ -28,6 +30,10 @@ interface Props {
 
 export default defineComponent({
   props: {
+    scanType: {
+      type: String,
+      required: true,
+    },
     jobUUID: {
       type: String,
       required: true,

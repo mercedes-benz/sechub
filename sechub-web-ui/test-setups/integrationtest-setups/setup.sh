@@ -18,9 +18,8 @@ test_user1_email="web-ui-tester1@example.org"
 echo "- create project"
 # Run the sechub-api.sh scripts with the necessary parameters
 $SECHUB_API_SCRIPT project_create $test_project_name $SECHUB_USERID
-$SECHUB_API_SCRIPT project_assign_user $test_project_name $SECHUB_USERID
 
-echo "- setup project"
+echo "- setup project for codescan with gosec mock"
 # Create and assign a mocked executor, the result will always be RED
 $SECHUB_API_SCRIPT executor_create gosec-executor.json
 $SECHUB_API_SCRIPT profile_create gosec-profile pds-gosec
@@ -35,12 +34,13 @@ echo "- assign test user: $test_user1_name to project: $test_project_name"
 $SECHUB_API_SCRIPT project_assign_user $test_project_name $test_user1_name
 
 # WEBSCAN (Optional)
-# Create and assign a mocked executor, the result will always be RED
+echo "- setup project for webscan with owasp mock"
 $SECHUB_API_SCRIPT executor_create owasp-zap-executor.json
 $SECHUB_API_SCRIPT profile_create owaspzap-profile pds-owaspzap
-$SECHUB_API_SCRIPT  project_assign_profile $TEST_PROJECT_NAME owaspzap-profile
-$SECHUB_API_SCRIPT project_set_whitelist_uris $TEST_PROJECT_NAME https://example.org
+$SECHUB_API_SCRIPT project_assign_profile $test_project_name owaspzap-profile
+$SECHUB_API_SCRIPT project_set_whitelist_uris $test_project_name https://example.org
 
-sechub scan -project "$TEST_PROJECT_NAME"
+echo "- executing webscan"
+sechub scan -project "$test_project_name"
 
 echo "Finished setting up CODE_SCAN Project for integrationtest server with mocked Products"

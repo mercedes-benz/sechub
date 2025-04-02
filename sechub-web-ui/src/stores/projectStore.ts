@@ -6,7 +6,6 @@ const STORE_NAME = 'projectStore'
 
 const getProjects = () => {
   const projects = localStorage.getItem(STORE_NAME)
-  console.log('Loaded reports from localStorage:', projects)
   return projects ? JSON.parse(projects) : []
 }
 

@@ -27,8 +27,10 @@
               @click="openProjectPage(project)"
             >
               <template #prepend>
-                <v-icon v-if="project.isOwned" :class="ownedClass" icon="mdi-cube" />
-                <v-icon v-else icon="mdi-cube" />
+                <v-icon v-if="project.isOwned" 
+                :class="ownedClass"
+                icon="mdi-cube" />
+                <v-icon v-else icon="mdi-cube" class="ma-2"/>
               </template>
               <template #title>
                 <span>{{ project.projectId }}</span>
@@ -85,6 +87,7 @@
 <style scoped>
   .project-owned {
     color: rgb(var(--v-theme-primary)) !important;
+    margin-right: 8px;
   }
   .v-list-item{
     background-color: rgb(var(--v-theme-layer_01)) !important;

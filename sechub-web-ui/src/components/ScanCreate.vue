@@ -6,9 +6,12 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectId }}</v-toolbar-title>
-            <v-btn icon="mdi-reply" @click="backToProjectOverview" />
-          </v-toolbar>
-
+            <template v-slot:prepend>
+                <v-btn
+                icon="mdi-arrow-left" 
+                @click="backToProjectOverview()" />
+             </template>
+            </v-toolbar>
           <div class="background-color">
             <v-sheet class="background-color">
               <h2 class="background-color text-h5 pa-5">{{ $t('SCAN_CREATE_TITLE') }}</h2>

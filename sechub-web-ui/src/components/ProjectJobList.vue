@@ -23,14 +23,19 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
+            <template v-slot:prepend>
+              <v-btn
+              v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
+              icon="mdi-arrow-left" 
+              @click="router.go(-1)" />
+              <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
+            </template>
 
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
 
-          <ProjectSettingsDialog
+          <ProjectSettingsDialog v-if="!loading"
             :current-owner-user-id="projectData.owner.userId"
             :project-id="projectData.projectId"
             :visible="settingsDialog"
@@ -302,10 +307,6 @@
         });
       }
 
-      function backToProjectsList () {
-        router.go(-1)
-      }
-
       function handleError (errMsg: string, err : unknown) {
         alert.value = true
         error.value = errMsg
@@ -358,6 +359,7 @@
 
       return {
         projectData,
+        router,
         jobsObject,
         jobs,
         loading,
@@ -371,7 +373,6 @@
         cancelJob,
         onPageChange,
         openNewScanPage,
-        backToProjectsList,
         viewJobReport,
         settingsDialog,
         onProjectOwnerChanged,

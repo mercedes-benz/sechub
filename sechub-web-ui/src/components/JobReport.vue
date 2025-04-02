@@ -2,6 +2,7 @@
 <template>
 
     <JobDetaillsToolBar
+    :scan-type="scantype"
     :project-id="projectId"
     :job-u-u-i-d="jobUUID"
     :traffic-light="report.trafficLight || ''" />
@@ -94,7 +95,7 @@
   import '@/styles/sechub.scss'
 
   export default {
-    name: 'JobDetail',
+    name: 'JobReport',
 
     setup () {
       const { t } = useI18n()
@@ -115,7 +116,7 @@
         { title: 'Description', key: 'description', sortable: false },
     ]
     const sortById = ref([{ key: 'id', order: true }])
-    const groupBy = ref([{ key: 'severity', order: true }])
+    const groupBy = ref([{ key: 'severity', order: false }])
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -125,8 +126,12 @@
         jobUUID.value = route.params.jobId
       }
 
+      const query = route.query.scantype as string
+      const scantype = ref('')
+      scantype.value = query
+
       onMounted(async () => {
-        const reportFromStore = await store.getReportByUUID(jobUUID.value)
+        const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (!reportFromStore) {
             router.push({
                 path: '/projects',
@@ -171,6 +176,7 @@
         projectId,
         jobUUID,
         report,
+        scantype,
         headers,
         sortById,
         groupBy,

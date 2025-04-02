@@ -99,10 +99,6 @@
         jobUUID.value = route.params.jobId
       }
 
-      function routerGoBack () {
-        router.go(-1)
-      }
-
       function getButtonColor(title: string) {
         return title === 'FAILED' ? 'error' : 'layer-01';
     }
@@ -135,14 +131,18 @@
     }
 
     function routeTo(route: string){
-        let basePath = `/projects/${projectId.value}/jobs/${jobUUID.value}/`
         if(route === 'status') {
             router.push({
-                path: basePath + `status`
+                path: `/projects/${projectId.value}/jobs/${jobUUID.value}/status`
             });
         } else {
             router.push({
-                path: basePath + `scanreport`
+                name: '/projects/[id]/jobs/[jobId]/scanreport',
+                params: {
+                    id: projectId.value,
+                    jobId: jobUUID.value
+                },
+                query: { scantype: route }
         })
     }
     }
@@ -169,7 +169,6 @@
         report,
         scanTypeMap,
         routeTo,
-        routerGoBack,
         getTrafficLightClass,
         getButtonColor
       }

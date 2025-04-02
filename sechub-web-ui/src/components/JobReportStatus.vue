@@ -1,6 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
     <JobDetaillsToolBar
+    :scan-type="''"
     :project-id="projectId"
     :job-u-u-i-d="jobUUID"
     :traffic-light="report.trafficLight || ''" />
