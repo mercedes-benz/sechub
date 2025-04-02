@@ -49,7 +49,6 @@
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
   import { getTrafficLightClass } from '@/utils/projectUtils'
-  import { useRouter } from 'vue-router'
   import { SecHubFinding } from '@/generated-sources/openapi'
   import '@/styles/sechub.scss'
 
@@ -67,15 +66,9 @@ export default defineComponent({
 
   setup (props: Props, {}) {
     const { item } = toRefs(props)
-    const router = useRouter()
-
-    function routerGoBack () {
-        router.go(-1)
-      }
 
     return {
         getTrafficLightClass,
-        routerGoBack,
         item,
     }
   },

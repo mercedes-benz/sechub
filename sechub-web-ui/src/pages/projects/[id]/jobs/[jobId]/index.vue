@@ -1,4 +1,4 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <JobDetails />
+    <JobReportOverview />
 </template>

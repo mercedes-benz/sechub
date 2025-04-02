@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+
     <v-card class="mr-auto" color="background_paper">
+        <ProjectToolbar 
+        :project-id="projectId"
+        />
         <v-toolbar color="background_paper">
             <v-toolbar-title>
                 {{ jobUUID }}
@@ -18,8 +22,7 @@
                     {{ report.status }}
                     <v-icon end icon="mdi-information-outline" />
                 </v-btn>
-            </v-toolbar-title>
-            <v-btn icon="mdi-reply" @click="routerGoBack" />       
+            </v-toolbar-title>   
         </v-toolbar>
 
         <div v-if="(!report || report.status === 'FAILED' || scanTypeMap.size === 0)">
@@ -72,6 +75,7 @@
   import { getTrafficLightClass } from '@/utils/projectUtils'
   import { useReportStore } from '../stores/reportStore'
   import '@/styles/sechub.scss'
+import ProjectToolbar from './ProjectToolbar.vue'
 
   export default {
     name: 'JobDetail',
@@ -137,16 +141,11 @@
             router.push({
                 path: basePath + `status`
             });
-        }
-        else if(route === "webscan"){
-            router.push({
-                path: basePath + `webscanreport`
-            });
         } else {
             router.push({
                 path: basePath + `scanreport`
-            });
-        }
+        })
+    }
     }
 
       onMounted(async () => {
@@ -180,6 +179,7 @@
 </script>
 <style scoped>
 .clickable-column:hover {
+    cursor: pointer;
     background-color: rgb(var(--v-theme-layer_02)) !important;
 }
 </style>

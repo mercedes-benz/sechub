@@ -1,9 +1,10 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
     <JobDetaillsToolBar
+    :project-id="projectId"
     :job-u-u-i-d="jobUUID"
     :traffic-light="report.trafficLight || ''" />
-
+    
     <v-card>
         <v-card-item>
             <v-card-title>
@@ -43,10 +44,9 @@
   import '@/styles/sechub.scss'
 
   export default {
-    name: 'JobDetail',
+    name: 'JobReportStatus',
 
     setup () {
-      const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
       const store = useReportStore()
@@ -65,7 +65,7 @@
       }
 
       onMounted(async () => {
-        const reportFromStore = await store.getReportByUUID(jobUUID.value)
+        const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (!reportFromStore) {
             router.push({
                 path: '/projects',
@@ -87,6 +87,6 @@
 </script>
 <style scoped>
   .v-card {
-    margin-top: 25px;
+    margin-bottom: 25px;
   }
 </style>

@@ -1,6 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+
     <JobDetaillsToolBar
+    :project-id="projectId"
     :job-u-u-i-d="jobUUID"
     :traffic-light="report.trafficLight || ''" />
 
@@ -71,8 +73,12 @@
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length" class="py-2">
-          <v-sheet rounded="lg" >
-            <JobsScanReportTable 
+          <v-sheet v-if="item.type !== 'webScan'" rounded="lg" >
+            <JobReportCodescanDetails 
+            :item="item"/>
+          </v-sheet>
+          <v-sheet v-else rounded="lg" >
+            <JobReportWebscanDetails
             :item="item"/>
           </v-sheet>
         </td>
@@ -84,7 +90,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { SecHubReport } from '@/generated-sources/openapi'
-  import { useReportStore } from '../stores/reportStore'
+  import { useReportStore } from '@/stores/reportStore'
   import '@/styles/sechub.scss'
 
   export default {
@@ -109,7 +115,7 @@
         { title: 'Description', key: 'description', sortable: false },
     ]
     const sortById = ref([{ key: 'id', order: true }])
-    const groupBy = [{ key: 'severity', order: 'asc' }]
+    const groupBy = ref([{ key: 'severity', order: true }])
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -153,6 +159,7 @@
           case 'MEDIUM':
             return 'warning';
           case 'LOW':
+            return 'success'
           case 'INFO':
             return 'primary';
           default:

@@ -88,6 +88,7 @@
                   </span>
                   </td>
                   <td><v-btn
+                    :disabled="job.executionResult !== 'OK'"
                     @click="viewJobReport(job.jobUUID || '')"
                     >
                     {{ job.jobUUID }}

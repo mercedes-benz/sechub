@@ -32,6 +32,7 @@ echo "Using VITE .env to setup your user and apitoken"
 export SECHUB_APITOKEN=${VITE_API_PASSWORD}
 export SECHUB_USERID=${VITE_API_USERNAME}
 export SECHUB_SERVER=https://localhost:8443
+export SECHUB_TRUSTALL=true
 export TEST_PROJECT_NAME="test-gosec"
 
 echo 'Starting test setup...'
@@ -44,5 +45,14 @@ echo 'Starting test setup...'
 ../../../sechub-developertools/scripts/sechub-api.sh executor_create gosec-executor.json
 ../../../sechub-developertools/scripts/sechub-api.sh profile_create gosec-profile pds-gosec
 ../../../sechub-developertools/scripts/sechub-api.sh project_assign_profile $TEST_PROJECT_NAME gosec-profile
+
+# WEBSCAN
+# Create and assign a mocked executor, the result will always be RED
+../../../sechub-developertools/scripts/sechub-api.sh executor_create owasp-zap-executor.json
+../../../sechub-developertools/scripts/sechub-api.sh profile_create owaspzap-profile pds-owaspzap
+../../../sechub-developertools/scripts/sechub-api.sh project_assign_profile $TEST_PROJECT_NAME owaspzap-profile
+../../../sechub-developertools/scripts/sechub-api.sh project_set_whitelist_uris $TEST_PROJECT_NAME https://example.org
+
+sechub scan -project "$TEST_PROJECT_NAME" 
 
 echo "Finished setting up CODE_SCAN Project for integrationtest server with mocked Products"

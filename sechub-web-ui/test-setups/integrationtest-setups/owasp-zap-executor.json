@@ -1,0 +1,67 @@
+{
+  "name": "pds-owaspzap",
+  "productIdentifier": "PDS_WEBSCAN",
+  "executorVersion": 1,
+  "enabled": true,
+  "setup": {
+    "baseURL": "https://localhost:8444",
+    "credentials": {
+        "user": "pds-inttest-techuser",
+        "password": "pds-inttest-apitoken"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_SOLUTION_ZAP_MOCKED"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": false
+      },
+      {
+        "key": "pds.mocking.disabled",
+        "value": true
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": 180
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": 15000
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": true
+      },
+      {
+        "key": "zap.activescan.enabled",
+        "value": true
+      },
+      {
+        "key": "zap.ajaxcrawler.enabled",
+        "value": true
+      },
+      {
+        "key": "zap.deactivated.rule.references",
+        "value": "Timestamp-Disclosure-10096,Cross-Site-Scripting-(DOM-Based)-40026"
+      },
+      {
+        "key": "zap.use.proxy",
+        "value": false
+      },
+      {
+        "key": "zap.proxy.for.pds.target.type",
+        "value": "INTRANET"
+      },
+      {
+        "key": "pds.config.cancel.event.checkinterval.milliseconds",
+        "value": 2000
+      },
+      {
+        "key": "pds.config.cancel.maximum.waittime.seconds",
+        "value": 120
+      }
+    ]
+  }
+}

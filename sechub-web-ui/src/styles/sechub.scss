@@ -2,7 +2,10 @@
     background-color: rgb(var(--v-theme-layer_01)) !important;
   }
   .traffic-light-none {
-    color: rgb(var(--v-theme-layer_01)) !important;
+    color: transparent;
+  }
+  .traffic-light-off {
+    color: transparent;
   }
   .traffic-light-red {
     color: rgb(var(--v-theme-error)) !important;

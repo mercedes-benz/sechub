@@ -1,6 +1,9 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
     <v-card class="mr-auto" color="background_paper">
+      <ProjectToolbar 
+        :project-id="projectId"
+        />
         <v-toolbar color="background_paper">
             <v-toolbar-title>
                 {{ jobUUID }}
@@ -10,18 +13,17 @@
                 :class="getTrafficLightClass(trafficLight)">
                 </v-icon>
             </v-toolbar-title>
-            <v-btn icon="mdi-reply" @click="routerGoBack()" />
         </v-toolbar>
     </v-card>
 </template>
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
   import { getTrafficLightClass } from '@/utils/projectUtils'
-  import { useRouter } from 'vue-router'
 
 interface Props {
   jobUUID: string
   trafficLight: string
+  projectId: string
 }
 
 export default defineComponent({
@@ -33,20 +35,18 @@ export default defineComponent({
     trafficLight: {
         type: String,
         required: true,
+    },
+    projectId: {
+      type: String,
+      required: true,
     }
   },
 
-  setup (props: Props, {}) {
+  setup (props: Props) {
     const { jobUUID, trafficLight } = toRefs(props)
-    const router = useRouter()
-
-    function routerGoBack () {
-        router.go(-1)
-      }
 
     return {
         getTrafficLightClass,
-        routerGoBack,
         jobUUID,
         trafficLight
     }
