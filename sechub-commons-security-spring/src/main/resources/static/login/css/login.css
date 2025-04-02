@@ -6,7 +6,7 @@ body {
     justify-content: flex-start;
     align-items: center;
     height: 100vh;
-    background-image: url('/images/background_image_login.jpg');
+    background-image: url('/login/images/background_image_login.jpg');
     background-size: cover;
     background-position: center;
 }

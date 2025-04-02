@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,15 +13,15 @@ public class ProjectData {
     public static final String PROPERTY_ASSIGNED_USERS = "assignedUsers";
 
     private String projectId;
-    private String owner;
+    private ProjectUserData owner;
     private Boolean isOwned;
-    private String[] assignedUsers;
+    private List<ProjectUserData> assignedUsers;
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(ProjectUserData owner) {
         this.owner = owner;
     }
 
@@ -27,7 +29,7 @@ public class ProjectData {
         this.isOwned = isOwned;
     }
 
-    public void setAssignedUsers(String[] assignedUsers) {
+    public void setAssignedUsers(List<ProjectUserData> assignedUsers) {
         this.assignedUsers = assignedUsers;
     }
 
@@ -42,13 +44,13 @@ public class ProjectData {
     }
 
     @JsonProperty(PROPERTY_OWNER)
-    public String getOwner() {
+    public ProjectUserData getOwner() {
         return owner;
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(PROPERTY_ASSIGNED_USERS)
-    public String[] getAssignedUsers() {
+    public List<ProjectUserData> getAssignedUsers() {
         return assignedUsers;
     }
 }

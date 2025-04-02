@@ -24,10 +24,19 @@
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
 
-            <v-btn icon="mdi-plus" @click="openNewScanPage()" />
-            <v-btn icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
-            <v-btn icon="mdi-reply" @click="backToProjectsList" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
+
+          <ProjectSettingsDialog
+            :current-owner-user-id="projectData.owner.userId"
+            :project-id="projectData.projectId"
+            :visible="settingsDialog"
+            @close="settingsDialog=false"
+            @project-owner-changed="onProjectOwnerChanged"
+          />
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">
             <v-list bg-color="background_paper" lines="two">
@@ -66,12 +75,12 @@
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
                     <v-menu>
                       <template #activator="{ props }">
-                        <v-btn 
+                        <v-btn
                         class="ma-2"
                         v-bind="props"
                         >
                           {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                          <v-icon end icon="mdi-download-circle-outline" 
+                          <v-icon end icon="mdi-download-circle-outline"
                           color="primary"
                           />
                         </v-btn>
@@ -134,13 +143,14 @@
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import { useI18n } from 'vue-i18n'
   import {
+    UserCancelsJobRequest,
+    UserListsJobsForProjectRequest,
     ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
-    UserCancelsJobRequest,
-    UserListsJobsForProjectRequest,
-  } from '@/generated-sources/openapi'
+  } from '@/generated-sources/openapi/'
   import '@/styles/sechub.scss'
+  import { useFetchProjects } from '@/composables/useProjects'
 
   export default {
     name: 'ProjectComponent',
@@ -159,7 +169,10 @@
         projectId: '',
         isOwned: false,
         assignedUsers: [],
-        owner: '',
+        owner: {
+          userId: '',
+          emailAddress: '',
+        },
       })
 
       const maxAttempts = 6 // exponent limit
@@ -178,6 +191,8 @@
       const error = ref<string | undefined>(undefined)
       const alert = ref(false)
       const showProjectsDetails = ref(true)
+
+      const settingsDialog = ref(false)
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
@@ -297,6 +312,34 @@
         console.error(errMsg, err)
       }
 
+      async function onProjectOwnerChanged (newOwnerUserId: String) {
+        console.debug('Project owner for project', projectId.value, 'changed to', newOwnerUserId)
+
+        // We know the new owner id, but not the new owner email address.
+        // Because of missing other REST API endpoints, we must reload all projects data
+        const { loading } = useFetchProjects();
+
+        let fetchTimeOutId : number | undefined = undefined
+        updateData(loading, fetchTimeOutId)
+      }
+
+      function updateData(loading: any, fetchTimeOutId: any, count = 0){
+        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
+        if(count >= 10){
+          return
+        }
+
+        if(loading.value){
+          fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
+
+        }else{
+          const newLoadedProject = store.getProjectById(projectId.value);
+          if (newLoadedProject !== undefined) {
+            projectData.value = newLoadedProject
+          }
+        }
+      }
+
       onMounted(async () => {
         const projectFromStore = await store.getProjectById(projectId.value)
         if (!projectFromStore) {
@@ -330,6 +373,8 @@
         openNewScanPage,
         backToProjectsList,
         viewJobReport,
+        settingsDialog,
+        onProjectOwnerChanged,
       }
     },
 

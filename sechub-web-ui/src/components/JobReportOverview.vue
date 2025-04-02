@@ -73,9 +73,8 @@
   import defaultClient from '@/services/defaultClient'
   import { SecHubReport, SecHubReportScanTypeSummary } from '@/generated-sources/openapi'
   import { getTrafficLightClass } from '@/utils/projectUtils'
-  import { useReportStore } from '../stores/reportStore'
+  import { useReportStore } from '@/stores/reportStore'
   import '@/styles/sechub.scss'
-import ProjectToolbar from './ProjectToolbar.vue'
 
   export default {
     name: 'JobDetail',

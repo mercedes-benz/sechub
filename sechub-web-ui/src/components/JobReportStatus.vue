@@ -37,10 +37,9 @@
 </template>
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
-  import { useI18n } from 'vue-i18n'
   import { SecHubReport } from '@/generated-sources/openapi'
   import { getIcon, getIconColor } from '@/utils/projectUtils'
-  import { useReportStore } from '../stores/reportStore'
+  import { useReportStore } from '@/stores/reportStore'
   import '@/styles/sechub.scss'
 
   export default {

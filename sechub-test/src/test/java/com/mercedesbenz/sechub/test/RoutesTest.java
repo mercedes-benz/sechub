@@ -205,6 +205,9 @@ public class RoutesTest {
         } else if (route.contains("/api/project") || route.contains("/api/job")) {
             assertMustHaveAtLeastOneOfExpectedRoles(route, clazz, roles, RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN);
 
+        } else if (route.contains("/api/management")) {
+            assertMustHaveAtLeastOneOfExpectedRoles(route, clazz, roles, RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER);
+
         } else {
             assertMustHaveAtLeastRoles(route, clazz, roles, RoleConstants.ROLE_USER);
 
