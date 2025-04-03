@@ -8,8 +8,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.adapter.pds.PDSAnalyticsConfig;
-import com.mercedesbenz.sechub.adapter.pds.PDSAnalyticsConfigImpl;
+import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
+import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
@@ -17,10 +17,10 @@ import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 
 @Service
-public class PDSAnalyticsExecutor extends AbstractPDSProductExecutor {
+public class PDSIacScanProductExecutor extends AbstractPDSProductExecutor {
 
-    public PDSAnalyticsExecutor() {
-        super(ProductIdentifier.PDS_ANALYTICS, 1);
+    public PDSIacScanProductExecutor() {
+        super(ProductIdentifier.PDS_IACSCAN, 1);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PDSAnalyticsExecutor extends AbstractPDSProductExecutor {
             try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull();
                     InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull()) { /* @formatter:off */
 
-                 PDSAnalyticsConfig pdsAnalyticsConfig = PDSAnalyticsConfigImpl.builder().
+                 PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
                         configure(PDSAdapterConfigurationStrategy.builder().
                                     setScanType(getScanType()).
                                     setProductExecutorData(data).
@@ -47,14 +47,14 @@ public class PDSAnalyticsExecutor extends AbstractPDSProductExecutor {
                  /* @formatter:on */
 
                 /* inspect */
-                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_ANALYTICS.name());
-                inspection.notice(MetaDataInspection.TRACE_ID, pdsAnalyticsConfig.getTraceID());
+                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_IACSCAN.name());
+                inspection.notice(MetaDataInspection.TRACE_ID, pdsCodeScanConfig.getTraceID());
 
                 /* we temporary store the adapter configuration - necessary for cancellation */
-                data.rememberAdapterConfig(pdsAnalyticsConfig);
+                data.rememberAdapterConfig(pdsCodeScanConfig);
 
                 /* execute PDS by adapter and update product result */
-                AdapterExecutionResult adapterResult = pdsAdapter.start(pdsAnalyticsConfig, executorContext.getCallback());
+                AdapterExecutionResult adapterResult = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
                 /* cancel not necessary - so forget it */
                 data.forgetRememberedAdapterConfig();

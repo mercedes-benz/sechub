@@ -28,7 +28,7 @@ public class FalsePositiveMetaDataFactory {
     public FalsePositiveMetaData createMetaData(SecHubFinding finding) {
         ScanType type = finding.getType();
         if (type == null) {
-            /* hmm.. maybe an old report where type was not set */
+            /* Maybe an old report where type was not set */
             SecHubCodeCallStack callstack = finding.getCode();
             if (callstack == null) {
                 throw new IllegalStateException(
@@ -43,6 +43,8 @@ public class FalsePositiveMetaDataFactory {
             return createCodeScan(finding);
         case SECRET_SCAN:
             return createSecretScan(finding);
+        case IAC_SCAN:
+            return createIacScan(finding);
         case WEB_SCAN:
             return createWebScan(finding);
         default:
@@ -81,22 +83,21 @@ public class FalsePositiveMetaDataFactory {
     }
 
     private FalsePositiveMetaData createSecretScan(SecHubFinding finding) {
-        FalsePositiveMetaData metaData = createCommonMetaDataWithCweId(finding);
+        return createCodeBasedMetaData(finding, ScanType.SECRET_SCAN);
+    }
 
-        metaData.setScanType(ScanType.SECRET_SCAN);
-
-        appendCommonCodeBasedParts(finding, metaData);
-
-        return metaData;
+    private FalsePositiveMetaData createIacScan(SecHubFinding finding) {
+        return createCodeBasedMetaData(finding, ScanType.IAC_SCAN);
     }
 
     private FalsePositiveMetaData createCodeScan(SecHubFinding finding) {
+        return createCodeBasedMetaData(finding, ScanType.CODE_SCAN);
+    }
+
+    private FalsePositiveMetaData createCodeBasedMetaData(SecHubFinding finding, ScanType scanType) {
         FalsePositiveMetaData metaData = createCommonMetaDataWithCweId(finding);
-
-        metaData.setScanType(ScanType.CODE_SCAN);
-
+        metaData.setScanType(scanType);
         appendCommonCodeBasedParts(finding, metaData);
-
         return metaData;
     }
 

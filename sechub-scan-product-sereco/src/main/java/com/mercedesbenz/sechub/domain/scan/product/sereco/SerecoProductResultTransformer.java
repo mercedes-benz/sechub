@@ -125,6 +125,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             switch (scanType) {
             case CODE_SCAN:
             case SECRET_SCAN:
+            case IAC_SCAN:
                 finding.setCode(convert(vulnerability.getCode()));
                 break;
             case INFRA_SCAN:

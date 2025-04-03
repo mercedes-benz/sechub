@@ -8,12 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class ImportParameterTest {
+
     @Test
     void build__no_values() {
         /* prepare + execute */
@@ -28,13 +32,14 @@ public class ImportParameterTest {
         assertEquals(importParameter.getScanType(), ScanType.UNKNOWN);
     }
 
-    @Test
-    void build__from_data_id_productmessages_productid() {
+    @ParameterizedTest
+    @EnumSource(ProductIdentifier.class)
+    void build__uses_product_identifier_scan_type_and_provides_data(ProductIdentifier productIdentifier) {
         /* prepare */
         SecHubMessage info = new SecHubMessage(SecHubMessageType.INFO, "info");
         String importId = "id1";
         String importData = "{}";
-        String productId = "PDS_CODESCAN";
+        String productId = productIdentifier.name();
         List<SecHubMessage> messages = List.of(info);
 
         /* execute */
@@ -48,90 +53,7 @@ public class ImportParameterTest {
         assertEquals(importId, importParameter.getImportId());
         assertEquals(productId, importParameter.getProductId());
         assertEquals(1, importParameter.getProductMessages().size());
-        assertEquals(importParameter.getScanType(), ScanType.CODE_SCAN);
+        assertEquals(importParameter.getScanType(), productIdentifier.getType());
     }
 
-    @Test
-    void build__productid_scancode() {
-        /* prepare */
-        String productId = "PDS_CODESCAN";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.CODE_SCAN);
-    }
-
-    @Test
-    void build__productid_checkmarx() {
-        /* prepare */
-        String productId = "CHECKMARX";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.CODE_SCAN);
-    }
-
-    @Test
-    void build__productid_nessus() {
-        /* prepare */
-        String productId = "NESSUS";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.INFRA_SCAN);
-    }
-
-    @Test
-    void build__productid_pds_infrascan() {
-        /* prepare */
-        String productId = "PDS_INFRASCAN";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.INFRA_SCAN);
-    }
-
-    @Test
-    void build__productid_netsparker() {
-        /* prepare */
-        String productId = "NETSPARKER";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.WEB_SCAN);
-    }
-
-    @Test
-    void build__productid_pds_webscan() {
-        /* prepare */
-        String productId = "PDS_WEBSCAN";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.WEB_SCAN);
-    }
-
-    @Test
-    void build__productid_pds_licensescan() {
-        /* prepare */
-        String productId = "PDS_LICENSESCAN";
-
-        /* execute */
-        ImportParameter importParameter = ImportParameter.builder().productId(productId).build();
-
-        /* test */
-        assertEquals(importParameter.getScanType(), ScanType.LICENSE_SCAN);
-    }
 }

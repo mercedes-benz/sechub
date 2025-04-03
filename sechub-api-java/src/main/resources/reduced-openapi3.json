@@ -1301,7 +1301,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@5060f389"
+                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@3f25d83e"
                     }
                 }
             },
@@ -1404,7 +1404,7 @@
             "api-admin-encryption-rotate-638361826": {
                 "type": "object"
             },
-            "api-admin-template-templateId1116126976": {
+            "api-admin-template-templateId-1784841170": {
                 "type": "object",
                 "properties": {
                     "variables": {
@@ -1451,7 +1451,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@6c1a65d"
+                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@69ad94c"
                     }
                 }
             },
@@ -3491,7 +3491,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-template-templateId1116126976"
+                                    "$ref": "#/components/schemas/api-admin-template-templateId-1784841170"
                                 }
                             }
                         }
@@ -4061,7 +4061,7 @@
                     "management"
                 ],
                 "summary": "Admin or owner changes owner of a project",
-                "description": "An administrator or the current project owner changes the ownership of an existing sechub project.",
+                "description": "An administrator or the current project owner changes the ownership of an existing SecHub project. If the new owner is not already assigned to the project, the new owner will be assigned automatically. The old owner will still be assigned to the project, but can be removed later by the owner if necessary.",
                 "operationId": "adminOrOwnerChangesProjectOwner",
                 "parameters": [
                     {

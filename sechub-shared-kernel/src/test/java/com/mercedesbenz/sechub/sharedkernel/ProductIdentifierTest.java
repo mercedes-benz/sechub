@@ -3,10 +3,18 @@ package com.mercedesbenz.sechub.sharedkernel;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
+
+import com.mercedesbenz.sechub.commons.model.ScanType;
 
 class ProductIdentifierTest {
 
@@ -50,5 +58,38 @@ class ProductIdentifierTest {
 
         /* test */
         assertEquals(expected, result);
+    }
+
+    @ParameterizedTest()
+    @ArgumentsSource(ExpectedScanTypesForProductIdentifierArgumentsProvider.class)
+    void productIdentifier_has_expected_scantype(ProductIdentifier productIdentifier, ScanType expectedScanType) {
+        /* prepare */
+
+        /* execute */
+        ScanType result = productIdentifier.getType();
+
+        /* test */
+        assertEquals(expectedScanType, result);
+    }
+
+    private static class ExpectedScanTypesForProductIdentifierArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+              Arguments.of(ProductIdentifier.CHECKMARX      ,ScanType.CODE_SCAN   ),
+
+              Arguments.of(ProductIdentifier.PDS_CODESCAN   ,ScanType.CODE_SCAN   ),
+              Arguments.of(ProductIdentifier.PDS_SECRETSCAN ,ScanType.SECRET_SCAN ),
+              Arguments.of(ProductIdentifier.PDS_IACSCAN    ,ScanType.IAC_SCAN    ) ,
+              Arguments.of(ProductIdentifier.PDS_LICENSESCAN,ScanType.LICENSE_SCAN),
+
+              Arguments.of(ProductIdentifier.PDS_WEBSCAN    ,ScanType.WEB_SCAN    ),
+
+              Arguments.of(ProductIdentifier.PDS_ANALYTICS  ,ScanType.ANALYTICS   ),
+              Arguments.of(ProductIdentifier.PDS_PREPARE    ,ScanType.PREPARE     )
+              );
+        }
+        /* @formatter:on*/
     }
 }

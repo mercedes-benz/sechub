@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubIacScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
@@ -790,6 +791,29 @@ public class SystemTestConfigurationBuilder {
                 }
 
                 public SecretScanConfigBuilder use(String... referenceIds) {
+                    List<String> referenceIdsList = Arrays.asList(referenceIds);
+                    configuration.setUse(new ArrayList<>(referenceIdsList));
+                    return this;
+                }
+
+                public SecHubRunBuilder endScan() {
+                    return SecHubRunBuilder.this;
+                }
+            }
+
+            public class IacScanConfigBuilder {
+                private final SecHubIacScanConfiguration configuration;
+
+                private IacScanConfigBuilder(SecHubIacScanConfiguration configuration) {
+                    this.configuration = configuration;
+                }
+
+                private IacScanConfigBuilder() {
+                    this(new SecHubIacScanConfiguration());
+                    runSecHubJob.setIacScan(Optional.of(configuration));
+                }
+
+                public IacScanConfigBuilder use(String... referenceIds) {
                     List<String> referenceIdsList = Arrays.asList(referenceIds);
                     configuration.setUse(new ArrayList<>(referenceIdsList));
                     return this;

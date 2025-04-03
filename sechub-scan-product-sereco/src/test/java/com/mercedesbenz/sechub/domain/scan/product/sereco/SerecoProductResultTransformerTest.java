@@ -161,6 +161,43 @@ public class SerecoProductResultTransformerTest {
     }
 
     @Test
+    void one_vulnerability_as_iac_finding_in_meta_results_in_one_finding() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityAsIacFound();
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        SecHubResult sechubResult = result.getResult();
+        for (SecHubFinding finding : sechubResult.getFindings()) {
+            assertEquals(ScanType.IAC_SCAN, finding.getType());
+        }
+
+        AssertSecHubResult.assertSecHubResult(sechubResult).hasFindings(1);
+        SecHubFinding finding1 = sechubResult.getFindings().get(0);
+        assertEquals(Integer.valueOf(4711), finding1.getCweId());
+        assertTrue(finding1.getRevision().isEmpty());// no information available
+
+        SecHubCodeCallStack code1 = finding1.getCode();
+        assertNotNull(code1);
+        assertEquals(Integer.valueOf(1), code1.getLine());
+        assertEquals(Integer.valueOf(2), code1.getColumn());
+        assertEquals("Location1", code1.getLocation());
+        assertEquals("source1", code1.getSource());
+        assertEquals("relevantPart1", code1.getRelevantPart());
+
+        SecHubCodeCallStack code2 = code1.getCalls();
+        assertNotNull(code2);
+        assertEquals(Integer.valueOf(3), code2.getLine());
+        assertEquals(Integer.valueOf(4), code2.getColumn());
+        assertEquals("Location2", code2.getLocation());
+        assertEquals("source2", code2.getSource());
+        assertEquals("relevantPart2", code2.getRelevantPart());
+
+    }
+
+    @Test
     void one_vulnerability_as_code_in_meta_results_in_one_finding() throws Exception {
         /* prepare */
         String converted = createMetaDataWithOneVulnerabilityAsCodeFound();
@@ -329,6 +366,10 @@ public class SerecoProductResultTransformerTest {
 
     private String createMetaDataWithOneVulnerabilityAsSecretFound() {
         return createMetaDataWithOneVulnerability(ScanType.SECRET_SCAN);
+    }
+
+    private String createMetaDataWithOneVulnerabilityAsIacFound() {
+        return createMetaDataWithOneVulnerability(ScanType.IAC_SCAN);
     }
 
     private String createMetaDataWithOneVulnerability(ScanType scanType) {

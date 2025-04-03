@@ -15,6 +15,8 @@ public enum ScanType {
 
     SECRET_SCAN("secretScan", "Secret scan", "Scans code or artifacts for secrets"),
 
+    IAC_SCAN("iacScan", "IaC scan", "Scans the infrastruture as code for potential vulnerabilities (weaknesses)."),
+
     REPORT("report", "Report", "Internal scan type for reporting", true),
 
     ANALYTICS("analytics", "Analytics", "Internal scan type for analytic phase", true),

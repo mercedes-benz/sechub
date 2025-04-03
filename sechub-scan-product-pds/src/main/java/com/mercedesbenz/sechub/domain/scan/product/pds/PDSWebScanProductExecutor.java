@@ -15,7 +15,6 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfigImpl;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
@@ -34,7 +33,7 @@ public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
 
     public PDSWebScanProductExecutor() {
-        super(ProductIdentifier.PDS_WEBSCAN, 1, ScanType.WEB_SCAN);
+        super(ProductIdentifier.PDS_WEBSCAN, 1);
     }
 
     @Override

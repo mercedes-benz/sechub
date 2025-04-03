@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubIacScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
@@ -89,6 +90,12 @@ class SecHubFileStructureDataProviderBuilderTest {
 
             addUsages(secretScan, references);
             break;
+        case IAC_SCAN:
+            SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
+            model.setIacScan(iacScan);
+
+            addUsages(iacScan, references);
+            break;
         case WEB_SCAN:
             SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
             model.setWebScan(webScan);
@@ -118,6 +125,11 @@ class SecHubFileStructureDataProviderBuilderTest {
                     Arguments.of("C2", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
                     Arguments.of("C3", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
                     Arguments.of("C4", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
+
+                    Arguments.of("I1", ScanType.IAC_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I2", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I3", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I4", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
 
                     Arguments.of("S1", ScanType.SECRET_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
                     Arguments.of("S2", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
@@ -221,32 +233,19 @@ class SecHubFileStructureDataProviderBuilderTest {
         assertThrows(IllegalStateException.class, () -> builderToTest.setModel(new SecHubConfigurationModel()).build());
     }
 
-    @Test
-    void for_scanType_codescan_and_empty_model_builder_creates_a_dataProvider() {
+    @ParameterizedTest
+    @ArgumentsSource(EmptyModelArgumentsBuilderArgumentProvider.class)
+    void for_this_scanType_and_an_empty_model_the_builder_creates_a_dataProvider(ScanType scanType, boolean rootFolderAccepted) {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(scanType).build();
 
         /* test */
         assertNotNull(dataProvider);
         assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
-        assertTrue(dataProvider.isRootFolderAccepted());
-    }
-
-    @Test
-    void for_scanType_licensescan_and_empty_model_builder_creates_a_dataProvider() {
-        /* prepare */
-        SecHubConfigurationModel model = new SecHubConfigurationModel();
-
-        /* execute */
-        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.LICENSE_SCAN).build();
-
-        /* test */
-        assertNotNull(dataProvider);
-        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
-        assertFalse(dataProvider.isRootFolderAccepted());
+        assertEquals(dataProvider.isRootFolderAccepted(), rootFolderAccepted);
     }
 
     @Test
@@ -404,6 +403,20 @@ class SecHubFileStructureDataProviderBuilderTest {
         assertTrue(acceptedReferenceNames.contains("client-cert-api-file-reference"));
         assertTrue(acceptedReferenceNames.contains("header-file-ref-for-big-tokens"));
         assertFalse(dataProvider.isRootFolderAccepted());
+    }
+
+    private static class EmptyModelArgumentsBuilderArgumentProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+              Arguments.of(ScanType.CODE_SCAN, true),
+              Arguments.of(ScanType.LICENSE_SCAN, false),
+              Arguments.of(ScanType.SECRET_SCAN, false),
+              Arguments.of(ScanType.IAC_SCAN, false))
+              ;
+        }
+        /* @formatter:on*/
     }
 
 }

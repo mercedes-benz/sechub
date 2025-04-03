@@ -30,7 +30,9 @@ class SecHubConfigurationModelSupportTest {
     private static SecHubConfigurationModel sechub_license_scan_config_source_example;
 
     private SecHubConfigurationModelSupport supportToTest;
+
     private static JSONConverter converter = new JSONConverter();
+
     private static SecHubConfigurationModel sechub_code_scan_config_binary_example;
     private static SecHubConfigurationModel sechub_code_scan_config_source_example;
     private static SecHubConfigurationModel sechub_code_scan_config_source_embedded_def_example;
@@ -46,6 +48,7 @@ class SecHubConfigurationModelSupportTest {
     private static SecHubConfigurationModel sechub_license_and_code_scan_example4;
     private static SecHubConfigurationModel sechub_secret_scan_config_binary_example;
     private static SecHubConfigurationModel sechub_secret_scan_config_source_example;
+    private static SecHubConfigurationModel sechub_iac_scan_config_source_example;
 
     @BeforeAll
     static void beforeAll() {
@@ -60,6 +63,9 @@ class SecHubConfigurationModelSupportTest {
         /* secret scan */
         sechub_secret_scan_config_binary_example = loadModel("sechub_secret_scan_config_binary_example.json");
         sechub_secret_scan_config_source_example = loadModel("sechub_secret_scan_config_source_example.json");
+
+        /* iac scan */
+        sechub_iac_scan_config_source_example = loadModel("sechub_iac_scan_config_source_example.json");
 
         /* code scan */
         sechub_code_scan_config_binary_example = loadModel("sechub_code_scan_config_binary_example.json");
@@ -121,12 +127,14 @@ class SecHubConfigurationModelSupportTest {
         SecHubInfrastructureScanConfiguration infraScan = mock(SecHubInfrastructureScanConfiguration.class);
         SecHubLicenseScanConfiguration licenseScan = mock(SecHubLicenseScanConfiguration.class);
         SecHubSecretScanConfiguration secretScan = mock(SecHubSecretScanConfiguration.class);
+        SecHubIacScanConfiguration iacScan = mock(SecHubIacScanConfiguration.class);
 
         when(model.getCodeScan()).thenReturn(Optional.of(codeScan));
         when(model.getInfraScan()).thenReturn(Optional.of(infraScan));
         when(model.getWebScan()).thenReturn(Optional.of(webScan));
         when(model.getLicenseScan()).thenReturn(Optional.of(licenseScan));
         when(model.getSecretScan()).thenReturn(Optional.of(secretScan));
+        when(model.getIacScan()).thenReturn(Optional.of(iacScan));
 
         /* execute */
         Set<ScanType> result = supportToTest.collectScanTypes(model);
@@ -685,6 +693,21 @@ class SecHubConfigurationModelSupportTest {
 
         /* test */
         boolean needed = ScanType.SECRET_SCAN.equals(scanType);
+        assertEquals(needed, result, "Needed must be: " + needed);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void sechub_iac_scan_config_source_example__source_required_only_by_iac_scan(ScanType scanType) {
+
+        /* prepare */
+        SecHubConfigurationModel model = sechub_iac_scan_config_source_example;
+
+        /* execute */
+        boolean result = supportToTest.isSourceRequired(scanType, model);
+
+        /* test */
+        boolean needed = ScanType.IAC_SCAN.equals(scanType);
         assertEquals(needed, result, "Needed must be: " + needed);
     }
 
