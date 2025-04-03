@@ -31,10 +31,10 @@ spec:
 {{- if .Values.configMaps.enabled }}
         - name: configmap-background-image
           configMap:
-            name: web-ui-configmap-background-image
+            name: configmap-login-background-image
         - name: configmap-main-css
           configMap:
-            name: web-ui-configmap-main-css
+            name: configmap-login-main-css
 {{- end }}
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
         - name: secret-web-ui-ssl-volume
@@ -112,7 +112,7 @@ spec:
             value: "{{ .Values.deploymentComment }}"
           - name: WEB_UI_SSL_KEYSTORE_ALIAS
             value: "{{ .Values.web_ui.ssl.keystoreAlias }}"
-          - name: SPRING_WEB_RESOURCES_STATIC_LOCATIONS
+          - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
             value: "{{ .Values.web_ui.spring.staticLocations }}"
 {{- if .Values.configMaps.enabled }}
           - name: CONFIG_MAPS_ENABLED
