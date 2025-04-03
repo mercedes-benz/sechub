@@ -97,12 +97,13 @@ public class ZapScanner implements ZapScan {
             // client certificate first, because it could be needed to access the included
             // URLs or the URLs from the API definitions.
             importClientCertificate();
+            UserInformation userInfo = setupLoginInsideZapContext();
             addIncludedAndExcludedUrlsToContext();
             addAjaxSpiderAvoidLogoutExclude();
             loadApiDefinitions();
 
             /* ZAP scan */
-            executeScan();
+            executeScan(userInfo);
 
             /* After scan */
             generateZapReport();
@@ -316,8 +317,7 @@ public class ZapScanner implements ZapScan {
         clientApiWrapper.enableClientCertificate();
     }
 
-    void executeScan() throws ClientApiException {
-        UserInformation userInfo = setupLoginInsideZapContext();
+    void executeScan(UserInformation userInfo) throws ClientApiException {
         if (userInfo != null) {
             // This order follows the automation framework full scan order
             runAndWaitForSpiderAsUser(userInfo.zapuserId);

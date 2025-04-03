@@ -87,6 +87,7 @@ class ZapWrapperGroovyScriptExecutorTest {
         assertTrue(loginResult.isLoginFailed());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void valid_script_is_executed_as_expected() throws Exception {
         /* prepare */
@@ -101,6 +102,8 @@ class ZapWrapperGroovyScriptExecutorTest {
         templateData.getVariables().putAll(Map.of("custom-username", "user1", "custom-password", "pwd1"));
         login.setTemplateData(templateData);
         webScanConfig.setLogin(Optional.of(login));
+
+        when((Map<String, Object>) firefox.executeScript(anyString())).thenReturn(Collections.emptyMap());
 
         ZapScanContext zapScanContext = ZapScanContext.builder().setSecHubWebScanConfiguration(webScanConfig).setTargetUrl(webScanConfig.getUrl().toURL())
                 .build();
