@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
       <v-toolbar color="background_paper">
       <v-toolbar-title>{{ projectId }}</v-toolbar-title>

@@ -45,6 +45,7 @@
                     <th class="background-color">{{ $t('REPORT_TOTAL_FINDINGS') }}</th>
                     <th class="background-color">{{ $t('REPORT_CRITICAL_FINDINGS') }}</th>
                     <th class="background-color">{{ $t('REPORT_HIGH_FINDINGS') }}</th>
+                    <th class="background-color">{{ $t('REPORT_MEDIUM_FINDINGS') }}</th>
                     <th class="background-color">{{ $t('REPORT_LOW_FINDINGS') }}</th>
                     <th class="background-color">{{ $t('REPORT_INFO_FINDINGS') }}</th>
                     </tr>
@@ -56,6 +57,7 @@
                     class="background-color clickable-column"
                     @click="routeTo(key)">
                         <td>{{ key }}</td>
+                        <td>{{ scanType.total }}</td>
                         <td>{{ scanType.critical }}</td>
                         <td>{{ scanType.high }}</td>
                         <td>{{ scanType.medium }}</td>

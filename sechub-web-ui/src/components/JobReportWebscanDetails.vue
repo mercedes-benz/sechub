@@ -7,7 +7,7 @@
     fixed-header
     >
         <tbody class="sechub-primary-color">
-        <tr><th>{{ $t('REPORT_DESCRIPTION_NAME')}}</th>
+        <tr>
             <th>{{ $t('REPORT_DESCRIPTION_LOCATION')}}</th>
             <th>{{ $t('REPORT_DESCRIPTION_ATTACK_VECTOR')}}</th>
             <th>{{ $t('REPORT_DESCRIPTION_EVIDENCE')}}</th>
@@ -16,7 +16,6 @@
         
         <tbody>
         <tr>
-            <td>{{ item.name }}</td>
             <td>{{ webItem.request?.target }}</td>
             <td>{{ webItem.attack?.vector }}</td>
             <td>{{ webItem.attack?.evidence?.snippet }}</td>
@@ -93,7 +92,9 @@
               <tr>
                 <td> {{ $t('REPORT_DETAILS_WEBSCAN_BODY') }}</td>
                 <td>
-                  {{ webItem.request?.body }}
+                  <pre>
+                    {{ formatJson(webItem.request?.body?.text || '{}') }}
+                  </pre>
                 </td>
               </tr>
             </tbody>
@@ -125,8 +126,63 @@
                 </td>
               </tr>
             </tbody>
+
+            <tbody v-if="isExpanded.reportDetails">
+              <tr>
+                <td> {{ $t('REPORT_DETAILS_WEBSCAN_HEADERS') }}</td>
+                <td>
+                  <v-list lines="two"
+                  class="background-color">
+                    <v-list-item
+                    class="background-color ma-0 pa-0"
+                      v-for="(header, i) in webItem.response?.headers">
+                      <spa>{{ i }}</spa>: <span>{{ header }}</span>
+
+                    </v-list-item>
+                  </v-list>
+                </td>
+              </tr>
+            </tbody>
+
+            <tbody v-if="isExpanded.reportDetails"
+            class="background-color-light ">
+              <tr>
+                <td> {{ $t('REPORT_DETAILS_WEBSCAN_BODY') }}</td>
+                <td>
+                  <pre>
+                  {{ formatJson(webItem.response?.body?.text || '{}') }}
+                  </pre>
+                </td>
+              </tr>
+            </tbody>
         </v-table>
       </div>
+
+      <!-- Description Table -->
+      <div>
+      <v-table
+      class="background-color sechub-report-expandable-element"
+      fixed-header
+      >
+        <tbody class="sechub-primary-color">
+            <tr>
+                <v-btn
+                :append-icon="isExpanded.description ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                :text="isExpanded.description ? $t('REPORT_DESCRIPTION_HIDE') : $t('REPORT_DESCRIPTION_SHOW')"
+                class="text-none background-color ma-2"
+                color="primary"
+                variant="text"
+                @click="toggleExpand('description')">
+                </v-btn>
+            </tr>
+          </tbody>
+          <tbody v-if="isExpanded.description">
+              <tr>
+                <td> {{ item.description }} </td>
+              </tr>
+          </tbody>
+      </v-table>
+    </div>
 
     <!-- Solution Table -->
      <div>
@@ -162,7 +218,6 @@
   import { getTrafficLightClass } from '@/utils/projectUtils'
   import { SecHubFinding, SecHubReportWeb } from '@/generated-sources/openapi'
   import '@/styles/sechub.scss'
-import { it } from 'vuetify/locale'
 
 interface Props {
   item: SecHubFinding
@@ -171,7 +226,7 @@ interface Props {
 interface ExpandedState {
   reportDetails: boolean;
   solution: boolean;
-  table3: boolean;
+  description: boolean;
 }
 
 export default defineComponent({
@@ -191,15 +246,27 @@ export default defineComponent({
     const isExpanded = ref<ExpandedState>({
       reportDetails: false,
       solution: false,
-      table3: false,
+      description: false,
     })
 
     const toggleExpand = (table: keyof ExpandedState) => {
       isExpanded.value[table] = !isExpanded.value[table]
     }
+
+    function formatJson(jsonString: string) {
+      console.log(jsonString)
+      try {
+        const jsonObj = JSON.parse(jsonString)
+        return JSON.stringify(jsonObj, null, 2)
+      } catch (error) {
+        return jsonString
+      }
+    }
+
     return {
         getTrafficLightClass,
         toggleExpand,
+        formatJson,
         item,
         webItem,
         isExpanded,
@@ -207,3 +274,13 @@ export default defineComponent({
   },
 })
 </script>
+<style scoped>
+pre {
+  word-wrap: break-word;
+  width: 100%;
+  margin: 0; 
+  display: inline;
+  text-align: left;
+  white-space: pre-line;
+}
+</style>

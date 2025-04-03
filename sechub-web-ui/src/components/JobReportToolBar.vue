@@ -6,8 +6,8 @@
         />
         <v-toolbar color="background_paper">
             <v-toolbar-title>
-                {{ scanType }}
                 {{ jobUUID }}
+                {{ scanType }}
             </v-toolbar-title>
               <v-icon 
                 icon="mdi-circle"

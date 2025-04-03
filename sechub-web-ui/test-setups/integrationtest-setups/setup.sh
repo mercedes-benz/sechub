@@ -33,12 +33,18 @@ $SECHUB_API_SCRIPT user_signup_accept $test_user1_name
 echo "- assign test user: $test_user1_name to project: $test_project_name"
 $SECHUB_API_SCRIPT project_assign_user $test_project_name $test_user1_name
 
-# WEBSCAN (Optional)
+# WebScan Zap 
 echo "- setup project for webscan with owasp mock"
 $SECHUB_API_SCRIPT executor_create owasp-zap-executor.json
 $SECHUB_API_SCRIPT profile_create owaspzap-profile pds-owaspzap
 $SECHUB_API_SCRIPT project_assign_profile $test_project_name owaspzap-profile
 $SECHUB_API_SCRIPT project_set_whitelist_uris $test_project_name https://example.org
+
+# Secretscan Gitleaks
+echo "- setup project for secretscan with gitleaks mock"
+$SECHUB_API_SCRIPT executor_create gitleaks-executor.json
+$SECHUB_API_SCRIPT profile_create gitleaks-profile pds-gitleaks
+$SECHUB_API_SCRIPT project_assign_profile $test_project_name gitleaks-profile
 
 echo "- executing webscan"
 sechub scan -project "$test_project_name"

@@ -10,9 +10,8 @@
     <v-data-table
     :group-by=groupBy
     :headers="headers"
-    :items="report.result?.findings"
+    :items="sortedFindings"
     item-key="id"
-    :sort-by=sortById
     show-expand
   >
   
@@ -115,11 +114,10 @@
         { title: 'ID', key: 'id', sortable: true },
         { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity' },
         { title: 'CWE', key: 'cweId' },
-        { title: t('REPORT_DESCRIPTION_TYPE'), key: 'type' },
-        { title: t('REPORT_DESCRIPTION_DESCRIPTION'), key: 'description', sortable: false },
-    ]
-    const sortById = ref([{ key: 'id', order: true }])
-    const groupBy = ref([{ key: 'severity', order: false }])
+        { title: t('REPORT_DESCRIPTION_NAME'), key: 'name' },
+      ]
+
+      const groupBy = ref([{ key: 'severity', order: false }])
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -132,6 +130,22 @@
       const query = route.query.scantype as string
       const scantype = ref('')
       scantype.value = query
+    
+      const filteredFindings = computed(() => {
+        if (report.value.result?.findings){
+          return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
+        }
+      })
+
+      const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']
+      const sortedFindings = computed(() => {
+        if (!filteredFindings.value) {
+          return []
+        }
+        return filteredFindings.value.sort((a, b) => {
+          return severityOrder.indexOf(a.severity || '') - severityOrder.indexOf(b.severity || '')
+        })
+      })
 
       onMounted(async () => {
         const reportFromStore = store.getReportByUUID(jobUUID.value)
@@ -181,10 +195,10 @@
         report,
         scantype,
         headers,
-        sortById,
         groupBy,
         calculateColor,
-        calculateIcon
+        calculateIcon,
+        sortedFindings,
       }
     },
   }

@@ -119,6 +119,12 @@
                       icon="mdi-close-circle-outline"
                       @button-clicked="cancelJob"
                     />
+                    <v-btn v-else
+                      size="small"
+                      icon="mdi-content-copy"
+                      v-tooltip="$t('PROJECT_COPY_JOB_UUID')"
+                      @click="copyToClipboard(job.jobUUID || '')"
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -286,6 +292,10 @@
         fetchProjectJobs(currentRequestParameters)
       }
 
+      const copyToClipboard = (uuid: string) => {
+        navigator.clipboard.writeText(uuid)
+      }
+
       function onPageChange (page: number) {
         // the API page starts by 0 while vue pagination starts with 1
         currentRequestParameters.page = (page - 1).toString()
@@ -376,6 +386,7 @@
         viewJobReport,
         settingsDialog,
         onProjectOwnerChanged,
+        copyToClipboard,
       }
     },
 

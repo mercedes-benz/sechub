@@ -17,7 +17,8 @@
         
         <tbody>
         <tr>
-            <td>{{ item.code?.calls }}</td>
+            <td v-if="item.code?.calls">{{ item.code?.calls }}</td>
+            <td v-else>1</td>
             <td>{{ item.code?.location }}</td>
             <td>{{ item.code?.line}}</td>
             <td>{{ item.code?.column}}</td>
@@ -27,16 +28,76 @@
         </tbody>
     </v-table>
 
-    <v-table 
-    class="background-color"
+    <!-- Revision Table -->
+    <div>
+      <v-table v-if="item.revision?.id"
+      class="background-color sechub-report-expandable-element"
+      fixed-header>
+      <tbody class="sechub-primary-color">
+              <tr>
+                <v-btn
+                :append-icon="isExpanded.revision ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                :text="isExpanded.revision ? $t('REPORT_REVISION_HIDE') : $t('REPORT_REVISION_SHOW')"
+                class="text-none background-color ma-2"
+                color="primary"
+                variant="text"
+                @click="toggleExpand('revision')">
+                </v-btn>
+              </tr>
+            </tbody>
+            <tbody v-if="isExpanded.revision">
+                <tr>
+                  <td> {{ item.revision?.id }} </td>
+                </tr>
+            </tbody>
+      </v-table>
+    </div>
+
+      <!-- Description Table -->
+      <div>
+      <v-table
+      class="background-color sechub-report-expandable-element"
+      fixed-header
+      >
+        <tbody class="sechub-primary-color">
+            <tr>
+                <v-btn
+                :append-icon="isExpanded.description ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                :text="isExpanded.description ? $t('REPORT_DESCRIPTION_HIDE') : $t('REPORT_DESCRIPTION_SHOW')"
+                class="text-none background-color ma-2"
+                color="primary"
+                variant="text"
+                @click="toggleExpand('description')">
+                </v-btn>
+            </tr>
+          </tbody>
+          <tbody v-if="isExpanded.description">
+              <tr>
+                <td> {{ item.description }} </td>
+              </tr>
+          </tbody>
+      </v-table>
+    </div>
+
+    <!-- Solution Table -->
+    <div>
+    <v-table
+    class="background-color sechub-report-expandable-element"
     fixed-header
     >
       <tbody class="sechub-primary-color">
           <tr>
-              <th>{{ $t('REPORT_DESCRIPTION_SOLUTION')}}</th>
+              <v-btn
+              :append-icon="isExpanded.solution ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              :text="isExpanded.solution ? $t('REPORT_SOLUTION_HIDE') : $t('REPORT_SOLUTION_SHOW')"
+              class="text-none background-color ma-2"
+              color="primary"
+              variant="text"
+              @click="toggleExpand('solution')">
+              </v-btn>
           </tr>
         </tbody>
-        <tbody>
+        <tbody v-if="isExpanded.solution">
             <tr>
               <td v-if="item.solution"> {{ item.solution }} </td>
               <td v-else>{{ $t('REPORT_DESCRIPTION_SOLUTION_EMPTY')}} 
@@ -45,6 +106,7 @@
             </tr>
         </tbody>
     </v-table>
+  </div>
 </template>
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
@@ -54,6 +116,12 @@
 
 interface Props {
   item: SecHubFinding
+}
+
+interface ExpandedState {
+  revision: boolean;
+  solution: boolean;
+  description: boolean;
 }
 
 export default defineComponent({
@@ -67,8 +135,20 @@ export default defineComponent({
   setup (props: Props, {}) {
     const { item } = toRefs(props)
 
+    const isExpanded = ref<ExpandedState>({
+      revision: false,
+      solution: false,
+      description: false,
+    })
+
+    const toggleExpand = (table: keyof ExpandedState) => {
+      isExpanded.value[table] = !isExpanded.value[table]
+    }
+
     return {
         getTrafficLightClass,
+        toggleExpand,
+        isExpanded,
         item,
     }
   },
