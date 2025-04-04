@@ -218,8 +218,6 @@ security:
     # Secret key used to encrypt the access token which is sent back to the user after sucessful authentication (or login).
     # Must be AES256 compatible (256 bit / 32 byte)
     secretKey: Insert-your-32-byte-string-here.
-  # When set to `true` then Pods from the same k8s namespace are allowed to connect. `false`: only web-ui is allowed.
-  allowAccessFromSameNamespace: false
 
 storage:
   local:

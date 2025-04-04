@@ -8,12 +8,8 @@ spec:
   ingress:
   - from:
     - podSelector:
-{{- if .Values.security.allowAccessFromSameNamespace }}
-        {}
-{{- else }}
         matchLabels:
-          name: web-ui  # Allow SecHub Web-UI access
-{{- end }}
+          role: sechub-frontend  # Allow SecHub Web-UI access
     ports:
     - protocol: TCP
       port: 8443
