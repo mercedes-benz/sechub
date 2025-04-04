@@ -143,6 +143,12 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
      */
     public static final TestProject PROJECT_10 = createTestProject(Scenario21.class, "project10");
 
+    /**
+     * Project 11 is created on startup, and has {@link #USER_1} assigned. Profile
+     * used = PROFILE_33_PDS_SOLUTION_KICS_MOCKED
+     */
+    public static final TestProject PROJECT_11 = createTestProject(Scenario21.class, "project11");
+
     @Override
     protected void initializeTestData() {
         /* @formatter:off */
@@ -158,6 +164,7 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
             createProject(PROJECT_8, USER_1).
             createProject(PROJECT_9, USER_1).
             createProject(PROJECT_10, USER_1).
+            createProject(PROJECT_11, USER_1).
 
             addProjectIdsToDefaultExecutionProfile(PROFILE_18_PDS_SOLUTION_GOSEC_MOCKED, PROJECT_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE, PROJECT_2).
@@ -168,7 +175,8 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
             addProjectIdsToDefaultExecutionProfile(PROFILE_24_PDS_SOLUTION_TERN_MOCKED, PROJECT_7).
             addProjectIdsToDefaultExecutionProfile(PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED, PROJECT_8).
             addProjectIdsToDefaultExecutionProfile(PROFILE_26_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED, PROJECT_9).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED, PROJECT_10)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED, PROJECT_10).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_33_PDS_SOLUTION_KICS_MOCKED, PROJECT_11)
 
             ;
         /* @formatter:on */

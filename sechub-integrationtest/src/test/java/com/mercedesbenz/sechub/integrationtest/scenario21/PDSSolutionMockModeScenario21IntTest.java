@@ -98,6 +98,16 @@ public class PDSSolutionMockModeScenario21IntTest {
     }
 
     @Test
+    public void pds_solution_kics_mocked_report_in_json_and_html_available() throws Exception {
+        /* execute + test */
+        SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.IAC_SCAN, PROJECT_11, "kics");
+
+        /* test */
+        assertReportUnordered(report.toJSON()).hasTrafficLight(TrafficLight.RED).finding().severity(Severity.HIGH).scanType(ScanType.IAC_SCAN)
+                .name("OSS Bucket Public Access Enabled").description("'acl' is public-read-write").isContained();
+    }
+
+    @Test
     public void pds_solution_zap_mocked_report_REST_API_direct_mark_and_unmark_false_positive_projectData_webscan() throws Exception {
         /* @formatter:off */
 
@@ -188,7 +198,7 @@ public class PDSSolutionMockModeScenario21IntTest {
         Set<SecHubMessage> messages = report.getMessages();
         if (messages.size() != 2) {
             LOG.error("Messages not as expected: {}", messages);
-            assertEquals("Messages count not as expected!", 2, messages.size());
+            fail("Messages count not as expected! Expected 2 but got " + messages.size() + "!\nMessages found:\n" + messages);
         }
 
         Iterator<SecHubMessage> iterator = messages.iterator();
@@ -249,6 +259,11 @@ public class PDSSolutionMockModeScenario21IntTest {
             SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
             secretScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
             model.setSecretScan(secretScan);
+            break;
+        case IAC_SCAN:
+            SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
+            iacScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
+            model.setIacScan(iacScan);
             break;
         case WEB_SCAN:
             SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();

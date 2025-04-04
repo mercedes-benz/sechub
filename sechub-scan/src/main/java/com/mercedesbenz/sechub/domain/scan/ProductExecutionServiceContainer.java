@@ -32,6 +32,9 @@ public class ProductExecutionServiceContainer {
     @Autowired
     private SecretScanProductExecutionService secretScanProductExecutionService;
 
+    @Autowired
+    private IacScanProductExecutionService iacScanProductExecutionService;
+
     @Lazy
     @Autowired
     private DomainMessageService domainMessageService;
@@ -66,5 +69,9 @@ public class ProductExecutionServiceContainer {
 
     public SecretScanProductExecutionService getSecretScanProductExecutionService() {
         return secretScanProductExecutionService;
+    }
+
+    public IacScanProductExecutionService getIacScanProductExecutionService() {
+        return iacScanProductExecutionService;
     }
 }
