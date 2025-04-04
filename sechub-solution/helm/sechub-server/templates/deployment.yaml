@@ -30,6 +30,15 @@ spec:
         runAsGroup: 7474 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 7474    # This gid has write access to the mounted volumes.
       volumes:
+{{- if .Values.staticResources.enabled }}
+        # Static resources for login page
+        - name: configmap-background-image
+          configMap:
+            name: configmap-login-background-image
+        - name: configmap-main-css
+          configMap:
+            name: configmap-login-main-css
+{{- end }}
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: secret-ssl
           secret:
@@ -137,6 +146,17 @@ spec:
           successThreshold: 1
           timeoutSeconds: 10
         volumeMounts:
+{{- if .Values.staticResources.enabled }}
+          # Static resources for login page
+          - mountPath: /sechub/web-resources/static/background_image_login.jpg
+            name: configmap-background-image
+            subPath: background_image_login.jpg
+            readOnly: true
+          - mountPath: /sechub/web-resources/static/main.css
+            name: configmap-main-css
+            subPath: main.css
+            readOnly: true
+{{- end }}
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub/secrets/secret-ssl
             name: secret-ssl
@@ -152,6 +172,9 @@ spec:
         # Base url for sechub server - e.g. https://sechub.example.com
         - name: SECHUB_SERVER_BASEURL
           value: "{{ .Values.server.baseURL.userAccess }}"
+        # Static resources for login page
+        - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
+          value: "{{ .Values.staticResources.spring.staticLocations }}"
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + File upload definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
