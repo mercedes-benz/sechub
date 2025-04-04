@@ -226,8 +226,8 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-ssl
-               key: sechub_server_ssl_keystore_password
+              name: secret-ssl
+              key: sechub_server_ssl_keystore_password
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -244,13 +244,13 @@ spec:
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
-               name: secret-database
-               key: spring_datasource_username
+              name: secret-database
+              key: spring_datasource_username
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-database
-               key: spring_datasource_password
+              name: secret-database
+              key: spring_datasource_password
 {{- end }}
         # Increase HikariPool (10 default)
         - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
@@ -308,14 +308,14 @@ spec:
         - name: SECHUB_ADAPTER_CHECKMARX_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-checkmarx
-               key: sechub_adapter_checkmarx_userid
+              name: secret-checkmarx
+              key: sechub_adapter_checkmarx_userid
         # Password of checkmarx user
         - name: SECHUB_ADAPTER_CHECKMARX_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-checkmarx
-               key: sechub_adapter_checkmarx_password
+              name: secret-checkmarx
+              key: sechub_adapter_checkmarx_password
         # Interval in minutes when SecHub checks if the scan has finished
         - name: SECHUB_ADAPTER_CHECKMARX_SCANRESULTCHECK_PERIOD_MINUTES
           value: "{{ .Values.adapterCheckmarx.checkIntervalInMinutes }}"
@@ -333,8 +333,8 @@ spec:
         - name: SECHUB_SCAN_CONFIG_INITIAL
           valueFrom:
             secretKeyRef:
-               name: secret-config
-               key: sechub_scan_config_initial
+              name: secret-config
+              key: sechub_scan_config_initial
         # Turns off certification checks for this product only. Should only be used in test or development environments!
         - name: SECHUB_ADAPTER_CHECKMARX_TRUSTALL
           value: "{{ .Values.adapterCheckmarx.trustAnyCertificate | toString }}"
@@ -350,14 +350,14 @@ spec:
         - name: SECHUB_ADAPTER_NESSUS_INTERNET_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_internet_userid
+              name: secret-nessus
+              key: sechub_adapter_nessus_internet_userid
         # Password for Nessus instance used for Internet scans
         - name: SECHUB_ADAPTER_NESSUS_INTERNET_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_internet_password
+              name: secret-nessus
+              key: sechub_adapter_nessus_internet_password
         # Base url of nessus used for intranet scans
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_BASEURL
           value: "{{ .Values.adapterNessus.baseURL.intranet }}"
@@ -365,14 +365,14 @@ spec:
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_intranet_userid
+              name: secret-nessus
+              key: sechub_adapter_nessus_intranet_userid
         # Password for nessus instance used for intranet scans
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_intranet_password
+              name: secret-nessus
+              key: sechub_adapter_nessus_intranet_password
         # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
         - name: SECHUB_ADAPTER_NESSUS_SCANRESULTCHECK_PERIOD_MINUTES
           value: "-1"
@@ -403,14 +403,14 @@ spec:
         - name: SECHUB_ADAPTER_NETSPARKER_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-netsparker
-               key: sechub_adapter_netsparker_userid
+              name: secret-netsparker
+              key: sechub_adapter_netsparker_userid
         # API token for Netsparker user
         - name: SECHUB_ADAPTER_NETSPARKER_APITOKEN
           valueFrom:
             secretKeyRef:
-               name: secret-netsparker
-               key: sechub_adapter_netsparker_apitoken
+              name: secret-netsparker
+              key: sechub_adapter_netsparker_apitoken
         # Default policy ID for Netsparker scans (test policy)
         - name: SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID
           value: "{{ .Values.adapterNetsparker.defaultPolicyID }}"
@@ -576,13 +576,13 @@ spec:
         - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
-               name: secret-storage
-               key: sechub_storage_s3_accesskey
+              name: secret-storage
+              key: sechub_storage_s3_accesskey
         - name: S3_SECRETKEY
           valueFrom:
             secretKeyRef:
-               name: secret-storage
-               key: sechub_storage_s3_secretkey
+              name: secret-storage
+              key: sechub_storage_s3_secretkey
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_MAX_MILLISECONDS
           value: "{{ .Values.storage.s3.connectionPool.maxIdleTimeInMilliseconds }}"
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_VALIDATE_MILLISECONDS
