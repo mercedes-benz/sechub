@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerUnassignsUserFromProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -22,7 +22,7 @@ public class ScanRevokeUserAccessFromProjectService {
     @Autowired
     UserInputAssertion assertion;
 
-    @UseCaseAdminUnassignsUserFromProject(@Step(number = 2, name = "Update authorization parts"))
+    @UseCaseAdminOrOwnerUnassignsUserFromProject(@Step(number = 2, name = "Update authorization parts"))
     public void revokeUserAccessFromProject(String userId, String projectId) {
         assertion.assertIsValidUserId(userId);
         assertion.assertIsValidProjectId(projectId);

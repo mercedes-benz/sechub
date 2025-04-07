@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
@@ -22,7 +23,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerAssignsUserToProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -55,7 +56,7 @@ public class ProjectAssignUserService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdminAssignsUserToProject(
+	@UseCaseAdminOrOwnerAssignsUserToProject(
 			@Step(
 					number = 2,
 					name = "Assign user",
@@ -69,6 +70,9 @@ public class ProjectAssignUserService {
         assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
+
+        assertAllowedToAddProjectMembers(project);
+
         User user = userRepository.findOrFailUser(userId);
         if (project.getUsers().add(user)) {
             user.getProjects().add(project);
@@ -86,6 +90,22 @@ public class ProjectAssignUserService {
         /* in any case which does not lead to a failure we request a recalculation */
         sendRequestUserRoleRecalculation(user);
 
+    }
+
+    private void assertAllowedToAddProjectMembers(Project project) {
+        if (userContextService.isSuperAdmin()) {
+            /* super admin is always allowed... */
+            return;
+        }
+        String currentUserId = userContextService.getUserId();
+        String projectOwnerId = project.getOwner().getName();
+
+        if (projectOwnerId.equals(currentUserId)) {
+            /* current project owner is also allowed */
+            return;
+        }
+
+        throw new AccessDeniedException("You are not allowed to add members to project " + project.getId() + " !");
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)

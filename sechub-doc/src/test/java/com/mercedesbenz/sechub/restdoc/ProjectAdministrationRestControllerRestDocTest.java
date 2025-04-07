@@ -71,8 +71,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminC
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerAssignsUserToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerUnassignsUserFromProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -297,11 +297,11 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminAssignsUserToProject.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminOrOwnerAssignsUserToProject.class)
     public void restdoc_assign_user2project() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
+        String apiEndpoint = https(PORT_USED).buildAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminOrOwnerAssignsUserToProject.class;
 
         /* execute + test @formatter:off */
 		mockMvc.perform(
@@ -329,11 +329,11 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminUnassignsUserFromProject.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminOrOwnerUnassignsUserFromProject.class)
     public void restdoc_unassign_userFromProject() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
+        String apiEndpoint = https(PORT_USED).buildUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminOrOwnerUnassignsUserFromProject.class;
 
         /* execute + test @formatter:off */
 		mockMvc.perform(

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerAssignsUserToProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -23,7 +23,7 @@ public class ScheduleGrantUserAccessToProjectService {
     @Autowired
     UserInputAssertion assertion;
 
-    @UseCaseAdminAssignsUserToProject(@Step(number = 2, name = "Update schedule authorization parts"))
+    @UseCaseAdminOrOwnerAssignsUserToProject(@Step(number = 2, name = "Update schedule authorization parts"))
     public void grantUserAccessToProject(String userId, String projectId) {
         assertion.assertIsValidUserId(userId);
         assertion.assertIsValidProjectId(projectId);

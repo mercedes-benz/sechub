@@ -2455,6 +2455,60 @@ paths:
         - Project Administration
       x-content-type: application/json
 
+  /api/management/project/{projectId}/membership/{userId}:
+    post:
+      summary: Admin or owner assigns user to project
+      description: An administrator or owner assigns an user to an existing SecHub project
+      operationId: adminOrOwnerAssignUserToProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to assign to project
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+    delete:
+      summary: Admin or owner unassigns user from project
+      description: An administrator or owner unassigns an user from a sechub project.
+      operationId: adminOrOwnerUnassignUserFromProject
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to unassign from project
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+
   /api/admin/project/{projectId}/membership/{userId}:
     post:
       summary: Admin assigns user to project

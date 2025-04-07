@@ -13,11 +13,15 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 /* @formatter:off */
 @Target(ElementType.METHOD)
-/* @formatter:on */
 @Retention(RetentionPolicy.RUNTIME)
-@UseCaseDefinition(id = UseCaseIdentifier.UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT, group = { UseCaseGroup.USER_ADMINISTRATION,
-        UseCaseGroup.PROJECT_ADMINISTRATION }, apiName = "adminUnassignsUserFromProject", title = "Admin unassigns user from project", description = "An administrator unassigns an user from a sechub project.")
-public @interface UseCaseAdminUnassignsUserFromProject {
-
+@UseCaseDefinition(
+        id = UseCaseIdentifier.UC_ADMIN_OR_OWNER_UNASSIGNS_USER_FROM_PROJECT,
+        group = { UseCaseGroup.USER_ADMINISTRATION,
+        UseCaseGroup.PROJECT_ADMINISTRATION },
+        apiName = "adminOrOwnerUnassignsUserFromProject",
+        title = "Admin or owner unassigns user from project",
+        description = "An administrator or owner unassigns an user from a sechub project.")
+public @interface UseCaseAdminOrOwnerUnassignsUserFromProject {
+    /* @formatter:on */
     Step value();
 }

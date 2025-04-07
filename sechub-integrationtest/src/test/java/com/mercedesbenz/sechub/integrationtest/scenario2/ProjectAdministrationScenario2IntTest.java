@@ -42,7 +42,32 @@ public class ProjectAdministrationScenario2IntTest {
         assertUser(USER_1).isAssignedToProject(PROJECT_1);
 
         /* execute */
-        as(SUPER_ADMIN).unassignUserFromProject(USER_1, PROJECT_1);
+        as(OWNER_1).unassignUserFromProject(USER_1, PROJECT_1);
+
+        /* test */
+        assertUser(USER_1).isNotAssignedToProject(PROJECT_1);
+    }
+
+    @Test
+    public void when_a_project_owner_assigns_a_user_to_a_project_the_user_is_assigned() {
+        /* check precondition */
+        assertUser(USER_1).isNotAssignedToProject(PROJECT_1);
+
+        /* execute */
+        as(OWNER_1).assignUserToProject(USER_1, PROJECT_1);
+
+        /* test */
+        assertUser(USER_1).isAssignedToProject(PROJECT_1);
+    }
+
+    @Test
+    public void when_a_project_owner_unassigns_a_user_from_a_project_the_user_is_no_longer_assigned() {
+        /* prepare */
+        as(OWNER_1).assignUserToProject(USER_1, PROJECT_1);
+        assertUser(USER_1).isAssignedToProject(PROJECT_1);
+
+        /* execute */
+        as(OWNER_1).unassignUserFromProject(USER_1, PROJECT_1);
 
         /* test */
         assertUser(USER_1).isNotAssignedToProject(PROJECT_1);

@@ -103,9 +103,11 @@ public class AdministrationAPIConstants {
     public static final String API_OLD_ASSIGN_OWNER_TO_PROJECT = API_ADMINISTRATION + "project/{projectId}/owner/{userId}";
     public static final String API_ASSIGN_OWNER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/owner/{userId}";
 
-    public static final String API_ASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
-    public static final String API_UNASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
+    public static final String OLD_API_ASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
+    public static final String OLD_API_UNASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
 
+    public static final String API_ASSIGN_USER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/membership/{userId}";
+    public static final String API_UNASSIGN_USER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/membership/{userId}";
     public static final String API_GRANT_ADMIN_RIGHTS_TO_USER = API_ADMINISTRATION + "user/{userId}/grant/superadmin";
     public static final String API_REVOKE_ADMIN_RIGHTS_FROM_USER = API_ADMINISTRATION + "user/{userId}/revoke/superadmin";
 
