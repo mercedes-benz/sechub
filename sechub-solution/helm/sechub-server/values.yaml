@@ -161,7 +161,7 @@ staticResources:
   enabled: false
   # Define the locations of static resources. This is used to serve static files.
   spring:
-    staticLocations: "file:/sechub/web-resources/static,classpath:/login/static"
+    staticLocations: "file:/sechub/web-resources/static,classpath:/static"
 
 security:
   # This section configures the application (or server) to be able to authorize incoming requests
