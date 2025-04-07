@@ -79,9 +79,11 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser isAssignedToProject(TestProject project) {
-        if (!internalIsAssignedToProject(project)) {
-            fail("User " + user.getUserId() + " is NOT assigned to project " + project.getProjectId());
-        }
+        executeResilient(() -> {
+            if (!internalIsAssignedToProject(project)) {
+                fail("User " + user.getUserId() + " is NOT assigned to project " + project.getProjectId());
+            }
+        });
         return this;
     }
 
@@ -209,7 +211,7 @@ public class AssertUser extends AbstractAssert {
      * @param project
      * @return this
      */
-    public AssertUser canCreateProject(TestProject project, String owner) {
+    public AssertUser canCreateProject(TestProject project, TestUser owner) {
         assertProject(project).doesNotExist();
         as(user).createProject(project, owner);
         assertProject(project).doesExist();

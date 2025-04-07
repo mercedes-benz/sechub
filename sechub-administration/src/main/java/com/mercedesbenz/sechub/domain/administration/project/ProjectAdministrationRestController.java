@@ -37,7 +37,6 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminD
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -142,9 +141,15 @@ public class ProjectAdministrationRestController {
         return listProjectsService.listProjects();
     }
 
+    /*
+     * This is an out dated REST API and will removed in future - we provide same
+     * functionality via management URL (but for owners and administrators). The old
+     * API endpoint is only kept for compatibility reasons and works only for
+     * administrators
+     */
+    @Deprecated(forRemoval = true)
     /* @formatter:off */
-	@UseCaseAdminChangesProjectOwner(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to set new project owner", needsRestDoc=true))
-    @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(path = AdministrationAPIConstants.API_OLD_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public void changeProjectOwner(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
         /* @formatter:on */
@@ -157,7 +162,7 @@ public class ProjectAdministrationRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void assignUserToProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
 		/* @formatter:on */
-        assignUserToProjectService.assignUserToProject(userId, projectId);
+        assignUserToProjectService.assignUserToProject(userId, projectId, true);
     }
 
     /* @formatter:off */

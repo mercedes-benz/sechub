@@ -32,9 +32,8 @@ class GitInputValidatorTest {
 
     @BeforeEach
     void beforeEach() {
-        gitInputValidatorToTest = new GitPrepareInputValidator();
-
-        gitInputValidatorToTest.logSanitizer = mock(PDSLogSanitizer.class);
+        PDSLogSanitizer logSanitizer = mock(PDSLogSanitizer.class);
+        gitInputValidatorToTest = new GitPrepareInputValidator(logSanitizer);
 
         context = mock(PrepareWrapperContext.class);
         remoteDataConfiguration = new SecHubRemoteDataConfiguration();

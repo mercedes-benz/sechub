@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
@@ -16,7 +17,6 @@ import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectAssignUserServiceTest {
 
@@ -27,11 +27,8 @@ public class ProjectAssignUserServiceTest {
     private UserRepository userRepository;
     private ProjectTransactionService transactionService;
 
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
-
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         eventBusService = mock(DomainMessageService.class);
         projectRepository = mock(ProjectRepository.class);
         userRepository = mock(UserRepository.class);
@@ -49,8 +46,9 @@ public class ProjectAssignUserServiceTest {
         serviceToTest.transactionService = transactionService;
     }
 
-    @Test
-    public void assign_new_user_to_project() {
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void assign_new_user_to_project(boolean failOnExistingAssignment) {
         User newUser = mock(User.class);
 
         /* prepare */
@@ -62,14 +60,14 @@ public class ProjectAssignUserServiceTest {
         when(userRepository.findOrFailUser("new")).thenReturn(newUser);
 
         /* execute */
-        serviceToTest.assignUserToProject(newUser.getName(), project1.getId());
+        serviceToTest.assignUserToProject(newUser.getName(), project1.getId(), failOnExistingAssignment);
 
         /* test */
         verify(transactionService).saveInOwnTransaction(project1, newUser);
     }
 
     @Test
-    public void assign_already_added_user_to_project__throws_already_exists_exception() {
+    void assign_already_added_user_to_project__throws_already_exists_exception_when_fail_wanted() {
 
         User existingUser = mock(User.class);
 
@@ -82,11 +80,28 @@ public class ProjectAssignUserServiceTest {
         when(existingUser.getName()).thenReturn("existing");
         when(userRepository.findOrFailUser("existing")).thenReturn(existingUser);
 
-        /* execute */
-        /* test */
-        assertThrows(AlreadyExistsException.class, () -> {
-            serviceToTest.assignUserToProject(existingUser.getName(), project1.getId());
-        });
+        /* execute + test */
+        assertThatThrownBy(() -> {
+            serviceToTest.assignUserToProject(existingUser.getName(), project1.getId(), true);
+        }).isInstanceOf(AlreadyExistsException.class);
+    }
+
+    @Test
+    void assign_already_added_user_to_project__not_throws_any_exception_when_fail_not_wanted() {
+
+        User existingUser = mock(User.class);
+
+        /* prepare */
+        Project project1 = new Project();
+        project1.id = "project1";
+        project1.users.add(existingUser);
+
+        when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
+        when(existingUser.getName()).thenReturn("existing");
+        when(userRepository.findOrFailUser("existing")).thenReturn(existingUser);
+
+        /* execute + test */
+        assertDoesNotThrow(() -> serviceToTest.assignUserToProject(existingUser.getName(), project1.getId(), false));
     }
 
 }

@@ -23,10 +23,8 @@ class GitLocationConverterTest {
 
     @BeforeEach
     void beforeEach() {
-        converterToTest = new GitLocationConverter();
-
         pdsLogSanitizer = mock(PDSLogSanitizer.class);
-        converterToTest.pdsLogSanitizer = pdsLogSanitizer;
+        converterToTest = new GitLocationConverter(pdsLogSanitizer);
     }
 
     @ParameterizedTest

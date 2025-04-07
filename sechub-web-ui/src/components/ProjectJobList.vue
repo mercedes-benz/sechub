@@ -26,9 +26,10 @@
             <!-- alternative to floating button ProjectDetailsFab
             <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
             -->
-            <v-btn icon="mdi-plus" @click="openNewScanPage()" />
-            <v-btn icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
-            <v-btn icon="mdi-reply" @click="backToProjectsList" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">
@@ -36,6 +37,14 @@
               <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
               <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
             </v-list>
+            <ProjectSettingsDialog
+              :current-owner-user-id="projectData.owner.userId"
+              :project-id="projectData.projectId"
+              :visible="settingsDialog"
+              @close="settingsDialog=false"
+              @project-owner-changed="onProjectOwnerChanged"
+            />
+
           </div>
 
           <div v-else>
@@ -128,6 +137,8 @@
     UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi'
 
+  import { useFetchProjects } from '@/composables/useProjects'
+
   export default {
     name: 'ProjectComponent',
 
@@ -139,13 +150,16 @@
       if ('id' in route.params) {
         projectId.value = route.params.id
       }
-
       const store = useProjectStore()
+
       const projectData = ref<ProjectData>({
         projectId: '',
         isOwned: false,
         assignedUsers: [],
-        owner: '',
+        owner: {
+          userId: '',
+          emailAddress: '',
+        },
       })
 
       const maxAttempts = 6 // exponent limit
@@ -164,6 +178,8 @@
       const error = ref<string | undefined>(undefined)
       const alert = ref(false)
       const showProjectsDetails = ref(true)
+
+      const settingsDialog = ref(false)
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
@@ -277,6 +293,34 @@
         console.error(errMsg, err)
       }
 
+      async function onProjectOwnerChanged (newOwnerUserId: String) {
+        console.debug('Project owner for project', projectId.value, 'changed to', newOwnerUserId)
+
+        // We know the new owner id, but not the new owner email address.
+        // Because of missing other REST API endpoints, we must reload all projects data
+        const { loading } = useFetchProjects();
+
+        let fetchTimeOutId : number | undefined = undefined
+        updateData(loading, fetchTimeOutId)
+      }
+
+      function updateData(loading: any, fetchTimeOutId: any, count = 0){
+        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
+        if(count >= 10){
+          return
+        }
+
+        if(loading.value){
+          fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
+
+        }else{
+          const newLoadedProject = store.getProjectById(projectId.value);
+          if (newLoadedProject !== undefined) {
+            projectData.value = newLoadedProject
+          }
+        }
+      }
+
       onMounted(async () => {
         const projectFromStore = await store.getProjectById(projectId.value)
         if (!projectFromStore) {
@@ -309,6 +353,8 @@
         onPageChange,
         openNewScanPage,
         backToProjectsList,
+        settingsDialog,
+        onProjectOwnerChanged,
       }
     },
 

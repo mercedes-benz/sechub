@@ -21,15 +21,14 @@ class PrepareWrapperCLITest {
     private PrepareWrapperCLI prepareWrapperCLIToTest;
     private PrepareWrapperPreparationService preparationService;
     private PrepareWrapperResultService storageService;
+    private PrepareWrapperDefaultExitService exitService;
 
     @BeforeEach
     void beforeEach() {
-        prepareWrapperCLIToTest = new PrepareWrapperCLI();
-        preparationService = mock(PrepareWrapperPreparationService.class);
-        storageService = mock(PrepareWrapperResultService.class);
-
-        prepareWrapperCLIToTest.preparationService = preparationService;
-        prepareWrapperCLIToTest.resultService = storageService;
+        preparationService = mock();
+        storageService = mock();
+        exitService = mock();
+        prepareWrapperCLIToTest = new PrepareWrapperCLI(preparationService, storageService, exitService);
     }
 
     @Test

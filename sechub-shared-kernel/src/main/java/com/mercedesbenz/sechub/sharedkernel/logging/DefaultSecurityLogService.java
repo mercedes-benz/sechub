@@ -57,7 +57,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSecurityLogService.class);
 
-    private static String SECURITY = "[SECURITY] [{}]:";
+    private static String SECURITY_CONSTANT_AND_TYPE_PARAMETER_PREFIX = "[SECURITY] [{}]: ";
 
     public DefaultSecurityLogService() {
         objectMapper = SpringUtilFactory.createDefaultObjectMapper();
@@ -102,19 +102,16 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     void doLogging(SecurityLogData logData) {
         StringBuilder sb = new StringBuilder();
-        sb.append(SECURITY);
-        sb.append("\ndata=\n{}");
-        // we add this to the end, so a wrong defined custom log message could never
-        // overwrite security log data
-        sb.append("\n, message=");
+        sb.append(SECURITY_CONSTANT_AND_TYPE_PARAMETER_PREFIX);
         sb.append(logData.message);
-
+        sb.append("\n{}");
         /*
          * Convert this to a new list - otherwise slf4j has problems with identifying
          * this as list and produces wrong output
          */
         List<Object> paramList = new ArrayList<>();
         paramList.add(logData.getType().getTypeId());
+        paramList.addAll(logData.getMessageParameters());
 
         try {
             String logDataAsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData);
@@ -122,11 +119,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         } catch (JsonProcessingException e) {
             getLogger().error("Was not able to write security log data as json - will fallback to empty JSON", e);
 
-            paramList.add("{}");
+            paramList.add("{}"); // as fallback output we provide an empty json
         }
-        // we add this to the end, so a wrong defined custom log message could never
-        // overwrite security log data
-        paramList.addAll(logData.getMessageParameters());
 
         getLogger().warn(sb.toString(), paramList.toArray());
 
