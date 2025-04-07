@@ -37,7 +37,7 @@ class OpenApiSecHubClientConversionHelperTest {
      *
      * Why excludes hiere? The complete project is deprecated and will be removed
      * soon, we won't implement newer types here! The sechub-openapi-* projects are
-     * the new ones. this here is only legacy and no longer active maintained.
+     * the new ones. This here is only legacy and no longer active maintained.
      *
      * @param type
      * @throws Exception

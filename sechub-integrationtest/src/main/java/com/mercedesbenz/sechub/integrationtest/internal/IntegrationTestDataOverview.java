@@ -80,6 +80,11 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED Profile 25} - PDS solutions scan mock mode (xray spdx)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_26_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED Profile 26} - PDS solutions scan mock mode (xray cyclonedx)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED Profile 27} - PDS solutions scan mock mode (gitleaks)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS Profile 28} - PDS prepare profile</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_29_PDS_PREPARE_FAILING Profile 29} - PDS prepare profile</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_30_PDS_PREPARE_EXIT_5 Profile 30} - PDS prepare profile</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS Profile 31} - PDS prepare profile</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS Profile 32} - PDS prepare profile (uses Variant E)</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_33_PDS_SOLUTION_KICS_MOCKED Profile 33} - PDS solutions scan mock mode (kics)</li>
  * </ul>
  * @author Albert Tregnaghi

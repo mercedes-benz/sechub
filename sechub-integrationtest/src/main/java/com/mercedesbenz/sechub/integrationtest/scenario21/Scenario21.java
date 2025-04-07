@@ -77,6 +77,10 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED profile 27} assigned
  * - has USER_1 as owner
  *
+ * PROJECT_11 is automatically created
+ * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_33_PDS_SOLUTION_KICS_MOCKED profile 33} assigned
+ * - has USER_1 as owner
+ *
  * USER_1, is automatically registered, created and owner of all projects inside this scenario
  * </pre>
  *
@@ -186,7 +190,7 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
     protected void waitForTestDataAvailable() {
         /* @formatter:off */
         initializer().
-            waitUntilProjectExists(PROJECT_10).
+            waitUntilProjectExists(PROJECT_11).
 
             waitUntilUserExists(USER_1).
 

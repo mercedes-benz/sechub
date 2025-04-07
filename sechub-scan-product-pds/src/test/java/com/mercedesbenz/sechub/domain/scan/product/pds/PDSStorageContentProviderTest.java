@@ -80,6 +80,7 @@ class PDSStorageContentProviderTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
+              /* Arguments: scanType, required (simulated result from model support) */
               Arguments.of(ScanType.CODE_SCAN, true),
               Arguments.of(ScanType.CODE_SCAN, false),
 

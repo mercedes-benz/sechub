@@ -298,22 +298,23 @@
 
         // We know the new owner id, but not the new owner email address.
         // Because of missing other REST API endpoints, we must reload all projects data
-        const { loading } = useFetchProjects()
+        const { loading } = useFetchProjects();
 
-        let fetchTimeOutId : number | undefined
+        let fetchTimeOutId : number | undefined = undefined
         updateData(loading, fetchTimeOutId)
       }
 
-      function updateData (loading: any, fetchTimeOutId: any, count = 0) {
-        console.debug('Waiting fo useFetchProjects() data count:', count, loading.value)
-        if (count >= 10) {
+      function updateData(loading: any, fetchTimeOutId: any, count = 0){
+        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
+        if(count >= 10){
           return
         }
 
-        if (loading.value) {
+        if(loading.value){
           fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
-        } else {
-          const newLoadedProject = store.getProjectById(projectId.value)
+
+        }else{
+          const newLoadedProject = store.getProjectById(projectId.value);
           if (newLoadedProject !== undefined) {
             projectData.value = newLoadedProject
           }

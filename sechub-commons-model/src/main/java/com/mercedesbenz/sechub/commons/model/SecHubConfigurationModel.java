@@ -96,7 +96,6 @@ public class SecHubConfigurationModel {
 
     public void setIacScan(SecHubIacScanConfiguration iacScan) {
         this.iacScan = Optional.ofNullable(iacScan);
-        ;
     }
 
     public Optional<SecHubIacScanConfiguration> getIacScan() {

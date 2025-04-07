@@ -103,8 +103,16 @@ public class PDSSolutionMockModeScenario21IntTest {
         SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.IAC_SCAN, PROJECT_11, "kics");
 
         /* test */
-        assertReportUnordered(report.toJSON()).hasTrafficLight(TrafficLight.RED).finding().severity(Severity.HIGH).scanType(ScanType.IAC_SCAN)
-                .name("OSS Bucket Public Access Enabled").description("'acl' is public-read-write").isContained();
+        /* @formatter:off */
+        assertReportUnordered(report.toJSON()).
+            hasTrafficLight(TrafficLight.RED).
+            finding().
+                severity(Severity.HIGH).
+                scanType(ScanType.IAC_SCAN).
+                name("OSS Bucket Public Access Enabled").
+                description("'acl' is public-read-write").
+                isContained();
+        /* @formatter:on */
     }
 
     @Test

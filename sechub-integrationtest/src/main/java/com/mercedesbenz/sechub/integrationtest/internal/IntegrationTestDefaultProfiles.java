@@ -882,7 +882,7 @@ public class IntegrationTestDefaultProfiles {
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E);
         profile.id = "inttest-p32-pds-prepare";
-        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
+        profile.description = "Profile 32: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
         profile.enabled = true;
         return profile;
     }
@@ -891,8 +891,8 @@ public class IntegrationTestDefaultProfiles {
 
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_KICS_MOCKED);
-        profile.id = "inttest-p32-pds-prepare";
-        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
+        profile.id = "inttest-p33-pds-iac-kics";
+        profile.description = "Profile 33: PDS iac scan using kics";
         profile.enabled = true;
         return profile;
     }

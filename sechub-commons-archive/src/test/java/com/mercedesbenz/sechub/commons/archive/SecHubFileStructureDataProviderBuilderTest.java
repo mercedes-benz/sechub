@@ -115,43 +115,6 @@ class SecHubFileStructureDataProviderBuilderTest {
         return usage;
     }
 
-    private static class RootFolderAcceptedByArchiveRootReferenceOnlyArgumentsProvider implements ArgumentsProvider {
-        /* @formatter:off */
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(
-                    Arguments.of("C0", ScanType.CODE_SCAN, List.of()), // code scan always accepts root - this is tested here as well!
-                    Arguments.of("C1", ScanType.CODE_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("C2", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("C3", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("C4", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
-
-                    Arguments.of("I1", ScanType.IAC_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("I2", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("I3", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("I4", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
-
-                    Arguments.of("S1", ScanType.SECRET_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("S2", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("S3", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("S4", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER,"additional2")),
-
-                    Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional3")),
-                    Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-
-                    Arguments.of("W1", ScanType.WEB_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("W2", ScanType.WEB_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "addtional4")),
-                    Arguments.of("W3", ScanType.WEB_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
-                    Arguments.of("W4", ScanType.WEB_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
-
-                    );
-
-        }
-        /* @formatter:on*/
-    }
-
     @Test
     void include_file_pattern_not_set_results_in_empty_list() {
         /* prepare */
@@ -405,11 +368,50 @@ class SecHubFileStructureDataProviderBuilderTest {
         assertFalse(dataProvider.isRootFolderAccepted());
     }
 
+    private static class RootFolderAcceptedByArchiveRootReferenceOnlyArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    /* Arguments: variant, scanType, list with reference names to use */
+                    Arguments.of("C0", ScanType.CODE_SCAN, List.of()), // code scan always accepts root - this is tested here as well!
+                    Arguments.of("C1", ScanType.CODE_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("C2", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("C3", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("C4", ScanType.CODE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
+
+                    Arguments.of("I1", ScanType.IAC_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I2", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I3", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("I4", ScanType.IAC_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional1")),
+
+                    Arguments.of("S1", ScanType.SECRET_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S2", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S3", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("S4", ScanType.SECRET_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER,"additional2")),
+
+                    Arguments.of("L1", ScanType.LICENSE_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L2", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("L3", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "additional3")),
+                    Arguments.of("L4", ScanType.LICENSE_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+
+                    Arguments.of("W1", ScanType.WEB_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W2", ScanType.WEB_SCAN, List.of(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, "addtional4")),
+                    Arguments.of("W3", ScanType.WEB_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)),
+                    Arguments.of("W4", ScanType.WEB_SCAN, List.of(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER))
+
+                    );
+
+        }
+        /* @formatter:on*/
+    }
+
     private static class EmptyModelArgumentsBuilderArgumentProvider implements ArgumentsProvider {
         /* @formatter:off */
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
+              /* Arguments: scanType, rootFolderAccepted */
               Arguments.of(ScanType.CODE_SCAN, true),
               Arguments.of(ScanType.LICENSE_SCAN, false),
               Arguments.of(ScanType.SECRET_SCAN, false),
