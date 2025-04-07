@@ -2,12 +2,18 @@
 package com.mercedesbenz.sechub.integrationtest.scenario3;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpStatus;
 
+import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
@@ -91,6 +97,22 @@ public class ProjectAdministrationScenario3IntTest {
             isNotAssignedToProject(PROJECT_2). // still assigned after ownership loss
             hasOwnerRole(); // has still owner role
 
+        /* test 4 - project details contain profile IDs */
+
+        // normal user can view profiles of assigned projects
+        List<ProjectData> projectDetailsOfnormalUser = as(USER_2).getAssignedProjectDataList();
+        assertThat(projectDetailsOfnormalUser).hasSize(1);
+        Set<String> userAssignedProfileIds = projectDetailsOfnormalUser.get(0).getAssignedProfileIds();
+        assertThat(userAssignedProfileIds).containsExactly(PROFILE_1.id);
+
+        // owner can view profiles of assigned projects
+        List<ProjectData> projectDetailsOfOwner = as(USER_1).getAssignedProjectDataList();
+        assertThat(projectDetailsOfOwner).hasSize(1);
+        Set<String> ownerAssignedProfileIds = projectDetailsOfOwner.get(0).getAssignedProfileIds();
+        assertThat(ownerAssignedProfileIds).containsExactly(PROFILE_1.id);
+
+        // admin can view profiles of assigned projects
+        assertThat(as(SUPER_ADMIN).getAssignedProjectDataList()).isEmpty();
 
     }
     /* @formatter:on */

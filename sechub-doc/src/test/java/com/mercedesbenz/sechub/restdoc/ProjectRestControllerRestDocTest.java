@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.*;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestService;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,6 +86,7 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         user2.setEmailAddress("user2@example.org");
 
         projectData.setAssignedUsers(List.of(user1, user2));
+        projectData.setAssignedProfileIds(Set.of("profile1", "profile2"));
         List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
@@ -117,7 +120,8 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
                                         fieldWithPath("[]." + ProjectData.PROPERTY_IS_OWNED).description("If caller is owner of the project"),
                                         fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS).description("Optional: Assigned users (only viewable by owner or admin)"),
                                         fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_USER_ID).description("Name of assigned user"),
-                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_EMAIL_ADDRESS).description("Email address of assigned user")
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_EMAIL_ADDRESS).description("Email address of assigned user"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_PROFILE_IDS+"[].").description("List of profile IDs assigned to the project.")
                                 )
                         )
                 );
