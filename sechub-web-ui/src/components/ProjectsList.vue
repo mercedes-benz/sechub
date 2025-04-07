@@ -27,10 +27,12 @@
               @click="openProjectPage(project)"
             >
               <template #prepend>
-                <v-icon v-if="project.isOwned" 
-                :class="ownedClass"
-                icon="mdi-cube" />
-                <v-icon v-else icon="mdi-cube" class="ma-2"/>
+                <v-icon
+                  v-if="project.isOwned"
+                  :class="ownedClass"
+                  icon="mdi-cube"
+                />
+                <v-icon v-else class="ma-2" icon="mdi-cube" />
               </template>
               <template #title>
                 <span>{{ project.projectId }}</span>

@@ -24,4 +24,6 @@ if (config.value.BASIC_AUTH_DEV) {
   })
 }
 
+console.log(config)
+
 export default apiConfig

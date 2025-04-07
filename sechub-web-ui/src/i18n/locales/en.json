@@ -107,5 +107,7 @@
     "REPORT_SHOW_FINDING": "More Info",
     "REPORT_DESCRIPTION_NAME": "Summary",
     "REPORT_REVISION_HIDE": "Hide Revision",
-    "REPORT_REVISION_SHOW": "Show Revision"
+    "REPORT_REVISION_SHOW": "Show Revision",
+    "REPORT_CALLSTACK_HIDE": "Hide Callstack",
+    "REPORT_CALLSTACK_SHOW": "Show Callstack"
 }

@@ -6,11 +6,12 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectId }}</v-toolbar-title>
-            <template v-slot:prepend>
-                <v-btn
-                icon="mdi-arrow-left" 
-                @click="backToProjectOverview()" />
-             </template>
+            <template #prepend>
+              <v-btn
+                icon="mdi-arrow-left"
+                @click="backToProjectOverview()"
+              />
+            </template>
           </v-toolbar>
           <div class="background-color">
             <v-sheet class="background-color">
@@ -54,10 +55,10 @@
                 {{ $t('SCAN_CREATE_FILE_UPLOAD_PROGRESS') }}
               </v-card-text>
               <v-progress-circular
-              v-if="isLoading"
+                v-if="isLoading"
                 color="primary"
                 indeterminate
-              ></v-progress-circular>
+              />
             </v-card>
 
             <v-card

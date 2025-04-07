@@ -1,40 +1,44 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-    <JobReportToolBar
-    :scan-type="''"
-    :project-id="projectId"
+  <JobReportToolBar
     :job-u-u-i-d="jobUUID"
-    :traffic-light="report.trafficLight || ''" />
-    
-    <v-card>
-        <v-card-item>
-            <v-card-title>
-                {{ $t('REPORT_METADATA_SCAN_STATUS') }}: 
-                    <v-icon :color="getIconColor(report.status || '')">
-                        {{ getIcon(report.status || '') }}
-                    </v-icon> 
-                </v-card-title>
-        </v-card-item>
-    </v-card>
+    :project-id="projectId"
+    :scan-type="''"
+    :traffic-light="report.trafficLight || ''"
+  />
 
-    <v-card>
-        <v-card-item>
-            <v-card-title>{{ $t('REPORT_METADATA_MESSAGES') }}</v-card-title>
-        </v-card-item>
-        <v-table>
+  <v-card>
+    <v-card-item>
+      <v-card-title>
+        {{ $t('REPORT_METADATA_SCAN_STATUS') }}:
+        <v-icon :color="getIconColor(report.status || '')">
+          {{ getIcon(report.status || '') }}
+        </v-icon>
+      </v-card-title>
+    </v-card-item>
+  </v-card>
 
-            <tbody>
-                <tr v-for="message in report.messages">
-                    <td> 
-                        <v-icon :color="getIconColor(message.type || '')">
-                        {{ getIcon(message.type || '') }}
-                        </v-icon>
-                    </td>
-                    <td >{{ message.text }}</td>
-                </tr>
-            </tbody>
-        </v-table>
-    </v-card>
+  <v-card>
+    <v-card-item>
+      <v-card-title>{{ $t('REPORT_METADATA_MESSAGES') }}</v-card-title>
+    </v-card-item>
+    <v-table>
+
+      <tbody>
+        <tr
+          v-for="message in report.messages"
+          :key="message.text"
+        >
+          <td>
+            <v-icon :color="getIconColor(message.type || '')">
+              {{ getIcon(message.type || '') }}
+            </v-icon>
+          </td>
+          <td>{{ message.text }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card>
 </template>
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
@@ -60,27 +64,27 @@
         projectId.value = route.params.id
       }
 
-      if ('jobId' in route.params){
+      if ('jobId' in route.params) {
         jobUUID.value = route.params.jobId
       }
 
       onMounted(async () => {
         const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (!reportFromStore) {
-            router.push({
-                path: '/projects',
-            })
-            } else {
-                report.value = reportFromStore
-            }
-        })
+          router.push({
+            path: '/projects',
+          })
+        } else {
+          report.value = reportFromStore
+        }
+      })
 
       return {
         projectId,
         jobUUID,
         report,
         getIconColor,
-        getIcon
+        getIcon,
       }
     },
   }

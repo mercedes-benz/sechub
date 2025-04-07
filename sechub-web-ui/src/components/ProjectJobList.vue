@@ -23,11 +23,12 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
-            <template v-slot:prepend>
+            <template #prepend>
               <v-btn
-              v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
-              icon="mdi-arrow-left" 
-              @click="router.go(-1)" />
+                v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
+                icon="mdi-arrow-left"
+                @click="router.go(-1)"
+              />
               <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
             </template>
 
@@ -35,7 +36,8 @@
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
           </v-toolbar>
 
-          <ProjectSettingsDialog v-if="!loading"
+          <ProjectSettingsDialog
+            v-if="!loading"
             :current-owner-user-id="projectData.owner.userId"
             :project-id="projectData.projectId"
             :visible="settingsDialog"
@@ -64,7 +66,7 @@
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_TRAFFIC_LIGHT') }}</th>
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_REPORT') }}</th>
                   <th class="background-color">{{ $t('JOB_TABLE_DOWNLOAD_JOBUUID') }}</th>
-                  <th class="background-color"></th>
+                  <th class="background-color" />
                 </tr>
               </thead>
               <tbody>
@@ -81,12 +83,14 @@
                     <v-menu>
                       <template #activator="{ props }">
                         <v-btn
-                        class="ma-2"
-                        v-bind="props"
+                          class="ma-2"
+                          v-bind="props"
                         >
                           {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                          <v-icon end icon="mdi-download-circle-outline"
-                          color="primary"
+                          <v-icon
+                            color="primary"
+                            end
+                            icon="mdi-download-circle-outline"
                           />
                         </v-btn>
                       </template>
@@ -104,12 +108,14 @@
                   <td><v-btn
                     :disabled="job.executionResult !== 'OK'"
                     @click="viewJobReport(job.jobUUID || '')"
-                    >
+                  >
                     {{ job.jobUUID }}
-                    <v-icon end icon="mdi-eye-circle-outline"
-                    color="primary"
+                    <v-icon
+                      color="primary"
+                      end
+                      icon="mdi-eye-circle-outline"
                     />
-                    </v-btn>
+                  </v-btn>
                   </td>
                   <td>
                     <AsyncButton
@@ -119,10 +125,11 @@
                       icon="mdi-close-circle-outline"
                       @button-clicked="cancelJob"
                     />
-                    <v-btn v-else
-                      size="small"
-                      icon="mdi-content-copy"
+                    <v-btn
+                      v-else
                       v-tooltip="$t('PROJECT_COPY_JOB_UUID')"
+                      icon="mdi-content-copy"
+                      size="small"
                       @click="copyToClipboard(job.jobUUID || '')"
                     />
                   </td>
@@ -154,11 +161,11 @@
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import { useI18n } from 'vue-i18n'
   import {
-    UserCancelsJobRequest,
-    UserListsJobsForProjectRequest,
     ProjectData,
     SecHubJobInfoForUser,
     SecHubJobInfoForUserListPage,
+    UserCancelsJobRequest,
+    UserListsJobsForProjectRequest,
   } from '@/generated-sources/openapi/'
   import '@/styles/sechub.scss'
   import { useFetchProjects } from '@/composables/useProjects'
@@ -313,8 +320,8 @@
 
       function viewJobReport (jobId: string) {
         router.push({
-          path: `/projects/${projectId.value}/jobs/${jobId}`
-        });
+          path: `/projects/${projectId.value}/jobs/${jobId}`,
+        })
       }
 
       function handleError (errMsg: string, err : unknown) {
@@ -328,23 +335,22 @@
 
         // We know the new owner id, but not the new owner email address.
         // Because of missing other REST API endpoints, we must reload all projects data
-        const { loading } = useFetchProjects();
+        const { loading } = useFetchProjects()
 
-        let fetchTimeOutId : number | undefined = undefined
+        let fetchTimeOutId : number | undefined
         updateData(loading, fetchTimeOutId)
       }
 
-      function updateData(loading: any, fetchTimeOutId: any, count = 0){
-        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
-        if(count >= 10){
+      function updateData (loading: any, fetchTimeOutId: any, count = 0) {
+        console.debug('Waiting fo useFetchProjects() data count:', count, loading.value)
+        if (count >= 10) {
           return
         }
 
-        if(loading.value){
+        if (loading.value) {
           fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
-
-        }else{
-          const newLoadedProject = store.getProjectById(projectId.value);
+        } else {
+          const newLoadedProject = store.getProjectById(projectId.value)
           if (newLoadedProject !== undefined) {
             projectData.value = newLoadedProject
           }

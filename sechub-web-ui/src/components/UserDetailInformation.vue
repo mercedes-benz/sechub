@@ -1,13 +1,18 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-      <v-card class="mr-auto" color="background_paper">
-        <v-toolbar color="background_paper">
-            <v-toolbar-title>
-              {{ $t('USER_PROFILE_SETTINGS') }}
-            </v-toolbar-title>
-            <v-btn icon="mdi-reply" @click="routerGoBack" />
-        </v-toolbar>
-    </v-card>
+  <v-card class="mr-auto" color="background_paper">
+    <v-toolbar color="background_paper">
+      <v-toolbar-title>
+        {{ $t('USER_PROFILE_SETTINGS') }}
+      </v-toolbar-title>
+      <template #prepend>
+        <v-btn
+          icon="mdi-arrow-left"
+          @click="router.go(-1)"
+        />
+      </template>
+    </v-toolbar>
+  </v-card>
   <v-card>
     <v-card-item>
       <v-card-title>{{ $t('USER_TITLE') }}</v-card-title>
@@ -41,19 +46,23 @@
     <v-list lines="one">
       <v-list-item v-if="false">
         <v-container>
-          <v-btn variant="tonal"
-          class="custom-btn">
+          <v-btn
+            class="custom-btn"
+            variant="tonal"
+          >
             {{ $t('USER_SETTINGS_CHANGE_PASSWORD') }}
           </v-btn>
         </v-container>
       </v-list-item>
       <v-list-item>
         <v-container>
-          <v-btn 
-          class="custom-btn"
-          :loading="isRefreshingApiToken" variant="tonal"
-          color="primary"
-          @click="refreshApiToken()">
+          <v-btn
+            class="custom-btn"
+            color="primary"
+            :loading="isRefreshingApiToken"
+            variant="tonal"
+            @click="refreshApiToken()"
+          >
             {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN') }}
           </v-btn>
 
@@ -151,17 +160,13 @@
         }
       }
 
-      function routerGoBack () {
-        router.go(-1)
-      }
-
       return {
         userId,
         email,
         refreshApiToken,
         isRefreshingApiToken,
         refreshApiTokenDialog,
-        routerGoBack
+        router,
       }
     },
   })

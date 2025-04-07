@@ -30,30 +30,30 @@ export const getIcon = (text: string): string => {
   switch (text) {
     case 'ERROR':
     case 'FAILED':
-        return 'mdi-alert-circle-outline';
+      return 'mdi-alert-circle-outline'
     case 'WARNING':
-      return 'mdi-alert-circle-outline';
+      return 'mdi-alert-circle-outline'
     case 'INFO':
-      return 'mdi-information-outline';
+      return 'mdi-information-outline'
     case 'SUCCESS':
-        return 'mdi-check-circle-outline'
+      return 'mdi-check-circle-outline'
     default:
-      return 'mdi-help-circle';
+      return 'mdi-help-circle'
   }
-};
+}
 
 export const getIconColor = (text: string): string => {
   switch (text) {
     case 'ERROR':
     case 'FAILED':
-      return 'error';
+      return 'error'
     case 'WARNING':
-      return 'warning';
+      return 'warning'
     case 'INFO':
-      return 'primary';
+      return 'primary'
     case 'SUCCESS':
-        return 'success'
+      return 'success'
     default:
-      return 'grey';
+      return 'grey'
   }
-};
+}

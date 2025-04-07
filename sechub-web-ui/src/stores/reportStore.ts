@@ -15,7 +15,7 @@ export const useReportStore = defineStore(STORE_NAME, {
   }),
 
   actions: {
-    storeReport(newReport: SecHubReport) {
+    storeReport (newReport: SecHubReport) {
       const uuid = newReport.jobUUID
       if (!uuid) {
         return
@@ -34,6 +34,6 @@ export const useReportStore = defineStore(STORE_NAME, {
   getters: {
     getReportByUUID: state => {
       return (uuid: string) => state.reports.find(report => report.jobUUID === uuid) || undefined
-    }
+    },
   },
 })
