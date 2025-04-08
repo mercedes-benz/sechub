@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-class ProjectIdToProfileMappingMessageDataProviderTest {
+class MapStringToListOfStringsMessageDataProviderTest {
 
-    private ProjectIdToProfileMappingMessageDataProvider providerToTest = new ProjectIdToProfileMappingMessageDataProvider();
+    private MapStringToListOfStringsMessageDataProvider providerToTest = new MapStringToListOfStringsMessageDataProvider();
 
     @Test
     void null_handled_correctly() {

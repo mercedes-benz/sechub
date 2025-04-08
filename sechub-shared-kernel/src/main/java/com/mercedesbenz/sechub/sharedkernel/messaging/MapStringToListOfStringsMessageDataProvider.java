@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 
-public class ProjectIdToProfileMappingMessageDataProvider implements MessageDataProvider<Map<String, List<String>>> {
+public class MapStringToListOfStringsMessageDataProvider implements MessageDataProvider<Map<String, List<String>>> {
 
     @SuppressWarnings("unchecked")
     @Override

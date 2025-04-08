@@ -43,7 +43,7 @@ public class MessageDataKeys {
     private static final SecHubProjectToTemplateMessageDataProvider SECHUB_PROJECT_TO_TEMPLATE_MESSAGE_DATA_PROVIDER = new SecHubProjectToTemplateMessageDataProvider();
     private static final SecHubProjectTemplatesMessageDataProvider SECHUB_PROJECT_TEMPLATES_MESSAGE_DATA_PROVIDER = new SecHubProjectTemplatesMessageDataProvider();
     private static final ListOfStringsMessageDataProvider LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER = new ListOfStringsMessageDataProvider();
-    private static final ProjectIdToProfileMappingMessageDataProvider PROJECT_TO_PROFILE_MAPPING_MESSAGE_DATA_PROVIDER = new ProjectIdToProfileMappingMessageDataProvider();
+    private static final MapStringToListOfStringsMessageDataProvider MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER = new MapStringToListOfStringsMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -211,7 +211,7 @@ public class MessageDataKeys {
     public static final MessageDataKey<List<String>> PROJECT_IDS = createKey("project.ids", LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<Map<String, List<String>>> PROJECT_ASSIGNED_PROFILE_IDS = createKey("project.assigned.profiles",
-            PROJECT_TO_PROFILE_MAPPING_MESSAGE_DATA_PROVIDER);
+            MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */
