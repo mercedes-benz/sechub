@@ -78,11 +78,24 @@ Now you can test your web-ui with sechub and real scans!
 
 ### Building for Production
 
-Set Environment Variables:
+## Environment Variables
 Be aware that `npm run build` sets the environment variables at build time.
 For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
 
-To build your project for production, use:
+Please see the config.ts for possible ENV variables that can be set.
+
+Example config.json
+
+Custom user support email address 
+
+```json
+{
+    "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
+    "SECHUB_USER_SUPPORT_WEBSITE": "https:\\mycustomwebsit.example.org"
+}
+```
+
+## build project for production
 
 ```bash
 npm run build

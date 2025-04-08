@@ -32,6 +32,14 @@ The values can be changed at runtime +
 |PASSWORD
 |undefined
 |Basic Auth password (only for development)
+
+|SECHUB_USER_SUPPORT_EMAIL
+|example@example.org
+|Support email address for your service shown in the Web UI
+
+|SECHUB_USER_SUPPORT_WEBSITE
+|https://sechub.example.org
+|Support website for your service shown in the Web UI
 |===
 
 3. Start the sechub server docker container in sechub/sechub-solution +
