@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.error.AlreadyExistsException;
+import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -70,7 +70,7 @@ public class ProjectUnassignUserService {
 
         User user = userRepository.findOrFailUser(userId);
         if (!project.getUsers().remove(user)) {
-            throw new AlreadyExistsException("User already not assigned to this project!");
+            throw new NotFoundException("User is not assigned to this project!");
         }
         user.getProjects().remove(project);
 

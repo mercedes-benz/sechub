@@ -2476,6 +2476,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+        "403":
+          description: "Forbidden"
         "404":
           description: "Not found"
         "406":
@@ -2502,6 +2504,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+        "403":
+          description: "Forbidden"
         "404":
           description: "Not found"
         "406":
