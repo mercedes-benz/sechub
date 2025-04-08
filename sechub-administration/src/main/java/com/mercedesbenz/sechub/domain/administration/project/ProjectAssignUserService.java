@@ -28,7 +28,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import jakarta.annotation.security.RolesAllowed;
 
 @Service
-@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+@RolesAllowed({ RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
 public class ProjectAssignUserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignUserService.class);
@@ -70,19 +70,20 @@ public class ProjectAssignUserService {
 
         Project project = projectRepository.findOrFailProject(projectId);
         User user = userRepository.findOrFailUser(userId);
-        if (!project.getUsers().add(user)) {
+        if (project.getUsers().add(user)) {
+            user.getProjects().add(project);
+
+            transactionService.saveInOwnTransaction(project, user);
+
+            sendUserAddedToProjectEvent(projectId, user);
+        } else {
             if (failOnExistingAssignment) {
                 throw new AlreadyExistsException("User already assigned to this project!");
             }
             LOG.info("User {} is already assigned to project {} - but not handled as failure", user.getName(), project.getId());
-            return;
         }
-        user.getProjects().add(project);
-        project.getUsers().add(user);
 
-        transactionService.saveInOwnTransaction(project, user);
-
-        sendUserAddedToProjectEvent(projectId, user);
+        /* in any case which does not lead to a failure we request a recalculation */
         sendRequestUserRoleRecalculation(user);
 
     }

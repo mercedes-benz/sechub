@@ -288,7 +288,7 @@ components:
 
     ProjectData:
       title: ProjectData
-      description: "The project names with information according to the call"
+      description: "Project information according to the call"
       type: object
       required:
         - projectId
@@ -299,16 +299,31 @@ components:
           description: The name of the project.
           type: string
         owner:
-          description: Username of the owner of this project. An owner is the person
-            in charge.
-          type: string
+          description: Project user data of the owner of this project. An owner is the person in charge.
+          $ref: '#/components/schemas/ProjectUserData'
         isOwned:
           description: True, when project is owned by the user
           type: boolean
         assignedUsers:
-          description: List of usernames assigned to the project
+          description: List of project user data of users assigned to the project
           type: array
-
+          items:
+            $ref: '#/components/schemas/ProjectUserData'
+          
+    ProjectUserData:
+      title: ProjectUserData
+      description: "A reduced user information in scope of project data"
+      type: object
+      required:
+        - userId
+        - emailAddress
+      properties:
+        userId:
+          description: The name of the user (which is also the identifier).
+          type: string
+        emailAddress:
+          description: The email address of the user
+          type: string
 
     ######################
     ## SecHub Execution ##
@@ -2570,34 +2585,6 @@ paths:
       tags:
         - Project Administration
 
-  /api/admin/project/{projectId}/owner/{userId}:
-    post:
-      summary: Admin changes owner of a project
-      description: An administrator changes the owner of an existing sechub project.
-      operationId: adminChangeProjectOwner
-      parameters:
-        - name: projectId
-          description: The id for project
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: userId
-          description: The user id of the user to assign to project as the owner
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: "Ok"
-        "404":
-          description: "Not found"
-        "406":
-          description: "Not acceptable"
-      tags:
-        - Project Administration
-
   /api/admin/project/{projectId}/whitelist:
     post:
       summary: Update project whitelist
@@ -2757,7 +2744,37 @@ paths:
           description: "Not acceptable"
       tags:
         - Project Administration
- 
+        
+  /api/management/project/{projectId}/owner/{userId}:
+    post:
+      summary: Admin or owner changes owner of a project
+      description: An administrator or the current project owner changes the ownership of an existing sechub project.
+      operationId: adminOrOwnerChangesProjectOwner
+      parameters:
+        - name: projectId
+          description: The id for project
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          description: The user id of the user to assign to project as the owner
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ok"
+        "404":
+          description: "Not found"
+        "403":
+          description: "Access denied"
+        "406":
+          description: "Not acceptable"
+      tags:
+        - Project Administration
+        
   #######################
   ## User Self Service ##
   #######################
@@ -2795,7 +2812,7 @@ paths:
           description: "Bad request"
       tags:
         - User Self Service
-
+        
   /api/anonymous/email/verify/{token}:
     get:
       summary: Anonymous user verifies new email address

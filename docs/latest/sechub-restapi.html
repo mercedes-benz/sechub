@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 2.8.0</span>
+<span id="revnumber"> Server 2.9.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -645,8 +645,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#check-if-the-server-is-alive-and-running">2.2.2. Check if the server is alive and running.</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.1. HEAD variant</a></li>
-<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.2. GET variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.1. GET variant</a></li>
+<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.2. HEAD variant</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">2.2.3. Admin lists all users</a></li>
@@ -659,7 +659,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#admin-grants-admin-rights-to-user">2.2.10. Admin grants admin rights to user</a></li>
 <li><a href="#admin-revokes-admin-rights-from-an-admin">2.2.11. Admin revokes admin rights from an admin</a></li>
 <li><a href="#admin-lists-all-admins">2.2.12. Admin lists all admins</a></li>
-<li><a href="#admin-changes-owner-of-a-project">2.2.13. Admin changes owner of a project</a></li>
+<li><a href="#admin-or-owner-changes-owner-of-a-project">2.2.13. Admin or owner changes owner of a project</a></li>
 <li><a href="#admin-updates-user-email-address">2.2.14. Admin updates user email address</a></li>
 <li><a href="#admin-shows-user-details-for-email-address">2.2.15. Admin shows user details for email address</a></li>
 <li><a href="#admin-creates-a-project">2.2.16. Admin creates a project</a></li>
@@ -852,7 +852,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_057">4.1.58. UC_057-Admin assigns execution profile to project</a></li>
 <li><a href="#section-usecase-UC_058">4.1.59. UC_058-Admin unassigns execution profile from project</a></li>
 <li><a href="#section-usecase-UC_059">4.1.60. UC_059-Update project metadata</a></li>
-<li><a href="#section-usecase-UC_060">4.1.61. UC_060-Admin changes owner of a project</a></li>
+<li><a href="#section-usecase-UC_060">4.1.61. UC_060-Admin or owner changes owner of a project</a></li>
 <li><a href="#section-usecase-UC_061">4.1.62. UC_061-Admin changes project description</a></li>
 <li><a href="#section-usecase-UC_062">4.1.63. UC_062-Admin changes project access level</a>
 <ul class="sectlevel4">
@@ -910,70 +910,71 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </ul>
 </li>
 <li><a href="#section-gen-messaging-analyze_scan_results_available">4.1.99.2. Message ANALYZE_SCAN_RESULTS_AVAILABLE</a></li>
-<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.99.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-binary_upload_done">4.1.99.4. Message BINARY_UPLOAD_DONE</a></li>
-<li><a href="#section-gen-messaging-get_encryption_status_schedule_domain">4.1.99.5. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
-<li><a href="#section-gen-messaging-job_cancellation_running">4.1.99.6. Message JOB_CANCELLATION_RUNNING</a></li>
-<li><a href="#section-gen-messaging-job_created">4.1.99.7. Message JOB_CREATED</a></li>
-<li><a href="#section-gen-messaging-job_done">4.1.99.8. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_execution_starting">4.1.99.9. Message JOB_EXECUTION_STARTING</a></li>
-<li><a href="#section-gen-messaging-job_failed">4.1.99.10. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">4.1.99.11. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">4.1.99.12. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">4.1.99.13. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">4.1.99.14. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.99.15. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">4.1.99.16. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-job_suspended">4.1.99.17. Message JOB_SUSPENDED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.99.18. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">4.1.99.19. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
-<li><a href="#section-gen-messaging-project_access_level_changed">4.1.99.20. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">4.1.99.21. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">4.1.99.22. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_owner_changed">4.1.99.23. Message PROJECT_OWNER_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.99.24. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_assign_template_to_project">4.1.99.25. Message REQUEST_ASSIGN_TEMPLATE_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-request_full_configuration_validation">4.1.99.26. Message REQUEST_FULL_CONFIGURATION_VALIDATION</a></li>
-<li><a href="#section-gen-messaging-request_job_cancellation">4.1.99.27. Message REQUEST_JOB_CANCELLATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">4.1.99.28. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.99.29. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">4.1.99.30. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.99.31. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.99.32. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_job_status">4.1.99.33. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.99.34. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_unassign_template_from_project">4.1.99.35. Message REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.99.36. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-result_assign_template_to_project">4.1.99.37. Message RESULT_ASSIGN_TEMPLATE_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-result_encryption_status_schedule_domain">4.1.99.38. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
-<li><a href="#section-gen-messaging-result_full_configuration_validation">4.1.99.39. Message RESULT_FULL_CONFIGURATION_VALIDATION</a></li>
-<li><a href="#section-gen-messaging-result_unassign_template_from_project">4.1.99.40. Message RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-scan_done">4.1.99.41. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">4.1.99.42. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scan_suspended">4.1.99.43. Message SCAN_SUSPENDED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.99.44. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.99.45. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_status">4.1.99.46. Message SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-scheduler_started">4.1.99.47. Message SCHEDULER_STARTED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">4.1.99.48. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-schedule_encryption_pool_initialized">4.1.99.49. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</a></li>
-<li><a href="#section-gen-messaging-source_upload_done">4.1.99.50. Message SOURCE_UPLOAD_DONE</a></li>
-<li><a href="#section-gen-messaging-start_encryption_rotation">4.1.99.51. Message START_ENCRYPTION_ROTATION</a></li>
-<li><a href="#section-gen-messaging-start_scan">4.1.99.52. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-template_deleted">4.1.99.53. Message TEMPLATE_DELETED</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">4.1.99.54. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">4.1.99.55. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">4.1.99.56. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.99.57. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">4.1.99.58. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">4.1.99.59. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_email_address_changed">4.1.99.60. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_email_address_change_request">4.1.99.61. Message USER_EMAIL_ADDRESS_CHANGE_REQUEST</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.99.62. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.99.63. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">4.1.99.64. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">4.1.99.65. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">4.1.99.66. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-assign_owner_as_user_to_project">4.1.99.3. Message ASSIGN_OWNER_AS_USER_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.99.4. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-binary_upload_done">4.1.99.5. Message BINARY_UPLOAD_DONE</a></li>
+<li><a href="#section-gen-messaging-get_encryption_status_schedule_domain">4.1.99.6. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
+<li><a href="#section-gen-messaging-job_cancellation_running">4.1.99.7. Message JOB_CANCELLATION_RUNNING</a></li>
+<li><a href="#section-gen-messaging-job_created">4.1.99.8. Message JOB_CREATED</a></li>
+<li><a href="#section-gen-messaging-job_done">4.1.99.9. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_execution_starting">4.1.99.10. Message JOB_EXECUTION_STARTING</a></li>
+<li><a href="#section-gen-messaging-job_failed">4.1.99.11. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">4.1.99.12. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">4.1.99.13. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">4.1.99.14. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">4.1.99.15. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.99.16. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">4.1.99.17. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-job_suspended">4.1.99.18. Message JOB_SUSPENDED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.99.19. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">4.1.99.20. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
+<li><a href="#section-gen-messaging-project_access_level_changed">4.1.99.21. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">4.1.99.22. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">4.1.99.23. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_owner_changed">4.1.99.24. Message PROJECT_OWNER_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.99.25. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_assign_template_to_project">4.1.99.26. Message REQUEST_ASSIGN_TEMPLATE_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-request_full_configuration_validation">4.1.99.27. Message REQUEST_FULL_CONFIGURATION_VALIDATION</a></li>
+<li><a href="#section-gen-messaging-request_job_cancellation">4.1.99.28. Message REQUEST_JOB_CANCELLATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">4.1.99.29. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.99.30. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">4.1.99.31. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.99.32. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.99.33. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_job_status">4.1.99.34. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.99.35. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_unassign_template_from_project">4.1.99.36. Message REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.99.37. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-result_assign_template_to_project">4.1.99.38. Message RESULT_ASSIGN_TEMPLATE_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-result_encryption_status_schedule_domain">4.1.99.39. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</a></li>
+<li><a href="#section-gen-messaging-result_full_configuration_validation">4.1.99.40. Message RESULT_FULL_CONFIGURATION_VALIDATION</a></li>
+<li><a href="#section-gen-messaging-result_unassign_template_from_project">4.1.99.41. Message RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-scan_done">4.1.99.42. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">4.1.99.43. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scan_suspended">4.1.99.44. Message SCAN_SUSPENDED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.99.45. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.99.46. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_status">4.1.99.47. Message SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">4.1.99.48. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">4.1.99.49. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-schedule_encryption_pool_initialized">4.1.99.50. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</a></li>
+<li><a href="#section-gen-messaging-source_upload_done">4.1.99.51. Message SOURCE_UPLOAD_DONE</a></li>
+<li><a href="#section-gen-messaging-start_encryption_rotation">4.1.99.52. Message START_ENCRYPTION_ROTATION</a></li>
+<li><a href="#section-gen-messaging-start_scan">4.1.99.53. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-template_deleted">4.1.99.54. Message TEMPLATE_DELETED</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">4.1.99.55. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">4.1.99.56. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">4.1.99.57. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.99.58. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">4.1.99.59. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">4.1.99.60. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_changed">4.1.99.61. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_change_request">4.1.99.62. Message USER_EMAIL_ADDRESS_CHANGE_REQUEST</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.99.63. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.99.64. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">4.1.99.65. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">4.1.99.66. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">4.1.99.67. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -1063,7 +1064,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.8.0 - Build date: 2025-03-14 09:49 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.9.0 - Build date: 2025-04-07 06:44 (UTCZ)</code></p>
 </div>
 <hr>
 </div>
@@ -3076,7 +3077,7 @@ elements are removed)</em>.</p>
 <p><a href="#section-ucrestdoc-uc-UC_029">REST API for UC_029-Admin lists all admins </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_060">REST API for UC_060-Admin changes owner of a project </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_060">REST API for UC_060-Admin or owner changes owner of a project </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_063">REST API for UC_063-Admin updates user email address </a></p>
@@ -3406,60 +3407,12 @@ elements are removed)</em>.</p>
 <p>REST API for usecase <a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running. </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-head">2.2.2.1. HEAD variant</h5>
+<h5 id="section-ucrestdoc-UC_039-get">2.2.2.1. GET variant</h5>
 <div class="paragraph">
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. General request information</caption>
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 85.7143%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HEAD</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong class="big">Example</strong></p>
-</div>
-<div class="paragraph">
-<p><strong>Curl request</strong> <br></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Response body</strong> <br>
-<em>(empty)</em></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-get">2.2.2.2. GET variant</h5>
-<div class="paragraph">
-<p><strong class="big">Definition</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -3494,6 +3447,54 @@ elements are removed)</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X GET</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Response body</strong> <br>
+<em>(empty)</em></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_039-head">2.2.2.2. HEAD variant</h5>
+<div class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/anonymous/check/alive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HEAD</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4213,7 +4214,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/dd88cbb8-d3bb-4965-a0f8-257e54097066' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/fa4bf4e3-bcaa-4b76-b109-26a6289fb2c8' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4489,9 +4490,9 @@ elements are removed)</em>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-changes-owner-of-a-project">2.2.13. Admin changes owner of a project</h4>
+<h4 id="admin-or-owner-changes-owner-of-a-project">2.2.13. Admin or owner changes owner of a project</h4>
 <div id="section-ucrestdoc-uc-UC_060" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project </a></p>
+<p>REST API for usecase <a href="#section-usecase-UC_060">UC_060-Admin or owner changes owner of a project </a></p>
 </div>
 <div id="section-ucrestdoc-UC_060-" class="paragraph">
 <p><strong class="big">Definition</strong></p>
@@ -4511,7 +4512,7 @@ elements are removed)</em>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/api/admin/project/{projectId}/owner/{userId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/management/project/{projectId}/owner/{userId}</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
@@ -4527,7 +4528,7 @@ elements are removed)</em>.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
+<caption class="title">Table 22. https://localhost:8081/api/management/project/{projectId}/owner/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4572,7 +4573,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/owner/userId1' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/project/projectId1/owner/userId1' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5378,7 +5379,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9cc4d019-ae0b-4bd2-90ce-847a2acb2cc5</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-13T09:49:39.444650017</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:49:39.444675535</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e86fd888-2501-47ea-85ae-eca23ade9f8e</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">spartakus</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-06T06:44:37.900583811</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:44:37.900609259</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -5854,8 +5855,18 @@ elements are removed)</em>.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].owner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Owner of the Project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].owner.userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of owner of the Project</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of owner</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].owner.emailAddress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email address of owner</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].isOwned</code></p></td>
@@ -5866,6 +5877,16 @@ elements are removed)</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].assignedUsers</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional: Assigned users (only viewable by owner or admin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].assignedUsers[].userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of assigned user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].assignedUsers[].emailAddress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email address of assigned user</p></td>
 </tr>
 </tbody>
 </table>
@@ -5886,7 +5907,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">assignedUsers</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">user2</span><span class="delimiter">&quot;</span></span>],<span class="key"><span class="delimiter">&quot;</span><span class="content">isOwned</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">emailAddress</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1@example.org</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">assignedUsers</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">emailAddress</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user1@example.org</span><span class="delimiter">&quot;</span></span>},{<span class="key"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user2</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">emailAddress</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">user2@example.org</span><span class="delimiter">&quot;</span></span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">isOwned</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -6203,7 +6224,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f0a1ab07-d273-40ad-b893-f8fa7092de6b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ab174b38-b005-4500-b51b-4dc8c38c45b6</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -6382,7 +6403,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">21703796-d7ca-467f-8666-7bf80abd3411</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">47a96af4-f504-45a0-9864-6e0b421b11a4</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -6541,7 +6562,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2247427d-a57c-40d1-b35b-26bdb1aa664b</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">417b2a0a-c281-47d2-908f-638d43463cc5</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -6700,7 +6721,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f796518f-30ec-431e-98f1-7aeaf6d37f85</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0c84c532-8754-4b05-8c0f-86f2fcd9d50e</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -6854,7 +6875,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">319e2644-72b9-4a37-bad9-4518bf4ec8b2</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">9ae9cce5-c115-4100-9247-63a07f260f61</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7023,7 +7044,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d0978f67-b7c7-41f2-90f6-754eb9798780</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">d01c8564-7696-4c81-b168-d6b4c492f44d</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7187,7 +7208,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">b212f35c-ed27-4320-80f5-8150dfeb83ed</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">3b8664d8-bae1-4ebf-acec-4e01825cbe37</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7346,7 +7367,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f3bb6d44-1a4b-4ec1-bf2a-735af1241f44</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5e1b4d4a-fd45-4942-96b0-a54c7aaa51ec</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7520,7 +7541,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">940a01de-b02a-4dc3-9614-57ae1ef77d26</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5bd8c451-a604-4788-81a2-1125a823a1a9</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7759,7 +7780,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">1353ef57-d5ab-4c66-876a-7809d4d371d9</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">8cc17eae-35e7-44f9-a436-3afdad4c451e</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -7948,7 +7969,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e7f490f7-786f-450d-a12e-11c2437cec13</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">abf53ef0-bea1-4526-94af-29083fad4b4f</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -8112,7 +8133,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">5d52b683-c720-4dd1-8c0c-353ffe4f2a90</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cf20a17a-d1ac-4180-8126-9cf65124f5d7</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -8222,7 +8243,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/daa94ea7-954e-4615-84c1-f76251af04dc/sourcecode?checkSum=checkSumValue' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b8e8f0ae-4759-42de-814c-7f28d8627de3/sourcecode?checkSum=checkSumValue' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -8319,7 +8340,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2502a7e9-a4c8-4b30-b3f4-80e037067e81/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3df2ca1c-040e-4177-80cc-da125e2ce131/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8471,7 +8492,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/15a780d5-5dde-4f0e-bb4c-4fb92f40f414' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e8136d6a-8228-44fc-9213-460f89072680' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8480,7 +8501,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">15a780d5-5dde-4f0e-bb4c-4fb92f40f414</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:34:37.803301282</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:49:37.803328504</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">e8136d6a-8228-44fc-9213-460f89072680</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">CREATOR1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:29:36.016027274</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:44:36.016055647</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -8555,7 +8576,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c3bea70a-0086-4a1e-b40c-7ed943c2c7bf' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/8ce6a8ff-fb01-472c-9048-897015b74b87' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -8627,7 +8648,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/2c66a730-6c25-4c27-929b-c0d7d8761005' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/a895a38e-e0c8-4a1f-b7b9-ebba12abd31b' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -9255,7 +9276,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/431df9a3-4971-479e-8885-12520edcdf63/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7c293ce3-3720-452a-8d04-ca3e0a57f73a/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -9336,7 +9357,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/fa47927a-e9b2-47f5-be2c-1f070faab760' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/30407002-f16a-4574-95b9-79763fda918a' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10060,7 +10081,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">6ac487a2-ae79-4343-96a8-e5c6b29d4f93</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:49:44.796367826</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ccaa7269-5724-435c-94d9-8f5a47efed30</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">projectId</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">project-name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">owner-userid</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">since</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:44:43.441505846</span><span class="delimiter">&quot;</span></span>}]</code></pre>
 </div>
 </div>
 </div>
@@ -10144,7 +10165,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/cfd54788-1753-4b69-9a13-db1d91c5e07e' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/98b32685-37fe-4b70-805e-a38de52a1b87' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10233,7 +10254,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a9ffbd24-8ca7-4a88-be59-c95053bdb235' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/12ce8bcd-30ef-4a37-98a4-2ed61dde27e1' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10322,7 +10343,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/90462c75-0598-4caa-a582-76abf1f0644d' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/1d33ed17-a2f6-4cda-88b0-cd8542d77631' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10411,7 +10432,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/jobs/254a20c5-e0de-46f6-bb5c-064bc40c0f7a/cancel' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/management/jobs/39504ef9-f468-434f-b02f-fbc3f1155389/cancel' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -10944,7 +10965,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="plain">8e235728-dfca-4988-9de7-bf7eab5421a6</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="plain">956bd780-48b4-48cf-9d0b-137b71a57b0e</code></pre>
 </div>
 </div>
 </div>
@@ -11028,7 +11049,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/10d88958-63b6-45de-964a-4a49f0609480' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2a3706c3-329d-4abc-8936-182f2690da0b' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11143,7 +11164,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">3a1e0dcd-d0e1-4bf7-bf12-a704d2f5662c</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">executorConfigurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">774b0a72-721f-49e1-a2ee-50ed5fc0883f</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example configuration</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">executorConfigurationList</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 </div>
@@ -11296,7 +11317,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/c807fe26-b388-4cc2-b1b6-3ada988f2c43' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4883f40b-04f8-436f-9235-aa4024d2f482' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11305,7 +11326,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">c807fe26-b388-4cc2-b1b6-3ada988f2c43</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">4883f40b-04f8-436f-9235-aa4024d2f482</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}</code></pre>
 </div>
 </div>
 </div>
@@ -11453,7 +11474,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/a02fe2a4-e824-4b7f-91fc-7ab5ca19c855' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/e58eeb2d-92c2-4be0-a898-c164baef5313' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -11797,7 +11818,7 @@ elements are removed)</em>.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;a79ef1ae-3f25-4e41-982b-e20f4dc32349&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;4dbbe10d-1cb0-4761-b281-abd75aad8ebf&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11953,7 +11974,7 @@ elements are removed)</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">0eb600e2-4aef-433c-8b87-1840f1815db6</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">a description</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">true</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">configurations</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">8f951552-a487-4747-a820-61e0e4656048</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">New name</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">productIdentifier</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_CODESCAN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">setup</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">baseURL</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">https://product.example.com</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">credentials</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_USENAME</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">env:EXAMPLE_PASSWORD</span><span class="delimiter">&quot;</span></span>},<span class="key"><span class="delimiter">&quot;</span><span class="content">jobParameters</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">example.key1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A value but changed. Remark: the other parameter (example.key2) has been removed by this call</span><span class="delimiter">&quot;</span></span>}]},<span class="key"><span class="delimiter">&quot;</span><span class="content">executorVersion</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">enabled</span><span class="delimiter">&quot;</span></span>:<span class="value">false</span>}],<span class="key"><span class="delimiter">&quot;</span><span class="content">projectIds</span><span class="delimiter">&quot;</span></span>:[<span class="string"><span class="delimiter">&quot;</span><span class="content">project-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">project-2</span><span class="delimiter">&quot;</span></span>]}</code></pre>
 </div>
 </div>
 </div>
@@ -12469,7 +12490,7 @@ elements are removed)</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@3bcd7431</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@6f00950b</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>assetId</code></p></td>
@@ -12689,7 +12710,7 @@ elements are removed)</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@33e2c40d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@79c1b429</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
@@ -14324,7 +14345,7 @@ The filter works as an AND combination: Only jobs having all wanted label key va
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">f76bf6b2-5634-488b-b20f-e3a081963213</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:32:38.023330923</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:34:38.023359738</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-03-14T09:49:38.023372922</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">page</span><span class="delimiter">&quot;</span></span>:<span class="integer">0</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">totalPages</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>:[{<span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">cf58ab8b-23af-429d-bdba-d52fcdafb55e</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executedBy</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">User1</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">created</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:27:36.230615641</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:29:36.230645907</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">ended</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">2025-04-07T06:44:36.23065814</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">ENDED</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">GREEN</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">executionResult</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>:{<span class="key"><span class="delimiter">&quot;</span><span class="content">stage</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>}}}]}</code></pre>
 </div>
 </div>
 </div>
@@ -14767,7 +14788,7 @@ configure the client to do this on color YELLOW.
 <p><a href="#section-usecase-UC_029">UC_029-Admin lists all admins</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project</a></p>
+<p><a href="#section-usecase-UC_060">UC_060-Admin or owner changes owner of a project</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_063">UC_063-Admin updates user email address</a></p>
@@ -16057,7 +16078,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWNER, SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
@@ -18715,9 +18736,9 @@ This will NOT change any former job report where the false positive to unmark ha
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_060">4.1.61. UC_060-Admin changes owner of a project</h4>
+<h4 id="section-usecase-UC_060">4.1.61. UC_060-Admin or owner changes owner of a project</h4>
 <div class="paragraph">
-<p>An administrator changes the owner of an existing sechub project.</p>
+<p>An administrator or the current project owner changes the ownership of an existing SecHub project. If the new owner is not already assigned to the project, the new owner will be assigned automatically. The old owner will still be assigned to the project, but can be removed later by the owner if necessary.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -18743,16 +18764,16 @@ This will NOT change any former job report where the false positive to unmark ha
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWNER, SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator does call rest API to set new project owner</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Change project owner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWNER, SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will set the user as the owner of the project. If user does not have ROLE_OWNER it will obtain it. The old owner will loose project ownership.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will set the given user as the owner of the project. If the user does not already has the the role ROLE_OWNER it will obtain it. The old owner will loose the project ownership.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -20796,7 +20817,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <h6 id="diagram">4.1.99.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="955" height="4876">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="955" height="4934">
 </div>
 </div>
 </div>
@@ -20806,6 +20827,9 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 <ul>
 <li>
 <p><a href="#section-gen-messaging-analyze_scan_results_available">ANALYZE_SCAN_RESULTS_AVAILABLE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-assign_owner_as_user_to_project">ASSIGN_OWNER_AS_USER_TO_PROJECT</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-auto_cleanup_configuration_changed">AUTO_CLEANUP_CONFIGURATION_CHANGED</a></p>
@@ -21012,7 +21036,15 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.99.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-assign_owner_as_user_to_project">4.1.99.3. Message ASSIGN_OWNER_AS_USER_TO_PROJECT</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_assign_owner_as_user_to_project.svg" alt="Sequence diagram of messaging ASSIGN_OWNER_AS_USER_TO_PROJECT" width="914" height="205">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.99.4. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
@@ -21041,7 +21073,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-binary_upload_done">4.1.99.4. Message BINARY_UPLOAD_DONE</h5>
+<h5 id="section-gen-messaging-binary_upload_done">4.1.99.5. Message BINARY_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_binary_upload_done.svg" alt="Sequence diagram of messaging BINARY_UPLOAD_DONE" width="592" height="176">
@@ -21049,7 +21081,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-get_encryption_status_schedule_domain">4.1.99.5. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
+<h5 id="section-gen-messaging-get_encryption_status_schedule_domain">4.1.99.6. Message GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_get_encryption_status_schedule_domain.svg" alt="Sequence diagram of messaging GET_ENCRYPTION_STATUS_SCHEDULE_DOMAIN" width="833" height="234">
@@ -21057,7 +21089,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_cancellation_running">4.1.99.6. Message JOB_CANCELLATION_RUNNING</h5>
+<h5 id="section-gen-messaging-job_cancellation_running">4.1.99.7. Message JOB_CANCELLATION_RUNNING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
@@ -21065,7 +21097,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_created">4.1.99.7. Message JOB_CREATED</h5>
+<h5 id="section-gen-messaging-job_created">4.1.99.8. Message JOB_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_created.svg" alt="Sequence diagram of messaging JOB_CREATED" width="751" height="205">
@@ -21073,7 +21105,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">4.1.99.8. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_done">4.1.99.9. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="765" height="205">
@@ -21105,7 +21137,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_execution_starting">4.1.99.9. Message JOB_EXECUTION_STARTING</h5>
+<h5 id="section-gen-messaging-job_execution_starting">4.1.99.10. Message JOB_EXECUTION_STARTING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_execution_starting.svg" alt="Sequence diagram of messaging JOB_EXECUTION_STARTING" width="628" height="176">
@@ -21137,7 +21169,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">4.1.99.10. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_failed">4.1.99.11. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="765" height="205">
@@ -21145,7 +21177,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">4.1.99.11. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">4.1.99.12. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -21177,7 +21209,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">4.1.99.12. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">4.1.99.13. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -21209,7 +21241,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">4.1.99.13. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">4.1.99.14. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -21238,7 +21270,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">4.1.99.14. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">4.1.99.15. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -21246,7 +21278,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">4.1.99.15. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">4.1.99.16. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -21254,7 +21286,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">4.1.99.16. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">4.1.99.17. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -21286,7 +21318,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_suspended">4.1.99.17. Message JOB_SUSPENDED</h5>
+<h5 id="section-gen-messaging-job_suspended">4.1.99.18. Message JOB_SUSPENDED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_suspended.svg" alt="Sequence diagram of messaging JOB_SUSPENDED" width="571" height="176">
@@ -21294,7 +21326,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.99.18. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.99.19. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -21302,7 +21334,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-product_executor_cancel_operations_done">4.1.99.19. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
+<h5 id="section-gen-messaging-product_executor_cancel_operations_done">4.1.99.20. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_product_executor_cancel_operations_done.svg" alt="Sequence diagram of messaging PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" width="863" height="176">
@@ -21310,7 +21342,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_access_level_changed">4.1.99.20. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
+<h5 id="section-gen-messaging-project_access_level_changed">4.1.99.21. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
@@ -21318,7 +21350,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">4.1.99.21. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-project_created">4.1.99.22. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="543" height="176">
@@ -21326,7 +21358,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">4.1.99.22. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-project_deleted">4.1.99.23. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="877" height="234">
@@ -21334,7 +21366,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_owner_changed">4.1.99.23. Message PROJECT_OWNER_CHANGED</h5>
+<h5 id="section-gen-messaging-project_owner_changed">4.1.99.24. Message PROJECT_OWNER_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_owner_changed.svg" alt="Sequence diagram of messaging PROJECT_OWNER_CHANGED" width="636" height="176">
@@ -21342,7 +21374,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">4.1.99.24. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">4.1.99.25. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="667" height="176">
@@ -21350,7 +21382,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_assign_template_to_project">4.1.99.25. Message REQUEST_ASSIGN_TEMPLATE_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-request_assign_template_to_project">4.1.99.26. Message REQUEST_ASSIGN_TEMPLATE_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_assign_template_to_project.svg" alt="Sequence diagram of messaging REQUEST_ASSIGN_TEMPLATE_TO_PROJECT" width="780" height="309">
@@ -21358,7 +21390,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_full_configuration_validation">4.1.99.26. Message REQUEST_FULL_CONFIGURATION_VALIDATION</h5>
+<h5 id="section-gen-messaging-request_full_configuration_validation">4.1.99.27. Message REQUEST_FULL_CONFIGURATION_VALIDATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_full_configuration_validation.svg" alt="Sequence diagram of messaging REQUEST_FULL_CONFIGURATION_VALIDATION" width="824" height="234">
@@ -21366,7 +21398,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancellation">4.1.99.27. Message REQUEST_JOB_CANCELLATION</h5>
+<h5 id="section-gen-messaging-request_job_cancellation">4.1.99.28. Message REQUEST_JOB_CANCELLATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_cancellation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELLATION" width="656" height="176">
@@ -21374,7 +21406,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">4.1.99.28. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">4.1.99.29. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="753" height="205">
@@ -21403,7 +21435,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">4.1.99.29. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">4.1.99.30. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -21432,7 +21464,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">4.1.99.30. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">4.1.99.31. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -21461,7 +21493,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.99.31. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.99.32. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -21490,7 +21522,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.99.32. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.99.33. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -21519,7 +21551,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_job_status">4.1.99.33. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_scheduler_job_status">4.1.99.34. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_job_status.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_JOB_STATUS" width="715" height="234">
@@ -21551,7 +21583,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.99.34. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.99.35. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="761" height="176">
@@ -21559,7 +21591,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_unassign_template_from_project">4.1.99.35. Message REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-request_unassign_template_from_project">4.1.99.36. Message REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_unassign_template_from_project.svg" alt="Sequence diagram of messaging REQUEST_UNASSIGN_TEMPLATE_FROM_PROJECT" width="843" height="309">
@@ -21567,10 +21599,10 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.99.36. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.99.37. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2102" height="351">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -21602,7 +21634,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-result_assign_template_to_project">4.1.99.37. Message RESULT_ASSIGN_TEMPLATE_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-result_assign_template_to_project">4.1.99.38. Message RESULT_ASSIGN_TEMPLATE_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_result_assign_template_to_project.svg" alt="Sequence diagram of messaging RESULT_ASSIGN_TEMPLATE_TO_PROJECT" width="764" height="118">
@@ -21610,7 +21642,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-result_encryption_status_schedule_domain">4.1.99.38. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
+<h5 id="section-gen-messaging-result_encryption_status_schedule_domain">4.1.99.39. Message RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_result_encryption_status_schedule_domain.svg" alt="Sequence diagram of messaging RESULT_ENCRYPTION_STATUS_SCHEDULE_DOMAIN" width="871" height="118">
@@ -21618,7 +21650,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-result_full_configuration_validation">4.1.99.39. Message RESULT_FULL_CONFIGURATION_VALIDATION</h5>
+<h5 id="section-gen-messaging-result_full_configuration_validation">4.1.99.40. Message RESULT_FULL_CONFIGURATION_VALIDATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_result_full_configuration_validation.svg" alt="Sequence diagram of messaging RESULT_FULL_CONFIGURATION_VALIDATION" width="805" height="118">
@@ -21626,7 +21658,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-result_unassign_template_from_project">4.1.99.40. Message RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-result_unassign_template_from_project">4.1.99.41. Message RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_result_unassign_template_from_project.svg" alt="Sequence diagram of messaging RESULT_UNASSIGN_TEMPLATE_FROM_PROJECT" width="827" height="118">
@@ -21634,7 +21666,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">4.1.99.41. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">4.1.99.42. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -21642,7 +21674,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">4.1.99.42. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">4.1.99.43. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -21650,7 +21682,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_suspended">4.1.99.43. Message SCAN_SUSPENDED</h5>
+<h5 id="section-gen-messaging-scan_suspended">4.1.99.44. Message SCAN_SUSPENDED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_suspended.svg" alt="Sequence diagram of messaging SCAN_SUSPENDED" width="544" height="118">
@@ -21658,7 +21690,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.99.44. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.99.45. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
@@ -21687,7 +21719,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.99.45. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.99.46. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
@@ -21716,7 +21748,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_status">4.1.99.46. Message SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-scheduler_job_status">4.1.99.47. Message SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_status.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_STATUS" width="612" height="118">
@@ -21724,7 +21756,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_started">4.1.99.47. Message SCHEDULER_STARTED</h5>
+<h5 id="section-gen-messaging-scheduler_started">4.1.99.48. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="579" height="176">
@@ -21732,7 +21764,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">4.1.99.48. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">4.1.99.49. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
@@ -21740,7 +21772,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-schedule_encryption_pool_initialized">4.1.99.49. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</h5>
+<h5 id="section-gen-messaging-schedule_encryption_pool_initialized">4.1.99.50. Message SCHEDULE_ENCRYPTION_POOL_INITIALIZED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_schedule_encryption_pool_initialized.svg" alt="Sequence diagram of messaging SCHEDULE_ENCRYPTION_POOL_INITIALIZED" width="794" height="176">
@@ -21748,7 +21780,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-source_upload_done">4.1.99.50. Message SOURCE_UPLOAD_DONE</h5>
+<h5 id="section-gen-messaging-source_upload_done">4.1.99.51. Message SOURCE_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_source_upload_done.svg" alt="Sequence diagram of messaging SOURCE_UPLOAD_DONE" width="598" height="176">
@@ -21756,7 +21788,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_encryption_rotation">4.1.99.51. Message START_ENCRYPTION_ROTATION</h5>
+<h5 id="section-gen-messaging-start_encryption_rotation">4.1.99.52. Message START_ENCRYPTION_ROTATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_start_encryption_rotation.svg" alt="Sequence diagram of messaging START_ENCRYPTION_ROTATION" width="686" height="176">
@@ -21764,7 +21796,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">4.1.99.52. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-start_scan">4.1.99.53. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="397">
@@ -21796,7 +21828,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-template_deleted">4.1.99.53. Message TEMPLATE_DELETED</h5>
+<h5 id="section-gen-messaging-template_deleted">4.1.99.54. Message TEMPLATE_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_template_deleted.svg" alt="Sequence diagram of messaging TEMPLATE_DELETED" width="590" height="176">
@@ -21804,7 +21836,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">4.1.99.54. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-unsupported_operation">4.1.99.55. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="636" height="118">
@@ -21812,7 +21844,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">4.1.99.55. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">4.1.99.56. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
@@ -21841,7 +21873,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">4.1.99.56. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">4.1.99.57. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1163" height="234">
@@ -21849,7 +21881,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.99.57. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.99.58. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="663" height="176">
@@ -21857,7 +21889,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">4.1.99.58. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">4.1.99.59. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
@@ -21886,7 +21918,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">4.1.99.59. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">4.1.99.60. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1015" height="264">
@@ -21894,7 +21926,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_email_address_changed">4.1.99.60. Message USER_EMAIL_ADDRESS_CHANGED</h5>
+<h5 id="section-gen-messaging-user_email_address_changed">4.1.99.61. Message USER_EMAIL_ADDRESS_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_email_address_changed.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGED" width="696" height="176">
@@ -21902,7 +21934,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_email_address_change_request">4.1.99.61. Message USER_EMAIL_ADDRESS_CHANGE_REQUEST</h5>
+<h5 id="section-gen-messaging-user_email_address_change_request">4.1.99.62. Message USER_EMAIL_ADDRESS_CHANGE_REQUEST</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_email_address_change_request.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGE_REQUEST" width="784" height="176">
@@ -21910,7 +21942,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.99.62. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.99.63. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
@@ -21939,7 +21971,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.99.63. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.99.64. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="687" height="176">
@@ -21947,7 +21979,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">4.1.99.64. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">4.1.99.65. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
@@ -21976,7 +22008,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">4.1.99.65. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">4.1.99.66. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="594" height="176">
@@ -22011,7 +22043,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">4.1.99.66. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">4.1.99.67. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="629" height="176">
@@ -22046,7 +22078,7 @@ A project admin can see assigned or owned projects and all assigned users.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.8.0<br>
+ Server 2.9.0<br>
 </div>
 </div>
 </body>

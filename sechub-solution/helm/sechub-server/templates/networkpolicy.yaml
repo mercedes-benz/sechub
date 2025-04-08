@@ -9,7 +9,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          name: web-ui  # Allow SecHub Web-UI access
+          role: sechub-frontend  # Allow SecHub Web-UI access
     ports:
     - protocol: TCP
       port: 8443
