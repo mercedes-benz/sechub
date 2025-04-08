@@ -62,7 +62,24 @@ public class ProjectAssignUserService {
 					name = "Assign user",
 					description = "The service will add the user to the project. If user does not have ROLE_USER it will obtain it"))
 	/* @formatter:on */
-    public void assignUserToProject(String userId, String projectId, boolean failOnExistingAssignment) {
+    public void assignUserToProjectAsUser(String userId, String projectId, boolean failOnExistingAssignment) {
+        assignUserToProject(userId, projectId, failOnExistingAssignment, false);
+    }
+
+    /**
+     * Assigns a user to a project as system. This method is used by the system when
+     * receiving DomainMessages
+     *
+     * @param userId                   the user id to assign
+     * @param projectId                the project id to assign the user to
+     * @param failOnExistingAssignment if true, an exception will be thrown if the
+     *                                 user is already assigned to the project
+     */
+    public void assignUserToProjectAsSystem(String userId, String projectId, boolean failOnExistingAssignment) {
+        assignUserToProject(userId, projectId, failOnExistingAssignment, true);
+    }
+
+    private void assignUserToProject(String userId, String projectId, boolean failOnExistingAssignment, boolean isSystem) {
         LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
@@ -71,7 +88,9 @@ public class ProjectAssignUserService {
 
         Project project = projectRepository.findOrFailProject(projectId);
 
-        assertAllowedToAddProjectMembers(project);
+        if (!isSystem) {
+            assertAllowedToAddProjectMembers(project);
+        }
 
         User user = userRepository.findOrFailUser(userId);
         if (project.getUsers().add(user)) {
@@ -89,7 +108,6 @@ public class ProjectAssignUserService {
 
         /* in any case which does not lead to a failure we request a recalculation */
         sendRequestUserRoleRecalculation(user);
-
     }
 
     private void assertAllowedToAddProjectMembers(Project project) {

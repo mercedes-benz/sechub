@@ -12,7 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
-import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -120,7 +120,7 @@ class ProjectUnassignUserServiceTest {
         /* execute + test */
         assertThatThrownBy(() -> {
             serviceToTest.unassignUserFromProject("notAssignedUser", project.getId());
-        }).isInstanceOf(NotFoundException.class).hasMessageContaining("User is not assigned to this project!");
+        }).isInstanceOf(NotAcceptableException.class).hasMessageContaining("User is not assigned to this project!");
     }
 
     private void baseSetUp(User owner, User assignedUser, Project project) {

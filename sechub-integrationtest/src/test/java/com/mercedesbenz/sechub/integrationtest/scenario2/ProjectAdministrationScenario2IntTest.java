@@ -42,7 +42,7 @@ public class ProjectAdministrationScenario2IntTest {
         assertUser(USER_1).isAssignedToProject(PROJECT_1);
 
         /* execute */
-        as(OWNER_1).unassignUserFromProject(USER_1, PROJECT_1);
+        as(SUPER_ADMIN).unassignUserFromProject(USER_1, PROJECT_1);
 
         /* test */
         assertUser(USER_1).isNotAssignedToProject(PROJECT_1);

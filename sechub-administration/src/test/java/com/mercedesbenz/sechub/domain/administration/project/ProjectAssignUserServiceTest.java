@@ -68,7 +68,7 @@ public class ProjectAssignUserServiceTest {
         when(userRepository.findOrFailUser("new")).thenReturn(newUser);
 
         /* execute */
-        serviceToTest.assignUserToProject(newUser.getName(), project1.getId(), failOnExistingAssignment);
+        serviceToTest.assignUserToProjectAsUser(newUser.getName(), project1.getId(), failOnExistingAssignment);
 
         /* test */
         verify(transactionService).saveInOwnTransaction(project1, newUser);
@@ -94,7 +94,7 @@ public class ProjectAssignUserServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> {
-            serviceToTest.assignUserToProject(existingUser.getName(), project1.getId(), true);
+            serviceToTest.assignUserToProjectAsUser(existingUser.getName(), project1.getId(), true);
         }).isInstanceOf(AlreadyExistsException.class);
     }
 
@@ -117,7 +117,7 @@ public class ProjectAssignUserServiceTest {
         when(userRepository.findOrFailUser("existing")).thenReturn(existingUser);
 
         /* execute + test */
-        assertDoesNotThrow(() -> serviceToTest.assignUserToProject(existingUser.getName(), project1.getId(), false));
+        assertDoesNotThrow(() -> serviceToTest.assignUserToProjectAsUser(existingUser.getName(), project1.getId(), false));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ProjectAssignUserServiceTest {
         when(owner.getProjects()).thenReturn(Set.of(project1));
 
         /* execute */
-        serviceToTest.assignUserToProject(newUser.getName(), project1.getId(), false);
+        serviceToTest.assignUserToProjectAsUser(newUser.getName(), project1.getId(), false);
 
         /* test */
         verify(transactionService).saveInOwnTransaction(project1, newUser);
@@ -149,8 +149,9 @@ public class ProjectAssignUserServiceTest {
         User newUser = mock(User.class);
 
         /* prepare */
-        when(owner.getName()).thenReturn("someOwner");
-        when(userContext.getUserId()).thenReturn("owner");
+        when(owner.getName()).thenReturn("owner");
+        when(userContext.getUserId()).thenReturn("someOtherUser");
+        when(userContext.isSuperAdmin()).thenReturn(false);
 
         Project project1 = new Project();
         project1.owner = owner;
@@ -162,7 +163,7 @@ public class ProjectAssignUserServiceTest {
         /* @formatter:off */
         /* execute + test */
         assertThatThrownBy(() -> {
-            serviceToTest.assignUserToProject(newUser.getName(), project1.getId(), false);
+            serviceToTest.assignUserToProjectAsUser(newUser.getName(), project1.getId(), false);
         }).isInstanceOf(AccessDeniedException.class)
                 .hasMessageContaining("You are not allowed");
         /* @formatter:on */

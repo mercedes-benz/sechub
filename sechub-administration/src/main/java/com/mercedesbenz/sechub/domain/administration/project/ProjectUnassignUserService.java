@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
+import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -66,11 +66,11 @@ public class ProjectUnassignUserService {
 
         Project project = projectRepository.findOrFailProject(projectId);
 
-        assertAllowedToUnassingProjectMembers(project);
+        assertAllowedToRemoveProjectMembers(project);
 
         User user = userRepository.findOrFailUser(userId);
         if (!project.getUsers().remove(user)) {
-            throw new NotFoundException("User is not assigned to this project!");
+            throw new NotAcceptableException("User is not assigned to this project!");
         }
         user.getProjects().remove(project);
 
@@ -80,7 +80,7 @@ public class ProjectUnassignUserService {
         sendRequestUserRoleRecalculation(user);
     }
 
-    private void assertAllowedToUnassingProjectMembers(Project project) {
+    private void assertAllowedToRemoveProjectMembers(Project project) {
         if (userContextService.isSuperAdmin()) {
             /* super admin is always allowed... */
             return;
