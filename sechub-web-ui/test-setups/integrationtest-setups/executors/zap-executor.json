@@ -1,5 +1,5 @@
 {
-  "name": "pds-owaspzap",
+  "name": "pds-zap",
   "productIdentifier": "PDS_WEBSCAN",
   "executorVersion": 1,
   "enabled": true,

@@ -1,8 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
-set -e
-
 test_setup_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )
 
 export SECHUB_API_SCRIPT="${test_setup_dir}/../../sechub-developertools/scripts/sechub-api.sh"
