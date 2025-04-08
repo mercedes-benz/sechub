@@ -148,11 +148,11 @@ spec:
         volumeMounts:
 {{- if .Values.staticResources.enabled }}
           # Static resources for login page
-          - mountPath: /sechub/web-resources/static/background_image_login.jpg
+          - mountPath: /sechub/web-resources/static/login/images/background_image_login.jpg
             name: configmap-background-image
             subPath: background_image_login.jpg
             readOnly: true
-          - mountPath: /sechub/web-resources/static/main.css
+          - mountPath: /sechub/web-resources/static/login/css/main.css
             name: configmap-main-css
             subPath: main.css
             readOnly: true
