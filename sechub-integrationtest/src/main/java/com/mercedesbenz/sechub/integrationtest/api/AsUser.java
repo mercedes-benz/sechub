@@ -434,7 +434,7 @@ public class AsUser {
      */
     public AsUser assignUserToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning user:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsUserToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAssignsUserToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
     }
 
@@ -447,7 +447,7 @@ public class AsUser {
      */
     public AsUser unassignUserFromProject(TestUser targetUser, TestProject project) {
         LOG.debug("unassigning user:{} from project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(project.getProjectId(), targetUser.getUserId()));
+        getRestHelper().delete(getUrlBuilder().buildUnassignsUserFromProjectUrl(project.getProjectId(), targetUser.getUserId()));
         return this;
     }
 

@@ -28,6 +28,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_PROJECT = "/api/project";
     private static final String API_PROJECTS = "/api/projects";
     private static final String API_MANAGEMENT = "/api/management";
+    private static final String API_MANAGEMENT_PROJECT = "/api/management/project";
 
     public static SecHubTestURLBuilder https(int port) {
         return new SecHubTestURLBuilder("https", port);
@@ -345,12 +346,12 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_MANAGEMENT, "project", projectId, "owner", userId);
     }
 
-    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    public String buildAssignsUserToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_MANAGEMENT_PROJECT, projectId, "membership", userId);
     }
 
-    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    public String buildUnassignsUserFromProjectUrl(String projectId, String userId) {
+        return buildUrl(API_MANAGEMENT_PROJECT, projectId, "membership", userId);
     }
 
     public String buildAdminFetchProjectInfoUrl(String projectId) {

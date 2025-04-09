@@ -26,13 +26,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectAssignUserService;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectChangeOwnerService;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectManagementRestController;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.mercedesbenz.sechub.server.SecHubWebMvcConfigurer;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerAssignsUserToProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerChangesProjectOwner;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerUnassignsUserFromProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -53,6 +57,12 @@ public class ProjectManagementRestControllerRestDocTest implements TestIsNecessa
 
     @MockBean
     ProjectChangeOwnerService assignOwnerService;
+
+    @MockBean
+    ProjectAssignUserService assignUserService;
+
+    @MockBean
+    ProjectUnassignUserService unassignUserService;
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseAdminOrOwnerChangesProjectOwner.class)
@@ -82,6 +92,70 @@ public class ProjectManagementRestControllerRestDocTest implements TestIsNecessa
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
                             )
                 ));
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminOrOwnerAssignsUserToProject.class)
+    public void restdoc_assign_user2project() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminOrOwnerAssignsUserToProject.class;
+
+        /* execute + test @formatter:off */
+        mockMvc.perform(
+                        post(apiEndpoint, "projectId1", "userId1").
+                                contentType(MediaType.APPLICATION_JSON_VALUE).
+                                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
+                ).
+                andExpect(status().isOk()).
+                andDo(defineRestService().
+                        with().
+                        useCaseData(useCase).
+                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                        and().
+                        document(
+                                requestHeaders(
+
+                                ),
+                                pathParameters(
+                                        parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                                        parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
+                                )
+                        ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminOrOwnerUnassignsUserFromProject.class)
+    public void restdoc_unassign_userFromProject() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminOrOwnerUnassignsUserFromProject.class;
+
+        /* execute + test @formatter:off */
+        mockMvc.perform(
+                        delete(apiEndpoint,"userId1", "projectId1").
+                                contentType(MediaType.APPLICATION_JSON_VALUE).
+                                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
+                ).
+                andExpect(status().isOk()).
+                andDo(defineRestService().
+                        with().
+                        useCaseData(useCase).
+                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                        and().
+                        document(
+                                requestHeaders(
+
+                                ),
+                                pathParameters(
+                                        parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                                        parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
+                                )
+                        ));
+
         /* @formatter:on */
     }
 }

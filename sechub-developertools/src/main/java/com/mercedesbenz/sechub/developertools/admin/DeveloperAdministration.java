@@ -567,12 +567,12 @@ public class DeveloperAdministration {
     }
 
     public String assignUserToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
+        getRestHelper().post(getUrlBuilder().buildAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
     }
 
     public String unassignUserFromProject(String userId, String projectId) {
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(projectId, userId));
+        getRestHelper().delete(getUrlBuilder().buildUnassignsUserFromProjectUrl(projectId, userId));
         return "unassigned " + userId + " to project " + projectId;
     }
 
