@@ -44,6 +44,7 @@ class ProfileMessageHandlerTest {
         DomainMessageSynchronousResult response = handlerToTest.receiveSynchronMessage(message);
 
         /* test */
+        assertThat(response.getMessageId()).isEqualTo(MessageID.RESULT_PROFILE_IDS_FOR_PROJECT);
         Map<String, List<String>> projectToProfiles = response.get(PROJECT_ASSIGNED_PROFILE_IDS);
         assertThat(projectToProfiles).containsKey(TEST_PROJECT_ID);
         assertThat(projectToProfiles.get(TEST_PROJECT_ID)).isEmpty();
@@ -61,6 +62,7 @@ class ProfileMessageHandlerTest {
         DomainMessageSynchronousResult response = handlerToTest.receiveSynchronMessage(message);
 
         /* test */
+        assertThat(response.getMessageId()).isEqualTo(MessageID.RESULT_PROFILE_IDS_FOR_PROJECT);
         Map<String, List<String>> projectToProfiles = response.get(PROJECT_ASSIGNED_PROFILE_IDS);
         assertThat(projectToProfiles).containsKey(TEST_PROJECT_ID);
         assertThat(projectToProfiles.get(TEST_PROJECT_ID)).containsAll(expectedProfileIds);
