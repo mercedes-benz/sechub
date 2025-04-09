@@ -176,7 +176,7 @@ public class ProjectAdministrationScenario3IntTest {
 
     private TestUser createTemporaryAdminForAndAssignToProject(TestProject project) {
         String adminId = "admin_" + System.currentTimeMillis();
-        TestUser tmpAdmin = new FixedTestUser(adminId, adminId + "-pwd");
+        TestUser tmpAdmin = new FixedTestUser(adminId, adminId + "-pwd", adminId + "@example.com");
         as(ANONYMOUS).signUpAs(tmpAdmin);
         as(SUPER_ADMIN).acceptSignup(tmpAdmin);
         assertUser(tmpAdmin).doesExist();
