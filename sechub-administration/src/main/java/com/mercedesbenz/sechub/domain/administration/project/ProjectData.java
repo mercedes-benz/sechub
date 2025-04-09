@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,11 +12,13 @@ public class ProjectData {
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_IS_OWNED = "isOwned";
     public static final String PROPERTY_ASSIGNED_USERS = "assignedUsers";
+    public static final String PROPERTY_ASSIGNED_PROFILE_IDS = "assignedProfileIds";
 
     private String projectId;
     private ProjectUserData owner;
     private Boolean isOwned;
     private List<ProjectUserData> assignedUsers;
+    private Set<String> assignedProfileIds;
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
@@ -31,6 +34,10 @@ public class ProjectData {
 
     public void setAssignedUsers(List<ProjectUserData> assignedUsers) {
         this.assignedUsers = assignedUsers;
+    }
+
+    public void setAssignedProfileIds(Set<String> assignedProfileIds) {
+        this.assignedProfileIds = assignedProfileIds;
     }
 
     @JsonProperty(PROPERTY_IS_OWNED)
@@ -52,5 +59,11 @@ public class ProjectData {
     @JsonProperty(PROPERTY_ASSIGNED_USERS)
     public List<ProjectUserData> getAssignedUsers() {
         return assignedUsers;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(PROPERTY_ASSIGNED_PROFILE_IDS)
+    public Set<String> getAssignedProfileIds() {
+        return assignedProfileIds;
     }
 }
