@@ -83,7 +83,7 @@ Now you can test your web-ui with sechub and real scans!
 ### Environment Variables
 
 Be aware that `npm run build` sets the environment variables at build time.
-For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
+For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/config.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
 
 Please see the config.ts for possible ENV variables that can be set and sechub-web-ui-solution/README.md
 
