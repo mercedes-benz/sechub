@@ -173,6 +173,11 @@ public class AsUser {
         return getContext().getRestHelper(user);
     }
 
+    public AsUser deleteUser(TestUser user) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(user.getUserId()));
+        return this;
+    }
+
     /**
      * Signup given (new) user
      *

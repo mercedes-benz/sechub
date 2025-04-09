@@ -262,7 +262,13 @@ public enum MessageID {
      * Request all execution profile IDs for each project. This is sent when a user
      * requests information about all projects the user is part of.
      */
-    REQUEST_PROFILE_IDS_FOR_PROJECT(MessageDataKeys.PROJECT_ASSIGNED_PROFILE_IDS, MessageDataKeys.PROJECT_IDS),
+    REQUEST_PROFILE_IDS_FOR_PROJECT(MessageDataKeys.PROJECT_IDS),
+
+    /**
+     * This is sent as a result to a message with the request:
+     * {@link #REQUEST_PROFILE_IDS_FOR_PROJECT}.
+     */
+    RESULT_PROFILE_IDS_FOR_PROJECT(MessageDataKeys.PROJECT_ASSIGNED_PROFILE_IDS),
 
     ;
 

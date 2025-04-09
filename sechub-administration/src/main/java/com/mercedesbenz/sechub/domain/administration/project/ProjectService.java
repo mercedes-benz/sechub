@@ -62,11 +62,7 @@ public class ProjectService {
         List<ProjectData> projectDataList = new ArrayList<>();
         for (Project project : user.getProjects()) {
 
-            ProjectData projectData = createProjectDataForProject(user, project);
-            List<String> profileIds = projectToProfileIds.get(project.getId());
-            if (profileIds != null) {
-                projectData.setAssignedProfileIds(new HashSet<>(profileIds));
-            }
+            ProjectData projectData = createProjectDataForProject(user, project, projectToProfileIds);
             projectDataList.add(projectData);
 
         }
@@ -74,7 +70,7 @@ public class ProjectService {
         return projectDataList;
     }
 
-    private static ProjectData createProjectDataForProject(User user, Project project) {
+    private static ProjectData createProjectDataForProject(User user, Project project, Map<String, List<String>> projectToProfileIds) {
 
         ProjectData projectData = new ProjectData();
         projectData.setProjectId(project.getId());
@@ -92,6 +88,11 @@ public class ProjectService {
         /* additional users - role shall have this information as well */
         if (user.isSuperAdmin() || isOwner) {
             addAssignedUsersToProjectData(project, projectData);
+        }
+
+        List<String> profileIds = projectToProfileIds.get(project.getId());
+        if (profileIds != null) {
+            projectData.setAssignedProfileIds(new HashSet<>(profileIds));
         }
         return projectData;
     }

@@ -68,7 +68,6 @@ class ProfileMessageHandlerTest {
 
     private DomainMessage prepareValidDomainMessage() {
         DomainMessage message = new DomainMessage(MessageID.REQUEST_PROFILE_IDS_FOR_PROJECT);
-        message.set(PROJECT_ASSIGNED_PROFILE_IDS, null);
         message.set(PROJECT_IDS, List.of(TEST_PROJECT_ID));
         return message;
     }
