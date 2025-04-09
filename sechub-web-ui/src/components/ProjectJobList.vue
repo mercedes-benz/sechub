@@ -106,8 +106,9 @@
               </tbody>
             </v-table>
           </div>
+          <!-- we need to add 1 because our page starts at 0 while pagination starts with 1 -->
           <Pagination
-            :current-page="jobsObject.page || 1"
+            :current-page="(jobsObject.page || 0) + 1"
             :total-pages="jobsObject.totalPages || 1"
             @page-changed="onPageChange"
           />

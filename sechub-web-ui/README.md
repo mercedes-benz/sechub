@@ -58,7 +58,7 @@ npm run dev
 
 If you want to get Server responses, start the SecHub integrationtest Server e.g. via your IDE see the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide) for instructions.
 Use the SecHub user and password for your basic auth .env file.
-You can use the sechub-api.sh script to manage your user and project or execute the `test-setups/integrationtest-setups/setup.sh`
+You can use the sechub-api.sh script to manage your user and project or execute the `test-setups/integrationtest-setups/setup.sh` (scan jobs will fail but set up will be there)
 
 ### Running local development server with SecHub Integrationtest Server and PDS Integrationtest Server (Mocked Products)
 
@@ -94,7 +94,7 @@ Custom user support email address
 ```json
 {
     "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
-    "SECHUB_USER_SUPPORT_WEBSITE": "https:\\mycustomwebsit.example.org"
+    "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsit.example.org"
 }
 ```
 
