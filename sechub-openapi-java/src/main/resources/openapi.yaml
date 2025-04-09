@@ -1004,6 +1004,11 @@ components:
           type: string
         version:
           type: string
+        headers:
+          type: object
+          additionalProperties: true
+        body:
+          $ref: '#/components/schemas/SecHubReportWebBody'
 
     SecHubReportWebBodyLocation:
       title: SecHubReportWebBodyLocation
