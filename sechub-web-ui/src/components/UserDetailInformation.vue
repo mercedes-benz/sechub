@@ -69,7 +69,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_WEBSITE') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="https://sechub.example.org" target="_blank">sechub.example.org</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a :href="userSupportWebsite" target="_blank">{{ userSupportWebsite }}</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
       <v-list-item>
@@ -87,7 +87,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_EMAIL') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="mailto:example@example.org">example@example.org</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a :href="'mailto:' + userSupportEmail">{{ userSupportEmail }}</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
     </v-list>
@@ -98,6 +98,7 @@
   import defaultClient from '@/services/defaultClient'
   import { defineComponent } from 'vue'
   import type { UserDetailInformation } from '@/generated-sources/openapi'
+  import { useConfig } from '@/config'
 
   export default defineComponent({
     name: 'UserDetailInformation',
@@ -107,6 +108,13 @@
       const email = ref('')
       const isRefreshingApiToken = ref(false)
       const refreshApiTokenDialog = ref(false)
+
+      const config = useConfig()
+
+      const userSupportEmail = ref('')
+      const userSupportWebsite = ref('')
+      userSupportEmail.value = config.value.SECHUB_USER_SUPPORT_EMAIL
+      userSupportWebsite.value = config.value.SECHUB_USER_SUPPORT_WEBSITE
 
       onMounted(async () => {
         try {
@@ -142,6 +150,8 @@
         refreshApiToken,
         isRefreshingApiToken,
         refreshApiTokenDialog,
+        userSupportEmail,
+        userSupportWebsite,
       }
     },
   })
