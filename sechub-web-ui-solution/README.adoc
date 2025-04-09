@@ -2,8 +2,7 @@
 
 == Web UI Image
 
-The files to create the Web UI container image.
-
+The files to create the Web UI container image. +
 The Web UI is a Vue.js SPA build with nuxt.js.
 
 === Local Web-UI Frontend and SecHub Server SetUp
