@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.IacScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
@@ -72,6 +73,7 @@ public class ScanServiceTest {
     private AnalyticsProductExecutionService analyticsProductExecutionService;
     private PrepareProductExecutionService prepareProductExecutionService;
     private SecretScanProductExecutionService secretScanProductExecutionService;
+    private IacScanProductExecutionService iacScanProductExecutionService;
     private ProgressState progressState;
     private TemplateService templateService;
 
@@ -99,6 +101,7 @@ public class ScanServiceTest {
         analyticsProductExecutionService = mock();
         prepareProductExecutionService = mock();
         secretScanProductExecutionService = mock();
+        iacScanProductExecutionService = mock();
         scanLogService = mock();
         reportService = mock();
         report = mock();
@@ -116,6 +119,7 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
         when(productExecutionServiceContainer.getPrepareProductExecutionService()).thenReturn(prepareProductExecutionService);
         when(productExecutionServiceContainer.getSecretScanProductExecutionService()).thenReturn(secretScanProductExecutionService);
+        when(productExecutionServiceContainer.getIacScanProductExecutionService()).thenReturn(iacScanProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;

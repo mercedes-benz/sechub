@@ -23,6 +23,7 @@ public class SecHubConfigurationModel {
     private Optional<SecHubDataConfiguration> data = Optional.empty();
     private Optional<SecHubLicenseScanConfiguration> licenseScan = Optional.empty();
     private Optional<SecHubSecretScanConfiguration> secretScan = Optional.empty();
+    private Optional<SecHubIacScanConfiguration> iacScan = Optional.empty();
     private Optional<SecHubConfigurationMetaData> metaData = Optional.empty();
 
     private String apiVersion;
@@ -91,6 +92,14 @@ public class SecHubConfigurationModel {
 
     public void setSecretScan(SecHubSecretScanConfiguration secretScan) {
         this.secretScan = Optional.ofNullable(secretScan);
+    }
+
+    public void setIacScan(SecHubIacScanConfiguration iacScan) {
+        this.iacScan = Optional.ofNullable(iacScan);
+    }
+
+    public Optional<SecHubIacScanConfiguration> getIacScan() {
+        return iacScan;
     }
 
     public Optional<SecHubConfigurationMetaData> getMetaData() {

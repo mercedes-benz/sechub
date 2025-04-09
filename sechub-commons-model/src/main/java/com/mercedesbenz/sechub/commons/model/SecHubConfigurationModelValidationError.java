@@ -84,7 +84,13 @@ public enum SecHubConfigurationModelValidationError {
 
     REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined."),
 
-    RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION("An internal, reserved reference id may not be manually defined inside a data section."),;
+    RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION("An internal, reserved reference id may not be manually defined inside a data section."),
+
+    ILLEGAL_SOURCE_DATA_REFERENCE("Illegal source data reference."),
+
+    ILLEGAL_BINARY_DATA_REFERENCE("Illegal binary data reference."),
+
+    ;
 
     private String defaultMessage;
 

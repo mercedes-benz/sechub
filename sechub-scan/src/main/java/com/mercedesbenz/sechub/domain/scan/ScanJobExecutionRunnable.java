@@ -7,6 +7,7 @@ import org.slf4j.MDC;
 
 import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.IacScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.PrepareProductExecutionService;
@@ -75,12 +76,14 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
             InfrastructureScanProductExecutionService infraScanProductExecutionService = executionServiceContainer.getInfraScanProductExecutionService();
             LicenseScanProductExecutionService licenseScanProductExecutionService = executionServiceContainer.getLicenseScanProductExecutionService();
             SecretScanProductExecutionService secretScanProductExecutionService = executionServiceContainer.getSecretScanProductExecutionService();
+            IacScanProductExecutionService iacScanProductExecutionService = executionServiceContainer.getIacScanProductExecutionService();
 
             codeScanProductExecutionService.executeProductsAndStoreResults(executionContext);
             webScanProductExecutionService.executeProductsAndStoreResults(executionContext);
             infraScanProductExecutionService.executeProductsAndStoreResults(executionContext);
             licenseScanProductExecutionService.executeProductsAndStoreResults(executionContext);
             secretScanProductExecutionService.executeProductsAndStoreResults(executionContext);
+            iacScanProductExecutionService.executeProductsAndStoreResults(executionContext);
 
         } catch (SecHubExecutionException e) {
             runnableData.setException(e);

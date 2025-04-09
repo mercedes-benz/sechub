@@ -52,6 +52,7 @@ public class HTMLReportHelper {
         switch (scanType) {
         case LICENSE_SCAN:
         case SECRET_SCAN:
+        case IAC_SCAN:
         case CODE_SCAN:
             SecHubCodeCallStack code = finding.getCode();
             if (code != null) {

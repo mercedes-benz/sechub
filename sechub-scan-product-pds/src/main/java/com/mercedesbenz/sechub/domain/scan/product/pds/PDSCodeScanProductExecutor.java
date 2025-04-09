@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
@@ -21,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 public class PDSCodeScanProductExecutor extends AbstractPDSProductExecutor {
 
     public PDSCodeScanProductExecutor() {
-        super(ProductIdentifier.PDS_CODESCAN, 1, ScanType.CODE_SCAN);
+        super(ProductIdentifier.PDS_CODESCAN, 1);
     }
 
     @Override

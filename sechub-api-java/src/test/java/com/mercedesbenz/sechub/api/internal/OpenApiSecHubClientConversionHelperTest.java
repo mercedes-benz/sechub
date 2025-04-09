@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.OpenApiScanJob;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -31,8 +32,18 @@ class OpenApiSecHubClientConversionHelperTest {
         helperToTest = new OpenApiSecHubClientConversionHelper();
     }
 
+    /**
+     * Tests scan type support.
+     *
+     * Why excludes hiere? The complete project is deprecated and will be removed
+     * soon, we won't implement newer types here! The sechub-openapi-* projects are
+     * the new ones. This here is only legacy and no longer active maintained.
+     *
+     * @param type
+     * @throws Exception
+     */
     @ParameterizedTest
-    @EnumSource(value = ScanType.class)
+    @EnumSource(value = ScanType.class, mode = Mode.EXCLUDE, names = "IAC_SCAN")
     void scantype_is_either_internal_or_public_but_available_in_origin_config_also_converted_json(ScanType type) throws Exception {
 
         /* prepare */

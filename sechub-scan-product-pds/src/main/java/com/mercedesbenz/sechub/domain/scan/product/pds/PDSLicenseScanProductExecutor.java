@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfigImpl;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
@@ -21,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 public class PDSLicenseScanProductExecutor extends AbstractPDSProductExecutor {
 
     public PDSLicenseScanProductExecutor() {
-        super(ProductIdentifier.PDS_LICENSESCAN, 1, ScanType.LICENSE_SCAN);
+        super(ProductIdentifier.PDS_LICENSESCAN, 1);
     }
 
     @Override

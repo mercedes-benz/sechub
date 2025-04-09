@@ -28,7 +28,6 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
@@ -88,7 +87,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     SecHubDirectCheckmarxResilienceConfiguration environmentBasedResilienceConfig;
 
     public CheckmarxProductExecutor() {
-        super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
+        super(ProductIdentifier.CHECKMARX, 1);
     }
 
     @PostConstruct

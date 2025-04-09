@@ -76,6 +76,15 @@ public class SecHubConfigurationModelReducedCloningSupport {
                 newModel.setSecretScan(new SecHubSecretScanConfiguration());
             }
             break;
+        case IAC_SCAN:
+            Optional<SecHubIacScanConfiguration> iacScan = model.getIacScan();
+            if (iacScan.isPresent()) {
+                newModel.setIacScan(iacScan.get());
+            } else {
+                LOG.warn("The model did not contain a iac scan configuration - so add new one as fallback");
+                newModel.setIacScan(new SecHubIacScanConfiguration());
+            }
+            break;
         case WEB_SCAN:
 
             Optional<SecHubWebScanConfiguration> webScan = model.getWebScan();
