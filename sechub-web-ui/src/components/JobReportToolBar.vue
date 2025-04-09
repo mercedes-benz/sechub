@@ -6,8 +6,11 @@
     />
     <v-toolbar color="background_paper">
       <v-toolbar-title>
-        {{ jobUUID }}
-        {{ scanType }}
+        <span>{{ jobUUID }}</span>
+        <span
+          class="ml-6 sechub-primary-color"
+        >{{ scanType }}</span>
+
       </v-toolbar-title>
       <v-icon
         class="ma-2"
@@ -21,6 +24,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { getTrafficLightClass } from '@/utils/projectUtils'
+  import '@/styles/sechub.scss'
 
   export default defineComponent({
     props: {

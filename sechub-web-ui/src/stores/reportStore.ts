@@ -33,7 +33,6 @@ export const useReportStore = defineStore(STORE_NAME, {
           // we store MAXIMAL_CACHE_SIZE reports in localstorage
           this.reports.shift()
         }
-
       } else if (JSON.stringify(this.reports[existingReportIndex]) !== JSON.stringify(newReport)) {
         // report already in store but has canged
         this.reports[existingReportIndex] = newReport

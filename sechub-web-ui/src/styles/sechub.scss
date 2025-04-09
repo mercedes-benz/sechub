@@ -1,10 +1,10 @@
 .background-color {
     background-color: rgb(var(--v-theme-layer_01)) !important;
-  }
+}
 
   .background-color-light {
     background-color: rgb(var(--v-theme-layer_02)) !important;
-  }
+}
 
   .traffic-light-none {
     color: transparent;
@@ -22,9 +22,13 @@
     color: rgb(var(--v-theme-warning)) !important;
   }
 
-  .sechub-primary-color {
+  .sechub-primary-color-report {
     color: rgb(var(--v-theme-primary)) !important;
     background-color: rgb(var(--v-theme-layer_01)) !important;
+  }
+
+  .sechub-primary-color {
+    color: rgb(var(--v-theme-primary)) !important;
   }
 
   .sechub-report-expandable-element {

@@ -4,7 +4,7 @@
     class="background-color"
     fixed-header
   >
-    <tbody class="sechub-primary-color">
+    <tbody class="sechub-primary-color-report">
       <tr>
         <th>{{ $t('REPORT_DESCRIPTION_LOCATION') }}</th>
         <th>{{ $t('REPORT_DESCRIPTION_LINE') }}</th>
@@ -32,7 +32,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.callstack ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -44,7 +44,7 @@
           />
         </tr>
       </tbody>
-      <tbody v-if="isExpanded.callstack" class="sechub-primary-color">
+      <tbody v-if="isExpanded.callstack" class="sechub-primary-color-report">
         <tr>
           <th>{{ $t('REPORT_DESCRIPTION_LOCATION') }}</th>
           <th>{{ $t('REPORT_DESCRIPTION_LINE') }}</th>
@@ -70,7 +70,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.revision ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -97,7 +97,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.description ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -123,7 +123,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.solution ? 'mdi-chevron-up' : 'mdi-chevron-down'"

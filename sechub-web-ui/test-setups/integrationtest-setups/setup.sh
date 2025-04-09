@@ -32,8 +32,11 @@ echo "- create test user: '$test_user1_name'"
 $SECHUB_API_SCRIPT user_signup $test_user1_name $test_user1_email
 $SECHUB_API_SCRIPT user_signup_accept $test_user1_name
 
-# echo "- assign test user: $test_user1_name to project: $test_project_name"
-# $SECHUB_API_SCRIPT project_assign_user $test_project_name $test_user1_name
+echo "- assign test user: $test_user1_name to projects"
+$SECHUB_API_SCRIPT project_assign_user $test_checkmarx_project_name $test_user1_name
+$SECHUB_API_SCRIPT project_assign_user $test_gosec_and_gitleaks_project_name $test_user1_name
+$SECHUB_API_SCRIPT project_assign_user $test_zap_project_name $test_user1_name
+
 
 echo "- setup project '$test_gosec_and_gitleaks_project_name' for codescan with gosec mock"
 # Create and assign a mocked executor, the result will always be RED

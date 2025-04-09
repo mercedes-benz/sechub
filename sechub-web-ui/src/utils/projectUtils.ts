@@ -38,7 +38,7 @@ export const getIcon = (text: string): string => {
     case 'SUCCESS':
       return 'mdi-check-circle-outline'
     default:
-      return 'mdi-help-circle'
+      return ''
   }
 }
 

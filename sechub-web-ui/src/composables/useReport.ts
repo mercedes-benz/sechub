@@ -13,18 +13,17 @@ export async function useFetchReport (projectId: string, jobUUID:string) {
 
   try {
     report.value = await defaultClient.withExecutionApi.userDownloadJobReport({
-      projectId: projectId,
-      jobUUID: jobUUID,
+      projectId,
+      jobUUID,
     })
     store.storeReport(report.value)
-    
   } catch (err) {
-    let errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
+    const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
     console.error(errMsg, err)
     error.value = errMsg
-  }finally{
+  } finally {
     loading.value = false
   }
 
-  return {report, error, loading}
+  return { report, error, loading }
 }

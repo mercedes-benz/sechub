@@ -6,7 +6,7 @@
     class="background-color"
     fixed-header
   >
-    <tbody class="sechub-primary-color">
+    <tbody class="sechub-primary-color-report">
       <tr>
         <th>{{ $t('REPORT_DESCRIPTION_LOCATION') }}</th>
         <th>{{ $t('REPORT_DESCRIPTION_ATTACK_VECTOR') }}</th>
@@ -45,7 +45,7 @@
       <!-- Webscan report details request -->
       <tbody v-if="isExpanded.reportDetails">
         <tr>
-          <th class="sechub-primary-color">
+          <th class="sechub-primary-color-report">
             {{ $t('REPORT_DETAILS_WEBSCAN_REQUEST') }}
           </th>
           <th />
@@ -108,7 +108,7 @@
       <!-- Webscan report details resposne -->
       <tbody v-if="isExpanded.reportDetails">
         <tr>
-          <th class="sechub-primary-color">
+          <th class="sechub-primary-color-report">
             {{ $t('REPORT_DETAILS_WEBSCAN_RESPONSE') }}
           </th>
           <th />
@@ -178,7 +178,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.description ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -204,7 +204,7 @@
       class="background-color sechub-report-expandable-element"
       fixed-header
     >
-      <tbody class="sechub-primary-color">
+      <tbody class="sechub-primary-color-report">
         <tr>
           <v-btn
             :append-icon="isExpanded.solution ? 'mdi-chevron-up' : 'mdi-chevron-down'"

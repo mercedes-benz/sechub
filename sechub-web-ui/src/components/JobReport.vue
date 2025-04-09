@@ -117,7 +117,7 @@
         { title: 'ID', key: 'id', sortable: true },
         { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity' },
         { title: 'CWE', key: 'cweId' },
-        { title: t('REPORT_DESCRIPTION_NAME'), key: 'name' },
+        { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
       ]
 
       const groupBy = ref([{ key: 'severity', order: false }])
@@ -175,7 +175,7 @@
           case 'INFO':
             return 'mdi-information-outline'
           default:
-            return 'mdi-help-circle'
+            return ''
         }
       }
 
