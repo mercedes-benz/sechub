@@ -6,6 +6,9 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
+            <template #prepend>
+              <v-btn icon="mdi-refresh" @click="fetchData()"></v-btn>
+            </template>
           </v-toolbar>
 
           <!-- Case when the user is not assigned to any project -->
@@ -62,7 +65,11 @@
 
     setup () {
       const router = useRouter()
-      const { projects, error, loading } = useFetchProjects()
+      const projects = ref<ProjectData[]>([])
+      const error = ref<string | undefined>(undefined)
+      const loading = ref(true)
+
+      fetchData()
 
       const openProjectPage = (project: ProjectData) => {
         router.push({
@@ -73,6 +80,13 @@
         })
       }
 
+      async function fetchData(){
+        const { projects: reloadProjects, error: reloadError, loading: reloadLoading } = await useFetchProjects()
+        projects.value = reloadProjects.value
+        error.value = reloadError.value
+        loading.value = reloadLoading.value
+      }
+
       return {
         ownedClass: {
           'project-owned': true,
@@ -80,6 +94,7 @@
         projects,
         loading,
         error,
+        fetchData,
         openProjectPage,
       }
     },
