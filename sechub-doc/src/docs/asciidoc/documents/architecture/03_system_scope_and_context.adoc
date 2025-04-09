@@ -30,7 +30,7 @@ plantuml::diagrams/diagram_technical_context_overview.plantuml[format=svg, title
 
 
 ==== PDS (Product delgation server)
-This approach had some cave eats: For every product it was necessary to write java code (adapter, executor etc.).
+This approach had some caveeats: For every product it was necessary to write java code (adapter, executor etc.).
 Also it was only possible to integrate 3rd party products having a REST or SOAP API. But it was 
 not possible to integrate tools which did only provide a command line interface.
  

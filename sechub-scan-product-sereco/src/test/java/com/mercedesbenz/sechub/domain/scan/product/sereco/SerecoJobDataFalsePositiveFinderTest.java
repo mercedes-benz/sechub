@@ -33,7 +33,7 @@ public class SerecoJobDataFalsePositiveFinderTest {
 
         finderToTest.jobDataCodeScanStrategy = jobDataCodeScanStrategy;
         finderToTest.jobDataIacScanStrategy = jobDataIacScanStrategy;
-        finderToTest.jobDataSebScanStrategy = jobDataWebScanStrategy;
+        finderToTest.jobDataWebScanStrategy = jobDataWebScanStrategy;
     }
 
     @Test

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
 /**
- * Strategy to check if a secret scan vulnerability identified by a product is
+ * Strategy to check if a IaC scan vulnerability identified by a product is
  * handled by a false positive meta data configuration
  *
  * @author Albert Tregnaghi

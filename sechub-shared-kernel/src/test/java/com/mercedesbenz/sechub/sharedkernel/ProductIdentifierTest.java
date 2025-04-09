@@ -63,8 +63,6 @@ class ProductIdentifierTest {
     @ParameterizedTest()
     @ArgumentsSource(ExpectedScanTypesForProductIdentifierArgumentsProvider.class)
     void productIdentifier_has_expected_scantype(ProductIdentifier productIdentifier, ScanType expectedScanType) {
-        /* prepare */
-
         /* execute */
         ScanType result = productIdentifier.getType();
 

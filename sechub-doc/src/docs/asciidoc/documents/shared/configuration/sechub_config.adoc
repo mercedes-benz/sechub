@@ -177,8 +177,7 @@ include::sechub_config_example6_infrascan_ip.json[]
 ----
 <1> Define infrastructure scan
 <2> The `IP` s to scan. Every `IP` listed here must be white listed in `{sechub}` project.
-    The given example with `127.0.0.1` represents only an example and will always not work
-    because scanners do not scan them self.
+    The given example with 127.0.0.1 is just an example and will not work because scanners do not scan themselves.
 
 
 ==== License scan
