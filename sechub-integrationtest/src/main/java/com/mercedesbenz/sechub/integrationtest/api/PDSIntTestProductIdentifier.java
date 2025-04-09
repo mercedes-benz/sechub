@@ -112,6 +112,8 @@ public enum PDSIntTestProductIdentifier {
 
     PDS_SOLUTION_XRAY_SPDX_MOCKED("PDS_SOLUTION_XRAY_SPDX_MOCKED"),
 
+    PDS_SOLUTION_KICS_MOCKED("PDS_SOLUTION_KICS_MOCKED"),
+
     ;
 
     private String id;

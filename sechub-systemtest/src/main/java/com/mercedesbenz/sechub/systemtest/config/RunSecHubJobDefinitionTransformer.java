@@ -30,6 +30,7 @@ public class RunSecHubJobDefinitionTransformer {
         config.setInfraScan(definition.getInfraScan().orElse(null));
         config.setLicenseScan(definition.getLicenseScan().orElse(null));
         config.setSecretScan(definition.getSecretScan().orElse(null));
+        config.setIacScan(definition.getIacScan().orElse(null));
 
         SecHubDataConfiguration data = createDataConfiguration(definition);
         config.setData(data);

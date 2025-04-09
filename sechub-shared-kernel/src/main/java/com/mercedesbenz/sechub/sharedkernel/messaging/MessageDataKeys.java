@@ -2,6 +2,8 @@
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -40,6 +42,8 @@ public class MessageDataKeys {
     private static final SecHubEncryptionStatusMessageDataProvider SECHUB_DOMAIN_ENCRYPTION_STATUS_MESSAGE_DATA_PROVIDER = new SecHubEncryptionStatusMessageDataProvider();
     private static final SecHubProjectToTemplateMessageDataProvider SECHUB_PROJECT_TO_TEMPLATE_MESSAGE_DATA_PROVIDER = new SecHubProjectToTemplateMessageDataProvider();
     private static final SecHubProjectTemplatesMessageDataProvider SECHUB_PROJECT_TEMPLATES_MESSAGE_DATA_PROVIDER = new SecHubProjectTemplatesMessageDataProvider();
+    private static final ListOfStringsMessageDataProvider LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER = new ListOfStringsMessageDataProvider();
+    private static final MapStringToListOfStringsMessageDataProvider MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER = new MapStringToListOfStringsMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -203,6 +207,11 @@ public class MessageDataKeys {
     public static final MessageDataKey<AnalyticMessageData> ANALYTIC_SCAN_RESULT_DATA = createAnalyticsData("analytic.scan.result.data");
 
     public static final MessageDataKey<StorageMessageData> UPLOAD_STORAGE_DATA = createStorageData("upload.storage.data");
+
+    public static final MessageDataKey<List<String>> PROJECT_IDS = createKey("project.ids", LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<Map<String, List<String>>> PROJECT_ASSIGNED_PROFILE_IDS = createKey("project.assigned.profiles",
+            MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */

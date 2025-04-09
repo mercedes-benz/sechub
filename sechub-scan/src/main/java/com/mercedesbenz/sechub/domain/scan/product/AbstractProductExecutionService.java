@@ -90,6 +90,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
                 LOG.debug("{} NO execution necessary by {}", traceLogID, getClass().getSimpleName());
                 return;
             }
+            LOG.debug("{} execution is necessary by {}", traceLogID, getClass().getSimpleName());
             runOnAllAvailableExecutors(getProductExecutors(), context, traceLogID);
         } catch (RuntimeException e) {
             /* catch runtime errors and move and wrapt in SecHubExecutionException */

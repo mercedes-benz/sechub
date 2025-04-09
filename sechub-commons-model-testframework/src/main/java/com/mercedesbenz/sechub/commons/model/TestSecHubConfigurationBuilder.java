@@ -41,6 +41,7 @@ public class TestSecHubConfigurationBuilder {
         result.setCodeScan(testData.codeScanConfig);
         result.setLicenseScan(testData.licenseScanConfig);
         result.setSecretScan(testData.secretScanConfig);
+        result.setIacScan(testData.iacScanConfig);
 
         if (testData.data != null) {
 
@@ -78,6 +79,7 @@ public class TestSecHubConfigurationBuilder {
         private SecHubInfrastructureScanConfiguration infraConfig;
         private SecHubCodeScanConfiguration codeScanConfig;
         private SecHubSecretScanConfiguration secretScanConfig;
+        private SecHubIacScanConfiguration iacScanConfig;
         private SecHubLicenseScanConfiguration licenseScanConfig;
         private String projectId;
     }
@@ -175,6 +177,31 @@ public class TestSecHubConfigurationBuilder {
 
         public TestSecretScanConfigurationBuilder useDataReferences(String... referenceName) {
             testData.secretScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
+            return this;
+        }
+
+    }
+
+    public TestIacScanConfigurationBuilder iacScanConfig() {
+        return new TestIacScanConfigurationBuilder();
+    }
+
+    public class TestIacScanConfigurationBuilder {
+
+        private TestIacScanConfigurationBuilder() {
+            TestSecHubConfigurationBuilder.this.testData.iacScanConfig = new SecHubIacScanConfiguration();
+        }
+
+        public SecHubScanConfiguration build() {
+            return TestSecHubConfigurationBuilder.this.build();
+        }
+
+        public TestSecHubConfigurationBuilder and() {
+            return TestSecHubConfigurationBuilder.this;
+        }
+
+        public TestIacScanConfigurationBuilder useDataReferences(String... referenceName) {
+            testData.iacScanConfig.getNamesOfUsedDataConfigurationObjects().addAll(Arrays.asList(referenceName));
             return this;
         }
 

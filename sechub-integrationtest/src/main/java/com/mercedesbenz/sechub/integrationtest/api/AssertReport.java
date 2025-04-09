@@ -375,6 +375,8 @@ public class AssertReport {
             return summary.getLicenseScan();
         case SECRET_SCAN:
             return summary.getSecretScan();
+        case IAC_SCAN:
+            return summary.getIacScan();
         case WEB_SCAN:
             return summary.getWebScan();
         case REPORT:

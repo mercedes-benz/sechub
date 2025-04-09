@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveEntry;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveMetaData;
@@ -17,25 +17,27 @@ public class SerecoJobDataFalsePositiveFinderTest {
     private SerecoJobDataFalsePositiveFinder finderToTest;
     private CodeScanJobDataFalsePositiveStrategy jobDataCodeScanStrategy;
     private WebScanJobDataFalsePositiveStrategy jobDataWebScanStrategy;
+    private IacScanJobDataFalsePositiveStrategy jobDataIacScanStrategy;
 
     // we use always true here, because every mock will return false when
     // not defined. Only some "syntactic sugar" to make test easier to read
     private final boolean yesItIsAFalsePositive = true;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         finderToTest = new SerecoJobDataFalsePositiveFinder();
 
         jobDataCodeScanStrategy = mock(CodeScanJobDataFalsePositiveStrategy.class);
-        finderToTest.jobDataCodeScanStrategy = jobDataCodeScanStrategy;
-
+        jobDataIacScanStrategy = mock(IacScanJobDataFalsePositiveStrategy.class);
         jobDataWebScanStrategy = mock(WebScanJobDataFalsePositiveStrategy.class);
-        finderToTest.jobDataSebScanStrategy = jobDataWebScanStrategy;
 
+        finderToTest.jobDataCodeScanStrategy = jobDataCodeScanStrategy;
+        finderToTest.jobDataIacScanStrategy = jobDataIacScanStrategy;
+        finderToTest.jobDataWebScanStrategy = jobDataWebScanStrategy;
     }
 
     @Test
-    public void code_scan_triggers_codescan_strategy_and_uses_its_result() {
+    void code_scan_triggers_codescan_strategy_and_uses_its_result() {
         /* prepare */
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
@@ -66,7 +68,32 @@ public class SerecoJobDataFalsePositiveFinderTest {
     }
 
     @Test
-    public void web_scan_triggers_webscan_strategy_and_uses_its_result() {
+    void iac_scan_triggers_iacscan_strategy_and_uses_its_result() {
+        /* prepare */
+        /* @formatter:off */
+        SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
+                name("name1").
+                iacScan().
+                location("location1").
+                source("source1").
+                relevantPart("relevant1").
+                end().build();
+        /* @formatter:on */
+
+        FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
+
+        when(jobDataIacScanStrategy.isFalsePositive(vulnerability, metaData)).thenReturn(yesItIsAFalsePositive);
+
+        /* execute */
+        boolean strategyResult = finderToTest.isFound(vulnerability, metaData);
+
+        /* test */
+        verify(jobDataIacScanStrategy).isFalsePositive(vulnerability, metaData);
+        assertEquals(yesItIsAFalsePositive, strategyResult);
+    }
+
+    @Test
+    void web_scan_triggers_webscan_strategy_and_uses_its_result() {
         /* prepare */
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
@@ -91,7 +118,7 @@ public class SerecoJobDataFalsePositiveFinderTest {
     }
 
     @Test
-    public void webscan_triggers_not_codescanstrategy() {
+    void webscan_triggers_not_codescanstrategy() {
         /* prepare */
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
@@ -111,7 +138,7 @@ public class SerecoJobDataFalsePositiveFinderTest {
     }
 
     @Test
-    public void infrascan_triggers_not_codescanstrategy() {
+    void infrascan_triggers_not_codescanstrategy() {
         /* prepare */
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().

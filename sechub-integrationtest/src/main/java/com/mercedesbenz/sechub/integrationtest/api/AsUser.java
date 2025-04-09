@@ -42,6 +42,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
@@ -170,6 +171,11 @@ public class AsUser {
 
     private TestRestHelper getRestHelper() {
         return getContext().getRestHelper(user);
+    }
+
+    public AsUser deleteUser(TestUser user) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(user.getUserId()));
+        return this;
     }
 
     /**
@@ -1554,6 +1560,12 @@ public class AsUser {
     public void deleteAsset(String assetId) {
         String url = getUrlBuilder().buildAdminDeletesAsset(assetId);
         getRestHelper().delete(url);
+    }
+
+    public List<ProjectData> getAssignedProjectDataList() {
+        String url = getUrlBuilder().buildGetProjects();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(ProjectData.class, json);
     }
 
 }

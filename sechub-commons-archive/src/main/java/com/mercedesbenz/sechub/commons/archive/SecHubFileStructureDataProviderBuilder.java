@@ -83,22 +83,31 @@ public class SecHubFileStructureDataProviderBuilder {
         data.setScanType(scanType);
 
         switch (scanType) {
+
         case CODE_SCAN:
             data.setRootFolderAccepted(true); // for code scan we always accept root folder (legacy acceptance);
             addAllUsages(data, model.getCodeScan(), false);
             break;
+
         case INFRA_SCAN:
             break;
+
         case LICENSE_SCAN:
             addAllUsages(data, model.getLicenseScan(), true);
             break;
         case SECRET_SCAN:
             addAllUsages(data, model.getSecretScan(), true);
+
+        case IAC_SCAN:
+            addAllUsages(data, model.getIacScan(), true);
             break;
+
         case REPORT:
             break;
+
         case UNKNOWN:
             break;
+
         case WEB_SCAN:
             Optional<SecHubWebScanConfiguration> webScanOpt = model.getWebScan();
             if (!webScanOpt.isPresent()) {

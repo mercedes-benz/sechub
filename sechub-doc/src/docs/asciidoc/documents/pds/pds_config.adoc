@@ -112,7 +112,10 @@ include::product_delegation_server_config_example1.json[]
 
 <4> `scanType` can be either
  - codeScan
+ - iacScan
  - infraScan
+ - licenseScan
+ - secretScan
  - webScan
 
 <5> `description` is a free text description
