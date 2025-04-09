@@ -13,8 +13,9 @@ export async function useFetchProjects () {
     projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
     store.storeProjects(projects.value)
   } catch (err) {
-    error.value = 'ProjectAPI error fetching assigned projects.'
-    console.error('ProjectAPI error fetching assigned projects:', err)
+    const errMsg = 'ERROR_MESSAGE_FETCHING_PROJECTS'
+    error.value = errMsg
+    console.error(errMsg, err)
   } finally {
     loading.value = false
   }

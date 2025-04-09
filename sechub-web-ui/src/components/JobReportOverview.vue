@@ -78,12 +78,14 @@
   import { getTrafficLightClass } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
   import { useFetchReport } from '@/composables/useReport'
+  import { useI18n } from 'vue-i18n'
   import '@/styles/sechub.scss'
 
   export default {
     name: 'JobDetail',
 
     setup () {
+      const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
       const store = useReportStore()
@@ -92,9 +94,6 @@
       const jobUUID = ref('')
 
       const report = ref<SecHubReport>({})
-      const error = ref<string | undefined>(undefined)
-      const loading = ref(true)
-
       const scanTypeMap = new Map<string, SecHubReportScanTypeSummary>()
 
       if ('id' in route.params) {
@@ -108,21 +107,21 @@
       fetchReport()
 
       async function fetchReport () {
-        loading.value = true
-        error.value = undefined
 
         // load cached report from store
         const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (reportFromStore) {
           report.value = reportFromStore
-          loading.value = false
+          
         } else {
           // fetch report from server
           const { report: fetchedReport, error: fetchedError, loading: fetchLoading } = await useFetchReport(projectId.value, jobUUID.value)
 
           report.value = fetchedReport.value
-          error.value = fetchedError.value
-          loading.value = fetchLoading.value
+
+          if(fetchedError.value){
+            console.error(t(fetchedError.value) + jobUUID)
+          }
         }
 
         collectSummaries()

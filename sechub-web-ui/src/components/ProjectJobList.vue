@@ -13,7 +13,7 @@
           closable
           color="error"
           density="compact"
-          :title="$t('JOB_ERROR_TITLE')"
+          :title="$t('API_ERROR_TITLE')"
           type="warning"
           variant="tonal"
         >

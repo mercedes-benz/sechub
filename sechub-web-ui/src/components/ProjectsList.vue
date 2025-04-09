@@ -3,6 +3,19 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" md="8">
+
+        <v-alert
+          v-model="alert"
+          closable
+          color="error"
+          density="compact"
+          :title="$t('API_ERROR_TITLE')"
+          type="warning"
+          variant="tonal"
+        >
+          {{ error }}
+        </v-alert>
+
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
@@ -59,15 +72,18 @@
   import { useFetchProjects } from '@/composables/useProjects'
   import { ProjectData } from '@/generated-sources/openapi'
   import { useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
 
   export default {
     name: 'ProjectListComponent',
 
     setup () {
+      const { t } = useI18n()
       const router = useRouter()
       const projects = ref<ProjectData[]>([])
       const error = ref<string | undefined>(undefined)
       const loading = ref(true)
+      const alert = ref(false)
 
       fetchData()
 
@@ -83,12 +99,17 @@
       async function fetchData () {
         loading.value = true
         error.value = undefined
+        alert.value = false
 
         const { projects: reloadProjects, error: reloadError, loading: reloadLoading } = await useFetchProjects()
 
         projects.value = reloadProjects.value
-        error.value = reloadError.value
         loading.value = reloadLoading.value
+        
+        if (reloadError.value) {
+          error.value = t(reloadError.value)
+          alert.value = true
+        }
       }
 
       return {
@@ -98,6 +119,7 @@
         projects,
         loading,
         error,
+        alert,
         fetchData,
         openProjectPage,
       }
