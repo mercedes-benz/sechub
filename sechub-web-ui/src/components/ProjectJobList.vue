@@ -338,9 +338,9 @@
         await useFetchProjects()
 
         const newLoadedProject = store.getProjectById(projectId.value)
-          if (newLoadedProject !== undefined) {
-            projectData.value = newLoadedProject
-          }
+        if (newLoadedProject !== undefined) {
+          projectData.value = newLoadedProject
+        }
       }
 
       onMounted(async () => {

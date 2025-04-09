@@ -7,7 +7,7 @@
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ $t('PROJECTS') }}</v-toolbar-title>
             <template #prepend>
-              <v-btn icon="mdi-refresh" @click="fetchData()"></v-btn>
+              <v-btn icon="mdi-refresh" @click="fetchData()" />
             </template>
           </v-toolbar>
 
@@ -80,8 +80,12 @@
         })
       }
 
-      async function fetchData(){
+      async function fetchData () {
+        loading.value = true
+        error.value = undefined
+
         const { projects: reloadProjects, error: reloadError, loading: reloadLoading } = await useFetchProjects()
+
         projects.value = reloadProjects.value
         error.value = reloadError.value
         loading.value = reloadLoading.value

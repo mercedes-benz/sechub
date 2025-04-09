@@ -74,18 +74,16 @@
 </template>
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
-  import { useI18n } from 'vue-i18n'
-  import defaultClient from '@/services/defaultClient'
   import { SecHubReport, SecHubReportScanTypeSummary } from '@/generated-sources/openapi'
   import { getTrafficLightClass } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
+  import { useFetchReport } from '@/composables/useReport'
   import '@/styles/sechub.scss'
 
   export default {
     name: 'JobDetail',
 
     setup () {
-      const { t } = useI18n()
       const route = useRoute()
       const router = useRouter()
       const store = useReportStore()
@@ -94,6 +92,9 @@
       const jobUUID = ref('')
 
       const report = ref<SecHubReport>({})
+      const error = ref<string | undefined>(undefined)
+      const loading = ref(true)
+
       const scanTypeMap = new Map<string, SecHubReportScanTypeSummary>()
 
       if ('id' in route.params) {
@@ -102,6 +103,29 @@
 
       if ('jobId' in route.params) {
         jobUUID.value = route.params.jobId
+      }
+
+      fetchReport()
+
+      async function fetchReport () {
+        loading.value = true
+        error.value = undefined
+
+        // load cached report from store
+        const reportFromStore = store.getReportByUUID(jobUUID.value)
+        if (reportFromStore) {
+          report.value = reportFromStore
+          loading.value = false
+        } else {
+          // fetch report from server
+          const { report: fetchedReport, error: fetchedError, loading: fetchLoading } = await useFetchReport(projectId.value, jobUUID.value)
+
+          report.value = fetchedReport.value
+          error.value = fetchedError.value
+          loading.value = fetchLoading.value
+        }
+
+        collectSummaries()
       }
 
       function getButtonColor (title: string) {
@@ -151,20 +175,6 @@
           })
         }
       }
-
-      onMounted(async () => {
-        try {
-          report.value = await defaultClient.withExecutionApi.userDownloadJobReport({
-            projectId: projectId.value,
-            jobUUID: jobUUID.value,
-          })
-          collectSummaries()
-          store.storeReport(report.value)
-        } catch (err) {
-          const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID.value)
-          console.error(errMsg, err)
-        }
-      })
 
       return {
         projectId,
