@@ -9,7 +9,7 @@
         <v-card-title>{{ $t('PROJECT_DETAILS_PROFILES') }}</v-card-title>
       </v-card-item>
       <v-card-text>
-        <div v-for="(profile, i) in project.assignedProfileIds" :key="i">
+        <div v-for="(profile, i) in project.enabledProfileIds" :key="i">
           <span variant="text">{{ profile }}</span>
         </div>
       </v-card-text>
