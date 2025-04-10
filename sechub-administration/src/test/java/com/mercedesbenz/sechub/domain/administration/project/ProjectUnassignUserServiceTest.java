@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
