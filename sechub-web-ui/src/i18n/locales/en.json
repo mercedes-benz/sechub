@@ -37,6 +37,7 @@
     "USER_SUPPORT_EMAIL": "Support Email",
     "PROJECT_COPY_JOB_UUID": "Copy UUID",
     "PROJECT_DETAILS_TITLE": "Project",
+    "PROJECT_DETAILS_PROFILES": "Profiles",
     "PROJECT_DETAILS_OWNER": "Owner",
     "PROJECT_DETAILS_MEMBERS": "Members",
     "PROJECT_DETAILS_NOT_OWNED": "You are not the owner or an admin and not allowed to view project members.",

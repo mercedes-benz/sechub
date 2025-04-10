@@ -107,20 +107,18 @@
       fetchReport()
 
       async function fetchReport () {
-
         // load cached report from store
         const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (reportFromStore) {
           report.value = reportFromStore
-          
         } else {
           // fetch report from server
           const { report: fetchedReport, error: fetchedError, loading: fetchLoading } = await useFetchReport(projectId.value, jobUUID.value)
 
           report.value = fetchedReport.value
 
-          if(fetchedError.value){
-            console.error(t(fetchedError.value) + jobUUID)
+          if (fetchedError.value) {
+            console.error(t(fetchedError.value) + jobUUID.value)
           }
         }
 

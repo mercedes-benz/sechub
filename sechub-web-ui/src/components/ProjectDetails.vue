@@ -4,6 +4,16 @@
     <v-card-item>
       <v-card-title>{{ $t('PROJECT_DETAILS_TITLE') }} {{ project.projectId }}</v-card-title>
     </v-card-item>
+    <div>
+      <v-card-item>
+        <v-card-title>{{ $t('PROJECT_DETAILS_PROFILES') }}</v-card-title>
+      </v-card-item>
+      <v-card-text>
+        <div v-for="(profile, i) in project.assignedProfileIds" :key="i">
+          <span variant="text">{{ profile }}</span>
+        </div>
+      </v-card-text>
+    </div>
     <v-card-item>
       <v-card-title>{{ $t('PROJECT_DETAILS_OWNER') }}</v-card-title>
     </v-card-item>
