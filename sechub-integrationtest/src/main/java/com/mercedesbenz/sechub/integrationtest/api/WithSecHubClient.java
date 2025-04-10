@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -46,8 +46,11 @@ public class WithSecHubClient {
     private boolean trustAll = true; // in tests we normally trust all - other usages, like dev tools should change
                                      // this
 
-    WithSecHubClient(AsUser asUser) {
+    private File workingDirectory;
+
+    WithSecHubClient(AsUser asUser, File workingDirectory) {
         this.asUser = asUser;
+        this.workingDirectory = workingDirectory;
         try {
             this.outputFolder = TestUtil.createTempDirectoryInBuildFolder("with-sechub-client-");
             this.outputFolder.toFile().deleteOnExit();
@@ -273,11 +276,11 @@ public class WithSecHubClient {
         return asynchResult;
     }
 
-    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubScanConfiguration configuration) {
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubConfigurationModel configuration) {
         return startAsynchronScanFor(project, configuration, null, ApiTokenStrategy.VISIBLE_AS_ARGUMENT);
     }
 
-    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubScanConfiguration configuration, Map<String, String> environmentVariables,
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, SecHubConfigurationModel configuration, Map<String, String> environmentVariables,
             ApiTokenStrategy apiTokenStrategy) {
         /* ensure project id is inside the configuration */
         configuration.setProjectId(project.getProjectId());
@@ -363,6 +366,7 @@ public class WithSecHubClient {
         executor.setOutputFolder(outputFolder);
         executor.setSechubClientBinaryPath(sechubClientBinaryPath);
         executor.setTrustAll(trustAll);
+        executor.setWorkingDirectory(workingDirectory);
         return executor;
     }
 
@@ -372,14 +376,14 @@ public class WithSecHubClient {
         VISIBLE_AS_ARGUMENT
     }
 
-    private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list,
+    private ExecutionResult doExecute(ClientAction action, File sechubConfigurationFile, SecHubClientExecutor executor, List<String> list,
             Map<String, String> environmentVariables) {
-        return doExecute(action, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, file, executor, list, environmentVariables);
+        return doExecute(action, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, sechubConfigurationFile, executor, list, environmentVariables);
     }
 
-    private ExecutionResult doExecute(ClientAction action, ApiTokenStrategy hideAPIToken, File file, SecHubClientExecutor executor, List<String> list,
-            Map<String, String> environmentVariables) {
-        return executor.execute(file, hideAPIToken, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
+    private ExecutionResult doExecute(ClientAction action, ApiTokenStrategy hideAPIToken, File sechubConfigurationFile, SecHubClientExecutor executor,
+            List<String> list, Map<String, String> environmentVariables) {
+        return executor.execute(sechubConfigurationFile, hideAPIToken, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
     }
 
     private List<String> buildEnvironmentAndBehaviourCommands(TestProject project) {
