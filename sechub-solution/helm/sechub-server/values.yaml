@@ -159,9 +159,9 @@ staticResources:
   # Enable static location. This is used to serve static files to the web application.
   # (e.g. for custom background images, custom css files)
   enabled: false
-  # Define the locations of static resources. This is used to serve static files.
-  spring:
-    staticLocations: "file:/sechub/web-resources/static,classpath:/static"
+  # If enabled, the following configmaps will be mounted to the container:
+  # - configmap-background-image on /sechub/web-resources/static/login/images/background_image_login.jpg
+  # - configmap-custom-css on /sechub/web-resources/static/login/css/main.css
 
 security:
   # This section configures the application (or server) to be able to authorize incoming requests
