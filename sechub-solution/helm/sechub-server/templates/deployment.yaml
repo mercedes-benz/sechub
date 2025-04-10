@@ -174,7 +174,11 @@ spec:
           value: "{{ .Values.server.baseURL.userAccess }}"
         # Static resources for login page
         - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
-          value: "{{ .Values.staticResources.spring.staticLocations }}"
+{{- if .Values.staticResources.enabled }}
+          value: "file:/sechub/web-resources/static,classpath:/static"
+{{- else }}
+          value: "classpath:/static"
+{{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + File upload definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
