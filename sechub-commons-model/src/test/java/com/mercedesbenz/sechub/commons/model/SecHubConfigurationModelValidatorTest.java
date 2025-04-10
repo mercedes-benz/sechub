@@ -129,6 +129,19 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
+    void when_scan_type_iac_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setIacScan(new SecHubIacScanConfiguration());
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNotError(result, CONTAINS_NO_SCAN_CONFIGURATION);
+    }
+
+    @Test
     void when_scan_type_infrascan_validation_fails_NOT_with_CONTAINS_NO_SCAN_CONFIGURATION() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
@@ -900,6 +913,85 @@ class SecHubConfigurationModelValidatorTest {
 
         /* test */
         assertFalse(result.hasErrors());
+    }
+
+    @Test
+    void iac_scan__empty_config_results_in_error() throws Exception {
+        /* prepare */
+        SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setIacScan(iacScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.IAC_SCAN); // simulate correct module group found
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void iac_scan__config_with_data_source() throws Exception {
+        /* prepare */
+        String dataName = "data-reference-1";
+
+        SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
+        iacScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
+
+        SecHubSourceDataConfiguration dataSource = new SecHubSourceDataConfiguration();
+        dataSource.setUniqueName(dataName);
+
+        SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
+        dataConfiguration.getSources().add(dataSource);
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setIacScan(iacScan);
+        model.setData(dataConfiguration);
+
+        modelSupportCollectedScanTypes.add(ScanType.IAC_SCAN); // simulate correct module group found
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
+    }
+
+    @Test
+    void iac_scan__config_with_data_binary_fails_because_making_no_sense() throws Exception {
+        /* prepare */
+        String dataName = "data-reference-1";
+
+        SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
+        iacScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
+
+        SecHubBinaryDataConfiguration dataSource = new SecHubBinaryDataConfiguration();
+        dataSource.setUniqueName(dataName);
+
+        SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
+        dataConfiguration.getBinaries().add(dataSource);
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setIacScan(iacScan);
+        model.setData(dataConfiguration);
+
+        modelSupportCollectedScanTypes.add(ScanType.IAC_SCAN); // simulate correct module group found
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertTrue(result.hasErrors());
+        List<SecHubConfigurationModelValidationErrorData> errors = result.getErrors();
+        assertEquals(1, errors.size());
+        SecHubConfigurationModelValidationErrorData errorData = errors.iterator().next();
+        assertThat(errorData.getMessage()).contains("Illegal binary data reference").contains("Not allowed for iac scan");
     }
 
     @ParameterizedTest

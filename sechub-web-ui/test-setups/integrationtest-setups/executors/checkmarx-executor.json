@@ -1,0 +1,71 @@
+{
+    "name": "pds-checkmarx",
+    "productIdentifier": "PDS_CODESCAN",
+    "executorVersion": 1,
+    "enabled": true,
+    "setup": {
+        "baseURL": "https://localhost:8444",
+        "credentials": {
+            "user": "pds-inttest-techuser",
+            "password": "pds-inttest-apitoken"
+        },
+        "jobParameters": [
+            {
+                "key": "pds.config.productidentifier",
+                "value": "PDS_SOLUTION_CHECKMARX_MOCKED"
+            },
+            {
+                "key": "pds.config.use.sechub.storage",
+                "value": false
+            },
+            {
+                "key": "pds.mocking.disabled",
+                "value": true
+            },
+            {
+                "key": "sechub.productexecutor.pds.timeout.minutes",
+                "value": 600
+            },
+            {
+                "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+                "value": 30000
+            },
+            {
+                "key": "sechub.productexecutor.pds.trustall.certificates",
+                "value": true
+            },
+            {
+                "key": "pds.checkmarx.baseurl",
+                "value": "https://checkmarx.example.org"
+            },
+            {
+                "key": "checkmarx.newproject.teamid.mapping",
+                "value": "{\"entries\":[{\"pattern\":\".*\",\"replacement\":\"42\",\"comment\":\"sechub-team-default\"}]}"
+            },
+            {
+                "key": "pds.checkmarx.user",
+                "value": "sechub"
+            },
+            {
+                "key": "pds.checkmarx.password",
+                "value": "$uper$ecret123!"
+            },
+            {
+                "key": "pds.checkmarx.always.fullscan.enabled",
+                "value": "true"
+            },
+            {
+                "key": "checkmarx.newproject.presetid.mapping",
+                "value": "{}"
+            },
+            {
+                "key": "pds.checkmarx.engine.configuration.name",
+                "value": "Multi Language"
+            },
+            {
+                "key": "pds.config.script.trustall.certificates.enabled",
+                "value": true
+            }
+        ]
+    }
+}

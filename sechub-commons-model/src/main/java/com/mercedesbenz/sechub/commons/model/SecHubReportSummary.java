@@ -12,6 +12,7 @@ public class SecHubReportSummary {
     private Optional<SecHubReportScanTypeSummary> infraScan = Optional.ofNullable(null);
     private Optional<SecHubReportScanTypeSummary> licenseScan = Optional.ofNullable(null);
     private Optional<SecHubReportScanTypeSummary> secretScan = Optional.ofNullable(null);
+    private Optional<SecHubReportScanTypeSummary> iacScan = Optional.ofNullable(null);
     private Optional<SecHubReportScanTypeSummary> webScan = Optional.ofNullable(null);
 
     public SecHubReportSummary() {
@@ -37,6 +38,10 @@ public class SecHubReportSummary {
         return secretScan;
     }
 
+    public Optional<SecHubReportScanTypeSummary> getIacScan() {
+        return iacScan;
+    }
+
     public void setCodeScan(SecHubReportScanTypeSummary codeScan) {
         this.codeScan = Optional.ofNullable(codeScan);
     }
@@ -51,6 +56,10 @@ public class SecHubReportSummary {
 
     public void setSecretScan(SecHubReportScanTypeSummary secretScan) {
         this.secretScan = Optional.ofNullable(secretScan);
+    }
+
+    public void setIacScan(SecHubReportScanTypeSummary iacScan) {
+        this.iacScan = Optional.ofNullable(iacScan);
     }
 
     public void setWebScan(SecHubReportScanTypeSummary webScan) {

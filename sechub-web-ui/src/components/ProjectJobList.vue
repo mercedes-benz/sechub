@@ -13,7 +13,7 @@
           closable
           color="error"
           density="compact"
-          :title="$t('JOB_ERROR_TITLE')"
+          :title="$t('API_ERROR_TITLE')"
           type="warning"
           variant="tonal"
         >
@@ -23,28 +23,34 @@
         <v-card class="mr-auto" color="background_paper">
           <v-toolbar color="background_paper">
             <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
-            <!-- alternative to floating button ProjectDetailsFab
-            <v-btn color="primary" icon="mdi-information" @click="toggleProjectDetails" />
-            -->
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+            <template #prepend>
+              <v-btn
+                v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
+                icon="mdi-arrow-left"
+                @click="router.go(-1)"
+              />
+              <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
+            </template>
+
+            <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
+            <v-btn v-if="projectData.assignedUsers" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')" icon="mdi-reply" @click="backToProjectsList" />
           </v-toolbar>
+
+          <ProjectSettingsDialog
+            v-if="!loading"
+            :current-owner-user-id="projectData.owner.userId"
+            :project-id="projectData.projectId"
+            :visible="settingsDialog"
+            @close="settingsDialog=false"
+            @project-owner-changed="onProjectOwnerChanged"
+          />
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">
             <v-list bg-color="background_paper" lines="two">
               <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
               <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
             </v-list>
-            <ProjectSettingsDialog
-              :current-owner-user-id="projectData.owner.userId"
-              :project-id="projectData.projectId"
-              :visible="settingsDialog"
-              @close="settingsDialog=false"
-              @project-owner-changed="onProjectOwnerChanged"
-            />
-
           </div>
 
           <div v-else>
@@ -61,6 +67,7 @@
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_TRAFFIC_LIGHT') }}</th>
                   <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_REPORT') }}</th>
                   <th class="background-color">{{ $t('JOB_TABLE_DOWNLOAD_JOBUUID') }}</th>
+                  <th class="background-color" />
                 </tr>
               </thead>
               <tbody>
@@ -76,9 +83,16 @@
                   <td class="text-center"><span v-if="job.executionResult === 'OK'">
                     <v-menu>
                       <template #activator="{ props }">
-                        <v-btn class="ma-2" v-bind="props">
+                        <v-btn
+                          class="ma-2"
+                          v-bind="props"
+                        >
                           {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                          <v-icon end icon="mdi-arrow-down" />
+                          <v-icon
+                            color="primary"
+                            end
+                            icon="mdi-download-circle-outline"
+                          />
                         </v-btn>
                       </template>
                       <v-list>
@@ -92,7 +106,18 @@
                     </v-menu>
                   </span>
                   </td>
-                  <td>{{ job.jobUUID }}</td>
+                  <td><v-btn
+                    :disabled="job.executionResult !== 'OK'"
+                    @click="viewJobReport(job.jobUUID || '')"
+                  >
+                    {{ job.jobUUID }}
+                    <v-icon
+                      color="primary"
+                      end
+                      icon="mdi-eye-circle-outline"
+                    />
+                  </v-btn>
+                  </td>
                   <td>
                     <AsyncButton
                       v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
@@ -101,13 +126,21 @@
                       icon="mdi-close-circle-outline"
                       @button-clicked="cancelJob"
                     />
+                    <v-btn
+                      v-else
+                      v-tooltip="$t('PROJECT_COPY_JOB_UUID')"
+                      icon="mdi-content-copy"
+                      size="small"
+                      @click="copyToClipboard(job.jobUUID || '')"
+                    />
                   </td>
                 </tr>
               </tbody>
             </v-table>
           </div>
+          <!-- we need to add 1 because our page starts at 0 while pagination starts with 1 -->
           <Pagination
-            :current-page="jobsObject.page || 1"
+            :current-page="(jobsObject.page || 0) + 1"
             :total-pages="jobsObject.totalPages || 1"
             @page-changed="onPageChange"
           />
@@ -135,8 +168,8 @@
     SecHubJobInfoForUserListPage,
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
-  } from '@/generated-sources/openapi'
-
+  } from '@/generated-sources/openapi/'
+  import '@/styles/sechub.scss'
   import { useFetchProjects } from '@/composables/useProjects'
 
   export default {
@@ -150,8 +183,8 @@
       if ('id' in route.params) {
         projectId.value = route.params.id
       }
-      const store = useProjectStore()
 
+      const store = useProjectStore()
       const projectData = ref<ProjectData>({
         projectId: '',
         isOwned: false,
@@ -268,6 +301,10 @@
         fetchProjectJobs(currentRequestParameters)
       }
 
+      const copyToClipboard = (uuid: string) => {
+        navigator.clipboard.writeText(uuid)
+      }
+
       function onPageChange (page: number) {
         // the API page starts by 0 while vue pagination starts with 1
         currentRequestParameters.page = (page - 1).toString()
@@ -283,8 +320,10 @@
         })
       }
 
-      function backToProjectsList () {
-        router.go(-1)
+      function viewJobReport (jobId: string) {
+        router.push({
+          path: `/projects/${projectId.value}/jobs/${jobId}`,
+        })
       }
 
       function handleError (errMsg: string, err : unknown) {
@@ -298,26 +337,11 @@
 
         // We know the new owner id, but not the new owner email address.
         // Because of missing other REST API endpoints, we must reload all projects data
-        const { loading } = useFetchProjects();
+        await useFetchProjects()
 
-        let fetchTimeOutId : number | undefined = undefined
-        updateData(loading, fetchTimeOutId)
-      }
-
-      function updateData(loading: any, fetchTimeOutId: any, count = 0){
-        console.debug("Waiting fo useFetchProjects() data count:", count, loading.value);
-        if(count >= 10){
-          return
-        }
-
-        if(loading.value){
-          fetchTimeOutId = setTimeout(() => updateData(loading, fetchTimeOutId, ++count), 300)
-
-        }else{
-          const newLoadedProject = store.getProjectById(projectId.value);
-          if (newLoadedProject !== undefined) {
-            projectData.value = newLoadedProject
-          }
+        const newLoadedProject = store.getProjectById(projectId.value)
+        if (newLoadedProject !== undefined) {
+          projectData.value = newLoadedProject
         }
       }
 
@@ -339,6 +363,7 @@
 
       return {
         projectData,
+        router,
         jobsObject,
         jobs,
         loading,
@@ -352,9 +377,10 @@
         cancelJob,
         onPageChange,
         openNewScanPage,
-        backToProjectsList,
+        viewJobReport,
         settingsDialog,
         onProjectOwnerChanged,
+        copyToClipboard,
       }
     },
 
@@ -367,21 +393,3 @@
     },
   }
 </script>
-
-<style scoped>
-.background-color {
-  background-color: rgb(var(--v-theme-layer_01)) !important;
-}
-.traffic-light-none {
-  color: rgb(var(--v-theme-layer_01)) !important;
-}
-.traffic-light-red {
-  color: rgb(var(--v-theme-error)) !important;
-}
-.traffic-light-green {
-  color: rgb(var(--v-theme-success)) !important;
-}
-.traffic-light-yellow {
-  color: rgb(var(--v-theme-warning)) !important;
-}
-</style>

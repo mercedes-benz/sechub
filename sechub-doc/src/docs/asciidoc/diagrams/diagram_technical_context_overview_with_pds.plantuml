@@ -1,0 +1,20 @@
+' SPDX-License-Identifier: MIT
+' syntax, see http://plantuml.com/sequence-diagram
+
+Scheduler <-> "SecHub job"
+"SecHub job" <-> "PDS Product Executors"
+"PDS Product Executors" <-> "PDS Adapter"
+"PDS Adapter" <-> "PDS"
+"PDS" <-> "3rd party product"
+
+note over "PDS"
+ The PDS (product delegation server)
+ is a specialized server which comes
+ together with SecHub and has a default
+ REST API which is wellknown by SecHub.
+ 
+ It can be used to integrate every 3rd party tool
+ into SecHub in an extreme simple way.
+ Even command line tools can be integrated
+ easily.
+end note

@@ -25,3 +25,35 @@ export function getTrafficLightClass (value: string) {
       return 'traffic-light-none'
   }
 }
+
+export const getIcon = (text: string): string => {
+  switch (text) {
+    case 'ERROR':
+    case 'FAILED':
+      return 'mdi-alert-circle-outline'
+    case 'WARNING':
+      return 'mdi-alert-circle-outline'
+    case 'INFO':
+      return 'mdi-information-outline'
+    case 'SUCCESS':
+      return 'mdi-check-circle-outline'
+    default:
+      return ''
+  }
+}
+
+export const getIconColor = (text: string): string => {
+  switch (text) {
+    case 'ERROR':
+    case 'FAILED':
+      return 'error'
+    case 'WARNING':
+      return 'warning'
+    case 'INFO':
+      return 'primary'
+    case 'SUCCESS':
+      return 'success'
+    default:
+      return 'grey'
+  }
+}

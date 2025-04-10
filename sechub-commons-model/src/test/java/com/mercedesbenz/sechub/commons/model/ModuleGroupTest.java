@@ -122,13 +122,13 @@ class ModuleGroupTest {
         }
     }
 
-    @EnumSource(mode = Mode.INCLUDE, value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN" })
+    @EnumSource(mode = Mode.INCLUDE, value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN", "IAC_SCAN" })
     @ParameterizedTest
     void group_static_accepts(ScanType scanType) {
         assertGroupAssignedTo(ModuleGroup.STATIC, scanType);
     }
 
-    @EnumSource(mode = Mode.EXCLUDE, value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN" })
+    @EnumSource(mode = Mode.EXCLUDE, value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN", "IAC_SCAN" })
     @ParameterizedTest
     @NullSource
     void group_static_NOT_accepts(ScanType scanType) {

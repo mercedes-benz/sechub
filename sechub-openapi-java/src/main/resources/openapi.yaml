@@ -309,6 +309,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProjectUserData'
+        assignedProfileIds:
+          description: List of execution profile IDs assigned to the project.
+          type: array
+          items:
+            type: string
           
     ProjectUserData:
       title: ProjectUserData
@@ -458,6 +463,17 @@ components:
     SecHubLicenseScanConfiguration:
       title: SecHubLicenseScanConfiguration
       description: License scan configuration block
+      type: object
+      properties:
+        use:
+          description: Referenced data configuration objects by their unique names
+          items:
+            type: string
+          type: array
+
+    SecHubIacScanConfiguration:
+      title: SecHubIacScanConfiguration
+      description: IaC (infrastructure as code) scan configuration block
       type: object
       properties:
         use:
@@ -806,6 +822,8 @@ components:
           $ref: '#/components/schemas/SecHubLicenseScanConfiguration'
         secretScan:
           $ref: '#/components/schemas/SecHubSecretScanConfiguration'
+        iacScan:
+          $ref: '#/components/schemas/SecHubIacScanConfiguration'
         metaData:
           $ref: '#/components/schemas/SecHubConfigurationMetaData'
         apiVersion:
@@ -940,6 +958,7 @@ components:
         - infraScan
         - licenseScan
         - secretScan
+        - iacScan
         - report
         - analytics
         - prepare
@@ -985,6 +1004,11 @@ components:
           type: string
         version:
           type: string
+        headers:
+          type: object
+          additionalProperties: true
+        body:
+          $ref: '#/components/schemas/SecHubReportWebBody'
 
     SecHubReportWebBodyLocation:
       title: SecHubReportWebBodyLocation
@@ -1201,6 +1225,8 @@ components:
         licenseScan:
           $ref: '#/components/schemas/SecHubReportScanTypeSummary'
         secretScan:
+          $ref: '#/components/schemas/SecHubReportScanTypeSummary'
+        iacScan:
           $ref: '#/components/schemas/SecHubReportScanTypeSummary'
         webScan:
           $ref: '#/components/schemas/SecHubReportScanTypeSummary'
@@ -2455,11 +2481,11 @@ paths:
         - Project Administration
       x-content-type: application/json
 
-  /api/admin/project/{projectId}/membership/{userId}:
+  /api/management/project/{projectId}/membership/{userId}:
     post:
-      summary: Admin assigns user to project
-      description: An administrator assigns an user to an existing SecHub project
-      operationId: adminAssignUserToProject
+      summary: Admin or owner assigns user to project
+      description: An administrator or owner assigns an user to an existing SecHub project
+      operationId: adminOrOwnerAssignUserToProject
       parameters:
         - name: projectId
           description: The id for project
@@ -2476,6 +2502,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+        "403":
+          description: "Forbidden"
         "404":
           description: "Not found"
         "406":
@@ -2483,9 +2511,9 @@ paths:
       tags:
         - Project Administration
     delete:
-      summary: Admin unassigns user from project
-      description: An administrator unassigns an user from a sechub project.
-      operationId: adminUnassignUserFromProject
+      summary: Admin or owner unassigns user from project
+      description: An administrator or owner unassigns an user from a sechub project.
+      operationId: adminOrOwnerUnassignUserFromProject
       parameters:
         - name: projectId
           description: The id for project
@@ -2502,6 +2530,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+        "403":
+          description: "Forbidden"
         "404":
           description: "Not found"
         "406":

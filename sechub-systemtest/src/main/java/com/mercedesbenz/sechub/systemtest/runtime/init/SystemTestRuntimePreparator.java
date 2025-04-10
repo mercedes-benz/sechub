@@ -95,6 +95,7 @@ public class SystemTestRuntimePreparator {
         }
         handleCodeScan(test, context, runSecHubJob);
         handleSecretScan(test, context, runSecHubJob);
+        handleIacScan(test, context, runSecHubJob);
         handleLicenseScan(test, context, runSecHubJob);
         handleWebScan(test, context, runSecHubJob);
         handleInfraScan(test, context, runSecHubJob);
@@ -165,6 +166,15 @@ public class SystemTestRuntimePreparator {
         }
         SecHubSecretScanConfiguration secretScan = secretScanOpt.get();
         handleUsedDataConfigurationObjects(secretScan.getUse());
+    }
+
+    private void handleIacScan(TestDefinition test, SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
+        Optional<SecHubIacScanConfiguration> iacScanOpt = runSecHubJob.getIacScan();
+        if (iacScanOpt.isEmpty()) {
+            return;
+        }
+        SecHubIacScanConfiguration iacScan = iacScanOpt.get();
+        handleUsedDataConfigurationObjects(iacScan.getUse());
     }
 
     private void handleUsedDataConfigurationObjects(List<String> usageByNames) {

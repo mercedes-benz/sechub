@@ -56,6 +56,9 @@ public enum ProductIdentifier {
     /** Product delegation server - secret scan */
     PDS_SECRETSCAN(ScanType.SECRET_SCAN),
 
+    /** Product delegation server - iac scan */
+    PDS_IACSCAN(ScanType.IAC_SCAN),
+
     /** Product delegation server - analytics */
     PDS_ANALYTICS(ScanType.ANALYTICS),
 

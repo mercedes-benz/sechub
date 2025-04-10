@@ -27,7 +27,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
-    void configuration_having_infra_code_and_webs_config_parts__target_is_analytics_all_contained() throws Exception {
+    void configuration_having_code_infra_and_webs_config_parts__target_is_analytics_all_contained() throws Exception {
 
         /* prepare */
 
@@ -60,7 +60,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
-    void configuration_having_infra_code_and_webs_config_parts__target_is_codescan() throws Exception {
+    void configuration_having_code_iac_and_web_config_parts__target_is_iacscan() throws Exception {
 
         /* prepare */
 
@@ -72,24 +72,24 @@ class SecHubConfigurationModelReducedCloningSupportTest {
                                 and().
                     codeScanConfig().setFileSystemFolders("folder1","folder2").
                                 and().
-                    infraConfig().addURI("https://testinfra.example.com").
+                    iacScanConfig().useDataReferences("ref1").
 
                 build();
         /* @formatter:on */
 
         // check preconditions
-        assertTrue(config.getWebScan().isPresent());
-        assertTrue(config.getInfraScan().isPresent());
         assertTrue(config.getCodeScan().isPresent());
+        assertTrue(config.getWebScan().isPresent());
+        assertTrue(config.getIacScan().isPresent());
 
         /* execute */
-        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.CODE_SCAN);
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.IAC_SCAN);
 
         /* test */
         SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
-        assertTrue(resultClone.getCodeScan().isPresent());
+        assertFalse(resultClone.getCodeScan().isPresent());
         assertFalse(resultClone.getWebScan().isPresent());
-        assertFalse(resultClone.getInfraScan().isPresent());
+        assertTrue(resultClone.getIacScan().isPresent());
     }
 
     @Test

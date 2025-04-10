@@ -28,6 +28,7 @@ SecHub features:
 Supported security tools:
 
 * <<codescan, Code scanners>>
+* <<iacscan, IaC scanners>>
 * <<secretscan, Secrets scanners>>
 * <<webscan, Web scanners>>
 * <<infrascan, Infrastructure scanners>>
@@ -299,7 +300,7 @@ Each module performs a different security testing method:
 [[codescan]]
 ==== codeScan
 
-__Alias: Static application security testing (SAST), static code analysis, infrastructure-as-code (IaC) scan__
+__Alias: Static application security testing (SAST), static code analysis__
 
 **Status: Productive**
 
@@ -314,6 +315,20 @@ PDS-Solutions: +
 - Bandit +
 - Checkmarx SAST (wrapper only) +
 - … and more
+
+[[iacscan]]
+==== iacScan
+
+__Alias: infrastructure-as-code (IaC) scan__
+
+**Status: Productive**
+
+The `iacScan` module scans infrastructure source code for potential vulnerabilities (weaknesses). To scan the user uploads the code or binary to SecHub. Once the files are uploaded, SecHub delegates the scan to one of many security tools.
+
+More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#sechub-config-iac-scan
+
+PDS-Solutions: +
+- Kics +
 
 [[secretscan]]
 ==== secretScan

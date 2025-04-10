@@ -15,12 +15,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT,
+		id=UseCaseIdentifier.UC_ADMIN_OR_OWNER_ASSIGNS_USER_TO_PROJECT,
 		group=UseCaseGroup.USER_ADMINISTRATION,
-		apiName="adminAssignsUserToProject",
-		title="Admin assigns user to project",
-		description="An administrator assigns an user to an existing sechub project.")
-public @interface UseCaseAdminAssignsUserToProject {
+		apiName="adminOrOwnerAssignsUserToProject",
+		title="Admin or owner assigns user to project",
+		description="An administrator or project owner assigns an user to an existing sechub project.")
+public @interface UseCaseAdminOrOwnerAssignsUserToProject {
 
 	Step value();
 }

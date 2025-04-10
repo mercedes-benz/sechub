@@ -2,9 +2,13 @@
 node_modules
 /dist
 
-# local env files
+# local env files and configs
 .env.local
 .env.*.local
+config.json
+
+# Sechub reports
+sechub_report_*
 
 # Log files
 npm-debug.log*

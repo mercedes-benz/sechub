@@ -1,5 +1,18 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
+  <v-card class="mr-auto" color="background_paper">
+    <v-toolbar color="background_paper">
+      <v-toolbar-title>
+        {{ $t('USER_PROFILE_SETTINGS') }}
+      </v-toolbar-title>
+      <template #prepend>
+        <v-btn
+          icon="mdi-arrow-left"
+          @click="router.go(-1)"
+        />
+      </template>
+    </v-toolbar>
+  </v-card>
   <v-card>
     <v-card-item>
       <v-card-title>{{ $t('USER_TITLE') }}</v-card-title>
@@ -33,14 +46,23 @@
     <v-list lines="one">
       <v-list-item v-if="false">
         <v-container>
-          <v-btn variant="tonal">
+          <v-btn
+            class="custom-btn"
+            variant="tonal"
+          >
             {{ $t('USER_SETTINGS_CHANGE_PASSWORD') }}
           </v-btn>
         </v-container>
       </v-list-item>
       <v-list-item>
         <v-container>
-          <v-btn :loading="isRefreshingApiToken" variant="tonal" @click="refreshApiToken()">
+          <v-btn
+            class="custom-btn"
+            color="primary"
+            :loading="isRefreshingApiToken"
+            variant="tonal"
+            @click="refreshApiToken()"
+          >
             {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN') }}
           </v-btn>
 
@@ -49,7 +71,7 @@
               <v-card-title>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TITLE') }}</v-card-title>
               <v-card-text>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TEXT') }}</v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="refreshApiTokenDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
+                <v-btn class="custom-btn" color="primary" @click="refreshApiTokenDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -69,7 +91,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_WEBSITE') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="https://sechub.example.org" target="_blank">sechub.example.org</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a :href="userSupportWebsite" target="_blank">{{ userSupportWebsite }}</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
       <v-list-item>
@@ -87,7 +109,7 @@
         </template>
         <v-container>
           <v-list-item-title>{{ $t('USER_SUPPORT_EMAIL') }}</v-list-item-title>
-          <v-list-item-subtitle><a href="mailto:example@example.org">example@example.org</a></v-list-item-subtitle>
+          <v-list-item-subtitle><a :href="'mailto:' + userSupportEmail">{{ userSupportEmail }}</a></v-list-item-subtitle>
         </v-container>
       </v-list-item>
     </v-list>
@@ -98,15 +120,25 @@
   import defaultClient from '@/services/defaultClient'
   import { defineComponent } from 'vue'
   import type { UserDetailInformation } from '@/generated-sources/openapi'
+  import { useConfig } from '@/config'
+  import { useRouter } from 'vue-router'
 
   export default defineComponent({
     name: 'UserDetailInformation',
 
     setup () {
+      const router = useRouter()
       const userId = ref('')
       const email = ref('')
       const isRefreshingApiToken = ref(false)
       const refreshApiTokenDialog = ref(false)
+
+      const config = useConfig()
+
+      const userSupportEmail = ref('')
+      const userSupportWebsite = ref('')
+      userSupportEmail.value = config.value.SECHUB_USER_SUPPORT_EMAIL
+      userSupportWebsite.value = config.value.SECHUB_USER_SUPPORT_WEBSITE
 
       onMounted(async () => {
         try {
@@ -139,9 +171,12 @@
       return {
         userId,
         email,
+        router,
         refreshApiToken,
         isRefreshingApiToken,
         refreshApiTokenDialog,
+        userSupportEmail,
+        userSupportWebsite,
       }
     },
   })
@@ -156,7 +191,7 @@
   .v-card {
     margin-top: 25px;
 
-    .v-btn {
+    .custom-btn {
       width: 300px;
     }
   }

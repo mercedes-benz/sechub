@@ -24,7 +24,7 @@ Install the project dependencies:
 npm install
 ```
 
-### Building openAPI SecHub Client
+### Build the openAPI SecHub Client
 
 To generate the SecHub openAPI Client use:
 
@@ -58,9 +58,10 @@ npm run dev
 
 If you want to get Server responses, start the SecHub integrationtest Server e.g. via your IDE see the [developer guide](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#run-integration-tests-from-ide) for instructions.
 Use the SecHub user and password for your basic auth .env file.
-You can use the sechub-api.sh script to manage your user and project.
+You can use the sechub-api.sh script to manage your user and project or execute the `test-setups/integrationtest-setups/setup.sh` (scan jobs will fail but set up will be there)
 
 ### Running local development server with SecHub Integrationtest Server and PDS Integrationtest Server (Mocked Products)
+
 > Only useful If you want to get mocked scan results
 1. Follow all steps above
 2. Start the integration test PDS  
@@ -68,6 +69,7 @@ You can use the sechub-api.sh script to manage your user and project.
 3. (Optional) Initial setup: execute `test-setups/integrationtest-setups/setup.sh`. Make sure the .env file contains the correct values for basic auth.
 
 ### Running local development server with SecHub Docker Container and PDS Docker Container (Real Products)
+
 > Only useful If you want to get real scan results
 1. Start the SecHub Server as Docker Container (see sechub-solution/01-...)
 2. Start the required PDS as Docker (e.g. sechub-pds-solutions/gosec/05-...)
@@ -76,13 +78,27 @@ You can use the sechub-api.sh script to manage your user and project.
 
 Now you can test your web-ui with sechub and real scans!
 
-### Building for Production
+## Building for Production
 
-Set Environment Variables:
+### Environment Variables
+
 Be aware that `npm run build` sets the environment variables at build time.
-For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/conf.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
+For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/config.json it will override the VITE variables. Be aware that the config.json will be served by nginx.
 
-To build your project for production, use:
+Please see the config.ts for possible ENV variables that can be set and sechub-web-ui-solution/README.md
+
+### Example
+
+Custom user support email address 
+
+```json
+{
+    "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
+    "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsit.example.org"
+}
+```
+
+### build project for production
 
 ```bash
 npm run build

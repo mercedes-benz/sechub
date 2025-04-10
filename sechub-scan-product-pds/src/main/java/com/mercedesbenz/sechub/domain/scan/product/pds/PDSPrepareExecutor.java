@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSPrepareConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSPrepareConfigImpl;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
@@ -20,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 public class PDSPrepareExecutor extends AbstractPDSProductExecutor {
 
     public PDSPrepareExecutor() {
-        super(ProductIdentifier.PDS_PREPARE, 1, ScanType.PREPARE);
+        super(ProductIdentifier.PDS_PREPARE, 1);
     }
 
     @Override

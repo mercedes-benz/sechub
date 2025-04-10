@@ -274,5 +274,10 @@
     "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-multi_bandit-mocked.sh",
     "scanType" : "codeScan",
     "description" : "Returns mock data, but from real product"
+  }, {
+    "id" : "PDS_SOLUTION_KICS_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-kics-mocked.sh",
+    "scanType" : "iacScan",
+    "description" : "Returns mock data, but from real product"
   } ]
 }

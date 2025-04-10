@@ -226,6 +226,9 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
             case SECRET_SCAN:
                 summary.setSecretScan(scanTypeSummary);
                 break;
+            case IAC_SCAN:
+                summary.setIacScan(scanTypeSummary);
+                break;
             case WEB_SCAN:
                 summary.setWebScan(scanTypeSummary);
                 break;

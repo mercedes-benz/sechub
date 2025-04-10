@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -67,7 +66,7 @@ class AbstractProductExecutorTest {
     private class TestAbstractProductExecutor extends AbstractProductExecutor {
 
         public TestAbstractProductExecutor() {
-            super(ProductIdentifier.PDS_CODESCAN, 999, ScanType.CODE_SCAN);
+            super(ProductIdentifier.PDS_CODESCAN, 999);
         }
 
         @Override

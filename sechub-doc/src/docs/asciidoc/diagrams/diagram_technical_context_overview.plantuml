@@ -1,6 +1,5 @@
 ' SPDX-License-Identifier: MIT
 ' syntax, see http://plantuml.com/sequence-diagram
-title Technical overview as sequence diagram
 
 Developer -> BuildTool
 Developer -> Client

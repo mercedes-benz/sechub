@@ -17,7 +17,6 @@ import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerMetaDataID;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
@@ -47,7 +46,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
     MockDataIdentifierFactory mockDataIdentifierFactory;
 
     public NetsparkerProductExecutor() {
-        super(ProductIdentifier.NETSPARKER, 1, ScanType.WEB_SCAN);
+        super(ProductIdentifier.NETSPARKER, 1);
     }
 
     @Override

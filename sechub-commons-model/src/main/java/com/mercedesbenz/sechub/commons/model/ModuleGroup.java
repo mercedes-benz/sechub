@@ -25,7 +25,7 @@ import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 @MustBeKeptStable("Module group is used inside DB entries. Do NOT remove something or change name of enum values!")
 public enum ModuleGroup {
 
-    STATIC("static", CODE_SCAN, LICENSE_SCAN, SECRET_SCAN),
+    STATIC("static", CODE_SCAN, LICENSE_SCAN, SECRET_SCAN, IAC_SCAN),
 
     DYNAMIC("dynamic", WEB_SCAN),
 

@@ -18,7 +18,6 @@ import com.mercedesbenz.sechub.adapter.nessus.NessusAdapter;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
 import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
@@ -60,7 +59,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
     NessusInstallSetup installSetup;
 
     public NessusProductExecutor() {
-        super(ProductIdentifier.NESSUS, 1, ScanType.INFRA_SCAN);
+        super(ProductIdentifier.NESSUS, 1);
     }
 
     @Override

@@ -121,6 +121,7 @@ public class SerecoFalsePositiveMarker {
         switch (scanType) {
         case CODE_SCAN:
         case SECRET_SCAN:
+        case IAC_SCAN:
         case WEB_SCAN:
             return jobDataFalsePositiveFinder.isFound(vulnerability, metaData);
         default:
