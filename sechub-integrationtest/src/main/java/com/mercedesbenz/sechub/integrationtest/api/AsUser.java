@@ -83,7 +83,11 @@ public class AsUser {
     }
 
     public WithSecHubClient withSecHubClient() {
-        return new WithSecHubClient(this);
+        return withSecHubClient(null);
+    }
+
+    public WithSecHubClient withSecHubClient(File workingDirectory) {
+        return new WithSecHubClient(this, workingDirectory);
     }
 
     public AsUser enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {

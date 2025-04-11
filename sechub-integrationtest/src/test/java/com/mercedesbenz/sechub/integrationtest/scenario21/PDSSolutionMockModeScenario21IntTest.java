@@ -3,63 +3,86 @@ package com.mercedesbenz.sechub.integrationtest.scenario21;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario21.Scenario21.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.model.*;
+import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubIacScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubStatus;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
 import com.mercedesbenz.sechub.domain.scan.project.WebscanFalsePositiveProjectData;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
 
+@ExtendWith(IntegrationTestExtension.class)
+@WithTestScenario(Scenario21.class)
+/**
+ * Contains test which uses PDS solution mocks and write HTML and JSON reports
+ * to disk.
+ *
+ * The tests will use the build SecHub client to start the jobs - means no
+ * direct REST api calls. This will automatically check that our SecHub client
+ * is able to handles every solution and every scan type.
+ */
 public class PDSSolutionMockModeScenario21IntTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSSolutionMockModeScenario21IntTest.class);
 
     private static final String REFERENCE_NAME1 = "reference-name1";
 
-    @Rule
-    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario21.class);
-
     @Test
-    public void pds_solution_gosec_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_gosec_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_1, "gosec");
     }
 
     @Test
-    public void pds_solution_checkmarx_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_checkmarx_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_2, "checkmarx");
     }
 
     @Test
-    public void pds_solution_multi_bandit_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_multi_bandit_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_3, "multi_bandit");
     }
 
     @Test
-    public void pds_solution_zap_mocked_report_in_json_and_html_available() throws Exception {
-        executePDSSolutionJobAndStoreReports(ScanType.WEB_SCAN, PROJECT_4, "zap");
-    }
-
-    @Test
-    public void pds_solution_scancode_spdx_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_scancode_spdx_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.LICENSE_SCAN, PROJECT_5, "scancode");
     }
 
     @Test
-    public void pds_solution_gitleaks_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_gitleaks_mocked_report_in_json_and_html_available() throws Exception {
         SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.SECRET_SCAN, PROJECT_6, "gitleaks");
         /* @formatter:off */
         assertReportUnordered(report.toJSON())
@@ -73,18 +96,18 @@ public class PDSSolutionMockModeScenario21IntTest {
     }
 
     @Test
-    public void pds_solution_tern_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_tern_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.LICENSE_SCAN, PROJECT_7, "tern");
     }
 
     @Test
-    public void pds_solution_xray_spdx_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_xray_spdx_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.LICENSE_SCAN, PROJECT_8, "xray_spdx");
     }
 
     @Test
-    @Ignore("Test is correct, but CycloneDX currently not by SecHub. Test should be re-activated when CycloneDX import is implemented")
-    public void pds_solution_xray_cyclonedx_mocked_report_in_json_and_html_available() throws Exception {
+    @Disabled("Test is correct, but CycloneDX currently not by SecHub. Test should be re-activated when CycloneDX import is implemented")
+    void pds_solution_xray_cyclonedx_mocked_report_in_json_and_html_available() throws Exception {
         /*
          * TODO Albert Tregnaghi, 2023-12-14: Enable the test when we support CycloneDX
          * in SecHub
@@ -93,12 +116,12 @@ public class PDSSolutionMockModeScenario21IntTest {
     }
 
     @Test
-    public void pds_solution_findsecuritybugs_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_findsecuritybugs_mocked_report_in_json_and_html_available() throws Exception {
         executePDSSolutionJobAndStoreReports(ScanType.CODE_SCAN, PROJECT_10, "findsecuritybugs");
     }
 
     @Test
-    public void pds_solution_kics_mocked_report_in_json_and_html_available() throws Exception {
+    void pds_solution_kics_mocked_report_in_json_and_html_available() throws Exception {
         /* execute + test */
         SecHubReportModel report = executePDSSolutionJobAndStoreReports(ScanType.IAC_SCAN, PROJECT_11, "kics");
 
@@ -116,7 +139,7 @@ public class PDSSolutionMockModeScenario21IntTest {
     }
 
     @Test
-    public void pds_solution_zap_mocked_report_REST_API_direct_mark_and_unmark_false_positive_projectData_webscan() throws Exception {
+    void pds_solution_zap_mocked_report_in_json_and_html_available_and_test_fp_handling_web_works() throws Exception {
         /* @formatter:off */
 
         /* prepare */
@@ -178,9 +201,9 @@ public class PDSSolutionMockModeScenario21IntTest {
 
     private SecHubReportModel executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
         SecHubConfigurationModel model = createTestModelFor(scanType, project);
-        UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, model);
+        LOG.info("using sechub config:\n{}", JSONConverter.get().toJSON(model, true));
+        UUID jobUUID = as(USER_1).withSecHubClient(new File("src/test/resources/solution-mocks")).startAsynchronScanFor(project, model).getJobUUID();
 
-        as(USER_1).approveJob(project, jobUUID);
         waitForJobDone(project, jobUUID, 30, true);
 
         /* execute */
@@ -243,11 +266,16 @@ public class PDSSolutionMockModeScenario21IntTest {
 
     private SecHubConfigurationModel createTestModelFor(ScanType type, TestProject project) {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        String sourceFolderForUpload = null;
+        String fileToUpload = null;
+
         switch (type) {
         case CODE_SCAN:
             SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
             codeScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
             model.setCodeScan(codeScan);
+            sourceFolderForUpload = "code-testproject/src";
             break;
         case INFRA_SCAN:
             SecHubInfrastructureScanConfiguration infraScan = new SecHubInfrastructureScanConfiguration();
@@ -262,16 +290,19 @@ public class PDSSolutionMockModeScenario21IntTest {
             SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
             licenseScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
             model.setLicenseScan(licenseScan);
+            sourceFolderForUpload = "code-testproject/src";
             break;
         case SECRET_SCAN:
             SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
             secretScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
             model.setSecretScan(secretScan);
+            sourceFolderForUpload = "code-testproject/src";
             break;
         case IAC_SCAN:
             SecHubIacScanConfiguration iacScan = new SecHubIacScanConfiguration();
             iacScan.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
             model.setIacScan(iacScan);
+            sourceFolderForUpload = "iac-testproject/deploy";
             break;
         case WEB_SCAN:
             SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
@@ -282,17 +313,27 @@ public class PDSSolutionMockModeScenario21IntTest {
                 throw new IllegalStateException("Should not happen - test corrupt", e);
             }
             model.setWebScan(webScan);
+            fileToUpload = "web-testproject/openapi.json";
+            sourceFolderForUpload = null;
+            ClientCertificateConfiguration clientCert = new ClientCertificateConfiguration();
+            clientCert.getNamesOfUsedDataConfigurationObjects().add(REFERENCE_NAME1);
+            Optional<ClientCertificateConfiguration> clientCertOpt = Optional.of(clientCert);
+            webScan.setClientCertificate(clientCertOpt);
             break;
         default:
             throw new IllegalStateException("Not implemented/handled type:" + type);
 
         }
-
         SecHubDataConfiguration data = new SecHubDataConfiguration();
         SecHubSourceDataConfiguration source = new SecHubSourceDataConfiguration();
         source.setUniqueName(REFERENCE_NAME1);
         SecHubFileSystemConfiguration fileSystem = new SecHubFileSystemConfiguration();
-        fileSystem.getFolders().add("source-folder1");
+        if (sourceFolderForUpload != null) {
+            fileSystem.getFolders().add(sourceFolderForUpload);
+        }
+        if (fileToUpload != null) {
+            fileSystem.getFiles().add(fileToUpload);
+        }
         source.setFileSystem(fileSystem);
         data.getSources().add(source);
         model.setData(data);
