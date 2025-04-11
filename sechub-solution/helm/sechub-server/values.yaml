@@ -160,7 +160,7 @@ staticResources:
   # (e.g. for custom background images, custom css files)
   enabled: false
   # If enabled, the following configmaps will be mounted to the container:
-  # - configmap-background-image on /sechub/web-resources/static/login/images/background_image_login.jpg
+  # - configmap-background-image - background image file for the login screen (create example: ...)
   # - configmap-custom-css - custom css file for the login page (see /file/path/to/default/css for default version)
 
 security:
