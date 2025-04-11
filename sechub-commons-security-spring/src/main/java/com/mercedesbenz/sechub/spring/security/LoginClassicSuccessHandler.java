@@ -56,6 +56,7 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
         String credentialsEncoded = encoder.encodeToString(credentialsEncrypted);
         Cookie cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, credentialsEncoded, cookieAge, BASE_PATH);
         response.addCookie(cookie);
+
         log.debug("Redirecting to {}", redirectUri);
         response.sendRedirect(redirectUri);
     }

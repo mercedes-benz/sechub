@@ -32,7 +32,7 @@ public class PDSHeartBeatTriggerService {
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 1000 * 60; // every minute trigger hearbeat per default
 
     private static final boolean DEFAULT_SCHEDULING_ENABLED = true;
-    private static final boolean DEFAULT_VERBOSE_LOGGING_ENABLED = true;
+    private static final boolean DEFAULT_VERBOSE_LOGGING_ENABLED = false;
 
     private UUID uuidForThisServerHeartBeat;
 
