@@ -24,6 +24,7 @@ type SecHubConfig struct {
 	ProjectID   string                `json:"project"`
 	Server      string                `json:"server"`
 	CodeScan    CodeScanConfig        `json:"codeScan"`
+	IacScan     IacScanConfig         `json:"iacScan"`
 	LicenseScan LicenseScanConfig     `json:"licenseScan"`
 	SecretScan  SecretScanConfig      `json:"secretScan"`
 	Data        DataSectionScanConfig `json:"data"`
@@ -68,6 +69,11 @@ type LicenseScanConfig struct {
 
 // SecretScanConfig - definition of a secrets scan
 type SecretScanConfig struct {
+	Use []string `json:"use"`
+}
+
+// IacScanConfig - definition of a IaC scan
+type IacScanConfig struct {
 	Use []string `json:"use"`
 }
 
@@ -172,6 +178,7 @@ func adjustSourceFilterPatterns(context *Context) {
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 				adjustSourceFilterPatternsWhitelistAll(item.SourceCodePatterns, true)
 		} else if slices.Contains(context.sechubConfig.CodeScan.Use, item.Name) ||
+			slices.Contains(context.sechubConfig.IacScan.Use, item.Name) ||
 			slices.Contains(context.sechubConfig.LicenseScan.Use, item.Name) {
 			// Append default source code patterns for code scans
 			context.sechubConfig.Data.Sources[i].SourceCodePatterns =
@@ -217,7 +224,7 @@ func computeSourceExcludePatterns(context *Context, config NamedCodeScanConfig) 
 			result = append(result, DefaultSCMDirPatterns...)
 		}
 		result = append(result, DefaultSecretScanUnwantedFilePatterns...)
-	} else if slices.Contains(context.sechubConfig.CodeScan.Use, config.Name) {
+	} else if slices.Contains(context.sechubConfig.CodeScan.Use, config.Name) || slices.Contains(context.sechubConfig.IacScan.Use, config.Name) {
 		result = DefaultSourceCodeExcludeDirPatterns
 	}
 	return result

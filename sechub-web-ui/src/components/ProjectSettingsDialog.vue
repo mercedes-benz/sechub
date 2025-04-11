@@ -115,11 +115,12 @@
           })
 
           originOwnerUserId = settingsOwnerUserId.value
+          console.debug('Project owner for project', projectId.value, 'changed to', originOwnerUserId)
 
           updateOwnerFieldIcon()
           clearSettingsErrors()
 
-          emit('projectOwnerChanged', originOwnerUserId)
+          emit('projectOwnerChanged')
         } catch (err) {
           const errMsg = t('PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED')
           handleSettingsError(errMsg, err)

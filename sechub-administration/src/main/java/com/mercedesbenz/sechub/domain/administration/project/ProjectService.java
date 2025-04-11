@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.project;
 
-import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.PROJECT_ASSIGNED_PROFILE_IDS;
+import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS;
 import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.PROJECT_IDS;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class ProjectService {
         return collectProjectDataForUser(user);
     }
 
-    @IsSendingSyncMessage(MessageID.REQUEST_PROFILE_IDS_FOR_PROJECT)
+    @IsSendingSyncMessage(MessageID.REQUEST_ENABLED_PROFILE_IDS_FOR_PROJECTS)
     private List<ProjectData> collectProjectDataForUser(User user) {
 
         /* @formatter:off */
@@ -53,16 +53,16 @@ public class ProjectService {
                                             .map(Project::getId)
                                             .collect(Collectors.toList());
         /* @formatter:on */
-        DomainMessage message = new DomainMessage(MessageID.REQUEST_PROFILE_IDS_FOR_PROJECT);
+        DomainMessage message = new DomainMessage(MessageID.REQUEST_ENABLED_PROFILE_IDS_FOR_PROJECTS);
         message.set(PROJECT_IDS, projectIdsForUser);
         DomainMessageSynchronousResult response = eventBus.sendSynchron(message);
 
-        Map<String, List<String>> projectToProfileIds = response.get(PROJECT_ASSIGNED_PROFILE_IDS);
+        Map<String, List<String>> enabledProjectToProfileIds = response.get(PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS);
 
         List<ProjectData> projectDataList = new ArrayList<>();
         for (Project project : user.getProjects()) {
 
-            ProjectData projectData = createProjectDataForProject(user, project, projectToProfileIds);
+            ProjectData projectData = createProjectDataForProject(user, project, enabledProjectToProfileIds);
             projectDataList.add(projectData);
 
         }
@@ -92,7 +92,7 @@ public class ProjectService {
 
         List<String> profileIds = projectToProfileIds.get(project.getId());
         if (profileIds != null) {
-            projectData.setAssignedProfileIds(new HashSet<>(profileIds));
+            projectData.setEnabledProfileIds(new HashSet<>(profileIds));
         }
         return projectData;
     }

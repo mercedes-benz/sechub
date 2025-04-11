@@ -170,7 +170,7 @@ public class ProjectAdministrationScenario3IntTest {
             assertThat(assignedUsers).containsOnly(expectedAssignedUsers);
         }
 
-        Set<String> assignedProfileIds = projectData.getAssignedProfileIds();
+        Set<String> assignedProfileIds = projectData.getEnabledProfileIds();
         assertThat(assignedProfileIds).containsExactly(expectedProfileId);
     }
 

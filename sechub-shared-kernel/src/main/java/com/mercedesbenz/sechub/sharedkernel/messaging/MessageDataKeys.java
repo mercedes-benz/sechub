@@ -210,8 +210,8 @@ public class MessageDataKeys {
 
     public static final MessageDataKey<List<String>> PROJECT_IDS = createKey("project.ids", LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
 
-    public static final MessageDataKey<Map<String, List<String>>> PROJECT_ASSIGNED_PROFILE_IDS = createKey("project.assigned.profiles",
-            MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<Map<String, List<String>>> PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS = createKey(
+            "project.assigned.and.enabled.profile.ids", MAP_STRING_TO_LIST_OF_STRINGS_MESSAGE_DATA_PROVIDER);
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */

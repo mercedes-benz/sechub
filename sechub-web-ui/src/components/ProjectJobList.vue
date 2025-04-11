@@ -29,7 +29,7 @@
                 icon="mdi-arrow-left"
                 @click="router.go(-1)"
               />
-              <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="fetchProjectJobs(currentRequestParameters)" />
+              <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
             </template>
 
             <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
@@ -43,7 +43,7 @@
             :project-id="projectData.projectId"
             :visible="settingsDialog"
             @close="settingsDialog=false"
-            @project-owner-changed="onProjectOwnerChanged"
+            @project-owner-changed="refreshProjectData"
           />
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">
@@ -214,6 +214,11 @@
 
       const settingsDialog = ref(false)
 
+      async function refreshRequestedByUser (requestParameters: UserListsJobsForProjectRequest) {
+        fetchProjectJobs(requestParameters)
+        refreshProjectData()
+      }
+
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         try {
           jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
@@ -332,9 +337,7 @@
         console.error(errMsg, err)
       }
 
-      async function onProjectOwnerChanged (newOwnerUserId: String) {
-        console.debug('Project owner for project', projectId.value, 'changed to', newOwnerUserId)
-
+      async function refreshProjectData () {
         // We know the new owner id, but not the new owner email address.
         // Because of missing other REST API endpoints, we must reload all projects data
         await useFetchProjects()
@@ -343,6 +346,7 @@
         if (newLoadedProject !== undefined) {
           projectData.value = newLoadedProject
         }
+        console.debug('Project data has been refreshed.')
       }
 
       onMounted(async () => {
@@ -379,8 +383,9 @@
         openNewScanPage,
         viewJobReport,
         settingsDialog,
-        onProjectOwnerChanged,
+        refreshProjectData,
         copyToClipboard,
+        refreshRequestedByUser,
       }
     },
 

@@ -65,7 +65,9 @@ public class SecHubClientExecutor {
     private String sechubClientBinaryPath;
     private boolean trustAll;
     private File cachedExecutableFile;
+    private File workingDirectory;
     private static File cachedExampleContentFolder;
+    private static final TestFileWriter writer = new TestFileWriter();
 
     public class ExecutionResult {
         private int exitCode;
@@ -166,7 +168,7 @@ public class SecHubClientExecutor {
             String... options) {
         assertAPITokenSet(user);
 
-        File targetFolder = resolveScanTargetFolder(file);
+        File targetFolder = workingDirectory != null ? workingDirectory : resolveScanTargetFolder(file);
         List<String> commandsAsList = new ArrayList<>();
 
         handleExecutable(commandsAsList);
@@ -407,7 +409,6 @@ public class SecHubClientExecutor {
                 File testFile1 = new File(projectResourceFolder, "TestMeIfYouCan.java");
                 if (!testFile1.exists()) {
                     try {
-                        TestFileWriter writer = new TestFileWriter();
                         writer.writeTextToFile("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);
@@ -430,6 +431,10 @@ public class SecHubClientExecutor {
 
     public void setSechubClientBinaryPath(String pathToSecHubClientBinary) {
         this.sechubClientBinaryPath = pathToSecHubClientBinary;
+    }
+
+    public void setWorkingDirectory(File workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 
     public static void main(String[] args) {

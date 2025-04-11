@@ -86,7 +86,7 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         user2.setEmailAddress("user2@example.org");
 
         projectData.setAssignedUsers(List.of(user1, user2));
-        projectData.setAssignedProfileIds(Set.of("profile1", "profile2"));
+        projectData.setEnabledProfileIds(Set.of("profile1", "profile2"));
         List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
@@ -121,7 +121,7 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
                                         fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS).description("Optional: Assigned users (only viewable by owner or admin)"),
                                         fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_USER_ID).description("Name of assigned user"),
                                         fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_EMAIL_ADDRESS).description("Email address of assigned user"),
-                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_PROFILE_IDS+"[].").description("List of profile IDs assigned to the project.")
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ENABLED_PROFILE_IDS+"[].").description("List of profile IDs assigned to the project.")
                                 )
                         )
                 );

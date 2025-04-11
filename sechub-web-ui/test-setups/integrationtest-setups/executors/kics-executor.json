@@ -1,0 +1,47 @@
+{
+  "name": "pds-kics",
+  "productIdentifier": "PDS_IACSCAN",
+  "executorVersion": 1,
+  "enabled": true,
+  "setup": {
+    "baseURL": "https://localhost:8444",
+    "credentials": {
+        "user": "pds-inttest-techuser",
+        "password": "pds-inttest-apitoken"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_SOLUTION_KICS_MOCKED"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": false
+      },
+      {
+        "key": "pds.mocking.disabled",
+        "value": true
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": 180
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": 15000
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": true
+      },
+      {
+        "key": "pds.config.cancel.event.checkinterval.milliseconds",
+        "value": 2000
+      },
+      {
+        "key": "pds.config.cancel.maximum.waittime.seconds",
+        "value": 120
+      }
+    ]
+  }
+}

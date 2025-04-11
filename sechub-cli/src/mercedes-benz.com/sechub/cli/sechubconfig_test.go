@@ -194,6 +194,36 @@ func Example_newSecHubConfigFromFile_parses_codeScan_use_correctly() {
 	// [mysources-1 mysources-2]
 }
 
+func Example_newSecHubConfigFromFile_parses_iacScan_use_correctly() {
+	/* prepare */
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "mysources-1",
+						"fileSystem": { "folders": [ "src1/" ] }
+					},
+					{
+						"name": "mysources-2",
+						"fileSystem": { "folders": [ "src2/" ] }
+					}
+				]
+			},
+			"iacScan": {
+				"use": [ "mysources-1", "mysources-2" ]
+			}
+		}
+	`
+	/* execute */
+	result := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	/* test */
+	fmt.Printf("%+v\n", result.IacScan.Use)
+	// Output:
+	// [mysources-1 mysources-2]
+}
+
 func Example_adjustSourceFilterPatterns_respects_whitelistAll_false() {
 	/* prepare */
 	var context Context
