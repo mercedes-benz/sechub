@@ -155,6 +155,14 @@ go_mmproxy:
   # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
   image: "example.org/go-mmproxy:2.1.0"
 
+staticResources:
+  # Enable static location. This is used to serve static files to the web application.
+  # (e.g. for custom background images, custom css files)
+  enabled: false
+  # If enabled, please provide the following configmaps. They will be mounted into the container:
+  # - configmap-background-image - background image file for the login screen (create example: ...)
+  # - configmap-custom-css - custom css file for the login page (see /file/path/to/default/css for default version)
+
 security:
   # This section configures the application (or server) to be able to authorize incoming requests
   resourceServer:
