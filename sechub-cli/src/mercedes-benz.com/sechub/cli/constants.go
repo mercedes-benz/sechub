@@ -189,6 +189,12 @@ var actionlist = []string{
 // archiveDataPrefix - Prefix in Zip or Tar archives for files from "data" section
 const archiveDataPrefix = "__data__"
 
+// forbiddenArchiveDataSectionNames - reserved names that are rejected by SecHub server
+var forbiddenArchiveDataSectionNames = []string{
+	"__binaries_archive_root__",
+	"__sourcecode_archive_root__",
+}
+
 /* -------------------------------------- */
 /* -------- Command line options -------- */
 /* -------------------------------------- */

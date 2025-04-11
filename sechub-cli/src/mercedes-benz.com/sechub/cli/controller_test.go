@@ -118,3 +118,65 @@ func Test_prepareScan_binary_upload_respects_exclude_patterns(t *testing.T) {
 	sechubTestUtil.AssertContainsNot(list, "__data__/my-test/sechub-cli-tmptest/binaries/test.bin", t)         // exclude pattern 2
 	sechubTestUtil.AssertSize(list, 2, t)
 }
+
+func Example_verifySecHubConfigForbiddenNames() {
+	// PREPARE
+	var config Config
+	config.projectID = "test"
+
+	sechubJSON := `
+	{
+		"data": {
+			"binaries": [
+				{ "name": "okay1" },
+				{ "name": "__binaries_archive_root__" }
+			],
+			"sources":  [
+				{ "name": "__sourcecode_archive_root__" },
+ 				{ "name": "okay2" }
+			]
+		}
+	}
+	`
+	sechubconfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	context := NewContext(&config)
+	context.sechubConfig = &sechubconfig
+
+	// EXECUTE
+	result := verifySecHubConfig(context)
+
+	// TEST
+	fmt.Printf("result: %+v\n", result)
+
+	// Output:
+	// result: false
+}
+
+func Example_verifySecHubConfigForbiddenNamesOkay() {
+	// PREPARE
+	var config Config
+	config.projectID = "test"
+
+	sechubJSON := `
+	{
+		"data": {
+			"binaries": [ { "name": "okay1" } ],
+			"sources":  [ { "name": "okay2" } ]
+		}
+	}
+	`
+	sechubconfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	context := NewContext(&config)
+	context.sechubConfig = &sechubconfig
+
+	// EXECUTE
+	result := verifySecHubConfig(context)
+
+	// TEST
+	fmt.Printf("result: %+v\n", result)
+
+	// Output:
+	// result: true
+}
