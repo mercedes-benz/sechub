@@ -105,7 +105,7 @@
 
         projects.value = reloadProjects.value
         loading.value = reloadLoading.value
-        
+
         if (reloadError.value) {
           error.value = t(reloadError.value)
           alert.value = true

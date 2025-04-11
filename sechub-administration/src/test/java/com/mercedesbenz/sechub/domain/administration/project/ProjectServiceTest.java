@@ -2,7 +2,7 @@
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import static com.mercedesbenz.sechub.domain.administration.user.TestUserCreationFactory.createProjectUser;
-import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.PROJECT_ASSIGNED_PROFILE_IDS;
+import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -58,7 +58,7 @@ class ProjectServiceTest {
             String expectedOwnerEmailAddress) {
         /* prepare */
         DomainMessageSynchronousResult mockedResponse = mock();
-        when(mockedResponse.get(PROJECT_ASSIGNED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
+        when(mockedResponse.get(PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
         when(eventBus.sendSynchron(any())).thenReturn(mockedResponse);
 
         /* execute */
@@ -105,7 +105,7 @@ class ProjectServiceTest {
         boolean assertionDone = false;
         for (ProjectData projectData : projects) {
             if (PROJECT_ID_2.equals(projectData.getProjectId())) {
-                assertThat(projectData.getAssignedProfileIds()).containsAll(profileIdsProject2);
+                assertThat(projectData.getEnabledProfileIds()).containsAll(profileIdsProject2);
                 assertionDone = true;
             }
         }
@@ -117,7 +117,7 @@ class ProjectServiceTest {
         /* prepare */
         String userId = USER_ID_3;
         DomainMessageSynchronousResult mockedResponse = mock();
-        when(mockedResponse.get(PROJECT_ASSIGNED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
+        when(mockedResponse.get(PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
         when(eventBus.sendSynchron(any())).thenReturn(mockedResponse);
 
         /* execute */
@@ -133,7 +133,7 @@ class ProjectServiceTest {
         /* prepare */
         String userId = USER_ID_4;
         DomainMessageSynchronousResult mockedResponse = mock();
-        when(mockedResponse.get(PROJECT_ASSIGNED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
+        when(mockedResponse.get(PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS)).thenReturn(Collections.emptyMap());
         when(eventBus.sendSynchron(any())).thenReturn(mockedResponse);
 
         /* execute */
@@ -211,8 +211,8 @@ class ProjectServiceTest {
     }
 
     private DomainMessageSynchronousResult prepareValidSyncResult(String projectId, List<String> profileIds) {
-        DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.REQUEST_PROFILE_IDS_FOR_PROJECT);
-        response.set(PROJECT_ASSIGNED_PROFILE_IDS, Map.of(projectId, profileIds));
+        DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.REQUEST_ENABLED_PROFILE_IDS_FOR_PROJECTS);
+        response.set(PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS, Map.of(projectId, profileIds));
         return response;
     }
 }

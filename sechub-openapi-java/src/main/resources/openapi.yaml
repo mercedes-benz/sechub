@@ -309,8 +309,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProjectUserData'
-        assignedProfileIds:
-          description: List of execution profile IDs assigned to the project.
+        enabledProfileIds:
+          description: List of execution profile IDs assigned to the project and being enabled
           type: array
           items:
             type: string

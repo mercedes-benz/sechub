@@ -12,13 +12,13 @@ public class ProjectData {
     public static final String PROPERTY_OWNER = "owner";
     public static final String PROPERTY_IS_OWNED = "isOwned";
     public static final String PROPERTY_ASSIGNED_USERS = "assignedUsers";
-    public static final String PROPERTY_ASSIGNED_PROFILE_IDS = "assignedProfileIds";
+    public static final String PROPERTY_ENABLED_PROFILE_IDS = "enabledProfileIds";
 
     private String projectId;
     private ProjectUserData owner;
     private Boolean isOwned;
     private List<ProjectUserData> assignedUsers;
-    private Set<String> assignedProfileIds;
+    private Set<String> enabledProfileIds;
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
@@ -36,8 +36,8 @@ public class ProjectData {
         this.assignedUsers = assignedUsers;
     }
 
-    public void setAssignedProfileIds(Set<String> assignedProfileIds) {
-        this.assignedProfileIds = assignedProfileIds;
+    public void setEnabledProfileIds(Set<String> enabledProfileIds) {
+        this.enabledProfileIds = enabledProfileIds;
     }
 
     @JsonProperty(PROPERTY_IS_OWNED)
@@ -62,8 +62,8 @@ public class ProjectData {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(PROPERTY_ASSIGNED_PROFILE_IDS)
-    public Set<String> getAssignedProfileIds() {
-        return assignedProfileIds;
+    @JsonProperty(PROPERTY_ENABLED_PROFILE_IDS)
+    public Set<String> getEnabledProfileIds() {
+        return enabledProfileIds;
     }
 }
