@@ -17,7 +17,6 @@ export function scan(context: LaunchContext) {
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
 
     try {
-        core.info(`PROJECT id is: ${process.env.PROJECT}`);
         const output = execFileSync(clientExecutablePath,
             ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
             {

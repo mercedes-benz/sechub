@@ -28451,7 +28451,6 @@ function scan(context) {
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     try {
-        lib_core.info(`PROJECT id is: ${process.env.PROJECT}`);
         const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
             env: process.env,
             encoding: 'utf-8'
