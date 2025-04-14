@@ -28494,6 +28494,7 @@ function getReport(jobUUID, reportFormat, context) {
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
     try {
+        lib_core.info(`PROJECT id is: ${process.env.PROJECT}`);
         (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
             env: process.env,
             encoding: 'utf-8'
