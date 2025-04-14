@@ -40,6 +40,11 @@ The values can be changed at runtime +
 |https://sechub.example.org
 |Support website for your service shown in the Web UI
 |===
+Example config.json file: +
+`{ +
+  "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org", +
+  "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsite.example.org" +
+}`
 
 3. Start the sechub server docker container in sechub/sechub-solution +
 +

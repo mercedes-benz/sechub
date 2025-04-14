@@ -34,6 +34,11 @@ spec:
           secret:
             secretName: secret-web-ui-ssl
 {{- end }}
+{{- if .Values.web_ui.useCustomConfig }}
+        - name: configmap-web-ui-custom-config
+          configMap:
+            name: configmap-sechub-webui-custom-config
+{{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
       - name: setup
@@ -91,6 +96,13 @@ spec:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-ui/secrets/secret-ssl
             name: secret-web-ui-ssl-volume
+{{- end }}
+{{- if .Values.web_ui.useCustomConfig }}
+          # Mount config.json for customized settings
+          - mountPath: /var/www/html/config.json
+            name: configmap-web-ui-custom-config
+            subPath: config.json
+            readOnly: true
 {{- end }}
         env:
           - name: DEPLOYMENT_COMMENT
