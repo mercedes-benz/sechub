@@ -1,17 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.assertArg;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -29,6 +21,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedConstruction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNames;
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
-import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,16 +43,17 @@ class OAuth2OpaqueTokenIntrospectorTest {
     private static final String CLIENT_SECRET = "example-client-secret";
     private static final UserDetailsService userDetailsService = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
+    private static final OAuth2OpaqueTokenExpirationCalculator expirationCalculator = mock();
     private static final Duration DEFAULT_TOKEN_EXPIRES_IN = Duration.ofDays(1);
     private static final Duration MAX_CACHE_DURATION = Duration.ofDays(30);
     private static final String OPAQUE_TOKEN = "opaque-token";
     private static final String SUBJECT = "sub";
 
-    private static OpaqueTokenIntrospector introspectorToTest;
+    private static OAuth2OpaqueTokenIntrospector introspectorToTest;
 
     @BeforeEach
     void beforeEach() {
-        reset(restTemplate, userDetailsService);
+        reset(restTemplate, userDetailsService, expirationCalculator, applicationShutdownHandler);
 
         /* reset the cache which is associated with each individual instance */
         introspectorToTest = createOAuth2OpaqueTokenIntrospector();
@@ -79,7 +72,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                                                                                Duration maxCacheDuration,
                                                                                UserDetailsService userDetailsService,
                                                                                String errMsg) {
-        assertThatThrownBy(() -> new OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration, userDetailsService, applicationShutdownHandler))
+        assertThatThrownBy(() -> new OAuth2OpaqueTokenIntrospector(restTemplate, introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration, userDetailsService, applicationShutdownHandler, expirationCalculator))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
     }
@@ -178,7 +171,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    void introspect_with_token_expires_at_null_uses_default_token_expires_at() {
+    void introspect_with_token_expires_at_null_uses_default_token_expires_at_for_cache() {
         try (MockedConstruction<InMemoryCache> cacheConstruction = mockConstruction(InMemoryCache.class, (mock, context) -> {
         })) {
             /* prepare */
@@ -201,9 +194,53 @@ class OAuth2OpaqueTokenIntrospectorTest {
             /* @formatter:on */
             Map<String, Object> attributes = principal.getAttributes();
             Instant expiresAtActual = truncate((Instant) attributes.get(OAuth2TokenIntrospectionClaimNames.EXP));
-            Instant expiresAtExpected = truncate(testStartTime.plus(DEFAULT_TOKEN_EXPIRES_IN));
+            Instant calculated = testStartTime.plus(DEFAULT_TOKEN_EXPIRES_IN);
+            Instant expiresAtExpected = truncate(calculated);
             assertThat(expiresAtActual).isEqualTo(expiresAtExpected);
+
         }
+    }
+
+    @Test
+    void introspect_with_token_expires_at_null_uses_default_token_to_calculate_and_set_response_fallback_expiration() {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospector();
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, null);
+        mockIntrospectionResponse(introspectionResponse);
+
+        /* execute */
+        introspectorToTest.introspect(OPAQUE_TOKEN);
+
+        /* test */
+        ArgumentCaptor<OAuth2OpaqueTokenIntrospectionResponse> responseCaptor = ArgumentCaptor.forClass(OAuth2OpaqueTokenIntrospectionResponse.class);
+        ArgumentCaptor<Instant> nowCaptor = ArgumentCaptor.forClass(Instant.class);
+
+        verify(expirationCalculator).isExpired(responseCaptor.capture(), nowCaptor.capture());
+
+        Instant now = nowCaptor.getValue();
+        Instant calculated = now.plus(DEFAULT_TOKEN_EXPIRES_IN);
+
+        OAuth2OpaqueTokenIntrospectionResponse response = responseCaptor.getValue();
+
+        // check expiration calculator got same value for calculation as response value
+        assertThat(introspectionResponse.getExpiresAt()).isEqualTo(response.getExpiresAt());
+
+        // check that response calculation used the calculated value
+        assertThat(response.getExpiresAt()).isEqualTo(calculated);
+
+    }
+
+    @Test
+    void when_calculator_says_expired_than_a_introspect_will_throw_bad_opaque_token_excpetion() {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, Long.valueOf(4711));
+        mockIntrospectionResponse(introspectionResponse);
+
+        when(expirationCalculator.isExpired(eq(introspectionResponse), any())).thenReturn(true); // this response is always expired for this test
+
+        /* execute */
+        assertThatThrownBy(() -> introspectorToTest.introspect(OPAQUE_TOKEN)).isInstanceOf(BadOpaqueTokenException.class).hasMessageContaining("expired");
+
     }
 
     @Test
@@ -287,7 +324,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     private static OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospector() {
         return new OAuth2OpaqueTokenIntrospector(restTemplate, INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET, DEFAULT_TOKEN_EXPIRES_IN, MAX_CACHE_DURATION,
-                userDetailsService, applicationShutdownHandler);
+                userDetailsService, applicationShutdownHandler, expirationCalculator);
     }
 
     private static OAuth2OpaqueTokenIntrospectionResponse createIntrospectionResponse(Boolean isActive) {
