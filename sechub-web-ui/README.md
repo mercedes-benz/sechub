@@ -94,7 +94,7 @@ Custom user support email address
 ```json
 {
     "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
-    "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsit.example.org"
+    "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsite.example.org"
 }
 ```
 

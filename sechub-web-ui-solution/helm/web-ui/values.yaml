@@ -19,10 +19,10 @@ replicaCount: 1
 resources:
   requests:
     # Initial container memory size
-    memory: 256Mi
+    memory: 32Mi
   limits:
     # Maximum container memory size
-    memory: 1Gi
+    memory: 512Mi
 
 web_ui:
   ssl:
@@ -34,6 +34,11 @@ web_ui:
     #     Inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl key and certificate to use
     #   - `keystore_password`
+  useCustomConfig: false
+  # Setting useCustomConfig to `true` will mount a k8s configmap into /var/www/html/config.json.
+  # In this case please create a configmap named `configmap-sechub-webui-custom-config`.
+  # This way, custom values can be added (e.g. custom support email or url).
+  # See https://github.com/mercedes-benz/sechub/blob/develop/sechub-web-ui-solution/README.adoc
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.
