@@ -28452,14 +28452,7 @@ function scan(context) {
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     try {
         const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
+            env: process.env,
             encoding: 'utf-8'
         });
         lib_core.info('Scan executed successfully');
@@ -28502,14 +28495,7 @@ function getReport(jobUUID, reportFormat, context) {
     const reportFormatArgValue = sanitize(reportFormat);
     try {
         (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
+            env: process.env,
             encoding: 'utf-8'
         });
         lib_core.debug('Get report executed successfully');
@@ -28536,14 +28522,7 @@ function defineFalsePositives(context) {
     const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
     try {
         const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
+            env: process.env,
             encoding: 'utf-8'
         });
         lib_core.info('defineFalsePositives executed successfully');

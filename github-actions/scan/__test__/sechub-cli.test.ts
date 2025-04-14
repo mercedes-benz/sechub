@@ -94,14 +94,7 @@ describe('scan', function() {
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
                 {
-                    env: {
-                        SECHUB_SERVER: process.env.SECHUB_SERVER,
-                        SECHUB_USERID: process.env.SECHUB_USERID,
-                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                    },
+                    env: process.env,
                     encoding: 'utf-8'
                 }
             );
@@ -127,14 +120,7 @@ describe('scan', function() {
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
                 {
-                    env: {
-                        SECHUB_SERVER: process.env.SECHUB_SERVER,
-                        SECHUB_USERID: process.env.SECHUB_USERID,
-                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                    },
+                    env: process.env,
                     encoding: 'utf-8'
                 }
             );
