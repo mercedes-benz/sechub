@@ -39,11 +39,10 @@
 
           <ProjectSettingsDialog
             v-if="!loading"
-            :current-owner-user-id="projectData.owner.userId"
-            :project-id="projectData.projectId"
+            :project-data="projectData"
             :visible="settingsDialog"
             @close="settingsDialog=false"
-            @project-owner-changed="refreshProjectData"
+            @project-changed="refreshProjectData"
           />
 
           <div v-if="(!jobs || jobs.length === 0 && !loading)">

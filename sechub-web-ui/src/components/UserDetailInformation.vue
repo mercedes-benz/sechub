@@ -57,7 +57,7 @@
       <v-list-item>
         <v-container>
           <v-btn
-            class="custom-btn"
+            class="sechub-dialog-close-btn"
             color="primary"
             :loading="isRefreshingApiToken"
             variant="tonal"
@@ -66,12 +66,20 @@
             {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN') }}
           </v-btn>
 
-          <v-dialog v-model="refreshApiTokenDialog" max-width="500">
+          <v-dialog
+            v-model="refreshApiTokenDialog"
+            max-width="500"
+          >
             <v-card>
               <v-card-title>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TITLE') }}</v-card-title>
               <v-card-text>{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_TEXT') }}</v-card-text>
               <v-card-actions>
-                <v-btn class="custom-btn" color="primary" @click="refreshApiTokenDialog = false">{{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
+                <v-btn
+                  class="sechub-dialog-close-btn"
+                  color="primary"
+                  @click="refreshApiTokenDialog = false"
+                >
+                  {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -122,6 +130,7 @@
   import type { UserDetailInformation } from '@/generated-sources/openapi'
   import { useConfig } from '@/config'
   import { useRouter } from 'vue-router'
+  import '@/styles/sechub.scss'
 
   export default defineComponent({
     name: 'UserDetailInformation',
@@ -190,9 +199,5 @@
 
   .v-card {
     margin-top: 25px;
-
-    .custom-btn {
-      width: 300px;
-    }
   }
 </style>
