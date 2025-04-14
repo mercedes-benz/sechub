@@ -70,6 +70,7 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
     const reportFormatArgValue = sanitize(reportFormat);
 
     try {
+        core.info(`PROJECT: ${process.env.PROJECT}`);
         execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
             {
