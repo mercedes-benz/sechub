@@ -28451,6 +28451,7 @@ function scan(context) {
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     try {
+        lib_core.info(`PROJECT id is: ${process.env.PROJECT}`);
         const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
             env: process.env,
             encoding: 'utf-8'
@@ -28494,7 +28495,6 @@ function getReport(jobUUID, reportFormat, context) {
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
     try {
-        lib_core.info(`PROJECT id is: ${process.env.PROJECT}`);
         (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
             env: process.env,
             encoding: 'utf-8'
