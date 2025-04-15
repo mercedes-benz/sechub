@@ -4,155 +4,152 @@
     :show-projects-details="showProjectsDetails"
     @on-toggle-details="toggleProjectDetails"
   />
-  <v-container fluid>
-    <v-row>
-      <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
+  <v-row>
+    <v-col :cols="12" :md="showProjectsDetails ? 8 : 12">
 
-        <v-alert
-          v-model="alert"
-          closable
-          color="error"
-          density="compact"
-          :title="$t('API_ERROR_TITLE')"
-          type="warning"
-          variant="tonal"
-        >
-          {{ error }}
-        </v-alert>
+      <v-alert
+        v-model="alert"
+        closable
+        color="error"
+        density="compact"
+        :title="$t('API_ERROR_TITLE')"
+        type="warning"
+        variant="tonal"
+      >
+        {{ error }}
+      </v-alert>
 
-        <v-card class="mr-auto" color="background_paper">
-          <v-toolbar color="background_paper">
-            <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
-            <template #prepend>
-              <v-btn
-                v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
-                icon="mdi-arrow-left"
-                @click="router.go(-1)"
-              />
-              <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
-            </template>
+      <v-card class="mr-auto" color="background_paper">
+        <v-toolbar color="background_paper">
+          <v-toolbar-title>{{ projectData?.projectId }}</v-toolbar-title>
+          <template #prepend>
+            <v-btn
+              v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_BACK_TO_PROJECTS_LIST')"
+              icon="mdi-arrow-left"
+              @click="router.go(-1)"
+            />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
+          </template>
 
-            <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
-            <v-btn v-if="projectData.assignedUsers" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
-          </v-toolbar>
+          <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
+          <v-btn v-if="projectData.assignedUsers" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+          <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+        </v-toolbar>
 
-          <ProjectSettingsDialog
-            v-if="!loading"
-            :current-owner-user-id="projectData.owner.userId"
-            :project-id="projectData.projectId"
-            :visible="settingsDialog"
-            @close="settingsDialog=false"
-            @project-owner-changed="refreshProjectData"
-          />
-
-          <div v-if="(!jobs || jobs.length === 0 && !loading)">
-            <v-list bg-color="background_paper" lines="two">
-              <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
-              <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
-            </v-list>
-          </div>
-
-          <div v-else>
-            <v-table
-              class="background-color"
-              fixed-header
-              height="90%"
-            >
-              <thead>
-                <tr>
-                  <th class="background-color">{{ $t('HEADER_JOB_TABLE_CREATED') }}</th>
-                  <th class="background-color">{{ $t('HEADER_JOB_TABLE_STATUS') }}</th>
-                  <th class="background-color">{{ $t('HEADER_JOB_TABLE_RESULT') }}</th>
-                  <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_TRAFFIC_LIGHT') }}</th>
-                  <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_REPORT') }}</th>
-                  <th class="background-color">{{ $t('JOB_TABLE_DOWNLOAD_JOBUUID') }}</th>
-                  <th class="background-color" />
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="job in jobs"
-                  :key="job.jobUUID"
-                  class="background-color"
-                >
-                  <td>{{ formatDate(job.created?.toString() || '') }}</td>
-                  <td>{{ job.executionState }}</td>
-                  <td>{{ job.executionResult }}</td>
-                  <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight || '')" icon="mdi-circle" /></td>
-                  <td class="text-center"><span v-if="job.executionResult === 'OK'">
-                    <v-menu>
-                      <template #activator="{ props }">
-                        <v-btn
-                          class="ma-2"
-                          v-bind="props"
-                        >
-                          {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
-                          <v-icon
-                            color="primary"
-                            end
-                            icon="mdi-download-circle-outline"
-                          />
-                        </v-btn>
-                      </template>
-                      <v-list>
-                        <v-list-item @click="downloadJobReportHtml(job.jobUUID)">
-                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_HTML_REPORT') }}</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="downloadJobReportJson(job.jobUUID)">
-                          <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_JSON_REPORT') }}</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </span>
-                  </td>
-                  <td><v-btn
-                    :disabled="job.executionResult !== 'OK'"
-                    @click="viewJobReport(job.jobUUID || '')"
-                  >
-                    {{ job.jobUUID }}
-                    <v-icon
-                      color="primary"
-                      end
-                      icon="mdi-eye-circle-outline"
-                    />
-                  </v-btn>
-                  </td>
-                  <td>
-                    <AsyncButton
-                      v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
-                      :id="job.jobUUID || ''"
-                      color="error"
-                      icon="mdi-close-circle-outline"
-                      @button-clicked="cancelJob"
-                    />
-                    <v-btn
-                      v-else
-                      v-tooltip="$t('PROJECT_COPY_JOB_UUID')"
-                      icon="mdi-content-copy"
-                      size="small"
-                      @click="copyToClipboard(job.jobUUID || '')"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-          </div>
-          <!-- we need to add 1 because our page starts at 0 while pagination starts with 1 -->
-          <Pagination
-            :current-page="(jobsObject.page || 0) + 1"
-            :total-pages="jobsObject.totalPages || 1"
-            @page-changed="onPageChange"
-          />
-        </v-card>
-      </v-col>
-      <v-col v-if="showProjectsDetails" cols="12" md="4">
-        <ProjectDetails
+        <ProjectSettingsDialog
+          v-if="!loading"
           :project-data="projectData"
+          :visible="settingsDialog"
+          @close="settingsDialog=false"
+          @project-changed="refreshProjectData"
         />
-      </v-col>
-    </v-row>
-  </v-container>
+
+        <div v-if="(!jobs || jobs.length === 0 && !loading)">
+          <v-list bg-color="background_paper" lines="two">
+            <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
+            <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
+          </v-list>
+        </div>
+
+        <div v-else>
+          <v-table
+            class="background-color"
+            fixed-header
+            height="90%"
+          >
+            <thead>
+              <tr>
+                <th class="background-color">{{ $t('HEADER_JOB_TABLE_CREATED') }}</th>
+                <th class="background-color">{{ $t('HEADER_JOB_TABLE_STATUS') }}</th>
+                <th class="background-color">{{ $t('HEADER_JOB_TABLE_RESULT') }}</th>
+                <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_TRAFFIC_LIGHT') }}</th>
+                <th class="text-center background-color">{{ $t('HEADER_JOB_TABLE_REPORT') }}</th>
+                <th class="background-color">{{ $t('JOB_TABLE_DOWNLOAD_JOBUUID') }}</th>
+                <th class="background-color" />
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="job in jobs"
+                :key="job.jobUUID"
+                class="background-color"
+              >
+                <td>{{ formatDate(job.created?.toString() || '') }}</td>
+                <td>{{ job.executionState }}</td>
+                <td>{{ job.executionResult }}</td>
+                <td class="text-center"><v-icon :class="getTrafficLightClass(job.trafficLight || '')" icon="mdi-circle" /></td>
+                <td class="text-center"><span v-if="job.executionResult === 'OK'">
+                  <v-menu>
+                    <template #activator="{ props }">
+                      <v-btn
+                        class="ma-2"
+                        v-bind="props"
+                      >
+                        {{ $t('JOB_TABLE_DOWNLOAD_REPORT') }}
+                        <v-icon
+                          color="primary"
+                          end
+                          icon="mdi-download-circle-outline"
+                        />
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item @click="downloadJobReportHtml(job.jobUUID)">
+                        <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_HTML_REPORT') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="downloadJobReportJson(job.jobUUID)">
+                        <v-list-item-title>{{ $t('JOB_TABLE_DOWNLOAD_JSON_REPORT') }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </span>
+                </td>
+                <td><v-btn
+                  :disabled="job.executionResult !== 'OK'"
+                  @click="viewJobReport(job.jobUUID || '')"
+                >
+                  {{ job.jobUUID }}
+                  <v-icon
+                    color="primary"
+                    end
+                    icon="mdi-eye-circle-outline"
+                  />
+                </v-btn>
+                </td>
+                <td>
+                  <AsyncButton
+                    v-if="['RUNNING', 'STARTED', 'READY_TO_START'].includes(job.executionState || '')"
+                    :id="job.jobUUID || ''"
+                    color="error"
+                    icon="mdi-close-circle-outline"
+                    @button-clicked="cancelJob"
+                  />
+                  <v-btn
+                    v-else
+                    v-tooltip="$t('PROJECT_COPY_JOB_UUID')"
+                    icon="mdi-content-copy"
+                    size="small"
+                    @click="copyToClipboard(job.jobUUID || '')"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </div>
+        <!-- we need to add 1 because our page starts at 0 while pagination starts with 1 -->
+        <Pagination
+          :current-page="(jobsObject.page || 0) + 1"
+          :total-pages="jobsObject.totalPages || 1"
+          @page-changed="onPageChange"
+        />
+      </v-card>
+    </v-col>
+    <v-col v-if="showProjectsDetails" cols="12" md="4">
+      <ProjectDetails
+        :project-data="projectData"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

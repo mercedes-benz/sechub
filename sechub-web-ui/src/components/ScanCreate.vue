@@ -1,82 +1,81 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col :cols="12" :md="8">
-        <v-card class="mr-auto" color="background_paper">
-          <v-toolbar color="background_paper">
-            <v-toolbar-title>{{ projectId }}</v-toolbar-title>
-            <template #prepend>
+  <v-row>
+    <v-col :cols="12" :md="8">
+      <v-card class="mr-auto" color="background_paper">
+        <v-toolbar color="background_paper">
+          <v-toolbar-title>{{ projectId }}</v-toolbar-title>
+          <template #prepend>
+            <v-btn
+              icon="mdi-arrow-left"
+              @click="backToProjectOverview()"
+            />
+          </template>
+        </v-toolbar>
+        <div class="background-color">
+          <v-sheet class="background-color">
+            <h2 class="background-color text-h5 pa-5">{{ $t('SCAN_CREATE_TITLE') }}</h2>
+          </v-sheet>
+
+          <v-alert
+            v-model="alert"
+            closable
+            color="error"
+            density="compact"
+            :title="$t('SCAN_ERROR_ALERT_TITLE')"
+            type="warning"
+            variant="tonal"
+          >
+            {{ errors.pop() }}
+
+          </v-alert>
+
+          <v-card
+            class="background-color ma-5"
+            variant="flat"
+          >
+            <v-card-title>{{ $t('SCAN_CREATE_SELECT_SCAN_TYPE') }}</v-card-title>
+            <ScanTypeSelect
+              :scan-options="scanOptions"
+              :selected-scan-options="selectedScanOptions"
+              @on-toggle-selection="toggleSelection"
+            />
+          </v-card>
+
+          <v-card
+            class="background-color ma-5"
+            variant="flat"
+          >
+            <v-card-title>{{ $t('SCAN_CREATE_FILE_UPLOAD') }}</v-card-title>
+            <ScanFileUpload
+              @on-file-update="updateFileselection"
+            />
+            <v-card-text v-if="isLoading">
+              {{ $t('SCAN_CREATE_FILE_UPLOAD_PROGRESS') }}
+            </v-card-text>
+            <v-progress-circular
+              v-if="isLoading"
+              color="primary"
+              indeterminate
+            />
+          </v-card>
+
+          <v-card
+            class="background-color ma-5"
+            variant="flat"
+          >
+
+            <template #append>
               <v-btn
-                icon="mdi-arrow-left"
-                @click="backToProjectOverview()"
-              />
-            </template>
-          </v-toolbar>
-          <div class="background-color">
-            <v-sheet class="background-color">
-              <h2 class="background-color text-h5 pa-5">{{ $t('SCAN_CREATE_TITLE') }}</h2>
-            </v-sheet>
-
-            <v-alert
-              v-model="alert"
-              closable
-              color="error"
-              density="compact"
-              :title="$t('SCAN_ERROR_ALERT_TITLE')"
-              type="warning"
-              variant="tonal"
-            >
-              {{ errors.pop() }}
-
-            </v-alert>
-
-            <v-card
-              class="background-color ma-5"
-              variant="flat"
-            >
-              <v-card-title>{{ $t('SCAN_CREATE_SELECT_SCAN_TYPE') }}</v-card-title>
-              <ScanTypeSelect
-                :scan-options="scanOptions"
-                :selected-scan-options="selectedScanOptions"
-                @on-toggle-selection="toggleSelection"
-              />
-            </v-card>
-
-            <v-card
-              class="background-color ma-5"
-              variant="flat"
-            >
-              <v-card-title>{{ $t('SCAN_CREATE_FILE_UPLOAD') }}</v-card-title>
-              <ScanFileUpload
-                @on-file-update="updateFileselection"
-              />
-              <v-card-text v-if="isLoading">
-                {{ $t('SCAN_CREATE_FILE_UPLOAD_PROGRESS') }}
-              </v-card-text>
-              <v-progress-circular
-                v-if="isLoading"
+                class="me-2"
                 color="primary"
-                indeterminate
+                :disabled="!validateScanReady"
+                rounded
+                :text="$t('SCAN_CREATE_SCAN_START')"
+                variant="outlined"
+                @click="buildScanConfiguration"
               />
-            </v-card>
-
-            <v-card
-              class="background-color ma-5"
-              variant="flat"
-            >
-
-              <template #append>
-                <v-btn
-                  class="me-2"
-                  color="primary"
-                  :disabled="!validateScanReady"
-                  rounded
-                  :text="$t('SCAN_CREATE_SCAN_START')"
-                  variant="outlined"
-                  @click="buildScanConfiguration"
-                />
-                <!-- todo make scan configuration downloadable
+              <!-- todo make scan configuration downloadable
                 <v-btn
                   append-icon="mdi-download"
                   rounded
@@ -84,15 +83,14 @@
                   variant="outlined"
                 />
                 -->
-              </template>
-            </v-card>
+            </template>
+          </v-card>
 
-          </div>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="4" />
-    </v-row>
-  </v-container>
+        </div>
+      </v-card>
+    </v-col>
+    <v-col cols="12" md="4" />
+  </v-row>
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'

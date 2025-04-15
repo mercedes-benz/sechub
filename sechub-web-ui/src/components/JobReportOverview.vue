@@ -113,7 +113,7 @@
           report.value = reportFromStore
         } else {
           // fetch report from server
-          const { report: fetchedReport, error: fetchedError, loading: fetchLoading } = await useFetchReport(projectId.value, jobUUID.value)
+          const { report: fetchedReport, error: fetchedError } = await useFetchReport(projectId.value, jobUUID.value)
 
           report.value = fetchedReport.value
 
