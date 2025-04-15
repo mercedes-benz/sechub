@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
+    ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
     JobReport: typeof import('./components/JobReport.vue')['default']
     JobReportCodescanCallsRecursive: typeof import('./components/JobReportCodescanCallsRecursive.vue')['default']

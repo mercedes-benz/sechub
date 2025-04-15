@@ -1,9 +1,16 @@
 <!-- SPDX-License-Identifier: MIT -->
 <template>
   <v-dialog
-    v-model="visible"
+    v-model="localVisible"
     max-width="50%"
   >
+
+    <ConfirmationDialog
+      :message="confirmationMessage"
+      :on-cancel="cancelAction"
+      :on-confirm="confirmAction"
+      :visible="confirmationVisible"
+    />
 
     <v-alert
       v-if="settingsError!=undefined"
@@ -25,11 +32,12 @@
         {{ $t('PROJECT_SETTINGS_DIALOG_TITLE') }}
       </v-card-title>
       <v-card-text>
+
+        <!-- Project owner card -->
         <v-card
           variant="flat"
         >
           <v-card-subtitle>{{ $t('PROJECT_SETTINGS_DIALOG_OWNER_MANAGEMENT') }}</v-card-subtitle>
-
           <v-table>
             <tbody>
               <tr v-if="isEditingOwner">
@@ -51,10 +59,12 @@
                   <v-btn
                     :disabled="newOwnerId === projectData.owner.userId"
                     icon="mdi-check"
+                    variant="text"
                     @click="onSettingsChangeOwnerClicked"
                   />
                   <v-btn
                     icon="mdi-close"
+                    variant="text"
                     @click="editOwner"
                   />
                 </td>
@@ -72,7 +82,9 @@
                 </td>
                 <td class="text-right">
                   <v-btn
+                    v-tooltip="$t('PROJECT_SETTINGS_OWNER_CHANGE_TOOLTIP')"
                     icon="mdi-pencil"
+                    variant="text"
                     @click="editOwner"
                   />
                 </td>
@@ -81,6 +93,7 @@
           </v-table>
         </v-card>
 
+        <!-- Project users card -->
         <v-card
           variant="flat"
         >
@@ -106,7 +119,9 @@
                 </td>
                 <td class="text-right">
                   <v-btn
+                    v-tooltip="$t('PROJECT_SETTINGS_USER_REMOVE_TOOLTIP')"
                     icon="mdi-close"
+                    variant="text"
                     @click="onUnassignUserClicked(user.userId)"
                   />
                 </td>
@@ -130,10 +145,12 @@
                   <v-btn
                     :disabled="newMemberId === ''"
                     icon="mdi-check"
+                    variant="text"
                     @click="onAssignUserClicked()"
                   />
                   <v-btn
                     icon="mdi-close"
+                    variant="text"
                     @click="editMember"
                   />
                 </td>
@@ -146,7 +163,9 @@
                 <td class="wide-column" />
                 <td class="text-right">
                   <v-btn
+                    v-tooltip="$t('PROJECT_SETTINGS_USER_ADD_TOOLTIP')"
                     icon="mdi-plus"
+                    variant="text"
                     @click="editMember"
                   />
                 </td>
@@ -196,7 +215,8 @@
 
     setup (props: Props, { emit }) {
       const { t } = useI18n()
-      const { projectData } = toRefs(props)
+      const { visible, projectData } = toRefs(props)
+      const localVisible = ref(visible)
 
       const projectId = ref(projectData.value.projectId)
 
@@ -209,6 +229,10 @@
 
       const settingsError = ref<string | undefined>(undefined)
 
+      const confirmationVisible = ref(false)
+      const confirmationMessage = ref('')
+      let pendingAction: (() => Promise<void>) | null = null
+
       function handleSettingsError (errMsg: string, err : unknown) {
         settingsError.value = errMsg
         console.error(errMsg, err)
@@ -218,27 +242,51 @@
         settingsError.value = undefined
       }
 
+      function showConfirmationDialog (message: string, action: () => Promise<void>) {
+        confirmationMessage.value = message
+        pendingAction = action
+        confirmationVisible.value = true
+      }
+
+      function confirmAction () {
+        if (pendingAction) {
+          pendingAction()
+        }
+        confirmationVisible.value = false
+      }
+
+      function cancelAction () {
+        confirmationVisible.value = false
+        pendingAction = null
+      }
+
       async function onSettingsChangeOwnerClicked () {
         clearSettingsErrors()
+
         if (newOwnerId.value === projectData.value.owner.userId) {
           return
         }
 
-        try {
-          await defaultClient.withProjectApi.adminOrOwnerChangesProjectOwner({
-            projectId: projectId.value,
-            userId: newOwnerId.value,
-          })
+        showConfirmationDialog(
+          t('PROJECT_SETTINGS_CONFIRM_OWNER_CHANGE'),
+          async () => {
+            try {
+              await defaultClient.withProjectApi.adminOrOwnerChangesProjectOwner({
+                projectId: projectId.value,
+                userId: newOwnerId.value,
+              })
 
-          console.debug('Project owner for project', projectId, 'changed to', newOwnerId.value)
+              console.debug('Project owner for project', projectId, 'changed to', newOwnerId.value)
 
-          emit('projectChanged')
-        } catch (err) {
-          const errMsg = t('PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED')
-          handleSettingsError(errMsg, err)
-          newOwnerId.value = projectData.value.owner.userId
-        }
-        editOwner()
+              emit('projectChanged')
+              editOwner(false)
+            } catch (err) {
+              const errMsg = t('PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED')
+              handleSettingsError(errMsg, err)
+              editOwner()
+            }
+          }
+        )
       }
 
       async function closeDialog () {
@@ -253,9 +301,11 @@
         newMemberId.value = ''
       }
 
-      function editOwner () {
+      function editOwner (reset: boolean = true) {
         isEditingOwner.value = !isEditingOwner.value
-        newOwnerId.value = projectData.value.owner.userId
+        if (reset) {
+          newOwnerId.value = projectData.value.owner.userId
+        }
       }
 
       async function onAssignUserClicked () {
@@ -276,30 +326,41 @@
 
       async function onUnassignUserClicked (userId: string) {
         clearSettingsErrors()
-        try {
-          await defaultClient.withProjectApi.adminOrOwnerUnassignUserFromProject({
-            projectId: projectId.value,
-            userId,
-          })
-          emit('projectChanged')
-        } catch (err) {
-          const errMsg = t('PROJECT_SETTINGS_PROJECT_UNASSIGN_USER_FAILED')
-          handleSettingsError(errMsg, err)
-        }
+
+        showConfirmationDialog(
+          t('PROJECT_SETTINGS_CONFIRM_REMOVE_USER'),
+          async () => {
+            try {
+              await defaultClient.withProjectApi.adminOrOwnerUnassignUserFromProject({
+                projectId: projectId.value,
+                userId,
+              })
+              emit('projectChanged')
+            } catch (err) {
+              const errMsg = t('PROJECT_SETTINGS_PROJECT_UNASSIGN_USER_FAILED')
+              handleSettingsError(errMsg, err)
+            }
+          }
+        )
       }
 
       return {
+        localVisible,
         newOwnerId,
         settingsError,
         isAddingMember,
         isEditingOwner,
         newMemberId,
+        confirmationVisible,
+        confirmationMessage,
         onSettingsChangeOwnerClicked,
         closeDialog,
         editMember,
         editOwner,
         onUnassignUserClicked,
         onAssignUserClicked,
+        confirmAction,
+        cancelAction,
       }
     },
   })
