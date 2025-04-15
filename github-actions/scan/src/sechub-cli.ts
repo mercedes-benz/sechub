@@ -20,14 +20,7 @@ export function scan(context: LaunchContext) {
         const output = execFileSync(clientExecutablePath,
             ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
             {
-                env: {
-                    SECHUB_SERVER: process.env.SECHUB_SERVER,
-                    SECHUB_USERID: process.env.SECHUB_USERID,
-                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                },
+                env: process.env, // Pass all environment variables
                 encoding: 'utf-8'
             }
         );
@@ -80,14 +73,7 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
         execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
             {
-                env: {
-                    SECHUB_SERVER: process.env.SECHUB_SERVER,
-                    SECHUB_USERID: process.env.SECHUB_USERID,
-                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                },
+                env: process.env, // Pass all environment variables
                 encoding: 'utf-8'
             }
         );
@@ -120,14 +106,7 @@ export function defineFalsePositives(context: LaunchContext) {
         const output = execFileSync(clientExecutablePath,
             ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'],
             {
-                env: {
-                    SECHUB_SERVER: process.env.SECHUB_SERVER,
-                    SECHUB_USERID: process.env.SECHUB_USERID,
-                    SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                    SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                    SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                    SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                },
+                env: process.env, // Pass all environment variables
                 encoding: 'utf-8'
             }
         );
