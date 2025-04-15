@@ -90,7 +90,8 @@ public abstract class AbstractSecurityConfiguration {
 														  RestTemplate restTemplate,
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
 														  @Autowired(required = false) JwtDecoder jwtDecoder,
-														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+														  ApplicationShutdownHandler applicationShutdownHandler,
+														  @Autowired(required = false) OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
         LOG.debug("Setup security filter chain for ressource server");
 		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
 
@@ -101,7 +102,13 @@ public abstract class AbstractSecurityConfiguration {
 						/* Forbidden requests will return a 403 status code */
 						.accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase()))
 						/* Unauthorized requests will return a 401 status code */
-						.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()))
+						.authenticationEntryPoint((request, response, authException) -> {
+
+						            /* clear any existing oauth2 cookie if there is an authentication error - e.g. an expired token */
+        						    CookieHelper.removeCookie(response, OAUTH2_COOKIE_NAME);
+
+        						    response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+						        })
 				)
 				/* CSRF protection disabled. The CookieServerCsrfTokenRepository does not work since Spring Boot 3 */
 				.csrf(AbstractHttpConfigurer::disable)
@@ -114,10 +121,12 @@ public abstract class AbstractSecurityConfiguration {
 				aes256Encryption,
 				jwtDecoder,
 				restTemplate,
-				applicationShutdownHandler);
+				applicationShutdownHandler,
+				expirationCalculator);
 
         return httpSecurity.build();
     }
+
 	/* @formatter:on */
 
     @Bean
@@ -232,7 +241,8 @@ public abstract class AbstractSecurityConfiguration {
 													AES256Encryption aes256Encryption,
 													JwtDecoder jwtDecoder,
 													RestTemplate restTemplate,
-													ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+													ApplicationShutdownHandler applicationShutdownHandler,
+													OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
 
 		if (resourceServerProperties == null) {
 			/*
@@ -269,7 +279,8 @@ public abstract class AbstractSecurityConfiguration {
 					aes256Encryption,
 					jwtDecoder,
                     restTemplate,
-					applicationShutdownHandler);
+					applicationShutdownHandler,
+					expirationCalculator);
 			/* @formatter:on */
         }
     }
@@ -291,7 +302,7 @@ public abstract class AbstractSecurityConfiguration {
 														  AES256Encryption aes256Encryption,
 														  JwtDecoder jwtDecoder,
 														  RestTemplate restTemplate,
-														  ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+														  ApplicationShutdownHandler applicationShutdownHandler, OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
 	    if (oAuth2Properties==null) {
 	        throw new BeanInstantiationException(SecurityFilterChain.class, "The oauth2 resource server properties must not be null! You have to configure: "+SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX);
 	    }
@@ -313,7 +324,7 @@ public abstract class AbstractSecurityConfiguration {
 		}
 
 		if (oAuth2Properties.isOpaqueTokenModeEnabled()) {
-			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler);
+			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler, expirationCalculator);
 		}
 	}
 	/* @formatter:on */
@@ -354,7 +365,8 @@ public abstract class AbstractSecurityConfiguration {
 																	 UserDetailsService userDetailsService,
 																	 RestTemplate restTemplate,
 																	 AES256Encryption aes256Encryption,
-																	 ApplicationShutdownHandler applicationShutdownHandler) throws Exception {
+																	 ApplicationShutdownHandler applicationShutdownHandler,
+																	 OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
 
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
@@ -376,7 +388,8 @@ public abstract class AbstractSecurityConfiguration {
 				opaqueTokenProperties.getDefaultTokenExpiresAt(),
 				opaqueTokenProperties.getMaxCacheDuration(),
 				userDetailsService,
-				applicationShutdownHandler);
+				applicationShutdownHandler,
+				expirationCalculator);
 
 		if (aes256Encryption == null) {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);

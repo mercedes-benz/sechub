@@ -107,6 +107,17 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
         return Optional.of(cacheData.getValue());
     }
 
+    /**
+     * Removes cached value from cache. If key does not exist it will be just
+     * ignored
+     *
+     * @param key the key under which the cache data is stored
+     * @throws NullPointerException if the specified key is null
+     */
+    public void remove(String key) {
+        cacheMap.remove(key);
+    }
+
     public Duration getCacheClearJobPeriod() {
         return cacheClearJobPeriod;
     }
@@ -172,4 +183,5 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
             return createdAt;
         }
     }
+
 }

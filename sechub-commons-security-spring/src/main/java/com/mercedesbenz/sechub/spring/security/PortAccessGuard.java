@@ -33,8 +33,8 @@ class PortAccessGuard extends OncePerRequestFilter {
     @Override
     /* @formatter:off */
     protected void doFilterInternal(HttpServletRequest request,
-                                    @SuppressWarnings("NullableProblems") HttpServletResponse response,
-                                    @SuppressWarnings("NullableProblems") FilterChain filterChain) throws ServletException, IOException {
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         /* @formatter:on */
         int requestPort = request.getServerPort();
         if (allowedPort != requestPort) {
