@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -93,7 +94,8 @@ public abstract class AbstractSecurityConfiguration {
 														  ApplicationShutdownHandler applicationShutdownHandler,
 														  @Autowired(required = false) OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
         LOG.debug("Setup security filter chain for ressource server");
-		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
+		SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
+		configureResourceServerSecurityMatcher(httpSecurity, loginProperties);
 
 		httpSecurity
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -114,6 +116,10 @@ public abstract class AbstractSecurityConfiguration {
 				.csrf(AbstractHttpConfigurer::disable)
 				.headers((headers) -> headers.contentSecurityPolicy((csp) -> csp.policyDirectives("default-src 'none'; style-src 'unsafe-inline'")));
 
+		configureLogout(httpSecurity, loginProperties);
+
+		/* Configure the resource server */
+		configureResourceServerSecurityMatcher(httpSecurity, loginProperties);
 		configureResourceServerMode(
 				httpSecurity,
 				secHubSecurityProperties.getResourceServerProperties(),
@@ -460,5 +466,17 @@ public abstract class AbstractSecurityConfiguration {
 				.failureUrl("%s?tab=classic&error=true&errorMsg=Invalid User ID or API Token".formatted(loginPage))
 		);
 		/* @formatter:on */
+    }
+
+    private static void configureLogout(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
+        if (loginProperties != null && loginProperties.isEnabled()) {
+            /* we redirect to the frontend because of CORS */
+            SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
+            logoutSuccessHandler.setDefaultTargetUrl(loginProperties.getRedirectUri());
+
+            /* logout need to be setup in same Bean as authorizeHttpRequests */
+            httpSecurity.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler).invalidateHttpSession(true).clearAuthentication(true)
+                    .deleteCookies(CLASSIC_AUTH_COOKIE_NAME, OAUTH2_COOKIE_NAME));
+        }
     }
 }
