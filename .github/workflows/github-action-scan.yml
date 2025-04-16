@@ -80,20 +80,6 @@ jobs:
         with:
           node-version: 22
           
-      - name: Set up Go
-        if: env.SECHUB_CLIENT_VERSION == 'build'
-        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
-        with:
-          go-version: 1.21.6
-
-      - name: Build go client
-        if: env.SECHUB_CLIENT_VERSION == 'build'
-        run: |
-          echo "build go client because client version='${{ env.SECHUB_CLIENT_VERSION }}'"
-          cd ..
-          cd ..
-          ./gradlew buildGo
-        
       - name: Setup npm build
         run: npm ci 
         
@@ -110,6 +96,20 @@ jobs:
           git status
           mkdir "${{ github.workspace }}/build" -p
           git status >> "${{ github.workspace }}/build/git-status.txt"
+          
+      - name: Set up Go
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
+        with:
+          go-version: 1.21.6
+
+      - name: Build go client
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        run: |
+          echo "Build go client for integration tests because client version='${{ env.SECHUB_CLIENT_VERSION }}'"
+          cd ..
+          cd ..
+          ./gradlew buildGo
 
       - name: Define integration test setup
         id : version-selector
