@@ -22649,6 +22649,8 @@ __nccwpck_require__.d(forms_namespaceObject, {
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/action-helper.ts
 // SPDX-License-Identifier: MIT
 
@@ -22668,8 +22670,6 @@ function handleError(error) {
     failAction(1);
 }
 
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ./node_modules/shelljs/shell.js
@@ -27895,6 +27895,7 @@ function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
 
 
 
+
 /**
  * Downloads release for the SecHub CLI if not already loaded.
  * Ensure only the used client version is kept locally.
@@ -27906,6 +27907,12 @@ async function downloadClientRelease(context) {
     const clientVersion = context.clientVersion;
     if (external_fs_.existsSync(context.clientExecutablePath)) {
         lib_core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        return;
+    }
+    // sanity check - for build this may never be reached, because the client executable path must exist!
+    if (clientVersion == 'build') {
+        handleError('Illegal state - client version is build but the client executable path does not exist. Must be checked already before!');
+        failAction(4);
         return;
     }
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
@@ -28189,6 +28196,8 @@ const PARAM_TRUST_ALL = 'trust-all';
 const PARAM_SCAN_TYPES = 'scan-types';
 const PARAM_CONTENT_TYPE = 'content-type';
 const PARAM_DEFINE_FALSE_POSITIVES = 'define-false-positives';
+// special parameter - used only when client version is `build`
+const PARAM_CLIENT_BUILD_FOLDER = 'client-build-folder';
 const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
@@ -28206,6 +28215,7 @@ const INPUT_DATA_DEFAULTS = {
     scanTypes: '',
     contentType: '',
     defineFalsePositives: '',
+    clientBuildFolder: ''
 };
 function resolveGitHubInputData() {
     return {
@@ -28225,6 +28235,7 @@ function resolveGitHubInputData() {
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
         defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
+        clientBuildFolder: getParam(PARAM_CLIENT_BUILD_FOLDER),
     };
 }
 /**
@@ -46220,6 +46231,9 @@ async function getClientVersion(clientVersion) {
     return clientVersion;
 }
 function isValidVersion(version) {
+    if (version === 'build') {
+        return true; // build is always okay
+    }
     const regex = /^\d+\.\d+\.\d+$|^latest$/;
     return regex.test(version);
 }
@@ -46240,6 +46254,7 @@ async function getRedirectUrl(url) {
 
 ;// CONCATENATED MODULE: ./src/launcher.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -46291,6 +46306,19 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     trafficLight: 'OFF',
     defineFalsePositivesFile: '',
 };
+function resolveClientDownloadFolder(clientVersion, gitHubInputData) {
+    if (clientVersion == 'build') {
+        const dirPath = gitHubInputData.clientBuildFolder;
+        const isDirAndExists = external_fs_.existsSync(dirPath) && external_fs_.lstatSync(dirPath).isDirectory();
+        if (!isDirAndExists) {
+            handleError(`The path is not a directory or does not exist: ${dirPath}`);
+        }
+        return dirPath;
+    }
+    const expression = /\./gi;
+    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+    return `${getWorkspaceDir()}/.sechub-gha/client/${clientVersionSubFolder}`;
+}
 /**
  * Creates the initial launch context
  * @returns launch context
@@ -46298,10 +46326,8 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
 async function createContext() {
     const gitHubInputData = resolveGitHubInputData();
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
-    const expression = /\./gi;
-    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
     const workspaceFolder = getWorkspaceDir();
-    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
+    const clientDownloadFolder = resolveClientDownloadFolder(clientVersion, gitHubInputData);
     let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');

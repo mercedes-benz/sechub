@@ -42,18 +42,11 @@ const mockedInputMap = new Map();
 
 let mockedUploadFunction: jest.Mock;
 
-beforeAll(() =>{
-    shell.echo('*******************************************');
-    shell.echo('Start integration tests');
-    shell.echo('*******************************************');
-    shell.echo('Using SecHub client: ' +client_version);
-    shell.echo('');
-});
-
 beforeEach(() => {
-
+    
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
-    shell.echo('Integration test: ' + expect.getState().currentTestName);
+    shell.echo('Start integration test: ' + expect.getState().currentTestName);
+    shell.echo('- client= ' + client_version);
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
 
     jest.resetAllMocks();
@@ -112,7 +105,6 @@ describe('integrationtest codescan generated config', () => {
 
         /* prepare */
         initInputMap();
-        mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'build');
         mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-1');
 
