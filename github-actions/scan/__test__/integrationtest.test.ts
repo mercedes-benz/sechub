@@ -43,7 +43,7 @@ const mockedInputMap = new Map();
 let mockedUploadFunction: jest.Mock;
 
 beforeEach(() => {
-    
+
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
     shell.echo('Start integration test: ' + expect.getState().currentTestName);
     shell.echo('- client= ' + client_version);
@@ -417,8 +417,8 @@ function loadSpdxJsonReportAndAssertItContains(context: LaunchContext, textPart:
 }
 
 function createDefineFalsePositivesFile(context: LaunchContext): string {
-    const defineFalsePositivesJson = `{"apiVersion":"1.0","type":"falsePositiveDataList","jobData":[{"jobUUID":"${context.jobUUID}","findingId":1}]}`
-    const fileName = "defineFalsePositivesFile.json";
+    const defineFalsePositivesJson = `{"apiVersion":"1.0","type":"falsePositiveDataList","jobData":[{"jobUUID":"${context.jobUUID}","findingId":1}]}`;
+    const fileName = 'defineFalsePositivesFile.json';
     const filePath = `./${fileName}`;
     fs.writeFileSync(filePath, defineFalsePositivesJson);
     return filePath;

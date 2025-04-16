@@ -22434,6 +22434,18 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -27774,6 +27786,7 @@ axios.default = axios;
 
 // EXTERNAL MODULE: ./node_modules/extract-zip/index.js
 var extract_zip = __nccwpck_require__(460);
+var extract_zip_default = /*#__PURE__*/__nccwpck_require__.n(extract_zip);
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
@@ -27843,7 +27856,7 @@ async function downloadFile(url, dest) {
 }
 async function unzipFile(zipPath, dest) {
     try {
-        await extract_zip(zipPath, { dir: external_path_.resolve(dest) });
+        await extract_zip_default()(zipPath, { dir: external_path_.resolve(dest) });
         lib_core.debug(`Extracted zip file to: ${dest}`);
     }
     catch (err) {
@@ -46243,6 +46256,9 @@ async function getRedirectUrl(url) {
     const metaRefreshTag = $('meta[http-equiv="refresh"]');
     if (metaRefreshTag.length > 0) {
         const content = metaRefreshTag.attr('content');
+        if (content == null) {
+            throw new Error('No redirect content found');
+        }
         const redirectUrl = content.split(';')[1].split('=')[1];
         lib_core.debug(`Redirect URL found: ${redirectUrl}`);
         return redirectUrl;

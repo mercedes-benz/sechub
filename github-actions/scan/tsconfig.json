@@ -6,7 +6,11 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    
-    "typeRoots": ["./node_modules/@types", "./types"]
+    // try to avoid flaky tests /import problems 
+    "esModuleInterop": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ]
   }
 }
