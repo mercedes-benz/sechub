@@ -96,10 +96,10 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 function resolveClientDownloadFolder(clientVersion: string, gitHubInputData: GitHubInputData): string {
 
     if (clientVersion == 'build') {
-        const dirPath= gitHubInputData.clientBuildFolder;
+        const dirPath = gitHubInputData.clientBuildFolder;
 
         const isDirAndExists = fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory();
-        if (! isDirAndExists){
+        if (!isDirAndExists) {
             handleError(`The path is not a directory or does not exist: ${dirPath}`);
         }
         return dirPath;
@@ -122,6 +122,10 @@ async function createContext(): Promise<LaunchContext> {
     let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');
+    }
+
+    if (core.isDebug()) {
+        core.debug('Client executable path set to:' + clientExecutablePath);
     }
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;

@@ -46348,6 +46348,9 @@ async function createContext() {
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');
     }
+    if (lib_core.isDebug()) {
+        lib_core.debug('Client executable path set to:' + clientExecutablePath);
+    }
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
     const builderData = createSafeBuilderData(gitHubInputData);
     initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
