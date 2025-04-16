@@ -17,6 +17,10 @@ on:
       - 'github-actions/scan/**'
   # enable manual triggering of workflow
   workflow_dispatch:
+     inputs:
+         client-version:
+           description: Insert your client version to test (default=build)
+           required: false
 
 jobs:
   build-scan:
@@ -27,9 +31,29 @@ jobs:
       run:
         working-directory: github-actions/scan
     steps:
+   
+      - name: "Setup client version"
+        working-directory: ~
+        run: |
+          echo "User input for client-version: '${{ inputs.client-version }}'"
+          SECHUB_CLIENT_VERSION="${{ inputs.client-version }}"
+          if [ "$SECHUB_CLIENT_VERSION" = "" ]; then
+             SECHUB_CLIENT_VERSION=build 
+             echo "- not defined, set default"
+          else
+             echo "- using defined version"
+          fi
+          echo "SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION"
+          echo "SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION" >> $GITHUB_ENV
+          
+      - name: "Show client version"
+        working-directory: ~
+        run: |
+          echo "client-version in env now: '${{ env.SECHUB_CLIENT_VERSION }}'"
+      
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
+      
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -42,11 +66,25 @@ jobs:
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
         with:
           node-version: 22
+          
+      - name: Set up Go
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
+        with:
+          go-version: 1.21.6
 
-      - name: Install
-        run: npm install 
+      - name: Build go client
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        run: |
+          echo "build go client because client version='${{ env.SECHUB_CLIENT_VERSION }}'"
+          cd ..
+          cd ..
+          ./gradlew buildGo
         
-      - name: Build
+      - name: Setup npm build
+        run: npm ci 
+        
+      - name: Build action
         run: npm run build
         
       - name: Run unit tests
