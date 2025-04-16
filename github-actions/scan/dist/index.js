@@ -28881,13 +28881,22 @@ function resolveProjectName(gitHubInputData, configFileLocation) {
     let projectName = '';
     projectName = gitHubInputData.projectName;
     if (!projectName || projectName.length === 0) {
+        if (lib_core.isDebug()) {
+            lib_core.debug('Project name not defined as parameter - so start resolving from config:' + configFileLocation);
+        }
         const secHubConfigurationJson = external_fs_.readFileSync(configFileLocation, 'utf8');
+        if (lib_core.isDebug()) {
+            lib_core.debug('Loaded config file:' + configFileLocation + '\nContent:\n' + secHubConfigurationJson);
+        }
         const jsonObj = projectname_resolver_asJsonObject(secHubConfigurationJson);
         if (jsonObj) {
             const projectData = getFieldFromJson('project', jsonObj);
             if (typeof projectData === 'string') {
                 projectName = projectData;
             }
+        }
+        else {
+            throw new Error('SecHub configuration not available as object!');
         }
     }
     return projectName;

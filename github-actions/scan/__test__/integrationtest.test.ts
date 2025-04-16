@@ -24,8 +24,8 @@ jest.mock('@actions/artifact');
 * (This is an explanation to start the tests locally - the github action workflow "github-action-scan.yml" does it in exact same way for CI/CD)
 *
 */
-const sechub_debug = shell.env['SECHUB_DEBUG'];
-const debug_enabled = sechub_debug == 'true';
+const debug_enabled = shell.env['SECHUB_INTEGRATIONTEST_DEBUG'] == 'true';
+
 const client_version = resolveFromEnv('SECHUB_CLIENT_VERSION', 'build');
 
 const integrationTestContext = new IntegrationTestContext();

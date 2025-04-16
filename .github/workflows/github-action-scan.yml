@@ -128,6 +128,11 @@ jobs:
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
           echo "pds_version=${{ vars.INTEGRATIONTEST_PDS_VERSION }}" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
+          
+          runner_debug=${{ runner.debug }}
+          if [ "$runner_debug" = "1" ]; then
+             echo "SECHUB_INTEGRATIONTEST_DEBUG=true" >> "$GITHUB_ENV"
+          fi
 
       - name: Cache SecHub server download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
