@@ -37,19 +37,32 @@ jobs:
         run: |
           echo "User input for client-version: '${{ inputs.client-version }}'"
           SECHUB_CLIENT_VERSION="${{ inputs.client-version }}"
+          
           if [ "$SECHUB_CLIENT_VERSION" = "" ]; then
-             SECHUB_CLIENT_VERSION=build 
+
              echo "- not defined, set default"
+             
+             # set default value for version:
+             SECHUB_CLIENT_VERSION=build
+             
           else
              echo "- using defined version"
           fi
-          echo "SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION"
+          
+          echo "- SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION"
           echo "SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION" >> $GITHUB_ENV
+          
+          if [ "$SECHUB_CLIENT_VERSION" = "build" ]; then
+             # set client build folder:
+             SECHUB_CLIENT_BUILD_FOLDER=${{ github.workspace }}/sechub-cli/build/go 
+             echo "- SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER"
+             echo "SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER" >> $GITHUB_ENV
+          fi
           
       - name: "Show client version"
         working-directory: ~
         run: |
-          echo "client-version in env now: '${{ env.SECHUB_CLIENT_VERSION }}'"
+          echo "env.SECHUB_CLIENT_VERSION='${{ env.SECHUB_CLIENT_VERSION }}'"
       
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683

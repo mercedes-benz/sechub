@@ -10,7 +10,6 @@ import { getFieldFromJson } from '../src/json-helper';
 import * as launcher from '../src/launcher';
 import { LaunchContext } from '../src/launcher';
 import { IntegrationTestContext } from './integrationtest/testframework';
-import { defineFalsePositives } from '../src/sechub-cli';
 jest.mock('@actions/core');
 jest.mock('@actions/artifact');
 
@@ -43,9 +42,9 @@ const mockedInputMap = new Map();
 let mockedUploadFunction: jest.Mock;
 
 beforeEach(() => {
-    
+
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
-    shell.echo('START Integration test: '+ expect.getState().currentTestName);
+    shell.echo('START Integration test: ' + expect.getState().currentTestName);
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
 
     jest.resetAllMocks();
@@ -82,14 +81,17 @@ beforeEach(() => {
     });
 });
 
-
+function resolveFromEnv(name: string, defaultValue: string): string {
+    return process.env[name] || defaultValue;
+}
 
 function initInputMap() {
     mockedInputMap.clear();
     mockedInputMap.set(input.PARAM_SECHUB_SERVER_URL, `https://localhost:${integrationTestContext.serverPort}`);
     mockedInputMap.set(input.PARAM_SECHUB_USER, `${integrationTestContext.serverUserId}`);
     mockedInputMap.set(input.PARAM_API_TOKEN, `${integrationTestContext.serverApiToken}`);
-    mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'latest');
+    mockedInputMap.set(input.PARAM_CLIENT_VERSION, resolveFromEnv('SECHUB_CLIENT_VERSION', 'build')); // integration tests can simulate the parameter with env variable - otherwise default
+    mockedInputMap.set(input.PARAM_CLIENT_BUILD_FOLDER, resolveFromEnv('SECHUB_CLIENT_BUILD_FOLDER', '../../sechub-cli/build/go')); // integration tests can simulate the parameter with env variable - otherwise default
     mockedInputMap.set(input.PARAM_ADD_SCM_HISTORY, 'false');
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
     mockedInputMap.set(input.PARAM_TRUST_ALL, 'true'); // self signed certificate in test...
@@ -97,10 +99,30 @@ function initInputMap() {
 }
 
 describe('integrationtest codescan generated config', () => {
-    test('codescan green', async () => {
+    test('codescan green - using `latest`', async () => {
 
         /* prepare */
         initInputMap();
+        mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'latest');
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-1');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(result, 0);
+        assertTrafficLight(result, 'GREEN');
+        assertActionIsNotMarkedAsFailed();
+        assertJsonReportContains(result, 'result-green');
+        assertUploadDone();
+
+    });
+    test('codescan green - using `build`', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'build');
         mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-1');
 
@@ -162,7 +184,7 @@ describe('integrationtest codescan generated config', () => {
         const result = await launcher.launch();
 
         /* test */
-        assertLastClientExitCode(result, 1); 
+        assertLastClientExitCode(result, 1);
         assertTrafficLight(result, 'RED');
         assertActionIsNotMarkedAsFailed(); // important: exit code 1 but action is NOT marked as failed because fail-job-with-findings=false
         assertJsonReportContains(result, 'result-red');
@@ -189,7 +211,7 @@ describe('integrationtest secretscan generated config', () => {
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         assertUploadDone();
-        
+
     });
     test('secretscan yellow, html only', async () => {
 
@@ -211,7 +233,7 @@ describe('integrationtest secretscan generated config', () => {
         assertUploadDone();
 
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
-        
+
     });
     test('secretscan yellow, json,html', async () => {
 
@@ -231,9 +253,9 @@ describe('integrationtest secretscan generated config', () => {
         assertActionIsNotMarkedAsFailed();
         assertJsonReportContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
         assertUploadDone();
-       
+
         loadHTMLReportAndAssertItContains(result, 'generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml');
-        
+
     });
 
 });
@@ -250,7 +272,7 @@ describe('integrationtest licensescan generated config', () => {
 
         /* execute */
         const result = await launcher.launch();
-        
+
         /* test */
         assertTrafficLight(result, 'GREEN');
         assertLastClientExitCode(result, 0);
@@ -264,7 +286,7 @@ describe('integrationtest licensescan generated config', () => {
 });
 
 describe('integrationtest non-generated config', () => {
-    test('config-path defined, but file not found', async () =>  {
+    test('config-path defined, but file not found', async () => {
 
         /* prepare */
         initInputMap();
@@ -276,7 +298,7 @@ describe('integrationtest non-generated config', () => {
 
     });
 
-    test('config-path defined, file available, web scan with red trafficlight', async () =>  {
+    test('config-path defined, file available, web scan with red trafficlight', async () => {
 
         /* prepare */
         initInputMap();
@@ -298,11 +320,11 @@ describe('integrationtest non-generated config', () => {
         assertUploadDone();
 
     });
-    test('config-path defined, project name only in config file, file available, web scan with red trafficlight', async () =>  {
+    test('config-path defined, project name only in config file, file available, web scan with red trafficlight', async () => {
 
         /* prepare */
         initInputMap();
-        
+
         const pwd = shell.pwd();
         const configDir = `${pwd}/__test__/integrationtest/test-config`;
 
@@ -323,14 +345,14 @@ describe('integrationtest non-generated config', () => {
 });
 
 describe('integrationtest define-false-positives generated config', () => {
-    
+
     test('codescan first red then result is green after define-false-positives is executed', async () => {
 
         /* prepare */
         initInputMap();
         mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
         mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-7');
-        
+
         /* execute */
         const result1 = await launcher.launch();
 
@@ -357,11 +379,11 @@ describe('integrationtest define-false-positives generated config', () => {
 
 });
 
-function assertActionIsMarkedAsFailed(){
+function assertActionIsMarkedAsFailed() {
     expect(setFailed).toHaveBeenCalledTimes(1);
 }
 
-function assertActionIsNotMarkedAsFailed(){
+function assertActionIsNotMarkedAsFailed() {
     expect(setFailed).toHaveBeenCalledTimes(0);
 }
 
@@ -380,18 +402,18 @@ function assertJsonReportContains(context: LaunchContext, textPart: string) {
     expect(text).toContain(textPart);
 }
 
-function assertUploadDone(){
+function assertUploadDone() {
     expect(mockedUploadFunction).toHaveBeenCalled();
 }
 
 function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: string) {
-    
-    const fileName = context.secHubReportJsonFileName.replace('.json','.html');
+
+    const fileName = context.secHubReportJsonFileName.replace('.json', '.html');
     const htmlPath = `./${fileName}`;
-    if (context.debug){
+    if (context.debug) {
         const pwd = shell.pwd();
-        shell.echo('current dir: '+pwd);
-        shell.echo('htmlPath: '+htmlPath);
+        shell.echo('current dir: ' + pwd);
+        shell.echo('htmlPath: ' + htmlPath);
     }
     const html = fs.readFileSync(htmlPath, 'utf8');
 
@@ -399,13 +421,13 @@ function loadHTMLReportAndAssertItContains(context: LaunchContext, textPart: str
 }
 
 function loadSpdxJsonReportAndAssertItContains(context: LaunchContext, textPart: string) {
-    
-    const fileName = context.secHubReportJsonFileName.replace('.json','.spdx.json');
+
+    const fileName = context.secHubReportJsonFileName.replace('.json', '.spdx.json');
     const spdxJsonPath = `./${fileName}`;
-    if (context.debug){
+    if (context.debug) {
         const pwd = shell.pwd();
-        shell.echo('current dir: '+pwd);
-        shell.echo('spdxJsonPath: '+spdxJsonPath);
+        shell.echo('current dir: ' + pwd);
+        shell.echo('spdxJsonPath: ' + spdxJsonPath);
     }
     const spdxJson = fs.readFileSync(spdxJsonPath, 'utf8');
 
@@ -423,5 +445,5 @@ function createDefineFalsePositivesFile(context: LaunchContext): string {
 function deleteFile(file: string) {
     if (fs.existsSync(file)) {
         fs.unlinkSync(file);
-      }
+    }
 }

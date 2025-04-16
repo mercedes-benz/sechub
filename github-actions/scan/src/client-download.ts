@@ -3,8 +3,8 @@
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as shell from 'shelljs';
 import { ensureDirectorySync, downloadFile, unzipFile, chmodSync, deleteDirectoryExceptGivenFile } from './fs-helper';
+import * as actionHelper from './action-helper';
 import { LaunchContext } from './launcher';
 
 /**
@@ -20,6 +20,11 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
     if (fs.existsSync(context.clientExecutablePath)) {
         core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
         return;
+    }
+
+    // sanity check - for build this may never be reached, because the client executable path must exist!
+    if (clientVersion=='build'){
+        actionHelper.handleError('Illegal state - client version is build but the client executable path does not exist. Must be checked already before!');
     }
 
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
