@@ -29,6 +29,9 @@ export async function getClientVersion(clientVersion: string): Promise<string> {
 }
 
 function isValidVersion(version: string): boolean {
+    if (version === 'build') {
+        return true; // build is always okay
+    }
     const regex = /^\d+\.\d+\.\d+$|^latest$/;
     return regex.test(version);
 }

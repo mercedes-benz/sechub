@@ -26,6 +26,7 @@ jest.mock('@actions/artifact');
 */
 const sechub_debug = shell.env['SECHUB_DEBUG'];
 const debug_enabled = sechub_debug == 'true';
+const client_version = resolveFromEnv('SECHUB_CLIENT_VERSION', 'build');
 
 const integrationTestContext = new IntegrationTestContext();
 
@@ -41,10 +42,18 @@ const mockedInputMap = new Map();
 
 let mockedUploadFunction: jest.Mock;
 
+beforeAll(() =>{
+    shell.echo('*******************************************');
+    shell.echo('Start integration tests');
+    shell.echo('*******************************************');
+    shell.echo('Using SecHub client: ' +client_version);
+    shell.echo('');
+});
+
 beforeEach(() => {
 
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
-    shell.echo('START Integration test: ' + expect.getState().currentTestName);
+    shell.echo('Integration test: ' + expect.getState().currentTestName);
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
 
     jest.resetAllMocks();
@@ -82,7 +91,7 @@ beforeEach(() => {
 });
 
 function resolveFromEnv(name: string, defaultValue: string): string {
-    return process.env[name] || defaultValue;
+    return shell.env[name] || defaultValue;
 }
 
 function initInputMap() {
@@ -90,7 +99,7 @@ function initInputMap() {
     mockedInputMap.set(input.PARAM_SECHUB_SERVER_URL, `https://localhost:${integrationTestContext.serverPort}`);
     mockedInputMap.set(input.PARAM_SECHUB_USER, `${integrationTestContext.serverUserId}`);
     mockedInputMap.set(input.PARAM_API_TOKEN, `${integrationTestContext.serverApiToken}`);
-    mockedInputMap.set(input.PARAM_CLIENT_VERSION, resolveFromEnv('SECHUB_CLIENT_VERSION', 'build')); // integration tests can simulate the parameter with env variable - otherwise default
+    mockedInputMap.set(input.PARAM_CLIENT_VERSION, client_version); // integration tests can simulate the parameter with env variable - otherwise default
     mockedInputMap.set(input.PARAM_CLIENT_BUILD_FOLDER, resolveFromEnv('SECHUB_CLIENT_BUILD_FOLDER', '../../sechub-cli/build/go')); // integration tests can simulate the parameter with env variable - otherwise default
     mockedInputMap.set(input.PARAM_ADD_SCM_HISTORY, 'false');
     mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
@@ -99,26 +108,7 @@ function initInputMap() {
 }
 
 describe('integrationtest codescan generated config', () => {
-    test('codescan green - using `latest`', async () => {
-
-        /* prepare */
-        initInputMap();
-        mockedInputMap.set(input.PARAM_CLIENT_VERSION, 'latest');
-        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
-        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-1');
-
-        /* execute */
-        const result = await launcher.launch();
-
-        /* test */
-        assertLastClientExitCode(result, 0);
-        assertTrafficLight(result, 'GREEN');
-        assertActionIsNotMarkedAsFailed();
-        assertJsonReportContains(result, 'result-green');
-        assertUploadDone();
-
-    });
-    test('codescan green - using `build`', async () => {
+    test('codescan green', async () => {
 
         /* prepare */
         initInputMap();
