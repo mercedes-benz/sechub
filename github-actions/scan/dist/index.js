@@ -28630,6 +28630,21 @@ function storeOutput(field, value) {
     // setOutput(field,value);
 }
 
+;// CONCATENATED MODULE: ./src/fs-wrapper.ts
+// SPDX-License-Identifier: MIT
+
+/**
+ * This is a wrapper function - necessary make callers testable with jest.
+ * "fs" seems to be nolonger mockable any more correctly with jest, so this
+ * wrapper class was introduced. We can mock the wrapper without any problems.
+ *
+ * @param filePath
+ * @returns file content as string
+ */
+function readFileSync(filePath, options) {
+    return external_fs_.readFileSync(filePath, options);
+}
+
 ;// CONCATENATED MODULE: ./src/post-scan.ts
 // SPDX-License-Identifier: MIT
 
@@ -28659,7 +28674,7 @@ function collectJsonReportData(context) {
     let text = '';
     try {
         lib_core.info('Get Report as json');
-        text = external_fs_.readFileSync(filePath, 'utf8');
+        text = readFileSync(filePath, 'utf8');
     }
     catch (error) {
         lib_core.warning(`Error reading JSON file: ${error}`);
