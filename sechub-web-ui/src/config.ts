@@ -9,6 +9,7 @@ const config = ref({
   BASIC_AUTH_DEV: import.meta.env.VITE_API_BASIC_AUTH_DEV === 'true' || false,
   SECHUB_USER_SUPPORT_EMAIL: import.meta.env.VITE_SECHUB_USER_SUPPORT_EMAIL || 'example@example.org',
   SECHUB_USER_SUPPORT_WEBSITE: import.meta.env.VITE_SECHUB_USER_SUPPORT_WEBSITE || 'https://sechub.example.org',
+  SECHUB_FAQ_LINK: import.meta.env.VITE_SECHUB_FAQ_LINK || 'https://sechub.example.org/faq',
 })
 
 // Overrides local environment variables after project compilation
