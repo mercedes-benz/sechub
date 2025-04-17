@@ -2,7 +2,6 @@
 
 import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
-import * as fs from 'fs';
 import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
