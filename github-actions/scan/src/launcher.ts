@@ -100,7 +100,7 @@ function resolveClientDownloadFolder(clientVersion: string, gitHubInputData: Git
 
         const isDirAndExists = fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory();
         if (!isDirAndExists) {
-            handleError(`The path is not a directory or does not exist: ${dirPath}`);
+            handleError(`The client build folder path is not a directory or does not exist: ${dirPath}`);
         }
         return dirPath;
     }

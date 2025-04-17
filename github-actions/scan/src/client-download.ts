@@ -24,7 +24,7 @@ export async function downloadClientRelease(context: LaunchContext): Promise<voi
 
     // sanity check - for build this may never be reached, because the client executable path must exist!
     if (clientVersion=='build'){
-        actionHelper.handleError('Illegal state - client version is build but the client executable path does not exist. Must be checked already before!');
+        actionHelper.handleError('Illegal state - client version is `build` but the client executable path does not exist: `' + context.clientExecutablePath+'`');
         actionHelper.failAction(4);
         return;
     }

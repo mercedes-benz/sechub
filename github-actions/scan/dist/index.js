@@ -27924,7 +27924,7 @@ async function downloadClientRelease(context) {
     }
     // sanity check - for build this may never be reached, because the client executable path must exist!
     if (clientVersion == 'build') {
-        handleError('Illegal state - client version is build but the client executable path does not exist. Must be checked already before!');
+        handleError('Illegal state - client version is `build` but the client executable path does not exist: `' + context.clientExecutablePath + '`');
         failAction(4);
         return;
     }
@@ -28485,7 +28485,7 @@ function scan(context) {
         {
             env: process.env,
             encoding: 'utf-8',
-            stdio: 'inherit'
+            stdio: 'pipe'
         });
         lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
@@ -46359,7 +46359,7 @@ function resolveClientDownloadFolder(clientVersion, gitHubInputData) {
         const dirPath = gitHubInputData.clientBuildFolder;
         const isDirAndExists = external_fs_.existsSync(dirPath) && external_fs_.lstatSync(dirPath).isDirectory();
         if (!isDirAndExists) {
-            handleError(`The path is not a directory or does not exist: ${dirPath}`);
+            handleError(`The client build folder path is not a directory or does not exist: ${dirPath}`);
         }
         return dirPath;
     }

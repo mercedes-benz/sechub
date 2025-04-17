@@ -85,26 +85,9 @@ To be able to use this action you need a SecHub project. Check the https://merce
     #           The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file.
     #           You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.
     define-false-positives: 'sechub-false-positives.json'
-----
-
-==== Additional settings for debugging
-
-[source,yaml]
-----
-- uses: mercedes-benz/sechub/github-actions/scan@master
-    #....
-    
-    # OPTIONAL: 'Which version of the SecHub client to use. E.g `latest` or `1.10.0' or 'build'
-    #            For debugging it is possible to use `build` which will NOT download
-    #            a released version but instead use a local build! This can be useful for testing 
-    #            unreleased versions. The option is not listed in official action.yml file.
-    #
-    # DEFAULT: latest
-    version: 'latest'
     
     # OPTIONAL: An explicit client build folder path if used client version is 'build'.
     #           The parameter is only for testing unreleased versions.
-    #           This is the reason why this parameter is not listed in official action.yml file.
     client-build-folder: ''
 ----
 

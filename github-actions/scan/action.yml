@@ -60,6 +60,9 @@ inputs:
   define-false-positives:
     description: 'The file that defines false positives. This step is executed before the scan. The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file. You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.'
     required: false
+  client-build-folder:
+    description: 'An explicit client build folder path if used client version is `build`. The parameter is only for testing unreleased versions.'
+    required: false
 
 outputs:
   scan-trafficlight:
@@ -117,6 +120,7 @@ runs:
         report-formats: ${{ inputs.report-formats }}
         trust-all: ${{ inputs.trust-all }}
         debug: ${{ inputs.debug }}
+        client-build-folder: ${{ inputs.client-build-folder }}
         fail-job-with-findings: ${{ inputs.fail-job-with-findings }}
         define-false-positives: ${{ inputs.define-false-positives }}
         ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
