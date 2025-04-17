@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -122,7 +123,8 @@ public abstract class AbstractSecurityConfiguration {
 				jwtDecoder,
 				restTemplate,
 				applicationShutdownHandler,
-				expirationCalculator);
+				expirationCalculator,
+				secHubSecurityProperties.getMinimumTokenValidity());
 
         return httpSecurity.build();
     }
@@ -198,11 +200,12 @@ public abstract class AbstractSecurityConfiguration {
              * This will set the default login page to the oauth2 login page. Spring will
              * always use the default login page of the first configured login mode.
              */
-            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService);
+            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService,
+                    secHubSecurityProperties.getMinimumTokenValidity());
         }
 
         if (loginProperties.isClassicModeEnabled()) {
-            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties);
+            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties, secHubSecurityProperties.getMinimumTokenValidity());
         }
 
         return httpSecurity.build();
@@ -242,7 +245,8 @@ public abstract class AbstractSecurityConfiguration {
 													JwtDecoder jwtDecoder,
 													RestTemplate restTemplate,
 													ApplicationShutdownHandler applicationShutdownHandler,
-													OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
+													OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+													Duration minimumTokenValidity) throws Exception {
 
 		if (resourceServerProperties == null) {
 			/*
@@ -280,7 +284,8 @@ public abstract class AbstractSecurityConfiguration {
 					jwtDecoder,
                     restTemplate,
 					applicationShutdownHandler,
-					expirationCalculator);
+					expirationCalculator,
+					minimumTokenValidity);
 			/* @formatter:on */
         }
     }
@@ -302,7 +307,8 @@ public abstract class AbstractSecurityConfiguration {
 														  AES256Encryption aes256Encryption,
 														  JwtDecoder jwtDecoder,
 														  RestTemplate restTemplate,
-														  ApplicationShutdownHandler applicationShutdownHandler, OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
+														  ApplicationShutdownHandler applicationShutdownHandler, OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+														  Duration minimumTokenValidity) throws Exception {
 	    if (oAuth2Properties==null) {
 	        throw new BeanInstantiationException(SecurityFilterChain.class, "The oauth2 resource server properties must not be null! You have to configure: "+SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX);
 	    }
@@ -324,7 +330,7 @@ public abstract class AbstractSecurityConfiguration {
 		}
 
 		if (oAuth2Properties.isOpaqueTokenModeEnabled()) {
-			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler, expirationCalculator);
+			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler, expirationCalculator, minimumTokenValidity);
 		}
 	}
 	/* @formatter:on */
@@ -366,7 +372,8 @@ public abstract class AbstractSecurityConfiguration {
 																	 RestTemplate restTemplate,
 																	 AES256Encryption aes256Encryption,
 																	 ApplicationShutdownHandler applicationShutdownHandler,
-																	 OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
+																	 OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+																	 Duration minimumTokenValidity) throws Exception {
 
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
@@ -389,7 +396,8 @@ public abstract class AbstractSecurityConfiguration {
 				opaqueTokenProperties.getMaxCacheDuration(),
 				userDetailsService,
 				applicationShutdownHandler,
-				expirationCalculator);
+				expirationCalculator,
+				minimumTokenValidity);
 
 		if (aes256Encryption == null) {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
@@ -410,7 +418,7 @@ public abstract class AbstractSecurityConfiguration {
 												 SecHubSecurityProperties.LoginProperties loginProperties,
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
-												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService, Duration minimumTokenValidity) throws Exception {
 		SecHubSecurityProperties.LoginProperties.OAuth2Properties loginOAuth2Properties = loginProperties.getOAuth2Properties();
 
 		if (restTemplate == null) {
@@ -428,7 +436,7 @@ public abstract class AbstractSecurityConfiguration {
 		}
 
 		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
-				aes256Encryption, loginProperties.getRedirectUri());
+				aes256Encryption, loginProperties.getRedirectUri(), minimumTokenValidity);
 
 		/* Enable OAuth2 */
 		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(loginProperties.getLoginPage())
@@ -438,7 +446,7 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
-            SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
+            SecHubSecurityProperties.LoginProperties loginProperties, Duration minimumTokenValidity) throws Exception {
         if (aes256Encryption == null) {
             throw new NoSuchBeanDefinitionException(AES256Encryption.class);
         }
@@ -447,10 +455,14 @@ public abstract class AbstractSecurityConfiguration {
             throw new IllegalArgumentException("Property '%s' must not be null".formatted(SecHubSecurityProperties.LoginProperties.PREFIX));
         }
 
+        Duration classicCookieAge = loginProperties.getClassicAuthProperties().getCookieAge();
+        if (minimumTokenValidity != null && classicCookieAge.getSeconds() < minimumTokenValidity.getSeconds()) {
+            classicCookieAge = minimumTokenValidity;
+        }
         /* @formatter:off */
         AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(
 				aes256Encryption,
-				loginProperties.getClassicAuthProperties().getCookieAge(),
+				classicCookieAge,
 				loginProperties.getRedirectUri()
 		);
         String loginPage = loginProperties.getLoginPage();

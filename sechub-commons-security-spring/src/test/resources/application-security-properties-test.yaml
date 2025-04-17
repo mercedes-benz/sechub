@@ -25,3 +25,4 @@ sechub:
         jwk-set-uri: https://example.org/jwk-set-uri
     encryption:
       secret-key: test-test-test-test-test-test-32
+    minimum-token-validity: 10h
