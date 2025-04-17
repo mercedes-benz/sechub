@@ -28,7 +28,7 @@ public class SecHubSecurityConfiguration extends AbstractSecurityConfiguration {
                 .requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll()
                 .requestMatchers(APIConstants.ERROR_PAGE).permitAll()
                 .requestMatchers(APIConstants.ACTUATOR + "**").permitAll()
-                .requestMatchers(APIConstants.LOGOUT).hasAnyRole(RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER)
+                .requestMatchers(APIConstants.LOGOUT).authenticated()
                 .requestMatchers("/**").denyAll();
         /* @formatter:on */
     }

@@ -229,7 +229,7 @@ public abstract class AbstractSecurityConfiguration {
      * @see HttpSecurity#securityMatcher(RequestMatcher)
      */
     private static void configureResourceServerSecurityMatcher(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) {
-        if (loginProperties == null || !loginProperties.isEnabled()) {
+        if (isLoginNotEnabled(loginProperties)) {
             return;
         }
 
@@ -469,20 +469,25 @@ public abstract class AbstractSecurityConfiguration {
     }
 
     private static void configureLogout(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
-        if (loginProperties != null && loginProperties.isEnabled()) {
-
-            /* we redirect to the frontend because of CORS */
-            SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
-            logoutSuccessHandler.setDefaultTargetUrl(loginProperties.getRedirectUri());
-
-            /* @formatter:off */
-            /* logout need to be setup in same Bean as authorizeHttpRequests */
-			/* the default logout URL is /logout */
-            httpSecurity
-					.logout(logout -> logout
-							.logoutSuccessHandler(logoutSuccessHandler)
-							.deleteCookies(CLASSIC_AUTH_COOKIE_NAME, OAUTH2_COOKIE_NAME));
-			/* @formatter:on */
+        if (isLoginNotEnabled(loginProperties)) {
+            return;
         }
+
+        /* we redirect to the frontend because of CORS */
+        SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
+        logoutSuccessHandler.setDefaultTargetUrl(loginProperties.getRedirectUri());
+
+        /* @formatter:off */
+		/* logout need to be setup in same Bean as authorizeHttpRequests */
+		/* the default logout URL is /logout */
+		httpSecurity
+				.logout(logout -> logout
+						.logoutSuccessHandler(logoutSuccessHandler)
+						.deleteCookies(CLASSIC_AUTH_COOKIE_NAME, OAUTH2_COOKIE_NAME));
+		/* @formatter:on */
+    }
+
+    private static boolean isLoginNotEnabled(SecHubSecurityProperties.LoginProperties loginProperties) {
+        return loginProperties == null || !Boolean.TRUE.equals(loginProperties.isEnabled());
     }
 }
