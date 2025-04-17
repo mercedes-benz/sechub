@@ -5,8 +5,6 @@ import * as core from '@actions/core';
 import {execFileSync} from 'child_process';
 import {sanitize} from './shell-arg-sanitizer';
 
-const stdioInherit = 'inherit';
-const stdioPipe ='pipe';
 
 /**
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
@@ -19,9 +17,6 @@ export function scan(context: LaunchContext) {
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     
-    // if runner debugging is enabled (means core.debug enabled) we want to show the command line output of client
-    const stdioConfig = core.isDebug() ? stdioInherit : stdioPipe;
-
     try {
         const output = execFileSync(clientExecutablePath,
             /* parameters */
@@ -33,7 +28,7 @@ export function scan(context: LaunchContext) {
             {
                 env: process.env, // Pass all environment variables
                 encoding: 'utf-8',
-                stdio: stdioConfig
+                stdio: 'pipe'
             }
         );
 

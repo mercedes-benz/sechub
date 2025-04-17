@@ -28361,11 +28361,11 @@ function handleLegacyCodeScanSection(codeScan) {
  */
 function initSecHubJson(secHubJsonTargetFilePath, customSecHubConfigFilePath, builderData) {
     lib_core.startGroup('Set config');
-    let jsonString = "";
+    let jsonString = '';
     if (customSecHubConfigFilePath) {
         lib_core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
         if (external_fs_.existsSync(customSecHubConfigFilePath)) {
-            lib_core.debug(`Reading custom config file as json`);
+            lib_core.debug('Reading custom config file as json');
             jsonString = external_fs_.readFileSync(customSecHubConfigFilePath, 'utf8');
         }
         else {
@@ -28376,7 +28376,7 @@ function initSecHubJson(secHubJsonTargetFilePath, customSecHubConfigFilePath, bu
         jsonString = createSecHubConfigJsonString(builderData);
     }
     /* additional post processing of defined/generated config file :*/
-    lib_core.debug(`Additional post processing of SecHub configuration model`);
+    lib_core.debug('Additional post processing of SecHub configuration model');
     const jsonData = JSON.parse(jsonString);
     addAdditonalExcludes(jsonData);
     external_fs_.writeFileSync(secHubJsonTargetFilePath, JSON.stringify(jsonData, null, 2));
@@ -28475,9 +28475,17 @@ function scan(context) {
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
+        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, 
+        /* parameters */
+        [
+            '-configfile', configFileArgValue,
+            '-output', outputArgValue, addScmHistoryArg, 'scan'
+        ], 
+        /* options*/
+        {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: 'inherit'
         });
         lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
@@ -28537,7 +28545,7 @@ function getReport(jobUUID, reportFormat, context) {
  */
 function defineFalsePositives(context) {
     if (!context.defineFalsePositivesFile) {
-        lib_core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        lib_core.info('No define-false-positive file was specified. Skipping step defineFalsePositives...');
         context.lastClientExitCode = 0;
         return;
     }

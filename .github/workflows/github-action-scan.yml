@@ -11,10 +11,12 @@ on:
     paths:
       - '.github/workflows/github-action-scan.yml'
       - 'github-actions/scan/**'
+      - 'sechub-cli/src/**'
   pull_request:
     paths:
       - '.github/workflows/github-action-scan.yml'
       - 'github-actions/scan/**'
+      - 'sechub-cli/src/**'
   # enable manual triggering of workflow
   workflow_dispatch:
      inputs:

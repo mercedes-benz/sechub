@@ -2,7 +2,7 @@
 
 import {defineFalsePositives, extractJobUUID, getReport, scan} from '../src/sechub-cli';
 import {execFileSync} from 'child_process';
-import {sanitize} from "../src/shell-arg-sanitizer";
+import {sanitize} from '../src/shell-arg-sanitizer';
 
 jest.mock('@actions/core');
 
@@ -95,7 +95,8 @@ describe('scan', function() {
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
                 {
                     env: process.env,
-                    encoding: 'utf-8'
+                    encoding: 'utf-8',
+                    stdio: 'pipe',
                 }
             );
     });
@@ -121,7 +122,8 @@ describe('scan', function() {
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
                 {
                     env: process.env,
-                    encoding: 'utf-8'
+                    encoding: 'utf-8',
+                    stdio: 'pipe',
                 }
             );
     });
