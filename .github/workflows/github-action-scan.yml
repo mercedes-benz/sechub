@@ -163,7 +163,6 @@ jobs:
         run:  ./03-init_sechub_data.sh $sechub_server_port $pds_port
 
       - name: Run integration tests
-        env: ACTIONS_STEP_DEBUG=true
         run: npm run integration-test
         
       - name: Cleanup integration tests

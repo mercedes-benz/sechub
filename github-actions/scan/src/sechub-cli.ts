@@ -3,7 +3,10 @@
 import { LaunchContext } from './launcher';
 import * as core from '@actions/core';
 import {execFileSync} from 'child_process';
-import {sanitize} from "./shell-arg-sanitizer";
+import {sanitize} from './shell-arg-sanitizer';
+
+const stdioInherit = 'inherit';
+const stdioPipe ='pipe';
 
 /**
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
@@ -15,13 +18,22 @@ export function scan(context: LaunchContext) {
     const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
+    
+    // if runner debugging is enabled (means core.debug enabled) we want to show the command line output of client
+    const stdioConfig = core.isDebug() ? stdioInherit : stdioPipe;
 
     try {
         const output = execFileSync(clientExecutablePath,
-            ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'],
+            /* parameters */
+            [
+                '-configfile', configFileArgValue, 
+                '-output', outputArgValue, addScmHistoryArg, 'scan'],
+
+            /* options*/
             {
                 env: process.env, // Pass all environment variables
-                encoding: 'utf-8'
+                encoding: 'utf-8',
+                stdio: stdioConfig
             }
         );
 
@@ -93,7 +105,7 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
  */
 export function defineFalsePositives(context: LaunchContext) {
     if (!context.defineFalsePositivesFile) {
-        core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        core.info('No define-false-positive file was specified. Skipping step defineFalsePositives...');
         context.lastClientExitCode = 0;
         return;
     }
