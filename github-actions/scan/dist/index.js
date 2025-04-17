@@ -28487,6 +28487,7 @@ function scan(context) {
             encoding: 'utf-8',
             stdio: 'pipe'
         });
+        lib_core.info(output);
         lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
         context.jobUUID = extractJobUUID(output);
@@ -28526,10 +28527,12 @@ function getReport(jobUUID, reportFormat, context) {
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
     try {
-        (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
+        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: 'pipe'
         });
+        lib_core.info(output);
         lib_core.debug('Get report executed successfully');
         context.lastClientExitCode = 0;
     }
@@ -28557,6 +28560,7 @@ function defineFalsePositives(context) {
             env: process.env,
             encoding: 'utf-8'
         });
+        lib_core.info(output);
         lib_core.info('defineFalsePositives executed successfully');
         context.lastClientExitCode = 0;
     }

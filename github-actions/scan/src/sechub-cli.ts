@@ -32,12 +32,16 @@ export function scan(context: LaunchContext) {
             }
         );
 
+        core.info(output);
+
         core.info('Scan executed successfully');
+
         context.lastClientExitCode = 0;
         context.jobUUID=extractJobUUID(output);
     } catch (error: any) {
         core.error(`Error executing scan command: ${error.message}`);
         core.error(`Standard error: ${error.stderr}`);
+
         context.lastClientExitCode= error.status;
         context.jobUUID=extractJobUUID(error.stdout);
     }
@@ -77,14 +81,15 @@ export function getReport(jobUUID: string, reportFormat: string, context: Launch
     const reportFormatArgValue = sanitize(reportFormat);
 
     try {
-        execFileSync(clientExecutablePath,
+        const output = execFileSync(clientExecutablePath,
             ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'],
             {
                 env: process.env, // Pass all environment variables
-                encoding: 'utf-8'
+                encoding: 'utf-8',
+                stdio : 'pipe'
             }
         );
-
+        core.info(output);
         core.debug('Get report executed successfully');
         context.lastClientExitCode = 0;
     } catch (error: any) {
@@ -117,6 +122,7 @@ export function defineFalsePositives(context: LaunchContext) {
                 encoding: 'utf-8'
             }
         );
+        core.info(output);
 
         core.info('defineFalsePositives executed successfully');
         context.lastClientExitCode = 0;
