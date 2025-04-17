@@ -96,13 +96,13 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 function resolveClientDownloadFolder(clientVersion: string, gitHubInputData: GitHubInputData): string {
 
     if (clientVersion == 'build') {
-        const dirPath = gitHubInputData.clientBuildFolder;
+        const buildDownloadFolder = gitHubInputData.clientBuildFolder + '/go';
 
-        const isDirAndExists = fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory();
+        const isDirAndExists = fs.existsSync(buildDownloadFolder) && fs.lstatSync(buildDownloadFolder).isDirectory();
         if (!isDirAndExists) {
-            handleError(`The client build folder path is not a directory or does not exist: ${dirPath}`);
+            handleError(`The client build folder path is not a directory or does not exist: ${buildDownloadFolder}`);
         }
-        return dirPath;
+        return buildDownloadFolder;
     }
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input

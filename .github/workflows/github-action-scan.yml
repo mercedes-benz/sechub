@@ -56,7 +56,7 @@ jobs:
           
           if [ "$SECHUB_CLIENT_VERSION" = "build" ]; then
              # set client build folder:
-             SECHUB_CLIENT_BUILD_FOLDER=${{ github.workspace }}/sechub-cli/build/go 
+             SECHUB_CLIENT_BUILD_FOLDER=${{ github.workspace }}/sechub-cli/build 
              echo "- SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER"
              echo "SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER" >> $GITHUB_ENV
           fi

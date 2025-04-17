@@ -46356,12 +46356,12 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
 };
 function resolveClientDownloadFolder(clientVersion, gitHubInputData) {
     if (clientVersion == 'build') {
-        const dirPath = gitHubInputData.clientBuildFolder;
-        const isDirAndExists = external_fs_.existsSync(dirPath) && external_fs_.lstatSync(dirPath).isDirectory();
+        const buildDownloadFolder = gitHubInputData.clientBuildFolder + '/go';
+        const isDirAndExists = external_fs_.existsSync(buildDownloadFolder) && external_fs_.lstatSync(buildDownloadFolder).isDirectory();
         if (!isDirAndExists) {
-            handleError(`The client build folder path is not a directory or does not exist: ${dirPath}`);
+            handleError(`The client build folder path is not a directory or does not exist: ${buildDownloadFolder}`);
         }
-        return dirPath;
+        return buildDownloadFolder;
     }
     const expression = /\./gi;
     const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
