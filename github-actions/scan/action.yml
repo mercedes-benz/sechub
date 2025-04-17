@@ -83,6 +83,7 @@ runs:
   using: composite
   steps:
     - name: Cache SecHub client
+      if: ${{ ! startsWith(inputs.version, 'build') }}
       uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
         path: ${{ github.workspace }}/.sechub-gha/client/
