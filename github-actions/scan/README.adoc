@@ -32,7 +32,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # REQUIRED: the name of the project registered in SecHub (can alternatively provided via env variable or config file)
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
-    # OPTIONAL: Which version of the SecHub cli to use
+    # OPTIONAL: 'Which version of the SecHub client to use. E.g `latest` or `1.10.0'
     # DEFAULT: latest
     version: 'latest'
 
@@ -85,6 +85,27 @@ To be able to use this action you need a SecHub project. Check the https://merce
     #           The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file.
     #           You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.
     define-false-positives: 'sechub-false-positives.json'
+----
+
+==== Additional settings for debugging
+
+[source,yaml]
+----
+- uses: mercedes-benz/sechub/github-actions/scan@master
+    #....
+    
+    # OPTIONAL: 'Which version of the SecHub client to use. E.g `latest` or `1.10.0' or 'build'
+    #            For debugging it is possible to use `build` which will NOT download
+    #            a released version but instead use a local build! This can be useful for testing 
+    #            unreleased versions. The option is not listed in official action.yml file.
+    #
+    # DEFAULT: latest
+    version: 'latest'
+    
+    # OPTIONAL: An explicit client build folder path if used client version is 'build'.
+    #           The parameter is only for testing unreleased versions.
+    #           This is the reason why this parameter is not listed in official action.yml file.
+    client-build-folder: ''
 ----
 
 [IMPORTANT]
@@ -161,6 +182,8 @@ npm run test
 
 
 ==== Integration-Test
+
+===== Start integration tests locally
 As a precondition to run the integration tests locally you have to
 execute `01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortN`
 inside the integration test folder.
@@ -183,16 +206,40 @@ After the script has been executed, you can execute integration tests multiple t
 npm run integration-test
 ----
 
+====== Change used client version
+Per default 'build' will be used as client version. This means that the local build is used and no
+download happens.
+
+If you want to to change this locally, just set environment variable `SECHUB_CLIENT_VERSION` to
+your wanted version - e.g. `latest` or `1.10.0`
+
+===== Start GitHub action workflow
+The worklow `github-action-scan.yml`
+will be triggered on every PR which changes the worklow or the github action.
+
+It is also possible to trigger the workflow manually at
+https://github.com/mercedes-benz/sechub/actions/workflows/github-action-scan.yml
+
+====== Change used client version
+The workflow `github-action-scan.yml` uses per default `build`.
+
+If you want to change it and test a dedicated version of the client, just trigger a manual
+build at the workflow and set the version inside the parameter panel.
+
+===== Extended logging
 To enable full debug output in integration tests please execute following before running the integration tests:
 [source,npm]
 ----
-export SECHUB_DEBUG=true
+export SECHUB_INTEGRATIONTEST_DEBUG=true
 ----
+
+This will activate debug logging inside integration tests (via jest mocking core.debug).
 
 ==== Debugging tests
 The unit and also the integration tests are written with `jest` test framework.
 
 ===== Setup
+
 ====== VSCodium
 
 Used extensions

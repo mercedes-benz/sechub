@@ -19,7 +19,7 @@ inputs:
     description: 'SecHub project name (can alternatively provided via env variable or config file)'
     required: false
   version:
-    description: 'Which version of the SecHub client to use'
+    description: 'Which version of the SecHub client to use. E.g `latest` or `1.10.0'
     required: false
     default: 'latest'
   add-scm-history:
