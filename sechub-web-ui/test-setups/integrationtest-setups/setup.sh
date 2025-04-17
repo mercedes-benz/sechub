@@ -20,6 +20,7 @@ test_kics_project_name="test-kics"
 test_user1_name="web-ui-tester1"
 test_user1_email="web-ui-tester1@example.org"
 
+# Second testuser that can be alse created with keycloak (without json error)
 test_user2_name="testuser"
 test_user2_email="testuser@sechub.com"
 
