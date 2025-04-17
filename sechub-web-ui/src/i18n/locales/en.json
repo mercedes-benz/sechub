@@ -57,6 +57,8 @@
     "PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED" : "Was not able to change project owner",
     "PROJECT_SETTINGS_DIALOG_OWNER_MANAGEMENT": "Owner Management",
     "PROJECT_SETTINGS_DIALOG_USER_MANAGEMENT": "User Management",
+    "PROJECT_SETTINGS_DIALOG_PROJECT_MEMBER": "Project member",
+    "PROJECT_SETTINGS_DIALOG_PROJECT_OWNERT": "Project owner",
     "PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED": "Was not able to assign new user to project",
     "PROJECT_SETTINGS_PROJECT_UNASSIGN_USER_FAILED": "Was not able to remove user from project",
     "PROJECT_SETTINGS_CONFIRM_REMOVE_USER": "Are you sure you want to remove the user from the project? If you remove yourself you will no longer see the project in your projects overview.",

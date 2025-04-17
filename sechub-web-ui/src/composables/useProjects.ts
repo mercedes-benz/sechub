@@ -7,7 +7,6 @@ export async function useFetchProjects () {
   const store = useProjectStore()
   const projects = ref<ProjectData[]>([])
   const error = ref<string | undefined>(undefined)
-  const loading = ref(true)
 
   try {
     projects.value = await defaultClient.withProjectApi.getAssignedProjectDataList()
@@ -16,9 +15,7 @@ export async function useFetchProjects () {
     const errMsg = 'ERROR_MESSAGE_FETCHING_PROJECTS'
     error.value = errMsg
     console.error(errMsg, err)
-  } finally {
-    loading.value = false
-  }
+  } 
 
-  return { projects, error, loading }
+  return { projects, error }
 }

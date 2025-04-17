@@ -17,7 +17,7 @@
         justify="center"
       >
         <v-col class="pa-0">
-          <div>Welcome</div>
+          <div>{{ welcomeText }}</div>
         </v-col>
       </v-row>
       <v-row
@@ -43,7 +43,7 @@
         </v-responsive>
         -->
 
-    <template #append>
+    <template v-if="isLoggedIn" #append>
       <v-btn icon="mdi-account" @click="goToUserPage()" />
 
       <v-btn icon="mdi-logout-variant" />
@@ -53,15 +53,48 @@
   </v-app-bar>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
   import { useRouter } from 'vue-router'
-  const router = useRouter()
-  const username = 'SecHub User'
+  import { useFetchUserDetail } from '@/composables/useUserDetail'
+  import { useI18n } from 'vue-i18n'
 
-  function goToUserPage () {
-    router.push('/user')
+  export default {
+    name: 'AppHeader',
+
+    setup () {
+      const { t } = useI18n()
+      const router = useRouter()
+      const welcomeText = ref('')
+      const username = ref('')
+      const isLoggedIn = ref(false)
+
+      // initially fetch and store user data
+      userFetchUserDetailInformation()
+
+      function goToUserPage () {
+        router.push('/user')
+      }
+
+      async function userFetchUserDetailInformation(){
+        const { userDetailInformation, error } = await useFetchUserDetail()
+        if(userDetailInformation){
+          isLoggedIn.value = true
+          welcomeText.value = t('GREETING')
+          username.value = userDetailInformation.value.userId || 'SecHub User'
+        }else{
+          console.log(error.value)
+        }
+      }
+
+      return {
+        username,
+        welcomeText,
+        isLoggedIn,
+        goToUserPage,
+        t,
+      }
+    }
   }
-
 </script>
 
 <style scoped>
