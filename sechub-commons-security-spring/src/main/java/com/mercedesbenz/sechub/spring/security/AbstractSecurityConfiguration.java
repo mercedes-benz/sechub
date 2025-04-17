@@ -470,13 +470,19 @@ public abstract class AbstractSecurityConfiguration {
 
     private static void configureLogout(HttpSecurity httpSecurity, SecHubSecurityProperties.LoginProperties loginProperties) throws Exception {
         if (loginProperties != null && loginProperties.isEnabled()) {
+
             /* we redirect to the frontend because of CORS */
             SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
             logoutSuccessHandler.setDefaultTargetUrl(loginProperties.getRedirectUri());
 
+            /* @formatter:off */
             /* logout need to be setup in same Bean as authorizeHttpRequests */
-            httpSecurity.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler).invalidateHttpSession(true).clearAuthentication(true)
-                    .deleteCookies(CLASSIC_AUTH_COOKIE_NAME, OAUTH2_COOKIE_NAME));
+			/* the default logout URL is /logout */
+            httpSecurity
+					.logout(logout -> logout
+							.logoutSuccessHandler(logoutSuccessHandler)
+							.deleteCookies(CLASSIC_AUTH_COOKIE_NAME, OAUTH2_COOKIE_NAME));
+			/* @formatter:on */
         }
     }
 }
