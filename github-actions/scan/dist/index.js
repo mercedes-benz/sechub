@@ -22684,6 +22684,7 @@ function handleError(error) {
 
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/shelljs/shell.js
 var shelljs_shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
@@ -28460,8 +28461,67 @@ class CommandInjectionError extends Error {
     }
 }
 
+// EXTERNAL MODULE: ./node_modules/uuid/dist/index.js
+var dist = __nccwpck_require__(5840);
+;// CONCATENATED MODULE: ./node_modules/uuid/wrapper.mjs
+
+const v1 = dist.v1;
+const v3 = dist.v3;
+const v4 = dist.v4;
+const v5 = dist.v5;
+const NIL = dist.NIL;
+const version = dist.version;
+const validate = dist.validate;
+const stringify = dist.stringify;
+const wrapper_parse = dist.parse;
+
+;// CONCATENATED MODULE: ./src/fs-wrapper.ts
+// SPDX-License-Identifier: MIT
+
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * "fs" seems to be nolonger mockable any more correctly with jest, so this
+ * wrapper class was introduced. We can mock the wrapper without any problems.
+ *
+ * @param filePath
+ * @returns file content as string
+ */
+function readFileSync(filePath, options) {
+    return external_fs_.readFileSync(filePath, options);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ *
+ * @return an integer representing the file descriptor. */
+function openSync(path, flags, mode) {
+    return external_fs_.openSync(path, flags, mode);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * @param fd file descriptor to close
+ */
+function closeSync(fd) {
+    external_fs_.closeSync(fd);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * For detailed information, see the documentation of the asynchronous version of
+ * this API: {@link fs.mkdtemp}.
+ *
+ * The optional `options` argument can be a string specifying an encoding, or an
+ *  object with an `encoding` property specifying the character encoding to use.
+ * @return the created directory path.
+ */
+function mkdtempSync(prefix, options) {
+    return external_fs_.mkdtempSync(prefix, options);
+}
+
 ;// CONCATENATED MODULE: ./src/sechub-cli.ts
 // SPDX-License-Identifier: MIT
+
+
+
+
 
 
 
@@ -28474,8 +28534,12 @@ function scan(context) {
     const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'scan output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, 
+        (0,external_child_process_.execFileSync)(clientExecutablePath, 
         /* parameters */
         [
             '-configfile', configFileArgValue,
@@ -28485,19 +28549,25 @@ function scan(context) {
         {
             env: process.env,
             encoding: 'utf-8',
-            stdio: 'pipe'
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        lib_core.info(output);
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
         context.jobUUID = extractJobUUID(output);
     }
     catch (error) {
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing scan command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
-        context.jobUUID = extractJobUUID(error.stdout);
+        context.jobUUID = extractJobUUID(output);
     }
+}
+function logAndCloseStdOutFile(prefix, stdOutFd, stdOutFile) {
+    closeSync(stdOutFd);
+    const output = readFileSync(stdOutFile, 'utf8');
+    lib_core.info(`${prefix}:\n${output}`);
+    return output;
 }
 function extractJobUUID(output) {
     const jobPrefix = 'job:';
@@ -28526,19 +28596,23 @@ function getReport(jobUUID, reportFormat, context) {
     const jobUUIDArgValue = sanitize(jobUUID);
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'get-report-output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
+        (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
             env: process.env,
             encoding: 'utf-8',
-            stdio: 'pipe'
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        lib_core.info(output);
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.debug('Get report executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing getReport command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28555,18 +28629,23 @@ function defineFalsePositives(context) {
     const clientExecutablePath = sanitize(context.clientExecutablePath);
     const projectIdValue = sanitize(context.projectName);
     const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-define-false-positives-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'define-false-positives-output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
+        (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        lib_core.info(output);
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.info('defineFalsePositives executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing defineFalsePositives command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28640,21 +28719,6 @@ function storeOutput(field, value) {
     // fs.appendFileSync(outputFilePath, outputLine, { encoding: 'utf8' });
     // 2. Offical way by core API (does not work)
     // setOutput(field,value);
-}
-
-;// CONCATENATED MODULE: ./src/fs-wrapper.ts
-// SPDX-License-Identifier: MIT
-
-/**
- * This is a wrapper function - necessary make callers testable with jest.
- * "fs" seems to be nolonger mockable any more correctly with jest, so this
- * wrapper class was introduced. We can mock the wrapper without any problems.
- *
- * @param filePath
- * @returns file content as string
- */
-function readFileSync(filePath, options) {
-    return external_fs_.readFileSync(filePath, options);
 }
 
 ;// CONCATENATED MODULE: ./src/post-scan.ts
@@ -35972,7 +36036,7 @@ function setCss(el, prop, value, idx) {
         else if (val != null) {
             styles[prop] = val;
         }
-        el.attribs['style'] = stringify(styles);
+        el.attribs['style'] = css_stringify(styles);
     }
     else if (typeof prop === 'object') {
         Object.keys(prop).forEach((k, i) => {
@@ -36006,7 +36070,7 @@ function getCss(el, prop) {
  * @param obj - Object to stringify.
  * @returns The serialized styles.
  */
-function stringify(obj) {
+function css_stringify(obj) {
     return Object.keys(obj).reduce((str, prop) => `${str}${str ? ' ' : ''}${prop}: ${obj[prop]};`, '');
 }
 /**

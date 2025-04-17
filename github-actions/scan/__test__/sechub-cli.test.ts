@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 import {defineFalsePositives, extractJobUUID, getReport, scan} from '../src/sechub-cli';
-import {execFileSync} from 'child_process';
+import { execFileSync} from 'child_process';
+import { readFileSync, openSync, closeSync, mkdtempSync} from '../src/fs-wrapper';
 import {sanitize} from '../src/shell-arg-sanitizer';
 
 jest.mock('@actions/core');
@@ -22,10 +23,25 @@ jest.mock('child_process', () => ({
     execFileSync: jest.fn(() => output)
 }));
 
-jest.mock('../src/shell-arg-sanitizer');
+jest.mock('../src/shell-arg-sanitizer',() => ({
+    sanitize: jest.fn((toSanitize) => toSanitize) // just return always input..
+}));
 
-beforeEach(() => {
+jest.mock('../src/fs-wrapper', () => ({
+    readFileSync: jest.fn(() => output),
+    openSync: jest.fn(() => 4711),
+    mkdtempSync: jest.fn(() => '/temp-mocked'),
+    closeSync: jest.fn(),
+    mkdtempScloseSyncync: jest.fn(),
+}));
+
+
+afterEach(() => {
     jest.clearAllMocks();
+});
+
+afterAll(() => {
+    jest.resetAllMocks();
 });
 
 describe('scan', function() {
@@ -89,14 +105,15 @@ describe('scan', function() {
         scan(context);
 
         /* test */
-        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync).toBeCalledTimes(1); 
         expect(execFileSync)
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
                 {
                     env: process.env,
                     encoding: 'utf-8',
-                    stdio: 'pipe',
+
+                    stdio: ['ignore', 4711, 4711]
                 }
             );
     });
@@ -119,11 +136,13 @@ describe('scan', function() {
         expect(execFileSync).toBeCalledTimes(1);
         expect(execFileSync)
             .toBeCalledWith(
-                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
+                '/path/to/sechub-cli', 
+                ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
                 {
                     env: process.env,
                     encoding: 'utf-8',
-                    stdio: 'pipe',
+
+                    stdio: ['ignore', 4711, 4711]
                 }
             );
     });
