@@ -39,12 +39,22 @@ The values can be changed at runtime +
 |SECHUB_USER_SUPPORT_WEBSITE
 |https://sechub.example.org
 |Support website for your service shown in the Web UI
+
+|SECHUB_FAQ_LINK
+|https://sechub.example.org/faq
+|Link to your custom FAQ page
 |===
++
 Example config.json file: +
-`{ +
-  "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org", +
-  "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsite.example.org" +
-}`
++
+[source,json]
+----
+{
+  "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
+  "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsite.example.org",
+  "SECHUB_FAQ_LINK": "https://mycustomwebsite.example.org/faq"
+}
+----
 
 3. Start the sechub server docker container in sechub/sechub-solution +
 +

@@ -46,22 +46,50 @@
     <template #append>
       <v-btn icon="mdi-account" @click="goToUserPage()" />
 
-      <v-btn icon="mdi-logout-variant" />
+      <v-btn icon="mdi-logout-variant" @click="logout()" />
 
-      <v-btn icon="mdi-forum-outline" />
+      <v-btn :href="faqLink" icon="mdi-forum-outline" target="_blank" />
     </template>
   </v-app-bar>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+  import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router'
-  const router = useRouter()
-  const username = 'SecHub User'
+  import { useConfig } from '@/config'
 
-  function goToUserPage () {
-    router.push('/user')
+  export default {
+    name: 'ProjectComponent',
+
+    setup () {
+      const router = useRouter()
+      const username = 'SecHub User'
+      const config = useConfig()
+
+      const faqLink = ref(config.value.SECHUB_FAQ_LINK)
+
+      function goToUserPage () {
+        router.push('/user')
+      }
+
+      async function logout () {
+        try {
+          await defaultClient.withOtherApi.userLogout()
+          // redirect to root after logout
+          router.push('/login')
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      return {
+        username,
+        faqLink,
+        logout,
+        goToUserPage,
+      }
+    },
   }
-
 </script>
 
 <style scoped>

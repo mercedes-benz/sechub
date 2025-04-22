@@ -20,6 +20,10 @@ test_kics_project_name="test-kics"
 test_user1_name="web-ui-tester1"
 test_user1_email="web-ui-tester1@example.org"
 
+# Second testuser that can be alse created with keycloak (without json error)
+test_user2_name="testuser"
+test_user2_email="testuser@sechub.com"
+
 $SECHUB_API_SCRIPT alive_check
 
 echo "- create projects"
@@ -34,12 +38,16 @@ echo "- create test user: '$test_user1_name'"
 $SECHUB_API_SCRIPT user_signup $test_user1_name $test_user1_email
 $SECHUB_API_SCRIPT user_signup_accept $test_user1_name
 
+echo "- create test user: '$test_user2_name'"
+$SECHUB_API_SCRIPT user_signup $test_user2_name $test_user2_email
+$SECHUB_API_SCRIPT user_signup_accept $test_user2_name
+
 echo "- assign test user: $test_user1_name to projects"
 $SECHUB_API_SCRIPT project_assign_user $test_checkmarx_project_name $test_user1_name
 $SECHUB_API_SCRIPT project_assign_user $test_gosec_kics_and_gitleaks_project_name $test_user1_name
 $SECHUB_API_SCRIPT project_assign_user $test_zap_project_name $test_user1_name
 $SECHUB_API_SCRIPT project_assign_user $test_zap_test_kics_project_name $test_user1_name
-
+$SECHUB_API_SCRIPT project_assign_user $test_zap_test_kics_project_name $test_user2_name
 
 echo "- setup project '$test_gosec_kics_and_gitleaks_project_name' for codescan with gosec mock, iac with kics and secret scan with gitleaks"
 # Create and assign a mocked executor, the result will always be RED
