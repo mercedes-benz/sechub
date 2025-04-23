@@ -40,7 +40,6 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.validation.SechubEmailRuleProperties;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 
@@ -124,9 +123,6 @@ public class SecHubMultiSpringBootTest {
 
     @MockBean
     private JobStorageFactory jobStorageFactory;
-
-    @MockBean
-    private SechubEmailRuleProperties emailRuleProperties;
 
     @BeforeEach
     void beforeEach() {

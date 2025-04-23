@@ -16,7 +16,7 @@ public class SimpleEndsWithMailDomainsRule implements EmailRule {
 
     @Override
     public void applyRule(String email, ValidationContext<String> context) {
-        if (sechubEmailRuleProperties.getAllowedDomains() == null || sechubEmailRuleProperties.getAllowedDomains().isEmpty()) {
+        if (sechubEmailRuleProperties.getAllowedDomains().isEmpty()) {
             return;
         }
         if (email == null || context == null) {

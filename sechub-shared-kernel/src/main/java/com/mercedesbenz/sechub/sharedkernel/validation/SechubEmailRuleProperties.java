@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 
@@ -15,11 +16,18 @@ public class SechubEmailRuleProperties {
 
     private final List<String> allowedDomains;
 
+    @ConstructorBinding
     public SechubEmailRuleProperties(List<String> allowedDomains) {
-        this.allowedDomains = allowedDomains;
+        this.allowedDomains = allowedDomains != null ? Collections.unmodifiableList(allowedDomains) : Collections.emptyList();
+        ;
     }
 
+    /**
+     * Get the list of allowed domains for an email address.
+     *
+     * @return list of allowed domains or an empty list, never <code>code</code>
+     */
     public List<String> getAllowedDomains() {
-        return allowedDomains != null ? Collections.unmodifiableList(allowedDomains) : null;
+        return allowedDomains;
     }
 }

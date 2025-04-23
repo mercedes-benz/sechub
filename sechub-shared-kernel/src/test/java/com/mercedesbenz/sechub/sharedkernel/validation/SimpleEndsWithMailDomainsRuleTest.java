@@ -20,22 +20,6 @@ class SimpleEndsWithMailDomainsRuleTest {
     }
 
     @Test
-    void list_of_accepted_domains_is_null_does_nothing_and_results_in_no_error() {
-        /* prepare */
-        SechubEmailRuleProperties properties = new SechubEmailRuleProperties(null);
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
-
-        String email = "example@example.com";
-        ValidationContext<String> context = new ValidationContext<String>(email);
-
-        /* execute */
-        emailRule.applyRule(email, context);
-
-        /* test */
-        assertThat(context.isInValid()).isFalse();
-    }
-
-    @Test
     void list_of_accepted_domains_is_empty_does_nothing_and_results_in_no_error() {
         /* prepare */
         SechubEmailRuleProperties properties = new SechubEmailRuleProperties(Collections.emptyList());
