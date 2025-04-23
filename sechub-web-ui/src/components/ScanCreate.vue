@@ -21,7 +21,6 @@
             v-model="alert"
             closable
             color="error"
-            density="compact"
             :title="$t('SCAN_ERROR_ALERT_TITLE')"
             type="warning"
             variant="tonal"

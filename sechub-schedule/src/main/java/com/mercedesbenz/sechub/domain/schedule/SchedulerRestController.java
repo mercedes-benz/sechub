@@ -81,7 +81,7 @@ public class SchedulerRestController {
 
     /* @formatter:off */
 	@Validated
-	@RolesAllowed({RoleConstants.ROLE_USER})
+	@RolesAllowed(RoleConstants.ROLE_USER)
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload sourcecode"))
 	@UseCaseUserUploadsSourceCode(@Step(number=1,name="Authenticated REST call",needsRestDoc=true))
 	@RequestMapping(path = "/job/{jobUUID}/sourcecode", method = RequestMethod.POST)
@@ -91,7 +91,6 @@ public class SchedulerRestController {
 	        @RequestPart(MULTIPART_FILE) MultipartFile file,
 	        @RequestParam(MULTIPART_CHECKSUM) String checkSum
 	        ) {
-        System.out.println("Hello");
 	    sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}
 	/* @formatter:on */
