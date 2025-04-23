@@ -220,7 +220,6 @@
   import { useI18n } from 'vue-i18n'
   import { ProjectData, UserDetailInformation } from '@/generated-sources/openapi'
   import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
-  import { getUserNameClass } from '@/utils/projectUtils'
   import '@/styles/sechub.scss'
 
   interface Props {
@@ -321,11 +320,6 @@
         if (reset) {
           newOwnerId.value = projectData.value.owner.userId
         }
-      }
-
-      function getColorClass (userId: string) {
-        const currentUserId = userDetailInformation.value.userId || ''
-        return getUserNameClass(currentUserId, userId)
       }
 
       async function onSettingsChangeOwnerClicked () {
@@ -432,7 +426,6 @@
         onAssignUserClicked,
         confirmAction,
         cancelAction,
-        getColorClass,
       }
     },
   })
