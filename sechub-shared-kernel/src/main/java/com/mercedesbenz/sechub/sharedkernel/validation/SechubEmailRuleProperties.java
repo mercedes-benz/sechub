@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
+import com.mercedesbenz.sechub.commons.core.doc.Description;
 import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 
 @MustBeDocumented(scope = "Email validation")
@@ -16,11 +17,16 @@ public class SechubEmailRuleProperties {
 
     private final List<String> allowedDomains;
 
+    /* @formatter:off */
     @ConstructorBinding
-    public SechubEmailRuleProperties(List<String> allowedDomains) {
+    public SechubEmailRuleProperties(
+
+            @Description("The allowed domains for email addresses of SecHub users. A comma separated list of strings like: 'example.com,company.org'. If nothing is specified all domains are allowed.")
+            List<String> allowedDomains) {
+
         this.allowedDomains = allowedDomains != null ? Collections.unmodifiableList(allowedDomains) : Collections.emptyList();
-        ;
     }
+    /* @formatter:on */
 
     /**
      * Get the list of allowed domains for an email address.

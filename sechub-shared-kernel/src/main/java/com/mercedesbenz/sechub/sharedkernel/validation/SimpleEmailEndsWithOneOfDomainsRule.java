@@ -6,11 +6,11 @@ import static java.util.Objects.requireNonNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SimpleEndsWithMailDomainsRule implements EmailRule {
+public class SimpleEmailEndsWithOneOfDomainsRule implements EmailRule {
 
     private final SechubEmailRuleProperties sechubEmailRuleProperties;
 
-    public SimpleEndsWithMailDomainsRule(SechubEmailRuleProperties sechubEmailRuleProperties) {
+    public SimpleEmailEndsWithOneOfDomainsRule(SechubEmailRuleProperties sechubEmailRuleProperties) {
         this.sechubEmailRuleProperties = requireNonNull(sechubEmailRuleProperties, "The value of 'sechubEmailRuleProperties' must not be null!");
     }
 
@@ -23,9 +23,7 @@ public class SimpleEndsWithMailDomainsRule implements EmailRule {
             return;
         }
         for (String allowedDomain : sechubEmailRuleProperties.getAllowedDomains()) {
-            if (!allowedDomain.startsWith("@")) {
-                allowedDomain = "%s%s".formatted("@", allowedDomain);
-            }
+            allowedDomain = "@%s".formatted(allowedDomain);
             if (email.endsWith(allowedDomain)) {
                 return;
             }

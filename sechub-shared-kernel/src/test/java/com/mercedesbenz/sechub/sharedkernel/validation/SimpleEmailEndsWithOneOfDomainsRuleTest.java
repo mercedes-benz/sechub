@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class SimpleEndsWithMailDomainsRuleTest {
+class SimpleEmailEndsWithOneOfDomainsRuleTest {
 
     @Test
     void sechub_email_rule_properties_is_null_throws_exception() {
         /* test */
-        assertThatThrownBy(() -> new SimpleEndsWithMailDomainsRule(null)).hasMessage("The value of 'sechubEmailRuleProperties' must not be null!");
+        assertThatThrownBy(() -> new SimpleEmailEndsWithOneOfDomainsRule(null)).hasMessage("The value of 'sechubEmailRuleProperties' must not be null!");
     }
 
     @Test
     void list_of_accepted_domains_is_empty_does_nothing_and_results_in_no_error() {
         /* prepare */
         SechubEmailRuleProperties properties = new SechubEmailRuleProperties(Collections.emptyList());
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
+        SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
         String email = "example@example.com";
         ValidationContext<String> context = new ValidationContext<String>(email);
@@ -39,7 +39,7 @@ class SimpleEndsWithMailDomainsRuleTest {
     void email_is_null_does_nothing_and_results_in_no_error() {
         /* prepare */
         SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com"));
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
+        SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
         ValidationContext<String> context = new ValidationContext<String>("");
 
@@ -54,7 +54,7 @@ class SimpleEndsWithMailDomainsRuleTest {
     void validation_context_is_null_does_nothing_and_results_in_no_error() {
         /* prepare */
         SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com"));
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
+        SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
         String email = "example@example.com";
         ValidationContext<String> context = null;
@@ -70,8 +70,8 @@ class SimpleEndsWithMailDomainsRuleTest {
     @ValueSource(strings = { "example@example.com", "example@test.com" })
     void accepted_domains_result_in_no_error_in_the_validation_context(String email) {
         /* prepare */
-        SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com", "@test.com"));
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
+        SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com", "test.com"));
+        SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
         ValidationContext<String> context = new ValidationContext<String>(email);
 
@@ -86,8 +86,8 @@ class SimpleEndsWithMailDomainsRuleTest {
     @ValueSource(strings = { "example@other.com", "example@unaccepted.com" })
     void not_accepted_domains_result_in_an_error_in_the_validation_context(String email) {
         /* prepare */
-        SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com", "@test.com"));
-        SimpleEndsWithMailDomainsRule emailRule = new SimpleEndsWithMailDomainsRule(properties);
+        SechubEmailRuleProperties properties = new SechubEmailRuleProperties(List.of("example.com", "test.com"));
+        SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
         ValidationContext<String> context = new ValidationContext<String>(email);
 
