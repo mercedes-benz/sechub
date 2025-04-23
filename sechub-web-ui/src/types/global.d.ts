@@ -8,5 +8,6 @@ interface ImportMeta {
     VITE_API_BASIC_AUTH_DEV: string | undefined,
     VITE_SECHUB_USER_SUPPORT_EMAIL: string | undefined,
     VITE_SECHUB_USER_SUPPORT_WEBSITE: string | undefined,
+    VITE_SECHUB_FAQ_LINK: string | undefined,
   }
 }

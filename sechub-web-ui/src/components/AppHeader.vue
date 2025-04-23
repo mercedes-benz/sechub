@@ -46,17 +46,19 @@
     <template v-if="isLoggedIn" #append>
       <v-btn icon="mdi-account" @click="goToUserPage()" />
 
-      <v-btn icon="mdi-logout-variant" />
+      <v-btn icon="mdi-logout-variant" @click="logout()" />
 
-      <v-btn icon="mdi-forum-outline" />
+      <v-btn :href="faqLink" icon="mdi-forum-outline" target="_blank" />
     </template>
   </v-app-bar>
 </template>
 
 <script lang="ts">
+  import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router'
-  import { useFetchUserDetail } from '@/composables/useUserDetail'
   import { useI18n } from 'vue-i18n'
+  import { useFetchUserDetail } from '@/composables/useUserDetail'
+  import { useConfig } from '@/config'
 
   export default {
     name: 'AppHeader',
@@ -64,16 +66,16 @@
     setup () {
       const { t } = useI18n()
       const router = useRouter()
+      const config = useConfig()
+
+      const faqLink = ref(config.value.SECHUB_FAQ_LINK)
+
       const welcomeText = ref('')
       const username = ref('')
       const isLoggedIn = ref(false)
 
       // initially fetch and store user data
       userFetchUserDetailInformation()
-
-      function goToUserPage () {
-        router.push('/user')
-      }
 
       async function userFetchUserDetailInformation () {
         const { userDetailInformation, error } = await useFetchUserDetail()
@@ -89,12 +91,27 @@
         }
       }
 
+      function goToUserPage () {
+        router.push('/user')
+      }
+
+      async function logout () {
+        try {
+          await defaultClient.withOtherApi.userLogout()
+          // redirect to root after logout
+          router.push('/login')
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
       return {
         username,
+        faqLink,
         welcomeText,
         isLoggedIn,
+        logout,
         goToUserPage,
-        t,
       }
     },
   }
