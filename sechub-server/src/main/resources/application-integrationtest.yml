@@ -70,7 +70,7 @@ sechub:
   upload:
    binaries:
      maximum:
-      bytes: 409600 # For testing we only allow 400 kbytes         
+      bytes: 4096000000 # For testing we only allow 400 kbytes
 logging:
  level:
    com.mercedesbenz.sechub: DEBUG
@@ -81,5 +81,5 @@ logging:
 spring:
  servlet: 
     # to speed up integration tests, we use here only 300kb
-    multipart.max-file-size: 300KB
-    multipart.max-request-size: 300KB
+    multipart.max-file-size: 30000000KB
+    multipart.max-request-size: 30000000KB

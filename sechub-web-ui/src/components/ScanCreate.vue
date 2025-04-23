@@ -25,9 +25,11 @@
             :title="$t('SCAN_ERROR_ALERT_TITLE')"
             type="warning"
             variant="tonal"
+            @click:close="clearErrors"
           >
-            {{ errors.pop() }}
-
+            <ul>
+              <li v-for="error in errors" :key="error">{{ error }}</li>
+            </ul>
           </v-alert>
 
           <v-card
@@ -96,7 +98,7 @@
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
-  import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
+  import { buildSecHubConfiguration, isFileSizeValid } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
@@ -142,8 +144,17 @@
       }
 
       function updateFileselection (newFile : File, fileType : string) {
-        selectedFile.value = newFile
-        selectedFileType.value = fileType
+        const { errorMessage, isValid } = isFileSizeValid(newFile, fileType)
+
+        if (isValid) {
+          selectedFile.value = newFile
+          selectedFileType.value = fileType
+          return
+        }
+
+        selectedFile.value = null
+        errors.value.push(errorMessage)
+        alert.value = true
       }
 
       function buildScanConfiguration () {
@@ -164,11 +175,15 @@
         }
         isLoading.value = false
         if (errors.value.length > 0) {
-          // todo only one error is displayed in alert
           alert.value = true
         } else {
           backToProjectOverview()
         }
+      }
+
+      function clearErrors () {
+        errors.value = []
+        alert.value = false
       }
 
       return {
@@ -181,6 +196,7 @@
         errors,
         alert,
         isLoading,
+        clearErrors,
         updateFileselection,
         backToProjectOverview,
         buildScanConfiguration,

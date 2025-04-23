@@ -33,7 +33,7 @@
     :accept="fileAccept"
     base-color="primary"
     :clearable="false"
-    :label="$t('SCAN_CREATE_FILE_UPLOAD_INPUT')"
+    :label="fileInputLabel"
     max-width="1000px"
     :multiple="false"
     prepend-icon="mdi-upload"
@@ -65,9 +65,13 @@
       const error = ref('')
       const alert = ref(false)
 
+      const fileInputLabel = computed(() => {
+        const label = t('SCAN_CREATE_FILE_UPLOAD_INPUT')
+        return selectedRadio.value === 1 ? label + ' .zip' : label + ' .tar'
+      })
+
       const fileAccept = computed(() => {
         // files allowed: .zip and .tar
-        // todo: when drag and drop check files?
         return selectedRadio.value === 1 ? '.zip' : '.tar'
       })
 
@@ -80,16 +84,17 @@
           case 1:
             fileType = FILETYPE_SOURCES
             validType = file.value?.type === 'application/zip'
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP') + 'https://mercedes-benz.github.io/sechub/latest/client-download.html'
             break
           case 2:
             fileType = FILETYPE_BINARIES
             validType = file.value?.type === 'application/x-tar'
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR') + 'https://mercedes-benz.github.io/sechub/latest/client-download.html'
             break
         }
 
         if (file.value && !validType) {
+          // check if file is allowed (drag and drop allowes other files)
           error.value = errorMessage
           file.value = null
           alert.value = true
@@ -112,6 +117,7 @@
         file,
         selectedRadio,
         fileAccept,
+        fileInputLabel,
         alert,
         error,
         onFileChange,

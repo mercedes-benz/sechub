@@ -51,6 +51,7 @@ class ScanService {
   private async uploadData (configuration: SecHubConfiguration, jobId: string, file: File, errorMessages: string[]) {
     const checksum: string = await createSha256Checksum(file)
 
+    // sourcode upload
     if (this.containsString(configuration, UPLOAD_SOURCE_CODE_IDENTIFIER)) {
       const requestParameters: UserUploadSourceCodeWorkaroundRequest = {
         projectId: configuration.projectId,
@@ -65,6 +66,8 @@ class ScanService {
         console.error('Source code upload failed:', error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED'))
       }
+
+    // binary upload
     } else if (this.containsString(configuration, UPLOAD_BINARIES_IDENTIFIER)) {
       const size: string = file.size.toString()
       const requestParameters: UserUploadsBinariesWorkaroundRequest = {
