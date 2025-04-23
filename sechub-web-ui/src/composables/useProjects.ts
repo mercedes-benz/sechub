@@ -15,7 +15,7 @@ export async function useFetchProjects () {
     const errMsg = 'ERROR_MESSAGE_FETCHING_PROJECTS'
     error.value = errMsg
     console.error(errMsg, err)
-  } 
+  }
 
   return { projects, error }
 }

@@ -164,10 +164,10 @@
 
       userFetchUserDetailInformationFromStore()
 
-      async function userFetchUserDetailInformationFromStore() {
+      async function userFetchUserDetailInformationFromStore () {
         const userDetail: UserDetailInformation = store.getUserDetailInformation()
 
-        if(userDetail){
+        if (userDetail) {
           userId.value = userDetail.userId || ''
           email.value = userDetail.email || ''
         }

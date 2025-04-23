@@ -75,14 +75,17 @@
         router.push('/user')
       }
 
-      async function userFetchUserDetailInformation(){
+      async function userFetchUserDetailInformation () {
         const { userDetailInformation, error } = await useFetchUserDetail()
-        if(userDetailInformation){
+
+        if (userDetailInformation.value.userId) {
           isLoggedIn.value = true
           welcomeText.value = t('GREETING')
-          username.value = userDetailInformation.value.userId || 'SecHub User'
-        }else{
-          console.log(error.value)
+          username.value = userDetailInformation.value.userId
+        } else {
+          isLoggedIn.value = false
+          username.value = 'SecHub'
+          console.error(error.value)
         }
       }
 
@@ -93,7 +96,7 @@
         goToUserPage,
         t,
       }
-    }
+    },
   }
 </script>
 

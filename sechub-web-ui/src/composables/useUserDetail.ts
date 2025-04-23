@@ -11,9 +11,9 @@ export async function useFetchUserDetail () {
   try {
     userDetailInformation.value = await defaultClient.withUserSelfServiceApi.userFetchUserDetailInformation()
     store.storeUserDetailInformation(userDetailInformation.value)
-
-} catch (error) {
+  } catch (error) {
     console.error(error)
+    store.clearUseretailInformation()
   }
 
   return { userDetailInformation, error }

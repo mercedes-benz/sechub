@@ -57,3 +57,9 @@ export const getIconColor = (text: string): string => {
       return 'grey'
   }
 }
+
+export function getUserNameClass (userId: string, otherId: string) {
+  if (userId === otherId) {
+    return 'user-id-class'
+  }
+}

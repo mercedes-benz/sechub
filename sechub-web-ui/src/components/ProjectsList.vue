@@ -95,7 +95,6 @@
       }
 
       async function fetchData () {
-
         loading.value = true
         error.value = undefined
         alert.value = false
