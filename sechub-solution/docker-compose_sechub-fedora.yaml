@@ -12,6 +12,7 @@ services:
         - SECHUB_VERSION=${SECHUB_VERSION}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
+        - SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
       context: docker/
       dockerfile: SecHub-Fedora.dockerfile
     container_name: sechub

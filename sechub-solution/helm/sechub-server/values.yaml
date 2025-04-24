@@ -223,7 +223,7 @@ security:
         # The endpoint used to retrieve user details (e.g., name, email, roles) based on the access token.
         userInfo: https://sso.example.org/realms/local-realm/protocol/openid-connect/userinfo
   encryption:
-    # Secret key used to encrypt the access token which is sent back to the user after sucessful authentication (or login).
+    # Secret key used to encrypt the access token which is sent back to the user after successful authentication (or login) and the email verification token.
     # Must be AES256 compatible (256 bit / 32 byte)
     secretKey: Insert-your-32-byte-string-here.
 

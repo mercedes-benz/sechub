@@ -13,6 +13,7 @@ services:
         - GO=${GO}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
+        - SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
       context: docker/
       dockerfile: SecHub-Rocky.dockerfile
     container_name: sechub

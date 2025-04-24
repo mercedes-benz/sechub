@@ -8,6 +8,10 @@ sechub:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
+    encryption:
+      # Secret key used to encrypt the access token which is sent back to the user after successful authentication (or login) and the email verification token.
+      # Must be AES256 compatible (256 bit / 32 byte)
+      secret-key: Insert-your-32-byte-string-here.
 
 spring:
   profiles:
