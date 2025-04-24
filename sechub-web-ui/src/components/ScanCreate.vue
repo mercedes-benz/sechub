@@ -27,8 +27,19 @@
             @click:close="clearErrors"
           >
             <ul>
-              <li v-for="error in errors" :key="error">{{ error }}</li>
+              <li v-for="error in errors" 
+              :key="error">
+              {{ error }}
+              </li>
             </ul>
+            <v-btn v-if="showClientDownloadButton"
+              class="mt-5"
+              color="error"
+              rounded
+              :text="$t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT_BUTTON')"
+              variant="outlined"
+               href='https://mercedes-benz.github.io/sechub/latest/client-download.html'
+              />
           </v-alert>
 
           <v-card
@@ -100,11 +111,13 @@
   import { buildSecHubConfiguration, isFileSizeValid } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
+  import { useI18n } from 'vue-i18n'
   import '@/styles/sechub.scss'
 
   export default defineComponent({
 
     setup () {
+      const { t } = useI18n()
       // routing and translation methods
       const route = useRoute()
       const router = useRouter()
@@ -121,6 +134,7 @@
       const isLoading = ref(false)
       // todo: should be Map key, value = translation
       const selectedScanOptions = ref<string[]>([])
+      const showClientDownloadButton = ref(false)
 
       // sechub scan configuration
       const defaultConfig : SecHubConfiguration = {
@@ -151,6 +165,7 @@
           return
         }
 
+        // reached set upload limit 
         selectedFile.value = null
         errors.value.push(errorMessage)
         alert.value = true
@@ -175,6 +190,7 @@
         isLoading.value = false
         if (errors.value.length > 0) {
           alert.value = true
+          showClientDownloadButton.value = true
         } else {
           backToProjectOverview()
         }
@@ -195,6 +211,7 @@
         errors,
         alert,
         isLoading,
+        showClientDownloadButton,
         clearErrors,
         updateFileselection,
         backToProjectOverview,

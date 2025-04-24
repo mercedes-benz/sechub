@@ -65,6 +65,7 @@ class ScanService {
       } catch (error) {
         console.error('Source code upload failed:', error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED'))
+        errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
 
     // binary upload
@@ -83,6 +84,7 @@ class ScanService {
       } catch (error) {
         console.error('Binary upload failed:', error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED'))
+        errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
     } else {
       errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_CONFIGURATION_ERROR'))

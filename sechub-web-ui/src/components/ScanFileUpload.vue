@@ -84,12 +84,12 @@
           case 1:
             fileType = FILETYPE_SOURCES
             validType = file.value?.type === 'application/zip'
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP') + 'https://mercedes-benz.github.io/sechub/latest/client-download.html'
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_ZIP')
             break
           case 2:
             fileType = FILETYPE_BINARIES
             validType = file.value?.type === 'application/x-tar'
-            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR') + 'https://mercedes-benz.github.io/sechub/latest/client-download.html'
+            errorMessage = t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TAR')
             break
         }
 
