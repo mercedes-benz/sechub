@@ -13,7 +13,7 @@ export async function useFetchUserDetail () {
     store.storeUserDetailInformation(userDetailInformation.value)
   } catch (error) {
     console.error(error)
-    store.clearUseretailInformation()
+    store.clearUserDetailInformation()
   }
 
   return { userDetailInformation, error }

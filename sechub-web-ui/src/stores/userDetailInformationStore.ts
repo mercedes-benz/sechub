@@ -20,7 +20,7 @@ export const useUserDetailInformationStore = defineStore(STORE_NAME, {
       localStorage.setItem(STORE_NAME, JSON.stringify(this.userDetailInformation))
     },
 
-    clearUseretailInformation () {
+    clearUserDetailInformation () {
       this.userDetailInformation = {}
       localStorage.setItem(STORE_NAME, JSON.stringify(this.userDetailInformation))
     },
