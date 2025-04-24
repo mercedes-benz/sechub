@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.validation;
 
+import java.util.List;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailValidationImpl extends AbstractValidation<String> implements EmailValidation {
 
-    EmailValidator apacheEmailValidator = EmailValidator.getInstance();
+    private final List<EmailRule> emailRules;
+    private final EmailValidator apacheEmailValidator = EmailValidator.getInstance();
+
+    public EmailValidationImpl(List<EmailRule> emailRules) {
+        this.emailRules = emailRules;
+    }
 
     @Override
     protected void setup(AbstractValidation<String>.ValidationConfig config) {
@@ -31,6 +38,9 @@ public class EmailValidationImpl extends AbstractValidation<String> implements E
         String mail = context.objectToValidate;
         if (mail == null) {
             return;
+        }
+        for (EmailRule emailRule : emailRules) {
+            emailRule.applyRule(mail, context);
         }
         if (!apacheEmailValidator.isValid(mail)) {
             addErrorMessage(context, "Mail is not in valid format");
