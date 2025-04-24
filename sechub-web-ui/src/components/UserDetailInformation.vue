@@ -141,6 +141,7 @@
   import type { UserDetailInformation } from '@/generated-sources/openapi'
   import { useConfig } from '@/config'
   import { useRouter } from 'vue-router'
+  import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import '@/styles/sechub.scss'
 
   export default defineComponent({
@@ -148,27 +149,29 @@
 
     setup () {
       const router = useRouter()
+      const config = useConfig()
+      const store = useUserDetailInformationStore()
+
       const userId = ref('')
       const email = ref('')
       const isRefreshingApiToken = ref(false)
       const refreshApiTokenDialog = ref(false)
-
-      const config = useConfig()
 
       const userSupportEmail = ref('')
       const userSupportWebsite = ref('')
       userSupportEmail.value = config.value.SECHUB_USER_SUPPORT_EMAIL
       userSupportWebsite.value = config.value.SECHUB_USER_SUPPORT_WEBSITE
 
-      onMounted(async () => {
-        try {
-          const userDetailInformation: UserDetailInformation = await defaultClient.withUserSelfServiceApi.userFetchUserDetailInformation()
-          userId.value = userDetailInformation.userId!
-          email.value = userDetailInformation.email!
-        } catch (error) {
-          console.error(error)
+      userFetchUserDetailInformationFromStore()
+
+      async function userFetchUserDetailInformationFromStore () {
+        const userDetail: UserDetailInformation = store.getUserDetailInformation()
+
+        if (userDetail) {
+          userId.value = userDetail.userId || ''
+          email.value = userDetail.email || ''
         }
-      })
+      }
 
       async function refreshApiToken (): Promise<void> {
         isRefreshingApiToken.value = true
