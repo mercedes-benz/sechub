@@ -31,7 +31,7 @@ public class SechubEmailRuleProperties {
     /**
      * Get the list of allowed domains for an email address.
      *
-     * @return list of allowed domains or an empty list, never <code>code</code>
+     * @return list of allowed domains or an empty list, never <code>null</code>
      */
     public List<String> getAllowedDomains() {
         return allowedDomains;
