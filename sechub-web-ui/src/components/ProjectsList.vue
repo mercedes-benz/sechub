@@ -99,15 +99,16 @@
         error.value = undefined
         alert.value = false
 
-        const { projects: reloadProjects, error: reloadError, loading: reloadLoading } = await useFetchProjects()
+        const { projects: reloadProjects, error: reloadError } = await useFetchProjects()
 
         projects.value = reloadProjects.value
-        loading.value = reloadLoading.value
 
         if (reloadError.value) {
           error.value = t(reloadError.value)
           alert.value = true
         }
+
+        loading.value = false
       }
 
       return {

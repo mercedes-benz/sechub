@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
   <v-dialog
     v-model="localVisible"
@@ -5,10 +6,10 @@
   >
     <v-card>
       <v-card-title>
-        {{ $t('CONFIRM_DIALOG_TITLE') }}
+        {{ title }}
       </v-card-title>
       <v-card-text>
-        <span>{{ localMessage }}</span>
+        <span>{{ message }}</span>
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -33,6 +34,10 @@
   export default defineComponent({
 
     props: {
+      title: {
+        type: String,
+        required: true,
+      },
       visible: {
         type: Boolean,
         required: true,
@@ -52,10 +57,10 @@
     },
 
     setup (props) {
-      const { visible, message, onConfirm, onCancel } = toRefs(props)
+      const { visible, onConfirm, onCancel } = toRefs(props)
       const { t } = useI18n()
+
       const localVisible = ref(visible)
-      const localMessage = ref(message)
 
       function confirm () {
         onConfirm.value()
@@ -67,7 +72,6 @@
 
       return {
         localVisible,
-        localMessage,
         confirm,
         cancel,
         t,
