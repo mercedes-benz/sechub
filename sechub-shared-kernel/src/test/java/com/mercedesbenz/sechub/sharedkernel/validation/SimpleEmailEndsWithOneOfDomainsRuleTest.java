@@ -19,13 +19,13 @@ class SimpleEmailEndsWithOneOfDomainsRuleTest {
         assertThatThrownBy(() -> new SimpleEmailEndsWithOneOfDomainsRule(null)).hasMessage("The value of 'sechubEmailRuleProperties' must not be null!");
     }
 
-    @Test
-    void list_of_accepted_domains_is_empty_does_nothing_and_results_in_no_error() {
+    @ParameterizedTest
+    @ValueSource(strings = { "example@example.com", "example@test.com", "example@other.com", "example@accepted.com" })
+    void list_of_accepted_domains_is_empty_accepts_all_and_results_in_no_error(String email) {
         /* prepare */
         SechubEmailRuleProperties properties = new SechubEmailRuleProperties(Collections.emptyList());
         SimpleEmailEndsWithOneOfDomainsRule emailRule = new SimpleEmailEndsWithOneOfDomainsRule(properties);
 
-        String email = "example@example.com";
         ValidationContext<String> context = new ValidationContext<String>(email);
 
         /* execute */
