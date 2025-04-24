@@ -13,6 +13,16 @@ This GitHub action uses the SecHub cli to scan the repository for security issue
 
 To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
 
+If the action runs on a custom runner and a proxy is necessary to download the sechub client from https://github.com,
+specify the proxy using the default ENV variables (lowercased like used by many other cli tools) `http_proxy` or `https_proxy`.
+Make sure to use the format, like this:
+- http_proxy="http://user:password@proxy.example.org:1234"
+- https_proxy="https://user:password@proxy.example.org:1234"
+
+or if you do not need credentials:
+- http_proxy="http://proxy.example.org:1234"
+- https_proxy="https://proxy.example.org:1234"
+
 [source,yaml]
 ----
 - uses: mercedes-benz/sechub/github-actions/scan@master
