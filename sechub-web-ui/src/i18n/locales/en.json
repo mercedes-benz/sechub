@@ -131,5 +131,6 @@
     "REPORT_REVISION_HIDE": "Hide Revision",
     "REPORT_REVISION_SHOW": "Show Revision",
     "REPORT_CALLSTACK_HIDE": "Hide Callstack",
-    "REPORT_CALLSTACK_SHOW": "Show Callstack"
+    "REPORT_CALLSTACK_SHOW": "Show Callstack",
+    "REPORT_MARK_FALSE_POSITIVE_BUTTON": "Mark selected findings as false positives"
 }

@@ -43,7 +43,7 @@
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
   import { SecHubReport } from '@/generated-sources/openapi'
-  import { getIconFromScanStatus, getIconColor } from '@/utils/projectUtils'
+  import { getIconFromScanStatus, getIconColorFromScanStatus } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
   import '@/styles/sechub.scss'
 
@@ -83,7 +83,7 @@
         projectId,
         jobUUID,
         report,
-        getIconColor,
+        getIconColor: getIconColorFromScanStatus,
         getIcon: getIconFromScanStatus,
       }
     },
