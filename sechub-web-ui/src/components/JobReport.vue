@@ -8,41 +8,34 @@
     :traffic-light="report.trafficLight || ''"
   />
 
+  <SeverityFilterDialog
+    :visible="showSeverityFilter"
+    @filter="filterBySeverity"
+  />
+
   <v-data-table
-    :group-by="groupBy"
+    :v-model="selectedFindings"
+    :v-model:filter="filter"
+    :filter-keys="['severity']"
+    :items="filteredFindingsBySeverity"
     :headers="headers"
     item-key="id"
-    :items="sortedFindings"
     show-expand
+    show-select
   >
 
-    <template #group-header="{ item, columns, toggleGroup, isGroupOpen }">
-      <tr>
-        <td :colspan="columns.length">
-          <div class="d-flex align-center">
-            <v-btn
-              color="medium-emphasis"
-              density="comfortable"
-              :icon="isGroupOpen(item) ? '$expand' : '$next'"
-              size="small"
-              variant="outlined"
-              @click="toggleGroup(item)"
-            />
-
-            <span class="ms-4">
-              <div>
-                <v-icon
-                  class="ma-2"
-                  :color="calculateColor(item.value)"
-                  :icon="calculateIcon(item.value)"
-                  left
-                />
-                <span>{{ item.value }}</span>
-              </div>
-            </span>
-          </div>
-        </td>
-      </tr>
+    <template v-slot:header.severity>
+      <div>
+        {{ $t('REPORT_DESCRIPTION_SEVERITY') }}
+        <v-btn icon="mdi-filter-variant"
+          class="ma-2"
+          variant="text"
+          size="small"
+          color="primary"
+          @click="openSeverityFilter()"
+          >
+        </v-btn>
+      </div>
     </template>
 
     <template #item.severity="{ value }">
@@ -115,10 +108,15 @@
 
       const headers = [
         { title: 'ID', key: 'id', sortable: true },
-        { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity' },
+        { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity', sortable: false },
         { title: 'CWE', key: 'cweId' },
         { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
       ]
+
+      const showSeverityFilter = ref(false)
+      const severityFilter = ref([] as string[])
+      const selectedFindings = ref([])
+      const filter = ref('')
 
       const groupBy = ref([{ key: 'severity', order: false }])
 
@@ -134,7 +132,7 @@
       const scantype = ref('')
       scantype.value = query
 
-      const filteredFindings = computed(() => {
+      const filteredFindingsByScantype = computed(() => {
         if (report.value.result?.findings) {
           return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
         } else {
@@ -144,13 +142,20 @@
 
       const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']
 
-      const sortedFindings = computed<SecHubFinding[]>(() => {
-        if (!filteredFindings.value) {
+      const sortedFindingsBySeverity = computed<SecHubFinding[]>(() => {
+        if (!filteredFindingsByScantype.value) {
           return []
         }
-        return [...filteredFindings.value].sort((a, b) => {
+        return [...filteredFindingsByScantype.value].sort((a, b) => {
           return severityOrder.indexOf(a.severity || 'INFO') - severityOrder.indexOf(b.severity || 'INFO')
         })
+      })
+
+      const filteredFindingsBySeverity = computed<SecHubFinding[]>(() => {
+        if (!severityFilter.value || severityFilter.value.length === 0) {
+          return sortedFindingsBySeverity.value
+        }
+        return sortedFindingsBySeverity.value.filter(finding => severityFilter.value.includes(finding.severity || 'INFO'))
       })
 
       onMounted(async () => {
@@ -195,6 +200,15 @@
         }
       }
 
+      function filterBySeverity(filter = severityFilter.value){
+        severityFilter.value = filter
+        showSeverityFilter.value = false
+      }
+
+      function openSeverityFilter(){
+        showSeverityFilter.value = true
+      }
+
       return {
         projectId,
         jobUUID,
@@ -204,7 +218,14 @@
         groupBy,
         calculateColor,
         calculateIcon,
-        sortedFindings,
+        showSeverityFilter,
+        severityFilter,
+        selectedFindings,
+        filter,
+        filteredFindingsBySeverity,
+        sortedFindingsBySeverity,
+        filterBySeverity,
+        openSeverityFilter,
       }
     },
   }

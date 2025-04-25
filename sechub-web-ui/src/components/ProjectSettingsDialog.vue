@@ -26,6 +26,7 @@
     <v-card>
       <v-card-title>
         <v-icon
+          class="mr-2"
           icon="mdi-cog"
           left
           size="small"
@@ -208,7 +209,7 @@
           color="primary"
           @click="closeDialog()"
         >
-          {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
+          {{ $t('DIALOG_BUTTON_CLOSE') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

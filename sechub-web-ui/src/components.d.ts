@@ -30,6 +30,7 @@ declare module 'vue' {
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
     ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
     ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
+    SeverityFilterDialog: typeof import('./components/SeverityFilterDialog.vue')['default']
     UserDetailInformation: typeof import('./components/UserDetailInformation.vue')['default']
   }
 }
