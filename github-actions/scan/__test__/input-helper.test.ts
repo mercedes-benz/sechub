@@ -126,7 +126,7 @@ describe('resolveProxyConfig', function () {
         expect(result?.auth?.password).toEqual('password');
     });
 
-    it('http_proxy and https_proxy defined - uses values of http_proxy', function () {
+    it('http_proxy and https_proxy defined - uses values of https_proxy', function () {
         /* prepare */
         process.env.http_proxy = 'http://user:password@proxy.example.org:1234';
         process.env.https_proxy = 'https://other:pass@proxy.other.org:5678';
@@ -135,25 +135,25 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('http');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(1234);
-        expect(result?.auth?.username).toEqual('user');
-        expect(result?.auth?.password).toEqual('password');
+        expect(result?.protocol).toEqual('https');
+        expect(result?.host).toEqual('proxy.other.org');
+        expect(result?.port).toEqual(5678);
+        expect(result?.auth?.username).toEqual('other');
+        expect(result?.auth?.password).toEqual('pass');
     });
 
-    it('http_proxy and https_proxy defined - uses values of http_proxy no authentication section', function () {
+    it('http_proxy and https_proxy defined - uses values of https_proxy no authentication section', function () {
         /* prepare */
         process.env.http_proxy = 'http://proxy.example.org:1234';
-        process.env.https_proxy = 'https://other:pass@proxy.other.org:5678';
+        process.env.https_proxy = 'https://proxy.other.org:5678';
 
         /* execute */
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('http');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(1234);
+        expect(result?.protocol).toEqual('https');
+        expect(result?.host).toEqual('proxy.other.org');
+        expect(result?.port).toEqual(5678);
         expect(result?.auth).toBeUndefined();
     });
 
@@ -172,13 +172,19 @@ describe('resolveProxyConfig', function () {
         expect(result?.auth).toBeUndefined();
     });
 
-    it('invalid http_proxy defined - throws error', function () {
+    it('invalid http_proxy defined - takes defined https_proxy', function () {
         /* prepare */
         process.env.http_proxy = 'invalid-proxy-url';
         process.env.https_proxy = 'https://proxy.other.org:5678';
 
-        /* execute + test */
-        expect(() => resolveProxyConfig()).toThrowError(/Invalid URL/);
+        /* execute */
+        const result = resolveProxyConfig();
+
+        /* test */
+        expect(result?.protocol).toEqual('https');
+        expect(result?.host).toEqual('proxy.other.org');
+        expect(result?.port).toEqual(5678);
+        expect(result?.auth).toBeUndefined();
     });
 
     it('invalid https_proxy defined - throws error', function () {
@@ -190,24 +196,9 @@ describe('resolveProxyConfig', function () {
         expect(() => resolveProxyConfig()).toThrowError(/Invalid URL/);
     });
 
-    it('http_proxy defined without port - uses default port 80', function () {
+    it('https_proxy defined without port - uses default port 443', function () {
         /* prepare */
         process.env.http_proxy = 'http://proxy.example.org';
-        process.env.https_proxy = 'https://proxy.other.org';
-
-        /* execute */
-        const result = resolveProxyConfig();
-
-        /* test */
-        expect(result?.protocol).toEqual('http');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(80);
-        expect(result?.auth).toBeUndefined();
-    });
-
-    it('http_proxy defined without port - uses default port 443', function () {
-        /* prepare */
-        delete process.env.http_proxy;
         process.env.https_proxy = 'https://proxy.other.org';
 
         /* execute */
@@ -220,10 +211,25 @@ describe('resolveProxyConfig', function () {
         expect(result?.auth).toBeUndefined();
     });
 
+    it('http_proxy defined without port - uses default port 80', function () {
+        /* prepare */
+        process.env.http_proxy = 'http://proxy.example.org';
+        delete process.env.https_proxy;
+
+        /* execute */
+        const result = resolveProxyConfig();
+
+        /* test */
+        expect(result?.protocol).toEqual('http');
+        expect(result?.host).toEqual('proxy.example.org');
+        expect(result?.port).toEqual(80);
+        expect(result?.auth).toBeUndefined();
+    });
+
     it('http_proxy defined with invalid protocol - throws error', function () {
         /* prepare */
         process.env.http_proxy = 'ftp://proxy.example.org';
-        process.env.https_proxy = 'https://proxy.other.org';
+        delete process.env.https_proxy;
 
         /* execute + test */
         expect(() => resolveProxyConfig()).toThrowError(/Accepted protocols are "http" and "https"/);

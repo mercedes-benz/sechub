@@ -42,10 +42,10 @@ export function split(input: string): string[] {
  * @throws error if the proxy URL inside the ENV variable is an invalid URL
  */
 export function resolveProxyConfig(): AxiosProxyConfig | undefined {
-    const httpProxy = process.env.http_proxy || undefined;
     const httpsProxy = process.env.https_proxy || undefined;
+    const httpProxy = process.env.http_proxy || undefined;
 
-    const proxy = httpProxy || httpsProxy;
+    const proxy = httpsProxy || httpProxy;
     
     if (!proxy) {
         return undefined;

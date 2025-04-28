@@ -27829,9 +27829,9 @@ function split(input) {
  * @throws error if the proxy URL inside the ENV variable is an invalid URL
  */
 function resolveProxyConfig() {
-    const httpProxy = process.env.http_proxy || undefined;
     const httpsProxy = process.env.https_proxy || undefined;
-    const proxy = httpProxy || httpsProxy;
+    const httpProxy = process.env.http_proxy || undefined;
+    const proxy = httpsProxy || httpProxy;
     if (!proxy) {
         return undefined;
     }
