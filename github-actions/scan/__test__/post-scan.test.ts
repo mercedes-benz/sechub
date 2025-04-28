@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
+import * as fs_wrapper from '../src/fs-wrapper';
+
 import * as outputHelper from '../src/output-helper';
 import { collectReportData, reportOutputs } from '../src/post-scan';
 import { getReport } from '../src/sechub-cli';
@@ -15,8 +17,9 @@ jest.mock('../src/sechub-cli');
 const mockedGetReport = getReport as jest.MockedFunction<typeof getReport>;
 
 describe('collectReportData', function () {
+
     afterEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     it('format empty - logs called, getReport not called', function () {
@@ -76,25 +79,25 @@ describe('collectReportData', function () {
     });
 
     it('calls getReport with parameters (except json) and report json object is as expected', function () {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const fsMock = require('fs');
 
         /* prepare */
+        const mockReadFileSyncResponse = '{"test": "test"}'; // pseudo test report as json
+
+        jest.spyOn(fs_wrapper, 'readFileSync').mockReturnValue(mockReadFileSyncResponse);
+
         const testContext = Object.create(LAUNCHER_CONTEXT_DEFAULTS);
         testContext.reportFormats = ['json', 'html', 'xyz', 'bla'];
         testContext.jobUUID = 1234; // necessary for download
 
-        fsMock.readFileSync = jest.fn(() => '{"test": "test"}'); // Mock an empty JSON report
-        const sampleJson = { 'test': 'test' };
-
+        
         /* execute */
         collectReportData(testContext);
-
+        
         /* test */
         expect(mockedCore.info).toHaveBeenCalledTimes(4); // "json, html, xyz, bla" - 4 times logged (valid format check is not done here)
         expect(mockedGetReport).toHaveBeenCalledTimes(3); // we fetch not json via getReport again (already done before), so only "html, xyz, bla" used
-
-        expect(testContext.secHubReportJsonObject).toEqual(sampleJson); // json object is available
+        
+        expect(testContext.secHubReportJsonObject).toEqual({ 'test': 'test' }); // json object is available
 
     });
 });

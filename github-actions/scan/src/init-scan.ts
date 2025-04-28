@@ -17,12 +17,12 @@ import { addAdditonalExcludes } from './configuration-model-customizer';
 export function initSecHubJson(secHubJsonTargetFilePath: string, customSecHubConfigFilePath: string,  builderData: SecHubConfigurationModelBuilderData): void {
     core.startGroup('Set config');
 
-    let jsonString = "";
+    let jsonString = '';
     if (customSecHubConfigFilePath) {
         core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
         if (fs.existsSync(customSecHubConfigFilePath)) {
-             core.debug(`Reading custom config file as json`);
-             jsonString = fs.readFileSync(customSecHubConfigFilePath, 'utf8');
+            core.debug('Reading custom config file as json');
+            jsonString = fs.readFileSync(customSecHubConfigFilePath, 'utf8');
         } else {
             throw new Error(`Config-Path was defined, but no file exists at: ${customSecHubConfigFilePath}`);
         }
@@ -30,7 +30,7 @@ export function initSecHubJson(secHubJsonTargetFilePath: string, customSecHubCon
         jsonString = createSecHubConfigJsonString(builderData);
     }
     /* additional post processing of defined/generated config file :*/
-    core.debug(`Additional post processing of SecHub configuration model`);
+    core.debug('Additional post processing of SecHub configuration model');
     const jsonData: any = JSON.parse(jsonString);
     addAdditonalExcludes(jsonData);
     fs.writeFileSync(secHubJsonTargetFilePath, JSON.stringify(jsonData, null, 2));

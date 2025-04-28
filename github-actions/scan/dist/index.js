@@ -22434,6 +22434,18 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -22649,6 +22661,8 @@ __nccwpck_require__.d(forms_namespaceObject, {
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/action-helper.ts
 // SPDX-License-Identifier: MIT
 
@@ -22668,10 +22682,9 @@ function handleError(error) {
     failAction(1);
 }
 
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/shelljs/shell.js
 var shelljs_shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
@@ -27774,6 +27787,7 @@ axios.default = axios;
 
 // EXTERNAL MODULE: ./node_modules/extract-zip/index.js
 var extract_zip = __nccwpck_require__(460);
+var extract_zip_default = /*#__PURE__*/__nccwpck_require__.n(extract_zip);
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
@@ -27843,7 +27857,7 @@ async function downloadFile(url, dest) {
 }
 async function unzipFile(zipPath, dest) {
     try {
-        await extract_zip(zipPath, { dir: external_path_.resolve(dest) });
+        await extract_zip_default()(zipPath, { dir: external_path_.resolve(dest) });
         lib_core.debug(`Extracted zip file to: ${dest}`);
     }
     catch (err) {
@@ -27895,6 +27909,7 @@ function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
 
 
 
+
 /**
  * Downloads release for the SecHub CLI if not already loaded.
  * Ensure only the used client version is kept locally.
@@ -27906,6 +27921,12 @@ async function downloadClientRelease(context) {
     const clientVersion = context.clientVersion;
     if (external_fs_.existsSync(context.clientExecutablePath)) {
         lib_core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        return;
+    }
+    // sanity check - for build this may never be reached, because the client executable path must exist!
+    if (clientVersion == 'build') {
+        handleError('Illegal state - client version is `build` but the client executable path does not exist: `' + context.clientExecutablePath + '`');
+        failAction(4);
         return;
     }
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
@@ -28189,6 +28210,8 @@ const PARAM_TRUST_ALL = 'trust-all';
 const PARAM_SCAN_TYPES = 'scan-types';
 const PARAM_CONTENT_TYPE = 'content-type';
 const PARAM_DEFINE_FALSE_POSITIVES = 'define-false-positives';
+// special parameter - used only when client version is `build`
+const PARAM_CLIENT_BUILD_FOLDER = 'client-build-folder';
 const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
@@ -28206,6 +28229,7 @@ const INPUT_DATA_DEFAULTS = {
     scanTypes: '',
     contentType: '',
     defineFalsePositives: '',
+    clientBuildFolder: ''
 };
 function resolveGitHubInputData() {
     return {
@@ -28225,6 +28249,7 @@ function resolveGitHubInputData() {
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
         defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
+        clientBuildFolder: getParam(PARAM_CLIENT_BUILD_FOLDER),
     };
 }
 /**
@@ -28337,11 +28362,11 @@ function handleLegacyCodeScanSection(codeScan) {
  */
 function initSecHubJson(secHubJsonTargetFilePath, customSecHubConfigFilePath, builderData) {
     lib_core.startGroup('Set config');
-    let jsonString = "";
+    let jsonString = '';
     if (customSecHubConfigFilePath) {
         lib_core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
         if (external_fs_.existsSync(customSecHubConfigFilePath)) {
-            lib_core.debug(`Reading custom config file as json`);
+            lib_core.debug('Reading custom config file as json');
             jsonString = external_fs_.readFileSync(customSecHubConfigFilePath, 'utf8');
         }
         else {
@@ -28352,7 +28377,7 @@ function initSecHubJson(secHubJsonTargetFilePath, customSecHubConfigFilePath, bu
         jsonString = createSecHubConfigJsonString(builderData);
     }
     /* additional post processing of defined/generated config file :*/
-    lib_core.debug(`Additional post processing of SecHub configuration model`);
+    lib_core.debug('Additional post processing of SecHub configuration model');
     const jsonData = JSON.parse(jsonString);
     addAdditonalExcludes(jsonData);
     external_fs_.writeFileSync(secHubJsonTargetFilePath, JSON.stringify(jsonData, null, 2));
@@ -28436,8 +28461,67 @@ class CommandInjectionError extends Error {
     }
 }
 
+// EXTERNAL MODULE: ./node_modules/uuid/dist/index.js
+var dist = __nccwpck_require__(5840);
+;// CONCATENATED MODULE: ./node_modules/uuid/wrapper.mjs
+
+const v1 = dist.v1;
+const v3 = dist.v3;
+const v4 = dist.v4;
+const v5 = dist.v5;
+const NIL = dist.NIL;
+const version = dist.version;
+const validate = dist.validate;
+const stringify = dist.stringify;
+const wrapper_parse = dist.parse;
+
+;// CONCATENATED MODULE: ./src/fs-wrapper.ts
+// SPDX-License-Identifier: MIT
+
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * "fs" seems to be nolonger mockable any more correctly with jest, so this
+ * wrapper class was introduced. We can mock the wrapper without any problems.
+ *
+ * @param filePath
+ * @returns file content as string
+ */
+function readFileSync(filePath, options) {
+    return external_fs_.readFileSync(filePath, options);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ *
+ * @return an integer representing the file descriptor. */
+function openSync(path, flags, mode) {
+    return external_fs_.openSync(path, flags, mode);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * @param fd file descriptor to close
+ */
+function closeSync(fd) {
+    external_fs_.closeSync(fd);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * For detailed information, see the documentation of the asynchronous version of
+ * this API: {@link fs.mkdtemp}.
+ *
+ * The optional `options` argument can be a string specifying an encoding, or an
+ *  object with an `encoding` property specifying the character encoding to use.
+ * @return the created directory path.
+ */
+function mkdtempSync(prefix, options) {
+    return external_fs_.mkdtempSync(prefix, options);
+}
+
 ;// CONCATENATED MODULE: ./src/sechub-cli.ts
 // SPDX-License-Identifier: MIT
+
+
+
+
 
 
 
@@ -28450,21 +28534,40 @@ function scan(context) {
     const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'scan output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
+        (0,external_child_process_.execFileSync)(clientExecutablePath, 
+        /* parameters */
+        [
+            '-configfile', configFileArgValue,
+            '-output', outputArgValue, addScmHistoryArg, 'scan'
+        ], 
+        /* options*/
+        {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
         context.jobUUID = extractJobUUID(output);
     }
     catch (error) {
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing scan command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
-        context.jobUUID = extractJobUUID(error.stdout);
+        context.jobUUID = extractJobUUID(output);
     }
+}
+function logAndCloseStdOutFile(prefix, stdOutFd, stdOutFile) {
+    closeSync(stdOutFd);
+    const output = readFileSync(stdOutFile, 'utf8');
+    lib_core.info(`${prefix}:\n${output}`);
+    return output;
 }
 function extractJobUUID(output) {
     const jobPrefix = 'job:';
@@ -28493,17 +28596,23 @@ function getReport(jobUUID, reportFormat, context) {
     const jobUUIDArgValue = sanitize(jobUUID);
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'get-report-output';
     try {
         (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.debug('Get report executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing getReport command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28513,24 +28622,30 @@ function getReport(jobUUID, reportFormat, context) {
  */
 function defineFalsePositives(context) {
     if (!context.defineFalsePositivesFile) {
-        lib_core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        lib_core.info('No define-false-positive file was specified. Skipping step defineFalsePositives...');
         context.lastClientExitCode = 0;
         return;
     }
     const clientExecutablePath = sanitize(context.clientExecutablePath);
     const projectIdValue = sanitize(context.projectName);
     const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-define-false-positives-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'define-false-positives-output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
+        (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
             env: process.env,
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.info('defineFalsePositives executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
         lib_core.error(`Error executing defineFalsePositives command: ${error.message}`);
-        lib_core.error(`Standard error: ${error.stderr}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28635,7 +28750,7 @@ function collectJsonReportData(context) {
     let text = '';
     try {
         lib_core.info('Get Report as json');
-        text = external_fs_.readFileSync(filePath, 'utf8');
+        text = readFileSync(filePath, 'utf8');
     }
     catch (error) {
         lib_core.warning(`Error reading JSON file: ${error}`);
@@ -28857,13 +28972,22 @@ function resolveProjectName(gitHubInputData, configFileLocation) {
     let projectName = '';
     projectName = gitHubInputData.projectName;
     if (!projectName || projectName.length === 0) {
+        if (lib_core.isDebug()) {
+            lib_core.debug('Project name not defined as parameter - so start resolving from config:' + configFileLocation);
+        }
         const secHubConfigurationJson = external_fs_.readFileSync(configFileLocation, 'utf8');
+        if (lib_core.isDebug()) {
+            lib_core.debug('Loaded config file:' + configFileLocation + '\nContent:\n' + secHubConfigurationJson);
+        }
         const jsonObj = projectname_resolver_asJsonObject(secHubConfigurationJson);
         if (jsonObj) {
             const projectData = getFieldFromJson('project', jsonObj);
             if (typeof projectData === 'string') {
                 projectName = projectData;
             }
+        }
+        else {
+            throw new Error('SecHub configuration not available as object!');
         }
     }
     return projectName;
@@ -35912,7 +36036,7 @@ function setCss(el, prop, value, idx) {
         else if (val != null) {
             styles[prop] = val;
         }
-        el.attribs['style'] = stringify(styles);
+        el.attribs['style'] = css_stringify(styles);
     }
     else if (typeof prop === 'object') {
         Object.keys(prop).forEach((k, i) => {
@@ -35946,7 +36070,7 @@ function getCss(el, prop) {
  * @param obj - Object to stringify.
  * @returns The serialized styles.
  */
-function stringify(obj) {
+function css_stringify(obj) {
     return Object.keys(obj).reduce((str, prop) => `${str}${str ? ' ' : ''}${prop}: ${obj[prop]};`, '');
 }
 /**
@@ -46220,6 +46344,9 @@ async function getClientVersion(clientVersion) {
     return clientVersion;
 }
 function isValidVersion(version) {
+    if (version === 'build') {
+        return true; // build is always okay
+    }
     const regex = /^\d+\.\d+\.\d+$|^latest$/;
     return regex.test(version);
 }
@@ -46229,6 +46356,9 @@ async function getRedirectUrl(url) {
     const metaRefreshTag = $('meta[http-equiv="refresh"]');
     if (metaRefreshTag.length > 0) {
         const content = metaRefreshTag.attr('content');
+        if (content == null) {
+            throw new Error('No redirect content found');
+        }
         const redirectUrl = content.split(';')[1].split('=')[1];
         lib_core.debug(`Redirect URL found: ${redirectUrl}`);
         return redirectUrl;
@@ -46240,6 +46370,7 @@ async function getRedirectUrl(url) {
 
 ;// CONCATENATED MODULE: ./src/launcher.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -46291,6 +46422,19 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     trafficLight: 'OFF',
     defineFalsePositivesFile: '',
 };
+function resolveClientDownloadFolder(clientVersion, gitHubInputData) {
+    if (clientVersion == 'build') {
+        const buildDownloadFolder = gitHubInputData.clientBuildFolder + '/go';
+        const isDirAndExists = external_fs_.existsSync(buildDownloadFolder) && external_fs_.lstatSync(buildDownloadFolder).isDirectory();
+        if (!isDirAndExists) {
+            handleError(`The client build folder path is not a directory or does not exist: ${buildDownloadFolder}`);
+        }
+        return buildDownloadFolder;
+    }
+    const expression = /\./gi;
+    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+    return `${getWorkspaceDir()}/.sechub-gha/client/${clientVersionSubFolder}`;
+}
 /**
  * Creates the initial launch context
  * @returns launch context
@@ -46298,13 +46442,14 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
 async function createContext() {
     const gitHubInputData = resolveGitHubInputData();
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
-    const expression = /\./gi;
-    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
     const workspaceFolder = getWorkspaceDir();
-    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
+    const clientDownloadFolder = resolveClientDownloadFolder(clientVersion, gitHubInputData);
     let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');
+    }
+    if (lib_core.isDebug()) {
+        lib_core.debug('Client executable path set to:' + clientExecutablePath);
     }
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
     const builderData = createSafeBuilderData(gitHubInputData);
