@@ -27818,13 +27818,12 @@ function resolveProxyConfig() {
     const httpProxy = process.env.http_proxy || undefined;
     const httpsProxy = process.env.https_proxy || undefined;
     const proxy = httpProxy || httpsProxy;
-    let proxyConfig = undefined;
     if (!proxy) {
-        return proxyConfig;
+        return undefined;
     }
     try {
         const proxyUrl = new URL(proxy);
-        proxyConfig = {
+        const proxyConfig = {
             protocol: proxyUrl.protocol.replace(':', ''),
             host: proxyUrl.hostname,
             port: proxyUrl.port ? parseInt(proxyUrl.port, 10) : getProtocolDefaultPort(proxyUrl.protocol),
