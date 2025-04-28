@@ -11,6 +11,7 @@ declare module 'vue' {
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
+    FalsePositiveDialogSAST: typeof import('./components/FalsePositiveDialogSAST.vue')['default']
     JobReport: typeof import('./components/JobReport.vue')['default']
     JobReportCodescanCallsRecursive: typeof import('./components/JobReportCodescanCallsRecursive.vue')['default']
     JobReportCodescanDetails: typeof import('./components/JobReportCodescanDetails.vue')['default']

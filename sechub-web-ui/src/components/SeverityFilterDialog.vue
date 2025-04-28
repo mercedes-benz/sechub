@@ -51,7 +51,7 @@ export default defineComponent({
       required: true,
     },
     severities: {
-      type: Array as () => string[],
+      type:  Array as () => string[],
       required: true,
     },
   },

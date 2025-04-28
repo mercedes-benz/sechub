@@ -12,6 +12,13 @@
     @filter="filterBySeverity"
   />
 
+  <FalsePositiveDialogSAST
+  :visible="showMarkFalsePositiveDialog"
+  :project-id="projectId"
+  :job-u-u-i-d="jobUUID"
+  :selected-findings="selectedFindings"
+  @close="showMarkFalsePositiveDialog=false"
+  />
 
   <v-data-table
     v-model="selectedFindings"
@@ -133,10 +140,10 @@ export default {
 
     const showSeverityFilter = ref(false)
     const severityFilter = ref([] as string[])
-    const selectedFindings = ref<SecHubFinding[]>([])
+    const selectedFindings = ref([] as SecHubFinding[])
     const filter = ref('')
 
-    const groupBy = ref([{ key: 'severity', order: false }])
+    const showMarkFalsePositiveDialog= ref(false)
 
     if ('id' in route.params) {
       projectId.value = route.params.id
@@ -245,7 +252,7 @@ export default {
     }
 
     function markAsFalsePositive() {
-      // open Dialog
+      showMarkFalsePositiveDialog.value = true
     }
 
     return {
@@ -254,10 +261,10 @@ export default {
       report,
       scantype,
       headers,
-      groupBy,
       calculateColor,
       calculateIcon,
       showSeverityFilter,
+      showMarkFalsePositiveDialog,
       severityFilter,
       selectedFindings,
       filter,

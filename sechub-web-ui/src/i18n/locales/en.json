@@ -132,5 +132,11 @@
     "REPORT_REVISION_SHOW": "Show Revision",
     "REPORT_CALLSTACK_HIDE": "Hide Callstack",
     "REPORT_CALLSTACK_SHOW": "Show Callstack",
-    "REPORT_MARK_FALSE_POSITIVE_BUTTON": "Mark selected findings as false positives"
+    "REPORT_MARK_FALSE_POSITIVE_BUTTON": "Mark selected findings as false positives",
+    "MARK_FALSE_POSITIVE_RADIO_ONE": "A fix has already been started",
+    "MARK_FALSE_POSITIVE_RADIO_TWO": "No bandwidth to fix this",
+    "MARK_FALSE_POSITIVE_RADIO_THREE": "Risk is tolerable to this project",
+    "MARK_FALSE_POSITIVE_RADIO_FOUR": "This alert is inaccurate or incorrect",
+    "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used"
+    
 }
