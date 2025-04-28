@@ -28235,12 +28235,20 @@ function createSourceOrBinaryDataReference(referenceName, builderData, model) {
  * Sets the necessary environment variables with the user input values.
  */
 function initEnvironmentVariables(data, projectName) {
-    shelljs_shell.env.SECHUB_USERID = data.user;
+    shelljs_shell.env.SECHUB_USERID = getValueIfNotVariable(data.user);
+    shelljs_shell.env.SECHUB_SERVER = getValueIfNotVariable(data.url);
+    shelljs_shell.env.SECHUB_PROJECT = getValueIfNotVariable(projectName);
     shelljs_shell.env.SECHUB_APITOKEN = data.apiToken;
-    shelljs_shell.env.SECHUB_SERVER = data.url;
-    shelljs_shell.env.SECHUB_PROJECT = projectName;
     shelljs_shell.env.SECHUB_DEBUG = data.debug;
     shelljs_shell.env.SECHUB_TRUSTALL = data.trustAll;
+}
+function getValueIfNotVariable(valueOrEnvName) {
+    if (valueOrEnvName.startsWith('{{')) {
+        return '';
+    }
+    else {
+        return valueOrEnvName;
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/exitcode.ts
