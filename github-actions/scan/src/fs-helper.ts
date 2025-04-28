@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as fs_extra from 'fs-extra';
 import axios from 'axios';
 import * as util from 'util';
-import * as extract from 'extract-zip';
+import extract from 'extract-zip';
 import * as os from 'os';
 import { resolveProxyConfig } from './input-helper';
 
@@ -39,7 +39,7 @@ export function getWorkspaceDir(): string {
 export function ensureDirectorySync(path: string) {
     try {
         fs_extra.ensureDirSync(path);
-        core.debug(`Ensured directory at path: ${path}`)
+        core.debug(`Ensured directory at path: ${path}`);
     } catch (error) {
         throw new Error(`Error ensuring directory at path: ${path} with error: ${error}`);
     }
@@ -52,7 +52,7 @@ export function ensureDirectorySync(path: string) {
 export function chmodSync(path: string) {
     try {
         fs_extra.chmodSync(path, 0o755);
-        core.debug(`Grant permissions for file at path: ${path}`)
+        core.debug(`Grant permissions for file at path: ${path}`);
     } catch (error) {
         throw new Error(`Error granting permission for file at path: ${path} with error: ${error}`);
     }

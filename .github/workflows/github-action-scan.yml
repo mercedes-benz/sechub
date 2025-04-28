@@ -11,12 +11,18 @@ on:
     paths:
       - '.github/workflows/github-action-scan.yml'
       - 'github-actions/scan/**'
+      - 'sechub-cli/src/**'
   pull_request:
     paths:
       - '.github/workflows/github-action-scan.yml'
       - 'github-actions/scan/**'
+      - 'sechub-cli/src/**'
   # enable manual triggering of workflow
   workflow_dispatch:
+     inputs:
+         client-version:
+           description: Insert your client version to test (default=build)
+           required: false
 
 jobs:
   build-scan:
@@ -27,9 +33,42 @@ jobs:
       run:
         working-directory: github-actions/scan
     steps:
+   
+      - name: "Setup client version"
+        working-directory: ~
+        run: |
+          echo "User input for client-version: '${{ inputs.client-version }}'"
+          SECHUB_CLIENT_VERSION="${{ inputs.client-version }}"
+          
+          if [ "$SECHUB_CLIENT_VERSION" = "" ]; then
+
+             echo "- not defined, set default"
+             
+             # set default value for version:
+             SECHUB_CLIENT_VERSION=build
+             
+          else
+             echo "- using defined version"
+          fi
+          
+          echo "- SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION"
+          echo "SECHUB_CLIENT_VERSION=$SECHUB_CLIENT_VERSION" >> $GITHUB_ENV
+          
+          if [ "$SECHUB_CLIENT_VERSION" = "build" ]; then
+             # set client build folder:
+             SECHUB_CLIENT_BUILD_FOLDER=${{ github.workspace }}/sechub-cli/build 
+             echo "- SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER"
+             echo "SECHUB_CLIENT_BUILD_FOLDER=$SECHUB_CLIENT_BUILD_FOLDER" >> $GITHUB_ENV
+          fi
+          
+      - name: "Show client version"
+        working-directory: ~
+        run: |
+          echo "env.SECHUB_CLIENT_VERSION='${{ env.SECHUB_CLIENT_VERSION }}'"
+      
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
+      
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -42,11 +81,11 @@ jobs:
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
         with:
           node-version: 22
-
-      - name: Install
-        run: npm install 
+          
+      - name: Setup npm build
+        run: npm ci 
         
-      - name: Build
+      - name: Build action
         run: npm run build
         
       - name: Run unit tests
@@ -59,6 +98,20 @@ jobs:
           git status
           mkdir "${{ github.workspace }}/build" -p
           git status >> "${{ github.workspace }}/build/git-status.txt"
+          
+      - name: Set up Go
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
+        with:
+          go-version: 1.21.6
+
+      - name: Build go client
+        if: env.SECHUB_CLIENT_VERSION == 'build'
+        run: |
+          echo "Build go client for integration tests because client version='${{ env.SECHUB_CLIENT_VERSION }}'"
+          cd ..
+          cd ..
+          ./gradlew buildGo
 
       - name: Define integration test setup
         id : version-selector
@@ -77,6 +130,11 @@ jobs:
           echo "sechub_server_port=8443" >> "$GITHUB_ENV"
           echo "pds_version=${{ vars.INTEGRATIONTEST_PDS_VERSION }}" >> "$GITHUB_ENV"
           echo "pds_port=8444" >> "$GITHUB_ENV"
+          
+          runner_debug=${{ runner.debug }}
+          if [ "$runner_debug" = "1" ]; then
+             echo "SECHUB_INTEGRATIONTEST_DEBUG=true" >> "$GITHUB_ENV"
+          fi
 
       - name: Cache SecHub server download    
         # Cache V4 release: 13aacd865c20de90d75de3b17ebe84f7a17d57d2
