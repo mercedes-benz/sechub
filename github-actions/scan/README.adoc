@@ -20,7 +20,7 @@ Make sure to use the following format:
 - http_proxy="http://user:password@proxy.example.org:1234"
 - https_proxy="https://user:password@proxy.example.org:1234"
 
-or if without credentials:
+or without credentials:
 
 - http_proxy="http://proxy.example.org:1234"
 - https_proxy="https://proxy.example.org:1234"
