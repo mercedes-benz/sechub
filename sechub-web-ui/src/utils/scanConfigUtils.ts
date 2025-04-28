@@ -18,7 +18,7 @@ import { useConfig } from '@/config'
 import i18n from '@/i18n'
 
 export function buildSecHubConfiguration (scanTypes: string[], fileType: string, projectId: string): SecHubConfiguration {
-  const UNIQUE_NAME : string = getUniqueName(fileType)
+  const UNIQUE_NAME : string = getUniqueNameUploadIdentifier(fileType)
 
   const config: SecHubConfiguration = {
     apiVersion: '1.0',
@@ -40,7 +40,7 @@ export function buildSecHubConfiguration (scanTypes: string[], fileType: string,
   return config
 }
 
-function getUniqueName (fileType: string): string {
+function getUniqueNameUploadIdentifier (fileType: string): string {
   if (fileType === FILETYPE_BINARIES) {
     return UPLOAD_BINARIES_IDENTIFIER
   } else if (fileType === FILETYPE_SOURCES) {
@@ -52,29 +52,29 @@ function getUniqueName (fileType: string): string {
 
 export function isFileSizeValid (file: File, fileType: string) {
   const config = useConfig()
-  const UNIQUE_NAME : string = getUniqueName(fileType)
+  const UNIQUE_NAME: string = getUniqueNameUploadIdentifier(fileType)
 
-  let maxBytes
-  let errorMessage
-
-  if (UNIQUE_NAME === UPLOAD_BINARIES_IDENTIFIER) {
-    maxBytes = config.value.SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES
-    errorMessage = i18n.global.t('SCAN_ERROR_UPLOAD_TOO_BIG_BINARIES') + maxBytes + ' bytes'
-  } else if (UNIQUE_NAME === UPLOAD_SOURCE_CODE_IDENTIFIER) {
-    maxBytes = config.value.SECHUB_UPLOAD_SOURCES_MAXIMUM_BYTES
-    errorMessage = i18n.global.t('SCAN_ERROR_UPLOAD_TOO_BIG_SOURCECODE') + maxBytes + ' bytes'
-  } else {
-    errorMessage = (i18n.global.t('SCAN_ERROR_ALERT_CONFIGURATION_ERROR'))
+  const maxBytesMap = {
+    [UPLOAD_BINARIES_IDENTIFIER]: config.value.SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES,
+    [UPLOAD_SOURCE_CODE_IDENTIFIER]: config.value.SECHUB_UPLOAD_SOURCES_MAXIMUM_BYTES,
   }
+
+  const errorMessagesMap = {
+    [UPLOAD_BINARIES_IDENTIFIER]: 'SCAN_ERROR_UPLOAD_TOO_BIG_BINARIES',
+    [UPLOAD_SOURCE_CODE_IDENTIFIER]: 'SCAN_ERROR_UPLOAD_TOO_BIG_SOURCECODE',
+  }
+
+  const maxBytes = maxBytesMap[UNIQUE_NAME]
 
   // If maxBytes is undefined or -1, assume no limit
   if (maxBytes === undefined || maxBytes === -1) {
-    return { errorMessage, isValid: true }
+    return { isValid: true }
   }
 
-  const fileSize = file.size
-  if (fileSize > maxBytes) {
+  if (file.size > maxBytes) {
+    const errorMessage = i18n.global.t(errorMessagesMap[UNIQUE_NAME]) + maxBytes + ' bytes'
     return { errorMessage, isValid: false }
   }
-  return { errorMessage, isValid: true }
+
+  return { isValid: true }
 }

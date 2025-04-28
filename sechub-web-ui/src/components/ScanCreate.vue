@@ -27,19 +27,22 @@
             @click:close="clearErrors"
           >
             <ul>
-              <li v-for="error in errors" 
-              :key="error">
-              {{ error }}
+              <li
+                v-for="error in errors"
+                :key="error"
+              >
+                {{ error }}
               </li>
             </ul>
-            <v-btn v-if="showClientDownloadButton"
+            <v-btn
+              v-if="showClientDownloadButton"
               class="mt-5"
               color="error"
+              href="https://mercedes-benz.github.io/sechub/latest/client-download.html"
               rounded
               :text="$t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT_BUTTON')"
               variant="outlined"
-               href='https://mercedes-benz.github.io/sechub/latest/client-download.html'
-              />
+            />
           </v-alert>
 
           <v-card
@@ -111,13 +114,11 @@
   import { buildSecHubConfiguration, isFileSizeValid } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
-  import { useI18n } from 'vue-i18n'
   import '@/styles/sechub.scss'
 
   export default defineComponent({
 
     setup () {
-      const { t } = useI18n()
       // routing and translation methods
       const route = useRoute()
       const router = useRouter()
@@ -165,9 +166,11 @@
           return
         }
 
-        // reached set upload limit 
+        // reached set upload limit
         selectedFile.value = null
-        errors.value.push(errorMessage)
+        if (errorMessage) {
+          errors.value.push(errorMessage)
+        }
         alert.value = true
       }
 
