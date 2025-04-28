@@ -22,17 +22,17 @@ export function split(input: string): string[] {
 
 /**
  * This method checks the default environment variables 'http_proxy' and 'https_proxy' for http/https proxy specification.
- * The variables are expected to be specified in this format: http_proxy='http://user:password@proxy.example.org:3128'.
+ * The variables are expected to be specified in this format: http_proxy='http://user:password@proxy.example.org:1234'.
  * This results in an URL object like this:
  * URL {
-      href: 'http://user:password@proxy.example.org:3128/',
-      origin: 'http://proxy.example.org:3128',
+      href: 'http://user:password@proxy.example.org:1234/',
+      origin: 'http://proxy.example.org:1234',
       protocol: 'http:',
       username: 'user',
       password: 'password',
-      host: 'proxy.example.org:3128',
+      host: 'proxy.example.org:1234',
       hostname: 'proxy.example.org',
-      port: '3128',
+      port: '1234',
       pathname: '/',
       search: '',
       searchParams: URLSearchParams {},
@@ -65,7 +65,7 @@ export function resolveProxyConfig(): AxiosProxyConfig | undefined {
         };
         return proxyConfig;
     } catch(error: any) {
-        throw new Error(`Trying to setup proxy configuration received the error: "${error.message}". Make sure to use the following syntax: http://user:password@proxy.example.org:3128 or without credentials: http://proxy.example.org:3128`);
+        throw new Error(`Trying to setup proxy configuration received the error: "${error.message}". Make sure to use the following syntax: http://user:password@proxy.example.org:1234 or without credentials: http://proxy.example.org:1234`);
     }
 }
 
