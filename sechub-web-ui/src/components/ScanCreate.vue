@@ -21,13 +21,28 @@
             v-model="alert"
             closable
             color="error"
-            density="compact"
             :title="$t('SCAN_ERROR_ALERT_TITLE')"
             type="warning"
             variant="tonal"
+            @click:close="clearErrors"
           >
-            {{ errors.pop() }}
-
+            <ul>
+              <li
+                v-for="error in errors"
+                :key="error"
+              >
+                {{ error }}
+              </li>
+            </ul>
+            <v-btn
+              v-if="showClientDownloadButton"
+              class="mt-5"
+              color="error"
+              href="https://mercedes-benz.github.io/sechub/latest/client-download.html"
+              rounded
+              :text="$t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT_BUTTON')"
+              variant="outlined"
+            />
           </v-alert>
 
           <v-card
@@ -96,7 +111,7 @@
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
-  import { buildSecHubConfiguration } from '@/utils/scanConfigUtils'
+  import { buildSecHubConfiguration, isFileSizeValid } from '@/utils/scanConfigUtils'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
@@ -120,6 +135,7 @@
       const isLoading = ref(false)
       // todo: should be Map key, value = translation
       const selectedScanOptions = ref<string[]>([])
+      const showClientDownloadButton = ref(false)
 
       // sechub scan configuration
       const defaultConfig : SecHubConfiguration = {
@@ -142,8 +158,20 @@
       }
 
       function updateFileselection (newFile : File, fileType : string) {
-        selectedFile.value = newFile
-        selectedFileType.value = fileType
+        const { errorMessage, isValid } = isFileSizeValid(newFile, fileType)
+
+        if (isValid) {
+          selectedFile.value = newFile
+          selectedFileType.value = fileType
+          return
+        }
+
+        // reached set upload limit
+        selectedFile.value = null
+        if (errorMessage) {
+          errors.value.push(errorMessage)
+        }
+        alert.value = true
       }
 
       function buildScanConfiguration () {
@@ -164,11 +192,16 @@
         }
         isLoading.value = false
         if (errors.value.length > 0) {
-          // todo only one error is displayed in alert
           alert.value = true
+          showClientDownloadButton.value = true
         } else {
           backToProjectOverview()
         }
+      }
+
+      function clearErrors () {
+        errors.value = []
+        alert.value = false
       }
 
       return {
@@ -181,6 +214,8 @@
         errors,
         alert,
         isLoading,
+        showClientDownloadButton,
+        clearErrors,
         updateFileselection,
         backToProjectOverview,
         buildScanConfiguration,
