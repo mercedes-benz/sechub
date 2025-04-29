@@ -7,58 +7,81 @@
   />
 
   <SeverityFilterDialog
-    :visible="showSeverityFilter"
     :severities="availableSeverities"
+    :visible="showSeverityFilter"
     @filter="filterBySeverity"
   />
 
   <FalsePositiveDialogSAST
-  :visible="showMarkFalsePositiveDialog"
-  :project-id="projectId"
-  :job-u-u-i-d="jobUUID"
-  :selected-findings="selectedFindings"
-  @close="showMarkFalsePositiveDialog=false"
+    :job-u-u-i-d="jobUUID"
+    :project-id="projectId"
+    :selected-findings="selectedFindingsForFalsePositives"
+    :visible="showMarkFalsePositiveDialog"
+    @close="closeFalsePositiveDialog"
+    @error-alert="errorAlert=true"
+    @success-alert="successAlert=true"
   />
+
+  <v-alert
+    v-if="errorAlert"
+    closable
+    color="error"
+    density="compact"
+    type="warning"
+    variant="tonal"
+    @click:close="errorAlert=false"
+  >
+    {{ $t('MARK_FALSE_POSITIVE_MESSAGE_ERROR') }}
+  </v-alert>
+
+  <v-alert
+    v-if="successAlert"
+    closable
+    color="success"
+    density="compact"
+    type="info"
+    variant="tonal"
+    @click:close="successAlert=false"
+  >
+    {{ $t('MARK_FALSE_POSITIVE_MESSAGE_SUCCESS') }}
+  </v-alert>
 
   <v-data-table
     v-model="selectedFindings"
     v-model:filter="filter"
     :filter-keys="['severity']"
-    :items="filteredFindingsBySeverity"
     :headers="headers"
     item-key="id"
+    :items="filteredFindingsBySeverity"
     show-expand
     show-select
-    >
-    <template v-slot:header.severity>
+  >
+
+    <template #top>
       <div>
-        {{ $t('REPORT_DESCRIPTION_SEVERITY') }}
-        <v-btn icon="mdi-filter-variant"
-          class="ma-2"
-          variant="text"
-          size="small"
+        <div />
+        <v-btn
+          v-if="isAnyFindingSelected"
+          class="ma-4"
           color="primary"
-          @click="openSeverityFilter()"
+          @click="markAsFalsePositive"
         >
+          {{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
         </v-btn>
       </div>
     </template>
 
-    <template v-slot:top>
+    <template #header.severity>
       <div>
-        <div>
-
-        </div>
+        {{ $t('REPORT_DESCRIPTION_SEVERITY') }}
         <v-btn
-          v-if="isAnyFindingSelected"
           class="ma-2"
-          variant="text"
-          size="small"
           color="primary"
-          @click="markAsFalsePositive"
-        >
-          {{ $t('REPORT_MARK_FALSE_POSITIVE_BUTTON') }}
-        </v-btn>
+          icon="mdi-filter-variant"
+          size="small"
+          variant="text"
+          @click="openSeverityFilter()"
+        />
       </div>
     </template>
 
@@ -111,171 +134,192 @@
 </template>
 
 <script lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { SecHubFinding, SecHubReport } from '@/generated-sources/openapi'
-import { useReportStore } from '@/stores/reportStore'
-import '@/styles/sechub.scss'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
+  import { SecHubFinding, SecHubReport } from '@/generated-sources/openapi'
+  import { useReportStore } from '@/stores/reportStore'
+  import '@/styles/sechub.scss'
 
-export default {
-  name: 'JobReport',
+  export default {
+    name: 'JobReport',
 
-  setup () {
-    const { t } = useI18n()
-    const route = useRoute()
-    const router = useRouter()
-    const store = useReportStore()
+    setup () {
+      const { t } = useI18n()
+      const route = useRoute()
+      const router = useRouter()
+      const store = useReportStore()
 
-    const projectId = ref('')
-    const jobUUID = ref('')
+      const projectId = ref('')
+      const jobUUID = ref('')
 
-    const report = ref<SecHubReport>({})
+      const report = ref<SecHubReport>({})
 
-    const headers = [
-      { title: 'ID', key: 'id', sortable: true },
-      { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity', sortable: false },
-      { title: 'CWE', key: 'cweId' },
-      { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
-    ]
+      const headers = [
+        { title: 'ID', key: 'id', sortable: true },
+        { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity', sortable: false },
+        { title: 'CWE', key: 'cweId' },
+        { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
+      ]
 
-    const showSeverityFilter = ref(false)
-    const severityFilter = ref([] as string[])
-    const selectedFindings = ref([] as SecHubFinding[])
-    const filter = ref('')
+      const showSeverityFilter = ref(false)
+      const filter = ref('')
+      const severityFilter = ref([] as string[])
+      const selectedFindings = ref([])
+      // in selectedFindings only the id is save, because it is binded to the v-data-table and id is the item key
+      // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
+      const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
 
-    const showMarkFalsePositiveDialog= ref(false)
+      const showMarkFalsePositiveDialog = ref(false)
+      const errorAlert = ref(false)
+      const successAlert = ref(false)
 
-    if ('id' in route.params) {
-      projectId.value = route.params.id
-    }
-
-    if ('jobId' in route.params) {
-      jobUUID.value = route.params.jobId
-    }
-
-    const query = route.query.scantype as string
-    const scantype = ref('')
-    scantype.value = query
-
-    const filteredFindingsByScantype = computed(() => {
-      if (report.value.result?.findings) {
-        return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
-      } else {
-        return report.value.result?.findings
+      if ('id' in route.params) {
+        projectId.value = route.params.id
       }
-    })
 
-    const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']
-
-    const sortedFindingsBySeverity = computed<SecHubFinding[]>(() => {
-      if (!filteredFindingsByScantype.value) {
-        return []
+      if ('jobId' in route.params) {
+        jobUUID.value = route.params.jobId
       }
-      return [...filteredFindingsByScantype.value].sort((a, b) => {
-        return severityOrder.indexOf(a.severity || 'INFO') - severityOrder.indexOf(b.severity || 'INFO')
-      })
-    })
 
-    const filteredFindingsBySeverity = computed<SecHubFinding[]>(() => {
-      if (!severityFilter.value || severityFilter.value.length === 0) {
-        return sortedFindingsBySeverity.value
-      }
-      return sortedFindingsBySeverity.value.filter(finding => severityFilter.value.includes(finding.severity || 'INFO'))
-    })
+      const query = route.query.scantype as string
+      const scantype = ref('')
+      scantype.value = query
 
-    const isAnyFindingSelected = computed(() => {
-      return selectedFindings.value.length > 0
-    })
-
-    const availableSeverities = computed(() => {
-      const severities = new Set<any>()
-      if(!filteredFindingsByScantype.value){
-        return Array.from(severities)
-      }
-      filteredFindingsByScantype.value.forEach(finding => {
-        if (finding.severity) {
-          severities.add(finding.severity)
+      const filteredFindingsByScantype = computed(() => {
+        if (report.value.result?.findings) {
+          return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
+        } else {
+          return report.value.result?.findings
         }
       })
-      return Array.from(severities).sort((a, b) => severityOrder.indexOf(a) - severityOrder.indexOf(b))
-    })
 
-    onMounted(async () => {
-      const reportFromStore = store.getReportByUUID(jobUUID.value)
-      if (!reportFromStore) {
-        router.push({
-          path: '/projects',
+      const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']
+
+      const sortedFindingsBySeverity = computed<SecHubFinding[]>(() => {
+        if (!filteredFindingsByScantype.value) {
+          return []
+        }
+        return [...filteredFindingsByScantype.value].sort((a, b) => {
+          return severityOrder.indexOf(a.severity || 'INFO') - severityOrder.indexOf(b.severity || 'INFO')
         })
-      } else {
-        report.value = reportFromStore
+      })
+
+      const filteredFindingsBySeverity = computed<SecHubFinding[]>(() => {
+        if (!severityFilter.value || severityFilter.value.length === 0) {
+          return sortedFindingsBySeverity.value
+        }
+        return sortedFindingsBySeverity.value.filter(finding => severityFilter.value.includes(finding.severity || 'INFO'))
+      })
+
+      const isAnyFindingSelected = computed(() => {
+        return selectedFindings.value.length > 0
+      })
+
+      const availableSeverities = computed(() => {
+        const severities = new Set<any>()
+        if (!filteredFindingsByScantype.value) {
+          return Array.from(severities)
+        }
+        filteredFindingsByScantype.value.forEach(finding => {
+          if (finding.severity) {
+            severities.add(finding.severity)
+          }
+        })
+        return Array.from(severities).sort((a, b) => severityOrder.indexOf(a) - severityOrder.indexOf(b))
+      })
+
+      onMounted(async () => {
+        const reportFromStore = store.getReportByUUID(jobUUID.value)
+        if (!reportFromStore) {
+          router.push({
+            path: '/projects',
+          })
+        } else {
+          report.value = reportFromStore
+        }
+      })
+
+      function calculateIcon (severity :string) {
+        switch (severity) {
+          case 'CRITICAL':
+          case 'HIGH':
+            return 'mdi-alert-circle-outline'
+          case 'MEDIUM':
+            return 'mdi-alert-circle-outline'
+          case 'LOW':
+          case 'INFO':
+            return 'mdi-information-outline'
+          default:
+            return ''
+        }
       }
-    })
 
-    function calculateIcon (severity :string) {
-      switch (severity) {
-        case 'CRITICAL':
-        case 'HIGH':
-          return 'mdi-alert-circle-outline'
-        case 'MEDIUM':
-          return 'mdi-alert-circle-outline'
-        case 'LOW':
-        case 'INFO':
-          return 'mdi-information-outline'
-        default:
-          return ''
+      function calculateColor (severity: string) {
+        switch (severity) {
+          case 'CRITICAL':
+          case 'HIGH':
+            return 'error'
+          case 'MEDIUM':
+            return 'warning'
+          case 'LOW':
+            return 'success'
+          case 'INFO':
+            return 'primary'
+          default:
+            return 'layer_01'
+        }
       }
-    }
 
-    function calculateColor (severity: string) {
-      switch (severity) {
-        case 'CRITICAL':
-        case 'HIGH':
-          return 'error'
-        case 'MEDIUM':
-          return 'warning'
-        case 'LOW':
-          return 'success'
-        case 'INFO':
-          return 'primary'
-        default:
-          return 'layer_01'
+      function filterBySeverity (filter = severityFilter.value) {
+        severityFilter.value = filter
+        showSeverityFilter.value = false
       }
-    }
 
-    function filterBySeverity(filter = severityFilter.value){
-      severityFilter.value = filter
-      showSeverityFilter.value = false
-    }
+      function openSeverityFilter () {
+        showSeverityFilter.value = true
+      }
 
-    function openSeverityFilter(){
-      showSeverityFilter.value = true
-    }
+      function markAsFalsePositive () {
+        const allFindings = report.value.result?.findings
+        if (!allFindings) {
+          selectedFindingsForFalsePositives.value = []
+        } else {
+          selectedFindingsForFalsePositives.value = selectedFindings.value.map(selected => {
+            return allFindings.find(finding => finding.id === selected) || {}
+          })
+        }
+        showMarkFalsePositiveDialog.value = true
+      }
 
-    function markAsFalsePositive() {
-      showMarkFalsePositiveDialog.value = true
-    }
+      async function closeFalsePositiveDialog () {
+        showMarkFalsePositiveDialog.value = false
+      }
 
-    return {
-      projectId,
-      jobUUID,
-      report,
-      scantype,
-      headers,
-      calculateColor,
-      calculateIcon,
-      showSeverityFilter,
-      showMarkFalsePositiveDialog,
-      severityFilter,
-      selectedFindings,
-      filter,
-      filteredFindingsBySeverity,
-      sortedFindingsBySeverity,
-      availableSeverities,
-      filterBySeverity,
-      openSeverityFilter,
-      isAnyFindingSelected,
-      markAsFalsePositive,
-    }
-  },
-}
+      return {
+        projectId,
+        jobUUID,
+        report,
+        scantype,
+        headers,
+        errorAlert,
+        successAlert,
+        showSeverityFilter,
+        showMarkFalsePositiveDialog,
+        severityFilter,
+        selectedFindings,
+        selectedFindingsForFalsePositives,
+        filter,
+        filteredFindingsBySeverity,
+        sortedFindingsBySeverity,
+        availableSeverities,
+        filterBySeverity,
+        calculateColor,
+        calculateIcon,
+        openSeverityFilter,
+        isAnyFindingSelected,
+        markAsFalsePositive,
+        closeFalsePositiveDialog,
+      }
+    },
+  }
 </script>

@@ -8,21 +8,23 @@
       <v-card>
         <v-card-title>
           <v-icon
-            icon="mdi-filter-variant"
             class="mr-2"
+            icon="mdi-filter-variant"
             left
             size="small"
           />
           {{ $t('REPORT_FINDING_SEVERITY_FILTER_TITLE') }}
         </v-card-title>
         <v-card-text>
-          <div v-for="(severity, i) in severities" 
-          :key="i">
+          <div
+            v-for="(severity, i) in severities"
+            :key="i"
+          >
             <v-checkbox
               v-model="selected"
+              hide-details
               :label="severity"
               :value="severity"
-              hide-details
             />
           </div>
         </v-card-text>
@@ -41,38 +43,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from 'vue'
-import '@/styles/sechub.scss'
+  import { defineComponent, ref, toRefs } from 'vue'
+  import '@/styles/sechub.scss'
 
-export default defineComponent({
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
+  export default defineComponent({
+    props: {
+      visible: {
+        type: Boolean,
+        required: true,
+      },
+      severities: {
+        type: Array as () => string[],
+        required: true,
+      },
     },
-    severities: {
-      type:  Array as () => string[],
-      required: true,
+
+    emits: ['filter'],
+
+    setup (props, { emit }) {
+      const { visible } = toRefs(props)
+      const localVisible = ref(visible)
+      const selected = ref([])
+
+      function newFilter () {
+        emit('filter', selected.value)
+      }
+
+      return {
+        localVisible,
+        selected,
+        newFilter,
+      }
     },
-  },
-
-  emits: ['filter'],
-
-  setup (props, { emit }) {
-    const { visible, severities } = toRefs(props)
-    const localVisible = ref(visible)
-    const selected = ref([])
-
-    function newFilter () {
-      emit('filter', selected.value)
-    }
-
-    return {
-      localVisible,
-      selected,
-      severities,
-      newFilter,
-    }
-  },
-})
+  })
 </script>

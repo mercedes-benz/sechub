@@ -2,15 +2,15 @@
 import apiConfig from './configuration'
 import executionApi from './executionService/executionService'
 import scanService from './executionService/ScanService'
-import { 
+import {
   ConfigurationApi,
   JobManagementApi,
-  OtherApi, 
-  UserSelfServiceApi,
-  SecHubExecutionApi,
-  SystemApi,
-  SignUpApi,
+  OtherApi,
   ProjectAdministrationApi,
+  SecHubExecutionApi,
+  SignUpApi,
+  SystemApi,
+  UserSelfServiceApi,
 } from '@/generated-sources/openapi'
 
 const otherApi = new OtherApi(apiConfig)

@@ -100,6 +100,7 @@
     "REPORT_LOW_FINDINGS": "Low findings",
     "REPORT_INFO_FINDINGS": "Info findings",
     "REPORT_SCAN_NOT_SUCCESSFUL": "Executed scan was not successful!",
+    "REPORT_SCAN_NO_FINDINGS": "Executed scan does not contain findings or only false positives!",
     "REPORT_METADATA_SCAN_STATUS": "Scan status",
     "REPORT_METADATA_MESSAGES": "SecHub Report Messages",
     "REPORT_DESCRIPTION_SEVERITY": "Severity",
@@ -132,11 +133,12 @@
     "REPORT_REVISION_SHOW": "Show Revision",
     "REPORT_CALLSTACK_HIDE": "Hide Callstack",
     "REPORT_CALLSTACK_SHOW": "Show Callstack",
-    "REPORT_MARK_FALSE_POSITIVE_BUTTON": "Mark selected findings as false positives",
+    "MARK_FALSE_POSITIVE_BUTTON": "Mark as false Positives",
     "MARK_FALSE_POSITIVE_RADIO_ONE": "A fix has already been started",
     "MARK_FALSE_POSITIVE_RADIO_TWO": "No bandwidth to fix this",
     "MARK_FALSE_POSITIVE_RADIO_THREE": "Risk is tolerable to this project",
     "MARK_FALSE_POSITIVE_RADIO_FOUR": "This alert is inaccurate or incorrect",
-    "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used"
-    
+    "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used",
+    "MARK_FALSE_POSITIVE_MESSAGE_ERROR": "Error! Could not mark fidnings as false positives",
+    "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not occurr on next scan!"
 }
