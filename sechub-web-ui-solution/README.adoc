@@ -15,35 +15,7 @@ remove the root `redirect / to login page` if you do not have login enabled in t
 +
 If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. in docker/nginx/ +
 The values can be changed at runtime +
-+
-.ENV that can be set in the config.json file
-|===
-|Name |Default Value |Description
-
-|BASIC_AUTH_DEV
-|false
-|Sets Basic Auth for the Web-UI (only for development, username and password must be set)
-
-|USERNAME
-|undefined
-|Basic Auth username (only for development)
-
-|PASSWORD
-|undefined
-|Basic Auth password (only for development)
-
-|SECHUB_USER_SUPPORT_EMAIL
-|example@example.org
-|Support email address for your service shown in the Web UI
-
-|SECHUB_USER_SUPPORT_WEBSITE
-|https://sechub.example.org
-|Support website for your service shown in the Web UI
-
-|SECHUB_FAQ_LINK
-|https://sechub.example.org/faq
-|Link to your custom FAQ page
-|===
+See table 1 for the .ENV variables that can be set in the config.json file. +
 +
 Example config.json file: +
 +
@@ -71,3 +43,40 @@ Example config.json file: +
 The command will run the Web UI on localhost as docker container, with nginx as reverse proxy.
 
 5. The webui is available at https://localhost +
+
+.ENV that can be set in the config.json file
+|===
+|Name |Default Value |Description
+
+|BASIC_AUTH_DEV
+|false
+|Sets Basic Auth for the Web-UI (only for development, username and password must be set)
+
+|USERNAME
+|undefined
+|Basic Auth username (only for development)
+
+|PASSWORD
+|undefined
+|Basic Auth password (only for development)
+
+|SECHUB_USER_SUPPORT_EMAIL
+|example@example.org
+|Support email address for your service shown in the Web UI
+
+|SECHUB_USER_SUPPORT_WEBSITE
+|https://sechub.example.org
+|Support website for your service shown in the Web UI
+
+|SECHUB_FAQ_LINK
+|https://sechub.example.org/faq
+|Link to your custom FAQ page
+
+|SECHUB_UPLOAD_SOURCES_MAXIMUM_BYTES
+|-1
+|the maximum size of the source code to be uploaded in bytes. -1 means no limit.
+
+|SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES
+|-1
+|the maximum size of the binaries to be uploaded in bytes. -1 means no limit.
+|===
