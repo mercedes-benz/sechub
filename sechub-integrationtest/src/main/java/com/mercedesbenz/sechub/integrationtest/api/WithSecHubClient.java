@@ -53,7 +53,7 @@ public class WithSecHubClient {
         this.workingDirectory = workingDirectory;
         try {
             this.outputFolder = TestUtil.createTempDirectoryInBuildFolder("with-sechub-client-");
-            this.outputFolder.toFile().deleteOnExit();
+
         } catch (IOException e) {
             throw new IllegalStateException("Can NOT create temp directory for tests!", e);
         }

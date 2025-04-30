@@ -26,10 +26,10 @@ func InitializeContext() *Context {
 
 	// Add labels defined via cmdline args or env var to config JSON (only for job related client actions)
 	if context.config.action == scanAction ||
-		 context.config.action == scanAsynchronAction ||
-		 context.config.action == listJobsAction ||
-		 context.config.action == getReportAction ||
-		 context.config.action == getStatusAction {
+		context.config.action == scanAsynchronAction ||
+		context.config.action == listJobsAction ||
+		context.config.action == getReportAction ||
+		context.config.action == getStatusAction {
 
 		err := applyLabelsToConfigJson(context)
 		if err != nil {
@@ -68,10 +68,17 @@ func loadConfigFile(context *Context) {
 	}
 }
 
-func lowercaseOrNotice(s string, name string) string {
+func lowercaseOrNotice(s string, name string, hideValue bool) string {
 	lowercased := strings.ToLower(s)
 	if s != lowercased {
-		sechubUtil.LogNotice("Converted " + name + " '" + s + "' to lowercase because it contained uppercase characters, which are not accepted by SecHub server.")
+		var text = "Converted " + name + " '"
+		if hideValue {
+			text = text + "***hidden***"
+		} else {
+			text = text + s
+		}
+		text = text + "' to lowercase because it contained uppercase characters, which are not accepted by SecHub server."
+		sechubUtil.LogNotice(text)
 	}
 	return lowercased
 }
