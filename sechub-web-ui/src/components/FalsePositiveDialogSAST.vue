@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
   <v-dialog
     v-model="localVisible"
@@ -9,22 +10,27 @@
       </v-card-title>
       <v-radio-group v-model="radios">
         <v-radio
+          color="primary"
           :label="$t('MARK_FALSE_POSITIVE_RADIO_ONE')"
           :value="$t('MARK_FALSE_POSITIVE_RADIO_ONE')"
         />
         <v-radio
+          color="primary"
           :label="$t('MARK_FALSE_POSITIVE_RADIO_TWO')"
           :value="$t('MARK_FALSE_POSITIVE_RADIO_TWO')"
         />
         <v-radio
+          color="primary"
           :label="$t('MARK_FALSE_POSITIVE_RADIO_THREE')"
           :value="$t('MARK_FALSE_POSITIVE_RADIO_THREE')"
         />
         <v-radio
+          color="primary"
           :label="$t('MARK_FALSE_POSITIVE_RADIO_FOUR')"
           :value="$t('MARK_FALSE_POSITIVE_RADIO_FOUR')"
         />
         <v-radio
+          color="primary"
           :label="$t('MARK_FALSE_POSITIVE_RADIO_FIVE')"
           :value="$t('MARK_FALSE_POSITIVE_RADIO_FIVE')"
         />
@@ -90,7 +96,7 @@
       const localVisible = ref(visible)
       const { t } = useI18n()
       const comment = ref('')
-      const radios = ref()
+      const radios = ref(t('MARK_FALSE_POSITIVE_RADIO_ONE'))
 
       async function markAsFalsePositive () {
         const falsePositiveJobData: Array<FalsePositiveJobData> = []

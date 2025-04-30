@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
   <JobReportToolBar
     :job-u-u-i-d="jobUUID"
@@ -60,15 +61,16 @@
       <div>
         <div />
         <v-btn
-          v-if="isAnyFindingSelected && (scantype != 'webscan')"
+          v-if="(scantype != 'webscan')"
           class="ma-4"
           color="primary"
+          :disabled="!isAnyFindingSelected"
           @click="openFalsePositiveDialog"
         >
           {{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
         </v-btn>
         <v-tooltip
-          v-else-if="isAnyFindingSelected && (scantype == 'webscan')"
+          v-else-if="(scantype == 'webscan')"
           v-model="showWebScanMarkFPButtonToggle"
           location="right"
         >
@@ -98,6 +100,29 @@
           variant="text"
           @click="openSeverityFilter()"
         />
+      </div>
+    </template>
+
+    <template #item.id="{ value }">
+      <div>
+        <span>{{ value }}</span>
+        <v-tooltip
+          v-if="isAlreadyFalsePositive(value)"
+          v-model="showIsFalsePositiveToggle"
+          location="right"
+        >
+          <template #activator="{ props }">
+            <div v-bind="props" class="d-inline-block">
+              <v-icon
+                class="ml-4"
+                :color="calculateColor('INFO')"
+                :icon="calculateIcon('INFO')"
+                left
+              />
+            </div>
+          </template>
+          <span>{{ $t('MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE') }}</span>
+        </v-tooltip>
       </div>
     </template>
 
@@ -154,6 +179,7 @@
   import { useI18n } from 'vue-i18n'
   import { SecHubFinding, SecHubReport } from '@/generated-sources/openapi'
   import { useReportStore } from '@/stores/reportStore'
+  import { TmpFalsePositives, useTmpFalsePositivesStore } from '@/stores/tempFalsePositivesStore'
   import '@/styles/sechub.scss'
 
   export default {
@@ -164,11 +190,13 @@
       const route = useRoute()
       const router = useRouter()
       const store = useReportStore()
+      const tempFalsePositivesStore = useTmpFalsePositivesStore()
 
       const projectId = ref('')
       const jobUUID = ref('')
 
       const report = ref<SecHubReport>({})
+      const markedFalsePositives = ref<TmpFalsePositives>()
 
       const headers = [
         { title: 'ID', key: 'id', sortable: true },
@@ -184,13 +212,14 @@
 
       // in selectedFindings only the id is saved, because it is binded to the v-data-table and id is the item key
       // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
-      const selectedFindings = ref([])
+      const selectedFindings = ref([] as number[])
       const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
       const showMarkFalsePositiveDialog = ref(false)
       const errorAlert = ref(false)
       const successAlert = ref(false)
 
       const showWebScanMarkFPButtonToggle = ref(false)
+      const showIsFalsePositiveToggle = ref(false)
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -203,6 +232,8 @@
       const query = route.query.scantype as string
       const scantype = ref('')
       scantype.value = query
+
+      loadFalsePositivesFromStore()
 
       // preparing findings for presentation (order and filter)
       const filteredFindingsByScantype = computed(() => {
@@ -314,6 +345,37 @@
 
       async function closeFalsePositiveDialog () {
         showMarkFalsePositiveDialog.value = false
+
+        if (successAlert.value) {
+          let combinedArray
+          if (markedFalsePositives.value?.findingIds) {
+            combinedArray = [...new Set([...markedFalsePositives.value?.findingIds, ...selectedFindings.value])]
+          } else {
+            combinedArray = selectedFindings.value
+          }
+          const newFalsePositives: TmpFalsePositives = {
+            jobUUID: jobUUID.value,
+            findingIds: combinedArray,
+          }
+          tempFalsePositivesStore.storeFalsePositives(newFalsePositives)
+          loadFalsePositivesFromStore()
+        }
+      }
+
+      function isAlreadyFalsePositive (item: number) {
+        if (markedFalsePositives.value) {
+          return !!markedFalsePositives.value.findingIds.includes(item)
+        }
+        return false
+      }
+
+      function loadFalsePositivesFromStore () {
+        const fpFromStorage = tempFalsePositivesStore.getFalsePositivesByUUID(jobUUID.value)
+        if (fpFromStorage) {
+          markedFalsePositives.value = fpFromStorage
+          selectedFindings.value = fpFromStorage.findingIds
+        }
+        console.debug(selectedFindings)
       }
 
       return {
@@ -327,6 +389,7 @@
         showSeverityFilter,
         showMarkFalsePositiveDialog,
         showWebScanMarkFPButtonToggle,
+        showIsFalsePositiveToggle,
         selectedFindings,
         selectedFindingsForFalsePositives,
         filter,
@@ -339,6 +402,7 @@
         isAnyFindingSelected,
         openFalsePositiveDialog,
         closeFalsePositiveDialog,
+        isAlreadyFalsePositive,
       }
     },
   }

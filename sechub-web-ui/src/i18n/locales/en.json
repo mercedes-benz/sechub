@@ -135,11 +135,13 @@
     "REPORT_CALLSTACK_SHOW": "Show Callstack",
     "MARK_FALSE_POSITIVE_BUTTON": "Mark as false Positives",
     "MARK_FALSE_POSITIVE_BUTTON_COMING_SOON": "Please use the cli client for webscan false positives.",
+    "MARK_FALSE_POSITIVE_TITLE": "Mark selected findings as false positives",
     "MARK_FALSE_POSITIVE_RADIO_ONE": "A fix has already been started",
     "MARK_FALSE_POSITIVE_RADIO_TWO": "No bandwidth to fix this",
     "MARK_FALSE_POSITIVE_RADIO_THREE": "Risk is tolerable to this project",
     "MARK_FALSE_POSITIVE_RADIO_FOUR": "This alert is inaccurate or incorrect",
     "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used",
     "MARK_FALSE_POSITIVE_MESSAGE_ERROR": "Error! Could not mark fidnings as false positives",
-    "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not occurr on next scan!"
+    "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not be reported in future scans!",
+    "MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE": "Findings are already marked as false Positive"
 }
