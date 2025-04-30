@@ -13,6 +13,7 @@
   />
 
   <FalsePositiveDialogSAST
+    v-if="scantype != 'webscan'"
     :job-u-u-i-d="jobUUID"
     :project-id="projectId"
     :selected-findings="selectedFindingsForFalsePositives"
@@ -28,7 +29,6 @@
     color="error"
     density="compact"
     type="warning"
-    variant="tonal"
     @click:close="errorAlert=false"
   >
     {{ $t('MARK_FALSE_POSITIVE_MESSAGE_ERROR') }}
@@ -40,7 +40,6 @@
     color="success"
     density="compact"
     type="info"
-    variant="tonal"
     @click:close="successAlert=false"
   >
     {{ $t('MARK_FALSE_POSITIVE_MESSAGE_SUCCESS') }}
@@ -61,13 +60,30 @@
       <div>
         <div />
         <v-btn
-          v-if="isAnyFindingSelected"
+          v-if="isAnyFindingSelected && (scantype != 'webscan')"
           class="ma-4"
           color="primary"
-          @click="markAsFalsePositive"
+          @click="openFalsePositiveDialog"
         >
           {{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
         </v-btn>
+        <v-tooltip
+          v-else-if="isAnyFindingSelected && (scantype == 'webscan')"
+          v-model="showWebScanMarkFPButtonToggle"
+          location="right"
+        >
+          <template #activator="{ props }">
+            <div v-bind="props" class="d-inline-block">
+              <v-btn
+                class="ma-4"
+                color="primary"
+                :disabled="true"
+              >{{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
+              </v-btn>
+            </div>
+          </template>
+          <span>{{ $t('MARK_FALSE_POSITIVE_BUTTON_COMING_SOON') }}</span>
+        </v-tooltip>
       </div>
     </template>
 
@@ -161,17 +177,20 @@
         { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
       ]
 
+      // severity filter constants
       const showSeverityFilter = ref(false)
       const filter = ref('')
       const severityFilter = ref([] as string[])
-      const selectedFindings = ref([])
-      // in selectedFindings only the id is save, because it is binded to the v-data-table and id is the item key
-      // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
-      const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
 
+      // in selectedFindings only the id is saved, because it is binded to the v-data-table and id is the item key
+      // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
+      const selectedFindings = ref([])
+      const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
       const showMarkFalsePositiveDialog = ref(false)
       const errorAlert = ref(false)
       const successAlert = ref(false)
+
+      const showWebScanMarkFPButtonToggle = ref(false)
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -185,6 +204,7 @@
       const scantype = ref('')
       scantype.value = query
 
+      // preparing findings for presentation (order and filter)
       const filteredFindingsByScantype = computed(() => {
         if (report.value.result?.findings) {
           return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
@@ -210,6 +230,7 @@
         }
         return sortedFindingsBySeverity.value.filter(finding => severityFilter.value.includes(finding.severity || 'INFO'))
       })
+      // end of preparing findings for presentation
 
       const isAnyFindingSelected = computed(() => {
         return selectedFindings.value.length > 0
@@ -279,7 +300,7 @@
         showSeverityFilter.value = true
       }
 
-      function markAsFalsePositive () {
+      function openFalsePositiveDialog () {
         const allFindings = report.value.result?.findings
         if (!allFindings) {
           selectedFindingsForFalsePositives.value = []
@@ -305,19 +326,18 @@
         successAlert,
         showSeverityFilter,
         showMarkFalsePositiveDialog,
-        severityFilter,
+        showWebScanMarkFPButtonToggle,
         selectedFindings,
         selectedFindingsForFalsePositives,
         filter,
         filteredFindingsBySeverity,
-        sortedFindingsBySeverity,
         availableSeverities,
         filterBySeverity,
         calculateColor,
         calculateIcon,
         openSeverityFilter,
         isAnyFindingSelected,
-        markAsFalsePositive,
+        openFalsePositiveDialog,
         closeFalsePositiveDialog,
       }
     },

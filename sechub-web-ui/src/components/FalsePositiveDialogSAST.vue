@@ -5,7 +5,7 @@
   >
     <v-card>
       <v-card-title>
-        Mark as false Positive
+        {{ $t('MARK_FALSE_POSITIVE_TITLE') }}
       </v-card-title>
       <v-radio-group v-model="radios">
         <v-radio

@@ -134,6 +134,7 @@
     "REPORT_CALLSTACK_HIDE": "Hide Callstack",
     "REPORT_CALLSTACK_SHOW": "Show Callstack",
     "MARK_FALSE_POSITIVE_BUTTON": "Mark as false Positives",
+    "MARK_FALSE_POSITIVE_BUTTON_COMING_SOON": "Please use the cli client for webscan false positives.",
     "MARK_FALSE_POSITIVE_RADIO_ONE": "A fix has already been started",
     "MARK_FALSE_POSITIVE_RADIO_TWO": "No bandwidth to fix this",
     "MARK_FALSE_POSITIVE_RADIO_THREE": "Risk is tolerable to this project",
