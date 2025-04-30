@@ -24,6 +24,7 @@ type Config struct {
 	configFileRead                 bool
 	debug                          bool
 	debugHTTP                      bool
+	failOnRed                      bool
 	failOnYellow                   bool
 	file                           string
 	ignoreDefaultExcludes          bool
@@ -126,6 +127,11 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubDebugEnvVar) == "true"
 	config.debugHTTP =
 		os.Getenv(SechubDebugHTTPEnvVar) == "true"
+	if os.Getenv(SechubFailOnRedEnvVar) == "false" {
+		config.failOnRed = false
+	} else {
+		config.failOnRed = true  // default behavior
+	}
 	config.ignoreDefaultExcludes =
 		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =

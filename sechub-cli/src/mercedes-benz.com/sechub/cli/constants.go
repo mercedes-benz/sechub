@@ -255,6 +255,9 @@ const SechubDebugEnvVar = "SECHUB_DEBUG"
 // SechubDebugHTTPEnvVar - environment variable to enable additional HTTP logging
 const SechubDebugHTTPEnvVar = "SECHUB_DEBUG_HTTP"
 
+// SechubFailOnRedEnvVar - environment variable to change exit code behavior
+const SechubFailOnRedEnvVar = "SECHUB_FAIL_ON_RED"
+
 // SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
 const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"
 
