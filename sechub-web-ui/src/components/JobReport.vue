@@ -59,15 +59,18 @@
 
     <template #top>
       <div>
-        <div />
         <v-btn
           v-if="(scantype != 'webscan')"
           class="ma-4"
-          color="primary"
           :disabled="!isAnyFindingSelected"
           @click="openFalsePositiveDialog"
         >
           {{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
+          <v-icon
+            color="primary"
+            end
+            icon="mdi-alert-remove-outline"
+          />
         </v-btn>
         <v-tooltip
           v-else-if="(scantype == 'webscan')"
@@ -78,9 +81,13 @@
             <div v-bind="props" class="d-inline-block">
               <v-btn
                 class="ma-4"
-                color="primary"
                 :disabled="true"
               >{{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
+                <v-icon
+                  color="primary"
+                  end
+                  icon="mdi-alert-remove-outline"
+                />
               </v-btn>
             </div>
           </template>
@@ -106,23 +113,14 @@
     <template #item.id="{ value }">
       <div>
         <span>{{ value }}</span>
-        <v-tooltip
+        <v-btn
           v-if="isAlreadyFalsePositive(value)"
-          v-model="showIsFalsePositiveToggle"
-          location="right"
-        >
-          <template #activator="{ props }">
-            <div v-bind="props" class="d-inline-block">
-              <v-icon
-                class="ml-4"
-                :color="calculateColor('INFO')"
-                :icon="calculateIcon('INFO')"
-                left
-              />
-            </div>
-          </template>
-          <span>{{ $t('MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE') }}</span>
-        </v-tooltip>
+          v-tooltip="$t('MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE')"
+          class="ml-4 non-clickable-btn"
+          :color="calculateColor('INFO')"
+          :icon="calculateIcon('INFO')"
+          variant="text"
+        />
       </div>
     </template>
 
@@ -219,7 +217,6 @@
       const successAlert = ref(false)
 
       const showWebScanMarkFPButtonToggle = ref(false)
-      const showIsFalsePositiveToggle = ref(false)
 
       if ('id' in route.params) {
         projectId.value = route.params.id
@@ -375,7 +372,6 @@
           markedFalsePositives.value = fpFromStorage
           selectedFindings.value = fpFromStorage.findingIds
         }
-        console.debug(selectedFindings)
       }
 
       return {
@@ -389,7 +385,6 @@
         showSeverityFilter,
         showMarkFalsePositiveDialog,
         showWebScanMarkFPButtonToggle,
-        showIsFalsePositiveToggle,
         selectedFindings,
         selectedFindingsForFalsePositives,
         filter,
@@ -407,3 +402,8 @@
     },
   }
 </script>
+<style scoped>
+.non-clickable-btn:hover {
+  cursor: default;
+}
+</style>
