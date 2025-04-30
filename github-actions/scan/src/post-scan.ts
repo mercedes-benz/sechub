@@ -2,7 +2,6 @@
 
 import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
-import * as fs from 'fs';
 import { getWorkspaceDir } from './fs-helper';
 import { LaunchContext } from './launcher';
 import { logExitCode } from './exitcode';
@@ -11,6 +10,7 @@ import { getFieldFromJson } from './json-helper';
 import { execFileSync } from 'child_process';
 import { sanitize } from './shell-arg-sanitizer';
 import { storeOutput } from './output-helper';
+import { readFileSync } from './fs-wrapper';
 
 const NEW_LINE_SEPARATOR = '\n';
 
@@ -34,7 +34,7 @@ function collectJsonReportData(context: LaunchContext) {
     let text = '';
     try {
         core.info('Get Report as json');
-        text = fs.readFileSync(filePath, 'utf8');
+        text = readFileSync(filePath, 'utf8');
     } catch (error) {
         core.warning(`Error reading JSON file: ${error}`);
         return undefined;

@@ -32,7 +32,7 @@
     :accept="fileAccept"
     base-color="primary"
     :clearable="false"
-    :label="$t('SCAN_CREATE_FILE_UPLOAD_INPUT')"
+    :label="fileInputLabel"
     max-width="1000px"
     :multiple="false"
     prepend-icon="mdi-upload"
@@ -64,9 +64,13 @@
       const error = ref('')
       const alert = ref(false)
 
+      const fileInputLabel = computed(() => {
+        const label = t('SCAN_CREATE_FILE_UPLOAD_INPUT')
+        return selectedRadio.value === 1 ? label + ' .zip' : label + ' .tar'
+      })
+
       const fileAccept = computed(() => {
         // files allowed: .zip and .tar
-        // todo: when drag and drop check files?
         return selectedRadio.value === 1 ? '.zip' : '.tar'
       })
 
@@ -89,6 +93,7 @@
         }
 
         if (file.value && !validType) {
+          // check if file is allowed (drag and drop allowes other files)
           error.value = errorMessage
           file.value = null
           alert.value = true
@@ -111,6 +116,7 @@
         file,
         selectedRadio,
         fileAccept,
+        fileInputLabel,
         alert,
         error,
         onFileChange,
