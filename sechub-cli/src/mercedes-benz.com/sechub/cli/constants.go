@@ -202,6 +202,7 @@ var forbiddenArchiveDataSectionNames = []string{
 const addSCMHistoryOption = "addScmHistory"
 const apitokenOption = "apitoken"
 const configfileOption = "configfile"
+const failOnYellowOption = "stop-on-yellow"
 const fileOption = "file"
 const helpOption = "help"
 const jobUUIDOption = "jobUUID"
@@ -211,7 +212,6 @@ const projectOption = "project"
 const quietOption = "quiet"
 const reportformatOption = "reportformat"
 const serverOption = "server"
-const stopOnYellowOption = "stop-on-yellow"
 const tempDirOption = "tempdir"
 const timeoutOption = "timeout"
 const userOption = "user"
@@ -222,6 +222,7 @@ const waitOption = "wait"
 var flaglist = []string{
 	apitokenOption,
 	configfileOption,
+	failOnYellowOption,
 	fileOption,
 	helpOption,
 	jobUUIDOption,
@@ -231,7 +232,6 @@ var flaglist = []string{
 	quietOption,
 	reportformatOption,
 	serverOption,
-	stopOnYellowOption,
 	tempDirOption,
 	timeoutOption,
 	userOption,

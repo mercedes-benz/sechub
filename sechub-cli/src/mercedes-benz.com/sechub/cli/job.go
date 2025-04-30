@@ -146,7 +146,7 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 		os.Exit(ExitCodeFailed)
 	case "YELLOW":
 		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
-		if context.config.stopOnYellow {
+		if context.config.failOnYellow {
 			fmt.Fprintln(os.Stderr, yellowMessage)
 			os.Exit(ExitCodeFailed)
 		} else {
