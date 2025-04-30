@@ -27829,8 +27829,8 @@ function split(input) {
  * @throws error if the proxy URL inside the ENV variable is an invalid URL
  */
 function resolveProxyConfig() {
-    const httpsProxy = process.env.https_proxy || undefined;
-    const httpProxy = process.env.http_proxy || undefined;
+    const httpsProxy = process.env.https_proxy;
+    const httpProxy = process.env.http_proxy;
     const proxy = httpsProxy || httpProxy;
     if (!proxy) {
         return undefined;
@@ -27855,11 +27855,14 @@ function resolveProxyConfig() {
     }
 }
 function getProtocolDefaultPort(protocol) {
-    if (protocol === 'http:') {
-        return 80;
+    if (!protocol) {
+        throw new Error('No protocol defined!');
     }
-    else if (protocol === 'https:') {
+    if (protocol.startsWith('https')) {
         return 443;
+    }
+    else if (protocol.startsWith('http')) {
+        return 80;
     }
     else {
         throw new Error('Accepted protocols are "http" and "https"');

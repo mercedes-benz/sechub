@@ -15,7 +15,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
 
 If the action runs on a custom runner and a proxy is necessary to download the sechub client from https://github.com,
 specify the proxy using the default ENV variables (lowercased like used by many other cli tools) `http_proxy` or `https_proxy`.
-The ENV variable `https_proxy` will be used if  `http_proxy` and `https_proxy` are set.
+The ENV variable `https_proxy` will be used if `http_proxy` and `https_proxy` are set.
 Make sure to use the following format:
 
 - http_proxy="http://user:password@proxy.example.org:1234"

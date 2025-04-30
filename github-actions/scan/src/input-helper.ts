@@ -42,8 +42,8 @@ export function split(input: string): string[] {
  * @throws error if the proxy URL inside the ENV variable is an invalid URL
  */
 export function resolveProxyConfig(): AxiosProxyConfig | undefined {
-    const httpsProxy = process.env.https_proxy || undefined;
-    const httpProxy = process.env.http_proxy || undefined;
+    const httpsProxy = process.env.https_proxy;
+    const httpProxy = process.env.http_proxy;
 
     const proxy = httpsProxy || httpProxy;
     
@@ -70,10 +70,13 @@ export function resolveProxyConfig(): AxiosProxyConfig | undefined {
 }
 
 function getProtocolDefaultPort(protocol: string) {
-    if (protocol === 'http:') {
-        return 80;
-    } else if (protocol === 'https:') {
+    if (!protocol){
+        throw new Error('No protocol defined!');
+    }
+    if (protocol.startsWith('https')) {
         return 443;
+    } else if (protocol.startsWith('http')) {
+        return 80;
     } else {
         throw new Error('Accepted protocols are "http" and "https"');
     }
