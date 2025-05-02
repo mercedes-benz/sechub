@@ -317,6 +317,8 @@ In below table, there is an overview of what can be defined where.
 | append SCM history | `-addScmHistory` | `SECHUB_ADD_SCM_HISTORY` |
 | code scan config ||| <<sechub-config-code-scan,codeScan>>
 | JSON config file | `-configfile` ||
+| fail on red ||`SECHUB_FAIL_ON_RED`|
+| fail on yellow | `-stop-on-yellow`||
 | file | `-file` ||
 | job uuid | `-jobUUID` ||
 | label definitions | `-label` | `SECHUB_LABELS` | <<labels,metaData.labels>>
@@ -328,7 +330,6 @@ In below table, there is an overview of what can be defined where.
 | report format | `-reportformat`||
 | scan for secrets ||| <<secret-scan,secretScan>>
 | server url | `-server` | `SECHUB_SERVER` | server
-| stop on yellow | `-stop-on-yellow`||
 | temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
 | trust all certificates || `SECHUB_TRUSTALL` |
 | user id | `-user` | `SECHUB_USERID` | user
@@ -381,12 +382,14 @@ In below table, there is an overview of what can be defined where.
   Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
-Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
+You can set some values via environment variables:
 
 - `SECHUB_ADD_SCM_HISTORY` +
   (`true` or `false` / unset) Secrets scan only: Upload SCM directories like `.git` for scanning. (same as `-addScmHistory` option)
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_FAIL_ON_RED` +
+  Fail on critical or high findings (`true` or `false`) - Client returns non-zero when set to ´true`. Default: `true`
 - `SECHUB_LABELS` +
   Define one or more labels for scan or filtering. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also `-label` option) +
   Example: `export SECHUB_LABELS="key1=test 1,key2=test 2"`
