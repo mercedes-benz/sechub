@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
-    "@openapitools/openapi-generator-cli": "^2.15.3",
+    "@openapitools/openapi-generator-cli": "^2.20.0",
     "core-js": "^3.37.1",
     "crypto-js": "^4.2.0",
     "pinia": "^2.3.0",
