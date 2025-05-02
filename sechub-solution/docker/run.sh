@@ -77,6 +77,23 @@ Using S3 object storage:
 EOF
 }
 
+set_up_encryption_key() {
+  # Check if SECHUB_SECURITY_ENCRYPTION_SECRET_KEY is empty
+  if [ -z "$SECHUB_SECURITY_ENCRYPTION_SECRET_KEY" ]; then
+    echo "SECHUB_SECURITY_ENCRYPTION_SECRET_KEY is empty. Generating a new AES256 key..."
+
+    # Generate a 256-bit (32-byte) AES256 compatible key
+    NEW_KEY=$(openssl rand -base64 32)
+
+    # Set the new key to the environment variable
+    export SECHUB_SECURITY_ENCRYPTION_SECRET_KEY="$NEW_KEY"
+
+    echo "New AES256 key generated and set to SECHUB_SECURITY_ENCRYPTION_SECRET_KEY."
+  else
+    echo "SECHUB_SECURITY_ENCRYPTION_SECRET_KEY is already set."
+  fi
+}
+
 # Mode "localserver" is meant for local development
 prepare_localserver_startup() {
   check_setup
@@ -186,6 +203,9 @@ fi
 if [ "$S3_ENABLED" = "true" ] ; then
   init_s3_settings
 fi
+
+# check if key is set
+set_up_encryption_key
 
 # Prepare SecHub server startup
 case "$SECHUB_START_MODE" in
