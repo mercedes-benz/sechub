@@ -14,7 +14,7 @@ export interface TmpFalsePositives {
   findingIds: Array<number>
 }
 
-// this storage holds only the current userDetailInformation
+// this storage holds only the current false positives
 export const useTmpFalsePositivesStore = defineStore(STORE_NAME, {
   state: () => ({
     falsePositives: getFalsePositives() as TmpFalsePositives [],

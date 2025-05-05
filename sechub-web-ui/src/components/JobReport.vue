@@ -208,7 +208,7 @@
       const filter = ref('')
       const severityFilter = ref([] as string[])
 
-      // in selectedFindings only the id is saved, because it is binded to the v-data-table and id is the item key
+      // in selectedFindings only the id is saved, because it is bound to the v-data-table and id is the item key
       // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
       const selectedFindings = ref([] as number[])
       const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
