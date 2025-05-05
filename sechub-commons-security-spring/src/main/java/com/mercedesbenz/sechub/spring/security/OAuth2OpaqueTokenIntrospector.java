@@ -86,7 +86,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     private final Duration maxCacheDuration;
     private final UserDetailsService userDetailsService;
     private final InMemoryCache<OAuth2OpaqueTokenIntrospectionResponse> cache;
-    private OAuth2OpaqueTokenExpirationCalculator expirationCalculator;
+    private OAuth2TokenExpirationCalculator expirationCalculator;
     private Duration minimumTokenValidity;
 
     /* @formatter:off */
@@ -98,7 +98,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                                   Duration maxCacheDuration,
                                   UserDetailsService userDetailsService,
                                   ApplicationShutdownHandler applicationShutdownHandler,
-                                  OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+                                  OAuth2TokenExpirationCalculator expirationCalculator,
                                   Duration minimumTokenValidity) {
 
         this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
@@ -202,7 +202,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                     introspectionResponse.setExpiresAt(minimumTokenValidityInstant);
 
                     log.debug(
-                            "Opaque token 'expiresAt' entry was before configured 'minimumTokenValidity'! Set 'expiresAt' to configured 'minimumTokenValidity' value '{}' as fallback.",
+                            "Opaque token 'expiresAt' entry was smaller than the configured 'minimumTokenValidity'! Set 'expiresAt' to configured 'minimumTokenValidity' value '{}' as fallback.",
                             minimumTokenValidityInstant);
                 }
             }

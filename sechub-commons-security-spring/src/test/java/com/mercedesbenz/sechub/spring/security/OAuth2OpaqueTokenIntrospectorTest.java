@@ -43,7 +43,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
     private static final String CLIENT_SECRET = "example-client-secret";
     private static final UserDetailsService userDetailsService = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
-    private static final OAuth2OpaqueTokenExpirationCalculator expirationCalculator = mock();
+    private static final OAuth2TokenExpirationCalculator expirationCalculator = mock();
     private static final Duration DEFAULT_TOKEN_EXPIRES_IN = Duration.ofDays(1);
     private static final Duration MAX_CACHE_DURATION = Duration.ofDays(30);
     private static final String OPAQUE_TOKEN = "opaque-token";

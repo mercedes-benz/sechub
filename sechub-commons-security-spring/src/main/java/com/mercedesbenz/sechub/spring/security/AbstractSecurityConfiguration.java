@@ -92,7 +92,7 @@ public abstract class AbstractSecurityConfiguration {
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
 														  @Autowired(required = false) JwtDecoder jwtDecoder,
 														  ApplicationShutdownHandler applicationShutdownHandler,
-														  @Autowired(required = false) OAuth2OpaqueTokenExpirationCalculator expirationCalculator) throws Exception {
+														  @Autowired(required = false) OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
         LOG.debug("Setup security filter chain for ressource server");
 		configureResourceServerSecurityMatcher(httpSecurity, secHubSecurityProperties.getLoginProperties());
 
@@ -117,14 +117,13 @@ public abstract class AbstractSecurityConfiguration {
 
 		configureResourceServerMode(
 				httpSecurity,
-				secHubSecurityProperties.getResourceServerProperties(),
+				secHubSecurityProperties,
 				userDetailsService,
 				aes256Encryption,
 				jwtDecoder,
 				restTemplate,
 				applicationShutdownHandler,
-				expirationCalculator,
-				secHubSecurityProperties.getMinimumTokenValidity());
+				expirationCalculator);
 
         return httpSecurity.build();
     }
@@ -133,8 +132,8 @@ public abstract class AbstractSecurityConfiguration {
 
     @Bean
     @Conditional(LoginModeOAuth2ActiveCondition.class)
-    ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties secHubSecurityProperties) {
-        SecHubSecurityProperties.LoginProperties login = secHubSecurityProperties.getLoginProperties();
+    ClientRegistrationRepository clientRegistrationRepository(SecHubSecurityProperties sechubSecurityProperties) {
+        SecHubSecurityProperties.LoginProperties login = sechubSecurityProperties.getLoginProperties();
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = login.getOAuth2Properties();
 
         LOG.debug("Provide oauth2 client registry");
@@ -163,13 +162,14 @@ public abstract class AbstractSecurityConfiguration {
     @Order(2)
     /* @formatter:off */
 	SecurityFilterChain securityFilterChainLogin(HttpSecurity httpSecurity,
-												 SecHubSecurityProperties secHubSecurityProperties,
+												 SecHubSecurityProperties sechubSecurityProperties,
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
-												 @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService) throws Exception {
+												 @Autowired(required = false) OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
+												 OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
         LOG.debug("Setup security filter chain for login");
 
-        SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
+        SecHubSecurityProperties.LoginProperties loginProperties = sechubSecurityProperties.getLoginProperties();
 
 		Set<String> publicPaths = new HashSet<>(DEFAULT_PUBLIC_PATHS);
 		publicPaths.add(loginProperties.getLoginPage());
@@ -200,12 +200,12 @@ public abstract class AbstractSecurityConfiguration {
              * This will set the default login page to the oauth2 login page. Spring will
              * always use the default login page of the first configured login mode.
              */
-            configureLoginOAuth2Mode(httpSecurity, loginProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService,
-                    secHubSecurityProperties.getMinimumTokenValidity());
+            configureLoginOAuth2Mode(httpSecurity, sechubSecurityProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService,
+                    expirationCalculator);
         }
 
         if (loginProperties.isClassicModeEnabled()) {
-            configureLoginClassicMode(httpSecurity, aes256Encryption, loginProperties, secHubSecurityProperties.getMinimumTokenValidity());
+            configureLoginClassicMode(httpSecurity, aes256Encryption, sechubSecurityProperties);
         }
 
         return httpSecurity.build();
@@ -239,15 +239,14 @@ public abstract class AbstractSecurityConfiguration {
 
     /* @formatter:off */
     private static void configureResourceServerMode(HttpSecurity httpSecurity,
-													SecHubSecurityProperties.ResourceServerProperties resourceServerProperties,
+													SecHubSecurityProperties sechubSecurityProperties,
 													UserDetailsService userDetailsService,
 													AES256Encryption aes256Encryption,
 													JwtDecoder jwtDecoder,
 													RestTemplate restTemplate,
 													ApplicationShutdownHandler applicationShutdownHandler,
-													OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
-													Duration minimumTokenValidity) throws Exception {
-
+													OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
+        SecHubSecurityProperties.ResourceServerProperties resourceServerProperties = sechubSecurityProperties.getResourceServerProperties();
 		if (resourceServerProperties == null) {
 			/*
 			 * This is useful for testing purposes where the security layer is mocked or if you need disable all authentication
@@ -285,7 +284,7 @@ public abstract class AbstractSecurityConfiguration {
                     restTemplate,
 					applicationShutdownHandler,
 					expirationCalculator,
-					minimumTokenValidity);
+					sechubSecurityProperties.getMinimumTokenValidity());
 			/* @formatter:on */
         }
     }
@@ -307,7 +306,8 @@ public abstract class AbstractSecurityConfiguration {
 														  AES256Encryption aes256Encryption,
 														  JwtDecoder jwtDecoder,
 														  RestTemplate restTemplate,
-														  ApplicationShutdownHandler applicationShutdownHandler, OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+														  ApplicationShutdownHandler applicationShutdownHandler,
+														  OAuth2TokenExpirationCalculator expirationCalculator,
 														  Duration minimumTokenValidity) throws Exception {
 	    if (oAuth2Properties==null) {
 	        throw new BeanInstantiationException(SecurityFilterChain.class, "The oauth2 resource server properties must not be null! You have to configure: "+SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX);
@@ -372,7 +372,7 @@ public abstract class AbstractSecurityConfiguration {
 																	 RestTemplate restTemplate,
 																	 AES256Encryption aes256Encryption,
 																	 ApplicationShutdownHandler applicationShutdownHandler,
-																	 OAuth2OpaqueTokenExpirationCalculator expirationCalculator,
+																	 OAuth2TokenExpirationCalculator expirationCalculator,
 																	 Duration minimumTokenValidity) throws Exception {
 
 		if (userDetailsService == null) {
@@ -415,11 +415,21 @@ public abstract class AbstractSecurityConfiguration {
 
     /* @formatter:off */
 	private static void configureLoginOAuth2Mode(HttpSecurity httpSecurity,
-												 SecHubSecurityProperties.LoginProperties loginProperties,
+												 SecHubSecurityProperties sechubSecurityProperties,
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
-												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService, Duration minimumTokenValidity) throws Exception {
+												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
+												 OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
+
+	    SecHubSecurityProperties.LoginProperties loginProperties = sechubSecurityProperties.getLoginProperties();
+	    if (loginProperties == null) {
+            throw new NoSuchBeanDefinitionException(SecHubSecurityProperties.LoginProperties.class);
+        }
+
 		SecHubSecurityProperties.LoginProperties.OAuth2Properties loginOAuth2Properties = loginProperties.getOAuth2Properties();
+		if (loginOAuth2Properties == null) {
+            throw new NoSuchBeanDefinitionException(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class);
+        }
 
 		if (restTemplate == null) {
 			throw new NoSuchBeanDefinitionException(RestTemplate.class);
@@ -435,8 +445,9 @@ public abstract class AbstractSecurityConfiguration {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
 		}
 
+		Duration minimumTokenValidity = sechubSecurityProperties.getMinimumTokenValidity();
 		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
-				aes256Encryption, loginProperties.getRedirectUri(), minimumTokenValidity);
+				aes256Encryption, loginProperties.getRedirectUri(), minimumTokenValidity, expirationCalculator);
 
 		/* Enable OAuth2 */
 		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(loginProperties.getLoginPage())
@@ -446,17 +457,21 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
-            SecHubSecurityProperties.LoginProperties loginProperties, Duration minimumTokenValidity) throws Exception {
+            SecHubSecurityProperties secHubSecurityProperties) throws Exception {
         if (aes256Encryption == null) {
             throw new NoSuchBeanDefinitionException(AES256Encryption.class);
         }
-
+        SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
         if (loginProperties == null) {
             throw new IllegalArgumentException("Property '%s' must not be null".formatted(SecHubSecurityProperties.LoginProperties.PREFIX));
         }
 
+        Duration minimumTokenValidity = secHubSecurityProperties.getMinimumTokenValidity();
         Duration classicCookieAge = loginProperties.getClassicAuthProperties().getCookieAge();
         if (minimumTokenValidity != null && classicCookieAge.getSeconds() < minimumTokenValidity.getSeconds()) {
+            LOG.debug(
+                    "Will use minimum token validity time of {} seconds for classic cookie age, because {} seconds were configured for classic authentication, which is smaller than the configured minimum.",
+                    minimumTokenValidity.getSeconds(), classicCookieAge.getSeconds());
             classicCookieAge = minimumTokenValidity;
         }
         /* @formatter:off */

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -45,8 +46,9 @@ class LoginOAuth2SuccessHandlerTest {
     private static final Authentication authentication = mock();
     private static final OAuth2AuthorizedClient oauth2AuthorizedClient = mock();
     private static final OAuth2AccessToken oAuth2AccessToken = mock();
+    private static final OAuth2TokenExpirationCalculator expirationCalculator = mock();
     private static final LoginOAuth2SuccessHandler loginOAuth2SuccessHandler = new LoginOAuth2SuccessHandler(PROVIDER, oAuth2AuthorizedClientService,
-            aes256Encryption, REDIRECT_URI, null);
+            aes256Encryption, REDIRECT_URI, null, expirationCalculator);
 
     @BeforeEach
     void beforeEach() {
@@ -56,6 +58,7 @@ class LoginOAuth2SuccessHandlerTest {
         when(authentication.getName()).thenReturn(PRINCIPAL);
         when(oauth2AuthorizedClient.getAccessToken()).thenReturn(oAuth2AccessToken);
         when(oAuth2AccessToken.getTokenValue()).thenReturn(ACCESS_TOKEN);
+
     }
 
     @Test
@@ -65,7 +68,10 @@ class LoginOAuth2SuccessHandlerTest {
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
         /* setting this should make sure that the default expiry (1 hour) is not used */
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(now.plusSeconds(expiry.toSeconds()));
+        Instant nowPlusOneSecond = now.plusSeconds(expiry.toSeconds());
+        when(oAuth2AccessToken.getExpiresAt()).thenReturn(nowPlusOneSecond);
+
+        when(expirationCalculator.calculateAccessTokenDuration(any(), any(), any(), any())).thenReturn(nowPlusOneSecond);
 
         /* execute */
         loginOAuth2SuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
@@ -92,6 +98,7 @@ class LoginOAuth2SuccessHandlerTest {
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
         when(oAuth2AccessToken.getExpiresAt()).thenReturn(null);
+        when(expirationCalculator.calculateAccessTokenDuration(any(), any(), any(), any())).thenReturn(Instant.now().plus(DEFAULT_EXPIRY));
 
         /* execute */
         loginOAuth2SuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
@@ -101,59 +108,4 @@ class LoginOAuth2SuccessHandlerTest {
         verify(httpServletResponse).addCookie(ArgumentMatchers.argThat(argumentMatcher));
     }
 
-    @Test
-    void on_authentication_success_assumes_minimum_token_validity_when_default_expiry_is_less_than_minimum_and_expires_at_is_null() throws IOException {
-        /* prepare */
-        Instant now = Instant.now();
-        Duration minimumTokenValidity = DEFAULT_EXPIRY.plusDays(1);
-        LoginOAuth2SuccessHandler handlerWithMinimumTokenValidity = new LoginOAuth2SuccessHandler(PROVIDER, oAuth2AuthorizedClientService, aes256Encryption,
-                REDIRECT_URI, minimumTokenValidity);
-        when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(null);
-
-        /* execute */
-        handlerWithMinimumTokenValidity.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
-
-        /* test */
-        ArgumentMatcher<Cookie> argumentMatcher = cookie -> cookie.getMaxAge() == minimumTokenValidity.toSeconds();
-        verify(httpServletResponse).addCookie(ArgumentMatchers.argThat(argumentMatcher));
-    }
-
-    @Test
-    void on_authentication_success_assumes_default_expiry_when_default_is_greater_than_minimum_and_expires_at_is_null() throws IOException {
-        /* prepare */
-        Instant now = Instant.now();
-        Duration minimumTokenValidity = DEFAULT_EXPIRY.minusMinutes(30);
-        LoginOAuth2SuccessHandler handlerWithMinimumTokenValidity = new LoginOAuth2SuccessHandler(PROVIDER, oAuth2AuthorizedClientService, aes256Encryption,
-                REDIRECT_URI, minimumTokenValidity);
-        when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(null);
-
-        /* execute */
-        handlerWithMinimumTokenValidity.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
-
-        /* test */
-        ArgumentMatcher<Cookie> argumentMatcher = cookie -> cookie.getMaxAge() == DEFAULT_EXPIRY.toSeconds();
-        verify(httpServletResponse).addCookie(ArgumentMatchers.argThat(argumentMatcher));
-    }
-
-    @Test
-    void on_authentication_success_assumes_expires_when_greater_than_default_and_minimum() throws IOException {
-        /* prepare */
-        Instant now = Instant.now();
-        Duration minimumTokenValidity = DEFAULT_EXPIRY.minusMinutes(30);
-        Duration accessTokenValidity = Duration.ofDays(1);
-        Instant accessTokenExpiresAt = now.plusSeconds(accessTokenValidity.getSeconds());
-        LoginOAuth2SuccessHandler handlerWithMinimumTokenValidity = new LoginOAuth2SuccessHandler(PROVIDER, oAuth2AuthorizedClientService, aes256Encryption,
-                REDIRECT_URI, minimumTokenValidity);
-        when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(accessTokenExpiresAt);
-
-        /* execute */
-        handlerWithMinimumTokenValidity.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
-
-        /* test */
-        ArgumentMatcher<Cookie> argumentMatcher = cookie -> cookie.getMaxAge() == accessTokenValidity.toSeconds();
-        verify(httpServletResponse).addCookie(ArgumentMatchers.argThat(argumentMatcher));
-    }
 }
