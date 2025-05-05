@@ -13,8 +13,7 @@
 
       </v-toolbar-title>
       <v-icon
-        class="ma-2"
-        :class="getTrafficLightClass(trafficLight)"
+        :class="['traffic-light-toolbar', getTrafficLightClass(trafficLight)]"
         icon="mdi-circle"
         size="x-large"
       />

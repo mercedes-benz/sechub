@@ -14,7 +14,6 @@
         density="compact"
         :title="$t('API_ERROR_TITLE')"
         type="warning"
-        variant="tonal"
       >
         {{ error }}
       </v-alert>
