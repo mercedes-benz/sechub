@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionHistoryElement;
+import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
@@ -109,7 +110,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
         configureMockDataIdentifier(data);
         configureNetworkTargetHandlingIfNecessary(data);
-
+        
         return startExecution(data);
     }
 
@@ -133,6 +134,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     private List<ProductResult> startExecution(ProductExecutorData data) throws SecHubExecutionException {
 
         LOG.debug("Executing {}", data.traceLogId);
+        
         try {
             List<ProductResult> targetResults = new ArrayList<>();
 
@@ -230,6 +232,10 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         SecHubExecutionHistoryElement historyElement = context.remember(this, data);
 
         List<ProductResult> productResults = executeByAdapter(data);
+        
+        /* remember public scan type */
+        ScanType scanType = productIdentifier.getType();
+        data.getSechubExecutionContext().rememberIfPublicScanType(scanType);
 
         /* product execution has been done, so remove from history */
         context.forget(historyElement);
