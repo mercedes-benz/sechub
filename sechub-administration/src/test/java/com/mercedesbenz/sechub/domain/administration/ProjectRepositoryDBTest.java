@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.administration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,21 @@ public class ProjectRepositoryDBTest {
     }
 
     @Test
+    void findAllProjectIdsOrdered() {
+        /* prepare */
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testC", user1));
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testA", user1));
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testB", user1));
+
+        /* execute */
+        List<String> projectIds = projectRepository.findAllProjectIdsOrdered();
+
+        /* test */
+        assertThat(projectIds).containsExactly("project_repo_testA", "project_repo_testB", "project_repo_testC");
+
+    }
+
+    @Test
     void project_with_owner_can_be_deleted() {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test1", user1);
@@ -66,7 +82,6 @@ public class ProjectRepositoryDBTest {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test2", user1);
 
-        project.getUsers().add(user1);
         entityManager.persist(project);
 
         prepareForDBTest();
@@ -86,7 +101,6 @@ public class ProjectRepositoryDBTest {
         /* prepare */
         Project project = TestProjectCreationFactory.createProject("project_repo_test2", user1);
 
-        project.getUsers().add(user1);
         project.getWhiteList().add(new URI("http://www.example.org"));
         entityManager.persist(project);
         entityManager.persist(user1);

@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.administration.project;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,12 @@ public class ListProjectsService {
     @Autowired
     ProjectRepository projectRepository;
 
+    /**
+     * Lists project identifiers ordered ascending
+     *
+     * @return project identifiers
+     */
     public List<String> listProjects() {
-        return projectRepository.findAll().stream().map(Project::getId).collect(Collectors.toList());
+        return projectRepository.findAllProjectIdsOrdered();
     }
 }

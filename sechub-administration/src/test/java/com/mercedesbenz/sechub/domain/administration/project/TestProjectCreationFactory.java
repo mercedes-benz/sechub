@@ -9,6 +9,7 @@ public class TestProjectCreationFactory {
         Project project = new Project();
         project.id = projectId;
         project.owner = owner;
+        project.users.add(owner);
         return project;
     }
 }

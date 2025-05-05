@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class ListProjectsServiceTest {
+
     private ListProjectsService serviceToTest;
     private ProjectRepository projectRepository;
 
@@ -24,23 +24,13 @@ public class ListProjectsServiceTest {
     }
 
     @Test
-    public void list_projects() {
+    public void list_projects_uses_findAllProjectIds_from_repo() {
         /* prepare */
         List<String> expectedProjectIds = new ArrayList<>();
         expectedProjectIds.add("Project1");
         expectedProjectIds.add("Project2");
 
-        Project project1 = mock(Project.class);
-        Project project2 = mock(Project.class);
-
-        when(project1.getId()).thenReturn(expectedProjectIds.get(0));
-        when(project2.getId()).thenReturn(expectedProjectIds.get(1));
-
-        List<Project> projects = new LinkedList<>();
-        projects.add(project1);
-        projects.add(project2);
-
-        when(projectRepository.findAll()).thenReturn(projects);
+        when(projectRepository.findAllProjectIdsOrdered()).thenReturn(expectedProjectIds);
 
         /* execute */
         List<String> actualProjectIds = serviceToTest.listProjects();
