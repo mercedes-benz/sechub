@@ -86,6 +86,7 @@ Here is an overview of the mandatory parameters for each *action*:
 | <<getStatus>> |server + user + api token + projectID
 | <<getReport>> |server + user + api token + projectID
 | <<listJobs>> |server + user + api token + projectID
+| <<cancel>> |server + user + api token + projectID + jobUUID
 | <<defineFalsePositives>> |server + user + api token + projectID
 | <<getFalsePositives>> |server + user + api token + projectID
 | <<interactiveMarkFalsePositives>> |server + user + api token + projectID + (file only if no report file is in current dir)
@@ -125,9 +126,9 @@ sechub scan
 TIP: If you prefer the report in HTML format: +
      `sechub -reportformat html scan`
 
-TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+TIP: With `-output ${file_or_directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+     Default: `sechub_report_${your_project}_${jobUUID}.{json|html|spdx}` in current directory
 
 ===== scanAsync
 
@@ -173,9 +174,9 @@ TIP: Defaults to latest finished job. +
      You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}` +
      This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
-TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+TIP: With `-output ${file_or_directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+     Default: `sechub_report_${your_project}_${jobUUID}.{json|html|spdx}` in current directory
 
 ===== listJobs
 Lists the last jobs and their state.
@@ -190,6 +191,13 @@ TIP: This might be useful for an overview or +
      to find out the job UUID of a certain job. +
      This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
+===== cancel
+Cancels a SecHub scan job.
+
+**Minimum call syntax**
+----
+sechub -jobUUID ${jobUUID} cancel
+----
 
 ===== defineFalsePositives
 This will define the false positives list of your project. +
@@ -217,9 +225,9 @@ This will fetch the false positives list of your project as JSON.
 sechub getFalsePositives
 ----
 
-TIP: With `-output ${file-or-directory}` you can define where to place the result. +
+TIP: With `-output ${file_or_directory}` you can define where to place the result. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub-false-positives-${your-project}.json` in current directory
+     Default: `sechub-false-positives-${your_project}.json` in current directory
 
 ===== interactiveMarkFalsePositives
 Instead of creating a json file to mark false positives, you can also do this interactively:
@@ -262,7 +270,7 @@ Create a json file as described below and start action `markFalsePositives`.
 
 **Minimum call syntax**
 ----
-sechub -file ${json-file} markFalsePositives
+sechub -file ${json_file} markFalsePositives
 ----
 
 include::../shared/false-positives/false-positives-howto-define-by-api.adoc[]
@@ -283,7 +291,7 @@ action `unmarkFalsePositives`.
 
 **Minimum call syntax**
 ----
-sechub -file ${json-file} unmarkFalsePositives
+sechub -file ${json_file} unmarkFalsePositives
 ----
 
 The JSON scheme is identical to `markFalsePositives`
