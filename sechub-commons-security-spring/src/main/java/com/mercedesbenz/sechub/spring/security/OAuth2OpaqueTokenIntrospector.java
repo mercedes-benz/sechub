@@ -86,7 +86,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     private final Duration maxCacheDuration;
     private final UserDetailsService userDetailsService;
     private final InMemoryCache<OAuth2OpaqueTokenIntrospectionResponse> cache;
-    private OAuth2OpaqueTokenExpirationCalculator expirationCalculator;
+    private OAuth2TokenExpirationCalculator expirationCalculator;
+    private Duration minimumTokenValidity;
 
     /* @formatter:off */
     OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
@@ -97,7 +98,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                                   Duration maxCacheDuration,
                                   UserDetailsService userDetailsService,
                                   ApplicationShutdownHandler applicationShutdownHandler,
-                                  OAuth2OpaqueTokenExpirationCalculator expirationCalculator) {
+                                  OAuth2TokenExpirationCalculator expirationCalculator,
+                                  Duration minimumTokenValidity) {
 
         this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
         this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
@@ -110,6 +112,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.cache = new InMemoryCache<>(maxCacheDuration, scheduledExecutorService, applicationShutdownHandler);
+
+        this.minimumTokenValidity = minimumTokenValidity;
     }
     /* @formatter:on */
 
@@ -191,6 +195,16 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
                 log.debug("Opaque token introspection response did not contain an `expiresAt` entry! Set `expiresAt` to calculated value `{}` as fallback.",
                         calculatedExpiresAtWithDefault);
+            }
+            if (minimumTokenValidity != null) {
+                Instant minimumTokenValidityInstant = now.plus(minimumTokenValidity);
+                if (minimumTokenValidityInstant.isAfter(introspectionResponse.getExpiresAt())) {
+                    introspectionResponse.setExpiresAt(minimumTokenValidityInstant);
+
+                    log.debug(
+                            "Opaque token 'expiresAt' entry was smaller than the configured 'minimumTokenValidity'! Set 'expiresAt' to configured 'minimumTokenValidity' value '{}' as fallback.",
+                            minimumTokenValidityInstant);
+                }
             }
 
             return introspectionResponse;

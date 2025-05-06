@@ -52,16 +52,22 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final AES256Encryption aes256Encryption;
     private final String redirectUri;
+    private final Duration minimumTokenValidity;
+    private final OAuth2TokenExpirationCalculator calculator;
 
     /* @formatter:off */
     public LoginOAuth2SuccessHandler(String provider,
                                      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
                                      AES256Encryption aes256Encryption,
-                                     String redirectUri) {
+                                     String redirectUri,
+                                     Duration minimumTokenValidity,
+                                     OAuth2TokenExpirationCalculator calculator) {
         this.provider = requireNonNull(provider, "Property provider must not be null");
         this.oAuth2AuthorizedClientService = requireNonNull(oAuth2AuthorizedClientService, "Property oAuth2AuthorizedClientService must not be null");
         this.aes256Encryption = requireNonNull(aes256Encryption, "Property aes256Encryption must not be null");
         this.redirectUri = requireNonNull(redirectUri, "Property redirectUri must not be null");
+        this.calculator = requireNonNull(calculator, "Property calculator must not be null");
+        this.minimumTokenValidity = minimumTokenValidity;
     }
     /* @formatter:on */
 
@@ -70,7 +76,7 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2AccessToken oAuth2AccessToken = getAccessTokenFromAuthentication(authentication);
         Instant issuedAt = requireNonNullElseGet(oAuth2AccessToken.getIssuedAt(), Instant::now);
         /* Assume a default expiry of 1 hour if the expiry time is not set */
-        Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> Instant.now().plusSeconds(DEFAULT_EXPIRY_ONE_HOUR.toSeconds()));
+        Instant expiresAt = calculator.calculateAccessTokenDuration(Instant.now(), DEFAULT_EXPIRY_ONE_HOUR, oAuth2AccessToken, minimumTokenValidity);
         long expirySeconds = expiresAt.getEpochSecond() - issuedAt.getEpochSecond();
         Duration expiryDuration = Duration.ofSeconds(expirySeconds);
         String accessToken = oAuth2AccessToken.getTokenValue();
@@ -86,4 +92,5 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient(provider, authentication.getName());
         return oAuth2AuthorizedClient.getAccessToken();
     }
+
 }

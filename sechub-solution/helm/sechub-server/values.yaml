@@ -226,6 +226,8 @@ security:
     # Secret key used to encrypt the access token which is sent back to the user after successful authentication (or login) and the email verification token.
     # Must be AES256 compatible (256 bit / 32 byte)
     secretKey: Insert-your-32-byte-string-here.
+  # The minimum time a token is valid on SecHub side. This is preferred over any other default.
+  minimumTokenValidity: 10h
 
 storage:
   local:

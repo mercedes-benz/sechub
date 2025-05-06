@@ -82,13 +82,13 @@ class SecHubSecurityPropertiesTest {
     @Test
     void construct_security_properties_with_null_server_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecHubSecurityProperties(null, null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(null, null, null, null));
     }
 
     @Test
     void construct_security_properties_with_null_login_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecHubSecurityProperties(mock(), null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(mock(), null, null, null));
     }
 
     @Test
@@ -99,7 +99,7 @@ class SecHubSecurityPropertiesTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecHubSecurityProperties(mock(), loginMock, null))
+        assertThatThrownBy(() -> new SecHubSecurityProperties(mock(), loginMock, null, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.encryption' must not be null");
         /* @formatter:on */
