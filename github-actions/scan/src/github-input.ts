@@ -20,6 +20,9 @@ export const PARAM_SCAN_TYPES = 'scan-types';
 export const PARAM_CONTENT_TYPE = 'content-type';
 export const PARAM_DEFINE_FALSE_POSITIVES= 'define-false-positives';
 
+// special parameter - used only when client version is `build`
+export const PARAM_CLIENT_BUILD_FOLDER = 'client-build-folder';
+
 export interface GitHubInputData {
     configPath: string;
     url: string;
@@ -37,6 +40,8 @@ export interface GitHubInputData {
     scanTypes: string;
     contentType: string;
     defineFalsePositives: string;
+
+    clientBuildFolder: string;
 
 }
 
@@ -57,6 +62,7 @@ export const INPUT_DATA_DEFAULTS: GitHubInputData = {
     scanTypes: '',
     contentType: '',
     defineFalsePositives: '',
+    clientBuildFolder: ''
 
 };
 
@@ -78,6 +84,7 @@ export function resolveGitHubInputData(): GitHubInputData {
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
         defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
+        clientBuildFolder : getParam(PARAM_CLIENT_BUILD_FOLDER),
     };
 }
 

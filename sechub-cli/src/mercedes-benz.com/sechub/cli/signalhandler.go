@@ -33,6 +33,6 @@ func processTerminationSignal(context *Context) {
 	switch context.config.action {
 		case scanAction:
 			// Cancel current scan job on termination
-			cancelSecHubJob(context, true)
+			cancelSecHubJob(context)
 	}
 }

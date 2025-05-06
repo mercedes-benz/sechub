@@ -20,3 +20,9 @@ SECHUB_MAX_FILE_UPLOAD_SIZE=-1
 # default value 250 MiB
 SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES=262144000
 
+# Secret key used to encrypt the access token which is sent back to the user after
+# successful authentication (or login) and the email verification token.
+# Must be AES256 compatible (256 bit / 32 byte)
+# If not set, a key is generated automatically
+# set this key to work with multiple sechub instances
+# SECHUB_SECURITY_ENCRYPTION_SECRET_KEY=Insert-your-32-byte-string-here.

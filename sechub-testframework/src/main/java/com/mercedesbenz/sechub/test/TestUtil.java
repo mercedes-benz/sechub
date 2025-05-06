@@ -10,11 +10,14 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,39 @@ public class TestUtil {
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
     private static final String SECHUB_TEST_TRACEMODE = "SECHUB_TEST_TRACEMODE";
+
+    private static Set<Path> currentTempFolders = new LinkedHashSet<>();
+
+    public static void deleteAllCurrentCreatedTempFolders() {
+        if (!isDeletingTempFiles()) {
+            return;
+        }
+        if (currentTempFolders.isEmpty()) {
+            return;
+        }
+
+        /* try to delete output folder paths */
+        synchronized (currentTempFolders) {
+
+            Set<Path> deletedTempFolders = new LinkedHashSet<>();
+            for (Path tempFolder : currentTempFolders) {
+                try {
+                    if (Files.exists(tempFolder)) {
+                        LOG.trace("Delete temp directory: {}", tempFolder);
+                        PathUtils.deleteDirectory(tempFolder);
+                    }
+                } catch (Exception e) {
+
+                    LOG.error("Was not able to delete temp folder: {}. Reason: {}", tempFolder, e.getMessage());
+
+                } finally {
+
+                    deletedTempFolders.add(tempFolder);
+                }
+            }
+            currentTempFolders.removeAll(deletedTempFolders);
+        }
+    }
 
     public static <E extends Exception, R> FailUntilAmountOfRunsReached<E, R> createFailUntil(int amount, E failure, R result) {
         return new FailUntilAmountOfRunsReached<>(amount, failure, result);
@@ -188,21 +224,24 @@ public class TestUtil {
     public static Path createTempDirectoryInBuildFolder(String dirNectoryBaseName, FileAttribute<?>... attributes) throws IOException {
         Path tmpPath = ensureBuildTmpDirAsFile();
 
-        Path dirAsPath = tmpPath.toRealPath().resolve(dirNectoryBaseName + "tmp_" + System.nanoTime());
-        if (Files.notExists(dirAsPath)) {
-            Files.createDirectories(dirAsPath, attributes); // create all missing directories
+        Path tempFolder = tmpPath.toRealPath().resolve(dirNectoryBaseName + "tmp_" + System.nanoTime());
+        if (Files.notExists(tempFolder)) {
+            Files.createDirectories(tempFolder, attributes); // create all missing directories
 
             if (isDeletingTempFiles()) {
-                dirAsPath.toFile().deleteOnExit();
+                currentTempFolders.add(tempFolder);
             }
         }
-        return dirAsPath;
+
+        return tempFolder;
     }
 
     public static Path createTempFileInBuildSubFolder(String subFolderName, String explicitFileName, FileAttribute<?>... attributes) throws IOException {
         Path parent = ensureBuildTmpDirAsFile();
+        Path tempSubFolder = null;
         if (subFolderName != null) {
-            parent = parent.resolve(subFolderName);
+            tempSubFolder = parent.resolve(subFolderName);
+            parent = tempSubFolder;
         }
         Path filePath = parent.resolve(explicitFileName);
 
@@ -216,8 +255,13 @@ public class TestUtil {
         }
         Files.createDirectories(filePath.getParent());
         Files.createFile(filePath, attributes);
+
         if (isDeletingTempFiles()) {
-            filePath.toFile().deleteOnExit();
+            if (tempSubFolder != null) {
+                currentTempFolders.add(tempSubFolder);
+            } else {
+                filePath.toFile().deleteOnExit(); // mark file as to auto delete at the end (means directly inside tmp folder)
+            }
         }
         return filePath;
     }

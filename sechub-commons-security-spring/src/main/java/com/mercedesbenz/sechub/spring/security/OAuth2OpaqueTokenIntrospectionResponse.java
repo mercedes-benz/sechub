@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.*;
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -33,8 +32,6 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
 
     private static final String ERR_MSG_FORMAT = "Property '%s' must not be null";
 
-    private static final Duration DEFAULT_EXPIRES_IN = Duration.ofDays(1);
-
     private static final String JSON_PROPERTY_ACTIVE = "active";
     private static final String JSON_PROPERTY_SCOPE = "scope";
     private static final String JSON_PROPERTY_CLIENT_ID = "client_id";
@@ -53,7 +50,7 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
     private final String username;
     private final String tokenType;
     private final Instant issuedAt;
-    private final Instant expiresAt;
+    private Instant expiresAt; // not final, because we may change this to fallback value if null
     private final String subject;
     private final String audience;
     private final String groupType;
@@ -126,5 +123,9 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
 
     String getGroupType() {
         return groupType;
+    }
+
+    public void setExpiresAt(Instant expiresAt) {
+        this.expiresAt = expiresAt;
     }
 }

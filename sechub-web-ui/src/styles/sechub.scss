@@ -2,35 +2,57 @@
     background-color: rgb(var(--v-theme-layer_01)) !important;
 }
 
-  .background-color-light {
+.background-color-light {
     background-color: rgb(var(--v-theme-layer_02)) !important;
 }
 
-  .traffic-light-none {
-    color: transparent;
-  }
-  .traffic-light-off {
-    color: transparent;
-  }
-  .traffic-light-red {
-    color: rgb(var(--v-theme-error)) !important;
-  }
-  .traffic-light-green {
-    color: rgb(var(--v-theme-success)) !important;
-  }
-  .traffic-light-yellow {
-    color: rgb(var(--v-theme-warning)) !important;
-  }
+.sechub-primary-color-report {
+  color: rgb(var(--v-theme-primary)) !important;
+  background-color: rgb(var(--v-theme-layer_01)) !important;
+}
 
-  .sechub-primary-color-report {
-    color: rgb(var(--v-theme-primary)) !important;
-    background-color: rgb(var(--v-theme-layer_01)) !important;
-  }
+.sechub-primary-color {
+  color: rgb(var(--v-theme-primary)) !important;
+}
 
-  .sechub-primary-color {
-    color: rgb(var(--v-theme-primary)) !important;
-  }
+.traffic-light-none {
+  color: transparent;
+}
+.traffic-light-off {
+  color: transparent;
+}
+.traffic-light-red {
+  color: rgb(var(--v-theme-error)) !important;
+}
+.traffic-light-green {
+  color: rgb(var(--v-theme-success)) !important;
+}
+.traffic-light-yellow {
+  color: rgb(var(--v-theme-warning)) !important;
+}
 
-  .sechub-report-expandable-element {
-    margin-top: 8px;
-  }
+.traffic-light-toolbar {
+  padding-right: 24px;
+}
+
+.sechub-report-expandable-element {
+  margin-top: 8px;
+}
+
+.v-dialog .v-card-title{
+  margin-top: 16px;
+}
+
+.v-dialog .v-card{
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.v-card .sechub-dialog-close-btn {
+    width: 300px;
+    color: rgb(var(--v-theme-primary));
+}
+
+.user-detail-card {
+  margin-top: 16px;
+}

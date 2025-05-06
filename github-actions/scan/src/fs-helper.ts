@@ -6,8 +6,9 @@ import * as path from 'path';
 import * as fs_extra from 'fs-extra';
 import axios from 'axios';
 import * as util from 'util';
-import * as extract from 'extract-zip';
+import extract from 'extract-zip';
 import * as os from 'os';
+import { resolveProxyConfig } from './input-helper';
 
 const writeFile = util.promisify(fs_extra.writeFile);
 
@@ -38,7 +39,7 @@ export function getWorkspaceDir(): string {
 export function ensureDirectorySync(path: string) {
     try {
         fs_extra.ensureDirSync(path);
-        core.debug(`Ensured directory at path: ${path}`)
+        core.debug(`Ensured directory at path: ${path}`);
     } catch (error) {
         throw new Error(`Error ensuring directory at path: ${path} with error: ${error}`);
     }
@@ -51,15 +52,20 @@ export function ensureDirectorySync(path: string) {
 export function chmodSync(path: string) {
     try {
         fs_extra.chmodSync(path, 0o755);
-        core.debug(`Grant permissions for file at path: ${path}`)
+        core.debug(`Grant permissions for file at path: ${path}`);
     } catch (error) {
         throw new Error(`Error granting permission for file at path: ${path} with error: ${error}`);
     }
 }
 
 export async function downloadFile(url: string, dest: string) {
+    let proxyConfig = resolveProxyConfig();
+
     try {
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            ...(proxyConfig && { proxy: proxyConfig })
+        });
         await writeFile(dest, response.data);
     } catch (err) {
         throw new Error(`Error downloading file from url: ${url} to destination: ${dest} with error: ${err}`);

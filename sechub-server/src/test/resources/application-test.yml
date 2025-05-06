@@ -28,7 +28,7 @@ sechub:
     login:
       enabled: true
       login-page: /login
-      redirect-uri: example.org/redirect-uri
+      redirect-uri: https://example.org/redirect-uri
       modes: oauth2, classic
       oauth2:
         client-id: example-client-id

@@ -58,7 +58,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {
-            LOG.debug("No cookies found in the request");
+            LOG.trace("No cookies found in the request");
             return null;
         }
 
@@ -72,7 +72,7 @@ class DynamicBearerTokenResolver implements BearerTokenResolver {
         /* @formatter:on */
 
         if (accessToken == null) {
-            LOG.debug("Request is missing the 'access_token' cookie");
+            LOG.trace("Request is missing the 'access_token' cookie");
             return null;
         }
 

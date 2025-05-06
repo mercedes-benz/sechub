@@ -17,7 +17,7 @@
         justify="center"
       >
         <v-col class="pa-0">
-          <div>Welcome</div>
+          <div>{{ welcomeText }}</div>
         </v-col>
       </v-row>
       <v-row
@@ -43,25 +43,78 @@
         </v-responsive>
         -->
 
-    <template #append>
+    <template v-if="isLoggedIn" #append>
       <v-btn icon="mdi-account" @click="goToUserPage()" />
 
-      <v-btn icon="mdi-logout-variant" />
+      <v-btn icon="mdi-logout-variant" @click="logout()" />
 
-      <v-btn icon="mdi-forum-outline" />
+      <v-btn :href="faqLink" icon="mdi-forum-outline" target="_blank" />
     </template>
   </v-app-bar>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+  import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router'
-  const router = useRouter()
-  const username = 'SecHub User'
+  import { useI18n } from 'vue-i18n'
+  import { useFetchUserDetail } from '@/composables/useUserDetail'
+  import { useConfig } from '@/config'
 
-  function goToUserPage () {
-    router.push('/user')
+  export default {
+    name: 'AppHeader',
+
+    setup () {
+      const { t } = useI18n()
+      const router = useRouter()
+      const config = useConfig()
+
+      const faqLink = ref(config.value.SECHUB_FAQ_LINK)
+
+      const welcomeText = ref('')
+      const username = ref('')
+      const isLoggedIn = ref(false)
+
+      // initially fetch and store user data
+      userFetchUserDetailInformation()
+
+      async function userFetchUserDetailInformation () {
+        const { userDetailInformation, error } = await useFetchUserDetail()
+
+        if (userDetailInformation.value.userId) {
+          isLoggedIn.value = true
+          welcomeText.value = t('GREETING')
+          username.value = userDetailInformation.value.userId
+        } else {
+          isLoggedIn.value = false
+          username.value = 'SecHub'
+          console.error(error.value)
+        }
+      }
+
+      function goToUserPage () {
+        router.push('/user')
+      }
+
+      async function logout () {
+        try {
+          await defaultClient.withOtherApi.userLogout()
+          // redirect to root after logout
+          router.push('/login')
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      return {
+        username,
+        faqLink,
+        welcomeText,
+        isLoggedIn,
+        logout,
+        goToUserPage,
+      }
+    },
   }
-
 </script>
 
 <style scoped>

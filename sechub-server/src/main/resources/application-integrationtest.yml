@@ -23,7 +23,9 @@ sechub:
                       # and this too long for test...)
   security:
     encryption:
-      secret-key: test-test-test-test-test-test-32
+      # Secret key used to encrypt the access token which is sent back to the user after successful authentication (or login) and the email verification token.
+      # Must be AES256 compatible (256 bit / 32 byte)
+      secret-key: Insert-your-32-byte-string-here.
   schedule:
     nextjob: 
        suspend:
@@ -70,7 +72,7 @@ sechub:
   upload:
    binaries:
      maximum:
-      bytes: 409600 # For testing we only allow 400 kbytes         
+      bytes: 409600 # For testing we only allow 400 kbytes
 logging:
  level:
    com.mercedesbenz.sechub: DEBUG

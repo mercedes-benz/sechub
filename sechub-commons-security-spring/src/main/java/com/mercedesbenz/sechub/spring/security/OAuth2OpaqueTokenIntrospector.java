@@ -86,6 +86,8 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     private final Duration maxCacheDuration;
     private final UserDetailsService userDetailsService;
     private final InMemoryCache<OAuth2OpaqueTokenIntrospectionResponse> cache;
+    private OAuth2TokenExpirationCalculator expirationCalculator;
+    private Duration minimumTokenValidity;
 
     /* @formatter:off */
     OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
@@ -95,7 +97,10 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                                   Duration defaultTokenExpiresIn,
                                   Duration maxCacheDuration,
                                   UserDetailsService userDetailsService,
-                                  ApplicationShutdownHandler applicationShutdownHandler) {
+                                  ApplicationShutdownHandler applicationShutdownHandler,
+                                  OAuth2TokenExpirationCalculator expirationCalculator,
+                                  Duration minimumTokenValidity) {
+
         this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
         this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
         this.clientIdSealed = cryptoString.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
@@ -103,8 +108,12 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         this.defaultTokenExpiresIn = requireNonNull(defaultTokenExpiresIn, "Parameter defaultTokenExpiresIn must not be null");
         this.maxCacheDuration = requireNonNull(maxCacheDuration, "Parameter maxCacheDuration must not be null");
         this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
+        this.expirationCalculator=requireNonNull(expirationCalculator);
+
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.cache = new InMemoryCache<>(maxCacheDuration, scheduledExecutorService, applicationShutdownHandler);
+
+        this.minimumTokenValidity = minimumTokenValidity;
     }
     /* @formatter:on */
 
@@ -117,6 +126,24 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         Instant now = Instant.now();
 
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = getIntrospectionResponse(opaqueToken, now);
+
+        if (expirationCalculator.isExpired(introspectionResponse, now)) {
+            /*
+             * Remove value from cache (we differ between expiration and cache time and want
+             * no orphans in cache).
+             */
+            cache.remove(opaqueToken);
+
+            /*
+             * Remark: Spring Boot will catch any BadOpaqueTokenException inside
+             * OpaqueTokenAuthenticationProvider and transform it to an
+             * InvalidBearerTokenException which will be fetched and handled by our custom
+             * Authentication entry point inside AbstractSecurityConfiguration, leading to a
+             * remove of the oauth2 cookie at browser side and finally to a 401 unauthorized
+             * response.
+             */
+            throw new BadOpaqueTokenException("Opaque token is expired");
+        }
 
         if (!introspectionResponse.isActive()) {
             throw new BadOpaqueTokenException("Token is not active");
@@ -132,6 +159,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         String username = userDetails.getUsername();
+
         return new OAuth2IntrospectionAuthenticatedPrincipal(username, introspectionClaims, authorities);
     }
 
@@ -144,12 +172,12 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     }
 
     private OAuth2OpaqueTokenIntrospectionResponse fetchAndCacheTokenIntrospectionResponse(String opaqueToken, Instant now) {
-        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetchTokenIntrospectionResponse(opaqueToken);
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetchTokenIntrospectionResponse(opaqueToken, now);
         cacheIntrospectionResponse(opaqueToken, introspectionResponse, now);
         return introspectionResponse;
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse fetchTokenIntrospectionResponse(String opaqueToken) {
+    private OAuth2OpaqueTokenIntrospectionResponse fetchTokenIntrospectionResponse(String opaqueToken, Instant now) {
         HttpEntity<MultiValueMap<String, String>> httpEntity = buildHttpEntity(opaqueToken);
 
         try {
@@ -160,7 +188,27 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                 throw new RestClientException("Response is null");
             }
 
+            if (introspectionResponse.getExpiresAt() == null) {
+
+                Instant calculatedExpiresAtWithDefault = now.plus(defaultTokenExpiresIn);
+                introspectionResponse.setExpiresAt(calculatedExpiresAtWithDefault);
+
+                log.debug("Opaque token introspection response did not contain an `expiresAt` entry! Set `expiresAt` to calculated value `{}` as fallback.",
+                        calculatedExpiresAtWithDefault);
+            }
+            if (minimumTokenValidity != null) {
+                Instant minimumTokenValidityInstant = now.plus(minimumTokenValidity);
+                if (minimumTokenValidityInstant.isAfter(introspectionResponse.getExpiresAt())) {
+                    introspectionResponse.setExpiresAt(minimumTokenValidityInstant);
+
+                    log.debug(
+                            "Opaque token 'expiresAt' entry was smaller than the configured 'minimumTokenValidity'! Set 'expiresAt' to configured 'minimumTokenValidity' value '{}' as fallback.",
+                            minimumTokenValidityInstant);
+                }
+            }
+
             return introspectionResponse;
+
         } catch (RestClientException e) {
             String errMsg = "Failed to perform token introspection";
             log.error(errMsg, e);
@@ -169,15 +217,18 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     }
 
     private void cacheIntrospectionResponse(String opaqueToken, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
-        Instant expiresAt;
+        Instant cacheExpiresAt;
 
-        if (introspectionResponse.getExpiresAt() == null) {
-            expiresAt = now.plus(defaultTokenExpiresIn);
-        } else {
-            expiresAt = introspectionResponse.getExpiresAt();
+        // currently we always use the expiresAt from response to define how long the
+        // cache value is cached
+        cacheExpiresAt = introspectionResponse.getExpiresAt();
+
+        // sanity check
+        if (cacheExpiresAt == null) {
+            throw new IllegalStateException("May not happen - must be handled with defaults before!");
         }
 
-        Duration cacheDuration = Duration.between(now, expiresAt);
+        Duration cacheDuration = Duration.between(now, cacheExpiresAt);
 
         if (maxCacheDuration.compareTo(cacheDuration) < 0) {
             log.debug("Opaque token cache duration of %s exceeds the maximum cache duration of %s. Using the maximum cache duration instead."

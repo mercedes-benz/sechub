@@ -1,16 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.cache;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -30,9 +23,11 @@ class InMemoryCacheTest {
 
     private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
     private static final ScheduledExecutorService scheduledExecutorService = mock();
+    @SuppressWarnings("rawtypes")
     private static final ScheduledFuture scheduledFuture = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
 
+    @SuppressWarnings("unchecked")
     @BeforeEach
     void beforeEach() {
         reset(scheduledExecutorService, applicationShutdownHandler);
@@ -95,6 +90,24 @@ class InMemoryCacheTest {
     }
 
     @Test
+    void remove_key_removes_value_from_cache() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* prepare */
+        inMemoryCacheToTest.put("key1", "value1", Duration.ofSeconds(10));
+
+        /* check-precondition */
+        assertThat(inMemoryCacheToTest.get("key1")).isNotEmpty().isEqualTo(Optional.of("value1"));
+
+        /* execute */
+        inMemoryCacheToTest.remove("key1");
+
+        assertThat(inMemoryCacheToTest.get("key1")).isEmpty();
+
+    }
+
+    @Test
     void get_returns_empty_optional_when_cache_does_not_contain_key() {
         /* test */
         InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
@@ -110,6 +123,15 @@ class InMemoryCacheTest {
 
         /* test */
         assertThatThrownBy(() -> inMemoryCacheToTest.get(null)).isInstanceOf(NullPointerException.class).hasMessage("Argument 'key' must not be null");
+    }
+
+    @Test
+    void remove_throws_null_pointer_exception_when_key_is_null() {
+        /* test */
+        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+
+        /* test */
+        assertThatThrownBy(() -> inMemoryCacheToTest.remove(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("key");
     }
 
     @Test

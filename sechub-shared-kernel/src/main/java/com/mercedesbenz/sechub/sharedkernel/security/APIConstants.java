@@ -70,4 +70,6 @@ public class APIConstants {
      */
     public static final String ERROR_PAGE = "/error";
 
+    public static final String LOGOUT = "/logout";
+
 }

@@ -10,7 +10,7 @@ export async function getClientVersion(clientVersion: string): Promise<string> {
     }
 
     if (!isValidVersion(clientVersion)) {
-        throw new Error(`Invalid SecHub client version: ${clientVersion}`)
+        throw new Error(`Invalid SecHub client version: ${clientVersion}`);
     }
 
     if (clientVersion === 'latest') {
@@ -29,6 +29,9 @@ export async function getClientVersion(clientVersion: string): Promise<string> {
 }
 
 function isValidVersion(version: string): boolean {
+    if (version === 'build') {
+        return true; // build is always okay
+    }
     const regex = /^\d+\.\d+\.\d+$|^latest$/;
     return regex.test(version);
 }
@@ -40,6 +43,9 @@ async function getRedirectUrl(url: string): Promise<string> {
 
     if (metaRefreshTag.length > 0) {
         const content = metaRefreshTag.attr('content');
+        if (content==null){
+            throw new Error('No redirect content found');
+        }
         const redirectUrl = content!.split(';')[1].split('=')[1];
         core.debug(`Redirect URL found: ${redirectUrl}`);
         return redirectUrl;

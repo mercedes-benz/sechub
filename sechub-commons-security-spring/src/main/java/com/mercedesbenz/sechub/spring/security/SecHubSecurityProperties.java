@@ -47,11 +47,17 @@ public class SecHubSecurityProperties {
 
     private final EncryptionProperties encryption;
 
+    private final Duration minimumTokenValidity;
+
     private static Set<String> requireNonEmpy(Set<String> set, String message) {
         if (set == null || set.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
         return set;
+    }
+
+    public Duration getMinimumTokenValidity() {
+        return minimumTokenValidity;
     }
 
     /* @formatter:off */
@@ -61,7 +67,11 @@ public class SecHubSecurityProperties {
 
             LoginProperties login,
 
-            EncryptionProperties encryption) {
+            EncryptionProperties encryption,
+
+            @Description("The minimum token expiration time, used as a minimum for cookie ages and token validity. If set higher than the default values it will always overwrite the default values. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.")
+            Duration minimumTokenValidity) {
+
         /* @formatter:on */
         this.server = server;
         if (server == null) {
@@ -69,6 +79,8 @@ public class SecHubSecurityProperties {
         }
         this.login = login;
         this.encryption = login != null ? requireNonNull(encryption, ERR_MSG_FORMAT.formatted(PREFIX, "encryption")) : encryption;
+
+        this.minimumTokenValidity = minimumTokenValidity;
     }
 
     public ResourceServerProperties getResourceServerProperties() {

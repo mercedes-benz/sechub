@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 import {defineFalsePositives, extractJobUUID, getReport, scan} from '../src/sechub-cli';
-import {execFileSync} from 'child_process';
-import {sanitize} from "../src/shell-arg-sanitizer";
+import { execFileSync} from 'child_process';
+import { readFileSync, openSync, closeSync, mkdtempSync} from '../src/fs-wrapper';
+import {sanitize} from '../src/shell-arg-sanitizer';
 
 jest.mock('@actions/core');
 
@@ -22,10 +23,25 @@ jest.mock('child_process', () => ({
     execFileSync: jest.fn(() => output)
 }));
 
-jest.mock('../src/shell-arg-sanitizer');
+jest.mock('../src/shell-arg-sanitizer',() => ({
+    sanitize: jest.fn((toSanitize) => toSanitize) // just return always input..
+}));
 
-beforeEach(() => {
+jest.mock('../src/fs-wrapper', () => ({
+    readFileSync: jest.fn(() => output),
+    openSync: jest.fn(() => 4711),
+    mkdtempSync: jest.fn(() => '/temp-mocked'),
+    closeSync: jest.fn(),
+    mkdtempScloseSyncync: jest.fn(),
+}));
+
+
+afterEach(() => {
     jest.clearAllMocks();
+});
+
+afterAll(() => {
+    jest.resetAllMocks();
 });
 
 describe('scan', function() {
@@ -89,20 +105,15 @@ describe('scan', function() {
         scan(context);
 
         /* test */
-        expect(execFileSync).toBeCalledTimes(1);
+        expect(execFileSync).toBeCalledTimes(1); 
         expect(execFileSync)
             .toBeCalledWith(
                 '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
                 {
-                    env: {
-                        SECHUB_SERVER: process.env.SECHUB_SERVER,
-                        SECHUB_USERID: process.env.SECHUB_USERID,
-                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                    },
-                    encoding: 'utf-8'
+                    env: process.env,
+                    encoding: 'utf-8',
+
+                    stdio: ['ignore', 4711, 4711]
                 }
             );
     });
@@ -125,17 +136,13 @@ describe('scan', function() {
         expect(execFileSync).toBeCalledTimes(1);
         expect(execFileSync)
             .toBeCalledWith(
-                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
+                '/path/to/sechub-cli', 
+                ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
                 {
-                    env: {
-                        SECHUB_SERVER: process.env.SECHUB_SERVER,
-                        SECHUB_USERID: process.env.SECHUB_USERID,
-                        SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                        SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                        SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                        SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-                    },
-                    encoding: 'utf-8'
+                    env: process.env,
+                    encoding: 'utf-8',
+
+                    stdio: ['ignore', 4711, 4711]
                 }
             );
     });
