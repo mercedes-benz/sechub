@@ -68,10 +68,10 @@ class LoginOAuth2SuccessHandlerTest {
         Instant now = Instant.now();
         when(oAuth2AccessToken.getIssuedAt()).thenReturn(now);
         /* setting this should make sure that the default expiry (1 hour) is not used */
-        Instant nowPlusOneSecond = now.plusSeconds(expiry.toSeconds());
-        when(oAuth2AccessToken.getExpiresAt()).thenReturn(nowPlusOneSecond);
+        Instant nowPlusOneMinute = now.plusSeconds(expiry.toSeconds());
+        when(oAuth2AccessToken.getExpiresAt()).thenReturn(nowPlusOneMinute);
 
-        when(expirationCalculator.calculateAccessTokenDuration(any(), any(), any(), any())).thenReturn(nowPlusOneSecond);
+        when(expirationCalculator.calculateAccessTokenDuration(any(), any(), any(), any())).thenReturn(nowPlusOneMinute);
 
         /* execute */
         loginOAuth2SuccessHandler.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);

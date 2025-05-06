@@ -37,7 +37,8 @@ class OAuth2TokenExpirationCalculatorTest {
     }
 
     @Test
-    void isExpired_throws_illegal_argument_exception_if_now_is_null_() {
+    void isExpired_throws_illegal_argument_exception_if_response_is_null() {
+        /* execute + test */
         assertThatThrownBy(() -> calculatorToTest.isExpired(null, Instant.now())).isInstanceOf(NullPointerException.class).hasMessageContaining("response");
     }
 
@@ -57,55 +58,55 @@ class OAuth2TokenExpirationCalculatorTest {
     }
 
     @Test
-    void now_null_throws_exception() {
+    void calculateAccessTokenDuration_now_null_throws_exception() {
         /* prepare */
         Duration defaultDuration = mock();
         OAuth2AccessToken oAuth2AccessToken = mock();
         Duration minimumTokenValidity = mock();
 
-        /* test */
+        /* execute + test */
         assertThatThrownBy(() -> calculatorToTest.calculateAccessTokenDuration(null, defaultDuration, oAuth2AccessToken, minimumTokenValidity))
                 .isInstanceOf(NullPointerException.class).hasMessageContaining("now");
     }
 
     @Test
-    void default_duration_null_throws_exception() {
+    void calculateAccessTokenDuration_default_duration_null_throws_exception() {
         /* prepare */
         Instant now = mock();
         OAuth2AccessToken oAuth2AccessToken = mock();
         Duration minimumTokenValidity = mock();
 
-        /* test */
+        /* execute + test */
         assertThatThrownBy(() -> calculatorToTest.calculateAccessTokenDuration(now, null, oAuth2AccessToken, minimumTokenValidity))
                 .isInstanceOf(NullPointerException.class).hasMessageContaining("defaultDuration");
     }
 
     @Test
-    void oAuth2AccessToken_null_throws_exception() {
+    void calculateAccessTokenDuration_oAuth2AccessToken_null_throws_exception() {
         /* prepare */
         Instant now = mock();
         Duration defaultDuration = mock();
         Duration minimumTokenValidity = mock();
 
-        /* test */
+        /* execute + test */
         assertThatThrownBy(() -> calculatorToTest.calculateAccessTokenDuration(now, defaultDuration, null, minimumTokenValidity))
                 .isInstanceOf(NullPointerException.class).hasMessageContaining("oAuth2AccessToken");
     }
 
     @Test
-    void minimumTokenValidity_null_throws_exception() {
+    void calculateAccessTokenDuration_minimumTokenValidity_null_throws_exception() {
         /* prepare */
         Instant now = mock();
         Duration defaultDuration = mock();
         OAuth2AccessToken oAuth2AccessToken = mock();
 
-        /* test */
+        /* execute + test */
         assertThatThrownBy(() -> calculatorToTest.calculateAccessTokenDuration(now, defaultDuration, oAuth2AccessToken, null))
                 .isInstanceOf(NullPointerException.class).hasMessageContaining("minimumTokenValidity");
     }
 
     @Test
-    void minimum_token_validity_when_default_expiry_is_less_than_minimum_and_expires_at_is_null() {
+    void calculateAccessTokenDuration_minimum_token_validity_when_default_expiry_is_less_than_minimum_and_expires_at_is_null() {
         /* prepare */
         Instant now = Instant.now();
         Duration minimumTokenValidity = DEFAULT_EXPIRY.plusDays(1);
@@ -121,7 +122,7 @@ class OAuth2TokenExpirationCalculatorTest {
     }
 
     @Test
-    void on_authentication_success_assumes_default_expiry_when_default_is_greater_than_minimum_and_expires_at_is_null() {
+    void calculateAccessTokenDuration_on_authentication_success_assumes_default_expiry_when_default_is_greater_than_minimum_and_expires_at_is_null() {
         /* prepare */
         Instant now = Instant.now();
         Duration minimumTokenValidity = DEFAULT_EXPIRY.minusMinutes(20);
@@ -137,12 +138,12 @@ class OAuth2TokenExpirationCalculatorTest {
     }
 
     @Test
-    void on_authentication_success_assumes_expires_from_token_when_greater_than_default_and_minimum() {
+    void calculateAccessTokenDuration_on_authentication_success_assumes_expires_from_token_when_greater_than_default_and_minimum() {
         /* prepare */
         Instant now = Instant.now();
         Duration minimumTokenValidity = DEFAULT_EXPIRY.plusDays(1);
 
-        Instant expiresAtFromToken = Instant.now().plusSeconds(minimumTokenValidity.plusDays(5).getSeconds());
+        Instant expiresAtFromToken = now.plusSeconds(minimumTokenValidity.plusDays(5).getSeconds());
         OAuth2AccessToken oAuth2AccessToken = mock();
         when(oAuth2AccessToken.getExpiresAt()).thenReturn(expiresAtFromToken);
 
