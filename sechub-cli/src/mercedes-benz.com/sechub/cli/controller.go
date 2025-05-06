@@ -57,7 +57,7 @@ func Execute() {
 		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
 	case cancelAction:
-		cancelSecHubJob(context, false)
+		cancelSecHubJob(context)
 	case getStatusAction:
 		jsonData := getSecHubJobStatus(context)
 		fmt.Println(jsonData)
