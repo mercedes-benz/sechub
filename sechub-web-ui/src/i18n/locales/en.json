@@ -151,5 +151,7 @@
     "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used",
     "MARK_FALSE_POSITIVE_MESSAGE_ERROR": "Error! Could not mark fidnings as false positives",
     "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not be reported in future scans!",
-    "MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE": "Finding is already marked as false positive"
+    "MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE": "Finding is already marked as false positive",
+    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN": "Suggested Patterns",
+    "MARK_FALSE_POSITIVE_SUBTITLE": "WebScan false positives patterns might apply to multiple findings. The patterns are calculated everytime the dialog opens."
 }

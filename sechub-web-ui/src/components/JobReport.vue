@@ -13,8 +13,19 @@
     @filter="filterBySeverity"
   />
 
-  <FalsePositiveDialogSAST
+  <FalsePositiveDialog
     v-if="scantype != 'webscan'"
+    :job-u-u-i-d="jobUUID"
+    :project-id="projectId"
+    :selected-findings="selectedFindingsForFalsePositives"
+    :visible="showMarkFalsePositiveDialog"
+    @close="closeFalsePositiveDialog"
+    @error-alert="errorAlert=true"
+    @success-alert="successAlert=true"
+  />
+
+  <FalsePositiveDialogWebscan
+    v-else
     :job-u-u-i-d="jobUUID"
     :project-id="projectId"
     :selected-findings="selectedFindingsForFalsePositives"
@@ -60,7 +71,6 @@
     <template #top>
       <div>
         <v-btn
-          v-if="(scantype != 'webscan')"
           class="ma-4"
           :disabled="!isAnyFindingSelected"
           @click="openFalsePositiveDialog"
@@ -72,27 +82,6 @@
             icon="mdi-alert-remove-outline"
           />
         </v-btn>
-        <v-tooltip
-          v-else-if="(scantype == 'webscan')"
-          v-model="showWebScanMarkFPButtonToggle"
-          location="right"
-        >
-          <template #activator="{ props }">
-            <div v-bind="props" class="d-inline-block">
-              <v-btn
-                class="ma-4"
-                :disabled="true"
-              >{{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
-                <v-icon
-                  color="primary"
-                  end
-                  icon="mdi-alert-remove-outline"
-                />
-              </v-btn>
-            </div>
-          </template>
-          <span>{{ $t('MARK_FALSE_POSITIVE_BUTTON_COMING_SOON') }}</span>
-        </v-tooltip>
       </div>
     </template>
 
@@ -340,10 +329,10 @@
         showMarkFalsePositiveDialog.value = true
       }
 
-      async function closeFalsePositiveDialog () {
+      async function closeFalsePositiveDialog (succes: boolean) {
         showMarkFalsePositiveDialog.value = false
 
-        if (successAlert.value) {
+        if (succes) {
           let combinedArray
           if (markedFalsePositives.value?.findingIds) {
             combinedArray = [...new Set([...markedFalsePositives.value?.findingIds, ...selectedFindings.value])]
