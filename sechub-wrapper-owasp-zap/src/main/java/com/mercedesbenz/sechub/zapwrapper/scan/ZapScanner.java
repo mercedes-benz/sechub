@@ -107,7 +107,7 @@ public class ZapScanner implements ZapScan {
             /* ZAP scan */
             executeScan(userInfo);
 
-            // Write number of crawled URLs as product message
+            // Write a product message with the number of crawled URLs
             scanContext.getZapProductMessageHelper().writeSingleProductMessage(
                     new SecHubMessage(SecHubMessageType.INFO, "Detected %s URLs and paths during the scan.".formatted(numberOfCrawlerResults)));
 

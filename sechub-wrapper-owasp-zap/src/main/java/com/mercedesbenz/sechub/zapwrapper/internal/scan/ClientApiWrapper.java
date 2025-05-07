@@ -9,12 +9,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zaproxy.clientapi.core.ApiResponse;
-import org.zaproxy.clientapi.core.ApiResponseElement;
-import org.zaproxy.clientapi.core.ApiResponseList;
-import org.zaproxy.clientapi.core.ApiResponseSet;
-import org.zaproxy.clientapi.core.ClientApi;
-import org.zaproxy.clientapi.core.ClientApiException;
+import org.zaproxy.clientapi.core.*;
 
 import com.mercedesbenz.sechub.commons.model.WebLogoutConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
