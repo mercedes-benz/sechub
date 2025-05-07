@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
@@ -26,10 +29,14 @@ public class UserDetailInformationService {
     private final LogSanitizer logSanitizer;
     private final UserInputAssertion assertion;
 
-    public UserDetailInformationService(UserContextService userContext, UserRepository userRepository, LogSanitizer logSanitizer,
-            UserInputAssertion assertion) {
+    private ProjectRepository projectRepository;
+
+    public UserDetailInformationService(UserContextService userContext, UserRepository userRepository, ProjectRepository projectRepository,
+            LogSanitizer logSanitizer, UserInputAssertion assertion) {
         this.userContext = userContext;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+
         this.logSanitizer = logSanitizer;
         this.assertion = assertion;
     }
@@ -49,7 +56,10 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUser(userId);
 
-        return new UserDetailInformation(user);
+        Set<String> assignedProjectIds = projectRepository.findAllProjectIdsWhereUserIsAssigned(userId);
+        Set<String> ownedProjectIds = projectRepository.findAllProjectIdsWhereUserIsOwner(userId);
+
+        return new UserDetailInformation(user, assignedProjectIds, ownedProjectIds);
     }
 
     /* @formatter:off */
@@ -67,7 +77,10 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUser(userId);
 
-        return new UserDetailInformation(user);
+        Set<String> assignedProjects = projectRepository.findAllProjectIdsWhereUserIsAssigned(user.getName());
+        Set<String> ownedProjects = projectRepository.findAllProjectIdsWhereUserIsOwner(user.getName());
+
+        return new UserDetailInformation(user, assignedProjects, ownedProjects);
     }
 
     /* @formatter:off */
@@ -85,6 +98,9 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUserByEmailAddress(emailAddress);
 
-        return new UserDetailInformation(user);
+        Set<String> assignedProjects = projectRepository.findAllProjectIdsWhereUserIsAssigned(user.getName());
+        Set<String> ownedProjects = projectRepository.findAllProjectIdsWhereUserIsOwner(user.getName());
+
+        return new UserDetailInformation(user, assignedProjects, ownedProjects);
     }
 }

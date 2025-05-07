@@ -2,17 +2,10 @@
 package com.mercedesbenz.sechub.domain.administration.user;
 
 import java.util.Date;
-import java.util.Set;
 
-import com.mercedesbenz.sechub.domain.administration.project.Project;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -20,6 +13,11 @@ import jakarta.persistence.Version;
 
 @Entity
 @Table(name = User.TABLE_NAME)
+/**
+ * Represents a SecHub user. Project associations to project are private + lazy
+ * (to increase ORM/DB performance). All project related associations are
+ * handled by Project object,repository and services!
+ */
 public class User {
 
     /* +-----------------------------------------------------------------------+ */
@@ -50,6 +48,9 @@ public class User {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = User.class.getSimpleName();
 
+    public static final String PROPERTY_USER_NAME = "name";
+    public static final String PROPERTY_USER_EMAILADDRESS = "emailAddress";
+
     @Id
     @Column(name = COLUMN_USER_ID, unique = true, nullable = false)
     String name;
@@ -67,13 +68,6 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     Date oneTimeTokenDate;
 
-    @Column(name = COLUMN_USER_PROJECTS, nullable = false)
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = Project.PROPERTY_USERS, fetch = FetchType.EAGER)
-    Set<Project> projects;
-
-    @OneToMany(cascade = CascadeType.REFRESH, mappedBy = Project.PROPERTY_OWNER, fetch = FetchType.EAGER)
-    Set<Project> ownedProjects;
-
     @Column(name = COLUMN_USER_SUPERADMIN)
     boolean superAdmin;
 
@@ -83,14 +77,6 @@ public class User {
     @Version
     @Column(name = "VERSION")
     Integer version;
-
-    public Set<Project> getProjects() {
-        return projects;
-    }
-
-    public Set<Project> getOwnedProjects() {
-        return ownedProjects;
-    }
 
     public boolean isSuperAdmin() {
         return superAdmin;

@@ -72,8 +72,6 @@ public class ProjectUnassignUserService {
         if (!project.getUsers().remove(user)) {
             throw new NotAcceptableException("User is not assigned to this project!");
         }
-        user.getProjects().remove(project);
-
         transactionService.saveInOwnTransaction(project, user);
 
         sendUserRemovedFromProjectEvent(projectId, user);

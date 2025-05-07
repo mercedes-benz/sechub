@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectUserData;
 import com.mercedesbenz.sechub.domain.administration.project.TestProjectCreationFactory;
 import com.mercedesbenz.sechub.domain.administration.user.TestUserCreationFactory;
 import com.mercedesbenz.sechub.domain.administration.user.User;
@@ -45,6 +47,33 @@ public class ProjectRepositoryDBTest {
     }
 
     @Test
+    void findAllProjectIdsWhereUserIsAssigned() {
+        /* prepare */
+        User user2 = TestUserCreationFactory.createUser("db_test_testuser2");
+        user2 = entityManager.persistAndFlush(user2);
+
+        Project projectA = entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testA", user1));
+        projectA.getUsers().add(user2);
+
+        Project projectB = entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testB", user1));
+        projectB.getUsers().add(user2);
+        projectB.getUsers().remove(user1);
+
+        Project projectC = entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testC", user1));
+
+        entityManager.persistAndFlush(projectA);
+        entityManager.persistAndFlush(projectB);
+        entityManager.persistAndFlush(projectC);
+
+        /* execute */
+        Set<String> projectIds = projectRepository.findAllProjectIdsWhereUserIsAssigned(user1.getName());
+
+        /* test */
+        assertThat(projectIds).containsExactly("project_repo_testA", "project_repo_testC");
+
+    }
+
+    @Test
     void findAllProjectIdsOrdered() {
         /* prepare */
         entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testC", user1));
@@ -56,6 +85,68 @@ public class ProjectRepositoryDBTest {
 
         /* test */
         assertThat(projectIds).containsExactly("project_repo_testA", "project_repo_testB", "project_repo_testC");
+
+    }
+
+    @Test
+    void findAllProjectIdsForProjectOwner() {
+        /* prepare */
+        User user2 = TestUserCreationFactory.createUser("db_test_testuser2");
+        user2 = entityManager.persistAndFlush(user2);
+
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testC", user1));
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testB", user2));
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testA", user1));
+
+        /* execute */
+        Set<String> projectIds = projectRepository.findAllProjectIdsWhereUserIsOwner(user1.getName());
+
+        /* test */
+        assertThat(projectIds).containsExactly("project_repo_testA", "project_repo_testC");
+
+    }
+
+    @Test
+    void fetchProjectUserDataForProjectOwner() {
+        /* prepare */
+        entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testA", user1));
+
+        /* execute */
+        ProjectUserData userData = projectRepository.fetchProjectUserDataForOwner("project_repo_testA");
+
+        /* test */
+        assertThat(userData.getUserId()).isEqualTo(user1.getName());
+        assertThat(userData.getEmailAddress()).isEqualTo(user1.getEmailAddress());
+
+    }
+
+    @Test
+    void fetchProjectUserDataForProjectAssignedUsers() {
+        /* prepare */
+        User user2 = TestUserCreationFactory.createUser("db_test_testuser2");
+        user2 = entityManager.persistAndFlush(user2);
+
+        User user3 = TestUserCreationFactory.createUser("db_test_testuser3");
+        user3 = entityManager.persistAndFlush(user3);
+
+        Project project = entityManager.persist(TestProjectCreationFactory.createProject("project_repo_testA", user1));
+        project.getUsers().clear();// removes user1
+        project.getUsers().addAll(Set.of(user3, user2));
+
+        entityManager.persistAndFlush(project);
+
+        /* execute */
+        List<ProjectUserData> userData = projectRepository.fetchOrderedProjectUserDataForAssignedUsers("project_repo_testA");
+
+        /* test */
+        assertThat(userData).hasSize(2);
+        ProjectUserData userData0 = userData.get(0);
+        assertThat(userData0.getUserId()).isEqualTo(user2.getName());
+        assertThat(userData0.getEmailAddress()).isEqualTo(user2.getEmailAddress());
+
+        ProjectUserData userData1 = userData.get(1);
+        assertThat(userData1.getUserId()).isEqualTo(user3.getName());
+        assertThat(userData1.getEmailAddress()).isEqualTo(user3.getEmailAddress());
 
     }
 

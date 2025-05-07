@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -134,7 +132,6 @@ public class ProjectAssignUserServiceTest {
         project1.id = "project1";
         when(projectRepository.findOrFailProject(project1.id)).thenReturn(project1);
         when(userRepository.findOrFailUser(newUser.getName())).thenReturn(newUser);
-        when(owner.getProjects()).thenReturn(Set.of(project1));
 
         /* execute */
         serviceToTest.assignUserToProjectAsUser(newUser.getName(), project1.getId(), false);
@@ -158,7 +155,6 @@ public class ProjectAssignUserServiceTest {
         project1.id = "project1";
         when(projectRepository.findOrFailProject(project1.id)).thenReturn(project1);
         when(userRepository.findOrFailUser(newUser.getName())).thenReturn(newUser);
-        when(owner.getProjects()).thenReturn(Set.of(project1));
 
         /* @formatter:off */
         /* execute + test */

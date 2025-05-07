@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import static com.mercedesbenz.sechub.test.RestDocPathParameter.EMAIL_ADDRESS;
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -24,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -52,7 +50,7 @@ public class UserRestControllerSpringBootTest {
         /* prepare */
         User user = createUser();
         String userId = user.getName();
-        UserDetailInformation userDetailInformation = new UserDetailInformation(user);
+        UserDetailInformation userDetailInformation = new UserDetailInformation(user, Set.of("project1", "project2"), Set.of("project2"));
         when(userDetailInformationService.fetchDetails()).thenReturn(userDetailInformation);
 
         /* execute + test */
@@ -118,8 +116,6 @@ public class UserRestControllerSpringBootTest {
         User user = new User();
         user.name = UUID.randomUUID().toString();
         user.emailAddress = "test-user@example.org";
-        user.projects = Set.of(new Project());
-        user.ownedProjects = Set.of(new Project());
         user.superAdmin = true;
         return user;
     }

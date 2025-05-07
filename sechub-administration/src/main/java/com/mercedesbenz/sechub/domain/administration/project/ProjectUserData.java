@@ -11,8 +11,26 @@ public class ProjectUserData implements Comparable<ProjectUserData> {
     public static final String PROPERTY_USER_ID = "userId";
     public static final String PROPERTY_EMAIL_ADDRESS = "emailAddress";
 
+    public static final String FULL_CLASSNAME = "com.mercedesbenz.sechub.domain.administration.project.ProjectUserData";
+
     private String userId;
     private String emailAddress;
+
+    public ProjectUserData() {
+
+    }
+
+    /**
+     * Used by Spring query to fetch user data directly as DTO - keep this
+     * constructor!
+     *
+     * @param userId
+     * @param emailAddress
+     */
+    public ProjectUserData(String userId, String emailAddress) {
+        this.userId = userId;
+        this.emailAddress = emailAddress;
+    }
 
     public String getUserId() {
         return userId;

@@ -106,8 +106,6 @@ public class ProjectChangeOwnerService {
         User previousOwner = project.owner;
         project.owner = newOwner;
 
-        newOwner.getOwnedProjects().add(project);
-        previousOwner.getOwnedProjects().remove(project);
         return previousOwner;
     }
 
