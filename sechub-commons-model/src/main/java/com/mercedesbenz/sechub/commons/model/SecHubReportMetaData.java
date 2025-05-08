@@ -2,8 +2,10 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,9 +13,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class SecHubReportMetaData {
 
     private Map<String, String> labels = new LinkedHashMap<>();
+    
     private SecHubVersionControlData versionControl;
 
     private SecHubReportSummary summary = new SecHubReportSummary();
+    
+    private Set<ScanType> executed = new LinkedHashSet<>();
+    
+    public Set<ScanType> getExecuted(){
+        return executed;
+    }
 
     public Map<String, String> getLabels() {
         return labels;

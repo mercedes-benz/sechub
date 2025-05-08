@@ -103,6 +103,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             result = createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
         }
 
+        result.getMetaData();
+        
         result.setStarted(started);
         result.setEnded(LocalDateTime.now());
         
@@ -117,8 +119,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             importProductResult(traceLogId, sechubConfig, workspace, productResult);
         }
         String json = workspace.createReport();
- xxx: hier muss was rein: sechubExecutorContext.getUsedPublicScanTypes --> die info muss dann in sereco meta data rein, dort gibt es auch nen setter, das muss ins json
- ==> danach kann der transfomer das wieder in den report fuchteln wenn der scan report gebaut wird..auch.
+        
         /* fetch + return all vulnerabilities as JSON */
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }

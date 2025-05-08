@@ -122,6 +122,7 @@ public class CreateScanReportService {
         /* update time stamp */
         scanReport.setEnded(LocalDateTime.now());
 
+        
         /* persist */
         return reportRepository.save(scanReport);
     }

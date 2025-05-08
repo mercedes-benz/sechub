@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.integrationtest.scenario21;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario21.Scenario21.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.net.URI;
@@ -31,6 +31,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfigurati
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
@@ -221,7 +222,13 @@ public class PDSSolutionMockModeScenario21IntTest {
             TestAPI.dumpAllPDSJobOutputsForSecHubJob(jobUUID);
             fail("Report has not status SUCCESS but: " + report.getStatus() + " - something was wrong. Look at the console output for details");
         }
-
+        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
+        if (metaDataOpt.isEmpty()) {
+            fail("Meta data not found in report!");
+        }
+        SecHubReportMetaData metaData = metaDataOpt.get();
+        assertThat(metaData.getExecuted()).containsOnly(scanType);
+        
         /*
          * now we do sanity check via info and warn messages - if something is wrong
          * configured in tests we can fail here
@@ -248,12 +255,12 @@ public class PDSSolutionMockModeScenario21IntTest {
 
         if (!productMessage.getText().contains("product:" + solutionName)) {
             // we use assertEquals here to have the text output directly in our IDEs
-            assertEquals("product info message should contain: 'product:" + solutionName + "' but did not!", productMessage.getText());
+            assertThat(productMessage.getText()).isEqualTo("product info message should contain: 'product:" + solutionName + "' but did not!");
         }
 
         if (!mockMessage.getText().contains("mocked result")) {
             // we use assertEquals here to have the text output directly in our IDEs
-            assertEquals("mock warn message should contain: 'mocked result' but did not!", mockMessage.getText());
+            assertThat(mockMessage.getText()).isEqualTo("mock warn message should contain: 'mocked result' but did not!");
         }
 
         if (ScanType.LICENSE_SCAN.equals(scanType)) {
