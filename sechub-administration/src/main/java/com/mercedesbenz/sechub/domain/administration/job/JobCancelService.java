@@ -9,11 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.domain.administration.project.Project;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.error.InternalServerErrorException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -36,14 +35,16 @@ public class JobCancelService {
     private final DomainMessageService eventBusService;
     private final JobInformationRepository jobInformationRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     public JobCancelService(AuditLogService auditLogService, UserInputAssertion userInputAssertion, DomainMessageService eventBusService,
-            JobInformationRepository jobInformationRepository, UserRepository userRepository) {
+            JobInformationRepository jobInformationRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.auditLogService = auditLogService;
         this.userInputAssertion = userInputAssertion;
         this.eventBusService = eventBusService;
         this.jobInformationRepository = jobInformationRepository;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     @UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
@@ -79,16 +80,12 @@ public class JobCancelService {
         });
 
         User user = userRepository.findOrFailUser(userId);
-        Set<Project> projects = user.getProjects();
+        Set<String> projectIds = projectRepository.findAllProjectIdsWhereUserIsAssigned(user.getName());
 
-        if (projects == null) {
-            LOG.debug("Projects for user {} are null.", userId);
-            throw new InternalServerErrorException("Projects fore user %s are null.".formatted(userId));
-        }
+        String projectId = jobInfo.getProjectId();
+        boolean allowed = projectIds.contains(projectId);
 
-        boolean isForbidden = projects.stream().noneMatch(project -> project.getId().equals(jobInfo.getProjectId()));
-
-        if (isForbidden) {
+        if (!allowed) {
             LOG.debug("User {} is not allowed to cancel job {}", userId, jobUUID);
             throw new NotFoundException("Job not found: " + jobUUID);
         }

@@ -1,21 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario3;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.ANONYMOUS;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.SUPER_ADMIN;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.assertUser;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.expectHttpFailure;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.getLinkToFetchNewAPITokenAfterSignupAccepted;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.udpdateAPITokenByOneTimeTokenLink;
-import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_1;
-import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.PROJECT_1;
-import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.PROJECT_2;
-import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.USER_1;
-import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.USER_2;
-import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.USER_3;
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
+import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.List;
 import java.util.Set;
@@ -32,6 +23,8 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
 
 @ExtendWith(IntegrationTestExtension.class)
 @WithTestScenario(Scenario3.class)
@@ -154,6 +147,7 @@ public class ProjectAdministrationScenario3IntTest {
         as(SUPER_ADMIN).deleteUser(tmpAdmin);
     }
 
+    @UseCaseGetAssignedProjectDataList(@Step(number = 0, description = "Integration test for the use case", name = "integration-test"))
     private void assertProjectData(TestUser asUser, TestProject project, String expectedProfileId, ProjectUserData expectedOwner,
             ProjectUserData... expectedAssignedUsers) {
         List<ProjectData> projectDetails = as(asUser).getAssignedProjectDataList();

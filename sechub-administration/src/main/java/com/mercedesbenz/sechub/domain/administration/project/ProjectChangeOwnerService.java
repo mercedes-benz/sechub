@@ -106,8 +106,6 @@ public class ProjectChangeOwnerService {
         User previousOwner = project.owner;
         project.owner = newOwner;
 
-        newOwner.getOwnedProjects().add(project);
-        previousOwner.getOwnedProjects().remove(project);
         return previousOwner;
     }
 
@@ -131,7 +129,7 @@ public class ProjectChangeOwnerService {
         projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAddress());
         projectData.setProjectOwnerEmailAddress(newOwner.getEmailAddress());
 
-        project.users.forEach(user -> {
+        project.getUsers().forEach(user -> {
             projectData.addUserEmailAddress(user.getEmailAddress());
         });
 
