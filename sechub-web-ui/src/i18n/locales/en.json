@@ -144,14 +144,16 @@
     "MARK_FALSE_POSITIVE_BUTTON": "Mark as false positives",
     "MARK_FALSE_POSITIVE_BUTTON_COMING_SOON": "Please use the cli client for webscan false positives.",
     "MARK_FALSE_POSITIVE_TITLE": "Mark selected findings as false positives",
-    "MARK_FALSE_POSITIVE_RADIO_ONE": "A fix has already been started",
-    "MARK_FALSE_POSITIVE_RADIO_TWO": "No bandwidth to fix this",
-    "MARK_FALSE_POSITIVE_RADIO_THREE": "Risk is tolerable to this project",
-    "MARK_FALSE_POSITIVE_RADIO_FOUR": "This alert is inaccurate or incorrect",
-    "MARK_FALSE_POSITIVE_RADIO_FIVE": "Vulnerable code is not actually used",
+    "MARK_FALSE_POSITIVE_RADIO_1": "A fix has already been started",
+    "MARK_FALSE_POSITIVE_RADIO_2": "No bandwidth to fix this",
+    "MARK_FALSE_POSITIVE_RADIO_3": "Risk is tolerable to this project",
+    "MARK_FALSE_POSITIVE_RADIO_4": "This alert is inaccurate or incorrect",
+    "MARK_FALSE_POSITIVE_RADIO_5": "Vulnerable code is not actually used",
     "MARK_FALSE_POSITIVE_MESSAGE_ERROR": "Error! Could not mark fidnings as false positives",
     "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not be reported in future scans!",
     "MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE": "Finding is already marked as false positive",
-    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN": "Suggested Patterns",
-    "MARK_FALSE_POSITIVE_SUBTITLE": "WebScan false positives patterns might apply to multiple findings. The patterns are calculated everytime the dialog opens."
+    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN": "Suggested False Positive Patterns",
+    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_CWEID": "CWE ID",
+    "MARK_FALSE_POSITIVE_SUBTITLE": "WebScan false positives patterns might apply to multiple findings. The patterns are pre-calculated everytime the dialog opens.",
+    "MARK_FALSE_POSITIVE_METHODS_SELECTION_TITLE": "Select Methods"
 }

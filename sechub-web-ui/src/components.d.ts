@@ -13,7 +13,7 @@ declare module 'vue' {
     copy: typeof import('./components/FalsePositiveDialog copy.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
     FalsePositiveDialog: typeof import('./components/FalsePositiveDialog.vue')['default']
-    FalsePositiveDialogWebscan: typeof import('./components/FalsePositiveDialogWebscan.vue')['default']
+    FalsePositivesMethodsDialog: typeof import('./components/FalsePositivesMethodsDialog.vue')['default']
     JobReport: typeof import('./components/JobReport.vue')['default']
     JobReportCodescanCallsRecursive: typeof import('./components/JobReportCodescanCallsRecursive.vue')['default']
     JobReportCodescanDetails: typeof import('./components/JobReportCodescanDetails.vue')['default']
