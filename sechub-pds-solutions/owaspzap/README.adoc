@@ -18,15 +18,15 @@ With templates it is very easy to handle complex authentication scenarios (e.g. 
 TIP: Templates are not mandatory. If you only need Basic Auth or custom headers template definitions and usage are not necessary.
 
 To start a scan this pds-solution executes the script link:docker/scripts/owasp-zap.sh[owasp-zap.sh].
-SecHub will automatically create the directory `$PDS_JOB_EXTRACTED_ASSETS_FOLDER`. The shell script requires a file called `script.groovy` inside the directory for script authentication with templates and assets to work. This script performs the authentication steps necessary for the targeted application.
+SecHub will automatically create the directory `$PDS_JOB_EXTRACTED_ASSETS_FOLDER`. The shell script requires a file called `login-script.groovy` inside the directory for script authentication with templates and assets to work. This script performs the authentication steps necessary for the targeted application.
 When creating a template with an asset for webscan authentication and assigning it to a SecHub project, ensure that 
 
 - `PDS_OWASP_ZAP.zip` is available as asset file inside the used asset
-- `PDS_OWASP_ZAP.zip` can optionally contain `script.groovy` at root level for authentication
+- `PDS_OWASP_ZAP.zip` can optionally contain `login-script.groovy` at root level for authentication
 - `PDS_OWASP_ZAP.zip` can optionally contain `proxy.pac` at root level for dynamic proxy handling during authentication
 
-The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` and `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac`.
-If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy` exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
+The PDS will extract the file at runtime to `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/login-script.groovy` and `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac`.
+If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/login-script.groovy` exists by the time the script `owasp-zap.sh` is executed, the groovy script will be used for automated login.
 If the extracted file `$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac` exists by the time the script `owasp-zap.sh` is executed, the PAC file will be used by the browser during the authentication.
 Details about the configuration of the wrapper application that is used to configure the ZAP, can be found at link:https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc[https://github.com/mercedes-benz/sechub/blob/develop/sechub-wrapper-owasp-zap/README.adoc].
 

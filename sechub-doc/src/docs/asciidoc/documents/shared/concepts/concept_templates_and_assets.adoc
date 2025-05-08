@@ -265,7 +265,7 @@ The `WEBSCAN_PRODUCT_ID.zip` file contains
 
 [source,text]
 ----
-/script.groovy
+/login-script.groovy
 /development/
              debug-settings.json
 ----
@@ -288,7 +288,7 @@ For the former example `WEBSCAN_PRODUCT_ID.zip` will be extracted the following 
 `$workspaceFolder/
      assets/
         webscan-login/
-                    script.groovy
+                    login-script.groovy
                     development/
                               debug-settings.json
    
@@ -318,7 +318,7 @@ if (templateData!=null){
 
     // read template script file from extracted folder
     String assetExtractionFolder = System.getenv("PDS_JOB_EXTRACTED_ASSETS_FOLDER");
-    Path path = Paths.get(assetExtractionFolder, TemplateType.WEBSCAN_LOGIN.getId(), "script.groovy");
+    Path path = Paths.get(assetExtractionFolder, TemplateType.WEBSCAN_LOGIN.getId(), "login-script.groovy");
     String scriptTemplate = Files.readString(path);
     
     // replace variable parts inside template
