@@ -244,12 +244,12 @@ class ProjectServiceTest {
         Project project3 = createProject(PROJECT_ID_3);
         Project project4 = createProject(PROJECT_ID_4);
 
-        User user0 = createProjectUser(USER_ID_0_NOT_ASSIGNED_OR_OWNER, false);
-        User user1 = createProjectUser(USER_ID_1, false);
-        User user2 = createProjectUser(USER_ID_2, false);
-        User user3 = createProjectUser(USER_ID_3, false);
-        User user4_admin = createProjectUser(USER_ID_4_ADMIN, true);
-        User user5 = createProjectUser(USER_ID_5_ONLY_OWNER, false);
+        User user0 = createUser(USER_ID_0_NOT_ASSIGNED_OR_OWNER, false);
+        User user1 = createUser(USER_ID_1, false);
+        User user2 = createUser(USER_ID_2, false);
+        User user3 = createUser(USER_ID_3, false);
+        User user4_admin = createUser(USER_ID_4_ADMIN, true);
+        User user5 = createUser(USER_ID_5_ONLY_OWNER, false);
 
         when(userRepository.findOrFailUser(USER_ID_0_NOT_ASSIGNED_OR_OWNER)).thenReturn(user0);
         when(userRepository.findOrFailUser(USER_ID_1)).thenReturn(user1);

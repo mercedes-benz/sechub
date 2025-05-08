@@ -14,9 +14,10 @@ import jakarta.persistence.Version;
 @Entity
 @Table(name = User.TABLE_NAME)
 /**
- * Represents a SecHub user. Project associations to project are private + lazy
- * (to increase ORM/DB performance). All project related associations are
- * handled by Project object,repository and services!
+ * Represents a SecHub user. Project associations to project only exists in
+ * database but not inside the ORM entity (to increase ORM/DB performance). All
+ * project related associations are handled by Project object,repository and
+ * services!
  */
 public class User {
 

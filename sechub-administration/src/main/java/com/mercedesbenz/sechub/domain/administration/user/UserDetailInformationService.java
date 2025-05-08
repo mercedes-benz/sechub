@@ -56,10 +56,7 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUser(userId);
 
-        Set<String> assignedProjectIds = projectRepository.findAllProjectIdsWhereUserIsAssigned(userId);
-        Set<String> ownedProjectIds = projectRepository.findAllProjectIdsWhereUserIsOwner(userId);
-
-        return new UserDetailInformation(user, assignedProjectIds, ownedProjectIds);
+        return fetchUserDetails(user);
     }
 
     /* @formatter:off */
@@ -77,10 +74,7 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUser(userId);
 
-        Set<String> assignedProjects = projectRepository.findAllProjectIdsWhereUserIsAssigned(user.getName());
-        Set<String> ownedProjects = projectRepository.findAllProjectIdsWhereUserIsOwner(user.getName());
-
-        return new UserDetailInformation(user, assignedProjects, ownedProjects);
+        return fetchUserDetails(user);
     }
 
     /* @formatter:off */
@@ -98,9 +92,15 @@ public class UserDetailInformationService {
 
         User user = userRepository.findOrFailUserByEmailAddress(emailAddress);
 
-        Set<String> assignedProjects = projectRepository.findAllProjectIdsWhereUserIsAssigned(user.getName());
-        Set<String> ownedProjects = projectRepository.findAllProjectIdsWhereUserIsOwner(user.getName());
+        return fetchUserDetails(user);
+    }
 
-        return new UserDetailInformation(user, assignedProjects, ownedProjects);
+    private UserDetailInformation fetchUserDetails(User user) {
+        String userId = user.getName();
+
+        Set<String> assignedProjectIds = projectRepository.findAllProjectIdsWhereUserIsAssigned(userId);
+        Set<String> ownedProjectIds = projectRepository.findAllProjectIdsWhereUserIsOwner(userId);
+
+        return new UserDetailInformation(user, assignedProjectIds, ownedProjectIds);
     }
 }
