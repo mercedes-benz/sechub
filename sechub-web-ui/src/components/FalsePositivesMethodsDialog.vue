@@ -1,79 +1,104 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
-  <v-dialog v-model="visible" persistent max-width="600px">
+  <v-dialog v-model="localVisible" max-width="600px" persistent>
     <v-card>
       <v-card-title>
-        {{ $t('MARK_FALSE_POSITIVE_METHODS_SELECTION_TITLE') }}
+        {{ $t('MARK_FALSE_POSITIVE_METHODS_SELECTION_DIALOG_TITLE') }}
       </v-card-title>
       <v-card-text>
         <v-checkbox
           v-for="method in httpMethods"
           :key="method"
-          v-model="falsePositive.methods"
-          :value="method"
-          :label="method"
+          v-model="selectedMethods"
+          :disabled="anyMethods"
           hide-details
-        ></v-checkbox>
+          :label="method"
+          :value="method"
+        />
+        <v-checkbox
+          v-model="anyMethods"
+          hide-details
+          :label="$t('MARK_FALSE_POSITIVE_METHODS_SELECTION_DIALOG_LABEL')"
+        />
       </v-card-text>
       <v-card-actions>
         <v-btn @click="cancel">
-            {{ $t('CONFIRM_DIALOG_BUTTON_CANCEL') }}
-          </v-btn>
-          <v-btn color="primary" @click="closeDialog">
-            {{ $t('CONFIRM_DIALOG_BUTTON_OK') }}
-          </v-btn>
+          {{ $t('CONFIRM_DIALOG_BUTTON_CANCEL') }}
+        </v-btn>
+        <v-btn color="primary" @click="saveMethods()">
+          {{ $t('CONFIRM_DIALOG_BUTTON_OK') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { WebscanFalsePositiveProjectData } from '@/generated-sources/openapi'
+  import { defineComponent } from 'vue'
+  import { WebscanFalsePositiveProjectData } from '@/generated-sources/openapi'
 
-interface Props {
-  falsePositive: WebscanFalsePositiveProjectData,
-  visible: boolean,
-}
+  interface Props {
+    falsePositive: WebscanFalsePositiveProjectData,
+    visible: boolean,
+  }
 
-export default defineComponent({
-  props: {
+  export default defineComponent({
+    props: {
       visible: {
-      type: Boolean,
-      required: true,
+        type: Boolean,
+        required: true,
+      },
+      falsePositive: {
+        type: Object,
+        required: true,
+      },
     },
-    falsePositive: {
-      type: Object,
-      required: true,
-    },
-  },
 
-  emits: ['close'],
+    emits: ['close'],
 
-  setup(props, { emit }) {
-    const httpMethods = ['GET', 'POST', 'PUT', 'DELETE'];
-    const { falsePositive, visible } = toRefs(props);
-    const oldMethods = falsePositive.value.methods
+    setup (props: Props, { emit }) {
+      const httpMethods = ['GET', 'POST', 'PUT', 'DELETE']
+      const anyMethods = ref(false)
+      const { falsePositive, visible } = toRefs(props)
+      const selectedMethods = ref(falsePositive.value.methods)
+      const localVisible = ref(visible)
 
-    watch(visible, (newValue) => {
-        if (newValue){
-          oldMethods.value = falsePositive.value.methods
+      watch(localVisible, newValue => {
+        if (newValue) {
+          selectedMethods.value = falsePositive.value.methods
         }
-      });
+        if (selectedMethods.value) {
+          if (selectedMethods.value.length === 0) {
+            anyMethods.value = true
+          }
+        }
+      })
 
-    const closeDialog = () => {
-      emit('close');
-    };
+      const closeDialog = () => {
+        emit('close')
+      }
 
-    const cancel = () =>{
-      falsePositive.value.methods = oldMethods.value
-      closeDialog()
-    }
+      const saveMethods = () => {
+        if (anyMethods.value) {
+          falsePositive.value.methods = []
+        } else {
+          falsePositive.value.methods = selectedMethods.value
+        }
+        closeDialog()
+      }
 
-    return {
-      httpMethods,
-      falsePositive,
-      closeDialog,
-      cancel,
-    };
-  },
-});
+      const cancel = () => {
+        closeDialog()
+      }
+
+      return {
+        localVisible,
+        httpMethods,
+        selectedMethods,
+        anyMethods,
+        closeDialog,
+        cancel,
+        saveMethods,
+      }
+    },
+  })
 </script>

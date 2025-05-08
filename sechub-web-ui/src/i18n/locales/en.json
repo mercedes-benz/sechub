@@ -153,7 +153,13 @@
     "MARK_FALSE_POSITIVE_MESSAGE_SUCCESS": "Successfully marked findings as false positives. Findings will not be reported in future scans!",
     "MARK_FALSE_POSITIVE_FINDING_IS_FALSE_POSITIVE": "Finding is already marked as false positive",
     "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN": "Suggested False Positive Patterns",
+    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN_DELETE": "Successfully removed Pattern",
     "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_CWEID": "CWE ID",
-    "MARK_FALSE_POSITIVE_SUBTITLE": "WebScan false positives patterns might apply to multiple findings. The patterns are pre-calculated everytime the dialog opens.",
-    "MARK_FALSE_POSITIVE_METHODS_SELECTION_TITLE": "Select Methods"
+    "MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_METHODS": "Method(s)",
+    "MARK_FALSE_POSITIVE_WEBSCAN_TOOLTIP_DELETE": "Remove Pattern",
+    "MARK_FALSE_POSITIVE_WEBSCAN_INFORMATION_TOOLTIP": "Webscan false positives are suggested URL patterns and might apply to non-selected findings.",
+    "MARK_FALSE_POSITIVE_WEBSCAN_EDIT_TOOLTIP": "Edit request methods.",
+    "MARK_FALSE_POSITIVE_WEBSCAN_ANY_METHOD": "Any Method",
+    "MARK_FALSE_POSITIVE_METHODS_SELECTION_DIALOG_TITLE": "Select Methods",
+    "MARK_FALSE_POSITIVE_METHODS_SELECTION_DIALOG_LABEL": "Any Method"
 }
