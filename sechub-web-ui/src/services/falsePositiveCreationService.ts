@@ -12,8 +12,6 @@ class FalsePositiveCreationService {
   createFalsePositives (selectedFindings: SecHubFinding[], jobUUID: string, radioComment: string, textAreaComment: string): FalsePositives {
     const falsePositiveJobData: Array<FalsePositiveJobData> = []
     selectedFindings.forEach(finding => {
-      console.log(falsePositiveJobData)
-
       const data: FalsePositiveJobData = {
         findingId: finding.id,
         jobUUID,

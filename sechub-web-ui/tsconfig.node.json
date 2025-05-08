@@ -3,7 +3,8 @@
     "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["vitest/globals"]
   },
   "include": ["vite.config.mts"]
 }

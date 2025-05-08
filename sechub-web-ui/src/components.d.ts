@@ -10,7 +10,6 @@ declare module 'vue' {
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
-    copy: typeof import('./components/FalsePositiveDialog copy.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
     FalsePositiveDialog: typeof import('./components/FalsePositiveDialog.vue')['default']
     FalsePositivesMethodsDialog: typeof import('./components/FalsePositivesMethodsDialog.vue')['default']

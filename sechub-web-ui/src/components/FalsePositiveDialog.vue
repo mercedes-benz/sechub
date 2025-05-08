@@ -204,7 +204,6 @@
         } else {
           falsePositive = falsePositiveCreationService.createFalsePositives(selectedFindings.value, jobUUID.value, radios.value, comment.value)
         }
-        console.log(JSON.stringify(falsePositive))
 
         const isSuccess = await useMarkAsFalsePositive(projectId.value, falsePositive)
         if (isSuccess) {
