@@ -34,12 +34,15 @@ describe('ScanConfigurationBuilderService', () => {
 
   describe('buildSecHubConfiguration', () => {
     it('should build SecHub configuration for code scan and source code', () => {
+      /* prepare */
       const scanTypes = [CODE_SCAN_IDENTIFIER]
       const fileType = FILETYPE_SOURCES
       const projectId = 'project-id'
 
+      /* execute */
       const result: SecHubConfiguration = serviceToTest.buildSecHubConfiguration(scanTypes, fileType, projectId)
 
+      /* test */
       expect(result.apiVersion).toBe('1.0')
       expect(result.projectId).toBe(projectId)
       expect(result.codeScan).toBeDefined()
@@ -47,12 +50,15 @@ describe('ScanConfigurationBuilderService', () => {
     })
 
     it('should build SecHub configuration for secret scan and binaries', () => {
+      /* prepare */
       const scanTypes = [SECRET_SCAN_IDENTIFER]
       const fileType = FILETYPE_BINARIES
       const projectId = 'project-id'
 
+      /* execute */
       const result: SecHubConfiguration = serviceToTest.buildSecHubConfiguration(scanTypes, fileType, projectId)
 
+      /* test */
       expect(result.apiVersion).toBe('1.0')
       expect(result.projectId).toBe(projectId)
       expect(result.secretScan).toBeDefined()
@@ -60,12 +66,15 @@ describe('ScanConfigurationBuilderService', () => {
     })
 
     it('should build SecHub configuration for code and secret scans', () => {
+      /* prepare */
       const scanTypes = [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER]
       const fileType = FILETYPE_SOURCES
       const projectId = 'project-id'
 
+      /* execute */
       const result: SecHubConfiguration = serviceToTest.buildSecHubConfiguration(scanTypes, fileType, projectId)
 
+      /* test */
       expect(result.apiVersion).toBe('1.0')
       expect(result.projectId).toBe(projectId)
       expect(result.codeScan).toBeDefined()
@@ -77,22 +86,28 @@ describe('ScanConfigurationBuilderService', () => {
 
   describe('isFileSizeValid', () => {
     it('should validate file size correctly', () => {
+      /* prepare */
       const file = new File(['dummy content'], 'dummy.txt')
       const fileType = FILETYPE_SOURCES
 
+      /* execute */
       const result = scanConfigurationBuilderService.isFileSizeValid(file, fileType)
 
+      /* test */
       expect(result.isValid).toBe(true)
       expect(result.errorMessage).toBeUndefined()
     })
 
     it('should return error message when file size exceeds limit', () => {
+      /* prepare */
       const largeContent = new Array(202).join('a')
       const file = new File([largeContent], 'dummy.txt')
       const fileType = FILETYPE_SOURCES
 
+      /* execute */
       const result = scanConfigurationBuilderService.isFileSizeValid(file, fileType)
 
+      /* test */
       expect(result.isValid).toBe(false)
       expect(result.errorMessage).toBe('Your .zip file is too big. Allowed source code file size: 200 bytes')
     })
