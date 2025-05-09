@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 class SecHubExecutionContextTest {
@@ -25,6 +27,41 @@ class SecHubExecutionContextTest {
         executionUUID = UUID.randomUUID();
         sechubJobUUID = UUID.randomUUID();
         config = mock(SecHubConfiguration.class);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void rememberIfPublicScanType_only_non_internal_scan_types_are_remembered(ScanType scanType) {
+        /* prepare */
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID);
+
+        /* execute */
+        context.rememberIfPublicScanType(scanType);
+
+        /* test */
+        if (scanType.isInternalScanType()) {
+            assertThat(context.getUsedPublicScanTypes()).isEmpty();
+        } else {
+            assertThat(context.getUsedPublicScanTypes()).contains(scanType);
+        }
+
+    }
+
+    @Test
+    void adding_multiple_public_scan_types_results_in_set_containing_them() {
+        /* prepare */
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID);
+
+        /* execute */
+        context.rememberIfPublicScanType(ScanType.CODE_SCAN);
+        context.rememberIfPublicScanType(ScanType.CODE_SCAN);
+        context.rememberIfPublicScanType(ScanType.IAC_SCAN);
+        context.rememberIfPublicScanType(ScanType.LICENSE_SCAN);
+        context.rememberIfPublicScanType(ScanType.WEB_SCAN);
+        context.rememberIfPublicScanType(ScanType.WEB_SCAN);
+
+        /* test */
+        assertThat(context.getUsedPublicScanTypes()).containsOnly(ScanType.CODE_SCAN, ScanType.IAC_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN).hasSize(4);
     }
 
     @Test

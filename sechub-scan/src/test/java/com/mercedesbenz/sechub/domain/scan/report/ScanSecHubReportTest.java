@@ -307,7 +307,7 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().getSummary();
         assertTrue(summary.getCodeScan().isPresent());
         assertEquals(1, summary.getCodeScan().get().getTotal());
 
@@ -335,7 +335,7 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().getSummary();
         assertTrue(summary.getInfraScan().isPresent());
         assertEquals(1, summary.getInfraScan().get().getTotal());
 
@@ -363,7 +363,7 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().getSummary();
         assertTrue(summary.getLicenseScan().isPresent());
         assertEquals(1, summary.getLicenseScan().get().getTotal());
 
@@ -391,7 +391,7 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().getSummary();
         assertTrue(summary.getSecretScan().isPresent());
         assertEquals(1, summary.getSecretScan().get().getTotal());
 
@@ -419,7 +419,7 @@ class ScanSecHubReportTest {
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
 
         /* test */
-        SecHubReportSummary summary = scanSecHubReport.getMetaData().get().getSummary();
+        SecHubReportSummary summary = scanSecHubReport.getMetaData().getSummary();
         assertTrue(summary.getWebScan().isPresent());
         assertEquals(1, summary.getWebScan().get().getTotal());
 

@@ -1242,6 +1242,10 @@ components:
           $ref: '#/components/schemas/SecHubVersionControlData'
         summary:
           $ref: '#/components/schemas/SecHubReportSummary'
+        executed: 
+          type: array
+          items:
+            $ref: '#/components/schemas/ScanType'
 
     SecHubReport:
       title: ScanSecHubReport

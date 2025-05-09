@@ -133,6 +133,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     private List<ProductResult> startExecution(ProductExecutorData data) throws SecHubExecutionException {
 
         LOG.debug("Executing {}", data.traceLogId);
+
         try {
             List<ProductResult> targetResults = new ArrayList<>();
 
@@ -230,6 +231,10 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         SecHubExecutionHistoryElement historyElement = context.remember(this, data);
 
         List<ProductResult> productResults = executeByAdapter(data);
+
+        /* remember public scan type */
+        ScanType scanType = productIdentifier.getType();
+        data.getSechubExecutionContext().rememberIfPublicScanType(scanType);
 
         /* product execution has been done, so remove from history */
         context.forget(historyElement);

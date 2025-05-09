@@ -86,7 +86,7 @@ class SecHubReportModelTest {
         SecHubReportModel result = SecHubReportModel.fromJSONString(json);
 
         /* test */
-        SecHubReportMetaData metaData = result.getMetaData().get();
+        SecHubReportMetaData metaData = result.getMetaData();
         SecHubVersionControlData versionControl = metaData.getVersionControl().get();
         assertEquals("git", versionControl.getType());
         assertEquals("git@example.org:testuser/testrepo.git", versionControl.getLocation());

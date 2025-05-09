@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
-import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.EnumType.*;
 
 import java.sql.Types;
 import java.time.LocalDateTime;

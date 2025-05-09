@@ -20,7 +20,25 @@
 
   <v-card>
     <v-card-item>
-      <v-card-title>{{ $t('REPORT_METADATA_MESSAGES') }}</v-card-title>
+      <v-card-title>{{ $t('REPORT_METADATA_EXECUTED') }}:</v-card-title>
+    </v-card-item>
+    <v-table>
+
+      <tbody>
+        <tr
+          v-for="executed in report.metaData?.executed"
+          :key="executed"
+        >
+          <td><v-icon class="mr-3">
+            mdi-check
+          </v-icon>{{ executed }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card>
+  <v-card>
+    <v-card-item>
+      <v-card-title>{{ $t('REPORT_METADATA_MESSAGES') }}:</v-card-title>
     </v-card-item>
     <v-table>
 
@@ -29,12 +47,9 @@
           v-for="message in report.messages"
           :key="message.text"
         >
-          <td>
-            <v-icon :color="getIconColor(message.type || '')">
-              {{ getIcon(message.type || '') }}
-            </v-icon>
-          </td>
-          <td>{{ message.text }}</td>
+          <td><v-icon class="mr-3" :color="getIconColor(message.type || '')">
+            {{ getIcon(message.type || '') }}
+          </v-icon>{{ message.text }}</td>
         </tr>
       </tbody>
     </v-table>

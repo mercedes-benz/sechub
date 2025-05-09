@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,7 +112,7 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
     }
 
     @Override
-    public Optional<SecHubReportMetaData> getMetaData() {
+    public SecHubReportMetaData getMetaData() {
         return model.getMetaData();
     }
 

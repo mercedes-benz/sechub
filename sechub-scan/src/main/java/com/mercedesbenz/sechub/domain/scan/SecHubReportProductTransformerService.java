@@ -56,24 +56,30 @@ public class SecHubReportProductTransformerService {
         UUID secHubJobUUID = context.getSechubJobUUID();
         ReportTransformationResult result = createResult(secHubJobUUID);
 
-        SecHubConfiguration configuration = context.getConfiguration();
-        addMetaDataFromConfigurationToReport(configuration, result);
-
+        addMetaDataToReport(context, result);
         return result;
     }
 
-    private void addMetaDataFromConfigurationToReport(SecHubConfiguration configuration, ReportTransformationResult result) {
+    private void addMetaDataToReport(SecHubExecutionContext context, ReportTransformationResult result) {
+        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
+        result.setMetaData(reportMetaData);
+
+        reportMetaData.getExecuted().addAll(context.getUsedPublicScanTypes());
+
+        addConfigMetaDataToReport(context, reportMetaData);
+    }
+
+    private void addConfigMetaDataToReport(SecHubExecutionContext context, SecHubReportMetaData reportMetaData) {
+        SecHubConfiguration configuration = context.getConfiguration();
         Optional<SecHubConfigurationMetaData> userDefinedConfigMetaDataOpt = configuration.getMetaData();
         if (userDefinedConfigMetaDataOpt.isEmpty()) {
             return;
         }
+
         /*
          * we add desired meta data from configuration (user defined) back into the scan
          * result
          */
-        SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-        result.setMetaData(reportMetaData);
-
         SecHubConfigurationMetaData userDefinedConfigMetaData = userDefinedConfigMetaDataOpt.get();
         copyLabelsFromConfigToReport(userDefinedConfigMetaData, reportMetaData);
     }
