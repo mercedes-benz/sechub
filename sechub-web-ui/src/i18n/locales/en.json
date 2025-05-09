@@ -106,6 +106,7 @@
     "REPORT_INFO_FINDINGS": "Info Findings",
     "REPORT_SCAN_NOT_SUCCESSFUL": "Executed scan was not successful!",
     "REPORT_METADATA_SCAN_STATUS": "Scan Status",
+    "REPORT_METADATA_EXECUTED": "Executed scans",
     "REPORT_METADATA_MESSAGES": "SecHub Report Messages",
     "REPORT_DESCRIPTION_SEVERITY": "Severity",
     "REPORT_DESCRIPTION_TYPE": "Type",

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,9 +18,9 @@ public class SecHubReportMetaData {
 
     private SecHubReportSummary summary = new SecHubReportSummary();
 
-    private Set<ScanType> executed = new LinkedHashSet<>();
+    private List<ScanType> executed = new ArrayList<>(); // as list, so jackson will keep execution order
 
-    public Set<ScanType> getExecuted() {
+    public List<ScanType> getExecuted() {
         return executed;
     }
 

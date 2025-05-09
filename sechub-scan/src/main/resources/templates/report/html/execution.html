@@ -1,20 +1,12 @@
 <!--/* For development just call one ore more tests inside ThymeLeafHTMLReportingTest and check output */-->
 <th:block th:fragment="renderExecution(metaData)">
             <div class="execution" th:if="${metaData!=null}">
-                <h2 class='executionHeadline'>Executed</h2>
-                <table class='executionTable'>
+                <h2 class='executionHeadline'>Executed scans</h2>
+                <table>
                     <tbody>
                     <tr th:each="executed : ${metaData.executed}">
                         <td>✔</td>
                         <td th:text="${executed.text}">What scan type was executed. An example "codeScan"</td>
-                    </tr>
-                    <tr th:remove="all">
-                        <td>✅</td>
-                        <td>someScan</td>
-                    </tr>
-                    <tr th:remove="all">
-                        <td>✅</td>
-                        <td>someScan</td>
                     </tr>
                     </tbody>
                 </table>
