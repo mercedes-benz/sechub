@@ -13,6 +13,16 @@
       {{ $t('MARK_FALSE_POSITIVE_WEBSCAN_CALCULATED_PATTERN_DELETE') }}
     </v-alert>
 
+    <v-alert
+      v-if="infoNoCWEIDAlert"
+      closable
+      color="primary"
+      density="compact"
+      :text="infoNoCWEIDAlertMessage"
+      type="info"
+      @click:close="infoNoCWEIDAlert=false"
+    />
+
     <v-card>
       <v-card-title>
         {{ $t('MARK_FALSE_POSITIVE_TITLE') }}
@@ -182,18 +192,28 @@
       const comment = ref('')
       const radios = ref(t('MARK_FALSE_POSITIVE_RADIO_1'))
 
-      const webScanFalsePositives = ref([] as WebscanFalsePositiveProjectData [])
       // constants for false positives web methods
+      const webScanFalsePositives = ref([] as WebscanFalsePositiveProjectData [])
       const webScanMethodsDialog = ref(false)
+      const infoNoCWEIDAlert = ref(false)
+      const infoNoCWEIDAlertMessage = ref('')
       const currentFalsePositive = ref<WebscanFalsePositiveProjectData>({
-        cweId: -1,
+        cweId: 0,
         urlPattern: '',
         methods: [],
       })
 
       watch(localVisible, newValue => {
         if (newValue && isWebScan.value) {
-          webScanFalsePositives.value = falsePositiveCreationService.calculateWebScanFalsePositivesProjectData(selectedFindings.value) as WebscanFalsePositiveProjectData[]
+          const { calculatedFalsePositives, findingsWithNoCWEID } = falsePositiveCreationService.calculateWebScanFalsePositivesProjectData(selectedFindings.value)
+          webScanFalsePositives.value = calculatedFalsePositives
+          if (findingsWithNoCWEID.length > 0) {
+            infoNoCWEIDAlert.value = true
+            infoNoCWEIDAlertMessage.value = t('MARK_FALSE_POSITIVE_WEBSCAN_NO_CWEID') + findingsWithNoCWEID.join(', ')
+          } else {
+            infoNoCWEIDAlert.value = false
+            infoNoCWEIDAlertMessage.value = ''
+          }
         }
       })
 
@@ -241,6 +261,8 @@
         currentFalsePositive,
         showInfoToggle,
         successRemoveAlert,
+        infoNoCWEIDAlert,
+        infoNoCWEIDAlertMessage,
         t,
         closeDialog,
         markAsFalsePositive,

@@ -18,7 +18,7 @@
         <v-checkbox
           v-model="anyMethods"
           hide-details
-          :label="$t('MARK_FALSE_POSITIVE_METHODS_SELECTION_DIALOG_LABEL')"
+          :label="$t('MARK_FALSE_POSITIVE_WEBSCAN_ANY_METHOD')"
         />
       </v-card-text>
       <v-card-actions>

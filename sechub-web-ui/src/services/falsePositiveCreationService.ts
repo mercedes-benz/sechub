@@ -29,8 +29,9 @@ class FalsePositiveCreationService {
     return falsePositives
   }
 
-  calculateWebScanFalsePositivesProjectData (selectedFindings: SecHubFinding[]): WebscanFalsePositiveProjectData[] {
+  calculateWebScanFalsePositivesProjectData (selectedFindings: SecHubFinding[]): { calculatedFalsePositives: WebscanFalsePositiveProjectData[], findingsWithNoCWEID: number[] } {
     const patternMap: Map<string, WebscanFalsePositiveProjectData> = new Map()
+    const findingsWithNoCWEID: Array<number> = []
 
     selectedFindings.forEach(finding => {
       const methods: Array<string> = []
@@ -47,18 +48,21 @@ class FalsePositiveCreationService {
         return
       }
 
-      const cweId = finding.cweId || 0
-      // supposed by AI
+      const cweId = finding.cweId
+      if (!cweId) {
+        // we cannot mark findings as false positive without cweId
+        findingsWithNoCWEID.push(finding.id || 0)
+        return
+      }
+
       const compositeKey = `${cweId}-${newPattern}`
 
       if (patternMap.has(compositeKey)) {
         const existingEntry = patternMap.get(compositeKey)
         if (existingEntry) {
           methods.forEach(method => {
-            if (existingEntry.methods) {
-              if (!existingEntry.methods.includes(method)) {
-                existingEntry.methods.push(method)
-              }
+            if (existingEntry.methods && !existingEntry.methods.includes(method)) {
+              existingEntry.methods.push(method)
             }
           })
         }
@@ -71,7 +75,8 @@ class FalsePositiveCreationService {
       }
     })
 
-    return Array.from(patternMap.values())
+    const calculatedFalsePositives = Array.from(patternMap.values())
+    return { calculatedFalsePositives, findingsWithNoCWEID }
   }
 
   createWebScanFalsePositives (webscans: WebscanFalsePositiveProjectData [], jobUUID: string, radioComment: string, textAreaComment: string): FalsePositives {

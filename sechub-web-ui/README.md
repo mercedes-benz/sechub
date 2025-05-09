@@ -82,7 +82,7 @@ Now you can test your web-ui with sechub and real scans!
 
 ### run tests
 
-For testing we use the https://vitest.dev/ vitest framework
+For testing we use the [vitest framework](https://vitest.dev)
 
 ```bash
 npm run test
