@@ -18,12 +18,15 @@
           <v-icon end icon="mdi-information-outline" />
         </v-btn>
       </v-toolbar-title>
-      <v-icon
-        class="ma-2"
-        :class="getTrafficLightClass(report.trafficLight || '')"
-        icon="mdi-circle"
-        size="x-large"
-      />
+      <template #prepend>
+        <v-icon
+          class="ma-2"
+          :class="getTrafficLightClass(report.trafficLight || '')"
+          icon="mdi-circle"
+          size="x-large"
+        />
+      </template>
+
     </v-toolbar>
 
     <div v-if="(!report || report.status === 'FAILED' || scanTypeMap.size === 0)">

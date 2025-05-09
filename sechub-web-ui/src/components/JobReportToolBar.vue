@@ -12,12 +12,15 @@
         >{{ scanType }}</span>
 
       </v-toolbar-title>
-      <v-icon
-        class="ma-2"
-        :class="getTrafficLightClass(trafficLight)"
-        icon="mdi-circle"
-        size="x-large"
-      />
+      <template #prepend>
+        <v-icon
+          class="ma-2"
+          :class="getTrafficLightClass(trafficLight)"
+          icon="mdi-circle"
+          size="x-large"
+        />
+      </template>
+
     </v-toolbar>
   </v-card>
 </template>
