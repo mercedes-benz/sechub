@@ -13,8 +13,8 @@
     @filter="filterBySeverity"
   />
 
-  <FalsePositiveDialogSAST
-    v-if="scantype != 'webscan'"
+  <FalsePositiveDialog
+    :is-web-scan="(scantype === 'webscan')"
     :job-u-u-i-d="jobUUID"
     :project-id="projectId"
     :selected-findings="selectedFindingsForFalsePositives"
@@ -60,7 +60,6 @@
     <template #top>
       <div>
         <v-btn
-          v-if="(scantype != 'webscan')"
           class="ma-4"
           :disabled="!isAnyFindingSelected"
           @click="openFalsePositiveDialog"
@@ -72,27 +71,6 @@
             icon="mdi-alert-remove-outline"
           />
         </v-btn>
-        <v-tooltip
-          v-else-if="(scantype == 'webscan')"
-          v-model="showWebScanMarkFPButtonToggle"
-          location="right"
-        >
-          <template #activator="{ props }">
-            <div v-bind="props" class="d-inline-block">
-              <v-btn
-                class="ma-4"
-                :disabled="true"
-              >{{ $t('MARK_FALSE_POSITIVE_BUTTON') }}
-                <v-icon
-                  color="primary"
-                  end
-                  icon="mdi-alert-remove-outline"
-                />
-              </v-btn>
-            </div>
-          </template>
-          <span>{{ $t('MARK_FALSE_POSITIVE_BUTTON_COMING_SOON') }}</span>
-        </v-tooltip>
       </div>
     </template>
 
@@ -180,6 +158,11 @@
   import { TmpFalsePositives, useTmpFalsePositivesStore } from '@/stores/tempFalsePositivesStore'
   import '@/styles/sechub.scss'
 
+  type RouteParams = {
+    id?: string;
+    jobId?: string;
+  };
+
   export default {
     name: 'JobReport',
 
@@ -190,8 +173,11 @@
       const store = useReportStore()
       const tempFalsePositivesStore = useTmpFalsePositivesStore()
 
-      const projectId = ref('')
-      const jobUUID = ref('')
+      const params = route.params as RouteParams
+
+      const projectId = ref(params.id || '')
+      const jobUUID = ref(params.jobId || '')
+      const scantype = ref((route.query.scantype as string) || '')
 
       const report = ref<SecHubReport>({})
       const markedFalsePositives = ref<TmpFalsePositives>()
@@ -203,72 +189,39 @@
         { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
       ]
 
-      // severity filter constants
       const showSeverityFilter = ref(false)
       const filter = ref('')
       const severityFilter = ref([] as string[])
-
-      // in selectedFindings only the id is saved, because it is bound to the v-data-table and id is the item key
-      // to hand over the items for false positive handling, we need to transfer the whole SecHub finding
       const selectedFindings = ref([] as number[])
       const selectedFindingsForFalsePositives = ref([] as SecHubFinding[])
       const showMarkFalsePositiveDialog = ref(false)
       const errorAlert = ref(false)
       const successAlert = ref(false)
-
       const showWebScanMarkFPButtonToggle = ref(false)
-
-      if ('id' in route.params) {
-        projectId.value = route.params.id
-      }
-
-      if ('jobId' in route.params) {
-        jobUUID.value = route.params.jobId
-      }
-
-      const query = route.query.scantype as string
-      const scantype = ref('')
-      scantype.value = query
-
-      loadFalsePositivesFromStore()
-
-      // preparing findings for presentation (order and filter)
-      const filteredFindingsByScantype = computed(() => {
-        if (report.value.result?.findings) {
-          return report.value.result?.findings.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
-        } else {
-          return report.value.result?.findings
-        }
-      })
 
       const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']
 
+      const filteredFindingsByScantype = computed(() => {
+        return report.value.result?.findings?.filter(finding => finding.type?.toLocaleLowerCase() === scantype.value) || []
+      })
+
       const sortedFindingsBySeverity = computed<SecHubFinding[]>(() => {
-        if (!filteredFindingsByScantype.value) {
-          return []
-        }
-        return [...filteredFindingsByScantype.value].sort((a, b) => {
+        return filteredFindingsByScantype.value.slice().sort((a, b) => {
           return severityOrder.indexOf(a.severity || 'INFO') - severityOrder.indexOf(b.severity || 'INFO')
         })
       })
 
       const filteredFindingsBySeverity = computed<SecHubFinding[]>(() => {
-        if (!severityFilter.value || severityFilter.value.length === 0) {
+        if (!severityFilter.value.length) {
           return sortedFindingsBySeverity.value
         }
         return sortedFindingsBySeverity.value.filter(finding => severityFilter.value.includes(finding.severity || 'INFO'))
       })
-      // end of preparing findings for presentation
 
-      const isAnyFindingSelected = computed(() => {
-        return selectedFindings.value.length > 0
-      })
+      const isAnyFindingSelected = computed(() => selectedFindings.value.length > 0)
 
       const availableSeverities = computed(() => {
-        const severities = new Set<any>()
-        if (!filteredFindingsByScantype.value) {
-          return Array.from(severities)
-        }
+        const severities = new Set<string>()
         filteredFindingsByScantype.value.forEach(finding => {
           if (finding.severity) {
             severities.add(finding.severity)
@@ -280,43 +233,33 @@
       onMounted(async () => {
         const reportFromStore = store.getReportByUUID(jobUUID.value)
         if (!reportFromStore) {
-          router.push({
-            path: '/projects',
-          })
+          router.push({ path: '/projects' })
         } else {
           report.value = reportFromStore
         }
+        loadFalsePositivesFromStore()
       })
 
-      function calculateIcon (severity :string) {
-        switch (severity) {
-          case 'CRITICAL':
-          case 'HIGH':
-            return 'mdi-alert-circle-outline'
-          case 'MEDIUM':
-            return 'mdi-alert-circle-outline'
-          case 'LOW':
-          case 'INFO':
-            return 'mdi-information-outline'
-          default:
-            return ''
+      function calculateIcon (severity: string) {
+        const iconMap: Record<string, string> = {
+          CRITICAL: 'mdi-alert-circle-outline',
+          HIGH: 'mdi-alert-circle-outline',
+          MEDIUM: 'mdi-alert-circle-outline',
+          LOW: 'mdi-information-outline',
+          INFO: 'mdi-information-outline',
         }
+        return iconMap[severity] || ''
       }
 
       function calculateColor (severity: string) {
-        switch (severity) {
-          case 'CRITICAL':
-          case 'HIGH':
-            return 'error'
-          case 'MEDIUM':
-            return 'warning'
-          case 'LOW':
-            return 'success'
-          case 'INFO':
-            return 'primary'
-          default:
-            return 'layer_01'
+        const colorMap: Record<string, string> = {
+          CRITICAL: 'error',
+          HIGH: 'error',
+          MEDIUM: 'warning',
+          LOW: 'success',
+          INFO: 'primary',
         }
+        return colorMap[severity] || 'layer_01'
       }
 
       function filterBySeverity (filter = severityFilter.value) {
@@ -329,41 +272,34 @@
       }
 
       function openFalsePositiveDialog () {
-        const allFindings = report.value.result?.findings
-        if (!allFindings) {
-          selectedFindingsForFalsePositives.value = []
-        } else {
-          selectedFindingsForFalsePositives.value = selectedFindings.value.map(selected => {
-            return allFindings.find(finding => finding.id === selected) || {}
-          })
-        }
+        const allFindings = report.value.result?.findings || []
+        selectedFindingsForFalsePositives.value = selectedFindings.value.map(selected => {
+          return allFindings.find(finding => finding.id === selected) || {}
+        })
         showMarkFalsePositiveDialog.value = true
       }
 
-      async function closeFalsePositiveDialog () {
+      async function closeFalsePositiveDialog (success: boolean) {
         showMarkFalsePositiveDialog.value = false
-
-        if (successAlert.value) {
-          let combinedArray
-          if (markedFalsePositives.value?.findingIds) {
-            combinedArray = [...new Set([...markedFalsePositives.value?.findingIds, ...selectedFindings.value])]
+        if (success) {
+          if (scantype.value === 'webscan') {
+            selectedFindings.value = []
           } else {
-            combinedArray = selectedFindings.value
+            const combinedArray = markedFalsePositives.value?.findingIds
+              ? [...new Set([...markedFalsePositives.value.findingIds, ...selectedFindings.value])]
+              : selectedFindings.value
+            const newFalsePositives: TmpFalsePositives = {
+              jobUUID: jobUUID.value,
+              findingIds: combinedArray,
+            }
+            tempFalsePositivesStore.storeFalsePositives(newFalsePositives)
+            loadFalsePositivesFromStore()
           }
-          const newFalsePositives: TmpFalsePositives = {
-            jobUUID: jobUUID.value,
-            findingIds: combinedArray,
-          }
-          tempFalsePositivesStore.storeFalsePositives(newFalsePositives)
-          loadFalsePositivesFromStore()
         }
       }
 
       function isAlreadyFalsePositive (item: number) {
-        if (markedFalsePositives.value) {
-          return !!markedFalsePositives.value.findingIds.includes(item)
-        }
-        return false
+        return markedFalsePositives.value?.findingIds.includes(item) || false
       }
 
       function loadFalsePositivesFromStore () {
@@ -402,6 +338,7 @@
     },
   }
 </script>
+
 <style scoped>
 .non-clickable-btn:hover {
   cursor: default;

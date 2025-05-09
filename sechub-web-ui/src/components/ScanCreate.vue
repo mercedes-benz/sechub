@@ -111,7 +111,7 @@
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
   import { SecHubConfiguration } from '@/generated-sources/openapi'
-  import { buildSecHubConfiguration, isFileSizeValid } from '@/utils/scanConfigUtils'
+  import scanConfigurationBuilderService from '@/services/scanConfigurationBuilderService'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
@@ -158,7 +158,7 @@
       }
 
       function updateFileselection (newFile : File, fileType : string) {
-        const { errorMessage, isValid } = isFileSizeValid(newFile, fileType)
+        const { errorMessage, isValid } = scanConfigurationBuilderService.isFileSizeValid(newFile, fileType)
 
         if (isValid) {
           selectedFile.value = newFile
@@ -180,7 +180,7 @@
         }
 
         if (selectedFile.value !== null) {
-          configuration.value = buildSecHubConfiguration(selectedScanOptions.value, selectedFileType.value, projectId.value)
+          configuration.value = scanConfigurationBuilderService.buildSecHubConfiguration(selectedScanOptions.value, selectedFileType.value, projectId.value)
           createScan()
         }
       }
