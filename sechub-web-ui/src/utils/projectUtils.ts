@@ -26,7 +26,7 @@ export function getTrafficLightClass (value: string) {
   }
 }
 
-export const getIcon = (text: string): string => {
+export const getIconFromScanStatus = (text: string): string => {
   switch (text) {
     case 'ERROR':
     case 'FAILED':
@@ -42,7 +42,7 @@ export const getIcon = (text: string): string => {
   }
 }
 
-export const getIconColor = (text: string): string => {
+export const getIconColorFromScanStatus = (text: string): string => {
   switch (text) {
     case 'ERROR':
     case 'FAILED':

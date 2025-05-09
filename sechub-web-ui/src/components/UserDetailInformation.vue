@@ -85,7 +85,7 @@
                       color="primary"
                       @click="refreshApiTokenDialog = false"
                     >
-                      {{ $t('USER_SETTINGS_REQUEST_NEW_API_TOKEN_DIALOG_CLOSE') }}</v-btn>
+                      {{ $t('DIALOG_BUTTON_CLOSE') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>

@@ -7,7 +7,6 @@
     color="error"
     :title="$t('SCAN_CREATE_FILE_UPLOAD_INPUT_ERROR_TITLE')"
     type="warning"
-    variant="tonal"
   >
     {{ error }}
   </v-alert>

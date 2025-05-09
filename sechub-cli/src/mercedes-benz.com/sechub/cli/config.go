@@ -24,6 +24,8 @@ type Config struct {
 	configFileRead                 bool
 	debug                          bool
 	debugHTTP                      bool
+	failOnRed                      bool
+	failOnYellow                   bool
 	file                           string
 	ignoreDefaultExcludes          bool
 	initialWaitIntervalNanoseconds int64
@@ -37,7 +39,6 @@ type Config struct {
 	reportFormat                   string
 	secHubJobUUID                  string
 	server                         string
-	stopOnYellow                   bool
 	tempDir                        string
 	timeOutNanoseconds             int64
 	timeOutSeconds                 int
@@ -104,8 +105,8 @@ func prepareOptionsFromCommandline(config *Config) {
 		reportformatOption, config.reportFormat, "Output format for reports, supported currently: "+fmt.Sprint(SupportedReportFormats)+".")
 	flag.StringVar(&config.server,
 		serverOption, config.server, "Server url of SecHub server to use - e.g. 'https://sechub.example.com:8443'.\nMandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
-	flag.BoolVar(&config.stopOnYellow,
-		stopOnYellowOption, config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
+	flag.BoolVar(&config.failOnYellow,
+		failOnYellowOption, config.failOnYellow, "Makes a yellow traffic light in the scan also break the build")
 	flag.StringVar(&config.tempDir,
 		tempDirOption, config.tempDir, "Temporary directory - Temporary files will be placed here. Can also be defined in environment variable "+SechubTempDir)
 	flag.IntVar(&config.timeOutSeconds,
@@ -126,6 +127,11 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubDebugEnvVar) == "true"
 	config.debugHTTP =
 		os.Getenv(SechubDebugHTTPEnvVar) == "true"
+	if os.Getenv(SechubFailOnRedEnvVar) == "false" {
+		config.failOnRed = false
+	} else {
+		config.failOnRed = true  // default behavior
+	}
 	config.ignoreDefaultExcludes =
 		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =

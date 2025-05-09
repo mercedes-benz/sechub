@@ -5,7 +5,6 @@ import static com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,7 @@ class ProfileMessageHandlerTest {
     void no_profiles_assigned_results_in_empty_profiles_list_in_response() {
         /* prepare */
         DomainMessage message = prepareValidDomainMessage();
-        when(productExecutionProfileRepository.findExecutionProfilesForProject(TEST_PROJECT_ID)).thenReturn(Collections.emptyList());
+        when(productExecutionProfileRepository.findOrderedIdsOfEnabledExecutionProfilesForProject(TEST_PROJECT_ID)).thenReturn(Collections.emptyList());
 
         /* execute */
         DomainMessageSynchronousResult response = handlerToTest.receiveSynchronMessage(message);
@@ -60,12 +59,11 @@ class ProfileMessageHandlerTest {
 
     @ParameterizedTest
     @ArgumentsSource(ActiveProfileIdsProvider.class)
-    void profiles_assigned_to_project_only_enabled_projects_are_returned_in_response(String variant, List<String> allAssignedProfileIds,
-            List<String> enableddProfileIds, List<String> expectedProfileIds) {
+    void profiles_assigned_to_project_only_enabled_projects_are_returned_in_response(String variant, List<String> enabledProfileIds,
+            List<String> expectedProfileIds) {
         /* prepare */
         DomainMessage message = prepareValidDomainMessage();
-        List<ProductExecutionProfile> executionProfilesOfProject = createProductExecutionProfilesbyIds(allAssignedProfileIds, enableddProfileIds);
-        when(productExecutionProfileRepository.findExecutionProfilesForProject(TEST_PROJECT_ID)).thenReturn(executionProfilesOfProject);
+        when(productExecutionProfileRepository.findOrderedIdsOfEnabledExecutionProfilesForProject(TEST_PROJECT_ID)).thenReturn(enabledProfileIds);
 
         /* execute */
         DomainMessageSynchronousResult response = handlerToTest.receiveSynchronMessage(message);
@@ -83,32 +81,18 @@ class ProfileMessageHandlerTest {
         return message;
     }
 
-    private List<ProductExecutionProfile> createProductExecutionProfilesbyIds(List<String> allProjectProfileIds, List<String> enabledProfileIdsList) {
-        List<ProductExecutionProfile> executionProfilesOfProject = new ArrayList<>(allProjectProfileIds.size());
-        for (String profileId : allProjectProfileIds) {
-            ProductExecutionProfile profile = new ProductExecutionProfile();
-            profile.id = profileId;
-            if (enabledProfileIdsList.contains(profileId)) {
-                profile.enabled = Boolean.TRUE;
-            }
-            executionProfilesOfProject.add(profile);
-        }
-        return executionProfilesOfProject;
-    }
-
     private static class ActiveProfileIdsProvider implements ArgumentsProvider {
 
         /* @formatter:off */
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    /* Arguments: String variant, List<String> allAssignedProfileIds, List<String> enableddProfileIds, List<String> expectedProfileIds */
-                    Arguments.of("a1",List.of(PROFILE1, PROFILE3, PROFILE2), List.of(PROFILE1,PROFILE2,PROFILE3), List.of(PROFILE1,PROFILE2,PROFILE3)),
-                    Arguments.of("a2",List.of(PROFILE1, PROFILE3, PROFILE2), List.of(PROFILE1,PROFILE3), List.of(PROFILE1,PROFILE3)),
-                    Arguments.of("a3",List.of(PROFILE1, PROFILE3, PROFILE2), List.of(PROFILE3,PROFILE2),List.of(PROFILE3,PROFILE2)),
-                    Arguments.of("a4",List.of(PROFILE1, PROFILE3, PROFILE2), List.of(PROFILE3), List.of(PROFILE3)),
-                    Arguments.of("a6",List.of(PROFILE1, PROFILE3, PROFILE2), List.of(), List.of()),
-                    Arguments.of("u1",List.of(PROFILE1, PROFILE2), List.of(PROFILE1,"unknown"), List.of(PROFILE1))
+                    /* Arguments: String variant, List<String> allAssignedProfileIds, List<String> enabledProfileIds, List<String> expectedProfileIds */
+                    Arguments.of("a1",List.of(PROFILE1,PROFILE2,PROFILE3), List.of(PROFILE1,PROFILE2,PROFILE3)),
+                    Arguments.of("a2",List.of(PROFILE1,PROFILE3), List.of(PROFILE1,PROFILE3)),
+                    Arguments.of("a3",List.of(PROFILE3,PROFILE2),List.of(PROFILE3,PROFILE2)),
+                    Arguments.of("a4",List.of(PROFILE3), List.of(PROFILE3)),
+                    Arguments.of("a6",List.of(), List.of())
             );
         }
         /* @formatter:on*/

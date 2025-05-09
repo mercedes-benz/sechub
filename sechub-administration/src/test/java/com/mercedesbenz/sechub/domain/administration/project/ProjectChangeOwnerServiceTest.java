@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -72,7 +71,6 @@ public class ProjectChangeOwnerServiceTest {
         when(oldOwner.getName()).thenReturn("old");
         when(newOwner.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
-        when(newOwner.getProjects()).thenReturn(new HashSet<>());
         when(userContext.isSuperAdmin()).thenReturn(true);
 
         /* execute */
@@ -101,7 +99,6 @@ public class ProjectChangeOwnerServiceTest {
         when(oldOwner.getName()).thenReturn("old");
         when(newOwner.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
-        when(newOwner.getProjects()).thenReturn(new HashSet<>());
         when(userContext.isSuperAdmin()).thenReturn(false);
         when(userContext.getUserId()).thenReturn("old");
 
@@ -126,7 +123,6 @@ public class ProjectChangeOwnerServiceTest {
         when(oldOwner.getName()).thenReturn("old");
         when(newOwner.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
-        when(newOwner.getProjects()).thenReturn(new HashSet<>());
         when(userContext.isSuperAdmin()).thenReturn(false);
         when(userContext.getUserId()).thenReturn("other-user");
 
@@ -168,7 +164,6 @@ public class ProjectChangeOwnerServiceTest {
 
         User user2 = mock(User.class);
         when(user2.getName()).thenReturn("user2");
-        when(user2.getOwnedProjects()).thenReturn(new HashSet<>());
 
         User user3 = mock(User.class);
         when(user3.getName()).thenReturn("user3");
@@ -190,7 +185,6 @@ public class ProjectChangeOwnerServiceTest {
 
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
         when(userRepository.findOrFailUser("user2")).thenReturn(user2);
-        when(user2.getProjects()).thenReturn(new HashSet<>());
 
         /* execute */
         serviceToTest.changeProjectOwner(user2.getName(), project1.getId());

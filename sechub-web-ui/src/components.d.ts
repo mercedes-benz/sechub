@@ -11,6 +11,7 @@ declare module 'vue' {
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
+    FalsePositiveDialogSAST: typeof import('./components/FalsePositiveDialogSAST.vue')['default']
     JobReport: typeof import('./components/JobReport.vue')['default']
     JobReportCodescanCallsRecursive: typeof import('./components/JobReportCodescanCallsRecursive.vue')['default']
     JobReportCodescanDetails: typeof import('./components/JobReportCodescanDetails.vue')['default']
@@ -30,6 +31,7 @@ declare module 'vue' {
     ScanCreate: typeof import('./components/ScanCreate.vue')['default']
     ScanFileUpload: typeof import('./components/ScanFileUpload.vue')['default']
     ScanTypeSelect: typeof import('./components/ScanTypeSelect.vue')['default']
+    SeverityFilterDialog: typeof import('./components/SeverityFilterDialog.vue')['default']
     UserDetailInformation: typeof import('./components/UserDetailInformation.vue')['default']
   }
 }

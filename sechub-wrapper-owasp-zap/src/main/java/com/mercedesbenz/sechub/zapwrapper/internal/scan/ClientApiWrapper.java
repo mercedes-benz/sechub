@@ -22,10 +22,13 @@ import com.mercedesbenz.sechub.zapwrapper.config.auth.ZapSessionManagementType;
 public class ClientApiWrapper {
 
     public static final String ZAP_CONNECTION_REFUSED = "Connection refused";
+
     private static final String URL_KEY = "url";
     private static final String STATUS_CODE_KEY = "statusCode";
     private static final String STATUS_REASON_KEY = "statusReason";
     private static final String METHOD_KEY = "method";
+
+    private static final String URLS_IN_SCOPE = "urlsInScope";
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientApiWrapper.class);
 
@@ -158,7 +161,6 @@ public class ClientApiWrapper {
             if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
-            LOG.warn("ZAP backend error: {}", e.getMessage());
             LOG.warn("Rule with id: {} was not a passive scanner rule.", ruleId);
             return false;
         }
@@ -183,7 +185,6 @@ public class ClientApiWrapper {
             if (e.getMessage().equalsIgnoreCase(ZAP_CONNECTION_REFUSED)) {
                 throw e;
             }
-            LOG.warn("ZAP backend error: {}", e.getMessage());
             LOG.warn("Rule with id: {} was not an active scanner rule.", ruleId);
             return false;
         }
@@ -449,25 +450,20 @@ public class ClientApiWrapper {
     }
 
     /**
-     * Logs all spider results with additional meta data and counts the amount of
-     * spider results logged.
+     * Get the number of spider results.
      *
      * @param scanId
-     * @return the amount of spider results logged
+     * @return number of spider results
      * @throws ClientApiException
      */
-    public long logFullSpiderResults(int scanId) throws ClientApiException {
+    public long getNumberOfSpiderResults(int scanId) throws ClientApiException {
         int numberOfSpiderResults = 0;
         ApiResponseList results = (ApiResponseList) clientApi.spider.fullResults(Integer.toString(scanId));
         for (ApiResponse resultItem : results.getItems()) {
             ApiResponseList elementList = (ApiResponseList) resultItem;
 
             for (ApiResponse elementListItem : elementList.getItems()) {
-                // It seems like an ApiResponseSet is present if the URL was in scope.
-                // Otherwise, e.g. in case of third party services links like cloudflare or
-                // anything else that the crawler detects, elementListItem is of type
-                // ApiResponseElement, which does not contain a values map.
-                if (elementListItem instanceof ApiResponseSet) {
+                if (URLS_IN_SCOPE.equals(elementListItem.getName())) {
                     ApiResponseSet apiResponseSet = (ApiResponseSet) elementListItem;
                     Map<String, String> result = createSafeMap(apiResponseSet.getValuesMap());
                     String url = result.get(URL_KEY);
@@ -476,16 +472,21 @@ public class ClientApiWrapper {
                     if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
                         continue;
                     }
-                    String statusCode = result.get(STATUS_CODE_KEY);
-                    String statusReason = result.get(STATUS_REASON_KEY);
-                    String method = result.get(METHOD_KEY);
-
-                    LOG.info("URL: '{}' returned status code: '{}/{}' on detection phase for request method: '{}'", url, statusCode, statusReason, method);
                     numberOfSpiderResults++;
                 }
             }
         }
         return numberOfSpiderResults;
+    }
+
+    /**
+     * Get the number of ajaxSpider results.
+     *
+     * @return number of ajaxSpider results
+     * @throws ClientApiException
+     */
+    public long getNumberOfAjaxSpiderResults() throws ClientApiException {
+        return Long.parseLong(clientApi.ajaxSpider.numberOfResults().toString());
     }
 
     /**

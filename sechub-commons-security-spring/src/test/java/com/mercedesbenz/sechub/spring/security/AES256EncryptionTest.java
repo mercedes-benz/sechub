@@ -16,7 +16,7 @@ class AES256EncryptionTest {
 
     private static final String VALID_AES_256_TEST_SECRET_KEY = "test-test-test-test-test-test-32";
     private static final SecHubSecurityProperties SEC_HUB_SECURITY_PROPERTIES = new SecHubSecurityProperties(mock(), mock(),
-            new SecHubSecurityProperties.EncryptionProperties(VALID_AES_256_TEST_SECRET_KEY));
+            new SecHubSecurityProperties.EncryptionProperties(VALID_AES_256_TEST_SECRET_KEY), null);
     private static final AES256Encryption aes256Encryption;
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
 

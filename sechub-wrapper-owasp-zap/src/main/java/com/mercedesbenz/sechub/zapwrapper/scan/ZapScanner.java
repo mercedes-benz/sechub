@@ -56,6 +56,8 @@ public class ZapScanner implements ZapScan {
     private final SystemUtil systemUtil;
     private final Counter loginCounter;
 
+    private long numberOfCrawlerResults = 0L;
+
     public ZapScanner(ClientApiWrapper clientApiWrapper, ZapScanContext scanContext) {
         this.clientApiWrapper = clientApiWrapper;
         this.scanContext = scanContext;
@@ -104,6 +106,10 @@ public class ZapScanner implements ZapScan {
 
             /* ZAP scan */
             executeScan(userInfo);
+
+            // Write a product message with the number of crawled URLs
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(
+                    new SecHubMessage(SecHubMessageType.INFO, "Detected %s URLs and paths during the scan.".formatted(numberOfCrawlerResults)));
 
             /* After scan */
             generateZapReport();
@@ -272,13 +278,8 @@ public class ZapScanner implements ZapScan {
         SecHubWebScanApiConfiguration secHubWebScanApiConfiguration = apiConfig.get();
         switch (secHubWebScanApiConfiguration.getType()) {
         case OPEN_API:
-            URL apiDefinitionUrl = secHubWebScanApiConfiguration.getApiDefinitionUrl();
-            if (apiDefinitionUrl != null) {
-                clientApiWrapper.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
-            }
-            for (File apiFile : scanContext.getApiDefinitionFiles()) {
-                clientApiWrapper.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
-            }
+            importOpenApiDefinitionFromUrl(secHubWebScanApiConfiguration.getApiDefinitionUrl());
+            importOpenApiDefinitionFromFiles();
             break;
         default:
             // should never happen since API type is an Enum
@@ -288,7 +289,36 @@ public class ZapScanner implements ZapScan {
         }
     }
 
-    void importClientCertificate() throws ClientApiException {
+    private void importOpenApiDefinitionFromUrl(URL apiDefinitionUrl) {
+        try {
+            if (apiDefinitionUrl != null) {
+                clientApiWrapper.importOpenApiDefintionFromUrl(apiDefinitionUrl, scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
+            }
+        } catch (ClientApiException e) {
+            String errorMessage = "Could not import openapi definition from URL: %s. Please make sure the specified URL is valid."
+                    .formatted(apiDefinitionUrl.toString());
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            ;
+            throw new ZapWrapperRuntimeException(errorMessage, e, ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
+        }
+    }
+
+    private void importOpenApiDefinitionFromFiles() {
+        for (File apiFile : scanContext.getApiDefinitionFiles()) {
+            try {
+                clientApiWrapper.importOpenApiFile(apiFile.toString(), scanContext.getTargetUrlAsString(), scanContext.getZapContextId());
+            } catch (ClientApiException e) {
+                String errorMessage = "Could not import openapi definition from file: %s. Please make sure the specified file is valid."
+                        .formatted(apiFile.getName());
+                scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+                ;
+                throw new ZapWrapperRuntimeException(errorMessage, e, ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
+            }
+
+        }
+    }
+
+    void importClientCertificate() {
         if (scanContext.getClientCertificateFile() == null) {
             LOG.info("For scan {}: No client certificate file was found!", scanContext.getContextName());
             return;
@@ -313,8 +343,17 @@ public class ZapScanner implements ZapScan {
         if (clientCertificateConfig.getPassword() != null) {
             password = new String(clientCertificateConfig.getPassword());
         }
-        clientApiWrapper.importPkcs12ClientCertificate(clientCertificateFile.getAbsolutePath(), password);
-        clientApiWrapper.enableClientCertificate();
+        try {
+            clientApiWrapper.importPkcs12ClientCertificate(clientCertificateFile.getAbsolutePath(), password);
+            clientApiWrapper.enableClientCertificate();
+        } catch (ClientApiException e) {
+            String errorMessage = "Could not import client certificate from file: %s. Please make sure the file and/or the password are valid."
+                    .formatted(clientCertificateFile.getName());
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            ;
+            throw new ZapWrapperRuntimeException(errorMessage, e, ZapWrapperExitCode.CLIENT_CERTIFICATE_CONFIG_INVALID);
+        }
+
     }
 
     void executeScan(UserInformation userInfo) throws ClientApiException {
@@ -648,6 +687,8 @@ public class ZapScanner implements ZapScan {
         /* stop spider - otherwise running in background */
         clientApiWrapper.stopAjaxSpider();
         LOG.info("For scan {}: AjaxSpider completed.", scanContext.getContextName());
+
+        numberOfCrawlerResults += clientApiWrapper.getNumberOfAjaxSpiderResults();
     }
 
     /**
@@ -683,11 +724,9 @@ public class ZapScanner implements ZapScan {
         }
         /* stop spider - otherwise running in background */
         clientApiWrapper.stopSpiderScan(scanId);
-
-        long numberOfSpiderResults = clientApiWrapper.logFullSpiderResults(scanId);
-        scanContext.getZapProductMessageHelper()
-                .writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Scanned %s URLs during the scan.".formatted(numberOfSpiderResults)));
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
+
+        numberOfCrawlerResults += clientApiWrapper.getNumberOfSpiderResults(scanId);
     }
 
     /**

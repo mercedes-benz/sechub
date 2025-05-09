@@ -20,8 +20,7 @@
       </v-toolbar-title>
       <template #prepend>
         <v-icon
-          class="ma-2"
-          :class="getTrafficLightClass(report.trafficLight || '')"
+          :class="['traffic-light-toolbar', getTrafficLightClass(report.trafficLight || '') ]"
           icon="mdi-circle"
           size="x-large"
         />
@@ -29,9 +28,15 @@
 
     </v-toolbar>
 
-    <div v-if="(!report || report.status === 'FAILED' || scanTypeMap.size === 0)">
+    <div v-if="(report.status === 'FAILED')">
       <v-list bg-color="background_paper" lines="two">
         <v-list-item>{{ $t('REPORT_SCAN_NOT_SUCCESSFUL') }}</v-list-item>
+      </v-list>
+    </div>
+
+    <div v-else-if="(!report || scanTypeMap.size === 0)">
+      <v-list bg-color="background_paper" lines="two">
+        <v-list-item>{{ $t('REPORT_SCAN_NO_FINDINGS') }}</v-list-item>
       </v-list>
     </div>
 

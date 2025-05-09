@@ -560,6 +560,8 @@ spec:
 {{- end }}
         - name: SECHUB_SECURITY_ENCRYPTION_SECRETKEY
           value: "{{ .Values.security.encryption.secretKey }}"
+        - name: SECHUB_SECURITY_MINIMUMTOKENVALIDITY
+          value: "{{ .Values.security.minimumTokenValidity }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage
 # --------------------------------------------------------------------------------------------- #

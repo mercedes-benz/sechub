@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.mercedesbenz.sechub.domain.administration.project.Project;
-
 /**
  * This represents an information object used for json output
  *
@@ -31,20 +29,16 @@ public class UserDetailInformation {
 
     private final List<String> ownedProjects = new ArrayList<>();
 
-    public UserDetailInformation(User user) {
+    public UserDetailInformation(User user, Set<String> assignedProjects, Set<String> ownedProjects) {
         this.userId = user.getName();
         this.email = user.getEmailAddress();
 
-        Set<Project> projects = user.getProjects() == null ? Set.of() : user.getProjects();
+        if (assignedProjects != null) {
+            this.projects.addAll(assignedProjects);
 
-        for (Project project : projects) {
-            this.projects.add(project.getId());
         }
-
-        Set<Project> ownedProjects = user.getOwnedProjects() == null ? Set.of() : user.getOwnedProjects();
-
-        for (Project project : ownedProjects) {
-            this.ownedProjects.add(project.getId());
+        if (ownedProjects != null) {
+            this.ownedProjects.addAll(ownedProjects);
         }
 
         this.superAdmin = user.isSuperAdmin();

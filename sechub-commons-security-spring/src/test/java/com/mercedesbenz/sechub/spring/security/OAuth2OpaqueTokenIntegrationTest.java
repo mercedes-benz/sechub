@@ -133,7 +133,7 @@ class OAuth2OpaqueTokenIntegrationTest {
 
     @Configuration
     @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, AES256Encryption.class,
-            OAuth2OpaqueTokenExpirationCalculator.class })
+            OAuth2TokenExpirationCalculator.class })
     static class TestConfig {
 
         @Bean

@@ -31,12 +31,21 @@
   color: rgb(var(--v-theme-warning)) !important;
 }
 
+.traffic-light-toolbar {
+  padding-left: 20px;
+}
+
 .sechub-report-expandable-element {
   margin-top: 8px;
 }
 
 .v-dialog .v-card-title{
   margin-top: 16px;
+}
+
+.v-dialog .v-card{
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .v-card .sechub-dialog-close-btn {

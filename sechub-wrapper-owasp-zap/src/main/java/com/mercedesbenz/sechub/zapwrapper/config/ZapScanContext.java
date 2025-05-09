@@ -61,7 +61,7 @@ public class ZapScanContext {
     private File pacFilePath;
     private boolean noHeadless;
     private int zapContextId;
-    public int maximumLoginScriptFailureRetries;
+    private int maximumLoginScriptFailureRetries;
 
     private ZapScanContext() {
     }

@@ -937,6 +937,7 @@ class ZapScannerTest {
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
         when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
+        when(clientApiWrapper.getNumberOfAjaxSpiderResults()).thenReturn(0L);
 
         /* execute */
         scannerToTest.runAndWaitAjaxSpider();
@@ -944,6 +945,7 @@ class ZapScannerTest {
         /* test */
         verify(clientApiWrapper, times(2)).getAjaxSpiderStatus();
         verify(clientApiWrapper).stopAjaxSpider();
+        verify(clientApiWrapper).getNumberOfAjaxSpiderResults();
     }
 
     @Test
@@ -952,22 +954,21 @@ class ZapScannerTest {
         int scanId = 111111;
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(false);
 
-        ZapProductMessageHelper messageHelper = mock(ZapProductMessageHelper.class);
-        when(scanContext.getZapProductMessageHelper()).thenReturn(messageHelper);
-
         when(clientApiWrapper.getSpiderStatusForScan(scanId)).thenReturn(42).thenReturn(100);
-        when(clientApiWrapper.logFullSpiderResults(scanId)).thenReturn(0L);
+        when(clientApiWrapper.getNumberOfSpiderResults(scanId)).thenReturn(0L);
         when(clientApiWrapper.startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean())).thenReturn(scanId);
+
+        when(clientApiWrapper.getNumberOfSpiderResults(scanId)).thenReturn(0L);
 
         /* execute */
         scannerToTest.runAndWaitForSpider();
 
         /* test */
-        verify(scanContext).getZapProductMessageHelper();
         verify(clientApiWrapper, times(2)).getSpiderStatusForScan(scanId);
         verify(clientApiWrapper).stopSpiderScan(scanId);
-        verify(clientApiWrapper).logFullSpiderResults(scanId);
+        verify(clientApiWrapper).getNumberOfSpiderResults(scanId);
         verify(clientApiWrapper).startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean());
+        verify(clientApiWrapper).getNumberOfSpiderResults(scanId);
     }
 
     @Test
@@ -1021,7 +1022,6 @@ class ZapScannerTest {
 
         when(clientApiWrapper.getSpiderStatusForScan(scanId)).thenReturn(42).thenReturn(100);
         when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
-        when(clientApiWrapper.logFullSpiderResults(scanId)).thenReturn(0L);
         when(clientApiWrapper.startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean())).thenReturn(scanId);
 
         when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(42).thenReturn(100);
@@ -1075,7 +1075,6 @@ class ZapScannerTest {
 
         when(clientApiWrapper.getSpiderStatusForScan(scanId)).thenReturn(42).thenReturn(100);
         when(clientApiWrapper.getAjaxSpiderStatus()).thenReturn("Running").thenReturn("stopped");
-        when(clientApiWrapper.logFullSpiderResults(scanId)).thenReturn(0L);
         when(clientApiWrapper.startSpiderScan(any(), any(), anyBoolean(), any(), anyBoolean())).thenReturn(scanId);
 
         when(clientApiWrapper.getActiveScannerStatusForScan(scanId)).thenReturn(42).thenReturn(100);

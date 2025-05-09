@@ -12,6 +12,8 @@ ENVIRONMENT_FILE=".env-single"
 setup_environment_file ".env" "env" "$ENVIRONMENT_FILES_FOLDER/env-base-image"
 setup_environment_file "$ENVIRONMENT_FILE" "$ENVIRONMENT_FILES_FOLDER/env-base"
 
+cp --recursive --force ../../sechub-solutions-shared/install-java/ docker/
+
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1

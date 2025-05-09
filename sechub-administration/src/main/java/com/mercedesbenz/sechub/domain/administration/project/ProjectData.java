@@ -66,4 +66,11 @@ public class ProjectData {
     public Set<String> getEnabledProfileIds() {
         return enabledProfileIds;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectData [" + (projectId != null ? "projectId=" + projectId + ", " : "") + (owner != null ? "owner=" + owner + ", " : "")
+                + (isOwned != null ? "isOwned=" + isOwned + ", " : "") + (assignedUsers != null ? "assignedUsers=" + assignedUsers + ", " : "")
+                + (enabledProfileIds != null ? "enabledProfileIds=" + enabledProfileIds : "") + "]";
+    }
 }
