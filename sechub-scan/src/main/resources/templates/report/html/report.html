@@ -119,6 +119,12 @@
             </tr>
         </table>
     </div>
+	<!--                   
+         ---------------------------------
+         - Execution                     -
+         ---------------------------------
+     -->
+     <div th:replace="~{report/html/execution :: renderExecution(metaData=${metaData})}"></div>
     <div class="content">
 
            <!--                   
@@ -181,12 +187,7 @@
          <div th:each="trafficLightGroup : ${trafficLightGroups}">
               <div th:replace="~{report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})}"></div>
          </div>
-         <!--                   
-             ---------------------------------
-             - Execution                     -
-             ---------------------------------
-         -->
-         <div th:replace="~{report/html/execution :: renderExecution(metaData=${metaData})}"></div>
+         
          <!--                   
              ---------------------------------
              - Messages                      -
