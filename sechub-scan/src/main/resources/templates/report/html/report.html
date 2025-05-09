@@ -106,11 +106,11 @@
                 -            Labels             -
                 ---------------------------------
             -->
-            <tr class="reportlabels" th:if="${metaData!=null && !metaData.get().getLabels().isEmpty()}">
+            <tr class="reportlabels" th:if="${metaData!=null && !metaData.getLabels().isEmpty()}">
                 <td></td>
                 <td>
                     <table class='reportMetaDataTable'>
-                        <tr th:each="entry : ${metaData.get().getLabels()}">
+                        <tr th:each="entry : ${metaData.getLabels()}">
                             <td class="metaDataLabelKey" th:text="${entry.key}">key</td>
                             <td class="metaDataLabelValue" th:text="${entry.value}">value</td>
                         </tr>
@@ -181,6 +181,12 @@
          <div th:each="trafficLightGroup : ${trafficLightGroups}">
               <div th:replace="~{report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})}"></div>
          </div>
+         <!--                   
+             ---------------------------------
+             - Execution                     -
+             ---------------------------------
+         -->
+         <div th:replace="~{report/html/execution :: renderExecution(metaData=${metaData})}"></div>
          <!--                   
              ---------------------------------
              - Messages                      -

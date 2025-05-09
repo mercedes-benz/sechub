@@ -15,7 +15,7 @@ public class SerecoMetaData {
     private Set<SerecoAnnotation> annotations = new LinkedHashSet<>();
     private List<SerecoLicenseDocument> licenseDocuments = new LinkedList<>();
     private SerecoVersionControl versionControl;
-    private Set<ScanType> usedPublicScanTypes= new LinkedHashSet<>();
+    private Set<ScanType> usedPublicScanTypes = new LinkedHashSet<>();
 
     public List<SerecoLicenseDocument> getLicenseDocuments() {
         return licenseDocuments;
@@ -36,8 +36,8 @@ public class SerecoMetaData {
     public SerecoVersionControl getVersionControl() {
         return versionControl;
     }
-    
-    public Set<ScanType> getUsedPublicScanTypes(){
+
+    public Set<ScanType> getUsedPublicScanTypes() {
         return usedPublicScanTypes;
     }
 }

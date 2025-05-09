@@ -80,14 +80,15 @@ public class SecHubExecutionContext {
     }
 
     /**
-     * @return unmodifiable set of all used public scan types in this SecHub execution
+     * @return unmodifiable set of all used public scan types in this SecHub
+     *         execution
      */
     public Set<ScanType> getUsedPublicScanTypes() {
         return Collections.unmodifiableSet(usedPublicScanTypes);
     }
 
     public void rememberIfPublicScanType(ScanType scanType) {
-        if (scanType==null) {
+        if (scanType == null) {
             return;
         }
         if (scanType.isInternalScanType()) {
@@ -95,7 +96,7 @@ public class SecHubExecutionContext {
         }
         usedPublicScanTypes.add(scanType);
     }
-    
+
     public SecHubExecutionOperationType getOperationType() {
         return operationType;
     }

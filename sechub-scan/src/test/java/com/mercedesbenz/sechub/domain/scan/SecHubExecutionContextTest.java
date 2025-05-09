@@ -34,24 +34,24 @@ class SecHubExecutionContextTest {
     void rememberIfPublicScanType_only_non_internal_scan_types_are_remembered(ScanType scanType) {
         /* prepare */
         SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID);
-        
+
         /* execute */
         context.rememberIfPublicScanType(scanType);
-        
+
         /* test */
         if (scanType.isInternalScanType()) {
             assertThat(context.getUsedPublicScanTypes()).isEmpty();
-        }else{
+        } else {
             assertThat(context.getUsedPublicScanTypes()).contains(scanType);
         }
-        
+
     }
-    
+
     @Test
     void adding_multiple_public_scan_types_results_in_set_containing_them() {
         /* prepare */
         SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID);
-        
+
         /* execute */
         context.rememberIfPublicScanType(ScanType.CODE_SCAN);
         context.rememberIfPublicScanType(ScanType.CODE_SCAN);
@@ -63,8 +63,7 @@ class SecHubExecutionContextTest {
         /* test */
         assertThat(context.getUsedPublicScanTypes()).containsOnly(ScanType.CODE_SCAN, ScanType.IAC_SCAN, ScanType.LICENSE_SCAN, ScanType.WEB_SCAN).hasSize(4);
     }
-    
-    
+
     @Test
     void constructor_without_operation_type_is_operation_type_SCAN() {
         /* execute */

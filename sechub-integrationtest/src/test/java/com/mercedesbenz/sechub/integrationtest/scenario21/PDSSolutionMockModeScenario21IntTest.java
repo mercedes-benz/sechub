@@ -45,6 +45,8 @@ import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestExtension;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.WithTestScenario;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 
 @ExtendWith(IntegrationTestExtension.class)
 @WithTestScenario(Scenario21.class)
@@ -200,6 +202,7 @@ public class PDSSolutionMockModeScenario21IntTest {
         /* @formatter:on */
     }
 
+    @UseCaseUserDownloadsJobReport(@Step(number = 0, name = "integration-test", description = "An integration test which downloads reports as HTML and JSON + stores it to file system"))
     private SecHubReportModel executePDSSolutionJobAndStoreReports(ScanType scanType, TestProject project, String solutionName) {
         SecHubConfigurationModel model = createTestModelFor(scanType, project);
         LOG.info("using sechub config:\n{}", JSONConverter.get().toJSON(model, true));
@@ -222,13 +225,12 @@ public class PDSSolutionMockModeScenario21IntTest {
             TestAPI.dumpAllPDSJobOutputsForSecHubJob(jobUUID);
             fail("Report has not status SUCCESS but: " + report.getStatus() + " - something was wrong. Look at the console output for details");
         }
-        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
-        if (metaDataOpt.isEmpty()) {
+        SecHubReportMetaData metaData = report.getMetaData();
+        if (metaData == null) {
             fail("Meta data not found in report!");
         }
-        SecHubReportMetaData metaData = metaDataOpt.get();
         assertThat(metaData.getExecuted()).containsOnly(scanType);
-        
+
         /*
          * now we do sanity check via info and warn messages - if something is wrong
          * configured in tests we can fail here

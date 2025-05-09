@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -164,10 +163,10 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         }
         assertEquals(0, result.getResult().getCount());
 
-        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
-        assertTrue(metaDataOpt.isPresent());
+        SecHubReportMetaData metaData = result.getMetaData();
+        assertNotNull(metaData);
 
-        SecHubReportSummary summary = metaDataOpt.get().getSummary();
+        SecHubReportSummary summary = metaData.getSummary();
         assertTrue(summary.getCodeScan().isEmpty());
         assertTrue(summary.getInfraScan().isEmpty());
         assertTrue(summary.getSecretScan().isEmpty());
@@ -189,7 +188,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
@@ -213,7 +212,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
@@ -238,7 +237,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(2, critical.size());
 
@@ -269,7 +268,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getCritical());
         assertEquals(0, codeScan.getHigh());
@@ -311,7 +310,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getCritical());
         assertEquals(1, codeScan.getLow());
