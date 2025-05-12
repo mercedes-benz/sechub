@@ -10,10 +10,14 @@ import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 
 /**
- * Represents a common possibility to encrypt data. The secret key of an
- * instance can unseal and seal objects for example. Be aware: Every crypto
- * access object has its own secret key inside! So you need to use the same
- * crypto access object for you operations...
+ * Represents a common possibility to encrypt data inside ONE JVM. The secret
+ * key of an instance can unseal and seal objects for example. Be aware: Every
+ * crypto access object has its own secret key inside! So you need to use the
+ * same crypto access object for you operations...
+ *
+ * NOTE: If you want to persist or share an object in a encrypted way you have
+ * to use other ways! This class is only meant to ensure that memory dumps do
+ * not reveal object data.
  *
  * @author Albert Tregnaghi
  *

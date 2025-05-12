@@ -19,17 +19,23 @@ import org.mockito.InOrder;
 
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
-class InMemoryCacheTest {
+class SelfCleaningCacheTest {
 
     private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
     private static final ScheduledExecutorService scheduledExecutorService = mock();
     @SuppressWarnings("rawtypes")
     private static final ScheduledFuture scheduledFuture = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
+    private CachePersistence<String> inMemoryCachePersistence;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
     void beforeEach() {
+
+        inMemoryCachePersistence = new InMemoryCachePersistence<String>(); // we rely here on the in memory cache persistence implementation (yes this is a
+        // bit ugly and not atomic testing, but makes it a lot easier to test).
+        // But InMemoryPersistence has its own tests which ensure it work as expected.
+
         reset(scheduledExecutorService, applicationShutdownHandler);
         when(scheduledExecutorService.scheduleAtFixedRate(any(), anyLong(), anyLong(), any())).thenReturn(scheduledFuture);
     }
@@ -37,7 +43,7 @@ class InMemoryCacheTest {
     @Test
     void construct_with_default_cache_clear_job_period() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(DEFAULT_CACHE_CLEAR_JOB_PERIOD);
@@ -52,7 +58,8 @@ class InMemoryCacheTest {
         Duration cacheClearJobPeriod = Duration.ofSeconds(1);
 
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, cacheClearJobPeriod, scheduledExecutorService,
+                applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.getCacheClearJobPeriod()).isEqualTo(cacheClearJobPeriod);
@@ -63,7 +70,7 @@ class InMemoryCacheTest {
     void construct_with_null_scheduled_executor_service_throws_exception() {
         /* test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new InMemoryCache<>(DEFAULT_CACHE_CLEAR_JOB_PERIOD, null, applicationShutdownHandler ))
+        assertThatThrownBy(() -> new SelfCleaningCache<>(inMemoryCachePersistence,DEFAULT_CACHE_CLEAR_JOB_PERIOD, null, applicationShutdownHandler ))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("Property 'scheduledExecutorService' must not be null");
         /* @formatter:on */
@@ -73,7 +80,7 @@ class InMemoryCacheTest {
     void construct_with_null_cache_clear_job_period_throws_exception() {
         /* test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new InMemoryCache<>(null, scheduledExecutorService, applicationShutdownHandler))
+        assertThatThrownBy(() -> new SelfCleaningCache<>(inMemoryCachePersistence,null, scheduledExecutorService, applicationShutdownHandler))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("Property 'cacheClearJobPeriod' must not be null");
         /* @formatter:on */
@@ -83,7 +90,7 @@ class InMemoryCacheTest {
     void construct_with_null_application_shutdown_handler_throws_exception() {
         /* test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new InMemoryCache<>(DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, null))
+        assertThatThrownBy(() -> new SelfCleaningCache<>(inMemoryCachePersistence,DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("Property 'applicationShutdownHandler' must not be null");
         /* @formatter:on */
@@ -92,7 +99,7 @@ class InMemoryCacheTest {
     @Test
     void remove_key_removes_value_from_cache() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* prepare */
         inMemoryCacheToTest.put("key1", "value1", Duration.ofSeconds(10));
@@ -110,7 +117,7 @@ class InMemoryCacheTest {
     @Test
     void get_returns_empty_optional_when_cache_does_not_contain_key() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         assertThat(inMemoryCacheToTest.get("not-existing-key")).isEmpty();
@@ -119,7 +126,7 @@ class InMemoryCacheTest {
     @Test
     void get_throws_null_pointer_exception_when_key_is_null() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         assertThatThrownBy(() -> inMemoryCacheToTest.get(null)).isInstanceOf(NullPointerException.class).hasMessage("Argument 'key' must not be null");
@@ -128,7 +135,7 @@ class InMemoryCacheTest {
     @Test
     void remove_throws_null_pointer_exception_when_key_is_null() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         assertThatThrownBy(() -> inMemoryCacheToTest.remove(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("key");
@@ -137,7 +144,7 @@ class InMemoryCacheTest {
     @Test
     void get_returns_value_when_cache_contains_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
         String key = "key";
         String value = "value";
         Duration duration = Duration.ofSeconds(1);
@@ -153,7 +160,7 @@ class InMemoryCacheTest {
     @Test
     void put_overrides_existing_cache_data_with_same_key() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
         String key = "key";
         String oldValue = "old value";
         Duration duration = Duration.ofSeconds(1);
@@ -173,7 +180,7 @@ class InMemoryCacheTest {
     @Test
     void put_throws_null_pointer_exception_when_key_is_null() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         /* @formatter:off */
@@ -186,7 +193,7 @@ class InMemoryCacheTest {
     @Test
     void put_throws_null_pointer_exception_when_value_is_null() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         /* @formatter:off */
@@ -199,7 +206,7 @@ class InMemoryCacheTest {
     @Test
     void put_throws_null_pointer_exception_when_duration_is_null() {
         /* test */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* test */
         /* @formatter:off */
@@ -214,8 +221,8 @@ class InMemoryCacheTest {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         /* the cache clear job will run right away (point in time = 0s) */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, Executors.newSingleThreadScheduledExecutor(),
-                applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, cacheClearJobPeriod,
+                Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler);
         String key = "key";
         String value = "value";
         Duration cacheDataDuration = Duration.ofMillis(100);
@@ -241,8 +248,8 @@ class InMemoryCacheTest {
     void clearCache_does_not_remove_cache_data_until_it_has_expired() {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(cacheClearJobPeriod, Executors.newSingleThreadScheduledExecutor(),
-                applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, cacheClearJobPeriod,
+                Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler);
         String key = "key";
         String value = "value";
         /* the cache is valid for 200 millis */
@@ -279,7 +286,7 @@ class InMemoryCacheTest {
     @Test
     void close_cancels_cache_clear_job_and_shuts_down_scheduled_executor_service() {
         /* prepare */
-        InMemoryCache<String> inMemoryCacheToTest = new InMemoryCache<>(scheduledExecutorService, applicationShutdownHandler);
+        SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(inMemoryCachePersistence, scheduledExecutorService, applicationShutdownHandler);
 
         /* execute */
         inMemoryCacheToTest.onShutdown();

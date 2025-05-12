@@ -8,6 +8,18 @@ sechub:
         mode: jwt
         jwt:
           jwk-set-uri: https://example.org/jwk-set-uri
+        opaque-token: 
+          introspection-uri: https://example.org/inrospection-uri
+          
+          client-id: example-client-id
+          client-secret: example-client-secret
+          
+          max-cache-duration: 24h 
+          pre-cache-duration: 10s
+          
+          cluster-cache-clear-period: 1m
+          in-memory-cache-clear-period: 10s
+    
     login:
       enabled: true
       login-page: /login
@@ -26,3 +38,4 @@ sechub:
     encryption:
       secret-key: test-test-test-test-test-test-32
     minimum-token-validity: 10h
+    

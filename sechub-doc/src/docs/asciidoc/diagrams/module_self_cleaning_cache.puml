@@ -1,0 +1,36 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+package com.mercedesbenz.sechub.commons.core.cache {
+
+	class CacheData<T> {
+		T value
+		Instant createdAt
+		Duration duration
+	}
+
+	class SelfCleaningCache<T> {
+		CachePersistence cachePersistence
+		
+		put(String key, T value, Duration duration)
+		get(String key): T
+		remove(String key)
+	}
+	
+	interface CachePersistence<T> {
+		put(String key, CacheData<T> value)
+		get(String key) : CacheData<T>
+		remove(String key)
+		
+		removeOutdated(Instant now)
+	}
+	
+	class InMemoryCachePersistence<T> implements CachePersistence{
+	}
+	
+	SelfCleaningCache o-- CachePersistence: uses
+	SelfCleaningCache o-- CacheData : provides
+}
+@enduml 

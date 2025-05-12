@@ -5,6 +5,7 @@ import static java.util.Objects.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author hamidonos
  */
-class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
+public class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,14 +51,17 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
     private final String username;
     private final String tokenType;
     private final Instant issuedAt;
-    private Instant expiresAt; // not final, because we may change this to fallback value if null
+
+    private Long expiresAt; // not final, because we may change this to fallback value if null
+    private Instant expiresAtInstant;
+
     private final String subject;
     private final String audience;
     private final String groupType;
 
     /* @formatter:off */
     @JsonCreator
-    OAuth2OpaqueTokenIntrospectionResponse(@JsonProperty(JSON_PROPERTY_ACTIVE) Boolean active,
+    public OAuth2OpaqueTokenIntrospectionResponse(@JsonProperty(JSON_PROPERTY_ACTIVE) Boolean active,
                                            @JsonProperty(JSON_PROPERTY_SCOPE) String scope,
                                            @JsonProperty(JSON_PROPERTY_CLIENT_ID) String clientId,
                                            @JsonProperty(JSON_PROPERTY_CLIENT_TYPE) String clientType,
@@ -74,58 +78,117 @@ class OAuth2OpaqueTokenIntrospectionResponse implements Serializable {
         this.username = username;
         this.tokenType = tokenType;
         this.issuedAt = Instant.now();
-        this.expiresAt = expiresAt != null ? Instant.ofEpochSecond(expiresAt) : null;
+        this.expiresAt = expiresAt;
         this.subject = active ? requireNonNull(subject, ERR_MSG_FORMAT.formatted(JSON_PROPERTY_SUBJECT)) : subject;
         this.audience = audience;
         this.groupType = groupType;
+
+        calculateInitExpireAsInstant();
     }
     /* @formatter:on */
 
-    boolean isActive() {
+    @JsonProperty(JSON_PROPERTY_ACTIVE)
+    public Boolean isActive() {
         return active;
     }
 
-    String getScope() {
+    @JsonProperty(JSON_PROPERTY_SCOPE)
+    public String getScope() {
         return scope;
     }
 
-    String getClientId() {
+    @JsonProperty(JSON_PROPERTY_CLIENT_ID)
+    public String getClientId() {
         return clientId;
     }
 
-    String getClientType() {
+    @JsonProperty(JSON_PROPERTY_CLIENT_TYPE)
+    public String getClientType() {
         return clientType;
     }
 
-    String getUsername() {
+    @JsonProperty(JSON_PROPERTY_USERNAME)
+    public String getUsername() {
         return username;
     }
 
-    String getTokenType() {
+    @JsonProperty(JSON_PROPERTY_TOKEN_TYPE)
+    public String getTokenType() {
         return tokenType;
     }
 
-    Instant getIssuedAt() {
+    @JsonProperty("iat")
+    public Instant getIssuedAt() {
         return issuedAt;
     }
 
-    Instant getExpiresAt() {
+    @JsonProperty(JSON_PROPERTY_EXP)
+    public Long getExpiresAt() {
         return expiresAt;
     }
 
-    String getSubject() {
+    @JsonProperty(JSON_PROPERTY_SUBJECT)
+    public String getSubject() {
         return subject;
     }
 
-    String getAudience() {
+    @JsonProperty(JSON_PROPERTY_AUDIENCE)
+    public String getAudience() {
         return audience;
     }
 
-    String getGroupType() {
+    @JsonProperty(JSON_PROPERTY_GROUP_TYPE)
+    public String getGroupType() {
         return groupType;
     }
 
-    public void setExpiresAt(Instant expiresAt) {
+    public void setExpiresAt(Long expiresAt) {
         this.expiresAt = expiresAt;
+        calculateInitExpireAsInstant();
     }
+
+    /**
+     * @return expiration in seconds
+     */
+    public Instant getExpiresAtAsInstant() {
+        return expiresAtInstant;
+    }
+
+    private void calculateInitExpireAsInstant() {
+        this.expiresAtInstant = this.expiresAt != null ? Instant.ofEpochSecond(this.expiresAt) : null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(active, audience, clientId, clientType, expiresAt, groupType, issuedAt, scope, subject, tokenType, username);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OAuth2OpaqueTokenIntrospectionResponse other = (OAuth2OpaqueTokenIntrospectionResponse) obj;
+        return Objects.equals(active, other.active) && Objects.equals(audience, other.audience) && Objects.equals(clientId, other.clientId)
+                && Objects.equals(clientType, other.clientType) && Objects.equals(expiresAt, other.expiresAt) && Objects.equals(groupType, other.groupType)
+                && Objects.equals(issuedAt, other.issuedAt) && Objects.equals(scope, other.scope) && Objects.equals(subject, other.subject)
+                && Objects.equals(tokenType, other.tokenType) && Objects.equals(username, other.username);
+    }
+
+    @Override
+    public String toString() {
+        return "OAuth2OpaqueTokenIntrospectionResponse [" + (active != null ? "active=" + active + ", " : "") + (scope != null ? "scope=" + scope + ", " : "")
+                + (clientId != null ? "clientId=" + clientId + ", " : "") + (clientType != null ? "clientType=" + clientType + ", " : "")
+                + (username != null ? "username=" + username + ", " : "") + (tokenType != null ? "tokenType=" + tokenType + ", " : "")
+                + (issuedAt != null ? "issuedAt=" + issuedAt + ", " : "") + (expiresAt != null ? "expiresAt=" + expiresAt + ", " : "")
+                + (expiresAtInstant != null ? "expiresAtInstant=" + expiresAtInstant + ", " : "") + (subject != null ? "subject=" + subject + ", " : "")
+                + (audience != null ? "audience=" + audience + ", " : "") + (groupType != null ? "groupType=" + groupType : "") + "]";
+    }
+
 }
