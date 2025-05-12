@@ -58,7 +58,7 @@ describe('FalsePositiveCreationService', () => {
   })
 
   describe('calculateWebScanFalsePositivesProjectData', () => {
-    it('should calculate no web scan false positives project data when fidning cweId undefined', () => {
+    it('should calculate no web scan false positives project data when finding cweId undefined', () => {
       /* prepare */
       const findings: SecHubFinding[] = [
         {

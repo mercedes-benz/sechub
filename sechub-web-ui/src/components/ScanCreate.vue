@@ -113,7 +113,7 @@
   import { SecHubConfiguration } from '@/generated-sources/openapi'
   import scanConfigurationBuilderService from '@/services/scanConfigurationBuilderService'
   import defaultClient from '@/services/defaultClient'
-  import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER } from '@/utils/applicationConstants'
+  import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
 
   export default defineComponent({
@@ -206,7 +206,7 @@
 
       return {
         projectId,
-        scanOptions: [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER] as string[],
+        scanOptions: [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER] as string[],
         selectedScanOptions,
         validateScanReady,
         selectedFile,

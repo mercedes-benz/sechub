@@ -9,7 +9,7 @@ import {
   CODE_SCAN_IDENTIFIER,
   FILETYPE_BINARIES,
   FILETYPE_SOURCES,
-  SECRET_SCAN_IDENTIFER,
+  SECRET_SCAN_IDENTIFIER,
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from '@/utils/applicationConstants'
@@ -32,7 +32,7 @@ class ScanConfigurationBuilderService {
       config.codeScan = codeScanConfiguration
     }
 
-    if (scanTypes.includes(SECRET_SCAN_IDENTIFER)) {
+    if (scanTypes.includes(SECRET_SCAN_IDENTIFIER)) {
       const secretScanConfiguration: SecHubSecretScanConfiguration = {}
       secretScanConfiguration.use = [UNIQUE_NAME]
       config.secretScan = secretScanConfiguration
