@@ -109,6 +109,7 @@
     "REPORT_SCAN_NOT_SUCCESSFUL": "Executed scan was not successful!",
     "REPORT_SCAN_NO_FINDINGS": "Executed scan does not contain findings or only false positives!",
     "REPORT_METADATA_SCAN_STATUS": "Scan Status",
+    "REPORT_METADATA_EXECUTED": "Executed scans",
     "REPORT_METADATA_MESSAGES": "SecHub Report Messages",
     "REPORT_MANAGE_FINDINGS": "Manage findings",
     "REPORT_DESCRIPTION_SEVERITY": "Severity",

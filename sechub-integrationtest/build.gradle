@@ -168,11 +168,11 @@ task cleanIntegrationTest(type: Delete) {
 /**
  * Own task for integration tests.
  
- * We use cleanIntegrationTest task as dependency here - reason: When tests are executed before in CI/CD, the integration
- * tests are skipped - which is okay. Unfortunately gradle will assume that there are no changes in tests
- * (source has not changed, test was executed, so means still valid...). To avoid this we do the cleanTest
+ * When tests are executed before in CI/CD, the integration
+ * tests are not execued by gradle when no gradle property 'sechub.integrationtest.serverport' is set
+ * This means we have no longer problems with duplicated test results and it is not necessary to cleanup something. 
  */
-task integrationtest(type: Test, dependsOn: [cleanIntegrationTest, startIntegrationTestInstances]) {
+task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
    group 'sechub'
    description 'Starts integration test server, execute tests and automatically stops server after done or failed'
    // integration tests seems to be very often  "up-to-date"
@@ -192,19 +192,6 @@ task integrationtest(type: Test, dependsOn: [cleanIntegrationTest, startIntegrat
    systemProperty "sechub.integrationtest.running", "true"
    
    finalizedBy "stopIntegrationTestInstances"
-
-   /*
-    * we do NOT something like 
-    * ``` 
-    *  filter {
-    *      includeTestsMatching "*IntTest"
-    *   }
-    * ```
-    * 
-    * Why? Because we need the cleanIntegrationTest task run (see documentation on top of task for reasons) and this
-    * will also cleanup the "normal" unit test results inside the gradle sub module "sechub-integration".
-    * Means if we would filter here, the tests would no longer exist.
-    */   
 
 }
 

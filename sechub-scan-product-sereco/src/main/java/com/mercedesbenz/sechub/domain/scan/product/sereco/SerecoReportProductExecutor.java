@@ -103,6 +103,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             result = createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
         }
 
+        result.getMetaData();
+
         result.setStarted(started);
         result.setEnded(LocalDateTime.now());
 
@@ -117,6 +119,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             importProductResult(traceLogId, sechubConfig, workspace, productResult);
         }
         String json = workspace.createReport();
+
         /* fetch + return all vulnerabilities as JSON */
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -11,10 +12,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,36 +53,18 @@ class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_null() {
-        /* prepare */
-        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
-        when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(null));
-
-        /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
-
-        /* test */
-        @SuppressWarnings("unchecked")
-        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
-        assertNotNull(metaData);
-        assertFalse(metaData.isPresent());
-    }
-
-    @Test
-    void metaData_set_as_optional_not_present_when_configuration_has_metadata_optional_defined() {
+    void metaData_from_report_is_inside_the_map() {
         /* prepare */
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW); // traffic light necessary to avoid illegal state exception
         SecHubReportMetaData reportMetaData = mock(SecHubReportMetaData.class);
-        when(scanSecHubReport.getMetaData()).thenReturn(Optional.ofNullable(reportMetaData));
+        when(scanSecHubReport.getMetaData()).thenReturn(reportMetaData);
 
         /* execute */
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        @SuppressWarnings("unchecked")
-        Optional<SecHubReportMetaData> metaData = (Optional<SecHubReportMetaData>) map.get("metaData");
-        assertNotNull(metaData);
-        assertTrue(metaData.isPresent());
+        SecHubReportMetaData metaData = (SecHubReportMetaData) map.get("metaData");
+        assertThat(metaData).isEqualTo(reportMetaData);
     }
 
     @Test
@@ -328,7 +311,7 @@ class HTMLScanResultReportModelBuilderTest {
                 assertEquals(finding5, relatedFindings2.get(0));
 
             } else {
-                fail("Unexpected value: " + trafficLight);
+                Assertions.fail("Unexpected value: " + trafficLight);
             }
         }
 

@@ -3,14 +3,18 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
@@ -54,6 +58,7 @@ public class SecHubExecutionContext {
     private boolean suspended;
 
     private List<TemplateDefinition> templateDefinitions = new ArrayList<>();
+    private Set<ScanType> usedPublicScanTypes = new LinkedHashSet<>();
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
         this(sechubJobUUID, configuration, executedBy, executionUUID, null);
@@ -72,6 +77,24 @@ public class SecHubExecutionContext {
         this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
         this.operationType = operationType == null ? DEFAULT_OPERATION_TYPE : operationType;
         this.executionHistory = new SecHubExecutionHistory();
+    }
+
+    /**
+     * @return unmodifiable set of all used public scan types in this SecHub
+     *         execution
+     */
+    public Set<ScanType> getUsedPublicScanTypes() {
+        return Collections.unmodifiableSet(usedPublicScanTypes);
+    }
+
+    public void rememberIfPublicScanType(ScanType scanType) {
+        if (scanType == null) {
+            return;
+        }
+        if (scanType.isInternalScanType()) {
+            return;
+        }
+        usedPublicScanTypes.add(scanType);
     }
 
     public SecHubExecutionOperationType getOperationType() {

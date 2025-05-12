@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public interface SecHubReportData {
 
     void setReportVersion(String version);
 
-    public Optional<SecHubReportMetaData> getMetaData();
+    public SecHubReportMetaData getMetaData();
 
     public void setMetaData(SecHubReportMetaData metaData);
 
