@@ -1041,6 +1041,20 @@
                                     }
                                 }
                             },
+                            "logout": {
+                                "type": "object",
+                                "properties": {
+                                    "xpath": {
+                                        "type": "string",
+                                        "description": "xpathto locate the element to avoid on the frontend."
+                                    },
+                                    "htmlElement": {
+                                        "type": "string",
+                                        "description": "'htmlElement' to locate the element to avoid on the frontend."
+                                    }
+                                },
+                                "description": "Webscan 'logout' section to avoid logout for webscans of a frontend."
+                            },
                             "clientCertificate": {
                                 "type": "object",
                                 "properties": {
@@ -1056,20 +1070,6 @@
                                         }
                                     }
                                 }
-                            },
-                            "logout": {
-                                "type": "object",
-                                "properties": {
-                                    "xpath": {
-                                        "type": "string",
-                                        "description": "xpathto locate the element to avoid on the frontend."
-                                    },
-                                    "htmlElement": {
-                                        "type": "string",
-                                        "description": "'htmlElement' to locate the element to avoid on the frontend."
-                                    }
-                                },
-                                "description": "Webscan 'logout' section to avoid logout for webscans of a frontend."
                             },
                             "excludes": {
                                 "type": "array",
@@ -1196,6 +1196,10 @@
                                         },
                                         "description": "basic login definition"
                                     },
+                                    "url": {
+                                        "type": "string",
+                                        "description": "Login URL"
+                                    },
                                     "verification": {
                                         "type": "object",
                                         "properties": {
@@ -1209,10 +1213,6 @@
                                             }
                                         },
                                         "description": "login verification definition"
-                                    },
-                                    "url": {
-                                        "type": "string",
-                                        "description": "Login URL"
                                     }
                                 },
                                 "description": "Webscan login definition"
@@ -1301,7 +1301,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@3f25d83e"
+                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@41d4aa86"
                     }
                 }
             },
@@ -1404,7 +1404,7 @@
             "api-admin-encryption-rotate-638361826": {
                 "type": "object"
             },
-            "api-admin-template-templateId-1784841170": {
+            "api-admin-template-templateId1589027889": {
                 "type": "object",
                 "properties": {
                     "variables": {
@@ -1451,7 +1451,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@69ad94c"
+                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@79f90079"
                     }
                 }
             },
@@ -1581,7 +1581,7 @@
                     }
                 }
             },
-            "api-projects100677202": {
+            "api-projects1434706064": {
                 "type": "array",
                 "items": {
                     "type": "object",
@@ -1599,6 +1599,26 @@
                                 }
                             },
                             "description": "Owner of the Project"
+                        },
+                        "enabledProfileIds": {
+                            "type": "array",
+                            "description": "List of profile IDs assigned to the project.",
+                            "items": {
+                                "oneOf": [
+                                    {
+                                        "type": "object"
+                                    },
+                                    {
+                                        "type": "boolean"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "number"
+                                    }
+                                ]
+                            }
                         },
                         "isOwned": {
                             "type": "boolean",
@@ -2877,88 +2897,6 @@
                 ]
             }
         },
-        "/api/admin/project/{projectId}/membership/{userId}": {
-            "post": {
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Admin assigns user to project",
-                "description": "An administrator assigns an user to an existing sechub project.",
-                "operationId": "adminAssignsUserToProject",
-                "parameters": [
-                    {
-                        "name": "projectId",
-                        "in": "path",
-                        "description": "The project id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "The user id of the user to assign to project",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200"
-                    }
-                },
-                "security": [
-                    {
-                        "basic": [
-                            
-                        ]
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Admin unassigns user from project",
-                "description": "An administrator unassigns an user from a sechub project.",
-                "operationId": "adminUnassignsUserFromProject",
-                "parameters": [
-                    {
-                        "name": "projectId",
-                        "in": "path",
-                        "description": "The project id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "The user id of the user to unassign from project",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200"
-                    }
-                },
-                "security": [
-                    {
-                        "basic": [
-                            
-                        ]
-                    }
-                ]
-            }
-        },
         "/api/admin/project/{projectId}/metadata": {
             "post": {
                 "tags": [
@@ -2987,48 +2925,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "200"
-                    }
-                },
-                "security": [
-                    {
-                        "basic": [
-                            
-                        ]
-                    }
-                ]
-            }
-        },
-        "/api/admin/project/{projectId}/owner/{userId}": {
-            "post": {
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Admin changes owner of a project",
-                "description": "An administrator changes the owner of an existing sechub project.",
-                "operationId": "adminChangesProjectOwner",
-                "parameters": [
-                    {
-                        "name": "projectId",
-                        "in": "path",
-                        "description": "The project id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "The user id of the user to assign to project as the owner",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "200"
@@ -3491,7 +3387,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-template-templateId-1784841170"
+                                    "$ref": "#/components/schemas/api-admin-template-templateId1589027889"
                                 }
                             }
                         }
@@ -4044,6 +3940,88 @@
                 "responses": {
                     "204": {
                         "description": "204"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/management/project/{projectId}/membership/{userId}": {
+            "post": {
+                "tags": [
+                    "management"
+                ],
+                "summary": "Admin or owner assigns user to project",
+                "description": "An administrator or project owner assigns an user to an existing sechub project.",
+                "operationId": "adminOrOwnerAssignsUserToProject",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "description": "The project id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The user id of the user to assign to project",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200"
+                    }
+                },
+                "security": [
+                    {
+                        "basic": [
+                            
+                        ]
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "management"
+                ],
+                "summary": "Admin or owner unassigns user from project",
+                "description": "An administrator or owner unassigns an user from a sechub project.",
+                "operationId": "adminOrOwnerUnassignsUserFromProject",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "description": "The project id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The user id of the user to unassign from project",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200"
                     }
                 },
                 "security": [
@@ -4762,12 +4740,12 @@
                     "200": {
                         "description": "200",
                         "content": {
-                            "application/json": {
+                            "text/html;charset=UTF-8": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SecHubReport"
                                 }
                             },
-                            "text/html;charset=UTF-8": {
+                            "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SecHubReport"
                                 }
@@ -4798,7 +4776,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-projects100677202"
+                                    "$ref": "#/components/schemas/api-projects1434706064"
                                 }
                             }
                         }
