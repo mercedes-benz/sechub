@@ -1,0 +1,13 @@
+# Number of SecHub server instances to spin up
+replicaCount: 1
+
+image:
+  registry: "{{ .SECHUB_SERVER_IMAGE_REGISTRY }}"
+  tag: "{{ .SECHUB_SERVER_IMAGE_TAG }}"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "IfNotPresent"
+
+server:
+  spring:
+    # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
+    profiles: dev,h2,real_products,mocked_notifications
