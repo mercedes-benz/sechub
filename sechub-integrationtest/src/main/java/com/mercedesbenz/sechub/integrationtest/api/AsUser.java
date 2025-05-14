@@ -197,6 +197,12 @@ public class AsUser {
 
     }
 
+    public AsUser signUpWithJson(String json) {
+        getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
+        return this;
+
+    }
+
     public AsUser requestNewApiTokenFor(String emailAddress) {
         getRestHelper().postJson(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress), "");
         return this;
@@ -569,6 +575,18 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
+        return resultAsString;
+    }
+
+    public UUID createJobFromStringAndReturnJobUUID(TestProject project, String config) {
+        String resultAsString = createJobAndReturnResultAsString(project, config);
+        return fetchJobUUID(resultAsString);
+    }
+
+    public String createJobAndReturnResultAsString(TestProject project, String jsonConfig) {
+        String projectId = project.getProjectId();
+        String url = getUrlBuilder().buildAddJobUrl(projectId);
+        String resultAsString = getRestHelper().postJson(url, jsonConfig);
         return resultAsString;
     }
 

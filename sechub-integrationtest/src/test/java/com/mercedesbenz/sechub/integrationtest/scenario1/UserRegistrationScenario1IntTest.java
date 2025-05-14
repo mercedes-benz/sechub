@@ -29,6 +29,23 @@ public class UserRegistrationScenario1IntTest {
 		expectHttpFailure(()->as(ANONYMOUS).signUpAs(USER_1), HttpStatus.NOT_ACCEPTABLE);
 
 		/* @formatter:on */
+    }
+
+    @Test
+    public void custom_json_mapper_ignores_unknown_values() {
+        /* @formatter:off */
+        String json = "{\"apiVersion\":\"1.0\",\r\n"
+                + "	\"userId\":\""
+                + "testuser"
+                + "\",\r\n"
+                + "	\"emailAddress\":\""
+                + "testuser@example.com"
+                + "\",\r\n"
+                + "	\"some-unknown-value\":\""
+                + "unknown"
+                + "\"}";
+        /* @formatter:on */
+        as(ANONYMOUS).signUpWithJson(json);
 
     }
 

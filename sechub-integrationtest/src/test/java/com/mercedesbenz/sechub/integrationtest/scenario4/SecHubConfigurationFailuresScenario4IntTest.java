@@ -5,6 +5,9 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 
 public class SecHubConfigurationFailuresScenario4IntTest {
 
@@ -83,6 +87,32 @@ public class SecHubConfigurationFailuresScenario4IntTest {
         assertJsonContainsDetails(json,
                 "Meta data label key contains illegal characters. Label key 'E xample1.1' may only contain 'a-z','0-9', '-', '_' or '.' characters");
 
+    }
+
+    @Test
+    public void unexpected_enum_values_result_in_null_by_custom_json_wrapper() {
+        /* prepare */
+        TestProject project = PROJECT_1;
+        /* years is not a valid value for unit */
+        String configuration = """
+                {
+                    "apiVersion": "1.0",
+                    "webScan": {
+                        "url": "https://demo.example.org",
+                        "maxScanDuration": {
+                			"duration" : 1,
+                			"unit" : "years"
+                		}
+                    }
+                }
+                """;
+        as(SUPER_ADMIN).updateWhiteListForProject(project, List.of("https://demo.example.org"));
+
+        /* execute */
+        UUID jobUUID = as(USER_1).createJobFromStringAndReturnJobUUID(project, configuration);
+
+        /* test */
+        assertNotNull(jobUUID);
     }
 
     private void assertJsonContainsDetails(JsonNode json, String... details) {
