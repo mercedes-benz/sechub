@@ -370,6 +370,11 @@ public class AsUser {
         return getRestHelper().getJSON(url);
     }
 
+    public String fetchProductExecutorConfigAsJSON(String uuid) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
+        return getRestHelper().getJSON(url);
+    }
+
     public TestExecutorConfig fetchProductExecutorConfig(UUID uuid) {
         String json = fetchProductExecutorConfigAsJSON(uuid);
         TestExecutorConfig result = JSONConverter.get().fromJSON(TestExecutorConfig.class, json);
@@ -1332,6 +1337,11 @@ public class AsUser {
     public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
         String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
 
+        getRestHelper().post(url);
+    }
+
+    public void changeProjectAccessLevel(TestProject project, String accessLevel) {
+        String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel);
         getRestHelper().post(url);
     }
 

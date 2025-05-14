@@ -200,4 +200,16 @@ public class ProjectChangeAccessLevelScenario3IntTest {
     }
     /* @formatter:on */
 
+    @Test
+    void not_existing_project_access_level_results_in_bad_request() {
+        /* prepare + test preconditions */
+        TestProject project = PROJECT_1;
+        UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);
+        String invalidAccessLevel = "INVALID_ACCESS_LEVEL";
+
+        /* execute + test */
+        expectHttpFailure(() -> {
+            as(SUPER_ADMIN).changeProjectAccessLevel(project, invalidAccessLevel);
+        }, HttpStatus.BAD_REQUEST);
+    }
 }
