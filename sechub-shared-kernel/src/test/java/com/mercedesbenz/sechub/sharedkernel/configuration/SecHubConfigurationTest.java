@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
@@ -488,14 +487,23 @@ public class SecHubConfigurationTest {
     }
 
     @Test
-    public void webscan_max_scan_duration_wrong_unit() {
+    public void webscan_max_scan_duration_wrong_unit_results_in_null() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_max_scan_duration_wrong_unit.json");
 
-        /* execute + test */
-        assertThrows(JSONConverterException.class, () -> {
-            SECHUB_CONFIG.fromJSON(json);
-        });
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        /*
+         * custom JSON mapper will not throw an exception, but will set wrong values to
+         * null
+         */
+        assertNotNull(result);
+        assert (result.getWebScan().isPresent());
+        assert (result.getWebScan().get().getMaxScanDuration().isPresent());
+        assertEquals(1, result.getWebScan().get().getMaxScanDuration().get().getDuration());
+        assertNull(result.getWebScan().get().getMaxScanDuration().get().getUnit());
     }
 
     @Test
