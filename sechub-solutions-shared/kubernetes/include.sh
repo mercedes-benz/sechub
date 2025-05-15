@@ -3,16 +3,22 @@
 ## Vars
 SECHUB_K8S_BUILDDIR="build"
 SECHUB_K8S_TEMPLATEDIR="templates"
+
+# Default values:
+KUBECONFIG_DEFAULT="$HOME/.kube/config"
+SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo"
 SECHUB_NAMESPACE_DEFAULT="sechub-testing"
 SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server"
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest"
-SECHUB_SERVER_HELMCHART_DEFAULT="oci://ghcr.io/mercedes-benz/sechub/helm-charts/sechub-server"
+SECHUB_SERVER_HELMCHART_DEFAULT="../../sechub-solution/helm/sechub-server"
 
-KUBECONFIG_DEFAULT="$HOME/.kube/config"
 MANDATORY_EXECUTABLES="helm kubectl"  # Space separated list
+
 # Environment variable names that will used to replace {{ .MYVAR }} in the template files.
 TEMPLATE_VARIABLES=" \
+  SECHUB_INITIALADMIN_APITOKEN \
   SECHUB_NAMESPACE \
+  SECHUB_SERVER_HELMCHART \
   SECHUB_SERVER_IMAGE_REGISTRY \
   SECHUB_SERVER_IMAGE_TAG \
 "
@@ -49,7 +55,8 @@ function env_var_or_default {
 # helm_install_or_upgrade <deployment name> [<values yaml file>]
 function helm_install_or_upgrade {
   local deployment_name=$1
-  local values_file=$2
+  local helm_dir="$2"
+  local values_file=$3
   local action
   local helm_values
 
@@ -69,8 +76,8 @@ function helm_install_or_upgrade {
     action=upgrade
   fi
 
-  echo ">> helm $HELM_FLAGS $action $deployment_name $deployment_name/ $helm_values"
-  helm $HELM_FLAGS $action $deployment_name $deployment_name/ $helm_values
+  echo ">> helm $HELM_FLAGS $action $deployment_name $helm_dir/ $helm_values"
+  helm $HELM_FLAGS $action $deployment_name $helm_dir/ $helm_values
   if [ $? -ne 0 ] ; then
     echo "Helm run  f a i l e d .  Please check."
     exit 1

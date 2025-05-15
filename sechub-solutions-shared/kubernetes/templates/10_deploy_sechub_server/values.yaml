@@ -10,4 +10,9 @@ image:
 server:
   spring:
     # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
-    profiles: dev,h2,real_products,mocked_notifications
+    #profiles: dev,h2,real_products,mocked_notifications
+    profiles: localserver,initial_admin_predefined,admin_access,h2,real_products,mocked_notifications
+
+env: |-
+  - name: SECHUB_INITIALADMIN_APITOKEN
+    value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"
