@@ -32,30 +32,20 @@ public class UserRegistrationScenario1IntTest {
     }
 
     @Test
-    public void custom_json_mapper_ignores_unknown_values() {
-        /* @formatter:off */
-        String json = "{\"apiVersion\":\"1.0\",\r\n"
-                + "	\"userId\":\""
-                + "testuser"
-                + "\",\r\n"
-                + "	\"emailAddress\":\""
-                + "testuser@example.com"
-                + "\",\r\n"
-                + "	\"some-unknown-value\":\""
-                + "unknown"
-                + "\"}";
-        /* @formatter:on */
-        as(ANONYMOUS).signUpWithJson(json);
-
-    }
-
-    @Test
     public void an_unregistered_user_can_be_accepted_by_admin_gets_a_link_and_is_then_registered() {
         /* check precondition */
         assertUser(USER_1).doesNotExist();
 
         /* prepare */
-        as(ANONYMOUS).signUpAs(USER_1);
+        String json = """
+                {
+                    "apiVersion": "1.0",
+                    "userId": "%s",
+                    "emailAddress": "%s",
+                    "some-unknown-value": "unknown"
+                }
+                """.formatted(USER_1.getUserId(), USER_1.getEmail());
+        as(ANONYMOUS).signUpWithJson(json);
         assertSignup(USER_1).doesExist();
         assertUser(USER_1).doesNotExist(); // still not existing
 

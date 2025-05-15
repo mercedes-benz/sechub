@@ -152,6 +152,10 @@ public class ProductExecutorConfigurationScenario7IntTest {
         /* execute */
         TestExecutorConfigList result = as(SUPER_ADMIN).fetchProductExecutorConfigList();
 
+        /* execute + test */
+        /* 2 invalid UUID results in 400 */
+        expectHttpFailure(() -> as(SUPER_ADMIN).fetchProductExecutorConfigAsJSON("i-am-not-a-valid-uuid"), HttpStatus.BAD_REQUEST);
+
         /* test */
         TestExecutorConfigListEntry found = resolveEntry(uuid, result);
         if (found == null) {
@@ -161,26 +165,6 @@ public class ProductExecutorConfigurationScenario7IntTest {
         assertEquals("pds gosec-forlist-check", found.name);
         assertTrue(found.enabled);
 
-    }
-
-    @Test
-    public void invalid_UUID_results_in_bad_request() {
-
-        /* prepare */
-        TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
-        config.name = "pds gosec-invalid-uuid";
-        config.executorVersion = 1;
-        config.setup.baseURL = "https://baseurl.product.example.com/start";
-        config.setup.jobParameters.add(new TestExecutorSetupJobParam("key1", "value1"));
-        config.setup.jobParameters.add(new TestExecutorSetupJobParam("key2", "value2"));
-
-        as(SUPER_ADMIN).createProductExecutorConfig(config);
-        String fakeUUID = "fake-uuid";
-
-        // returns 400
-        /* execute + test */
-        expectHttpFailure(() -> as(SUPER_ADMIN).fetchProductExecutorConfigAsJSON(fakeUUID), HttpStatus.BAD_REQUEST);
     }
 
     private TestExecutorConfigListEntry resolveEntry(UUID uuid, TestExecutorConfigList result) {

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
@@ -325,6 +326,42 @@ public class JSONConverterTest {
         /* test */
         assertNotNull(result);
         assertEquals("info1", result.getInfo());
+    }
+
+    @Test
+    void valid_enum_values_are_returned_as_enum() {
+        /* prepare */
+        String json = """
+                {
+                    "info":"info1",
+                    "enumValue":"TEST1"
+                }
+                """;
+
+        /* execute */
+        TestJSONConverterObject result = converterToTest.fromJSON(TestJSONConverterObject.class, json);
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result.getEnumValue()).isEqualTo(TestJSONConverterEnum.TEST1);
+    }
+
+    @Test
+    void invalid_enum_values_are_returned_as_null() {
+        /* prepare */
+        String json = """
+                {
+                    "info":"info1",
+                    "enumValue":"invalid_enum_value"
+                }
+                """;
+
+        /* execute */
+        TestJSONConverterObject result = converterToTest.fromJSON(TestJSONConverterObject.class, json);
+
+        /* test */
+        assertThat(result).isNotNull();
+        assertThat(result.getEnumValue()).isNull();
     }
 
     static class LocalDateTestClass {

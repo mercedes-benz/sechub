@@ -124,9 +124,26 @@ public class PDSWebScanJobScenario12IntTest {
             assignTemplateToProject(templateId, project)
         ;
 
+        /* prepare 2 */
+        String maxScanConfiguration = """
+                {
+                    "apiVersion": "1.0",
+                    "webScan": {
+                        "url": "%s",
+                        "maxScanDuration": {
+                			"duration" : 1,
+                			"unit" : "invalid_value"
+                		}
+                    }
+                }
+                """.formatted(targetURL);
+
         /* execute */
         UUID jobUUID = as(USER_1).withSecHubClient().startAsynchronScanFor(project, configuration).getJobUUID();
         waitForJobDone(project, jobUUID, 30, true);
+
+        /* execute 2 */
+        UUID secondJobUUID = as(USER_1).createJobFromStringAndReturnJobUUID(project, maxScanConfiguration);
 
         /* test */
         String sechubReport = as(USER_1).getJobReport(project, jobUUID);
@@ -204,6 +221,9 @@ public class PDSWebScanJobScenario12IntTest {
         assertThat(variables.get("PDS_CONFIG_TEMPLATE_METADATA_LIST")).isEqualTo(expectedMetaDataListJson);
         assertThat(variables.get("TEST_CONTENT_FROM_ASSETFILE")).isEqualTo("i am \"testfile1.txt\" for scenario12 integration tests");
         /* @formatter:on */
+
+        /* test 2 */
+        assertNotNull(secondJobUUID);
     }
 
     private void assertExpectedHeaders(SecHubWebScanConfiguration webConfiguration) {

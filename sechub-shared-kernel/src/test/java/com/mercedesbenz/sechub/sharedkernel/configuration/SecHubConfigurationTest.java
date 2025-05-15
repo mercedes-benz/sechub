@@ -500,10 +500,11 @@ public class SecHubConfigurationTest {
          * null
          */
         assertNotNull(result);
-        assert (result.getWebScan().isPresent());
-        assert (result.getWebScan().get().getMaxScanDuration().isPresent());
-        assertEquals(1, result.getWebScan().get().getMaxScanDuration().get().getDuration());
-        assertNull(result.getWebScan().get().getMaxScanDuration().get().getUnit());
+        assertTrue(result.getWebScan().isPresent());
+        SecHubWebScanConfiguration webscan = result.getWebScan().get();
+        assertTrue(webscan.getMaxScanDuration().isPresent());
+        assertEquals(1, webscan.getMaxScanDuration().get().getDuration());
+        assertNull(webscan.getMaxScanDuration().get().getUnit());
     }
 
     @Test
