@@ -3,6 +3,7 @@
 ## Vars
 SECHUB_K8S_BUILDDIR="build"
 SECHUB_K8S_TEMPLATEDIR="templates"
+REPOSITORY_ROOT="../.."
 
 # Default values
 #  If you want to set own value, please set an env var without "_DEFAULT".
@@ -12,14 +13,14 @@ SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo" # api-token/password of user sechuba
 SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deployments
 SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
-SECHUB_SERVER_HELMCHART_DEFAULT="../../sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
+SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
 PDS_GOSEC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-gosec" # Where to get the pds-gosec container image from
 PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
-PDS_GOSEC_HELMCHART_DEFAULT="../../sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
+PDS_GOSEC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
 PDS_GOSEC_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_GOSEC_TOKEN_TECHUSER_DEFAULT="undefined"
 
-MANDATORY_EXECUTABLES="helm kubectl"  # Space separated list
+MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
 # Environment variable names that will used to replace {{ .MYVAR }} in the template files.
 TEMPLATE_VARIABLES=" \
@@ -127,7 +128,43 @@ function pull_and_extract_helm_chart {
   fi
 }
 
+function set_sechub_connection {
+  # SecHub server must have been deployed
+  SERVER_IP=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  if [[ "$SERVER_IP" =~ (E|e)rror ]] ; then
+    echo "Could not figure out the load balancer IP of SecHub server: $SERVER_IP"
+    exit 1
+  fi
+  SERVER_PORT=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ports[0].port}')
+  export SECHUB_SERVER="https://$SERVER_IP:$SERVER_PORT"
+  export SECHUB_USERID=sechubadm
+  export SECHUB_APITOKEN="$SECHUB_INITIALADMIN_APITOKEN"
+  # Trust all because of self-signed certificate
+  export SECHUB_TRUSTALL=true
+}
+
+function symlink_sechub_api_script {
+  if [ ! -L sechub-api.sh ] ; then
+    echo "### Creating a symlink for sechub-api.sh script"
+    rm -f sechub-api.sh
+    ln -s $REPOSITORY_ROOT/sechub-developertools/scripts/sechub-api.sh .
+  fi
+}
+
+function verify_sechub_connection {
+  echo "# Connection test to $SECHUB_SERVER"
+  SECHUB_VERSION=$(./sechub-api.sh server_version)
+  if [ -z "$SECHUB_VERSION" ] || [[ "$SECHUB_VERSION" =~ Unauthorized|null ]] ; then
+    echo -e "# FATAL - Connection FAILED, wrong user or no admin rights: $SECHUB_VERSION"
+    return 1
+  else
+    echo -e "# Succeeded - SecHub server version: $SECHUB_VERSION"
+  fi
+}
+
 ## Actions
+
+symlink_sechub_api_script
 
 # Check prepreqs
 for i in $MANDATORY_EXECUTABLES ; do
