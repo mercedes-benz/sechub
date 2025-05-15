@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.commons.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.MockedStatic;
 
 public class JSONConverterTest {
 
@@ -25,6 +27,20 @@ public class JSONConverterTest {
     @BeforeEach
     void before() {
         converterToTest = new JSONConverter();
+    }
+
+    @Test
+    void JSONMapper_is_created_by_mapper_factory() {
+        try (MockedStatic<JsonMapperFactory> mockedFactory = mockStatic(JsonMapperFactory.class)) {
+            /* prepare */
+            mockedFactory.when(JsonMapperFactory::createMapper).thenReturn(null);
+
+            /* execute */
+            new JSONConverter();
+
+            /* test */
+            mockedFactory.verify(JsonMapperFactory::createMapper);
+        }
     }
 
     @Test
@@ -362,6 +378,7 @@ public class JSONConverterTest {
         /* test */
         assertThat(result).isNotNull();
         assertThat(result.getEnumValue()).isNull();
+        assertThat(result.getInfo()).isEqualTo("info1");
     }
 
     static class LocalDateTestClass {
