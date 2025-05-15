@@ -152,8 +152,8 @@ public class ProductExecutorConfigurationScenario7IntTest {
         /* execute */
         TestExecutorConfigList result = as(SUPER_ADMIN).fetchProductExecutorConfigList();
 
-        /* execute + test */
-        /* 2 invalid UUID results in 400 */
+        /* execute + test 2 */
+        /* invalid UUID results in 400 */
         expectHttpFailure(() -> as(SUPER_ADMIN).fetchProductExecutorConfigAsJSON("i-am-not-a-valid-uuid"), HttpStatus.BAD_REQUEST);
 
         /* test */

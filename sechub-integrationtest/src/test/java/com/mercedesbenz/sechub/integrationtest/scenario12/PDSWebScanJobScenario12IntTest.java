@@ -125,6 +125,7 @@ public class PDSWebScanJobScenario12IntTest {
         ;
 
         /* prepare 2 */
+        // this is just for testing that even with illegal values, the configuration is accepted without errors
         String maxScanConfiguration = """
                 {
                     "apiVersion": "1.0",
