@@ -10,6 +10,12 @@ SECHUB_SERVER_HELMCHART_DEFAULT="oci://ghcr.io/mercedes-benz/sechub/helm-charts/
 
 KUBECONFIG_DEFAULT="$HOME/.kube/config"
 MANDATORY_EXECUTABLES="helm kubectl"  # Space separated list
+# Environment variable names that will used to replace {{ .MYVAR }} in the template files.
+TEMPLATE_VARIABLES=" \
+  SECHUB_NAMESPACE \
+  SECHUB_SERVER_IMAGE_REGISTRY \
+  SECHUB_SERVER_IMAGE_TAG \
+"
 
 ## Functions
 function check_executable_is_installed(){
@@ -109,14 +115,12 @@ for i in $MANDATORY_EXECUTABLES ; do
   check_executable_is_installed $i
 done
 
-# If env var SECHUB_NAMESPACE is undefinded, use the default name
-export SECHUB_NAMESPACE=$(env_var_or_default SECHUB_NAMESPACE)
+# Populate env vars used in templates:
+for var in $TEMPLATE_VARIABLES ; do
+  export $var=$(env_var_or_default $var)
+done
+
+# Other env vars:
 export KUBE_FLAGS="--namespace=$SECHUB_NAMESPACE"
 export KUBECONFIG=$(env_var_or_default KUBECONFIG)
-
-# Populate other env vars:
-export SECHUB_SERVER_HELMCHART=$(env_var_or_default SECHUB_SERVER_HELMCHART)
-export SECHUB_SERVER_IMAGE_REGISTRY=$(env_var_or_default SECHUB_SERVER_IMAGE_REGISTRY)
-export SECHUB_SERVER_IMAGE_TAG=$(env_var_or_default SECHUB_SERVER_IMAGE_TAG)
-
 export HELM_FLAGS="--kubeconfig=$KUBECONFIG --namespace=$SECHUB_NAMESPACE"
