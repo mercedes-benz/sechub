@@ -90,7 +90,7 @@ database:
     password: "<password-of-db-user>"
 
 networkPolicy:
-  enabled: false
+  enabled: true
   ingress:
     - from:
       - podSelector:

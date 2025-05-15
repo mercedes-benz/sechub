@@ -4,13 +4,20 @@
 SECHUB_K8S_BUILDDIR="build"
 SECHUB_K8S_TEMPLATEDIR="templates"
 
-# Default values:
+# Default values
+#  If you want to set own value, please set an env var without "_DEFAULT".
+#  This will override the default values below
 KUBECONFIG_DEFAULT="$HOME/.kube/config"
-SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo"
-SECHUB_NAMESPACE_DEFAULT="sechub-testing"
-SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server"
-SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest"
-SECHUB_SERVER_HELMCHART_DEFAULT="../../sechub-solution/helm/sechub-server"
+SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo" # api-token/password of user sechubadm
+SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deployments
+SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
+SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
+SECHUB_SERVER_HELMCHART_DEFAULT="../../sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
+PDS_GOSEC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-gosec" # Where to get the pds-gosec container image from
+PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_GOSEC_HELMCHART_DEFAULT="../../sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
+PDS_GOSEC_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_GOSEC_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl"  # Space separated list
 
@@ -21,6 +28,11 @@ TEMPLATE_VARIABLES=" \
   SECHUB_SERVER_HELMCHART \
   SECHUB_SERVER_IMAGE_REGISTRY \
   SECHUB_SERVER_IMAGE_TAG \
+  PDS_GOSEC_HELMCHART \
+  PDS_GOSEC_IMAGE_REGISTRY \
+  PDS_GOSEC_IMAGE_TAG \
+  PDS_GOSEC_TOKEN_ADMINUSER \
+  PDS_GOSEC_TOKEN_TECHUSER \
 "
 
 ## Functions
@@ -84,7 +96,7 @@ function helm_install_or_upgrade {
   fi
 
   echo ""
-  echo "# Waiting for \"$deployment_name\" Pod(s) to complete startup ..."
+  echo "### Waiting for \"$deployment_name\" Pod(s) to complete startup ..."
   kubectl $KUBE_FLAGS rollout status deployment/$deployment_name
   if [ $? -ne 0 ] ; then
     echo "Helm deployment  f a i l e d .  Please check."

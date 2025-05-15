@@ -5,7 +5,7 @@ image:
   registry: "{{ .SECHUB_SERVER_IMAGE_REGISTRY }}"
   tag: "{{ .SECHUB_SERVER_IMAGE_TAG }}"
   # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
-  pullPolicy: "IfNotPresent"
+  pullPolicy: "Always"
 
 server:
   spring:
@@ -16,3 +16,10 @@ server:
 env: |-
   - name: SECHUB_INITIALADMIN_APITOKEN
     value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-gosec
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_GOSEC_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_GOSEC_PASSWORD
+    value: "{{ .PDS_GOSEC_TOKEN_TECHUSER }}"
