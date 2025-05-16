@@ -10,10 +10,7 @@ import com.mercedesbenz.sechub.commons.core.PatternCompiler;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
-import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
+import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
 import com.mercedesbenz.sechub.commons.model.template.TemplateUsageValidator;
 

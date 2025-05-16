@@ -197,6 +197,12 @@ public class AsUser {
 
     }
 
+    public AsUser signUpWithJson(String json) {
+        getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
+        return this;
+
+    }
+
     public AsUser requestNewApiTokenFor(String emailAddress) {
         getRestHelper().postJson(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress), "");
         return this;
@@ -366,6 +372,11 @@ public class AsUser {
     }
 
     public String fetchProductExecutorConfigAsJSON(UUID uuid) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
+        return getRestHelper().getJSON(url);
+    }
+
+    public String fetchProductExecutorConfigAsJSON(String uuid) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
         return getRestHelper().getJSON(url);
     }
@@ -564,6 +575,18 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
+        return resultAsString;
+    }
+
+    public UUID createJobFromStringAndReturnJobUUID(TestProject project, String config) {
+        String resultAsString = createJobAndReturnResultAsString(project, config);
+        return fetchJobUUID(resultAsString);
+    }
+
+    public String createJobAndReturnResultAsString(TestProject project, String jsonConfig) {
+        String projectId = project.getProjectId();
+        String url = getUrlBuilder().buildAddJobUrl(projectId);
+        String resultAsString = getRestHelper().postJson(url, jsonConfig);
         return resultAsString;
     }
 
@@ -1332,6 +1355,11 @@ public class AsUser {
     public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
         String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
 
+        getRestHelper().post(url);
+    }
+
+    public void changeProjectAccessLevel(TestProject project, String accessLevel) {
+        String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel);
         getRestHelper().post(url);
     }
 

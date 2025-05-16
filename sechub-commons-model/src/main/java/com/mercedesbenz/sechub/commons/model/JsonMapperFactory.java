@@ -31,6 +31,7 @@ public class JsonMapperFactory {
              * value-as-array-in-jacksons-deserialization-process
              */
             enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).
+            enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL).
             disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED).
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).
             /*
