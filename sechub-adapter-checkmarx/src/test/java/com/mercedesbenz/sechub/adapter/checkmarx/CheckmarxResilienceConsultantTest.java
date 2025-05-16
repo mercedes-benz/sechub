@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.checkmarx;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.net.SocketException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
@@ -30,7 +31,7 @@ public class CheckmarxResilienceConsultantTest {
     private CheckmarxResilienceConsultant consultantToTest;
     private ResilienceContext context;
 
-    @Before
+    @BeforeEach
     public void before() {
         CheckmarxResilienceConfiguration config = mock(CheckmarxResilienceConfiguration.class);
         when(config.getBadRequestMaxRetries()).thenReturn(TESTCONFIG_BAD_REQUEST_MAX_RETRIES);
@@ -54,7 +55,7 @@ public class CheckmarxResilienceConsultantTest {
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNull(proposal);
+        assertThat(proposal).isNull();
     }
 
     @Test
@@ -66,7 +67,7 @@ public class CheckmarxResilienceConsultantTest {
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNull(proposal);
+        assertThat(proposal).isNull();
     }
 
     @Test
@@ -78,27 +79,25 @@ public class CheckmarxResilienceConsultantTest {
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNotNull(proposal);
-        assertTrue(proposal instanceof RetryResilienceProposal);
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
         RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-        assertEquals(TESTCONFIG_BAD_REQUEST_MAX_RETRIES, rrp.getMaximumAmountOfRetries());
-        assertEquals(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS, rrp.getMillisecondsToWaitBeforeRetry());
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_BAD_REQUEST_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS);
     }
 
     @Test
     public void http_bad_server_error_500_exception_returns_retry_proposal_with_servererror_config() {
         /* prepare */
-        when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+        when(context.getCurrentError()).thenReturn(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
         /* execute */
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNotNull(proposal);
-        assertTrue(proposal instanceof RetryResilienceProposal);
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
         RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-        assertEquals(TESTCONFIG_SERVERERROR_MAX_RETRIES, rrp.getMaximumAmountOfRetries());
-        assertEquals(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS, rrp.getMillisecondsToWaitBeforeRetry());
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_SERVERERROR_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS);
     }
 
     @Test
@@ -110,16 +109,14 @@ public class CheckmarxResilienceConsultantTest {
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNotNull(proposal);
-        assertTrue(proposal instanceof RetryResilienceProposal);
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
         RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-        assertEquals(TESTCONFIG_NETWORKERROR_MAX_RETRIES, rrp.getMaximumAmountOfRetries());
-        assertEquals(TESTCONFIG_NETWORKERROR_RETRY_TIME_TO_WAIT_MILLIS, rrp.getMillisecondsToWaitBeforeRetry());
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_NETWORKERROR_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_NETWORKERROR_RETRY_TIME_TO_WAIT_MILLIS);
     }
 
     @Test
     public void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_badrequest_config() {
-
         /* prepare */
         when(context.getCurrentError())
                 .thenReturn(new IOException("se1", new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
@@ -128,11 +125,40 @@ public class CheckmarxResilienceConsultantTest {
         ResilienceProposal proposal = consultantToTest.consultFor(context);
 
         /* test */
-        assertNotNull(proposal);
-        assertTrue(proposal instanceof RetryResilienceProposal);
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
         RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-        assertEquals(TESTCONFIG_BAD_REQUEST_MAX_RETRIES, rrp.getMaximumAmountOfRetries());
-        assertEquals(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS, rrp.getMillisecondsToWaitBeforeRetry());
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_BAD_REQUEST_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS);
     }
 
+    @Test
+    public void http_server_error_503_exception_returns_retry_proposal_with_servererror_config() {
+        /* prepare */
+        when(context.getCurrentError()).thenReturn(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE));
+
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
+
+        /* test */
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
+        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_SERVERERROR_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS);
+    }
+
+    @Test
+    public void nested_http_server_error_503_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_servererror_config() {
+        /* prepare */
+        when(context.getCurrentError())
+                .thenReturn(new IOException("se1", new RuntimeException(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE))));
+
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
+
+        /* test */
+        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
+        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_SERVERERROR_MAX_RETRIES);
+        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS);
+    }
 }
