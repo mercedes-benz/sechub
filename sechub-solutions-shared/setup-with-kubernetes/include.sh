@@ -135,7 +135,10 @@ function set_sechub_connection {
     echo "Could not figure out the load balancer IP of SecHub server: $SERVER_IP"
     exit 1
   fi
-  SERVER_PORT=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ports[0].port}')
+  SERVER_PORT=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.spec.ports[0].port}')
+  if [ -z "$SERVER_PORT" ] ; then
+    echo "[WARNING] Could not find load balancer port under jsonpath='{.spec.ports[0].port}'. Connection could fail!"
+  fi
   export SECHUB_SERVER="https://$SERVER_IP:$SERVER_PORT"
   export SECHUB_USERID=sechubadm
   export SECHUB_APITOKEN="$SECHUB_INITIALADMIN_APITOKEN"
