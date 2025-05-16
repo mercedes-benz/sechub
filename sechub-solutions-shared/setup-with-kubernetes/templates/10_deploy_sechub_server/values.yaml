@@ -23,3 +23,10 @@ env: |-
     value: "techuser"
   - name: SECHUB_PDS_GOSEC_PASSWORD
     value: "{{ .PDS_GOSEC_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-loc
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_LOC_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_LOC_PASSWORD
+    value: "{{ .PDS_LOC_TOKEN_TECHUSER }}"

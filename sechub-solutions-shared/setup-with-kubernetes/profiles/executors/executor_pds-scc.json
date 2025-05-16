@@ -1,0 +1,43 @@
+{
+  "name": "pds-scc",
+  "productIdentifier": "PDS_ANALYTICS",
+  "setup": {
+    "baseURL": "https://pds-loc:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_LOC_USERID",
+      "password": "env:SECHUB_PDS_LOC_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "4"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_SCC"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "true"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "5"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

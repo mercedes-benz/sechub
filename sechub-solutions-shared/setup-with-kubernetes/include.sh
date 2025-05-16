@@ -19,6 +19,11 @@ PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_GOSEC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
 PDS_GOSEC_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_GOSEC_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_LOC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-loc" # Where to get the pds-loc container image from
+PDS_LOC_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_LOC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/loc/helm/pds-loc" # directory where the extracted pds-loc Helm chart resides
+PDS_LOC_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_LOC_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -34,6 +39,11 @@ TEMPLATE_VARIABLES=" \
   PDS_GOSEC_IMAGE_TAG \
   PDS_GOSEC_TOKEN_ADMINUSER \
   PDS_GOSEC_TOKEN_TECHUSER \
+  PDS_LOC_HELMCHART \
+  PDS_LOC_IMAGE_REGISTRY \
+  PDS_LOC_IMAGE_TAG \
+  PDS_LOC_TOKEN_ADMINUSER \
+  PDS_LOC_TOKEN_TECHUSER \
 "
 
 ## Functions
