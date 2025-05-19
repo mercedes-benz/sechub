@@ -13,6 +13,14 @@ server:
     #profiles: dev,h2,real_products,mocked_notifications
     profiles: localserver,initial_admin_predefined,admin_access,h2,real_products,mocked_notifications
 
+service:
+  loadbalancer:
+    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
+    ip: none
+    port:
+      name: https
+      number: {{ .SECHUB_SERVER_LB_PORT }}
+
 env: |-
   - name: SECHUB_INITIALADMIN_APITOKEN
     value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"

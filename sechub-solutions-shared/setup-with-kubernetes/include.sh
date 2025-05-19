@@ -14,6 +14,7 @@ SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deploym
 SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
 SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
+SECHUB_SERVER_LB_PORT_DEFAULT="8443"
 PDS_GOSEC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-gosec" # Where to get the pds-gosec container image from
 PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_GOSEC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
@@ -34,6 +35,7 @@ TEMPLATE_VARIABLES=" \
   SECHUB_SERVER_HELMCHART \
   SECHUB_SERVER_IMAGE_REGISTRY \
   SECHUB_SERVER_IMAGE_TAG \
+  SECHUB_SERVER_LB_PORT \
   PDS_GOSEC_HELMCHART \
   PDS_GOSEC_IMAGE_REGISTRY \
   PDS_GOSEC_IMAGE_TAG \
@@ -145,10 +147,8 @@ function set_sechub_connection {
     echo "Could not figure out the load balancer IP of SecHub server: $SERVER_IP"
     exit 1
   fi
-  SERVER_PORT=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.spec.ports[0].port}')
-  if [ -z "$SERVER_PORT" ] ; then
-    echo "[WARNING] Could not find load balancer port under jsonpath='{.spec.ports[0].port}'. Connection could fail!"
-  fi
+  SERVER_PORT=$SECHUB_SERVER_LB_PORT
+
   export SECHUB_SERVER="https://$SERVER_IP:$SERVER_PORT"
   export SECHUB_USERID=sechubadm
   export SECHUB_APITOKEN="$SECHUB_INITIALADMIN_APITOKEN"
