@@ -1,0 +1,43 @@
+{
+  "name": "pds-iac-kics-mock",
+  "productIdentifier": "PDS_CODESCAN",
+  "setup": {
+    "baseURL": "https://pds-iac:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_IAC_USERID",
+      "password": "env:SECHUB_PDS_IAC_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_KICS_MOCK"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "35"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}
