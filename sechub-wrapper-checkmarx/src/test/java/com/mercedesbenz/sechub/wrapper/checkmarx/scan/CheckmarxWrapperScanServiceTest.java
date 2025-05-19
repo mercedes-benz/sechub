@@ -69,8 +69,14 @@ class CheckmarxWrapperScanServiceTest {
         when(context.getPresetIdForNewProjects()).thenReturn(1L);
     }
 
+    /* @formatter:off */
     @ParameterizedTest
-    @CsvSource({ "true,false", "true,true", "false,false", "false,true" })
+    @CsvSource({
+            "true,false",
+            "true,true",
+            "false,false",
+            "false,true"})
+    /* @formatter:on */
     void adapter_is_used_with_correct_configuration(boolean alwaysFullScan, boolean trustAllCertificates) throws Exception {
         /* prepare */
         AdapterExecutionResult result = new AdapterExecutionResult("something");
@@ -99,16 +105,22 @@ class CheckmarxWrapperScanServiceTest {
         CheckmarxAdapterConfig config = adapterConfig.getValue();
         assertThat(config.getUser()).isEqualTo("user1");
         assertThat(config.getPasswordOrAPIToken()).isEqualTo("checkmarx-pwd1");
+
         assertThat(config.isAlwaysFullScanEnabled()).isEqualTo(alwaysFullScan);
         assertThat(config.isTrustAllCertificatesEnabled()).isEqualTo(trustAllCertificates);
+
         assertThat(config.getTimeOutInMilliseconds()).isEqualTo(20 * 1000 * 60);
         assertThat(config.getTimeToWaitForNextCheckOperationInMilliseconds()).isEqualTo(49152);
         assertThat(config.getProductBaseURL()).isEqualTo("product-base-url1");
+
         assertThat(config.getSourceCodeZipFileInputStream()).isEqualTo(inputStreamCreatedByContext);
+
         assertThat(config.getPresetIdForNewProjectsOrNull()).isEqualTo(1L);
         assertThat(config.getTeamIdForNewProjects()).isEqualTo("team1");
+
         assertThat(config.getProjectId()).isEqualTo("project1");
         assertThat(config.getTraceID()).isEqualTo("uuid1");
+
         assertThat(config.getEngineConfigurationName()).isEqualTo("engine1");
         assertThat(config.getClientSecret()).isEqualTo("secret1");
         assertThat(config.getMockDataIdentifier()).isEqualTo("folder1;folder2");

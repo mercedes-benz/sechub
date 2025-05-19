@@ -105,5 +105,4 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
         LOG.warn("No proposal for HTTP status code: {}", statusCode);
         return null;
     }
-
 }

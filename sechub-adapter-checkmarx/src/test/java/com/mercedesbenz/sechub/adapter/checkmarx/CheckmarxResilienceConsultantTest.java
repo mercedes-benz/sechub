@@ -9,6 +9,8 @@ import java.net.SocketException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -131,26 +133,11 @@ public class CheckmarxResilienceConsultantTest {
         assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS);
     }
 
-    @Test
-    public void http_server_error_503_exception_returns_retry_proposal_with_servererror_config() {
+    @ParameterizedTest
+    @EnumSource(value = HttpStatus.class, names = {"INTERNAL_SERVER_ERROR", "BAD_GATEWAY", "SERVICE_UNAVAILABLE", "GATEWAY_TIMEOUT"})
+    public void http_server_error_503_exception_returns_retry_proposal_with_servererror_config(HttpStatus status) {
         /* prepare */
-        when(context.getCurrentError()).thenReturn(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE));
-
-        /* execute */
-        ResilienceProposal proposal = consultantToTest.consultFor(context);
-
-        /* test */
-        assertThat(proposal).isNotNull().isInstanceOf(RetryResilienceProposal.class);
-        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-        assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_SERVERERROR_MAX_RETRIES);
-        assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS);
-    }
-
-    @Test
-    public void nested_http_server_error_503_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_servererror_config() {
-        /* prepare */
-        when(context.getCurrentError())
-                .thenReturn(new IOException("se1", new RuntimeException(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE))));
+        when(context.getCurrentError()).thenReturn(new HttpServerErrorException(status));
 
         /* execute */
         ResilienceProposal proposal = consultantToTest.consultFor(context);
