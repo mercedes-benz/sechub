@@ -27792,6 +27792,7 @@ var extract_zip_default = /*#__PURE__*/__nccwpck_require__.n(extract_zip);
 var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/input-helper.ts
 // SPDX-License-Identifier: MIT
+
 const COMMA = ',';
 /**
  * Splits an input string by comma and sanitizes the result by removing leading and trailing whitespaces.
@@ -27848,6 +27849,7 @@ function resolveProxyConfig() {
                 }
             } : undefined)
         };
+        lib_core.info(`Proxy found, using proxy host: '${proxyUrl.hostname}'`);
         return proxyConfig;
     }
     catch (error) {
