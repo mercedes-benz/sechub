@@ -25,6 +25,13 @@ env: |-
   - name: SECHUB_INITIALADMIN_APITOKEN
     value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"
   # -------------------------------------------------------------------------------#
+  # - pds-checkmarx
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_CHECKMARX_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_CHECKMARX_PASSWORD
+    value: "{{ .PDS_CHECKMARX_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
   # - pds-gosec
   # ------------------------------------------------------------------------------ #
   - name: SECHUB_PDS_GOSEC_USERID

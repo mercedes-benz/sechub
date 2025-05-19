@@ -15,6 +15,11 @@ SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
 SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
 SECHUB_SERVER_LB_PORT_DEFAULT="8443"
+PDS_CHECKMARX_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/checkmarx/helm/pds-checkmarx" # directory where the extracted pds-checkmarx Helm chart resides
+PDS_CHECKMARX_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-checkmarx" # Where to get the pds-checkmarx container image from
+PDS_CHECKMARX_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_CHECKMARX_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_CHECKMARX_TOKEN_TECHUSER_DEFAULT="undefined"
 PDS_GOSEC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-gosec" # Where to get the pds-gosec container image from
 PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_GOSEC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
@@ -36,6 +41,11 @@ TEMPLATE_VARIABLES=" \
   SECHUB_SERVER_IMAGE_REGISTRY \
   SECHUB_SERVER_IMAGE_TAG \
   SECHUB_SERVER_LB_PORT \
+  PDS_CHECKMARX_HELMCHART \
+  PDS_CHECKMARX_IMAGE_REGISTRY \
+  PDS_CHECKMARX_IMAGE_TAG \
+  PDS_CHECKMARX_TOKEN_ADMINUSER \
+  PDS_CHECKMARX_TOKEN_TECHUSER \
   PDS_GOSEC_HELMCHART \
   PDS_GOSEC_IMAGE_REGISTRY \
   PDS_GOSEC_IMAGE_TAG \

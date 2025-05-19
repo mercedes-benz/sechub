@@ -1,0 +1,83 @@
+{
+  "name": "pds-checkmarx-mock",
+  "productIdentifier": "PDS_CODESCAN",
+  "setup": {
+    "baseURL": "https://pds-checkmarx:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_CHECKMARX_USERID",
+      "password": "env:SECHUB_PDS_CHECKMARX_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "checkmarx.newproject.presetid.mapping",
+        "value": "{\"entries\":[{\"pattern\":\".*\",\"replacement\":\"100002\",\"comment\":\"sechub-undefined-default\"}]}"
+      },
+      {
+        "key": "checkmarx.newproject.teamid.mapping",
+        "value": "{\"entries\":[{\"pattern\":\".*\",\"replacement\":\"2\",\"comment\":\"sechub-team-default\"}]}"
+      },
+      {
+        "key": "pds.checkmarx.always.fullscan.enabled",
+        "value": "true"
+      },
+      {
+        "key": "pds.checkmarx.baseurl",
+        "value": "https://your.checkmarx.example.org"
+      },
+      {
+        "key": "pds.checkmarx.engine.configuration.name",
+        "value": "Multi-language Scan"
+      },
+      {
+        "key": "pds.checkmarx.password",
+        "value": "your-checkmarx-password"
+      },
+      {
+        "key": "pds.checkmarx.result.check.period.milliseconds",
+        "value": "1000"
+      },
+      {
+        "key": "pds.checkmarx.result.check.timeout.minutes",
+        "value": "600"
+      },
+      {
+        "key": "pds.checkmarx.user",
+        "value": "your-checkmarx-user"
+      },
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "602"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_CHECKMARX_MOCK"
+      },
+      {
+        "key": "pds.config.script.trustall.certificates.enabled",
+        "value": "true"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "605"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

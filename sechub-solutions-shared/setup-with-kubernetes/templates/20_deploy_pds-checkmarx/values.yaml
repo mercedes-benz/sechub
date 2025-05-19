@@ -1,0 +1,19 @@
+# Number of pds-checkmarx instances to spin up
+replicaCount: 1
+
+image:
+  registry: "{{ .PDS_CHECKMARX_IMAGE_REGISTRY }}"
+  tag: "{{ .PDS_CHECKMARX_IMAGE_TAG }}"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "Always"
+
+pds:
+  heartbeatLogging: "false"
+
+users:
+  technical:
+    id: "techuser"
+    apiToken: "{{ .PDS_CHECKMARX_TOKEN_TECHUSER }}"
+  admin:
+    id: "admin"
+    apiToken: "{{ .PDS_CHECKMARX_TOKEN_ADMINUSER }}"
