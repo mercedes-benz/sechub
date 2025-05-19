@@ -6,7 +6,8 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
@@ -32,59 +33,76 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
 
     @Override
     public ResilienceProposal consultFor(ResilienceContext context) {
-        Objects.requireNonNull(context);
+        Objects.requireNonNull(context, "Resilience context must not be null");
+
         Throwable rootCause = StacktraceUtil.findRootCause(context.getCurrentError());
         if (rootCause == null) {
             LOG.warn("Cannot make any proposal when root cause is null!");
             return null;
         }
-        String message = rootCause.getMessage();
 
-        if (message != null) {
-            if (message.contains("Changes exceeded the threshold limit")) {
-                LOG.warn("Checkmarx delta scan exceeded treshold limit. Will suggest to do a retry with fullscan enabled");
-                context.setValue(CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, true);
-
-                return new SimpleRetryResilienceProposal("checkmarx too many changes - retry fullscan handling", 1, 500);
-            }
+        if (isThresholdLimitExceeded(rootCause)) {
+            return handleThresholdLimitExceeded(context);
         }
 
         if (rootCause instanceof SocketException) {
-            LOG.info("Propose retry for socket exception");
-            return new SimpleRetryResilienceProposal("checkmarx network error handling", resilienceConfig.getNetworkErrorMaxRetries(),
-                    resilienceConfig.getNetworkErrorRetryTimeToWaitInMilliseconds());
+            return handleSocketException();
         }
 
-        if (rootCause instanceof HttpClientErrorException) {
-            HttpClientErrorException hce = (HttpClientErrorException) rootCause;
-            int statusCode = hce.getStatusCode().value();
-            if (statusCode == 400) {
-                /*
-                 * BAD request - this can happen for same project scans put to queue because
-                 * there can a CHECKMARX server error happen
-                 */
-                LOG.info("Propose retry for bad request");
-                return new SimpleRetryResilienceProposal("checkmarx bad request handling", resilienceConfig.getBadRequestMaxRetries(),
-                        resilienceConfig.getBadRequestRetryTimeToWaitInMilliseconds());
-
-            } else if (statusCode == 500) {
-                /*
-                 * An internal server error happened - lets assume that this is temporary and do
-                 * a retry
-                 */
-                LOG.info("Propose retry for internal server error");
-                return new SimpleRetryResilienceProposal("checkmarx internal server error handling", resilienceConfig.getInternalServerErrortMaxRetries(),
-                        resilienceConfig.getInternalServerErrorRetryTimeToWaitInMilliseconds());
-
-            } else {
-                LOG.info("Can't make proposal for http client error exception:{}", StacktraceUtil.createDescription(rootCause));
-            }
-        } else {
-            // unexpected problem - so log as warning and exception, so full stack trace
-            // availabe in logs
-            LOG.warn("Can't make proposal for exception with root cause: {}", rootCause.getClass().getSimpleName(), rootCause);
+        if (rootCause instanceof RestClientException) {
+            return handleRestClientException(rootCause);
         }
+
+        LOG.warn("No proposal available for exception: {}", rootCause.getClass().getSimpleName());
         return null;
     }
 
+    private boolean isThresholdLimitExceeded(Throwable rootCause) {
+        String message = rootCause.getMessage();
+        if (message == null) {
+            return false;
+        }
+        return message.contains("Changes exceeded the threshold limit");
+    }
+
+    private ResilienceProposal handleThresholdLimitExceeded(ResilienceContext context) {
+        LOG.warn("Checkmarx delta scan exceeded threshold limit. Will suggest to do a retry with fullscan enabled");
+        context.setValue(CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, true);
+
+        return new SimpleRetryResilienceProposal("checkmarx too many changes - retry fullscan handling", 1, 500);
+    }
+
+    private ResilienceProposal handleSocketException() {
+        LOG.info("Propose retry for socket exception");
+        return new SimpleRetryResilienceProposal("checkmarx network error handling", resilienceConfig.getNetworkErrorMaxRetries(),
+                resilienceConfig.getNetworkErrorRetryTimeToWaitInMilliseconds());
+    }
+
+    private ResilienceProposal handleRestClientException(Throwable rootCause) {
+        if (rootCause instanceof HttpStatusCodeException) {
+            return handleHttpStatusCodeException((HttpStatusCodeException) rootCause);
+        }
+
+        LOG.warn("Unexpected RestClientException: {}", StacktraceUtil.createDescription(rootCause));
+        return null;
+    }
+
+    private ResilienceProposal handleHttpStatusCodeException(HttpStatusCodeException exception) {
+        int statusCode = exception.getStatusCode().value();
+
+        if (statusCode == 400) {
+            LOG.info("Propose retry for bad request");
+            return new SimpleRetryResilienceProposal("checkmarx bad request handling", resilienceConfig.getBadRequestMaxRetries(),
+                    resilienceConfig.getBadRequestRetryTimeToWaitInMilliseconds());
+        }
+
+        if (statusCode >= 500 && statusCode <= 599) {
+            LOG.info("Propose retry for server error with status code: {}", statusCode);
+            return new SimpleRetryResilienceProposal("checkmarx server error handling", resilienceConfig.getInternalServerErrortMaxRetries(),
+                    resilienceConfig.getInternalServerErrorRetryTimeToWaitInMilliseconds());
+        }
+
+        LOG.warn("No proposal for HTTP status code: {}", statusCode);
+        return null;
+    }
 }
