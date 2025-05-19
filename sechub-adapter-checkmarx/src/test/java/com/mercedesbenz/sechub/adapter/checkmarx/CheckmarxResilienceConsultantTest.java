@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
 import com.mercedesbenz.sechub.commons.core.resilience.RetryResilienceProposal;
 
-public class CheckmarxResilienceConsultantTest {
+class CheckmarxResilienceConsultantTest {
 
     private static final int TESTCONFIG_BAD_REQUEST_MAX_RETRIES = 10;
     private static final int TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS = 20;
@@ -34,7 +34,7 @@ public class CheckmarxResilienceConsultantTest {
     private ResilienceContext context;
 
     @BeforeEach
-    public void before() {
+    void before() {
         CheckmarxResilienceConfiguration config = mock(CheckmarxResilienceConfiguration.class);
         when(config.getBadRequestMaxRetries()).thenReturn(TESTCONFIG_BAD_REQUEST_MAX_RETRIES);
         when(config.getBadRequestRetryTimeToWaitInMilliseconds()).thenReturn(TESTCONFIG_BAD_REQUEST_RETRY_TIME_TO_WAIT_MILLIS);
@@ -50,7 +50,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void no_exception_returns_null() {
+    void no_exception_returns_null() {
         /* prepare */
 
         /* execute */
@@ -61,7 +61,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void illegal_argument_exception_returns_null() {
+    void illegal_argument_exception_returns_null() {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new IllegalArgumentException());
 
@@ -73,7 +73,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void http_bad_request_400_exception_returns_retry_proposal_with_with_badrequest_config() {
+    void http_bad_request_400_exception_returns_retry_proposal_with_with_badrequest_config() {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
@@ -88,7 +88,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void http_bad_server_error_500_exception_returns_retry_proposal_with_servererror_config() {
+    void http_bad_server_error_500_exception_returns_retry_proposal_with_servererror_config() {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
@@ -103,7 +103,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void socket_exception_returns_retry_proposal_with_networkerror_config() {
+    void socket_exception_returns_retry_proposal_with_networkerror_config() {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new SocketException());
 
@@ -118,7 +118,7 @@ public class CheckmarxResilienceConsultantTest {
     }
 
     @Test
-    public void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_badrequest_config() {
+    void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_badrequest_config() {
         /* prepare */
         when(context.getCurrentError())
                 .thenReturn(new IOException("se1", new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
@@ -135,7 +135,7 @@ public class CheckmarxResilienceConsultantTest {
 
     @ParameterizedTest
     @EnumSource(value = HttpStatus.class, names = {"INTERNAL_SERVER_ERROR", "BAD_GATEWAY", "SERVICE_UNAVAILABLE", "GATEWAY_TIMEOUT"})
-    public void http_server_error_503_exception_returns_retry_proposal_with_servererror_config(HttpStatus status) {
+    void http_server_error_5xx_exception_returns_retry_proposal_with_servererror_config(HttpStatus status) {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new HttpServerErrorException(status));
 
@@ -147,5 +147,18 @@ public class CheckmarxResilienceConsultantTest {
         RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
         assertThat(rrp.getMaximumAmountOfRetries()).isEqualTo(TESTCONFIG_SERVERERROR_MAX_RETRIES);
         assertThat(rrp.getMillisecondsToWaitBeforeRetry()).isEqualTo(TESTCONFIG_SERVERERROR_RETRY_TIME_TO_WAIT_MILLIS);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = HttpStatus.class, names = {"UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "METHOD_NOT_ALLOWED", "NOT_ACCEPTABLE"})
+    void http_client_error_4xx_exception_returns_null_when_consultant_can_not_handle(HttpStatus status) {
+        /* prepare */
+        when(context.getCurrentError()).thenReturn(new HttpClientErrorException(status));
+
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
+
+        /* test */
+        assertThat(proposal).isNull();
     }
 }

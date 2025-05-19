@@ -14,13 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
-import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
@@ -170,59 +165,5 @@ class CheckmarxWrapperScanServiceTest {
         CheckmarxResilienceConfiguration config = checkmarxResilienceConsultant.getResilienceConfig();
 
         assertThat(config).isSameAs(environment);
-    }
-
-    @Test
-    void startScan_retries_on_http_500_and_400_errors_handled_by_resilience() throws Exception {
-        /* prepare */
-        @SuppressWarnings("unchecked")
-        ResilientActionExecutor<AdapterExecutionResult> executor = serviceToTest.createResilientActionExecutor();
-
-        when(environment.getBadRequestMaxRetries()).thenReturn(2);
-        when(environment.getInternalServerErrortMaxRetries()).thenReturn(2);
-
-        executor.add(new CheckmarxResilienceConsultant(environment));
-        CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
-        when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
-
-        // Simulate two HTTP 400 and 500 errors followed by a success
-        /* @ formatter:off */
-        when(adapter.getAdapterLogId(any())).thenReturn(mock(AdapterLogId.class));
-        when(adapter.start(any(), any())).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST))
-                .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)).thenReturn(new AdapterExecutionResult("Success after retries"));
-        /* @ formatter:on */
-
-        /* execute */
-        AdapterExecutionResult result = spiedServiceToTest.startScan();
-
-        /* test */
-        assertThat(result).isNotNull();
-        assertThat(result.getProductResult()).isEqualTo("Success after retries");
-        verify(adapter, times(3)).start(any(), any());
-    }
-
-    @Test
-    void startScan_does_not_retry_on_http_error_which_can_not_be_handled_by_resilience() throws Exception {
-        /* prepare */
-        @SuppressWarnings("unchecked")
-        ResilientActionExecutor<AdapterExecutionResult> executor = serviceToTest.createResilientActionExecutor();
-
-        when(environment.getBadRequestMaxRetries()).thenReturn(2);
-        when(environment.getInternalServerErrortMaxRetries()).thenReturn(2);
-
-        executor.add(new CheckmarxResilienceConsultant(environment));
-        CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
-        when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
-
-        AdapterLogId logId = mock(AdapterLogId.class);
-        when(adapter.getAdapterLogId(any())).thenReturn(logId);
-
-        // Simulate HTTP 403 error (can not be handled by resilience consultant)
-        when(adapter.start(any(), any())).thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN));
-
-        /* execute + test */
-        assertThatThrownBy(() -> spiedServiceToTest.startScan()).isInstanceOf(AdapterException.class);
-        verify(adapter).start(any(), any());
-        verify(logId).withMessage("Checkmarx wrapper scan start failed");
     }
 }
