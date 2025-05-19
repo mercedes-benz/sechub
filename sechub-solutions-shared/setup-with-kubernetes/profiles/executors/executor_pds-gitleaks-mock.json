@@ -1,0 +1,47 @@
+{
+  "name": "pds-gitleaks-mock",
+  "productIdentifier": "PDS_SECRETSCAN",
+  "setup": {
+    "baseURL": "https://pds-gitleaks:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_GITLEAKS_USERID",
+      "password": "env:SECHUB_PDS_GITLEAKS_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "gitleaks.history.scan.enabled",
+        "value": "true"
+      },
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_GITLEAKS_MOCK"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "35"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

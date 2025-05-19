@@ -39,6 +39,13 @@ env: |-
   - name: SECHUB_PDS_FINDSECURITYBUGS_PASSWORD
     value: "{{ .PDS_FINDSECURITYBUGS_TOKEN_TECHUSER }}"
   # -------------------------------------------------------------------------------#
+  # - pds-gitleaks
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_GITLEAKS_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_GITLEAKS_PASSWORD
+    value: "{{ .PDS_GITLEAKS_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
   # - pds-gosec
   # ------------------------------------------------------------------------------ #
   - name: SECHUB_PDS_GOSEC_USERID
