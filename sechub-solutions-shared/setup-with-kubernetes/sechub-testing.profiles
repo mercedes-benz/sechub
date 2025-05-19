@@ -1,4 +1,6 @@
 analytics-loc
+dast-owaspzap
+dast-owaspzap-mock
 iac
 iac-mock
 sast-checkmarx-mock

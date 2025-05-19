@@ -50,6 +50,11 @@ PDS_MULTI_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-multi" # Wher
 PDS_MULTI_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_MULTI_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_MULTI_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_OWASPZAP_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/owaspzap/helm/pds-owaspzap" # directory where the extracted pds-owaspzap Helm chart resides
+PDS_OWASPZAP_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-owaspzap" # Where to get the pds-owaspzap container image from
+PDS_OWASPZAP_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_OWASPZAP_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_OWASPZAP_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -96,6 +101,11 @@ TEMPLATE_VARIABLES=" \
   PDS_MULTI_IMAGE_TAG \
   PDS_MULTI_TOKEN_ADMINUSER \
   PDS_MULTI_TOKEN_TECHUSER \
+  PDS_OWASPZAP_HELMCHART \
+  PDS_OWASPZAP_IMAGE_REGISTRY \
+  PDS_OWASPZAP_IMAGE_TAG \
+  PDS_OWASPZAP_TOKEN_ADMINUSER \
+  PDS_OWASPZAP_TOKEN_TECHUSER \
 "
 
 ## Functions
