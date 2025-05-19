@@ -1,0 +1,43 @@
+{
+  "name": "pds-findsecuritybugs",
+  "productIdentifier": "PDS_CODESCAN",
+  "setup": {
+    "baseURL": "https://pds-findsecuritybugs:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_FINDSECURITYBUGS_USERID",
+      "password": "env:SECHUB_PDS_FINDSECURITYBUGS_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "120"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_FINDSECURITYBUGS"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "BINARY"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "125"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "10000"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

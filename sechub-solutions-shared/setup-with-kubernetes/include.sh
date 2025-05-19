@@ -20,6 +20,11 @@ PDS_CHECKMARX_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-checkmarx
 PDS_CHECKMARX_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_CHECKMARX_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_CHECKMARX_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_FINDSECURITYBUGS_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/findsecuritybugs/helm/pds-findsecuritybugs" # directory where the extracted pds-findsecuritybugs Helm chart resides
+PDS_FINDSECURITYBUGS_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-findsecuritybugs" # Where to get the pds-findsecuritybugs container image from
+PDS_FINDSECURITYBUGS_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_FINDSECURITYBUGS_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_FINDSECURITYBUGS_TOKEN_TECHUSER_DEFAULT="undefined"
 PDS_GOSEC_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-gosec" # Where to get the pds-gosec container image from
 PDS_GOSEC_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_GOSEC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/gosec/helm/pds-gosec" # directory where the extracted pds-gosec Helm chart resides
@@ -46,6 +51,11 @@ TEMPLATE_VARIABLES=" \
   PDS_CHECKMARX_IMAGE_TAG \
   PDS_CHECKMARX_TOKEN_ADMINUSER \
   PDS_CHECKMARX_TOKEN_TECHUSER \
+  PDS_FINDSECURITYBUGS_HELMCHART \
+  PDS_FINDSECURITYBUGS_IMAGE_REGISTRY \
+  PDS_FINDSECURITYBUGS_IMAGE_TAG \
+  PDS_FINDSECURITYBUGS_TOKEN_ADMINUSER \
+  PDS_FINDSECURITYBUGS_TOKEN_TECHUSER \
   PDS_GOSEC_HELMCHART \
   PDS_GOSEC_IMAGE_REGISTRY \
   PDS_GOSEC_IMAGE_TAG \

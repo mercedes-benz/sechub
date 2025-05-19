@@ -1,3 +1,5 @@
 sast-checkmarx-mock
+sast-findsecuritybugs
+sast-findsecuritybugs-mock
 sast-golang
 analytics-loc
