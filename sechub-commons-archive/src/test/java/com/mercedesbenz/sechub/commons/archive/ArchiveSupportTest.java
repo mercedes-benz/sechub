@@ -108,6 +108,54 @@ class ArchiveSupportTest {
         supportToTest = new ArchiveSupport();
     }
 
+    @Test
+    void extract_a_zipfile_containing_a_file_with_umlauts_in_filename_works() throws Exception {
+        /* prepare */
+        File twoFilesZipfile = resolveTestFile("zipfiles/contains-files-with-special-charackters.zip");
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("contains-files-with-special-charackters").toFile();
+        targetFolder.mkdirs();
+
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
+        configuration.setRootFolderAccepted(true);
+
+        /* execute */
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(twoFilesZipfile), twoFilesZipfile.getAbsolutePath(), targetFolder,
+                configuration, archiveExtractionConstraints);
+
+        /* test */
+        assertContainsFiles(targetFolder, "Apfelbäume_muss_man_gut_gießen.txt", "README.md");
+        assertEquals(2, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
+    }
+
+    @Test
+    void compressFolder_zipping_files_with_umlauts_in_filename_works() throws Exception {
+
+        /* prepare */
+        File targetFile = TestUtil.createTempFileInBuildFolder("zipped-files-with-special-charackters", "zip").toFile();
+        File folder = new File("./src/test/resources/expected-extraction/contains-files-with-special-charackters");
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        File targetFolderCheckZipFileContent = TestUtil.createTempDirectoryInBuildFolder("output-of_zipped-files-with-special-charackters").toFile();
+        targetFolderCheckZipFileContent.mkdirs();
+
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
+        configuration.setRootFolderAccepted(true);
+
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(),
+                targetFolderCheckZipFileContent, configuration, archiveExtractionConstraints);
+
+        // now test that the re-extraction still contains file with umlauts
+        assertContainsFiles(targetFolderCheckZipFileContent, "Apfelbäume_muss_man_gut_gießen.txt", "README.md");
+        assertEquals(2, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
+    }
+
     @ParameterizedTest
     @EnumSource(value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN" })
     @NullSource
@@ -742,7 +790,6 @@ class ArchiveSupportTest {
 
     private void assertContainsFiles(File folder, String... childNames) {
         File[] children = folder.listFiles();
-        assertEquals(childNames.length, children.length);
 
         /* build temporary list with names */
         List<String> foundChildNames = new ArrayList<>();
@@ -757,6 +804,7 @@ class ArchiveSupportTest {
                 fail("Child: " + childName + " not found found inside list, but: " + foundChildNames);
             }
         }
+        assertEquals(childNames.length, children.length);
 
     }
 
