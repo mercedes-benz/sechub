@@ -45,6 +45,11 @@ PDS_LOC_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_LOC_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/loc/helm/pds-loc" # directory where the extracted pds-loc Helm chart resides
 PDS_LOC_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_LOC_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_MULTI_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/multi/helm/pds-multi" # directory where the extracted pds-multi Helm chart resides
+PDS_MULTI_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-multi" # Where to get the pds-multi container image from
+PDS_MULTI_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_MULTI_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_MULTI_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -86,6 +91,11 @@ TEMPLATE_VARIABLES=" \
   PDS_LOC_IMAGE_TAG \
   PDS_LOC_TOKEN_ADMINUSER \
   PDS_LOC_TOKEN_TECHUSER \
+  PDS_MULTI_HELMCHART \
+  PDS_MULTI_IMAGE_REGISTRY \
+  PDS_MULTI_IMAGE_TAG \
+  PDS_MULTI_TOKEN_ADMINUSER \
+  PDS_MULTI_TOKEN_TECHUSER \
 "
 
 ## Functions

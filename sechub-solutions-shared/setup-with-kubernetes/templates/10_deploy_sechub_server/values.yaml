@@ -66,3 +66,10 @@ env: |-
     value: "techuser"
   - name: SECHUB_PDS_LOC_PASSWORD
     value: "{{ .PDS_LOC_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-multi
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_MULTI_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_MULTI_PASSWORD
+    value: "{{ .PDS_MULTI_TOKEN_TECHUSER }}"
