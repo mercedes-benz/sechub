@@ -162,6 +162,9 @@ ENV SCRIPT_FOLDER="$PDS_FOLDER/scripts"
 ENV TOOL_FOLDER="$PDS_FOLDER/tools"
 ENV WORKSPACE="/workspace"
 
+# Copy pds-api.sh into container
+COPY --chmod=755 pds-api.sh "/usr/local/bin/"
+
 # non-root user
 # using fixed group and user ids
 RUN groupadd --gid "$GID" "$USER" && \
@@ -188,16 +191,13 @@ RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into the container
-COPY run.sh /run.sh
+COPY --chmod=755 run.sh /run.sh
 
 # Copy the additional "hook" script into the container
-COPY run_additional.sh /run_additional.sh
+COPY --chmod=755 run_additional.sh /run_additional.sh
 
 # Copy run script into the container
 COPY helper/ "$HELPER_FOLDER"
-
-# Set execute permissions for scripts
-RUN chmod +x /run.sh /run_additional.sh
 
 # Set permissions
 RUN chown --recursive "$USER:$USER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR"

@@ -61,6 +61,9 @@ echo ">> Build type: $BUILD_TYPE"
 BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
 echo ">> SecHub PDS release version: $PDS_VERSION"
 
+echo "Copying pds-api.sh scripts into the docker directory"
+cp ../../sechub-developertools/scripts/pds-api.sh docker/
+
 echo "Copying install-java scripts into the docker directory"
 cp --recursive --force ../../sechub-solutions-shared/install-java/ docker/
 
