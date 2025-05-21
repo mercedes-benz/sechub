@@ -111,8 +111,8 @@ class ArchiveSupportTest {
     @Test
     void extract_a_zipfile_containing_a_file_with_umlauts_in_filename_works() throws Exception {
         /* prepare */
-        File twoFilesZipfile = resolveTestFile("zipfiles/contains-files-with-special-charackters.zip");
-        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("contains-files-with-special-charackters").toFile();
+        File twoFilesZipfile = resolveTestFile("zipfiles/contains-files-with-special-characters.zip");
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("contains-files-with-special-characters").toFile();
         targetFolder.mkdirs();
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
@@ -133,7 +133,7 @@ class ArchiveSupportTest {
 
         /* prepare */
         File targetFile = TestUtil.createTempFileInBuildFolder("zipped-files-with-special-charackters", "zip").toFile();
-        File folder = new File("./src/test/resources/expected-extraction/contains-files-with-special-charackters");
+        File folder = new File("./src/test/resources/expected-extraction/contains-files-with-special-characters");
 
         /* execute */
         supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
