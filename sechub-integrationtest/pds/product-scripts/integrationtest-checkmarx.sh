@@ -46,5 +46,16 @@ unzip sourcecode.zip
 # There must be a data.txt file inside - we create a sha256 for this file now
 # (For the complete zip file it is not possible, because timestamps differ inside the zip file, so
 # sha256 would be always different)
-TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256=$(sha256sum ./data.txt)
+
+TEST_RECOMPRESSED_ZIP_DATA_FILENAME=""
+
+if [ -f "./data-äüÖ.txt" ]; then
+  TEST_RECOMPRESSED_ZIP_DATA_FILENAME_WITH_UMLAUTS="true"
+  TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256=$(sha256sum ./data-äüÖ.txt)
+else
+  TEST_RECOMPRESSED_ZIP_DATA_FILENAME_WITH_UMLAUTS="false"
+  TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256=$(sha256sum ./data.txt)
+fi
+dumpVariable "TEST_RECOMPRESSED_ZIP_DATA_FILENAME_WITH_UMLAUTS"
+
 dumpVariable "TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256"
