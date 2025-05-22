@@ -80,3 +80,10 @@ env: |-
     value: "techuser"
   - name: SECHUB_PDS_OWASPZAP_PASSWORD
     value: "{{ .PDS_OWASPZAP_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-pmd
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_PMD_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_PMD_PASSWORD
+    value: "{{ .PDS_PMD_TOKEN_TECHUSER }}"

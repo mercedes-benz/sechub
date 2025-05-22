@@ -5,7 +5,10 @@
 
 = PMD + PDS
 
-https://pmd.github.io/[PMD] is a free and open source static application security testing tool. PMD is a command line interface (CLI) tool. By combining PMD with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, PMD can be used with SecHub. Another scenario is to use PMD+PDS standalone.
+https://pmd.github.io/[PMD] is a free and open source static application security testing tool.
+It's mainly concerned with Java and Apex, but supports 16 other languages.
+PMD is a command line interface (CLI) tool.
+By combining PMD with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, PMD can be used with SecHub. Another scenario is to use PMD+PDS standalone.
 
 Furthermore, the combination of PMD and PDS makes it possible to run both inside a Kubernetes cluster or virtual machines.
 

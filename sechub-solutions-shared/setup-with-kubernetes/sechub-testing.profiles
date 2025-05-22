@@ -13,6 +13,8 @@ sast-mobsfscan
 sast-mobsfscan-mock
 sast-nodejs
 sast-nodejs-mock
+sast-pmd
+sast-pmd-mock
 sast-python
 sast-python-mock
 secretscanner-gitleaks

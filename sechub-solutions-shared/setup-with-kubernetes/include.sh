@@ -55,6 +55,11 @@ PDS_OWASPZAP_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-owaspzap" 
 PDS_OWASPZAP_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_OWASPZAP_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_OWASPZAP_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_PMD_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/pmd/helm/pds-pmd" # directory where the extracted pds-pmd Helm chart resides
+PDS_PMD_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-pmd" # Where to get the pds-pmd container image from
+PDS_PMD_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_PMD_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_PMD_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -106,6 +111,11 @@ TEMPLATE_VARIABLES=" \
   PDS_OWASPZAP_IMAGE_TAG \
   PDS_OWASPZAP_TOKEN_ADMINUSER \
   PDS_OWASPZAP_TOKEN_TECHUSER \
+  PDS_PMD_HELMCHART \
+  PDS_PMD_IMAGE_REGISTRY \
+  PDS_PMD_IMAGE_TAG \
+  PDS_PMD_TOKEN_ADMINUSER \
+  PDS_PMD_TOKEN_TECHUSER \
 "
 
 ## Functions
