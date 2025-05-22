@@ -59,6 +59,7 @@
   import { useI18n } from 'vue-i18n'
   import { useFetchUserDetail } from '@/composables/useUserDetail'
   import { useConfig } from '@/config'
+  import { handleApiError } from '@/services/apiErrorHandler'
 
   export default {
     name: 'AppHeader',
@@ -101,6 +102,7 @@
           // redirect to root after logout
           router.push('/login')
         } catch (err) {
+          handleApiError(err)
           console.error(err)
         }
       }
