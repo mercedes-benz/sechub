@@ -3,6 +3,8 @@ dast-owaspzap
 dast-owaspzap-mock
 iac
 iac-mock
+prepare-remote
+prepare-remote-mock
 sast-checkmarx-mock
 sast-clang
 sast-clang-mock
@@ -17,5 +19,7 @@ sast-pmd
 sast-pmd-mock
 sast-python
 sast-python-mock
+sast-scancode
+sast-scancode-mock
 secretscanner-gitleaks
 secretscanner-gitleaks-mock

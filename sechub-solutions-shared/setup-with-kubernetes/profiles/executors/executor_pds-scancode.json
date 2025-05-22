@@ -1,24 +1,28 @@
 {
-  "name": "pds-findsecuritybugs",
-  "productIdentifier": "PDS_CODESCAN",
+  "name": "pds-scancode",
+  "productIdentifier": "PDS_LICENSESCAN",
   "setup": {
-    "baseURL": "https://pds-findsecuritybugs:8444",
+    "baseURL": "https://pds-scancode:8444",
     "credentials": {
-      "user": "env:SECHUB_PDS_FINDSECURITYBUGS_USERID",
-      "password": "env:SECHUB_PDS_FINDSECURITYBUGS_PASSWORD"
+      "user": "env:SECHUB_PDS_SCANCODE_USERID",
+      "password": "env:SECHUB_PDS_SCANCODE_PASSWORD"
     },
     "jobParameters": [
       {
         "key": "pds.config.product.timeout.minutes",
-        "value": "120"
+        "value": "600"
       },
       {
         "key": "pds.config.productidentifier",
-        "value": "PDS_FINDSECURITYBUGS"
+        "value": "PDS_SCANCODE"
+      },
+      {
+        "key": "pds.config.script.trustall.certificates.enabled",
+        "value": "false"
       },
       {
         "key": "pds.config.supported.datatypes",
-        "value": "BINARY"
+        "value": "SOURCE,BINARY"
       },
       {
         "key": "pds.config.use.sechub.storage",
@@ -26,7 +30,7 @@
       },
       {
         "key": "sechub.productexecutor.pds.timeout.minutes",
-        "value": "125"
+        "value": "605"
       },
       {
         "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
@@ -35,6 +39,18 @@
       {
         "key": "sechub.productexecutor.pds.trustall.certificates",
         "value": "true"
+      },
+      {
+        "key": "scancode.processes",
+        "value": "1"
+      },
+      {
+        "key": "scancode.scan.diagnostics",
+        "value": "true"
+      },
+      {
+        "key": "scancode.timeout",
+        "value": "36000"
       }
     ]
   },

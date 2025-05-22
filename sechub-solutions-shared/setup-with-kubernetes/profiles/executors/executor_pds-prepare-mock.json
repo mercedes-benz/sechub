@@ -1,11 +1,11 @@
 {
-  "name": "pds-iac-kics-mock",
-  "productIdentifier": "PDS_CODESCAN",
+  "name": "pds-prepare-mock",
+  "productIdentifier": "PDS_PREPARE",
   "setup": {
-    "baseURL": "https://pds-iac:8444",
+    "baseURL": "https://pds-prepare:8444",
     "credentials": {
-      "user": "env:SECHUB_PDS_IAC_USERID",
-      "password": "env:SECHUB_PDS_IAC_PASSWORD"
+      "user": "env:SECHUB_PDS_PREPARE_USERID",
+      "password": "env:SECHUB_PDS_PREPARE_PASSWORD"
     },
     "jobParameters": [
       {
@@ -14,11 +14,11 @@
       },
       {
         "key": "pds.config.productidentifier",
-        "value": "PDS_KICS_MOCK"
+        "value": "PDS_PREPARE_MOCK"
       },
       {
         "key": "pds.config.supported.datatypes",
-        "value": "SOURCE"
+        "value": "NONE"
       },
       {
         "key": "pds.config.use.sechub.storage",

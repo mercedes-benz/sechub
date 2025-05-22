@@ -1,24 +1,28 @@
 {
-  "name": "pds-iac-kics-mock",
-  "productIdentifier": "PDS_CODESCAN",
+  "name": "pds-scancode-mock",
+  "productIdentifier": "PDS_LICENSESCAN",
   "setup": {
-    "baseURL": "https://pds-iac:8444",
+    "baseURL": "https://pds-scancode:8444",
     "credentials": {
-      "user": "env:SECHUB_PDS_IAC_USERID",
-      "password": "env:SECHUB_PDS_IAC_PASSWORD"
+      "user": "env:SECHUB_PDS_SCANCODE_USERID",
+      "password": "env:SECHUB_PDS_SCANCODE_PASSWORD"
     },
     "jobParameters": [
       {
         "key": "pds.config.product.timeout.minutes",
-        "value": "30"
+        "value": "600"
       },
       {
         "key": "pds.config.productidentifier",
-        "value": "PDS_KICS_MOCK"
+        "value": "PDS_SCANCODE_MOCK"
+      },
+      {
+        "key": "pds.config.script.trustall.certificates.enabled",
+        "value": "false"
       },
       {
         "key": "pds.config.supported.datatypes",
-        "value": "SOURCE"
+        "value": "SOURCE,BINARY"
       },
       {
         "key": "pds.config.use.sechub.storage",
@@ -26,7 +30,7 @@
       },
       {
         "key": "sechub.productexecutor.pds.timeout.minutes",
-        "value": "35"
+        "value": "605"
       },
       {
         "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
@@ -35,6 +39,18 @@
       {
         "key": "sechub.productexecutor.pds.trustall.certificates",
         "value": "true"
+      },
+      {
+        "key": "scancode.processes",
+        "value": "1"
+      },
+      {
+        "key": "scancode.scan.diagnostics",
+        "value": "true"
+      },
+      {
+        "key": "scancode.timeout",
+        "value": "36000"
       }
     ]
   },

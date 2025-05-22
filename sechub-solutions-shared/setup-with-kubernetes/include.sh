@@ -60,6 +60,16 @@ PDS_PMD_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-pmd" # Where to
 PDS_PMD_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_PMD_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_PMD_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_PREPARE_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/prepare/helm/pds-prepare" # directory where the extracted pds-prepare Helm chart resides
+PDS_PREPARE_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-prepare" # Where to get the pds-prepare container image from
+PDS_PREPARE_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_PREPARE_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_PREPARE_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_SCANCODE_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/scancode/helm/pds-scancode" # directory where the extracted pds-scancode Helm chart resides
+PDS_SCANCODE_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-scancode" # Where to get the pds-scancode container image from
+PDS_SCANCODE_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_SCANCODE_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_SCANCODE_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -116,6 +126,16 @@ TEMPLATE_VARIABLES=" \
   PDS_PMD_IMAGE_TAG \
   PDS_PMD_TOKEN_ADMINUSER \
   PDS_PMD_TOKEN_TECHUSER \
+  PDS_PREPARE_HELMCHART \
+  PDS_PREPARE_IMAGE_REGISTRY \
+  PDS_PREPARE_IMAGE_TAG \
+  PDS_PREPARE_TOKEN_ADMINUSER \
+  PDS_PREPARE_TOKEN_TECHUSER \
+  PDS_SCANCODE_HELMCHART \
+  PDS_SCANCODE_IMAGE_REGISTRY \
+  PDS_SCANCODE_IMAGE_TAG \
+  PDS_SCANCODE_TOKEN_ADMINUSER \
+  PDS_SCANCODE_TOKEN_TECHUSER \
 "
 
 ## Functions

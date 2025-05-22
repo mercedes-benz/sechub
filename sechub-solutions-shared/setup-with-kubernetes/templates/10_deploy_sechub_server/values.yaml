@@ -87,3 +87,17 @@ env: |-
     value: "techuser"
   - name: SECHUB_PDS_PMD_PASSWORD
     value: "{{ .PDS_PMD_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-prepare
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_PREPARE_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_PREPARE_PASSWORD
+    value: "{{ .PDS_PREPARE_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-scancode
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_SCANCODE_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_SCANCODE_PASSWORD
+    value: "{{ .PDS_SCANCODE_TOKEN_TECHUSER }}"
