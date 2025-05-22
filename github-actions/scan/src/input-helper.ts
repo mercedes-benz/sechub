@@ -2,6 +2,7 @@
 
 import { AxiosProxyConfig } from "axios";
 import { handleError } from "./action-helper";
+import * as core from '@actions/core';
 
 const COMMA = ',';
 
@@ -63,6 +64,7 @@ export function resolveProxyConfig(): AxiosProxyConfig | undefined {
                 }
             } : undefined)
         };
+        core.info(`Proxy found, using proxy host: '${proxyUrl.hostname}'`);
         return proxyConfig;
     } catch(error: any) {
         throw new Error(`Trying to setup proxy configuration received the error: "${error.message}". Make sure to use the following syntax: http://user:password@proxy.example.org:1234 or without credentials: http://proxy.example.org:1234`);
