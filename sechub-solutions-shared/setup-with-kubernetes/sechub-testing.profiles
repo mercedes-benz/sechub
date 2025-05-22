@@ -3,6 +3,8 @@ dast-owaspzap
 dast-owaspzap-mock
 iac
 iac-mock
+licensescan-xray
+licensescan-xray-mock
 prepare-remote
 prepare-remote-mock
 sast-checkmarx-mock

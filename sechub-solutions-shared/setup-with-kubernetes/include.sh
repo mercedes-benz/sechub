@@ -70,6 +70,11 @@ PDS_SCANCODE_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-scancode" 
 PDS_SCANCODE_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_SCANCODE_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_SCANCODE_TOKEN_TECHUSER_DEFAULT="undefined"
+PDS_XRAY_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/xray/helm/pds-xray" # directory where the extracted pds-xray Helm chart resides
+PDS_XRAY_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-xray" # Where to get the pds-xray container image from
+PDS_XRAY_IMAGE_TAG_DEFAULT="latest" # image tag of above
+PDS_XRAY_TOKEN_ADMINUSER_DEFAULT="undefined"
+PDS_XRAY_TOKEN_TECHUSER_DEFAULT="undefined"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -136,6 +141,11 @@ TEMPLATE_VARIABLES=" \
   PDS_SCANCODE_IMAGE_TAG \
   PDS_SCANCODE_TOKEN_ADMINUSER \
   PDS_SCANCODE_TOKEN_TECHUSER \
+  PDS_XRAY_HELMCHART \
+  PDS_XRAY_IMAGE_REGISTRY \
+  PDS_XRAY_IMAGE_TAG \
+  PDS_XRAY_TOKEN_ADMINUSER \
+  PDS_XRAY_TOKEN_TECHUSER \
 "
 
 ## Functions

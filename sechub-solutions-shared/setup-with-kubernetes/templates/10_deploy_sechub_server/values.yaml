@@ -101,3 +101,10 @@ env: |-
     value: "techuser"
   - name: SECHUB_PDS_SCANCODE_PASSWORD
     value: "{{ .PDS_SCANCODE_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-xray
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_XRAY_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_XRAY_PASSWORD
+    value: "{{ .PDS_XRAY_TOKEN_TECHUSER }}"
