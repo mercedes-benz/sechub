@@ -115,6 +115,7 @@
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
+  import { handleApiError } from '@/utils/apiErrorHandler'
 
   export default defineComponent({
 

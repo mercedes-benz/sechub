@@ -222,6 +222,7 @@
   import { ProjectData, UserDetailInformation } from '@/generated-sources/openapi'
   import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import '@/styles/sechub.scss'
+  import { handleApiError } from '@/utils/apiErrorHandler'
 
   interface Props {
     projectData: ProjectData,
@@ -354,6 +355,7 @@
               emit('projectChanged')
               editOwner(false)
             } catch (err) {
+              handleApiError(err)
               const errMsg = t('PROJECT_SETTINGS_PROJECT_OWNER_CHANGE_FAILED')
               handleSettingsError(errMsg, err)
               editOwner()
@@ -373,6 +375,7 @@
           emit('projectChanged')
           newMemberId.value = ''
         } catch (err) {
+          handleApiError(err)
           const errMsg = t('PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED')
           handleSettingsError(errMsg, err)
         }
@@ -400,6 +403,7 @@
               })
               emit('projectChanged')
             } catch (err) {
+              handleApiError(err)
               const errMsg = t('PROJECT_SETTINGS_PROJECT_UNASSIGN_USER_FAILED')
               handleSettingsError(errMsg, err)
             }
