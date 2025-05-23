@@ -28,7 +28,7 @@ memory:
 
 server:
   # email address of the SecHub administrators. Informations about scheduler stop/start, new users etc. will go there.
-  adminEmail: mail@to.be.defined
+  adminEmail: sechub@example.org
   baseURL:
     # Base url for SecHub administration server instance (with Spring profile `admin_access`)
     adminAccess: https://to.be.defined
@@ -39,18 +39,19 @@ server:
   # !              As soon as you deploy a cluster, you must set up a shared database.
   # Put the database user id  in k8s secret secret-database:spring_datasource_username
   # Put the database password in k8s secret secret-database:spring_datasource_password
-  databaseConnection: "jdbc:postgresql://postgres-db:5432/sechub"
+  # databaseConnection: "jdbc:postgresql://postgres-db:5432/sechub"
+  #
   # Configure emails sent from SecHub server:
   email:
-    from: sechub@to.be.defined
-    replyTo: sechub@to.be.defined
+    from: sechub@example.org
+    replyTo: sechub@example.org
     smtp:
       host: mailhost.to.be.defined
       port: 25
   initialAdminUser:
     # Define initial admin user. The link to get the api token will be sent to this email address.
     id: sechubadm
-    email: mail@to.be.defined
+    email: sechub@example.org
   jobScheduling:
     # Job scheduling is activated in intervals (2000=every 2s)
     activationIntervalInMilliseconds: 2000
@@ -122,10 +123,11 @@ server:
 
 service:
   loadbalancer:
-    ip: ""
+    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
+    ip: none
     port:
       name: https
-      number: 443
+      number: 8443
   # optional: Add annotations (goes to metadata.annotations)
   #           Can contain multiple lines. Example:
   # annotations: |-

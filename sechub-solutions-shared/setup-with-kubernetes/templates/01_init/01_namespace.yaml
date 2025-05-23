@@ -1,0 +1,8 @@
+# ---------------------------------------
+#  Namespace setup
+# ---------------------------------------
+#
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .SECHUB_NAMESPACE }}

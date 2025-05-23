@@ -2,7 +2,8 @@
 
 = SecHub Solutions Shared
 
-Is a folder which contains scripts and tools which can be used by:
+This folder contains scripts and tools which can be used by:
 
 - sechub-solution
 - sechub-pds-solutions
+- sechub-web-ui-solution

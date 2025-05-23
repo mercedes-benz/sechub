@@ -1,0 +1,13 @@
+{
+  "apiVersion": "1.0",
+  "project": "demo",
+  "codeScan": { "use": [ "sourcecode" ] },
+  "data": {
+    "sources": [
+      {
+        "name": "sourcecode",
+        "fileSystem": { "folders": [ "." ] }
+      }
+    ]
+  }
+}

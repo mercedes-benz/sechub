@@ -1,0 +1,19 @@
+# Number of pds-scancode instances to spin up
+replicaCount: 1
+
+image:
+  registry: "{{ .PDS_SCANCODE_IMAGE_REGISTRY }}"
+  tag: "{{ .PDS_SCANCODE_IMAGE_TAG }}"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "Always"
+
+pds:
+  heartbeatLogging: "false"
+
+users:
+  technical:
+    id: "techuser"
+    apiToken: "{{ .PDS_SCANCODE_TOKEN_TECHUSER }}"
+  admin:
+    id: "admin"
+    apiToken: "{{ .PDS_SCANCODE_TOKEN_ADMINUSER }}"
