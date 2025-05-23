@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
@@ -35,31 +34,27 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
  *
  * @author hamidonos, de-jcup
  */
-public class SelfCleaningCache<T extends Serializable> implements ShutdownListener, CryptoAccessProvider<T> {
+public class SelfCleaningCache<T extends Serializable> implements ShutdownListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SelfCleaningCache.class);
 
-    private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
-
+    private final String cacheName;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final CryptoAccess<T> cryptoAccess = new CryptoAccess<>();
     private final ScheduledFuture<?> cacheClearJob;
     private final Duration cacheClearJobPeriod;
     private final CachePersistence<T> cachePersistence;
-
-    public SelfCleaningCache(CachePersistence<T> cachePersistence, ScheduledExecutorService scheduledExecutorService,
-            ApplicationShutdownHandler applicationShutdownHandler) {
-        this(cachePersistence, DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, applicationShutdownHandler);
-    }
+    private final CryptoAccessProvider<T> cryptoAccessProvider;
 
     /* @formatter:off */
-    public SelfCleaningCache(CachePersistence<T> cachePersistence, Duration cacheClearJobPeriod,
+    public SelfCleaningCache(String cacheName, CachePersistence<T> cachePersistence, Duration cacheClearJobPeriod,
                          ScheduledExecutorService scheduledExecutorService,
-                         ApplicationShutdownHandler applicationShutdownHandler) {
+                         ApplicationShutdownHandler applicationShutdownHandler, CryptoAccessProvider<T> cryptoAccessProvider) {
         /* @formatter:on */
+        this.cacheName = requireNonNull(cacheName, "Parameter 'cacheName' must not be null");
         this.cachePersistence = requireNonNull(cachePersistence, "Parameter 'cachePersistence' must not be null");
         this.scheduledExecutorService = requireNonNull(scheduledExecutorService, "Property 'scheduledExecutorService' must not be null");
         this.cacheClearJobPeriod = requireNonNull(cacheClearJobPeriod, "Property 'cacheClearJobPeriod' must not be null");
+        this.cryptoAccessProvider = cryptoAccessProvider;
 
         cacheClearJob = scheduleClearCacheJob();
 
@@ -84,9 +79,10 @@ public class SelfCleaningCache<T extends Serializable> implements ShutdownListen
     public void put(String key, T value, Duration duration) {
         requireNonNull(key, "Argument 'key' must not be null");
         if (logger.isTraceEnabled()) {
-            logger.trace("Put to persistence ({}): key={}, duration={}, value= {}", cachePersistence.getClass().getSimpleName(), key, duration, value);
+            logger.trace("Cache:{} - Put to persistence ({}): key={}, duration={}, value= {}", cacheName, cachePersistence.getClass().getSimpleName(), key,
+                    duration, value);
         }
-        cachePersistence.put(key, new CacheData<T>(value, duration, this));
+        cachePersistence.put(key, new CacheData<T>(value, duration, cryptoAccessProvider, Instant.now()));
     }
 
     /**
@@ -106,9 +102,15 @@ public class SelfCleaningCache<T extends Serializable> implements ShutdownListen
         CacheData<T> cacheData = cachePersistence.get(key);
 
         if (cacheData == null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Cache:{} - Get: key={} - not found", cacheName, key);
+            }
             return Optional.empty();
         }
 
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - Get: key={} - found", cacheName, key);
+        }
         return Optional.of(cacheData.getValue());
     }
 
@@ -121,6 +123,9 @@ public class SelfCleaningCache<T extends Serializable> implements ShutdownListen
      */
     public void remove(String key) {
         requireNonNull(key, "key must not be null!");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - Remove: key={}", cacheName, key);
+        }
         cachePersistence.remove(key);
     }
 
@@ -145,12 +150,10 @@ public class SelfCleaningCache<T extends Serializable> implements ShutdownListen
     }
 
     private void clearCache() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - clear cache", cacheName);
+        }
         cachePersistence.removeOutdated(Instant.now());
-    }
-
-    @Override
-    public CryptoAccess<T> getCryptoAccess() {
-        return cryptoAccess;
     }
 
 }

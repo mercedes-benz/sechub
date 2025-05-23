@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.cache.CacheData;
 import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponse;
@@ -20,9 +21,12 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth2OpaqueTokenClusterCachePersistence.class);
     private final OAuth2OpaqueTokenClusterCacheRepository repository;
+    private CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider;
 
-    OAuth2OpaqueTokenClusterCachePersistence(OAuth2OpaqueTokenClusterCacheRepository repository) {
+    OAuth2OpaqueTokenClusterCachePersistence(OAuth2OpaqueTokenClusterCacheRepository repository,
+            CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
         this.repository = requireNonNull(repository, "Parameter 'repository' may not be null.");
+        this.cryptoAccessProvider = requireNonNull(cryptoAccessProvider, "Parameter 'cryptoAccessProvider' may not be null.");
     }
 
     @Override
@@ -49,7 +53,8 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
 
         try {
             OAuth2OpaqueTokenIntrospectionResponse result = JSONConverter.get().fromJSON(OAuth2OpaqueTokenIntrospectionResponse.class, json);
-            CacheData<OAuth2OpaqueTokenIntrospectionResponse> cacheData = new CacheData<>(result, clusterCache.getDuration(), clusterCache.getCreatedAt());
+            CacheData<OAuth2OpaqueTokenIntrospectionResponse> cacheData = new CacheData<>(result, clusterCache.getDuration(), cryptoAccessProvider,
+                    clusterCache.getCreatedAt());
             return cacheData;
 
         } catch (JSONConverterException e) {

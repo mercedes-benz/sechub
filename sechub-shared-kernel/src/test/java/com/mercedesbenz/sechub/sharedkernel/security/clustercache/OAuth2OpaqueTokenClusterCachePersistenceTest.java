@@ -6,12 +6,21 @@ import static org.mockito.Mockito.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.core.cache.CacheData;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponse;
 
@@ -24,17 +33,22 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
     void beforeEach() {
         repository = mock();
 
-        persistenceToTest = new OAuth2OpaqueTokenClusterCachePersistence(repository);
+        CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> mock = mock();
+        when(mock.getCryptoAccess()).thenReturn(new CryptoAccess<>());
+        persistenceToTest = new OAuth2OpaqueTokenClusterCachePersistence(repository, mock);
     }
 
-    @Test
-    void put_calls_repository_save_with_cluster_cache_entity_having_expected_content() {
+    @ParameterizedTest
+    @NullSource
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    void put_calls_repository_save_with_cluster_cache_entity_having_expected_content(
+            CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoProvider) {
         /* prepare */
         OAuth2OpaqueTokenIntrospectionResponse value = createFakedIDPOpaqueTokenResponse("user1");
 
         Instant now = Instant.now();
         Duration duration = Duration.ofSeconds(10).plusHours(1);
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
 
         /* execute */
         persistenceToTest.put("key", data);
@@ -103,6 +117,26 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         /* test */
         verify(repository).findById(opaqueToken);
         assertThat(result).isNotNull();
+    }
+
+    private static class CryptoAccessArgumentsProvider implements ArgumentsProvider {
+        CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse> access = new CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse>();
+
+        CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> provider = new CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse>() {
+
+            @Override
+            public CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse> getCryptoAccess() {
+                return access;
+            }
+        };
+
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+		      Arguments.of(provider));
+        }
+        /* @formatter:on*/
     }
 
     private static OAuth2OpaqueTokenIntrospectionResponse createFakedIDPOpaqueTokenResponse(String username) {

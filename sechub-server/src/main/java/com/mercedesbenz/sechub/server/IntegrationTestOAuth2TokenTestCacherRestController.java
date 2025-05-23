@@ -34,6 +34,7 @@ import com.mercedesbenz.sechub.sharedkernel.security.clustercache.OAuth2OpaqueTo
 import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
 import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIDPIntrospectionResponseFetcher;
 import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponse;
+import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider;
 import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospector;
 import com.mercedesbenz.sechub.spring.security.OAuth2TokenExpirationCalculator;
 
@@ -73,10 +74,13 @@ public class IntegrationTestOAuth2TokenTestCacherRestController {
     private static final String INTEGRATIONTEST_CACHING_OPAQUE_TOKEN_SHUTDOWN_TEST_CACHE = INTEGRATIONTEST_CACHING_OPAQUE_TOKEN + "shutdown-test-cache";
 
     @Autowired
-    OAuth2OpaqueTokenClusterCachePersistence clusterCachePersistence;
+    OAuth2OpaqueTokenClusterCachePersistence tokenClusterCachePersistence;
 
     @Autowired
     OAuth2TokenExpirationCalculator expirationCalculator;
+
+    @Autowired
+    OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessProvider;
 
     private TestCleanupHandler testShutdownHandler;
     private OAuth2OpaqueTokenIDPIntrospectionResponseFetcher testFetcher;
@@ -105,6 +109,7 @@ public class IntegrationTestOAuth2TokenTestCacherRestController {
 
         /* @formatter:off */
         opaqueTokenIntrospector = OAuth2OpaqueTokenIntrospector.builder().
+                setCryptoAccessProvider(cryptoAccessProvider).
                 setTokenInMemoryCachePersistence(testInMemoryPersistence).
                 setIntrospectionResponseFetcher(testFetcher).
                 setDefaultTokenExpiresIn(Duration.ofMinutes(66)).
@@ -115,7 +120,7 @@ public class IntegrationTestOAuth2TokenTestCacherRestController {
                 setUserDetailsService(testUserDetailsService).
                 setApplicationShutdownHandler(testShutdownHandler).
                 setExpirationCalculator(expirationCalculator).
-                setTokenClusterCachePersistence(clusterCachePersistence).
+                setTokenClusterCachePersistence(tokenClusterCachePersistence).
                 setMinimumTokenValidity(Duration.ofSeconds(20)).
         build();
         /* @formatter:on */
@@ -133,23 +138,28 @@ public class IntegrationTestOAuth2TokenTestCacherRestController {
         OAuth2OpaqueTokenIntrospectionResponse response3_short_im = createFakedIDPOpaqueTokenResponse(USER_TOKEN3_SHORT_IN_MEMORY, Duration.ofHours(1));
         OAuth2OpaqueTokenIntrospectionResponse response3_short_cc = createFakedIDPOpaqueTokenResponse(USER_TOKEN3_SHORT_IN_CLUSTER_CACHE, Duration.ofHours(1));
 
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data1_long_im = new CacheData<>(response1_long_im, Duration.ofHours(10), now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data1_long_im = createCacheData(response1_long_im, Duration.ofHours(10), now);
 
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data2_short_im = new CacheData<>(response2_short_im, Duration.ofMillis(50), now);
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data2_long_cc = new CacheData<>(response2_long_cc, Duration.ofHours(20), now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data2_short_im = createCacheData(response2_short_im, Duration.ofMillis(50), now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data2_long_cc = createCacheData(response2_long_cc, Duration.ofHours(20), now);
 
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data3_short_im = new CacheData<>(response3_short_im, Duration.ofMillis(50), now);
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data3_short_cc = new CacheData<>(response3_short_cc, Duration.ofMillis(100), now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data3_short_im = createCacheData(response3_short_im, Duration.ofMillis(50), now);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data3_short_cc = createCacheData(response3_short_cc, Duration.ofMillis(100), now);
 
         /* prepare test cache data */
         testInMemoryPersistence.put(TEST_TOKEN_1, data1_long_im);
         // we do not set something in cluster cache
 
         testInMemoryPersistence.put(TEST_TOKEN_2, data2_short_im);
-        clusterCachePersistence.put(TEST_TOKEN_2, data2_long_cc);
+        tokenClusterCachePersistence.put(TEST_TOKEN_2, data2_long_cc);
 
         testInMemoryPersistence.put(TEST_TOKEN_3, data3_short_im);
-        clusterCachePersistence.put(TEST_TOKEN_3, data3_short_cc);
+        tokenClusterCachePersistence.put(TEST_TOKEN_3, data3_short_cc);
+    }
+
+    private CacheData<OAuth2OpaqueTokenIntrospectionResponse> createCacheData(OAuth2OpaqueTokenIntrospectionResponse response1_long_im, Duration ofHours,
+            Instant createdAt) {
+        return new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(response1_long_im, ofHours, cryptoAccessProvider, createdAt);
     }
 
     @RequestMapping(path = INTEGRATIONTEST_CACHING_OPAQUE_TOKEN_INTROSPECT + "/{opaqueToken}", method = RequestMethod.GET, produces = {
@@ -230,7 +240,7 @@ public class IntegrationTestOAuth2TokenTestCacherRestController {
         }
 
         private void removeFromCaches(String opaqueToken) {
-            clusterCachePersistence.remove(opaqueToken);
+            tokenClusterCachePersistence.remove(opaqueToken);
             testInMemoryPersistence.remove(opaqueToken);
         }
     }

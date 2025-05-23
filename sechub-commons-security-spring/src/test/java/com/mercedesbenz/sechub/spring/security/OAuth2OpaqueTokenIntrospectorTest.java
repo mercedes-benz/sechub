@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedConstruction;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,8 @@ import com.mercedesbenz.sechub.commons.core.cache.CacheData;
 import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
 import com.mercedesbenz.sechub.commons.core.cache.InMemoryCachePersistence;
 import com.mercedesbenz.sechub.commons.core.cache.SelfCleaningCache;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 class OAuth2OpaqueTokenIntrospectorTest {
@@ -315,9 +318,12 @@ class OAuth2OpaqueTokenIntrospectorTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
     @SuppressWarnings("unchecked")
-    void introspect_with_cluster_cache__in_memory_cache_has_no_entry_and_cluster_cache__has_no_entry__calls_idp_and_sets_cache_values() {
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    @NullSource
+    void introspect_with_cluster_cache__in_memory_cache_has_no_entry_and_cluster_cache__has_no_entry__calls_idp_and_sets_cache_values(
+            CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
         /* prepare */
         Long expiresAt = Instant.now().plus(2, ChronoUnit.DAYS).getEpochSecond();
         CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence = mock();
@@ -329,7 +335,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
-                Duration.ofDays(2), Instant.now());
+                Duration.ofDays(2), cryptoAccessProvider, Instant.now());
 
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
         when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null, cache0);
@@ -352,8 +358,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     }
 
-    @Test
-    void introspect_with_cluster_cache__in_memory_cache_has_entry_but_cluster_cache_has_no_entry__calls_NOT_idp_and_sets_NOT_cache_values() {
+    @ParameterizedTest
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    @NullSource
+    void introspect_with_cluster_cache__in_memory_cache_has_entry_but_cluster_cache_has_no_entry__calls_NOT_idp_and_sets_NOT_cache_values(
+            CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
         /* prepare */
         Long expiresAt = Instant.now().plus(2, ChronoUnit.DAYS).getEpochSecond();
         CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence = mock();
@@ -365,7 +374,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
-                Duration.ofDays(2), Instant.now());
+                Duration.ofDays(2), cryptoAccessProvider, Instant.now());
 
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(cache0);
         when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
@@ -385,8 +394,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     }
 
-    @Test
-    void introspect_with_cluster_cache__in_memory_cache_has_no_entry_but_cluster_cache_has_entry__calls_NOT_idp_and_sets_only_in_memory_cache_value() {
+    @ParameterizedTest
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    @NullSource
+    void introspect_with_cluster_cache__in_memory_cache_has_no_entry_but_cluster_cache_has_entry__calls_NOT_idp_and_sets_only_in_memory_cache_value(
+            CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
         /* prepare */
         Long expiresAt = Instant.now().plus(2, ChronoUnit.DAYS).getEpochSecond();
         CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence = mock();
@@ -398,7 +410,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
-                Duration.ofDays(2), Instant.now());
+                Duration.ofDays(2), cryptoAccessProvider, Instant.now());
 
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
         when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(cache0);
@@ -629,5 +641,25 @@ class OAuth2OpaqueTokenIntrospectorTest {
                     Arguments.of("a6", fetcher, MAX_CACHE_DURATION, MAX_CACHE_DURATION, null, "Parameter userDetailsService must not be null"));
             /* @formatter:on */
         }
+    }
+
+    private static class CryptoAccessArgumentsProvider implements ArgumentsProvider {
+        CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse> access = new CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse>();
+
+        CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> provider = new CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse>() {
+
+            @Override
+            public CryptoAccess<OAuth2OpaqueTokenIntrospectionResponse> getCryptoAccess() {
+                return access;
+            }
+        };
+
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+              Arguments.of(provider));
+        }
+        /* @formatter:on*/
     }
 }

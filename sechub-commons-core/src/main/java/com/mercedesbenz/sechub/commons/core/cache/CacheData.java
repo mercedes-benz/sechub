@@ -28,19 +28,23 @@ public class CacheData<T extends Serializable> {
     private final T value;
     private final Instant createdAt;
 
-    public CacheData(T value, Duration duration, Instant created) {
-        this(value, duration, null, created);
-    }
-
-    public CacheData(T value, Duration duration, CryptoAccessProvider<T> cryptoAccessProvider) {
-        this(value, duration, cryptoAccessProvider, null);
-    }
-
-    public CacheData(T value, Duration duration, CryptoAccessProvider<T> cryptoAccessProvider, Instant now) {
+    /**
+     * Creates a cache data object. If crypto access provider is not null, a sealed
+     * value will be used, otherwise the plain value will be stored directly in
+     * memory.
+     *
+     * @param value                value
+     * @param duration             duration
+     * @param cryptoAccessProvider crypto access provider
+     * @param createdAt            creation time of cache entry, normally
+     *                             Instant.now() except when the cache element is
+     *                             restored from somewhere else.
+     */
+    public CacheData(T value, Duration duration, CryptoAccessProvider<T> cryptoAccessProvider, Instant createdAt) {
 
         requireNonNull(value, "Property 'value' must not be null");
 
-        this.createdAt = now != null ? now : Instant.now();
+        this.createdAt = createdAt != null ? createdAt : Instant.now();
         this.cryptoAccessProvider = cryptoAccessProvider;
 
         if (cryptoAccessProvider == null) {

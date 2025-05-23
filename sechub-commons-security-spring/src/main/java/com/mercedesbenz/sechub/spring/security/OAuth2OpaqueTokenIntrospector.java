@@ -28,6 +28,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
 import com.mercedesbenz.sechub.commons.core.cache.InMemoryCachePersistence;
 import com.mercedesbenz.sechub.commons.core.cache.SelfCleaningCache;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 /**
@@ -92,6 +93,7 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         private Duration preCacheDuration;
         private ApplicationShutdownHandler applicationShutdownHandler;
         private OAuth2OpaqueTokenIDPIntrospectionResponseFetcher introspectionResponseFetcher;
+        private CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider;
 
         public OAuth2OpaqueTokenIntrospector build() {
             OAuth2OpaqueTokenIntrospector result = new OAuth2OpaqueTokenIntrospector();
@@ -112,12 +114,12 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             requireNonNull(inMemoryCacheClearPeriod, "Parameter inMemoryCacheClearPeriod must not be null");
             requireNonNull(clusterCacheClearPeriod, "Parameter clusterCacheClearPeriod must not be null");
 
-            result.tokenInMemoryCache = new SelfCleaningCache<>(inMemoryCachePersistence, inMemoryCacheClearPeriod,
-                    Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler);
+            result.tokenInMemoryCache = new SelfCleaningCache<>("token-in-memory-cache", inMemoryCachePersistence, inMemoryCacheClearPeriod,
+                    Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
 
             if (tokenClusterCachePersistence != null) {
-                result.tokenClusterCache = new SelfCleaningCache<>(tokenClusterCachePersistence, clusterCacheClearPeriod,
-                        Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler);
+                result.tokenClusterCache = new SelfCleaningCache<>("token-cluster-cache", tokenClusterCachePersistence, clusterCacheClearPeriod,
+                        Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
 
                 logger.debug("Created token cluster cache for this application");
 
@@ -129,6 +131,11 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             result.minimumTokenValidity = minimumTokenValidity;
 
             return result;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setCryptoAccessProvider(CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
+            this.cryptoAccessProvider = cryptoAccessProvider;
+            return this;
         }
 
         public OAuth2OpaqueTokenIntrospectorBuilder setIntrospectionResponseFetcher(

@@ -17,7 +17,7 @@ class CacheDataTest {
     @ValueSource(strings = { "", "hello world", "😀", "{}" })
     void created_cache_data_without_crypto_access_provider_stores_value_not_sealed_and_value_can_be_retrieved(String origin) {
         /* execute */
-        CacheData<String> data = new CacheData<String>(origin, Duration.ofMinutes(20), Instant.now());
+        CacheData<String> data = new CacheData<String>(origin, Duration.ofMinutes(20), null, Instant.now());
 
         /* test */
         assertThat(data.isSealed()).isFalse();
