@@ -17,7 +17,7 @@ This tutorial teaches you how to setup a SecHub environment and to do a scan usi
 
 You will learn:
 
-* How to start a SecHub environment and Gitleaks+PDS using Helm charts and container images
+* How to start a SecHub environment and PDS with a SAST scanner using SecHub's Helm charts and container images
 * Scan a vulnerable application containing a "forgotten" secret.
 * Install and use SecHub's extension for VsCodium (Optional)
 
@@ -87,19 +87,20 @@ cd sechub-solutions-shared/setup-with-kubernetes
 ./00_prepare_build.sh
 ./01_init.sh
 ./10_deploy_sechub_server.sh
-./20_deploy_pds-gitleaks.sh
+./20_deploy_pds-multi.sh
 ./40_apply-profiles.sh
 --
 
-This starts the SecHub server and a PDS with Gitleaks secret scanner.
+This starts the SecHub server and a PDS with a SAST scanner. +
+Additionally scan profiles are created. We will use one of them later.
 
 === Setup a project in SecHub
 
-The following call will create a SecHub project named "demo" and assigns the profile "secretscanner-gitleaks" to it:
+The following call will create a SecHub project named "demo" and assigns the scan profile "sast-python" to it:
 
 [source, shell]
 --
-./50_create_SecHub_project.sh demo secretscanner-gitleaks
+./50_create_SecHub_project.sh demo sast-python
 --
 
 Now you are ready to do scans!
@@ -108,7 +109,7 @@ Now you are ready to do scans!
 == Scan using SecHub Client
 
 === Environment vaiables
-After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL`. Make sure that the SecHub client executable "sechub" is in the PATH.
+Some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL`. Make sure that the SecHub client executable "sechub" is in the PATH.
 
 [source, shell]
 --
@@ -121,9 +122,9 @@ export SECHUB_TRUSTALL=true
 
 === Scan
 
-We have prepared a mini-example in the "demo" folder.
+We have prepared a mini-example with vulnerabe Python code in the "demo" folder.
 
-Please have a look at the `sechub.json`. Here it is defined which files should be scanned, and which should be skipped.
+Please have a look at the `sechub.json`. Here it is defined what should be scanned, and what should be skipped.
 
 Now you can do a scan:
 
@@ -133,8 +134,12 @@ cd demo
 sechub scan
 --
 
-This will run a Gitleaks scan via SecHub and create a file which contains a report of the findings from the scan (JSON format).
-If you want the report in HTML format instead, add `-reportformat html` as an option: `sechub -reportformat html scan`
+This will run a SAST scan via SecHub and create a file which contains a report of the findings from the scan (JSON format). +
+If you want the report in HTML format instead, add `-reportformat html` as an option:
+[source, shell]
+--
+sechub -reportformat html scan
+--
 
 == Optional
 === SecHub's IDE plugins
@@ -155,7 +160,7 @@ To install it, search for `sechub` in the Extensions manager and choose the one 
 For Visual Studio Code users: Download the Plugin and install it manually from file.
 
 == Appendix
-=== Install SecHub Client maually
+=== Installing the SecHub Client maually
 The command below, will download the latest version and put it in your `/usr/local/bin` folder.
 
 [source, bash]
