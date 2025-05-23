@@ -243,13 +243,13 @@ public class SecHubSecurityProperties {
                                  @Description("The maximum cache duration. To avoid that the IDP is always asked again about the validity of an opaquetoken, the acceptance is cached. When this time exceeds,the introspection will be done and cached again. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.")
                                  Duration maxCacheDuration,
 
-                                 @Description("The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case he in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
+                                 @Description("The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case the in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
                                  Duration preCacheDuration,
 
                                  @Description("The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
                                  Duration inMemoryCacheClearPeriod,
 
-                                 @Description("The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
+                                 @Description("The period until the in cluster cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
                                  Duration clusterCacheClearPeriod
 
                         ) {
