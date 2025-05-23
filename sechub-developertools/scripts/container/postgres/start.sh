@@ -17,7 +17,7 @@ addEnv "POSTGRES_DB_PASSWORD=$POSTGRES_DB_PASSWORD"
 addEnv "POSTGRES_DB_NAME=$POSTGRES_DB_NAME"
 
 defineContainerPort 5432
-defineEexposedPort $1
+defineExposedPort $1
 defineImage "sechub-test-postgres"
 
 ensureImageBuild

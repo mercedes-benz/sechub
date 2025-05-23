@@ -34,7 +34,7 @@ function defineContainerPort(){
 
 #
 # param 1: exposed port, may not be empty
-function defineEexposedPort(){
+function defineExposedPort(){
     assertNotEmpty "port not defined" $1
     
     exposed_port=$1
@@ -59,6 +59,11 @@ function defineImage(){
     image_name=$1
     container_name="${image_name}_${exposed_port}"
 
+}
+
+function defineContainerName(){
+    assertNotEmpty "container name not defined" $1
+    container_name=$1
 }
 
 function ensureImageBuild(){
