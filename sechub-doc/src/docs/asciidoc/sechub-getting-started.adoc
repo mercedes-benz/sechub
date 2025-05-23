@@ -25,7 +25,7 @@ plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title="
 
 This Diagram roughly explains how SecHub functions, behind the scenes.
 
-The SecHub server is responsible for taking jobs and passing them to the PDS server(s) for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub.
+The SecHub server is responsible for taking jobs and passing them to one or more PDS for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub.
 
 [NOTE]
 --
@@ -114,16 +114,16 @@ After starting all servers, some environment variables have to be set. Specifica
 --
 SECHUB_IP_ADDRESS=$(kubectl --namespace=sechub-testing get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export SECHUB_SERVER=https://$SECHUB_IP_ADDRESS:8443
-export SECHUB_USERID=admin
+export SECHUB_USERID=sechubadm
 export SECHUB_APITOKEN=demo
 export SECHUB_TRUSTALL=true
 --
 
 === Scan
 
-We have prepared mini-example in the "demo" folder.
+We have prepared a mini-example in the "demo" folder.
 
-Please have a look at the `sechub.json` there, which tells which files to be scanned, and which to be skipped.
+Please have a look at the `sechub.json`. Here it is defined which files should be scanned, and which should be skipped.
 
 Now you can do a scan:
 
