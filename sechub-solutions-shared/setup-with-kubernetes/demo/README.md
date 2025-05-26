@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # Purpose
 This directory is for trying out SecHub.
 
