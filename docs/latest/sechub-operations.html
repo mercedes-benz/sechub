@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.9.0</span>
+<span id="revnumber"> Server 2.9.0 modified (commit 8d67e39)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -787,7 +787,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.9.0 - Build date: 2025-04-07 06:44 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.9.0 modified (commit 8d67e39) - Build date: 2025-05-26 15:05 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -886,7 +886,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One time token time when outdating</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time until the one time token expires</p></td>
 </tr>
 </tbody>
 </table>
@@ -959,8 +959,30 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-configuration-scope-email_validation" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Scope 'Email validation'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.email.rule.allowed-domains</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The allowed domains for email addresses of SecHub users. A comma separated list of strings like: 'example.com,company.org'. If nothing is specified all domains are allowed.</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-encryption" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'Encryption'</caption>
+<caption class="title">Table 5. Scope 'Encryption'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -982,7 +1004,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-job" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'Job'</caption>
+<caption class="title">Table 6. Scope 'Job'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1065,7 +1087,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-login_and_resource_server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'Login and resource server'</caption>
+<caption class="title">Table 7. Scope 'Login and resource server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1175,6 +1197,11 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 <td class="tableblock halign-left valign-top"><p class="tableblock">The redirect URI after a succesful login is done</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.minimum-token-validity</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum token expiration time, used as a minimum for cookie ages and token validity. If set higher than the default values it will always overwrite the default values. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1237,7 +1264,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'Migration'</caption>
+<caption class="title">Table 8. Scope 'Migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1259,7 +1286,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-monitoring" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'Monitoring'</caption>
+<caption class="title">Table 9. Scope 'Monitoring'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1291,7 +1318,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'Nessus'</caption>
+<caption class="title">Table 10. Scope 'Nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1368,7 +1395,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'Netsparker'</caption>
+<caption class="title">Table 11. Scope 'Netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1440,7 +1467,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'Notification'</caption>
+<caption class="title">Table 12. Scope 'Notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1503,7 +1530,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-pds" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'PDS'</caption>
+<caption class="title">Table 13. Scope 'PDS'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1560,7 +1587,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-product_checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'Product Checkmarx'</caption>
+<caption class="title">Table 14. Scope 'Product Checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1622,7 +1649,7 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'Scan'</caption>
+<caption class="title">Table 15. Scope 'Scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1671,7 +1698,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'Security'</caption>
+<caption class="title">Table 16. Scope 'Security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1693,7 +1720,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'Storage'</caption>
+<caption class="title">Table 17. Scope 'Storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1783,7 +1810,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'Auto cleanup'</caption>
+<caption class="title">Table 18. Scope 'Auto cleanup'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1805,7 +1832,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'Encryption'</caption>
+<caption class="title">Table 19. Scope 'Encryption'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1827,7 +1854,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'Job'</caption>
+<caption class="title">Table 20. Scope 'Job'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1940,6 +1967,7 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.initialadmin.email=value
 -Dsechub.initialadmin.userid=value
 -Dsechub.server.baseurl=value
+-Dsechub.email.rule.allowed-domains=value
 -Dsechub.security.encryption=value
 -Dsechub.security.encryption.secret-key=value
 -Dsechub.security.login=value
@@ -1959,6 +1987,7 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.security.login.oauth2.token-uri=value
 -Dsechub.security.login.oauth2.user-info-uri=value
 -Dsechub.security.login.redirect-uri=value
+-Dsechub.security.minimum-token-validity=value
 -Dsechub.security.server=value
 -Dsechub.security.server.modes=value
 -Dsechub.security.server.oauth2=value
@@ -1996,6 +2025,7 @@ Instead of java system properties you can also define environment entries
 export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
 export SECHUB_SERVER_BASEURL=value
+export SECHUB_EMAIL_RULE_ALLOWEDDOMAINS=value
 export SECHUB_SECURITY_ENCRYPTION=value
 export SECHUB_SECURITY_ENCRYPTION_SECRETKEY=value
 export SECHUB_SECURITY_LOGIN=value
@@ -2015,6 +2045,7 @@ export SECHUB_SECURITY_LOGIN_OAUTH2_REDIRECTURI=value
 export SECHUB_SECURITY_LOGIN_OAUTH2_TOKENURI=value
 export SECHUB_SECURITY_LOGIN_OAUTH2_USERINFOURI=value
 export SECHUB_SECURITY_LOGIN_REDIRECTURI=value
+export SECHUB_SECURITY_MINIMUMTOKENVALIDITY=value
 export SECHUB_SECURITY_SERVER=value
 export SECHUB_SECURITY_SERVER_MODES=value
 export SECHUB_SECURITY_SERVER_OAUTH2=value
@@ -2545,7 +2576,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. PDS executor configuration parameters</caption>
+<caption class="title">Table 21. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3920,7 +3951,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.9.0<br>
+ Server 2.9.0 modified (commit 8d67e39)<br>
 </div>
 </div>
 </body>

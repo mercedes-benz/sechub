@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 1.10.0 modified (commit 76245bd)</span>
+<span id="revnumber"> Client 1.10.0 modified (commit 8d67e39)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -553,12 +553,13 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#getstatus">2.4.3.3. getStatus</a></li>
 <li><a href="#getreport">2.4.3.4. getReport</a></li>
 <li><a href="#listjobs">2.4.3.5. listJobs</a></li>
-<li><a href="#definefalsepositives">2.4.3.6. defineFalsePositives</a></li>
-<li><a href="#getfalsepositives">2.4.3.7. getFalsePositives</a></li>
-<li><a href="#interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</a></li>
-<li><a href="#interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</a></li>
-<li><a href="#section-client-false-positives-mark">2.4.3.10. markFalsePositives</a></li>
-<li><a href="#section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</a></li>
+<li><a href="#cancel">2.4.3.6. cancel</a></li>
+<li><a href="#definefalsepositives">2.4.3.7. defineFalsePositives</a></li>
+<li><a href="#getfalsepositives">2.4.3.8. getFalsePositives</a></li>
+<li><a href="#interactivemarkfalsepositives">2.4.3.9. interactiveMarkFalsePositives</a></li>
+<li><a href="#interactiveunmarkfalsepositives">2.4.3.10. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-false-positives-mark">2.4.3.11. markFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.4.3.12. unmarkFalsePositives</a></li>
 </ul>
 </li>
 <li><a href="#client-configuration-overview">2.4.4. Configuration overview</a></li>
@@ -577,84 +578,95 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel4">
 <li><a href="#upload-source-files-from-file-system">2.5.4.1. Upload source files from file system</a>
 <ul class="sectlevel5">
-<li><a href="#using-data-section">2.5.4.1.1. Using <code>data</code> section</a></li>
-<li><a href="#filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</a></li>
+<li><a href="#using-data-section">2.5.4.1.1. Using data section</a></li>
+<li><a href="#filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. fileSystem inside the codeScan section (deprecated)</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#license-scan">2.5.5. License scan</a>
+<li><a href="#iac-scan">2.5.5. IaC scan</a>
 <ul class="sectlevel4">
-<li><a href="#sechub-config-example-licensescan-binary">2.5.5.1. Example binary license scan</a></li>
-<li><a href="#sechub-config-example-licensescan-sources">2.5.5.2. Example source license scan</a></li>
-<li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.5.5.3. Example source licence scan with sources code scan combined</a></li>
+<li><a href="#sechub-config-example-iacscan-sources">2.5.5.1. Example IaC scan</a></li>
 </ul>
 </li>
-<li><a href="#secret-scan">2.5.6. Secret scan</a>
+<li><a href="#infrastructure-scan">2.5.6. Infrastructure scan</a>
 <ul class="sectlevel4">
-<li><a href="#sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</a></li>
-<li><a href="#sechub-config-example-secretscan-binary">2.5.6.2. Example binary secret scan</a></li>
-<li><a href="#sechub-config-example-secretscan-combined-with-codescan-sources">2.5.6.3. Example source secret scan combined with code scan</a></li>
-</ul>
-</li>
-<li><a href="#web-scan">2.5.7. Web scan</a>
-<ul class="sectlevel4">
-<li><a href="#url">2.5.7.1. URL</a>
+<li><a href="#security-setup">2.5.6.1. Security setup</a>
 <ul class="sectlevel5">
-<li><a href="#example-anonymous">2.5.7.1.1. Example anonymous</a></li>
+<li><a href="#sechub-infrastracture-side">2.5.6.1.1. SecHub infrastracture side</a></li>
+<li><a href="#test-application-side">2.5.6.1.2. Test application side</a></li>
 </ul>
 </li>
-<li><a href="#login">2.5.7.2. Login</a>
+<li><a href="#uris">2.5.6.2. URIs</a>
 <ul class="sectlevel5">
-<li><a href="#options">2.5.7.2.1. Options</a></li>
-<li><a href="#example-basic-authentication">2.5.7.2.2. Example basic authentication</a></li>
-<li><a href="#example-client-certificate-authentication">2.5.7.2.3. Example client certificate authentication</a></li>
-<li><a href="#example-authentication-via-webscan-template">2.5.7.2.4. Example authentication via webscan template</a></li>
-<li><a href="#example-logout-configuration">2.5.7.2.5. Example logout configuration</a></li>
-<li><a href="#example-form-based-login-by-script">2.5.7.2.6. Example form based login by script</a></li>
-<li><a href="#example-form-based-login-with-totp">2.5.7.2.7. Example form based login with TOTP</a></li>
-<li><a href="#example-form-based-login-with-login-verification">2.5.7.2.8. Example form based login with Login Verification</a></li>
-<li><a href="#sechub-config-example-webscan-openapi">2.5.7.2.9. Example OpenAPI scan</a></li>
-<li><a href="#sechub-config-openAPI-and-client-certificate">2.5.7.2.10. Example combination of openAPI definition and client certificate authentication</a></li>
-<li><a href="#sechub-config-example-webscan-header">2.5.7.2.11. Example Header scan</a></li>
-<li><a href="#sechub-config-example-webscan-header-indentify-scan-in-logs">2.5.7.2.12. Use headers to identify SecHub webscans in application logs</a></li>
-<li><a href="#sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.13. Example Header scan with value from data section</a></li>
+<li><a href="#example-infrascan-one-uri">2.5.6.2.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.5.6.3. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.5.6.3.1. Example infrascan one IP</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#infrastructure-scan">2.5.8. Infrastructure scan</a>
+<li><a href="#license-scan">2.5.7. License scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.5.8.1. URIs</a>
-<ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.5.8.1.1. Example infrascan one URI</a></li>
+<li><a href="#sechub-config-example-licensescan-binary">2.5.7.1. Example binary license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-sources">2.5.7.2. Example source license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.5.7.3. Example source licence scan with sources code scan combined</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.5.8.2. IPs</a>
-<ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.5.8.2.1. Example infrascan one IP</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#sechub-config-data-section">2.5.9. Data section</a>
+<li><a href="#secret-scan">2.5.8. Secret scan</a>
 <ul class="sectlevel4">
-<li><a href="#remote-data">2.5.9.1. Remote Data</a>
-<ul class="sectlevel5">
-<li><a href="#sechub-config-example-remote-data-section-sources-codescan">2.5.9.1.1. Example source remote data scan</a></li>
-<li><a href="#sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.9.1.2. Example source remote data scan with credentials</a></li>
-<li><a href="#sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.9.1.3. Example binaries remote data scan with credentials</a></li>
+<li><a href="#sechub-config-example-secretscan-sources">2.5.8.1. Example source secret scan</a></li>
+<li><a href="#sechub-config-example-secretscan-binary">2.5.8.2. Example binary secret scan</a></li>
+<li><a href="#sechub-config-example-secretscan-combined-with-codescan-sources">2.5.8.3. Example source secret scan combined with code scan</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#sechub-config-metadata-section">2.5.10. MetaData</a>
+<li><a href="#web-scan">2.5.9. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#labels">2.5.10.1. Labels</a></li>
+<li><a href="#url">2.5.9.1. URL</a>
+<ul class="sectlevel5">
+<li><a href="#example-anonymous">2.5.9.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#code-scan-accepted-source-code-files">2.5.11. Code scan: accepted source code files</a></li>
-<li><a href="#inject-variables-into-configuration-files-for-advanced-users">2.5.12. Inject variables into configuration files (For advanced users)</a></li>
+<li><a href="#login">2.5.9.2. Login</a>
+<ul class="sectlevel5">
+<li><a href="#options">2.5.9.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.5.9.2.2. Example basic authentication</a></li>
+<li><a href="#example-client-certificate-authentication">2.5.9.2.3. Example client certificate authentication</a></li>
+<li><a href="#example-authentication-via-webscan-template">2.5.9.2.4. Example authentication via webscan template</a></li>
+<li><a href="#example-logout-configuration">2.5.9.2.5. Example logout configuration</a></li>
+<li><a href="#example-form-based-login-by-script">2.5.9.2.6. Example form based login by script</a></li>
+<li><a href="#example-form-based-login-with-totp">2.5.9.2.7. Example form based login with TOTP</a></li>
+<li><a href="#example-form-based-login-with-login-verification">2.5.9.2.8. Example form based login with Login Verification</a></li>
+<li><a href="#sechub-config-example-webscan-openapi">2.5.9.2.9. Example OpenAPI scan</a></li>
+<li><a href="#sechub-config-openAPI-and-client-certificate">2.5.9.2.10. Example combination of openAPI definition and client certificate authentication</a></li>
+<li><a href="#sechub-config-example-webscan-header">2.5.9.2.11. Example Header scan</a></li>
+<li><a href="#sechub-config-example-webscan-header-indentify-scan-in-logs">2.5.9.2.12. Use headers to identify SecHub webscans in application logs</a></li>
+<li><a href="#sechub-config-example-webscan-header-value-from-data-section">2.5.9.2.13. Example Header scan with value from data section</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-data-section">2.5.10. Data section</a>
+<ul class="sectlevel4">
+<li><a href="#remote-data">2.5.10.1. Remote Data</a>
+<ul class="sectlevel5">
+<li><a href="#sechub-config-example-remote-data-section-sources-codescan">2.5.10.1.1. Example source remote data scan</a></li>
+<li><a href="#sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.10.1.2. Example source remote data scan with credentials</a></li>
+<li><a href="#sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.10.1.3. Example binaries remote data scan with credentials</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-metadata-section">2.5.11. MetaData</a>
+<ul class="sectlevel4">
+<li><a href="#labels">2.5.11.1. Labels</a></li>
+</ul>
+</li>
+<li><a href="#code-scan-accepted-source-code-files">2.5.12. Code scan: accepted source code files</a></li>
+<li><a href="#inject-variables-into-configuration-files-for-advanced-users">2.5.13. Inject variables into configuration files (For advanced users)</a></li>
 </ul>
 </li>
 <li><a href="#examples">2.6. Examples</a>
@@ -776,7 +788,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 1.10.0 modified (commit 76245bd) - Build date: 2025-04-07 06:44 (UTCZ)</code></p>
+<p>Documentation version: <code>Client 1.10.0 modified (commit 8d67e39) - Build date: 2025-05-26 15:05 (UTCZ)</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -947,6 +959,10 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 <td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#cancel">cancel</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + jobUUID</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#definefalsepositives">defineFalsePositives</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
 </tr>
@@ -1063,9 +1079,9 @@ If you prefer the report in HTML format:<br>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-With <code>-output ${file-or-directory}</code> you can define where to place the report.<br>
+With <code>-output ${file_or_directory}</code> you can define where to place the report.<br>
      Can be a directory, a file name or a file path.<br>
-     Default: <code>sechub_report_${your-project}_${jobUUID}.{json|html|spdx}</code> in current directory
+     Default: <code>sechub_report_${your_project}_${jobUUID}.{json|html|spdx}</code> in current directory
 </td>
 </tr>
 </table>
@@ -1175,9 +1191,9 @@ Defaults to latest finished job.<br>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-With <code>-output ${file-or-directory}</code> you can define where to place the report.<br>
+With <code>-output ${file_or_directory}</code> you can define where to place the report.<br>
      Can be a directory, a file name or a file path.<br>
-     Default: <code>sechub_report_${your-project}_${jobUUID}.{json|html|spdx}</code> in current directory
+     Default: <code>sechub_report_${your_project}_${jobUUID}.{json|html|spdx}</code> in current directory
 </td>
 </tr>
 </table>
@@ -1213,7 +1229,21 @@ This might be useful for an overview or<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="definefalsepositives">2.4.3.6. defineFalsePositives</h5>
+<h5 id="cancel">2.4.3.6. cancel</h5>
+<div class="paragraph">
+<p>Cancels a SecHub scan job.</p>
+</div>
+<div class="paragraph">
+<p><strong>Minimum call syntax</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sechub -jobUUID ${jobUUID} cancel</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="definefalsepositives">2.4.3.7. defineFalsePositives</h5>
 <div class="paragraph">
 <p>This will define the false positives list of your project.<br>
 Default definition file to read from is <code>sechub-false-positives.json</code> - format is same as for <a href="#section-client-false-positives-mark">markFalsePositives</a>.</p>
@@ -1258,7 +1288,7 @@ It&#8217;s a good idea to add your false-positives definition file in your sourc
 </div>
 </div>
 <div class="sect4">
-<h5 id="getfalsepositives">2.4.3.7. getFalsePositives</h5>
+<h5 id="getfalsepositives">2.4.3.8. getFalsePositives</h5>
 <div class="paragraph">
 <p>This will fetch the false positives list of your project as JSON.</p>
 </div>
@@ -1277,16 +1307,16 @@ It&#8217;s a good idea to add your false-positives definition file in your sourc
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-With <code>-output ${file-or-directory}</code> you can define where to place the result.<br>
+With <code>-output ${file_or_directory}</code> you can define where to place the result.<br>
      Can be a directory, a file name or a file path.<br>
-     Default: <code>sechub-false-positives-${your-project}.json</code> in current directory
+     Default: <code>sechub-false-positives-${your_project}.json</code> in current directory
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactivemarkfalsepositives">2.4.3.8. interactiveMarkFalsePositives</h5>
+<h5 id="interactivemarkfalsepositives">2.4.3.9. interactiveMarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
@@ -1331,7 +1361,7 @@ You can download and view your current false positives list with <a href="#getfa
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactiveunmarkfalsepositives">2.4.3.9. interactiveUnmarkFalsePositives</h5>
+<h5 id="interactiveunmarkfalsepositives">2.4.3.10. interactiveUnmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to unmark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
@@ -1361,7 +1391,7 @@ Your choices are:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-mark">2.4.3.10. markFalsePositives</h5>
+<h5 id="section-client-false-positives-mark">2.4.3.11. markFalsePositives</h5>
 <div class="paragraph">
 <p>Read your report carefully and decide which of the findings you consider as "false positives" (FP).</p>
 </div>
@@ -1373,7 +1403,7 @@ Your choices are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -file ${json-file} markFalsePositives</pre>
+<pre>sechub -file ${json_file} markFalsePositives</pre>
 </div>
 </div>
 <div id="section-false-positives-define-by-API" class="paragraph">
@@ -1574,7 +1604,7 @@ See also <a href="#interactivemarkfalsepositives">interactiveMarkFalsePositives<
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-unmark">2.4.3.11. unmarkFalsePositives</h5>
+<h5 id="section-client-false-positives-unmark">2.4.3.12. unmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Remove formerly defined false positives.</p>
 </div>
@@ -1587,7 +1617,7 @@ action <code>unmarkFalsePositives</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -file ${json-file} unmarkFalsePositives</pre>
+<pre>sechub -file ${json_file} unmarkFalsePositives</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1694,6 +1724,18 @@ action <code>unmarkFalsePositives</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fail on red</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_FAIL_ON_RED</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fail on yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-stop-on-yellow</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">file</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-file</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1758,12 +1800,6 @@ action <code>unmarkFalsePositives</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-server</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SECHUB_SERVER</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stop on yellow</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-stop-on-yellow</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">temporary dir</p></td>
@@ -1900,7 +1936,7 @@ Will be used for periodic status checks when action=<code>scan</code> and for re
 <div class="sect3">
 <h4 id="environment-variables">2.4.6. Environment variables</h4>
 <div class="paragraph">
-<p>Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)</p>
+<p>You can set some values via environment variables:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1911,6 +1947,10 @@ Will be used for periodic status checks when action=<code>scan</code> and for re
 <li>
 <p><code>SECHUB_APITOKEN</code><br>
 The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_FAIL_ON_RED</code><br>
+Fail on critical or high findings (<code>true</code> or <code>false</code>) - Client returns non-zero when set to ´true`. Default: <code>true</code></p>
 </li>
 <li>
 <p><code>SECHUB_LABELS</code><br>
@@ -2028,7 +2068,7 @@ Now <code>sourcecode-&lt;projectID&gt;.zip</code> files for code scan or <code>b
 <div class="sect2">
 <h3 id="section-client-configuration-file">2.5. SecHub configuration JSON</h3>
 <div class="paragraph">
-<p>A <code>SecHub</code> configuration  must be valid <code>JSON</code> and is defined
+<p>A <code>SecHub</code> job configuration file must be valid <code>JSON</code> and is defined
 at caller side.</p>
 </div>
 <div class="paragraph">
@@ -2137,7 +2177,7 @@ You should call SecHub inside the repository&#8217;s root folder - this is the s
 <p>There are two ways to define source code uploads for the SecHub client:</p>
 </div>
 <div class="sect5">
-<h6 id="using-data-section">2.5.4.1.1. Using <code>data</code> section</h6>
+<h6 id="using-data-section">2.5.4.1.1. Using data section</h6>
 <div class="paragraph">
 <p>Define the files and folders in a <code>data</code> section and reference it inside the <code>codeScan</code>.<br>
 This becomes useful e.g. if the same sources are used by different scan types.</p>
@@ -2225,7 +2265,7 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect5">
-<h6 id="filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section (deprecated)</h6>
+<h6 id="filesystem-inside-the-codescan-section-deprecated">2.5.4.1.2. fileSystem inside the codeScan section (deprecated)</h6>
 <div class="paragraph">
 <p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.<br></p>
 </div>
@@ -2272,12 +2312,213 @@ This option is deprecated but still supported.<br>
 </div>
 </div>
 <div class="sect3">
-<h4 id="license-scan">2.5.5. License scan</h4>
+<h4 id="iac-scan">2.5.5. IaC scan</h4>
+<div class="paragraph">
+<p><code>iacScan</code> defines "Infrastructure as Code" scanning.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The difference to <code>infraScan</code> is, that <strong>we do NOT penetrate</strong> here the
+infrastructure <strong>at runtime but only inspect</strong> the infrastructure definitions in
+<strong>code</strong> (e.g. kubernetes files or terraform scripts).</p>
+</div>
+<div class="paragraph">
+<p><code>iacScan</code> is very similar to <code>codeScan</code>, but specific for infrastructure scanning.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only source code data sections are allowed for <code>iacScan</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-iacscan-sources">2.5.5.1. Example IaC scan</h5>
+<div class="listingblock">
+<div class="title">IaC scan configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">iac</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">./cloud-setup</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">./deployment/</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+      }
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">iacScan</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">iac</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration - here we name it "iac"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The source folders which shall be inspected by IaC scanning</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>IaC scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "iac"</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="infrastructure-scan">2.5.6. Infrastructure scan</h4>
+<div class="paragraph">
+<p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setup is used to penetrate an existing IT infrastructure at <strong>runtime</strong>.
+Those scans try to detect and exploit CVEs - very similar to a real attacker.
+Executing such a scan can lead to DoS (denial of service), corrupted data, hanging
+systems and more.</p>
+</div>
+<div class="paragraph">
+<p>This means <strong>infrastructure scans</strong> shall only be executed on appropriate test environments
+(which can be thrown away&#8230;&#8203;) - and <strong>never on production systems</strong>!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="security-setup">2.5.6.1. Security setup</h5>
+<div class="sect5">
+<h6 id="sechub-infrastracture-side">2.5.6.1.1. SecHub infrastracture side</h6>
+<div class="paragraph">
+<p>The behavior of SecHub must be accepted by SecHub host environment: Infrastructure scans
+looks like a hacker has taken over the system and is using it to attack the target.</p>
+</div>
+<div class="paragraph">
+<p>Means SecHub operators must define their environment in a way which makes it clear
+that this acceptable.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="test-application-side">2.5.6.1.2. Test application side</h6>
+<div class="paragraph">
+<p>Because the scan behaves like an attacker, existing security solutions could
+prevent SecHub from scanning - e.g. your firewall /intrusion detection system
+would detect massive port scans and prevent further access.</p>
+</div>
+<div class="paragraph">
+<p>If you want your infrastructure to be scanned by SecHub you have to provide
+the technical possibilities for SecHub - e.g. configure your firewall for
+the test environment and let SecHub through.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="uris">2.5.6.2. URIs</h5>
+<div class="paragraph">
+<p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.
+As in web scans (DAST), the URI must be whitelisted inside the project.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-uri">2.5.6.2.1. Example infrascan one URI</h6>
+<div id="sechub-config-example-infrascan-with-uri" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define infrastructure scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ips">2.5.6.3. IPs</h5>
+<div class="paragraph">
+<p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-ip">2.5.6.3.1. Example infrascan one IP</h6>
+<div id="sechub-config-example-infrascan-with-ip" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define infrastructure scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
+The given example with 127.0.0.1 is just an example and will not work because scanners do not scan themselves.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="license-scan">2.5.7. License scan</h4>
 <div class="paragraph">
 <p><code>licenseScan</code> defines the settings for license scans.</p>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-licensescan-binary">2.5.5.1. Example binary license scan</h5>
+<h5 id="sechub-config-example-licensescan-binary">2.5.7.1. Example binary license scan</h5>
 <div class="listingblock">
 <div class="title">License scan configuration for binaries</div>
 <div class="content">
@@ -2311,7 +2552,7 @@ This option is deprecated but still supported.<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-licensescan-sources">2.5.5.2. Example source license scan</h5>
+<h5 id="sechub-config-example-licensescan-sources">2.5.7.2. Example source license scan</h5>
 <div class="listingblock">
 <div class="title">License scan configuration for sources</div>
 <div class="content">
@@ -2345,7 +2586,7 @@ This option is deprecated but still supported.<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-licensescan-combined-with-codescan">2.5.5.3. Example source licence scan with sources code scan combined</h5>
+<h5 id="sechub-config-example-licensescan-combined-with-codescan">2.5.7.3. Example source licence scan with sources code scan combined</h5>
 <div class="listingblock">
 <div class="title">License scan and code scan configuration for sources</div>
 <div class="content">
@@ -2388,7 +2629,7 @@ This option is deprecated but still supported.<br>
 </div>
 </div>
 <div class="sect3">
-<h4 id="secret-scan">2.5.6. Secret scan</h4>
+<h4 id="secret-scan">2.5.8. Secret scan</h4>
 <div class="paragraph">
 <p><code>secretScan</code> defines the settings for scanning for secrets in your source code.</p>
 </div>
@@ -2417,7 +2658,7 @@ SecHub Client: With the <code>-addScmHistory</code> option SCM directories like 
 </table>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-secretscan-sources">2.5.6.1. Example source secret scan</h5>
+<h5 id="sechub-config-example-secretscan-sources">2.5.8.1. Example source secret scan</h5>
 <div class="listingblock">
 <div class="title">Secret scan configuration for sources</div>
 <div class="content">
@@ -2457,7 +2698,7 @@ SecHub Client: With the <code>-addScmHistory</code> option SCM directories like 
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-secretscan-binary">2.5.6.2. Example binary secret scan</h5>
+<h5 id="sechub-config-example-secretscan-binary">2.5.8.2. Example binary secret scan</h5>
 <div class="listingblock">
 <div class="title">Secret scan scan configuration for binaries</div>
 <div class="content">
@@ -2491,7 +2732,7 @@ SecHub Client: With the <code>-addScmHistory</code> option SCM directories like 
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-config-example-secretscan-combined-with-codescan-sources">2.5.6.3. Example source secret scan combined with code scan</h5>
+<h5 id="sechub-config-example-secretscan-combined-with-codescan-sources">2.5.8.3. Example source secret scan combined with code scan</h5>
 <div class="listingblock">
 <div class="title">Secret scan and code scan configuration for sources</div>
 <div class="content">
@@ -2539,12 +2780,12 @@ SecHub Client: With the <code>-addScmHistory</code> option SCM directories like 
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.5.7. Web scan</h4>
+<h4 id="web-scan">2.5.9. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> defines the settings for web scans (DAST).</p>
 </div>
 <div class="sect4">
-<h5 id="url">2.5.7.1. URL</h5>
+<h5 id="url">2.5.9.1. URL</h5>
 <div class="paragraph">
 <p>Use the <code>url</code> element to define a URL you want to scan.</p>
 </div>
@@ -2561,8 +2802,26 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 </tr>
 </table>
 </div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This setup is used to penetrate an existing web application at <strong>runtime</strong>. Those scans change application data, do fuzzing and try to break into the application,
+similar to a real attacker.</p>
+</div>
+<div class="paragraph">
+<p>This means web scans (DAST) shall only be executed on appropriate test environments - and normally not on production systems!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect5">
-<h6 id="example-anonymous">2.5.7.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.5.9.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2663,7 +2922,7 @@ you can specify the target URL : <code>"url": "https://my-application.com"</code
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.5.7.2. Login</h5>
+<h5 id="login">2.5.9.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -2694,7 +2953,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.5.7.2.1. Options</h6>
+<h6 id="options">2.5.9.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 2 options for login:</p>
 </div>
@@ -2732,7 +2991,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.5.7.2.2. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.5.9.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2770,7 +3029,7 @@ this is not necessary.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-client-certificate-authentication">2.5.7.2.3. Example client certificate authentication</h6>
+<h6 id="example-client-certificate-authentication">2.5.9.2.3. Example client certificate authentication</h6>
 <div class="listingblock">
 <div class="title">client certificate authentication</div>
 <div class="content">
@@ -2819,7 +3078,7 @@ In the example above the SecHub GO client will substitute the value of <code>"{{
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-authentication-via-webscan-template">2.5.7.2.4. Example authentication via webscan template</h6>
+<h6 id="example-authentication-via-webscan-template">2.5.9.2.4. Example authentication via webscan template</h6>
 <div class="paragraph">
 <p>This can be used to handle complex authentication steps that can be handled in a template e.g. with a login script. The template must be assigned to the project.
 Any other part of the webscan configuration can be combined with the template section of the webscan configuration, e.g. TOTP or avoiding logout.</p>
@@ -2864,7 +3123,7 @@ Only if users know which template is assigned to their project, they will be abl
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-logout-configuration">2.5.7.2.5. Example logout configuration</h6>
+<h6 id="example-logout-configuration">2.5.9.2.5. Example logout configuration</h6>
 <div class="paragraph">
 <p>This is onyl relevant if scanning a frontend, since this logout specification tries to find certain HTML elements.
 When scanning a web API this section can be omitted. For URLs to exclude from the scan see <a href="#sechub-config-example-webscan-anonymous">[sechub-config-example-webscan-anonymous]</a>.</p>
@@ -2906,7 +3165,7 @@ to avoid a logout during the scan. To specify an URL to avoid during scan please
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.5.7.2.6. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.5.9.2.6. Example form based login by script</h6>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -3067,7 +3326,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-with-totp">2.5.7.2.7. Example form based login with TOTP</h6>
+<h6 id="example-form-based-login-with-totp">2.5.9.2.7. Example form based login with TOTP</h6>
 <div class="paragraph">
 <p>The TOTP configuration is generally never used without any other login mechanism. It is meant to be used as an additional authentication factor.
 In this example TOTP is used in combination with form based login, which is left out in the example for better readability.</p>
@@ -3198,7 +3457,7 @@ The default value is <code>AUTODETECT</code> where SecHub tries to detect the en
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-with-login-verification">2.5.7.2.8. Example form based login with Login Verification</h6>
+<h6 id="example-form-based-login-with-login-verification">2.5.9.2.8. Example form based login with Login Verification</h6>
 <div class="paragraph">
 <p>The login verification can be configured to verify the login was successful and the DAST module is logged in during the scan.</p>
 </div>
@@ -3243,7 +3502,7 @@ The default value is <code>AUTODETECT</code> where SecHub tries to detect the en
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-openapi">2.5.7.2.9. Example OpenAPI scan</h6>
+<h6 id="sechub-config-example-webscan-openapi">2.5.9.2.9. Example OpenAPI scan</h6>
 <div class="listingblock">
 <div class="title">Open API scan</div>
 <div class="content">
@@ -3292,7 +3551,7 @@ Currently you can combine importing openApi definitions from files and URLs, but
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-openAPI-and-client-certificate">2.5.7.2.10. Example combination of openAPI definition and client certificate authentication</h6>
+<h6 id="sechub-config-openAPI-and-client-certificate">2.5.9.2.10. Example combination of openAPI definition and client certificate authentication</h6>
 <div class="listingblock">
 <div class="title">Open API scan with client certificate authentication</div>
 <div class="content">
@@ -3348,7 +3607,7 @@ Currently you can combine importing openApi definitions from files and URLs, but
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-header">2.5.7.2.11. Example Header scan</h6>
+<h6 id="sechub-config-example-webscan-header">2.5.9.2.11. Example Header scan</h6>
 <div class="listingblock">
 <div class="title">header scan</div>
 <div class="content">
@@ -3408,7 +3667,7 @@ The <strong>default</strong> is <code>true</code> if nothing is specified.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-header-indentify-scan-in-logs">2.5.7.2.12. Use headers to identify SecHub webscans in application logs</h6>
+<h6 id="sechub-config-example-webscan-header-indentify-scan-in-logs">2.5.9.2.12. Use headers to identify SecHub webscans in application logs</h6>
 <div class="listingblock">
 <div class="title">identify SecHub webscan</div>
 <div class="content">
@@ -3432,7 +3691,7 @@ Specifying the header name <code>x-sechub-dast</code> with a custom value inside
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-header-value-from-data-section">2.5.7.2.13. Example Header scan with value from data section</h6>
+<h6 id="sechub-config-example-webscan-header-value-from-data-section">2.5.9.2.13. Example Header scan with value from data section</h6>
 <div class="listingblock">
 <div class="title">header scan with value from data section</div>
 <div class="content">
@@ -3475,81 +3734,7 @@ For each header provide either a <code>value</code> directly (as shown in <a hre
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.5.8. Infrastructure scan</h4>
-<div class="paragraph">
-<p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
-</div>
-<div class="sect4">
-<h5 id="uris">2.5.8.1. URIs</h5>
-<div class="paragraph">
-<p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
-</div>
-<div class="sect5">
-<h6 id="example-infrascan-one-uri">2.5.8.1.1. Example infrascan one URI</h6>
-<div id="sechub-config-example-infrascan-with-uri" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>
-    ]
-  }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define infrastructure scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="ips">2.5.8.2. IPs</h5>
-<div class="paragraph">
-<p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
-</div>
-<div class="sect5">
-<h6 id="example-infrascan-one-ip">2.5.8.2.1. Example infrascan one IP</h6>
-<div id="sechub-config-example-infrascan-with-ip" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>
-    ]
-  }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define infrastructure scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
-The given example with <code>127.0.0.1</code> represents only an example and will always not work
-because scanners do not scan them self.</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="sechub-config-data-section">2.5.9. Data section</h4>
+<h4 id="sechub-config-data-section">2.5.10. Data section</h4>
 <div class="paragraph">
 <p>With the <code>data</code> section users are able to</p>
 </div>
@@ -3697,9 +3882,10 @@ for details about default behaviour for sources.</td>
 </table>
 </div>
 <div class="sect4">
-<h5 id="remote-data">2.5.9.1. Remote Data</h5>
+<h5 id="remote-data">2.5.10.1. Remote Data</h5>
 <div class="paragraph">
-<p>Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve the data to be scanned from remote locations.
+<p>Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve
+the data to be scanned from remote locations.
 In a <code>PREPARE</code> phase the <code>PDS</code> prepare will download the data from the remote location and upload it to a shared storage.
 From there any other <code>PDS solution</code> can access the data for scanning.
 The <code>type</code> is not mandatory, but it is recommended to set it to <code>git</code> or <code>docker</code> to make it clear what type of remote data is being used.</p>
@@ -3708,7 +3894,7 @@ The <code>type</code> is not mandatory, but it is recommended to set it to <code
 <p>Scan types (codeScan, licenseScan etc.), includes or excludes as well as false positives can be defined as usual.</p>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-remote-data-section-sources-codescan">2.5.9.1.1. Example source remote data scan</h6>
+<h6 id="sechub-config-example-remote-data-section-sources-codescan">2.5.10.1.1. Example source remote data scan</h6>
 <div class="listingblock">
 <div class="title">Codes scan configuration for remote git sources without credentials</div>
 <div class="content">
@@ -3743,7 +3929,7 @@ The <code>type</code> is not mandatory, but it is recommended to set it to <code
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.9.1.2. Example source remote data scan with credentials</h6>
+<h6 id="sechub-config-example-remote-data-section-sources-codescan-credentials">2.5.10.1.2. Example source remote data scan with credentials</h6>
 <div class="listingblock">
 <div class="title">Code scan configuration for remote git sources with credentials</div>
 <div class="content">
@@ -3796,7 +3982,7 @@ The <code>type</code> is not mandatory, but it is recommended to set it to <code
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.9.1.3. Example binaries remote data scan with credentials</h6>
+<h6 id="sechub-config-example-remote-data-section-binaries-codescan-credentials">2.5.10.1.3. Example binaries remote data scan with credentials</h6>
 <div class="listingblock">
 <div class="title">Codes scan configuration for remote git sources with credentials</div>
 <div class="content">
@@ -3839,7 +4025,7 @@ The <code>type</code> is not mandatory, but it is recommended to set it to <code
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-config-metadata-section">2.5.10. MetaData</h4>
+<h4 id="sechub-config-metadata-section">2.5.11. MetaData</h4>
 <div class="paragraph">
 <p>The SecHub configuration file can have optional meta data.</p>
 </div>
@@ -3863,7 +4049,7 @@ without additional audit logging.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="labels">2.5.10.1. Labels</h5>
+<h5 id="labels">2.5.11.1. Labels</h5>
 <div class="paragraph">
 <p>With labels a user is able to add additional information to the
 scan configuration which end up in the report as key value pairs.</p>
@@ -3954,7 +4140,7 @@ elements are removed)</em>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="code-scan-accepted-source-code-files">2.5.11. Code scan: accepted source code files</h4>
+<h4 id="code-scan-accepted-source-code-files">2.5.12. Code scan: accepted source code files</h4>
 <div class="paragraph">
 <p>The client will per default only include "wellknown" source files.
 This is done by inspecting the filename ending. The accepted defaults are shown in next table.</p>
@@ -4254,7 +4440,7 @@ You can also define additional source file endings - see <a href="#sechub-config
 </table>
 </div>
 <div class="sect3">
-<h4 id="inject-variables-into-configuration-files-for-advanced-users">2.5.12. Inject variables into configuration files (For advanced users)</h4>
+<h4 id="inject-variables-into-configuration-files-for-advanced-users">2.5.13. Inject variables into configuration files (For advanced users)</h4>
 <div class="paragraph">
 <p>All environment variables are available inside your configuration file in Go
 template syntax:</p>
@@ -4697,7 +4883,7 @@ configure the client to do this on color YELLOW.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 1.10.0 modified (commit 76245bd)<br>
+ Client 1.10.0 modified (commit 8d67e39)<br>
 </div>
 </div>
 </body>
