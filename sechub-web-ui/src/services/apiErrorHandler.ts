@@ -8,11 +8,14 @@ export function handleApiError(error: any) {
         return;
     }
     const responseError = error as ResponseError;
+    if(!responseError.response){
+        return;
+    }
     handle401UnauthorizedError(responseError);
 }
 
 function handle401UnauthorizedError(responseError: ResponseError) {
-    if(responseError.response && responseError.response.status === 401){
+    if(responseError.response.status === 401){
         router.push('/login')
     }
 }
