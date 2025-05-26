@@ -13,7 +13,7 @@ fi
 set -e
 
 echo "# SecHub website: Install dependencies"
-npm install
+npm ci
 
 echo "# SecHub website: Build for production"
 npm run build

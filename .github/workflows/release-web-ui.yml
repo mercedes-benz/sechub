@@ -104,7 +104,7 @@ jobs:
       - name: Build SecHub web-ui
         run: |
           cd sechub-web-ui && \
-          npm install && \
+          npm ci && \
           npm run generate-api-client && \
           npm run build && \
           cd dist && \
