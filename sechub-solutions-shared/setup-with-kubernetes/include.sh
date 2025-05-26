@@ -1,4 +1,5 @@
 # This file is meant to be included by the scripts in this directoy
+# SPDX-License-Identifier: MIT
 
 ## Vars
 SECHUB_K8S_BUILDDIR="build"
