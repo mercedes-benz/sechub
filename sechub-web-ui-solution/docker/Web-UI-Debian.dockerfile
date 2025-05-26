@@ -38,7 +38,7 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     chmod 755 clone.sh && \
     ./clone.sh "$GIT_URL" "$GIT_BRANCH" "$GIT_TAG" && \
     cd "sechub/sechub-web-ui" && \
-    npm install && \
+    npm ci && \
     npm run build && \
     cp -r dist "${WEB_UI_ARTIFACTS}"
 
