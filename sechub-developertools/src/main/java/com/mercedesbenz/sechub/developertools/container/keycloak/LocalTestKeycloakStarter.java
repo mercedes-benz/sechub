@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.developertools.container.keycloak;
 
 import java.io.File;
