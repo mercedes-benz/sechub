@@ -78,6 +78,16 @@ You can use the sechub-api.sh script to manage your user and project or execute 
 
 Now you can test your web-ui with sechub and real scans!
 
+## Testing
+
+### run tests
+
+For testing we use the [vitest framework](https://vitest.dev)
+
+```bash
+npm run test
+```
+
 ## Building for Production
 
 ### Environment Variables
@@ -87,7 +97,7 @@ For deploying runtime ENV please se sechub-web-ui-solution/docker/nginx/config.j
 
 Please see the config.ts for possible ENV variables that can be set and sechub-web-ui-solution/README.md
 
-### Example
+#### Example
 
 Custom user support email address 
 

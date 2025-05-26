@@ -94,8 +94,6 @@ public class ProjectAssignUserService {
 
         User user = userRepository.findOrFailUser(userId);
         if (project.getUsers().add(user)) {
-            user.getProjects().add(project);
-
             transactionService.saveInOwnTransaction(project, user);
 
             sendUserAddedToProjectEvent(projectId, user);

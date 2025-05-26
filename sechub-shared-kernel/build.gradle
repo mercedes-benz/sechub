@@ -27,4 +27,5 @@ dependencies {
 
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-testframework-spring')
+    testImplementation spring_boot_dependency.assertj_core
 }

@@ -118,7 +118,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap, serverReturnedEngineConfigurationId);
 
         /* upload */
-        simulateUploadZipFileWasSuccesful();
+        simulateUploadZipFileWasSuccessful();
 
         /* scan start */
         simulateStartScanAccepted();
@@ -155,7 +155,7 @@ public class CheckmarxAdapterV1WireMockTest {
 
         /* upload */
         simulateExpiredBearerTokenLeadsToLoginRequest();
-        simulateUploadZipFileWasSuccesful();
+        simulateUploadZipFileWasSuccessful();
 
         simulateExpiredBearerTokenLeadsToLoginRequest();
         simulateStartScanAccepted();
@@ -175,7 +175,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateCheckScanAvailableReturns("Finished");
 
         simulateExpiredBearerTokenLeadsToLoginRequest();
-        simulateStartReportCreationWasSuccesful();
+        simulateStartReportCreationWasSuccessful();
 
         simulateExpiredBearerTokenLeadsToLoginRequest();
         simulateWaitForReportResultsReturns("Something");
@@ -185,7 +185,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateWaitForReportResultsReturns("Created");
 
         simulateExpiredBearerTokenLeadsToLoginRequest();
-        simulateDownloadReportSuccesful();
+        simulateDownloadReportSuccessful();
 
         /* execute */
         AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
@@ -224,14 +224,14 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateCheckScanAvailableReturns("Finished");
 
         /* report start */
-        simulateStartReportCreationWasSuccesful();
+        simulateStartReportCreationWasSuccessful();
 
         simulateWaitForReportResultsReturns("Something");
         simulateWaitForReportResultsReturns("Something");
         simulateWaitForReportResultsReturns("Created");
 
         /* download report */
-        simulateDownloadReportSuccesful();
+        simulateDownloadReportSuccessful();
 
     }
 
@@ -255,13 +255,13 @@ public class CheckmarxAdapterV1WireMockTest {
 
         /* report start */
         /* report start */
-        simulateStartReportCreationWasSuccesful();
+        simulateStartReportCreationWasSuccessful();
 
         simulateWaitForReportResultsReturns("Something");
         simulateWaitForReportResultsReturns("Created");
 
         /* download report */
-        simulateDownloadReportSuccesful();
+        simulateDownloadReportSuccessful();
 
         /* execute */
         AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
@@ -296,7 +296,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateWaitForReportResultsReturns("Created");
 
         /* download report */
-        simulateDownloadReportSuccesful();
+        simulateDownloadReportSuccessful();
 
         /* execute */
         AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
@@ -327,7 +327,7 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap, serverReturnedEngineConfigurationId);
 
         /* upload */
-        simulateUploadZipFileWasSuccesful();
+        simulateUploadZipFileWasSuccessful();
 
         /* scan start */
         simulateStartScanAccepted();
@@ -341,14 +341,14 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateCheckScanAvailableReturns("Finished");
 
         /* report start */
-        simulateStartReportCreationWasSuccesful();
+        simulateStartReportCreationWasSuccessful();
 
         simulateWaitForReportResultsReturns("Something");
         simulateWaitForReportResultsReturns("Something");
         simulateWaitForReportResultsReturns("Created");
 
         /* download report */
-        simulateDownloadReportSuccesful();
+        simulateDownloadReportSuccessful();
 
         /* execute */
         AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
@@ -361,12 +361,12 @@ public class CheckmarxAdapterV1WireMockTest {
 
     }
 
-    private void simulateDownloadReportSuccesful() {
+    private void simulateDownloadReportSuccessful() {
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/reports/sastScan/" + CHECKMARX_REPORT_ID))))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON).withBody(CONTENT_FROM_CHECKMARX)));
     }
 
-    private void simulateStartReportCreationWasSuccesful() {
+    private void simulateStartReportCreationWasSuccessful() {
         LinkedHashMap<String, Object> scanReportCreation = new LinkedHashMap<>();
         scanReportCreation.put("reportType", "XML");
         scanReportCreation.put("scanId", CHECKMARX_SCAN_ID);
@@ -400,7 +400,7 @@ public class CheckmarxAdapterV1WireMockTest {
                         .withBody(JSONTestUtil.toJSONContainingNullValues(startScanResult))));
     }
 
-    private void simulateUploadZipFileWasSuccesful() {
+    private void simulateUploadZipFileWasSuccessful() {
         stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects/" + CHECKMARX_PROJECT_ID + "/sourceCode/attachments"))))
                 .withHeader("content-type", containing("multipart/form-data;boundary="))
                 .withMultipartRequestBody(aMultipart().withBody(equalTo("pseudo-zip-content")).withName("zippedSource"))
@@ -624,5 +624,4 @@ public class CheckmarxAdapterV1WireMockTest {
             throw e;
         }
     }
-
 }

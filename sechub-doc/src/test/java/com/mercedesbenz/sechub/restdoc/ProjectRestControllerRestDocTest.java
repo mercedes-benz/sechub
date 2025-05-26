@@ -90,7 +90,7 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
         List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
-        when(projectService.getAssignedProjectDataList(username)).thenReturn(projectDataList);
+        when(projectService.getProjectDataList(username)).thenReturn(projectDataList);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

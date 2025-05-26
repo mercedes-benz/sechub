@@ -33,6 +33,6 @@ public class ProjectRestController {
     @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_OWNER })
     public List<ProjectData> getAssignedProjectDataList() {
         String userId = userContextService.getUserId();
-        return projectService.getAssignedProjectDataList(userId);
+        return projectService.getProjectDataList(userId);
     }
 }

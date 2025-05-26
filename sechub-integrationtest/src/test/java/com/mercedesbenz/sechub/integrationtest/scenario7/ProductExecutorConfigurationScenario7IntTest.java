@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
@@ -150,6 +151,10 @@ public class ProductExecutorConfigurationScenario7IntTest {
 
         /* execute */
         TestExecutorConfigList result = as(SUPER_ADMIN).fetchProductExecutorConfigList();
+
+        /* execute + test 2 */
+        /* invalid UUID results in 400 */
+        expectHttpFailure(() -> as(SUPER_ADMIN).fetchProductExecutorConfigAsJSON("i-am-not-a-valid-uuid"), HttpStatus.BAD_REQUEST);
 
         /* test */
         TestExecutorConfigListEntry found = resolveEntry(uuid, result);

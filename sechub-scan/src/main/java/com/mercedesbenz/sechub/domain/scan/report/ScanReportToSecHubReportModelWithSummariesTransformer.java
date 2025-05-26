@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,10 +108,7 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
             throw new IllegalStateException("Unsupported report result type:" + resultType);
         }
 
-        if (context.model.getMetaData().isEmpty()) {
-            SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-            context.model.setMetaData(reportMetaData);
-        }
+        ensureMetaDataInModel(context);
 
         /* calculate data */
         buildCalculatedData(context);
@@ -247,12 +243,9 @@ public class ScanReportToSecHubReportModelWithSummariesTransformer {
     }
 
     private SecHubReportMetaData ensureMetaDataInModel(Context context) {
-        Optional<SecHubReportMetaData> metaDataOpt = context.model.getMetaData();
 
-        SecHubReportMetaData metaData = null;
-        if (metaDataOpt.isPresent()) {
-            metaData = metaDataOpt.get();
-        } else {
+        SecHubReportMetaData metaData = context.model.getMetaData();
+        if (metaData == null) {
             metaData = new SecHubReportMetaData();
             context.model.setMetaData(metaData);
         }

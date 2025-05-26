@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -10,8 +10,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
 
-import com.mercedesbenz.sechub.domain.administration.project.Project;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserRepository;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
@@ -26,8 +28,14 @@ public class JobCancelServiceTest {
     private static final DomainMessageService eventBusService = mock();
     private static final JobInformationRepository jobInformationRepository = mock();
     private static final UserRepository userRepository = mock();
+    private static final ProjectRepository projectRepository = mock();
     private static final JobCancelService serviceToTest = new JobCancelService(auditLogService, userInputAssertion, eventBusService, jobInformationRepository,
-            userRepository);
+            userRepository, projectRepository);
+
+    @BeforeEach
+    void beforeEach() {
+        Mockito.reset(userRepository, projectRepository, jobInformationRepository, eventBusService, userInputAssertion, auditLogService);
+    }
 
     @Test
     public void userCancelJob_receives_not_found_exception_when_job_not_found() {
@@ -38,6 +46,7 @@ public class JobCancelServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotFoundException.class);
+
         verify(eventBusService, never()).sendAsynchron(any());
 
     }
@@ -52,22 +61,21 @@ public class JobCancelServiceTest {
 
         JobInformation jobInformation = mock(JobInformation.class);
         when(jobInformation.getProjectId()).thenReturn(projectId);
-        Project project = mock(Project.class);
-        when(project.getId()).thenReturn(otherProjectId);
 
         User user = mock(User.class);
-        when(user.getProjects()).thenReturn(Set.of(project));
+        when(projectRepository.findAllProjectIdsWhereUserIsAssigned(userId)).thenReturn(Set.of(otherProjectId));
 
         when(userRepository.findOrFailUser(userId)).thenReturn(user);
         when(jobInformationRepository.findById(jobUUID)).thenReturn(Optional.of(jobInformation));
 
         /* execute + test */
         assertThatThrownBy(() -> serviceToTest.userCancelJob(jobUUID, userId)).isInstanceOf(NotFoundException.class);
+
         verify(eventBusService, never()).sendAsynchron(any());
     }
 
     @Test
-    public void userCancelJob_receives_no_exception_when_job_found_and_authorized() {
+    public void userCancelJob_receives_no_exception_when_job_found_and_project_assigned_to_user() {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
         String userId = "user1";
@@ -75,17 +83,17 @@ public class JobCancelServiceTest {
 
         JobInformation jobInformation = mock(JobInformation.class);
         when(jobInformation.getProjectId()).thenReturn(projectId);
-        Project project = mock(Project.class);
-        when(project.getId()).thenReturn(projectId);
 
         User user = mock(User.class);
-        when(user.getProjects()).thenReturn(Set.of(project));
+        when(user.getName()).thenReturn(userId);
 
         when(userRepository.findOrFailUser(userId)).thenReturn(user);
         when(jobInformationRepository.findById(jobUUID)).thenReturn(Optional.of(jobInformation));
+        when(projectRepository.findAllProjectIdsWhereUserIsAssigned(userId)).thenReturn(Set.of(projectId));
 
         /* execute + test */
         assertThatCode(() -> serviceToTest.userCancelJob(jobUUID, userId)).doesNotThrowAnyException();
+
         verify(eventBusService, times(1)).sendAsynchron(any());
     }
 

@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
@@ -47,7 +49,9 @@ public class ZapScriptLogin {
         ScriptLoginResult loginResult = resilientLogin(() -> groovyScriptExecutor.executeScript(groovyScriptLoginFile, scanContext),
                 scanContext.getMaximumLoginScriptFailureRetries());
         if (loginResult.isLoginFailed()) {
-            throw new ZapWrapperRuntimeException("An error happened during script login.", ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
+            String errorMessage = "An error happened during script login. Please verify your credentials are specified correctly.";
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
         try {
             LOG.info("Calling session grabber to read the HTTP session data and pass them to ZAP.");

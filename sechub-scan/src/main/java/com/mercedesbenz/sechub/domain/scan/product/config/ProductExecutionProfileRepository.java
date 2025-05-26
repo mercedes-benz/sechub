@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.CLASS_NAME;
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROFILE_TO_PROJECT__COLUMN_PROFILE_ID;
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROFILE_TO_PROJECT__COLUMN_PROJECT_ID;
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ID;
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_PROJECT_IDS;
-import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.TABLE_NAME_PROFILE_TO_PROJECT;
+import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.*;
 
 import java.util.List;
 
@@ -36,4 +31,8 @@ public interface ProductExecutionProfileRepository extends JpaRepository<Product
 
     @Query(value = "select p from " + CLASS_NAME + " p where :projectId member of p." + PROPERTY_PROJECT_IDS)
     public List<ProductExecutionProfile> findExecutionProfilesForProject(String projectId);
+
+    @Query(value = "select p." + PROPERTY_ID + " from " + CLASS_NAME + " p where :projectId member of p." + PROPERTY_PROJECT_IDS + " and p." + PROPERTY_ENABLED
+            + " = true order by " + PROPERTY_ID)
+    public List<String> findOrderedIdsOfEnabledExecutionProfilesForProject(String projectId);
 }

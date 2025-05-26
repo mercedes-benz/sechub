@@ -197,6 +197,7 @@ class ZapScriptLoginTest {
                 .setGroovyScriptLoginFile(scriptFile)
                 .setTargetUrl(targetUrl)
                 .setMaxGroovyScriptLoginFailureRetries(maxAllowedLoginScriptRetries)
+                .setZapProductMessageHelper(mock())
                 .build();
         /* @formatter:on */
     }

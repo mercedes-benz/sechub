@@ -159,7 +159,6 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.READ_ONLY);
 
         /* test */
-
         expectHttpFailure(()->{
             as(USER_1).uploadSourcecode(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         }, HttpStatus.FORBIDDEN);
@@ -171,6 +170,11 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         expectHttpFailure(()->{
             as(USER_1).createWebScan(project);
         }, HttpStatus.FORBIDDEN);
+
+        /* test 2 - invalid access levels */
+        expectHttpFailure(() -> {
+            as(SUPER_ADMIN).changeProjectAccessLevel(project, "INVALID_ACCESS_LEVEL");
+        }, HttpStatus.BAD_REQUEST);
     }
     /* @formatter:on */
 
@@ -199,5 +203,4 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     }
     /* @formatter:on */
-
 }

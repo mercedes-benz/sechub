@@ -17,7 +17,9 @@ metadata:
 {{- end }}
 spec:
   type: LoadBalancer
+{{- if ne .Values.service.loadbalancer.ip "none" }}
   loadBalancerIP: {{ .Values.service.loadbalancer.ip }}
+{{- end }}
   selector:
     name: {{ .Values.name }}
   ports:

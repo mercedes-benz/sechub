@@ -47,6 +47,7 @@ public class Project {
     public static final String COLUMN_TEMPLATE_ID = "PROJECT_TEMPLATE_ID";
 
     public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
+    public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_USER_ID = "USERS_USER_ID";
     public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
     public static final String ASSOCIATE_PROJECT_TO_METADATA_COLUMN_PROJECT_ID = "PROJECT_ID";
     public static final String ASSOCIATE_PROJECT_TO_TEMPLATE_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
@@ -54,7 +55,7 @@ public class Project {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String CLASS_NAME = Project.class.getSimpleName();
+    public static final String CLASS_NAME = "Project";
 
     public static final String PROPERTY_USERS = "users";
     public static final String PROPERTY_OWNER = "owner";
@@ -74,7 +75,7 @@ public class Project {
     // otherwise leading to "java.lang.IllegalStateException: Multiple
     // representations of the same entity ... are being merged"
     @ManyToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
-    @JoinTable(name = TABLE_NAME_PROJECT_TO_USER)
+    @JoinTable(name = TABLE_NAME_PROJECT_TO_USER, joinColumns = @JoinColumn(name = ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID), inverseJoinColumns = @JoinColumn(name = ASSOCIATE_PROJECT_TO_USER_COLUMN_USER_ID))
     Set<User> users = new HashSet<>();
 
     // we do not CascadeType.Persist or ALL because otherwise user will be persisted

@@ -29,6 +29,11 @@ or without credentials:
 [source,yaml]
 ----
 - uses: mercedes-benz/sechub/github-actions/scan@master
+
+  # OPTIONAL: Set a proxy for the github action with or without credentials, e.g. to download the sechub client and to access sechub
+  env:
+    https_proxy: "https://user:password@proxy.example.org:1234"
+
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. (See IMPORTANT section below for more information)
     config-path: 'sechub.json'

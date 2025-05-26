@@ -68,7 +68,6 @@ subprojects{
 	sourceCompatibility = '17'
 	targetCompatibility = '17'
 
-
     dependencies {
         // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
         testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.2'
@@ -99,6 +98,17 @@ subprojects{
         
         // add a testlistener to all tasks of type Test
         tasks.withType(Test) {
+        
+			/* In case that no explicit integration test execution is defined, we skip always these tests.
+			 * This prevents unnecessary junit results in report (skipped) but also problems of mutiple test results 
+			 * for same Test classes when integration task is executed afterwards
+			 */
+		    if (! name.equals('integrationtest')) { // do only exlude when not integrationtest task
+		        exclude '**/*IntTest.class'
+		    }else{
+		    	include '**/*IntTest.class' // in case of integration test we do only inspect these tests
+		    }
+        
             afterTest { TestDescriptor descriptor, TestResult result ->
                 if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
                     buildContainsFailedTests=true
