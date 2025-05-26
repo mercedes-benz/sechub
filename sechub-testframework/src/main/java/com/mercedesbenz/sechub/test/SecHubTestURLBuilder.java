@@ -787,4 +787,16 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/administration/jobinformation");
     }
 
+    public String buildIntegrationTestOpaqueTokenInitTestCaching() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/init-test-cache");
+    }
+
+    public String buildIntegrationTestOpaqueTokenIntrospectTestCaching(String opaqueToken) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/introspect/" + opaqueToken);
+    }
+
+    public String buildIntegrationTestOpaqueTokenShutdownTestCaching() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/shutdown-test-cache");
+    }
+
 }

@@ -235,11 +235,26 @@ class SecHubSecurityPropertiesTest {
         Duration defaultTokenExpiresIn = Duration.ofDays(1);
         Duration maxCacheDuration = Duration.ofDays(30);
 
-        /* execute */
-        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
-                introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration);
+        Duration preCacheDuration = Duration.ofDays(30);
+        Duration inMemoryCacheClearPeriod = Duration.ofDays(30);
+        Duration clusterCacheClearPeriod = Duration.ofDays(30);
 
-        /* test */
+        /* execute - @formatter:off*/
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
+
+                introspectionUri,
+                clientId,
+                clientSecret,
+                defaultTokenExpiresIn,
+                maxCacheDuration,
+
+                preCacheDuration,
+
+                inMemoryCacheClearPeriod,
+                clusterCacheClearPeriod
+                );
+
+        /* test - @formatter:on*/
         assertThat(opaqueToken.getIntrospectionUri()).isEqualTo(introspectionUri);
         assertThat(opaqueToken.getClientId()).isEqualTo(clientId);
         assertThat(opaqueToken.getClientSecret()).isEqualTo(clientSecret);
@@ -253,6 +268,9 @@ class SecHubSecurityPropertiesTest {
                                                                      String clientId,
                                                                      String clientSecret,
                                                                      Duration maxCacheDuration,
+                                                                     Duration preCacheDuration,
+                                                                     Duration inMemoryCacheClearPeriod,
+                                                                     Duration clusterCacheClearPeriod,
                                                                      String errMsg) {
         /* prepare */
 
@@ -260,7 +278,18 @@ class SecHubSecurityPropertiesTest {
         Duration defaultTokenExpiresIn = null;
 
         /* execute + test */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
+                introspectionUri,
+                clientId,
+                clientSecret,
+                defaultTokenExpiresIn,
+                maxCacheDuration,
+
+                preCacheDuration,
+                inMemoryCacheClearPeriod,
+                clusterCacheClearPeriod
+
+                ))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -423,10 +452,13 @@ class SecHubSecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "example-client-id", "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", null, "The property 'sechub.security.server.oauth2.opaque-token.max-cache-duration' must not be null")
+                    Arguments.of(null, "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2),  Duration.ofDays(3),"The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", null, Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.max-cache-duration' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), null,  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.pre-cache-duration' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1), null, Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.in-memory-cache-clear-period' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1), Duration.ofDays(2), null, "The property 'sechub.security.server.oauth2.opaque-token.cluster-cache-clear-period' must not be null")
             );
         }
         /* @formatter:on */

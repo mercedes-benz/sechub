@@ -12,7 +12,7 @@ dependencies {
     implementation library.springboot_starter_web
     implementation library.springboot_starter_security
     implementation library.springboot_starter_oauth2_client
-    implementation library.springboot_starter_oauth2_resource_server
+    api library.springboot_starter_oauth2_resource_server // export necessary for oauth2 integration test rest controller in (sechub-server)
     implementation library.jakarta_servlet_api
 
     testImplementation library.springframework_web

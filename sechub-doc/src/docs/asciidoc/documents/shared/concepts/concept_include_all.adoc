@@ -48,3 +48,7 @@ include::concept_statistic.adoc[]
 
 === Data encryption
 include::concept_sechub_data_encryption.adoc[]
+
+=== Oauth2
+include::concept_oauth2_handling.adoc[]
+

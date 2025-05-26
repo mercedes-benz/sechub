@@ -1,0 +1,60 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+!include module_self_cleaning_cache.puml
+
+package com.mercedesbenz.sechub.spring.security {
+
+	class OAuth2OpaqueTokenIntrospector {
+		SelfCleaningCache inMemoryCache
+		SelfCleaningCache clusterCache
+	}
+	
+	class OAuth2OpaqueTokenIntrospectionResponse
+	
+}
+package com.mercedesbenz.sechub.sharedkernel.security {
+	class SecHubSecurityConfiguration
+	package com.mercedesbenz.sechub.sharedkernel.security.clustercache {
+	
+		
+		class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistence{
+		}
+	
+		class OAuth2OpaqueTokenClusterCacheRepository {
+			removeOutdated(Instant now)
+		}
+		
+		class OAuth2OpaqueTokenClusterCache {
+			String opaqueToken
+			String introspectionResponse
+			Instant createdAt
+			Duration duration
+		}
+		
+	
+	
+	}
+}
+database "SecHub Database" as db {
+
+}
+'Remark: we use 'identity' here as prefix for database table,
+'        because in future there is the possibility that this could be
+'        inside a new domain 'identiy'.        
+note top of OAuth2OpaqueTokenClusterCacheRepository 
+	Table: identity_oauth2_opaquetoken_cache
+end note
+
+SecHubSecurityConfiguration --> OAuth2OpaqueTokenIntrospector: creates
+SecHubSecurityConfiguration --> OAuth2OpaqueTokenClusterCachePersistence: creates
+OAuth2OpaqueTokenIntrospector o-- SelfCleaningCache: uses
+
+OAuth2OpaqueTokenClusterCachePersistence .> OAuth2OpaqueTokenIntrospectionResponse 
+OAuth2OpaqueTokenClusterCachePersistence --> OAuth2OpaqueTokenClusterCacheRepository 
+OAuth2OpaqueTokenClusterCachePersistence --> OAuth2OpaqueTokenClusterCache 
+OAuth2OpaqueTokenClusterCacheRepository --> db
+
+@enduml 

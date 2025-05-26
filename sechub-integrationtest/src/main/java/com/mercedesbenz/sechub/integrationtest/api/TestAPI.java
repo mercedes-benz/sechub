@@ -1757,4 +1757,79 @@ public class TestAPI {
         }
     }
 
+    public static void initOpaqueTokenTestCache() {
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenInitTestCaching();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    public static TestOAuth2AuthenticatedPrincipal introspectOpaqueTokenTestCache(String opaqueToken) {
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenIntrospectTestCaching(opaqueToken);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSON(TestOAuth2AuthenticatedPrincipal.class, json);
+    }
+
+    public static void shutdownOpaqueTokenTestCache() {
+
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenShutdownTestCaching();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    public static class TestOAuth2AuthenticatedPrincipal {
+        private String name;
+        private String username;
+        private String issuedAt;
+        private String expiresAt;
+        private boolean active;
+
+        private Map<String, Object> attributes;
+
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+
+        public Boolean isActive() {
+            return active;
+        }
+
+        public void setExpiresAt(String expiresAt) {
+            this.expiresAt = expiresAt;
+        }
+
+        public String getExpiresAt() {
+            return expiresAt;
+        }
+
+        public void setIssuedAt(String issuedAt) {
+            this.issuedAt = issuedAt;
+        }
+
+        public String getIssuedAt() {
+            return issuedAt;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setAttributes(Map<String, Object> attributes) {
+            this.attributes = attributes;
+        }
+
+        public Map<String, Object> getAttributes() {
+            return attributes;
+        }
+    }
+
 }

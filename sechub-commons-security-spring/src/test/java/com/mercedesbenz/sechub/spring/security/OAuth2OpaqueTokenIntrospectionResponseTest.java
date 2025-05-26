@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.opentest4j.TestAbortedException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
@@ -27,8 +28,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 
 class OAuth2OpaqueTokenIntrospectionResponseTest {
-
-    private static final Duration DEFAULT_EXPIRES_IN = Duration.ofDays(1);
 
     private static final String jsonResponse;
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -39,6 +38,20 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
         } catch (IOException e) {
             throw new TestAbortedException("Failed to prepare test", e);
         }
+    }
+
+    @Test
+    void calling_set_expiresAt_creates_new_instant_having_seconds_only() throws JsonMappingException, JsonProcessingException {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospectionResponse response = objectMapper.readValue(jsonResponse, OAuth2OpaqueTokenIntrospectionResponse.class);
+
+        Instant instant = Instant.now().plusSeconds(30);
+
+        /* execute */
+        response.setExpiresAt(instant.getEpochSecond());
+
+        /* test */
+        assertThat(response.getExpiresAtAsInstant()).isEqualTo(instant.truncatedTo(ChronoUnit.SECONDS));
     }
 
     @Test
@@ -55,10 +68,13 @@ class OAuth2OpaqueTokenIntrospectionResponseTest {
         assertThat(response.getUsername()).isEqualTo(JsonPath.read(jsonResponse, "$.username"));
         assertThat(response.getTokenType()).isEqualTo(JsonPath.read(jsonResponse, "$.token_type"));
         assertThat(response.getIssuedAt()).isNotNull();
-        assertThat(response.getExpiresAt()).isNotNull();
         assertThat(response.getSubject()).isEqualTo(JsonPath.read(jsonResponse, "$.sub"));
         assertThat(response.getAudience()).isEqualTo(JsonPath.read(jsonResponse, "$.aud"));
         assertThat(response.getGroupType()).isEqualTo(JsonPath.read(jsonResponse, "$.group_type"));
+
+        assertThat(response.getExpiresAt()).isEqualTo(1L);
+        assertThat(response.getExpiresAtAsInstant()).isEqualTo(Instant.ofEpochSecond(1L));
+
     }
 
     @ParameterizedTest

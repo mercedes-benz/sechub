@@ -40,6 +40,8 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
+import com.mercedesbenz.sechub.commons.core.cache.InMemoryCachePersistence;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 /**
@@ -93,7 +95,8 @@ public abstract class AbstractSecurityConfiguration {
 														  @Autowired(required = false) AES256Encryption aes256Encryption,
 														  @Autowired(required = false) JwtDecoder jwtDecoder,
 														  ApplicationShutdownHandler applicationShutdownHandler,
-														  @Autowired(required = false) OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
+														  @Autowired(required = false) OAuth2TokenExpirationCalculator expirationCalculator,
+														  @Autowired(required = false) OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessprovider) throws Exception {
         LOG.debug("Setup security filter chain for ressource server");
 		SecHubSecurityProperties.LoginProperties loginProperties = secHubSecurityProperties.getLoginProperties();
 		configureResourceServerSecurityMatcher(httpSecurity, loginProperties);
@@ -129,7 +132,8 @@ public abstract class AbstractSecurityConfiguration {
 				jwtDecoder,
 				restTemplate,
 				applicationShutdownHandler,
-				expirationCalculator);
+				expirationCalculator,
+				cryptoAccessprovider);
 
         return httpSecurity.build();
     }
@@ -244,14 +248,15 @@ public abstract class AbstractSecurityConfiguration {
     }
 
     /* @formatter:off */
-    private static void configureResourceServerMode(HttpSecurity httpSecurity,
+    private void configureResourceServerMode(HttpSecurity httpSecurity,
 													SecHubSecurityProperties sechubSecurityProperties,
 													UserDetailsService userDetailsService,
 													AES256Encryption aes256Encryption,
 													JwtDecoder jwtDecoder,
 													RestTemplate restTemplate,
 													ApplicationShutdownHandler applicationShutdownHandler,
-													OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
+													OAuth2TokenExpirationCalculator expirationCalculator,
+													OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessprovider) throws Exception {
         SecHubSecurityProperties.ResourceServerProperties resourceServerProperties = sechubSecurityProperties.getResourceServerProperties();
 		if (resourceServerProperties == null) {
 			/*
@@ -290,12 +295,13 @@ public abstract class AbstractSecurityConfiguration {
                     restTemplate,
 					applicationShutdownHandler,
 					expirationCalculator,
-					sechubSecurityProperties.getMinimumTokenValidity());
+					sechubSecurityProperties.getMinimumTokenValidity(),
+					cryptoAccessprovider);
 			/* @formatter:on */
         }
     }
 
-    private static void configureResourceServerClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption) throws Exception {
+    private void configureResourceServerClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption) throws Exception {
         ClassicAuthCredentialsCookieFilter classicAuthCredentialsCookieFilter = new ClassicAuthCredentialsCookieFilter(aes256Encryption);
 
         /* @formatter:off */
@@ -306,7 +312,7 @@ public abstract class AbstractSecurityConfiguration {
     }
 
     /* @formatter:off */
-	private static void configureResourceServerOAuth2Mode(HttpSecurity httpSecurity,
+	private void configureResourceServerOAuth2Mode(HttpSecurity httpSecurity,
 														  SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2Properties,
 														  UserDetailsService userDetailsService,
 														  AES256Encryption aes256Encryption,
@@ -314,7 +320,8 @@ public abstract class AbstractSecurityConfiguration {
 														  RestTemplate restTemplate,
 														  ApplicationShutdownHandler applicationShutdownHandler,
 														  OAuth2TokenExpirationCalculator expirationCalculator,
-														  Duration minimumTokenValidity) throws Exception {
+														  Duration minimumTokenValidity,
+														  OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessprovider) throws Exception {
 	    if (oAuth2Properties==null) {
 	        throw new BeanInstantiationException(SecurityFilterChain.class, "The oauth2 resource server properties must not be null! You have to configure: "+SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.PREFIX);
 	    }
@@ -336,7 +343,7 @@ public abstract class AbstractSecurityConfiguration {
 		}
 
 		if (oAuth2Properties.isOpaqueTokenModeEnabled()) {
-			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler, expirationCalculator, minimumTokenValidity);
+			configureResourceServerOAuth2OpaqueTokenMode(httpSecurity, oAuth2Properties.getOpaqueTokenProperties(), userDetailsService, restTemplate, aes256Encryption, applicationShutdownHandler, expirationCalculator, minimumTokenValidity,cryptoAccessprovider);
 		}
 	}
 	/* @formatter:on */
@@ -372,14 +379,15 @@ public abstract class AbstractSecurityConfiguration {
 	/* @formatter:on */
 
     /* @formatter:off */
-	private static void configureResourceServerOAuth2OpaqueTokenMode(HttpSecurity httpSecurity,
+	private void configureResourceServerOAuth2OpaqueTokenMode(HttpSecurity httpSecurity,
 																	 SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueTokenProperties,
 																	 UserDetailsService userDetailsService,
 																	 RestTemplate restTemplate,
 																	 AES256Encryption aes256Encryption,
 																	 ApplicationShutdownHandler applicationShutdownHandler,
 																	 OAuth2TokenExpirationCalculator expirationCalculator,
-																	 Duration minimumTokenValidity) throws Exception {
+																	 Duration minimumTokenValidity,
+																	 OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessprovider) throws Exception {
 
 		if (userDetailsService == null) {
 			throw new NoSuchBeanDefinitionException(UserDetailsService.class);
@@ -393,17 +401,31 @@ public abstract class AbstractSecurityConfiguration {
 			throw new NoSuchBeanDefinitionException(ApplicationShutdownHandler.class);
 		}
 
-		OpaqueTokenIntrospector opaqueTokenIntrospector = new OAuth2OpaqueTokenIntrospector(
-				restTemplate,
-				opaqueTokenProperties.getIntrospectionUri(),
-				opaqueTokenProperties.getClientId(),
-				opaqueTokenProperties.getClientSecret(),
-				opaqueTokenProperties.getDefaultTokenExpiresAt(),
-				opaqueTokenProperties.getMaxCacheDuration(),
-				userDetailsService,
-				applicationShutdownHandler,
-				expirationCalculator,
-				minimumTokenValidity);
+		CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> tokenClusterCachePersistence = getOAuth2OpaqueTokenClusterPersistence();
+
+		RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher = RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher.builder().
+		        setRestTemplate(restTemplate).
+                setIntrospectionUri(opaqueTokenProperties.getIntrospectionUri()).
+                setClientId(opaqueTokenProperties.getClientId()).
+                setClientSecret(opaqueTokenProperties.getClientSecret()).
+		build();
+
+
+        OpaqueTokenIntrospector opaqueTokenIntrospector = OAuth2OpaqueTokenIntrospector.builder().
+                setCryptoAccessProvider(cryptoAccessprovider).
+                setTokenInMemoryCachePersistence(new InMemoryCachePersistence<>()).
+                setIntrospectionResponseFetcher(fetcher).
+				setDefaultTokenExpiresIn(opaqueTokenProperties.getDefaultTokenExpiresAt()).
+				setMaxCacheDuration(opaqueTokenProperties.getMaxCacheDuration()).
+				setPreCacheDuration(opaqueTokenProperties.getPreCacheDuration()).
+                setInMemoryCacheClearPeriod(opaqueTokenProperties.getInMemoryCacheClearPeriod()).
+                setClusterCacheClearPeriod(opaqueTokenProperties.getClusterCacheClearPeriod()).
+				setUserDetailsService(userDetailsService).
+				setApplicationShutdownHandler(applicationShutdownHandler).
+				setExpirationCalculator(expirationCalculator).
+				setTokenClusterCachePersistence(tokenClusterCachePersistence).
+				setMinimumTokenValidity(minimumTokenValidity).
+		build();
 
 		if (aes256Encryption == null) {
 			throw new NoSuchBeanDefinitionException(AES256Encryption.class);
@@ -418,6 +440,15 @@ public abstract class AbstractSecurityConfiguration {
 				);
 		}
 	/* @formatter:on */
+
+    /**
+     * Returns token cluster persistence, used for long term and cluster wide opaque
+     * token response caching (if cluster persistence is supported by application by
+     * current configuration setup)
+     *
+     * @return token cluster persistence or <code>null</code>
+     */
+    protected abstract CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> getOAuth2OpaqueTokenClusterPersistence();
 
     /* @formatter:off */
 	private static void configureLoginOAuth2Mode(HttpSecurity httpSecurity,

@@ -157,14 +157,6 @@ go_mmproxy:
   # Choose a "go-mmproxy" docker image. See e.g. https://hub.docker.com/search?q=go-mmproxy
   image: "example.org/go-mmproxy:2.1.0"
 
-staticResources:
-  # Enable static location. This is used to serve static files to the web application.
-  # (e.g. for custom background images, custom css files)
-  enabled: false
-  # If enabled, please provide the following configmaps. They will be mounted into the container:
-  # - configmap-background-image - background image file for the login screen (create example: ...)
-  # - configmap-custom-css - custom css file for the login page (see /file/path/to/default/css for default version)
-
 security:
   # This section configures the application (or server) to be able to authorize incoming requests
   resourceServer:
@@ -185,12 +177,18 @@ security:
         clientId: insert_your_introspection_client_id_here
         # Client secret to use for token introspection.
         clientSecret: insert_your_introspection_client_secret_here
+        # The period until the in cluster cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.
+        clusterCacheClearPeriod: 5m
         # The default expiration time for tokens. This is used when the IDP does not provide an expiration time.
         defaultTokenExpiresIn: 1h
-        # The maximum time a token is cached on SecHub side. After this time, the token is introspected again.
-        maxCacheDuration: 24h
+        # The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.
+        inMemoryCacheClearPeriod: 5s
         # This is the introspection endpoint of the IDP. For every incoming request this endpoint will be called.
         introspectionUri: https://sso.example.org/introspect.oauth2
+        # The maximum time a token is cached on SecHub side. After this time, the token is introspected again.
+        maxCacheDuration: 24h
+        # The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case the in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.
+        preCacheDuration: 30s
   # This config defines everything necessary for the application (or server) to be able to offer user authentication.
   # With this a login page will be available on the application.
   login:
@@ -230,6 +228,17 @@ security:
     secretKey: Insert-your-32-byte-string-here.
   # The minimum time a token is valid on SecHub side. This is preferred over any other default.
   minimumTokenValidity: 10h
+
+# ------------------------------------------------------------------------------------- #
+# Web login
+# ------------------------------------------------------------------------------------- #
+staticResources:
+  # Enable static location. This is used to serve static files to the web application.
+  # (e.g. for custom background images, custom css files)
+  enabled: false
+  # If enabled, please provide the following configmaps. They will be mounted into the container:
+  # - configmap-background-image - background image file for the login screen (create example: ...)
+  # - configmap-custom-css - custom css file for the login page (see /file/path/to/default/css for default version)
 
 storage:
   local:
