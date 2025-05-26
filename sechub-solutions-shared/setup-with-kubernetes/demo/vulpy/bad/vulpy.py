@@ -1,4 +1,5 @@
 #!/bin/python3
+# SPDX-License-Identifier: MIT
 
 from pathlib import Path
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Number of pds-xray instances to spin up
 replicaCount: 1
 
