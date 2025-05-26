@@ -7,11 +7,9 @@ function usage() {
     echo "Usage: $script_name <port>"
 }
 
+# setting default values for keycloak admin user and password
 export KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN:-admin}
 export KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
-
-assertNotEmpty "KEYCLOAK_ADMIN missing" $KEYCLOAK_ADMIN
-assertNotEmpty "KEYCLOAK_ADMIN_PASSWORD missing" $KEYCLOAK_ADMIN_PASSWORD
 
 addEnv "DATABASE_START_MODE=server"
 addEnv "KEYCLOAK_ADMIN=$KEYCLOAK_ADMIN"

@@ -68,7 +68,7 @@ function defineContainerName(){
 
 function ensureImageBuild(){
     assertNotEmpty "image name not defined" $image_name
-    
+
     docker build -t $image_name -f Dockerfile .
 
     buildResult=$?
@@ -136,6 +136,7 @@ function killContainer(){
     if [ "$running" != CONST_DOES_NOT_EXIST ]; then
         echo "* trigger kill of container $container_name"
         docker container kill $container_name
+
         echo "* container $container_name killed"
     fi
 

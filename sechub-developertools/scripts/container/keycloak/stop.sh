@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 source ./../common-containerscript.sh
+container="keycloak"
 
 function usage() {
     echo "Usage: $script_name <port>" 
@@ -13,7 +14,23 @@ if [[ -z "$1" ]]; then
 else
     defineExposedPort $1
 fi
-defineImage "keycloak"
-defineContainerName "keycloak"
+  defineImage ${container}
+defineContainerName ${container}
 
 killContainer
+
+# When the container was started by java and stopped by this script, the container info file
+# must be removed to stop the java process
+echo "Removing ${container} container info file if exists..."
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+relative_build_info="../../../src/build/tmp/keycloak_container_${exposed_port}.info"
+
+# Check if the file exists
+if [ ! -f "${script_dir}/${relative_build_info}" ]; then
+    echo "No ${container} container info file found, nothing to remove."
+    exit 0
+fi
+
+rm -f "${script_dir}/${relative_build_info}"
+echo "${container} container info file removed."
