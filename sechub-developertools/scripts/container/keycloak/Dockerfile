@@ -1,6 +1,5 @@
 FROM quay.io/keycloak/keycloak:latest
 
-# Copy your custom script into the container
 USER root
 
 COPY run.sh /opt/keycloak/bin/
