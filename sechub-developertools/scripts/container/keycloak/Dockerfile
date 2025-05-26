@@ -1,8 +1,13 @@
 FROM quay.io/keycloak/keycloak:latest
 
-ENV KEYCLOAK_ADMIN=admin
-ENV KEYCLOAK_ADMIN_PASSWORD=admin
+# Copy your custom script into the container
+USER root
+
+COPY run.sh /opt/keycloak/bin/
+RUN chmod +x /opt/keycloak/bin/run.sh
 
 COPY sechub-int-keycloak-realm.json /opt/keycloak/data/import/realm-export.json
 
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--import-realm"]
+USER keycloak
+
+ENTRYPOINT ["/opt/keycloak/bin/run.sh"]
