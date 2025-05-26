@@ -16,7 +16,7 @@ resources:
     memory: 256Mi
   limits:
     # Maximum container memory size
-    memory: 1Gi
+    memory: 2Gi
 
 pds:
   startMode: localserver
@@ -38,7 +38,7 @@ pds:
     # Limiting parameters regarding the extraction of .zip archives:
     extraction:
       # The maximal file size of the uncompressed archive (e.g.: 10KB or 10MB or 10GB)
-      maxFileFizeUncompressed: 1GB
+      maxFileSizeUncompressed: 1GB
       # Defines how many entries the archive may have
       maxEntries: 100000
       # The maximum directory depth for an entry inside the archive
@@ -90,7 +90,7 @@ database:
     password: "<password-of-db-user>"
 
 networkPolicy:
-  enabled: false
+  enabled: true
   ingress:
     - from:
       - podSelector:

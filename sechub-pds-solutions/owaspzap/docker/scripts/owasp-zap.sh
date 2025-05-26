@@ -1,7 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
-target_script_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/script.groovy"
+target_script_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/login-script.groovy"
 target_pac_file="$PDS_JOB_EXTRACTED_ASSETS_FOLDER/webscan-login/proxy.pac"
 
 shutdownZAP() {

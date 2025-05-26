@@ -41,17 +41,22 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS, false);
+    }
+
+    @Test
+    public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow__file_is_with_umlauts() {
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS, true);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_accepted_is_binary_and_source_via_job_parameter_results_yellow() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_2, WITH_ANALYTICS);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_2, WITH_ANALYTICS, false);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_which_would_be_accepted_but_everything_is_filtered_results_in_job_done_without_result() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_3, WITHOUT_ANALYTICS);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_3, WITHOUT_ANALYTICS, false);
     }
 
     @Test
@@ -64,8 +69,10 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         testCheckmarxPDSjobWithBinaryContentUploaded(PROJECT_2, WITH_ANALYTICS);
     }
 
-    private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project, boolean withAnalytics) {
+    private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project, boolean withAnalytics, boolean dataFileWithUmlauts) {
         /* @formatter:off */
+        String pathToUploadZipFile = dataFileWithUmlauts ? PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS_BUT_FILENAME_WITH_UMLAUTS : PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS;
+        long expectedUploadSizeInBytes = dataFileWithUmlauts ? 212 : 198L;
         /* prepare */
         UUID jobUUID = as(USER_1).
                 createCodeScanWithTemplate(
@@ -80,7 +87,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
         /* execute */
         as(USER_1).
-            uploadSourcecode(project, jobUUID, PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS).
+            uploadSourcecode(project, jobUUID, pathToUploadZipFile).
             approveJob(project, jobUUID);
 
         /* test */
@@ -90,7 +97,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         // check statistics
         assertStatistic(jobUUID).
             isForProject(project).
-            hasData("UPLOAD_SOURCES", "SIZE_IN_BYTES", 198L);
+            hasData("UPLOAD_SOURCES", "SIZE_IN_BYTES", expectedUploadSizeInBytes);
 
         if (withAnalytics) {
             assertStatistic(jobUUID).
@@ -134,6 +141,9 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         UUID pdsJobUUID = waitForPDSJobOfSecHubJobAtGivenPositionAndReturnPDSJobUUID(jobUUID,recompressPDSJobIndex);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
 
+
+        assertEquals(Boolean.valueOf(dataFileWithUmlauts).toString(),variables.get("TEST_RECOMPRESSED_ZIP_DATA_FILENAME_WITH_UMLAUTS"));
+
         String sha256 = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);
 
         if (sha256!=null) {
@@ -150,7 +160,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
             assertEquals(expectedSha256, sha256);
         }
-        /* check pds debug enabled variable available - we have enabled it inside the executor configuration */
+        /* check PDS debug enabled variable available - we have enabled it inside the executor configuration */
         assertEquals("true", variables.get("PDS_DEBUG_ENABLED"));
         /* @formatter:on */
     }

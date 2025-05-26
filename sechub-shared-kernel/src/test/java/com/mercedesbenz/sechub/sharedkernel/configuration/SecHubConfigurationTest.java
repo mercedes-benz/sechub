@@ -1,23 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.configuration;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
@@ -34,18 +32,18 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.TestSharedKernelFileSupport;
 import com.mercedesbenz.sechub.test.PojoTester;
 
-public class SecHubConfigurationTest {
+class SecHubConfigurationTest {
 
     private SecHubConfiguration configurationToTest;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         configurationToTest = new SecHubConfiguration();
     }
 
     @Test
-    public void webscan_login_basic_json_has_webconfig_as_expected() throws Exception {
+    void webscan_login_basic_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_basic.json");
 
@@ -54,28 +52,28 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
+        assertThat(loginOption).isPresent();
         WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+        assertThat(loginConfiguration.getUrl()).isEqualTo(new URL("https://productfailure.demo.example.org/login"));
 
         /*-- basic --*/
         Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertTrue("basic login config must be present", basic.isPresent());
-        assertEquals("realm0", basic.get().getRealm().get());
-        assertEquals("user0", new String(basic.get().getUser()));
-        assertEquals("pwd0", new String(basic.get().getPassword()));
+        assertThat(basic).as("basic login config must be present").isPresent().hasValueSatisfying(b -> {
+            assertThat(b.getRealm()).hasValue("realm0");
+            assertThat(new String(b.getUser())).isEqualTo("user0");
+            assertThat(new String(b.getPassword())).isEqualTo("pwd0");
+        });
 
-        /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertFalse("form login config must NOT be present", form.isPresent());
+        assertThat(form).as("form login config must NOT be present").isNotPresent();
     }
 
     @Test
-    public void webscan_login_form_script_json_has_webconfig_as_expected() throws Exception {
+    void webscan_login_form_script_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script.json");
 
@@ -84,52 +82,52 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
+        assertThat(loginOption).isPresent();
         WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+        assertThat(loginConfiguration.getUrl()).isEqualTo(new URL("https://productfailure.demo.example.org/login"));
 
         Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertFalse("basic login config must NOT be present", basic.isPresent());
+        assertThat(basic).isNotPresent();
 
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
+        assertThat(form).isPresent();
 
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
-        assertTrue("script config must be present", script.isPresent());
+        assertThat(script).isPresent();
 
         Optional<List<Page>> pages = script.get().getPages();
-        assertTrue("pages must be present", pages.isPresent());
-        assertEquals("must have 1 pages", 1, pages.get().size());
+        assertThat(pages).isPresent();
+        assertThat(pages.get()).hasSize(1);
 
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
-        assertTrue("actions must be present", page1.isPresent());
-        assertEquals("must have 3 action entries", 3, page1.get().size());
+        assertThat(page1).isPresent();
+        assertThat(page1.get()).hasSize(3);
 
         Action action1 = page1.get().get(0);
         Action action2 = page1.get().get(1);
         Action action3 = page1.get().get(2);
 
-        assertEquals(ActionType.USERNAME, action1.getType());
-        assertEquals("#example_login_userid", action1.getSelector().get());
-        assertEquals("user2", action1.getValue().get());
+        assertThat(action1.getType()).isEqualTo(ActionType.USERNAME);
+        assertThat(action1.getSelector()).hasValue("#example_login_userid");
+        assertThat(action1.getValue()).hasValue("user2");
 
-        assertEquals(ActionType.PASSWORD, action2.getType());
-        assertEquals("#example_login_pwd", action2.getSelector().get());
-        assertEquals("pwd2", action2.getValue().get());
+        assertThat(action2.getType()).isEqualTo(ActionType.PASSWORD);
+        assertThat(action2.getSelector()).hasValue("#example_login_pwd");
+        assertThat(action2.getValue()).hasValue("pwd2");
 
-        assertEquals(ActionType.CLICK, action3.getType());
-        assertEquals("#example_login_login_button", action3.getSelector().get());
+        assertThat(action3.getType()).isEqualTo(ActionType.CLICK);
+        assertThat(action3.getSelector()).hasValue("#example_login_login_button");
     }
 
     @Test
-    public void webscan_login_form_script_with_descriptions_json_has_webconfig_as_expected() throws Exception {
+    void webscan_login_form_script_with_descriptions_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_descriptions.json");
 
@@ -138,59 +136,59 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
+        assertThat(loginOption).isPresent();
         WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+        assertThat(loginConfiguration.getUrl()).isEqualTo(new URL("https://productfailure.demo.example.org/login"));
 
         Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertFalse("basic login config must NOT be present", basic.isPresent());
+        assertThat(basic).isNotPresent();
 
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
+        assertThat(form).isPresent();
 
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
-        assertTrue("script config must be present", script.isPresent());
+        assertThat(script).isPresent();
 
         Optional<List<Page>> pages = script.get().getPages();
-        assertTrue("pages must be present", pages.isPresent());
-        assertEquals("must have 1 pages", 1, pages.get().size());
+        assertThat(pages).isPresent();
+        assertThat(pages.get()).hasSize(1);
 
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
-        assertTrue("actions must be present", page1.isPresent());
-        assertEquals("must have 4 action entries", 4, page1.get().size());
+        assertThat(page1).isPresent();
+        assertThat(page1.get()).hasSize(4);
 
         Action action1 = page1.get().get(0);
         Action action2 = page1.get().get(1);
         Action action3 = page1.get().get(2);
         Action action4 = page1.get().get(3);
 
-        assertEquals(ActionType.USERNAME, action1.getType());
-        assertEquals("#example_login_userid", action1.getSelector().get());
-        assertEquals("user2", action1.getValue().get());
-        assertEquals("The username is different from the email address", action1.getDescription().get());
+        assertThat(action1.getType()).isEqualTo(ActionType.USERNAME);
+        assertThat(action1.getSelector()).hasValue("#example_login_userid");
+        assertThat(action1.getValue()).hasValue("user2");
+        assertThat(action1.getDescription()).hasValue("The username is different from the email address");
 
-        assertEquals(ActionType.INPUT, action2.getType());
-        assertEquals("#example_login_email", action2.getSelector().get());
-        assertEquals("user2@example.com", action2.getValue().get());
-        assertEquals("The website has a separate field for the email address", action2.getDescription().get());
+        assertThat(action2.getType()).isEqualTo(ActionType.INPUT);
+        assertThat(action2.getSelector()).hasValue("#example_login_email");
+        assertThat(action2.getValue()).hasValue("user2@example.com");
+        assertThat(action2.getDescription()).hasValue("The website has a separate field for the email address");
 
-        assertEquals(ActionType.PASSWORD, action3.getType());
-        assertEquals("#example_login_pwd", action3.getSelector().get());
-        assertEquals("pwd2", action3.getValue().get());
+        assertThat(action3.getType()).isEqualTo(ActionType.PASSWORD);
+        assertThat(action3.getSelector()).hasValue("#example_login_pwd");
+        assertThat(action3.getValue()).hasValue("pwd2");
 
-        assertEquals(ActionType.CLICK, action4.getType());
-        assertEquals("#example_login_login_button", action4.getSelector().get());
+        assertThat(action4.getType()).isEqualTo(ActionType.CLICK);
+        assertThat(action4.getSelector()).hasValue("#example_login_login_button");
     }
 
     @Test
-    public void webscan_login_form_script_with_wait_json_has_webconfig_as_expected() throws Exception {
+    void webscan_login_form_script_with_wait_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_wait.json");
 
@@ -199,57 +197,57 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
+        assertThat(loginOption).isPresent();
         WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+        assertThat(loginConfiguration.getUrl()).isEqualTo(new URL("https://productfailure.demo.example.org/login"));
 
         Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertFalse("basic login config must NOT be present", basic.isPresent());
+        assertThat(basic).isNotPresent();
 
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
+        assertThat(form).isPresent();
 
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
-        assertTrue("script config must be present", script.isPresent());
+        assertThat(script).isPresent();
 
         Optional<List<Page>> pages = script.get().getPages();
-        assertTrue("pages must be present", pages.isPresent());
-        assertEquals("must have 1 pages", 1, pages.get().size());
+        assertThat(pages).isPresent();
+        assertThat(pages.get()).hasSize(1);
 
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
-        assertTrue("actions must be present", page1.isPresent());
-        assertEquals("must have 4 action entries", 4, page1.get().size());
+        assertThat(page1).isPresent();
+        assertThat(page1.get()).hasSize(4);
 
         Action action1 = page1.get().get(0);
         Action action2 = page1.get().get(1);
         Action action3 = page1.get().get(2);
         Action action4 = page1.get().get(3);
 
-        assertEquals(ActionType.INPUT, action1.getType());
-        assertEquals("#example_login_userid", action1.getSelector().get());
-        assertEquals("user2", action1.getValue().get());
+        assertThat(action1.getType()).isEqualTo(ActionType.INPUT);
+        assertThat(action1.getSelector()).hasValue("#example_login_userid");
+        assertThat(action1.getValue()).hasValue("user2");
 
-        assertEquals(ActionType.WAIT, action2.getType());
-        assertEquals("1458", action2.getValue().get());
-        assertEquals(SecHubTimeUnit.MILLISECOND, action2.getUnit().get());
+        assertThat(action2.getType()).isEqualTo(ActionType.WAIT);
+        assertThat(action2.getValue()).hasValue("1458");
+        assertThat(action2.getUnit()).hasValue(SecHubTimeUnit.MILLISECOND);
 
-        assertEquals(ActionType.INPUT, action3.getType());
-        assertEquals("#example_login_pwd", action3.getSelector().get());
-        assertEquals("pwd2", action3.getValue().get());
+        assertThat(action3.getType()).isEqualTo(ActionType.INPUT);
+        assertThat(action3.getSelector()).hasValue("#example_login_pwd");
+        assertThat(action3.getValue()).hasValue("pwd2");
 
-        assertEquals(ActionType.CLICK, action4.getType());
-        assertEquals("#example_login_login_button", action4.getSelector().get());
+        assertThat(action4.getType()).isEqualTo(ActionType.CLICK);
+        assertThat(action4.getSelector()).hasValue("#example_login_login_button");
     }
 
     @Test
-    public void webscan_alloptions_json_has_webconfig_with_all_examples() throws Exception {
+    void webscan_alloptions_json_has_webconfig_with_all_examples() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_alloptions.json");
 
@@ -258,97 +256,96 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
+        assertThat(secHubWebScanConfiguration.getUrl()).isEqualTo(URI.create("https://productfailure.demo.example.org"));
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
-        assertTrue("includes must be present", includes.isPresent());
+        assertThat(includes).isPresent();
         List<String> expectedIncludes = Arrays.asList("/portal/admin", "/abc.html", "/hidden");
-        assertEquals(expectedIncludes, includes.get());
+        assertThat(includes.get()).isEqualTo(expectedIncludes);
 
         Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
-        assertTrue("excludes must be present", excludes.isPresent());
+        assertThat(excludes).isPresent();
         List<String> expectedExcludes = Arrays.asList("/public/media", "/contact.html", "/static");
-        assertEquals(expectedExcludes, excludes.get());
+        assertThat(excludes.get()).isEqualTo(expectedExcludes);
 
         Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
-        assertTrue("max san duration config must be present", maxScanDuration.isPresent());
-        assertEquals(2, maxScanDuration.get().getDuration());
-        assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.get().getUnit());
+        assertThat(maxScanDuration).isPresent();
+        assertThat(maxScanDuration.get().getDuration()).isEqualTo(2);
+        assertThat(maxScanDuration.get().getUnit()).isEqualTo(SecHubTimeUnit.HOUR);
 
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
+        assertThat(loginOption).isPresent();
         WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+        assertThat(loginConfiguration.getUrl()).isEqualTo(new URL("https://productfailure.demo.example.org/login"));
 
         /*-- basic --*/
         Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertTrue("basic login config must be present", basic.isPresent());
-        assertEquals("realm0", basic.get().getRealm().get());
-        assertEquals("user0", new String(basic.get().getUser()));
-        assertEquals("pwd0", new String(basic.get().getPassword()));
+        assertThat(basic).isPresent();
+        assertThat(basic.get().getRealm()).hasValue("realm0");
+        assertThat(new String(basic.get().getUser())).isEqualTo("user0");
+        assertThat(new String(basic.get().getPassword())).isEqualTo("pwd0");
 
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
+        assertThat(form).isPresent();
 
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
-        assertTrue("script config must be present", script.isPresent());
+        assertThat(script).isPresent();
 
         Optional<List<Page>> pages = script.get().getPages();
-        assertTrue("pages must be present", pages.isPresent());
-        assertEquals("must have 2 pages", 2, pages.get().size());
+        assertThat(pages).isPresent();
+        assertThat(pages.get()).hasSize(2);
 
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
-        assertTrue("actions must be present", page1.isPresent());
-        assertEquals("must have 2 action entries", 2, page1.get().size());
+        assertThat(page1).isPresent();
+        assertThat(page1.get()).hasSize(2);
 
         Action action1 = page1.get().get(0);
         Action action2 = page1.get().get(1);
 
-        assertEquals(ActionType.USERNAME, action1.getType());
-        assertEquals("#example_login_userid", action1.getSelector().get());
-        assertEquals("user2", action1.getValue().get());
-        assertEquals("This is an example description", action1.getDescription().get());
+        assertThat(action1.getType()).isEqualTo(ActionType.USERNAME);
+        assertThat(action1.getSelector()).hasValue("#example_login_userid");
+        assertThat(action1.getValue()).hasValue("user2");
+        assertThat(action1.getDescription()).hasValue("This is an example description");
 
-        assertEquals(ActionType.CLICK, action2.getType());
-        assertEquals("#next_button", action2.getSelector().get());
-        assertEquals("Click the next button to go to the password field", action2.getDescription().get());
+        assertThat(action2.getType()).isEqualTo(ActionType.CLICK);
+        assertThat(action2.getSelector()).hasValue("#next_button");
+        assertThat(action2.getDescription()).hasValue("Click the next button to go to the password field");
 
         /*-- page 2 --*/
         Optional<List<Action>> page2 = pages.get().get(1).getActions();
-        assertTrue("actions must be present", page2.isPresent());
-        assertEquals("must have 4 action entries", 4, page2.get().size());
+        assertThat(page2).isPresent();
+        assertThat(page2.get()).hasSize(4);
 
         Action action3 = page2.get().get(0);
         Action action4 = page2.get().get(1);
         Action action5 = page2.get().get(2);
         Action action6 = page2.get().get(3);
 
-        assertEquals(ActionType.WAIT, action3.getType());
-        assertEquals("3200", action3.getValue().get());
-        assertEquals(SecHubTimeUnit.MILLISECOND, action3.getUnit().get());
+        assertThat(action3.getType()).isEqualTo(ActionType.WAIT);
+        assertThat(action3.getValue()).hasValue("3200");
+        assertThat(action3.getUnit()).hasValue(SecHubTimeUnit.MILLISECOND);
 
-        assertEquals(ActionType.INPUT, action4.getType());
-        assertEquals("#email_field", action4.getSelector().get());
-        assertEquals("user@example.org", action4.getValue().get());
-        assertEquals("The user's email address.", action4.getDescription().get());
+        assertThat(action4.getType()).isEqualTo(ActionType.INPUT);
+        assertThat(action4.getSelector()).hasValue("#email_field");
+        assertThat(action4.getValue()).hasValue("user@example.org");
+        assertThat(action4.getDescription()).hasValue("The user's email address.");
 
-        assertEquals(ActionType.PASSWORD, action5.getType());
-        assertEquals("#example_login_pwd", action5.getSelector().get());
-        assertEquals("pwd2", action5.getValue().get());
+        assertThat(action5.getType()).isEqualTo(ActionType.PASSWORD);
+        assertThat(action5.getSelector()).hasValue("#example_login_pwd");
+        assertThat(action5.getValue()).hasValue("pwd2");
 
-        assertEquals(ActionType.CLICK, action6.getType());
-        assertEquals("#example_login_login_button", action6.getSelector().get());
-
+        assertThat(action6.getType()).isEqualTo(ActionType.CLICK);
+        assertThat(action6.getSelector()).hasValue("#example_login_login_button");
     }
 
     @Test
-    public void sechub_config0_json_file_from_json_has_no_webconfig_or_infraconfig_but_api_version_1() throws Exception {
+    void sechub_config0_json_file_from_json_has_no_webconfig_or_infraconfig_but_api_version_1() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config0.json");
 
@@ -356,13 +353,13 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertFalse("webscan config must NOT be present", result.getWebScan().isPresent());
-        assertFalse("infracan config must NOT be present", result.getInfraScan().isPresent());
-        assertEquals("1.0", result.getApiVersion());
+        assertThat(result.getWebScan()).isNotPresent();
+        assertThat(result.getInfraScan()).isNotPresent();
+        assertThat(result.getApiVersion()).isEqualTo("1.0");
     }
 
     @Test
-    public void sechub_config1_json_file_from_json_has_webconfig_with_url() throws Exception {
+    void sechub_config1_json_file_from_json_has_webconfig_with_url() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config1.json");
 
@@ -370,12 +367,12 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertTrue("webscan config must be present", result.getWebScan().isPresent());
-        assertEquals(result.getWebScan().get().getUrl(), new URI("https://fscan.intranet.example.org/"));
+        assertThat(result.getWebScan()).isPresent();
+        assertThat(result.getWebScan().get().getUrl()).isEqualTo(new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test
-    public void sechub_config2_json_file_from_json_has_infraconfig_with_url() throws Exception {
+    void sechub_config2_json_file_from_json_has_infraconfig_with_url() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
@@ -383,12 +380,12 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertTrue("infrascan config must be present", result.getInfraScan().isPresent());
-        assertTrue(result.getInfraScan().get().getUris().contains(new URI("https://fscan.intranet.example.org/")));
+        assertThat(result.getInfraScan()).isPresent();
+        assertThat(result.getInfraScan().get().getUris()).contains(new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test
-    public void sechub_config2_json_file_from_json_has_infraconfig_with_ips() throws Exception {
+    void sechub_config2_json_file_from_json_has_infraconfig_with_ips() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
@@ -396,14 +393,13 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertTrue("infrascan config must be present", result.getInfraScan().isPresent());
+        assertThat(result.getInfraScan()).isPresent();
         List<InetAddress> ips = result.getInfraScan().get().getIps();
-        assertTrue(ips.contains(InetAddress.getByName("192.168.1.1")));
-        assertTrue(ips.contains(InetAddress.getByName("58.112.44.32")));
+        assertThat(ips).contains(InetAddress.getByName("192.168.1.1"), InetAddress.getByName("58.112.44.32"));
     }
 
     @Test
-    public void sechub_config2_json_file_from_json_has_no_codescanconfig() throws Exception {
+    void sechub_config2_json_file_from_json_has_no_codescanconfig() throws Exception {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
@@ -411,12 +407,11 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertFalse("codescan config must NOT be present", result.getCodeScan().isPresent());
-
+        assertThat(result.getCodeScan()).isNotPresent();
     }
 
     @Test
-    public void sechub_config4_json_file_from_json_has_codescanconfig_with_folders() throws Exception {
+    void sechub_config4_json_file_from_json_has_codescanconfig_with_folders() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("sechub_config4.json");
 
@@ -424,24 +419,23 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertTrue("codescan config must be present", result.getCodeScan().isPresent());
-        List<String> ips = result.getCodeScan().get().getFileSystem().get().getFolders();
-        assertTrue(ips.contains("src/main/java"));
-        assertTrue(ips.contains("src/main/resources"));
+        assertThat(result.getCodeScan()).isPresent();
+        List<String> folders = result.getCodeScan().get().getFileSystem().get().getFolders();
+        assertThat(folders).contains("src/main/java", "src/main/resources");
     }
 
     @Test
-    public void new_instance_returns_not_null_for_asJSON() throws Exception {
-        assertNotNull(configurationToTest.toJSON());
+    void new_instance_returns_not_null_for_asJSON() {
+        assertThat(configurationToTest.toJSON()).isNotNull();
     }
 
     @Test
-    public void new_instance_returns_null_for_getApiVersion() {
-        assertNull(configurationToTest.getApiVersion());
+    void new_instance_returns_null_for_getApiVersion() {
+        assertThat(configurationToTest.getApiVersion()).isNull();
     }
 
     @Test
-    public void uses_json_converter_when_toJSON_is_called() throws Exception {
+    void uses_json_converter_when_toJSON_is_called() {
         /* prepare */
         JSONConverter mockedConverter = mock(JSONConverter.class);
 
@@ -459,47 +453,55 @@ public class SecHubConfigurationTest {
 
         /* test */
         verify(mockedConverter).toJSON(specialConfigurationToTest);
-        assertEquals("mockedJSONResult", result);
+        assertThat(result).isEqualTo("mockedJSONResult");
     }
 
     @Test
-    public void configuration_setter_getter_testing() throws Exception {
-
+    void configuration_setter_getter_testing() {
         PojoTester.testSetterAndGetter(new SecHubConfiguration());
-
     }
 
     @Test
-    public void when_webscan_set_its_present() {
+    void when_webscan_set_its_present() {
         /* prepare */
         configurationToTest.setWebScan(mock(SecHubWebScanConfiguration.class));
 
         /* test */
-        assertTrue(configurationToTest.getWebScan().isPresent());
+        assertThat(configurationToTest.getWebScan()).isPresent();
     }
 
     @Test
-    public void when_infracan_set_its_present() {
+    void when_infracan_set_its_present() {
         /* prepare */
         configurationToTest.setInfraScan(mock(SecHubInfrastructureScanConfiguration.class));
 
         /* test */
-        assertTrue(configurationToTest.getInfraScan().isPresent());
+        assertThat(configurationToTest.getInfraScan()).isPresent();
     }
 
     @Test
-    public void webscan_max_scan_duration_wrong_unit() {
+    void webscan_max_scan_duration_wrong_unit_results_in_null() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_max_scan_duration_wrong_unit.json");
 
-        /* execute + test */
-        assertThrows(JSONConverterException.class, () -> {
-            SECHUB_CONFIG.fromJSON(json);
-        });
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        /*
+         * custom JSON mapper will not throw an exception, but will set wrong values to
+         * null
+         */
+        assertThat(result).isNotNull();
+        assertThat(result.getWebScan()).isPresent();
+        SecHubWebScanConfiguration webscan = result.getWebScan().get();
+        assertThat(webscan.getMaxScanDuration()).isPresent();
+        assertThat(webscan.getMaxScanDuration().get().getDuration()).isEqualTo(1);
+        assertThat(webscan.getMaxScanDuration().get().getUnit()).isNull();
     }
 
     @Test
-    public void webscan_empty_includes_excludes() {
+    void webscan_empty_includes_excludes() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_empty_includes_excludes.json");
 
@@ -508,26 +510,22 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
+        assertThat(webScanOption).isPresent();
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
+        assertThat(secHubWebScanConfiguration.getUrl()).isEqualTo(URI.create("https://productfailure.demo.example.org"));
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
-        assertTrue("includes must be present", includes.isPresent());
-        List<String> expectedIncludes = new LinkedList<>();
-        assertTrue("includes are empty", includes.get().isEmpty());
-        assertEquals(expectedIncludes, includes.get());
+        assertThat(includes).isPresent();
+        assertThat(includes.get()).isEmpty();
 
         Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
-        assertTrue("excludes must be present", excludes.isPresent());
-        List<String> expectedExcludes = new LinkedList<>();
-        assertTrue("excludes are empty", excludes.get().isEmpty());
-        assertEquals(expectedExcludes, excludes.get());
+        assertThat(excludes).isPresent();
+        assertThat(excludes.get()).isEmpty();
     }
 
     @Test
-    public void a_sechub_configuration_JSON_with_license_scan_can_be_read_and_license_scan_has_correct_data_configuration_reference() {
+    void a_sechub_configuration_JSON_with_license_scan_can_be_read_and_license_scan_has_correct_data_configuration_reference() {
         /* prepare */
         String expectedDataConfigName = "build-artifacts";
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
@@ -537,15 +535,15 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubLicenseScanConfiguration> licenseScan = result.getLicenseScan();
-        assertTrue("license scan must be present", licenseScan.isPresent());
+        assertThat(licenseScan).isPresent();
 
         Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
-        assertEquals(1, usedDataConfigs.size());
-        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+        assertThat(usedDataConfigs).hasSize(1);
+        assertThat(usedDataConfigs.iterator().next()).isEqualTo(expectedDataConfigName);
     }
 
     @Test
-    public void a_sechub_configuration_JSON_with_secret_scan_can_be_read_and_secret_scan_has_correct_data_configuration_reference() {
+    void a_sechub_configuration_JSON_with_secret_scan_can_be_read_and_secret_scan_has_correct_data_configuration_reference() {
         /* prepare */
         String expectedDataConfigName = "files";
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("secretscan/secret_scan.json");
@@ -555,15 +553,15 @@ public class SecHubConfigurationTest {
 
         /* test */
         Optional<SecHubSecretScanConfiguration> secretScan = result.getSecretScan();
-        assertTrue("secret scan must be present", secretScan.isPresent());
+        assertThat(secretScan).isPresent();
 
         Set<String> usedDataConfigs = secretScan.get().getNamesOfUsedDataConfigurationObjects();
-        assertEquals(1, usedDataConfigs.size());
-        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+        assertThat(usedDataConfigs).hasSize(1);
+        assertThat(usedDataConfigs.iterator().next()).isEqualTo(expectedDataConfigName);
     }
 
     @Test
-    public void a_sechub_configuration_JSON_with_data_section_containing_unknown_excludes_can_be_read() {
+    void a_sechub_configuration_JSON_with_data_section_containing_unknown_excludes_can_be_read() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("codescan/code_scan-with-datasections-and-unknown-excludes.json");
 
@@ -571,12 +569,12 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertNotNull(result);
-        assertEquals("1.2.3", result.getApiVersion());
+        assertThat(result).isNotNull();
+        assertThat(result.getApiVersion()).isEqualTo("1.2.3");
     }
 
     @Test
-    public void a_sechub_configuration_JSON_with_combined_unknown_properties_can_be_read() {
+    void a_sechub_configuration_JSON_with_combined_unknown_properties_can_be_read() {
         /* prepare */
         String json = TestSharedKernelFileSupport.getTestfileSupport().loadTestFile("combined_config_with_unknown_parts_everywhere.json");
 
@@ -584,7 +582,7 @@ public class SecHubConfigurationTest {
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
         /* test */
-        assertNotNull(result);
-        assertEquals("2.1.0", result.getApiVersion());
+        assertThat(result).isNotNull();
+        assertThat(result.getApiVersion()).isEqualTo("2.1.0");
     }
 }

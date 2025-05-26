@@ -29,7 +29,6 @@ public class UserRegistrationScenario1IntTest {
 		expectHttpFailure(()->as(ANONYMOUS).signUpAs(USER_1), HttpStatus.NOT_ACCEPTABLE);
 
 		/* @formatter:on */
-
     }
 
     @Test
@@ -38,7 +37,15 @@ public class UserRegistrationScenario1IntTest {
         assertUser(USER_1).doesNotExist();
 
         /* prepare */
-        as(ANONYMOUS).signUpAs(USER_1);
+        String json = """
+                {
+                    "apiVersion": "1.0",
+                    "userId": "%s",
+                    "emailAddress": "%s",
+                    "some-unknown-value": "unknown"
+                }
+                """.formatted(USER_1.getUserId(), USER_1.getEmail());
+        as(ANONYMOUS).signUpWithJson(json);
         assertSignup(USER_1).doesExist();
         assertUser(USER_1).doesNotExist(); // still not existing
 

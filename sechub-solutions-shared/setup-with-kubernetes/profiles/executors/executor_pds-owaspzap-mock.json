@@ -1,0 +1,67 @@
+{
+  "name": "pds-owaspzap-mock",
+  "productIdentifier": "PDS_WEBSCAN",
+  "setup": {
+    "baseURL": "https://pds-owaspzap:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_OWASPZAP_USERID",
+      "password": "env:SECHUB_PDS_OWASPZAP_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "540"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_OWASP_ZAP_MOCK"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE,NONE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "545"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      },
+      {
+        "key": "zap.activescan.enabled",
+        "value": "true"
+      },
+      {
+        "key": "zap.ajaxcrawler.enabled",
+        "value": "true"
+      },
+      {
+        "key": "zap.deactivated.rule.references",
+        "value": "10096,40026,10104"
+      },
+      {
+        "key": "zap.proxy.for.pds.target.type",
+        "value": "INTERNET"
+      },
+      {
+        "key": "zap.proxy.host",
+        "value": "proxy.example.org"
+      },
+      {
+        "key": "zap.proxy.port",
+        "value": "3128"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

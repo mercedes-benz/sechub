@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: MIT
+# Number of SecHub server instances to spin up
+replicaCount: 1
+
+image:
+  registry: "{{ .SECHUB_SERVER_IMAGE_REGISTRY }}"
+  tag: "{{ .SECHUB_SERVER_IMAGE_TAG }}"
+  # See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+  pullPolicy: "Always"
+
+server:
+  spring:
+    # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
+    #profiles: dev,h2,real_products,mocked_notifications
+    profiles: localserver,initial_admin_predefined,admin_access,h2,real_products,mocked_notifications
+
+service:
+  loadbalancer:
+    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
+    ip: none
+    port:
+      name: https
+      number: {{ .SECHUB_SERVER_LB_PORT }}
+
+env: |-
+  - name: SECHUB_INITIALADMIN_APITOKEN
+    value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-checkmarx
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_CHECKMARX_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_CHECKMARX_PASSWORD
+    value: "{{ .PDS_CHECKMARX_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-findsecuritybugs
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_FINDSECURITYBUGS_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_FINDSECURITYBUGS_PASSWORD
+    value: "{{ .PDS_FINDSECURITYBUGS_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-gitleaks
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_GITLEAKS_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_GITLEAKS_PASSWORD
+    value: "{{ .PDS_GITLEAKS_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-gosec
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_GOSEC_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_GOSEC_PASSWORD
+    value: "{{ .PDS_GOSEC_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-iac
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_IAC_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_IAC_PASSWORD
+    value: "{{ .PDS_IAC_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-loc
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_LOC_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_LOC_PASSWORD
+    value: "{{ .PDS_LOC_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-multi
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_MULTI_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_MULTI_PASSWORD
+    value: "{{ .PDS_MULTI_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-owaspzap
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_OWASPZAP_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_OWASPZAP_PASSWORD
+    value: "{{ .PDS_OWASPZAP_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-pmd
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_PMD_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_PMD_PASSWORD
+    value: "{{ .PDS_PMD_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-prepare
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_PREPARE_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_PREPARE_PASSWORD
+    value: "{{ .PDS_PREPARE_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-scancode
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_SCANCODE_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_SCANCODE_PASSWORD
+    value: "{{ .PDS_SCANCODE_TOKEN_TECHUSER }}"
+  # -------------------------------------------------------------------------------#
+  # - pds-xray
+  # ------------------------------------------------------------------------------ #
+  - name: SECHUB_PDS_XRAY_USERID
+    value: "techuser"
+  - name: SECHUB_PDS_XRAY_PASSWORD
+    value: "{{ .PDS_XRAY_TOKEN_TECHUSER }}"

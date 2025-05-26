@@ -72,11 +72,11 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
-        if (metaDataOpt.isEmpty()) {
+        SecHubReportMetaData metaData = result.getMetaData();
+        if (metaData == null) {
             fail("Did not find metadata");
         }
-        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
+        Optional<SecHubVersionControlData> versionControlOpt = metaData.getVersionControl();
         if (versionControlOpt.isEmpty()) {
             fail("Did not find version control meta data");
         }
@@ -100,11 +100,11 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
-        if (metaDataOpt.isEmpty()) {
+        SecHubReportMetaData metaDataOpt = result.getMetaData();
+        if (metaDataOpt == null) {
             fail("Did not find metadata");
         }
-        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.get().getVersionControl();
+        Optional<SecHubVersionControlData> versionControlOpt = metaDataOpt.getVersionControl();
         if (versionControlOpt.isPresent()) {
             fail("Found version control meta data!");
         }

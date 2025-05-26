@@ -221,6 +221,7 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
@@ -232,6 +233,7 @@ spec:
             secretKeyRef:
               name: secret-ssl
               key: sechub_server_ssl_keystore_password
+{{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

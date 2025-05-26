@@ -157,12 +157,12 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
     }
 
     private void handleMetaData(SerecoMetaData data, ReportTransformationResult transformerResult) {
-        if (transformerResult.getMetaData().isEmpty()) {
-            SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-            transformerResult.setMetaData(reportMetaData);
+        /* ensure metadata never null */
+        if (transformerResult.getMetaData() == null) {
+            transformerResult.setMetaData(new SecHubReportMetaData());
         }
 
-        SecHubReportMetaData metaData = transformerResult.getMetaData().get();
+        SecHubReportMetaData metaData = transformerResult.getMetaData();
         SerecoVersionControl serecoVersionControl = data.getVersionControl();
         handleVersionControlMetaData(metaData, serecoVersionControl);
 

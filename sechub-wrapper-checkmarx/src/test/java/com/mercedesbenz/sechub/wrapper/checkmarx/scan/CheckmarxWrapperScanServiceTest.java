@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.checkmarx.scan;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
@@ -23,7 +22,6 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConfiguration;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
-import com.mercedesbenz.sechub.commons.core.resilience.ResilientAction;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
@@ -39,7 +37,6 @@ class CheckmarxWrapperScanServiceTest {
 
     @BeforeEach
     void beforeEach() throws Exception {
-
         adapter = mock(CheckmarxAdapter.class);
         environment = mock(CheckmarxWrapperEnvironment.class);
         factory = mock(CheckmarxWrapperScanContextFactory.class);
@@ -65,16 +62,15 @@ class CheckmarxWrapperScanServiceTest {
         when(context.getProjectId()).thenReturn("project1");
         when(context.getTeamIdForNewProjects()).thenReturn("team1");
         when(context.getPresetIdForNewProjects()).thenReturn(1L);
-
     }
 
     /* @formatter:off */
     @ParameterizedTest
     @CsvSource({
-        "true,false",
-        "true,true",
-        "false,false",
-        "false,true"})
+            "true,false",
+            "true,true",
+            "false,false",
+            "false,true"})
     /* @formatter:on */
     void adapter_is_used_with_correct_configuration(boolean alwaysFullScan, boolean trustAllCertificates) throws Exception {
         /* prepare */
@@ -86,7 +82,7 @@ class CheckmarxWrapperScanServiceTest {
         when(environment.getScanResultCheckPeriodInMilliseconds()).thenReturn(49152);
         when(environment.getScanResultCheckTimeOutInMinutes()).thenReturn(20);
 
-        when((environment.getSecHubJobUUID())).thenReturn("uuid1");
+        when(environment.getSecHubJobUUID()).thenReturn("uuid1");
         when(environment.getEngineConfigurationName()).thenReturn("engine1");
         when(environment.getClientSecret()).thenReturn("secret1");
 
@@ -96,33 +92,33 @@ class CheckmarxWrapperScanServiceTest {
         serviceToTest.startScan();
 
         ArgumentCaptor<CheckmarxAdapterConfig> adapterConfig = ArgumentCaptor.forClass(CheckmarxAdapterConfig.class);
-        ArgumentCaptor<AdapterMetaDataCallback> metaDataCallack = ArgumentCaptor.forClass(AdapterMetaDataCallback.class);
+        ArgumentCaptor<AdapterMetaDataCallback> metaDataCallback = ArgumentCaptor.forClass(AdapterMetaDataCallback.class);
 
         /* test */
-        verify(adapter).start(adapterConfig.capture(), metaDataCallack.capture());
+        verify(adapter).start(adapterConfig.capture(), metaDataCallback.capture());
 
         CheckmarxAdapterConfig config = adapterConfig.getValue();
-        assertEquals("user1", config.getUser());
-        assertEquals("checkmarx-pwd1", config.getPasswordOrAPIToken());
+        assertThat(config.getUser()).isEqualTo("user1");
+        assertThat(config.getPasswordOrAPIToken()).isEqualTo("checkmarx-pwd1");
 
-        assertEquals(alwaysFullScan, config.isAlwaysFullScanEnabled());
-        assertEquals(trustAllCertificates, config.isTrustAllCertificatesEnabled());
+        assertThat(config.isAlwaysFullScanEnabled()).isEqualTo(alwaysFullScan);
+        assertThat(config.isTrustAllCertificatesEnabled()).isEqualTo(trustAllCertificates);
 
-        assertEquals(20 * 1000 * 60, config.getTimeOutInMilliseconds());
-        assertEquals(49152, config.getTimeToWaitForNextCheckOperationInMilliseconds());
-        assertEquals("product-base-url1", config.getProductBaseURL());
+        assertThat(config.getTimeOutInMilliseconds()).isEqualTo(20 * 1000 * 60);
+        assertThat(config.getTimeToWaitForNextCheckOperationInMilliseconds()).isEqualTo(49152);
+        assertThat(config.getProductBaseURL()).isEqualTo("product-base-url1");
 
-        assertEquals(inputStreamCreatedByContext, config.getSourceCodeZipFileInputStream());
+        assertThat(config.getSourceCodeZipFileInputStream()).isEqualTo(inputStreamCreatedByContext);
 
-        assertEquals(1L, config.getPresetIdForNewProjectsOrNull());
-        assertEquals("team1", config.getTeamIdForNewProjects());
+        assertThat(config.getPresetIdForNewProjectsOrNull()).isEqualTo(1L);
+        assertThat(config.getTeamIdForNewProjects()).isEqualTo("team1");
 
-        assertEquals("project1", config.getProjectId());
-        assertEquals("uuid1", config.getTraceID());
+        assertThat(config.getProjectId()).isEqualTo("project1");
+        assertThat(config.getTraceID()).isEqualTo("uuid1");
 
-        assertEquals("engine1", config.getEngineConfigurationName());
-        assertEquals("secret1", config.getClientSecret());
-        assertEquals("folder1;folder2", config.getMockDataIdentifier());
+        assertThat(config.getEngineConfigurationName()).isEqualTo("engine1");
+        assertThat(config.getClientSecret()).isEqualTo("secret1");
+        assertThat(config.getMockDataIdentifier()).isEqualTo("folder1;folder2");
     }
 
     @Test
@@ -130,7 +126,7 @@ class CheckmarxWrapperScanServiceTest {
         /* prepare */
         CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
         @SuppressWarnings("unchecked")
-        ResilientActionExecutor<AdapterExecutionResult> executor = (ResilientActionExecutor<AdapterExecutionResult>) mock(ResilientActionExecutor.class);
+        ResilientActionExecutor<AdapterExecutionResult> executor = mock(ResilientActionExecutor.class);
         AdapterExecutionResult mockedResult = mock(AdapterExecutionResult.class);
 
         when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
@@ -140,8 +136,8 @@ class CheckmarxWrapperScanServiceTest {
         AdapterExecutionResult result = spiedServiceToTest.startScan();
 
         /* test */
-        verify(executor).executeResilient(ArgumentMatchers.<ResilientAction<AdapterExecutionResult>>any());
-        assertSame(mockedResult, result);
+        verify(executor).executeResilient(any());
+        assertThat(result).isSameAs(mockedResult);
     }
 
     @Test
@@ -149,7 +145,7 @@ class CheckmarxWrapperScanServiceTest {
         /* prepare */
         CheckmarxWrapperScanService spiedServiceToTest = spy(serviceToTest);
         @SuppressWarnings("unchecked")
-        ResilientActionExecutor<AdapterExecutionResult> executor = (ResilientActionExecutor<AdapterExecutionResult>) mock(ResilientActionExecutor.class);
+        ResilientActionExecutor<AdapterExecutionResult> executor = mock(ResilientActionExecutor.class);
 
         when(spiedServiceToTest.createResilientActionExecutor()).thenReturn(executor);
 
@@ -161,15 +157,13 @@ class CheckmarxWrapperScanServiceTest {
         verify(executor).add(captor.capture());
 
         List<ResilienceConsultant> values = captor.getAllValues();
-        assertEquals(1, values.size());
+        assertThat(values).hasSize(1);
         ResilienceConsultant consultant = values.iterator().next();
-        assertTrue(consultant instanceof CheckmarxResilienceConsultant);
+        assertThat(consultant).isInstanceOf(CheckmarxResilienceConsultant.class);
 
         CheckmarxResilienceConsultant checkmarxResilienceConsultant = (CheckmarxResilienceConsultant) consultant;
         CheckmarxResilienceConfiguration config = checkmarxResilienceConsultant.getResilienceConfig();
 
-        assertSame(environment, config);
-
+        assertThat(config).isSameAs(environment);
     }
-
 }

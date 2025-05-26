@@ -52,12 +52,12 @@ spec:
               value: "{{ .Values.pds.config.execute.queueMax }}"
             - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
               value: "{{ .Values.pds.config.execute.workerThreadCount }}"
-            - name: PDS_ARCHIVE_EXTRACTION_MAX_DIRECTORY_DEPTH
+            - name: PDS_ARCHIVE_EXTRACTION_MAXDIRECTORYDEPTH
               value: "{{ .Values.pds.archive.extraction.maxDirectoryDepth }}"
-            - name: PDS_ARCHIVE_EXTRACTION_MAX_ENTRIES
+            - name: PDS_ARCHIVE_EXTRACTION_MAXENTRIES
               value: "{{ .Values.pds.archive.extraction.maxEntries }}"
-            - name: PDS_ARCHIVE_EXTRACTION_MAX_FILE_SIZE_UNCOMPRESSED
-              value: "{{ .Values.pds.archive.extraction.maxFileFizeUncompressed }}"
+            - name: PDS_ARCHIVE_EXTRACTION_MAXFILESIZEUNCOMPRESSED
+              value: "{{ .Values.pds.archive.extraction.maxFileSizeUncompressed }}"
             - name: PDS_ARCHIVE_EXTRACTION_TIMEOUT
               value: "{{ .Values.pds.archive.extraction.timeout }}"
             - name: PDS_ENCRYPTION_ALGORITHM
