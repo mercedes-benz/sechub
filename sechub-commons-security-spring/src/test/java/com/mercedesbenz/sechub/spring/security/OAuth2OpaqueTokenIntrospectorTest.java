@@ -8,11 +8,14 @@ import static org.mockito.Mockito.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -38,14 +41,15 @@ import com.mercedesbenz.sechub.commons.core.cache.SelfCleaningCache;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
+import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
 
 class OAuth2OpaqueTokenIntrospectorTest {
 
-    private static final RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher = mock();
+    private RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher;
+    private UserDetailsService userDetailsService;
+    private TestApplicationShutdownHandler applicationTestShutdownHandler;
 
-    private static final UserDetailsService userDetailsService = mock();
-    private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
-    private static final OAuth2TokenExpirationCalculator expirationCalculator = mock();
+    private OAuth2TokenExpirationCalculator expirationCalculator;
     private static final Duration DEFAULT_TOKEN_EXPIRES_IN = Duration.ofDays(1);
     private static final Duration MAX_CACHE_DURATION = Duration.ofDays(30);
     private static final Duration PRE_CACHE_DURATION = Duration.ofSeconds(30);
@@ -56,16 +60,23 @@ class OAuth2OpaqueTokenIntrospectorTest {
     private static final String OPAQUE_TOKEN = "opaque-token";
     private static final String SUBJECT = "sub";
 
-    private static OAuth2OpaqueTokenIntrospector introspectorToTest;
-
     @BeforeEach
     void beforeEach() {
-        reset(fetcher, userDetailsService, expirationCalculator, applicationShutdownHandler);
+        applicationTestShutdownHandler = new TestApplicationShutdownHandler();
 
-        /* reset the cache which is associated with each individual instance */
-        introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+        userDetailsService = mock();
+        fetcher = mock();
+        expirationCalculator = mock();
 
         mockUserDetailsService();
+    }
+
+    @AfterEach
+    void afterEach() {
+        /*
+         * simulate application shutdown - this will end the self cleaning cache threads
+         */
+        applicationTestShutdownHandler.simulateShutdown();
     }
 
     /* @formatter:off */
@@ -82,7 +93,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                     setDefaultTokenExpiresIn(defaultTokenExpiresIn).
                     setMaxCacheDuration(maxCacheDuration).
                     setUserDetailsService(userDetailsService).
-                    setApplicationShutdownHandler(applicationShutdownHandler).
+                    setApplicationShutdownHandler(applicationTestShutdownHandler).
                     setExpirationCalculator(expirationCalculator).
                     setPreCacheDuration(Duration.ofSeconds(1)).
                     setInMemoryCacheClearPeriod(Duration.ofSeconds(3)).
@@ -96,6 +107,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @ParameterizedTest
     @NullAndEmptySource
     void introspect_with_null_or_empty_opaque_token_fails(String opaqueToken) {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         /* @formatter:off */
         assertThatThrownBy(() -> introspectorToTest.introspect(opaqueToken))
                 .isInstanceOf(BadOpaqueTokenException.class)
@@ -105,6 +119,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     @Test
     void introspect_with_no_cached_opaque_calls_introspection_endpoint() {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
         mockIntrospectionResponse(introspectionResponse);
         verifyNoInteractions(fetcher);
@@ -119,6 +136,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_cached_opaque_token_returns_cached_opaque_token_introspection_response() {
         /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
         mockIntrospectionResponse(introspectionResponse);
         /* first introspection should cache the result */
@@ -128,14 +147,19 @@ class OAuth2OpaqueTokenIntrospectorTest {
         verifyNoInteractions(fetcher);
 
         /* execute */
-        introspectorToTest.introspect(OPAQUE_TOKEN);
+        OAuth2AuthenticatedPrincipal result = introspectorToTest.introspect(OPAQUE_TOKEN);
 
         /* test */
+        assertThat(result).isNotNull(); // a result is returned
+        assertThat(result.getName()).isEqualTo(introspectionResponse.getUsername());
+        verifyNoInteractions(fetcher); // fetcher may not be called... the cache must be used
     }
 
     @Test
     void introspect_with_null_response_fails() {
         /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         mockIntrospectionResponse(null);
 
         /* execute & assert */
@@ -149,6 +173,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_inactive_token_fails() {
         /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.FALSE);
         mockIntrospectionResponse(introspectionResponse);
 
@@ -163,6 +189,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void introspect_with_valid_token_succeeds() {
         /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE);
         mockIntrospectionResponse(introspectionResponse);
 
@@ -188,6 +216,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
     void introspect_with_token_expires_at_null_uses_default_token_expires_at_for_cache() {
         try (MockedConstruction<SelfCleaningCache> cacheConstruction = mockConstruction(SelfCleaningCache.class, (mock, context) -> {
         })) {
+
             /* prepare */
             OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
             Instant testStartTime = Instant.now();
@@ -248,6 +277,8 @@ class OAuth2OpaqueTokenIntrospectorTest {
     @Test
     void when_calculator_says_expired_than_a_introspect_will_throw_bad_opaque_token_excpetion() {
         /* prepare */
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence();
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, Long.valueOf(4711));
         mockIntrospectionResponse(introspectionResponse);
 
@@ -330,16 +361,15 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
         RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher = mock();
         InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse> inMemoryCachePersistence = mock();
-        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
-                inMemoryCachePersistence, clusterCachePersistence, fetcher);
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
-        CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
-                Duration.ofDays(2), cryptoAccessProvider, Instant.now());
-
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
-        when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null, cache0);
+        when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
         when(fetcher.fetchOpaqueTokenIntrospectionFromIDP(OPAQUE_TOKEN)).thenReturn(introspectionResponse);
+
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
+                inMemoryCachePersistence, clusterCachePersistence, fetcher, cryptoAccessProvider);
 
         /* execute 1 */
         introspectorToTest.introspect(OPAQUE_TOKEN);
@@ -364,13 +394,13 @@ class OAuth2OpaqueTokenIntrospectorTest {
     void introspect_with_cluster_cache__in_memory_cache_has_entry_but_cluster_cache_has_no_entry__calls_NOT_idp_and_sets_NOT_cache_values(
             CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
         /* prepare */
+
         Long expiresAt = Instant.now().plus(2, ChronoUnit.DAYS).getEpochSecond();
         CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence = mock();
 
         RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher = mock();
         InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse> inMemoryCachePersistence = mock();
-        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
-                inMemoryCachePersistence, clusterCachePersistence, fetcher);
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
@@ -378,6 +408,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(cache0);
         when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
+
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
+                inMemoryCachePersistence, clusterCachePersistence, fetcher, cryptoAccessProvider);
 
         /* execute 1 */
         introspectorToTest.introspect(OPAQUE_TOKEN);
@@ -405,8 +438,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
         RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher = mock();
         InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse> inMemoryCachePersistence = mock();
-        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
-                inMemoryCachePersistence, clusterCachePersistence, fetcher);
+
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = createIntrospectionResponse(Boolean.TRUE, expiresAt);
 
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> cache0 = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(introspectionResponse,
@@ -414,6 +446,9 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
         when(inMemoryCachePersistence.get(OPAQUE_TOKEN)).thenReturn(null);
         when(clusterCachePersistence.get(OPAQUE_TOKEN)).thenReturn(cache0);
+
+        OAuth2OpaqueTokenIntrospector introspectorToTest = createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(
+                inMemoryCachePersistence, clusterCachePersistence, fetcher, cryptoAccessProvider);
 
         /* execute 1 */
         introspectorToTest.introspect(OPAQUE_TOKEN);
@@ -533,11 +568,11 @@ class OAuth2OpaqueTokenIntrospectorTest {
 
     }
 
-    private static void mockIntrospectionResponse(OAuth2OpaqueTokenIntrospectionResponse introspectionResponse) {
+    private void mockIntrospectionResponse(OAuth2OpaqueTokenIntrospectionResponse introspectionResponse) {
         when(fetcher.fetchOpaqueTokenIntrospectionFromIDP(OPAQUE_TOKEN)).thenReturn(introspectionResponse);
     }
 
-    private static void mockUserDetailsService() {
+    private void mockUserDetailsService() {
         Collection<? extends GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(TestRoles.USER));
         when(userDetailsService.loadUserByUsername(SUBJECT)).thenReturn(new TestUserDetails(authorities, SUBJECT));
     }
@@ -551,7 +586,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
     }
 
 /* @formatter:off */
-    private static OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence() {
+    private OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityAndNoClusterCachePersistence() {
 
         return OAuth2OpaqueTokenIntrospector.builder().
                 setIntrospectionResponseFetcher(fetcher).
@@ -561,7 +596,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 setInMemoryCacheClearPeriod(IN_MEMORY_CACHE_CLEAR_PERIOD).
                 setClusterCacheClearPeriod(CLUSTER_CACHE_CLEAR_PERIOD).
                 setUserDetailsService(userDetailsService).
-                setApplicationShutdownHandler(applicationShutdownHandler).
+                setApplicationShutdownHandler(applicationTestShutdownHandler).
                 setExpirationCalculator(expirationCalculator).
                 setTokenClusterCachePersistence(null).
                 setMinimumTokenValidity(null).
@@ -569,7 +604,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 build();
     }
 
-    private static OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse>inMemoryCachePersistence, CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence, RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher) {
+    private OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorNoMinimumTokenValidityButClusterCachePersistence(InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse>inMemoryCachePersistence, CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> clusterCachePersistence, RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher, CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
 
         return OAuth2OpaqueTokenIntrospector.builder().
                 setIntrospectionResponseFetcher(fetcher).
@@ -579,17 +614,18 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 setInMemoryCacheClearPeriod(IN_MEMORY_CACHE_CLEAR_PERIOD).
                 setClusterCacheClearPeriod(CLUSTER_CACHE_CLEAR_PERIOD).
                 setUserDetailsService(userDetailsService).
-                setApplicationShutdownHandler(applicationShutdownHandler).
+                setApplicationShutdownHandler(applicationTestShutdownHandler).
                 setExpirationCalculator(expirationCalculator).
                 setTokenClusterCachePersistence(clusterCachePersistence).
                 setIntrospectionResponseFetcher(fetcher).
                 setTokenInMemoryCachePersistence(inMemoryCachePersistence).
+                setCryptoAccessProvider(cryptoAccessProvider).
                 setMinimumTokenValidity(null).
 
                 build();
     }
 
-    private static OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorWithMinimumTokenValidity(Duration minimumTokenValidity) {
+    private OAuth2OpaqueTokenIntrospector createOAuth2OpaqueTokenIntrospectorWithMinimumTokenValidity(Duration minimumTokenValidity) {
 
         return OAuth2OpaqueTokenIntrospector.builder().
                 setIntrospectionResponseFetcher(fetcher).
@@ -599,7 +635,7 @@ class OAuth2OpaqueTokenIntrospectorTest {
                 setInMemoryCacheClearPeriod(IN_MEMORY_CACHE_CLEAR_PERIOD).
                 setClusterCacheClearPeriod(CLUSTER_CACHE_CLEAR_PERIOD).
                 setUserDetailsService(userDetailsService).
-                setApplicationShutdownHandler(applicationShutdownHandler).
+                setApplicationShutdownHandler(applicationTestShutdownHandler).
                 setExpirationCalculator(expirationCalculator).
                 setTokenClusterCachePersistence(null).
                 setMinimumTokenValidity(minimumTokenValidity).
@@ -635,10 +671,10 @@ class OAuth2OpaqueTokenIntrospectorTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             /* @formatter:off */
             return Stream.of(
-                    Arguments.of("a0", null, DEFAULT_TOKEN_EXPIRES_IN, MAX_CACHE_DURATION, userDetailsService, "Parameter fetcher must not be null"),
-                    Arguments.of("a4", fetcher, null, MAX_CACHE_DURATION, userDetailsService, "Parameter defaultTokenExpiresIn must not be null"),
-                    Arguments.of("a5", fetcher, DEFAULT_TOKEN_EXPIRES_IN, null, userDetailsService, "Parameter maxCacheDuration must not be null"),
-                    Arguments.of("a6", fetcher, MAX_CACHE_DURATION, MAX_CACHE_DURATION, null, "Parameter userDetailsService must not be null"));
+                    Arguments.of("a0", null, DEFAULT_TOKEN_EXPIRES_IN, MAX_CACHE_DURATION, mock(UserDetailsService.class), "Parameter fetcher must not be null"),
+                    Arguments.of("a4", mock(RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher.class), null, MAX_CACHE_DURATION, mock(UserDetailsService.class), "Parameter defaultTokenExpiresIn must not be null"),
+                    Arguments.of("a5", mock(RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher.class), DEFAULT_TOKEN_EXPIRES_IN, null, mock(UserDetailsService.class), "Parameter maxCacheDuration must not be null"),
+                    Arguments.of("a6", mock(RestTemplateOAuth2OpaqueTokenIDPIntrospectionResponseFetcher.class), MAX_CACHE_DURATION, MAX_CACHE_DURATION, null, "Parameter userDetailsService must not be null"));
             /* @formatter:on */
         }
     }
@@ -661,5 +697,21 @@ class OAuth2OpaqueTokenIntrospectorTest {
               Arguments.of(provider));
         }
         /* @formatter:on*/
+    }
+
+    private static class TestApplicationShutdownHandler implements ApplicationShutdownHandler {
+
+        private List<ShutdownListener> shutdownListeners = new ArrayList<>();
+
+        @Override
+        public void register(ShutdownListener shutdownListener) {
+            shutdownListeners.add(shutdownListener);
+        }
+
+        public void simulateShutdown() {
+            for (ShutdownListener shutdownListener : shutdownListeners) {
+                shutdownListener.onShutdown();
+            }
+        }
     }
 }

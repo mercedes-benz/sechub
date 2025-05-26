@@ -19,13 +19,13 @@ but also with a cache mechanism for repsonse tokens.
 ===== Opaque token cache mechanism
 The opaque token handling is cached by two different caches:
 
-First level cache is a fast in memory cache - which is persisted by InMemoryCachePersistance. 
+First level cache is a fast in memory cache - which is persisted by `InMemoryCachePersistence`. 
 This cache is only available on a JVM instance and exists only a short time (e.g. 10 seconds).
 
-If the first level cache does not or does not longer contains the opaque token response data,
+If the first level cache does not contain the opaque token response data,
 the second level (cluster) cache from cluster persistence is fetched and stored again in first cache.
 
-If the second level cache also does not or does not longer contain the opaque token response data,
+If the second level cache also does not contain the opaque token response data,
 the IDP will be called to fetch the opaque token response data.
 
 plantuml::diagrams/diagram_oauth2_opaque_token_caching_overview.puml[]

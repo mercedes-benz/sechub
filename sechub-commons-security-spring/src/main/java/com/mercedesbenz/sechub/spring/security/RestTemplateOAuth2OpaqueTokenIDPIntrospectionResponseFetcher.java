@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.*;

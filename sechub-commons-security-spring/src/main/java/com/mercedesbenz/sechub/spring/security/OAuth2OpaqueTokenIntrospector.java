@@ -229,7 +229,7 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
         Instant now = Instant.now();
 
-        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = getIntrospectionResponseFromInMemoryCache(opaqueToken, now);
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = resolveIntrospectionResponseAndUpdateCachesOnDemand(opaqueToken, now);
 
         if (expirationCalculator.isExpired(introspectionResponse, now)) {
             /*
@@ -270,42 +270,56 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         return new OAuth2IntrospectionAuthenticatedPrincipal(username, introspectionClaims, authorities);
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse getIntrospectionResponseFromInMemoryCache(String opaqueToken, Instant now) {
+    private OAuth2OpaqueTokenIntrospectionResponse resolveIntrospectionResponseAndUpdateCachesOnDemand(String opaqueToken, Instant now) {
         /* @formatter:off */
 
+        /* ------------------------ */
+        /* -----In memory cache---- */
+        /* ------------------------ */
         Optional<OAuth2OpaqueTokenIntrospectionResponse> fromInMemoryCache = tokenInMemoryCache.get(opaqueToken);
         if (fromInMemoryCache.isPresent()) {
             logger.trace("found introspection response in memory for token: {}", opaqueToken);
             return fromInMemoryCache.get();
         }
-        /* not found in memory - fetch from cluster cache/or from IDP */
-        OAuth2OpaqueTokenIntrospectionResponse resolved = getIntrospectionResponseFromClusterCache(opaqueToken, now);
-        /* update cache: */
-        updateInMemoryCache(opaqueToken, resolved, now);
+        /* Not found in memory - fetch from cluster cache/or from IDP */
 
-        return resolved;
+        /* ------------------------ */
+        /* -----Cluster cache---- */
+        /* ------------------------ */
+        OAuth2OpaqueTokenIntrospectionResponse fromClusterCacheOrIDP = fetchByClusterCacheOrIDP(opaqueToken, now);
+        /* update cache: */
+        updateInMemoryCache(opaqueToken, fromClusterCacheOrIDP, now);
+
+        return fromClusterCacheOrIDP;
         /* @formatter:on */
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse getIntrospectionResponseFromClusterCache(String opaqueToken, Instant now) {
+    private OAuth2OpaqueTokenIntrospectionResponse fetchByClusterCacheOrIDP(String opaqueToken, Instant now) {
         if (tokenClusterCache == null) {
             /* no cluster cache defined - just get the value from IDP */
             logger.trace("no token cluster cache deifned - skip");
-            return fetchAndCacheTokenIntrospectionResponseFromIDP(opaqueToken, now);
+            return fetchFromIDP(opaqueToken, now);
         }
+        return fetchByClusterCache(opaqueToken, now);
+    }
 
+    private OAuth2OpaqueTokenIntrospectionResponse fetchByClusterCache(String opaqueToken, Instant now) {
         Optional<OAuth2OpaqueTokenIntrospectionResponse> fromClusterCache = tokenClusterCache.get(opaqueToken);
         if (fromClusterCache.isPresent()) {
             logger.trace("found introspection response in cluster cache for token: {}", opaqueToken);
             return fromClusterCache.get();
         }
-        OAuth2OpaqueTokenIntrospectionResponse resolved = fetchAndCacheTokenIntrospectionResponseFromIDP(opaqueToken, now);
-        updateDatabaseCache(opaqueToken, resolved, now);
-
-        return resolved;
+        return fetchFromIDPAndUpdateClusterCache(opaqueToken, now);
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse fetchAndCacheTokenIntrospectionResponseFromIDP(String opaqueToken, Instant now) {
+    private OAuth2OpaqueTokenIntrospectionResponse fetchFromIDPAndUpdateClusterCache(String opaqueToken, Instant now) {
+        OAuth2OpaqueTokenIntrospectionResponse fromIDP = fetchFromIDP(opaqueToken, now);
+        updateDatabaseCache(opaqueToken, fromIDP, now);
+
+        return fromIDP;
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchFromIDP(String opaqueToken, Instant now) {
         logger.trace("start fetching introspection response from IDP");
         OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetcher.fetchOpaqueTokenIntrospectionFromIDP(opaqueToken);
 
@@ -361,7 +375,7 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         } else {
             /*
              * Here the in memory cache is only for short time (to prevent always asking
-             * cluster cache ). So we use NOT IDP cache duration but the shortCacheDuration
+             * cluster cache ). So we use NOT IDP cache duration but the preCacheDuration
              * field
              */
             tokenInMemoryCache.put(opaqueToken, introspectionResponse, preCacheDuration);

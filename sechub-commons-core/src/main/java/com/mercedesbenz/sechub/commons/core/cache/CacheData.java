@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.cache;
 
 import static java.util.Objects.*;
@@ -16,7 +17,7 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
  *
  * <p>
  * The cached data can be any serializable object. If cryptoAccess provider is
- * nut null, the value is securely sealed using a {@link CryptoAccess} instance
+ * not null, the value is securely sealed using a {@link CryptoAccess} instance
  * of type otherwise the value be stored directly. <code>T</code>.
  * </p>
  */

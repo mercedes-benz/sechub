@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.security.clustercache;
 
 import static org.assertj.core.api.Assertions.*;
@@ -87,7 +88,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
     }
 
     @Test
-    void get_calls_repository_delete_by_id_not_found() {
+    void get_calls_repository_find_by_id_not_found() {
 
         /* execute */
         String opaqueToken = "test-" + System.nanoTime();
@@ -99,7 +100,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
     }
 
     @Test
-    void get_calls_repository_delete_by_id_found() {
+    void get_calls_repository_find_by_id_found() {
 
         /* execute */
         String opaqueToken = "test-" + System.nanoTime();
