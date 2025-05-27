@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.9.0 modified (commit 8d67e39)</span>
+<span id="revnumber"> Server 2.10.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -787,7 +787,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.9.0 modified (commit 8d67e39) - Build date: 2025-05-26 15:05 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.10.0 - Build date: 2025-05-27 15:01 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1247,9 +1247,19 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 <td class="tableblock halign-left valign-top"><p class="tableblock">The secret for the oauth2 client being used for opaque token handling</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.cluster-cache-clear-period</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The period until the in cluster cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.default-token-expires-in</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default token expiration time. Is used as fallback when IDP does not provide an expiration time. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.inmemory-cache-clear-period</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.introspection-uri</p></td>
@@ -1260,6 +1270,11 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.max-cache-duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum cache duration. To avoid that the IDP is always asked again about the validity of an opaquetoken, the acceptance is cached. When this time exceeds,the introspection will be done and cached again. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.pre-cache-duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case the in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1997,9 +2012,12 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.security.server.oauth2.opaque-token=value
 -Dsechub.security.server.oauth2.opaque-token.client-id=value
 -Dsechub.security.server.oauth2.opaque-token.client-secret=value
+-Dsechub.security.server.oauth2.opaque-token.cluster-cache-clear-period=value
 -Dsechub.security.server.oauth2.opaque-token.default-token-expires-in=value
+-Dsechub.security.server.oauth2.opaque-token.inmemory-cache-clear-period=value
 -Dsechub.security.server.oauth2.opaque-token.introspection-uri=value
 -Dsechub.security.server.oauth2.opaque-token.max-cache-duration=value
+-Dsechub.security.server.oauth2.opaque-token.pre-cache-duration=value
 -Dsechub.notification.email.administrators=value
 -Dsechub.notification.email.from=value
 -Dsechub.notification.smtp.hostname=value
@@ -2055,9 +2073,12 @@ export SECHUB_SECURITY_SERVER_OAUTH2_MODE=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTID=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLUSTERCACHECLEARPERIOD=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_DEFAULTTOKENEXPIRESIN=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INMEMORYCACHECLEARPERIOD=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI=value
 export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_PRECACHEDURATION=value
 export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
 export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
@@ -3951,7 +3972,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.9.0 modified (commit 8d67e39)<br>
+ Server 2.10.0<br>
 </div>
 </div>
 </body>
