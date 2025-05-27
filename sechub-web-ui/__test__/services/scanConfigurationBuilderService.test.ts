@@ -6,7 +6,7 @@ import {
   CODE_SCAN_IDENTIFIER,
   FILETYPE_BINARIES,
   FILETYPE_SOURCES,
-  SECRET_SCAN_IDENTIFER,
+  SECRET_SCAN_IDENTIFIER,
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from '../../src/utils/applicationConstants'
@@ -51,7 +51,7 @@ describe('ScanConfigurationBuilderService', () => {
 
     it('should build SecHub configuration for secret scan and binaries', () => {
       /* prepare */
-      const scanTypes = [SECRET_SCAN_IDENTIFER]
+      const scanTypes = [SECRET_SCAN_IDENTIFIER]
       const fileType = FILETYPE_BINARIES
       const projectId = 'project-id'
 
@@ -67,7 +67,7 @@ describe('ScanConfigurationBuilderService', () => {
 
     it('should build SecHub configuration for code and secret scans', () => {
       /* prepare */
-      const scanTypes = [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFER]
+      const scanTypes = [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER]
       const fileType = FILETYPE_SOURCES
       const projectId = 'project-id'
 

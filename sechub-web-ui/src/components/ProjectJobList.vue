@@ -167,6 +167,7 @@
   } from '@/generated-sources/openapi/'
   import '@/styles/sechub.scss'
   import { useFetchProjects } from '@/composables/useProjects'
+  import { handleApiError } from '@/services/apiErrorHandler'
 
   export default {
     name: 'ProjectComponent',
@@ -220,6 +221,7 @@
           jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
         } catch (err) {
+          handleApiError(err)
           alert.value = true
           error.value = t('JOB_ERROR_FETCHING_JOBS_FOR_PROJECT')
           console.error(t('JOB_ERROR_FETCHING_JOBS_FOR_PROJECT'), err)
@@ -253,6 +255,7 @@
           const prettyJson = JSON.stringify(response, null, 2)
           downloadFile(new Blob([prettyJson], { type: 'application/json' }), `sechub_report_${projectId.value}_${jobUUID}.json`)
         } catch (err) {
+          handleApiError(err)
           const errMsg = t('JOB_ERROR_REPORT_JSON_DONLOAD_FAILED' + jobUUID)
           handleError(errMsg, err)
         }
@@ -270,6 +273,7 @@
           })
           downloadFile(new Blob([response], { type: 'text/html' }), `sechub_report_${projectId.value}_${jobUUID}.html`)
         } catch (err) {
+          handleApiError(err)
           const errMsg = t('JOB_ERROR_REPORT_HTML_DONLOAD_FAILED' + jobUUID)
           handleError(errMsg, err)
         }
@@ -296,6 +300,7 @@
         try {
           await defaultClient.withJobManagementApi.userCancelsJob(requestParameter)
         } catch (err) {
+          handleApiError(err)
           const errMsg = (t('JOB_ERROR_CANCEL_JOB_FAILED') + jobUUID)
           handleError(errMsg, err)
         }
