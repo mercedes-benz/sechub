@@ -17,6 +17,15 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
+/**
+ * This encryption does NOT provide key rotation! You should use this class only
+ * for "throw away encryption".
+ *
+ * If you want key rotation and/or ensured cluster wide accessibility - e.g. for
+ * persisted encrypted data - you have to use EncryptionSupport instead from
+ * sechub-commons-encryption!
+ *
+ */
 @Component
 @ConditionalOnProperty(name = "sechub.security.encryption.secret-key")
 public class AES256Encryption {

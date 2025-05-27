@@ -219,6 +219,12 @@ public class SecHubSecurityProperties {
                 private final Duration defaultTokenExpiresIn;
                 private final Duration maxCacheDuration;
 
+                private Duration preCacheDuration;
+
+                private Duration inMemoryCacheClearPeriod;
+
+                private Duration clusterCacheClearPeriod;
+
                 @ConstructorBinding
                 /* @formatter:off */
                 public OpaqueTokenProperties(
@@ -235,7 +241,18 @@ public class SecHubSecurityProperties {
                                  Duration defaultTokenExpiresIn,
 
                                  @Description("The maximum cache duration. To avoid that the IDP is always asked again about the validity of an opaquetoken, the acceptance is cached. When this time exceeds,the introspection will be done and cached again. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.")
-                                 Duration maxCacheDuration) {
+                                 Duration maxCacheDuration,
+
+                                 @Description("The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case the in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
+                                 Duration preCacheDuration,
+
+                                 @Description("The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
+                                 Duration inMemoryCacheClearPeriod,
+
+                                 @Description("The period until the in cluster cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.")
+                                 Duration clusterCacheClearPeriod
+
+                        ) {
 
                     /* @formatter:on */
                     this.introspectionUri = requireNonNull(introspectionUri, ERR_MSG_FORMAT.formatted(PREFIX, "introspection-uri"));
@@ -243,6 +260,10 @@ public class SecHubSecurityProperties {
                     this.clientSecret = requireNonNull(clientSecret, ERR_MSG_FORMAT.formatted(PREFIX, "client-secret"));
                     this.defaultTokenExpiresIn = defaultTokenExpiresIn == null ? Duration.ofDays(1) : defaultTokenExpiresIn;
                     this.maxCacheDuration = requireNonNull(maxCacheDuration, ERR_MSG_FORMAT.formatted(PREFIX, "max-cache-duration"));
+                    this.preCacheDuration = requireNonNull(preCacheDuration, ERR_MSG_FORMAT.formatted(PREFIX, "pre-cache-duration"));
+
+                    this.inMemoryCacheClearPeriod = requireNonNull(inMemoryCacheClearPeriod, ERR_MSG_FORMAT.formatted(PREFIX, "in-memory-cache-clear-period"));
+                    this.clusterCacheClearPeriod = requireNonNull(clusterCacheClearPeriod, ERR_MSG_FORMAT.formatted(PREFIX, "cluster-cache-clear-period"));
                 }
 
                 public String getIntrospectionUri() {
@@ -263,6 +284,18 @@ public class SecHubSecurityProperties {
 
                 public Duration getMaxCacheDuration() {
                     return maxCacheDuration;
+                }
+
+                public Duration getPreCacheDuration() {
+                    return preCacheDuration;
+                }
+
+                public Duration getInMemoryCacheClearPeriod() {
+                    return inMemoryCacheClearPeriod;
+                }
+
+                public Duration getClusterCacheClearPeriod() {
+                    return clusterCacheClearPeriod;
                 }
             }
         }

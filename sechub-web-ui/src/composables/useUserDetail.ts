@@ -2,6 +2,7 @@
 import defaultClient from '@/services/defaultClient'
 import { UserDetailInformation } from '@/generated-sources/openapi'
 import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
+import { handleApiError } from '@/services/apiErrorHandler'
 
 export async function useFetchUserDetail () {
   const store = useUserDetailInformationStore()
@@ -14,6 +15,7 @@ export async function useFetchUserDetail () {
   } catch (error) {
     console.error(error)
     store.clearUserDetailInformation()
+    handleApiError(error)
   }
 
   return { userDetailInformation, error }

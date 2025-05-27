@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -8,12 +9,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 
+import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
+import com.mercedesbenz.sechub.sharedkernel.security.clustercache.OAuth2OpaqueTokenClusterCachePersistence;
 import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
+import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponse;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
 public class SecHubSecurityConfiguration extends AbstractSecurityConfiguration {
+
+    @Autowired(required = false) // required = false, because only injected/necessary when oauth2 used
+    OAuth2OpaqueTokenClusterCachePersistence opaqueTokenClusterCachePersistence;
 
     @Override
     protected Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> authorizeHttpRequests() {
@@ -31,5 +38,10 @@ public class SecHubSecurityConfiguration extends AbstractSecurityConfiguration {
                 .requestMatchers(APIConstants.LOGOUT).authenticated()
                 .requestMatchers("/**").denyAll();
         /* @formatter:on */
+    }
+
+    @Override
+    protected CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> getOAuth2OpaqueTokenClusterPersistence() {
+        return opaqueTokenClusterCachePersistence;
     }
 }

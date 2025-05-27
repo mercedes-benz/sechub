@@ -13,6 +13,7 @@ import {
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from '@/utils/applicationConstants'
+import { handleApiError } from '../apiErrorHandler'
 
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {
@@ -28,6 +29,7 @@ class ScanService {
       }
     } catch (error) {
       console.error('Scan failed:', error)
+      handleApiError(error)
       errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_GENERIC'))
     }
     return errorMessages
@@ -44,6 +46,7 @@ class ScanService {
       return result.jobId
     } catch (error) {
       console.error('Job creation failed:', error)
+      handleApiError(error)
       return undefined
     }
   }
@@ -64,6 +67,7 @@ class ScanService {
         await executionApi.userUploadSourceCode(requestParameters)
       } catch (error) {
         console.error('Source code upload failed:', error)
+        handleApiError(error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED'))
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
@@ -83,6 +87,7 @@ class ScanService {
         await executionApi.userUploadsBinaries(requestParameters)
       } catch (error) {
         console.error('Binary upload failed:', error)
+        handleApiError(error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED'))
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
@@ -106,6 +111,7 @@ class ScanService {
       await executionApi.userApproveJob(requestParameters)
     } catch (error) {
       console.error('Job approval failed:', error)
+      handleApiError(error)
       errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_JOB_NOT_APPROVED'))
     }
   }

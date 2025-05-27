@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.cache;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.*;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.crypto.SealedObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
 
@@ -23,47 +23,44 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ShutdownListener;
  * caching mechanism for generic data.
  *
  * <p>
- * It uses a {@link ConcurrentHashMap} to store data and a scheduled task to
+ * It uses a {@link CachePersistence} to store data and a scheduled task to
  * clear expired entries periodically. By default, the cache cleanup runs every
  * minute with an initial delay of 1 minute. These values can be customized via
  * the constructor.
  * </p>
  *
- * <p>
- * <b>Note:</b> This cache is local to a single application instance and is not
- * shared across multiple instances. Avoid using it in scenarios where a
- * distributed caching mechanism is required.
- * </p>
- *
  * @param <T> the type of data stored in the cache (must be of type
  *            {@link Serializable})
  *
- * @author hamidonos
+ * @author hamidonos, de-jcup
  */
-public class InMemoryCache<T extends Serializable> implements ShutdownListener {
+public class SelfCleaningCache<T extends Serializable> implements ShutdownListener {
 
-    private static final Duration DEFAULT_CACHE_CLEAR_JOB_PERIOD = Duration.ofMinutes(1);
+    private static final Logger logger = LoggerFactory.getLogger(SelfCleaningCache.class);
 
-    private final ConcurrentHashMap<String, CacheData> cacheMap = new ConcurrentHashMap<>();
+    private final String cacheName;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final CryptoAccess<T> cryptoAccess = new CryptoAccess<>();
     private final ScheduledFuture<?> cacheClearJob;
     private final Duration cacheClearJobPeriod;
-
-    public InMemoryCache(ScheduledExecutorService scheduledExecutorService, ApplicationShutdownHandler applicationShutdownHandler) {
-        this(DEFAULT_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, applicationShutdownHandler);
-    }
+    private final CachePersistence<T> cachePersistence;
+    private final CryptoAccessProvider<T> cryptoAccessProvider;
 
     /* @formatter:off */
-    public InMemoryCache(Duration cacheClearJobPeriod,
+    public SelfCleaningCache(String cacheName, CachePersistence<T> cachePersistence, Duration cacheClearJobPeriod,
                          ScheduledExecutorService scheduledExecutorService,
-                         ApplicationShutdownHandler applicationShutdownHandler) {
+                         ApplicationShutdownHandler applicationShutdownHandler, CryptoAccessProvider<T> cryptoAccessProvider) {
         /* @formatter:on */
+        this.cacheName = requireNonNull(cacheName, "Parameter 'cacheName' must not be null");
+        this.cachePersistence = requireNonNull(cachePersistence, "Parameter 'cachePersistence' must not be null");
         this.scheduledExecutorService = requireNonNull(scheduledExecutorService, "Property 'scheduledExecutorService' must not be null");
         this.cacheClearJobPeriod = requireNonNull(cacheClearJobPeriod, "Property 'cacheClearJobPeriod' must not be null");
+        this.cryptoAccessProvider = cryptoAccessProvider;
+
         cacheClearJob = scheduleClearCacheJob();
+
         requireNonNull(applicationShutdownHandler, "Property 'applicationShutdownHandler' must not be null");
         applicationShutdownHandler.register(this);
+
     }
 
     /**
@@ -81,7 +78,11 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      */
     public void put(String key, T value, Duration duration) {
         requireNonNull(key, "Argument 'key' must not be null");
-        cacheMap.put(key, new CacheData(value, duration));
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - Put to persistence ({}): key={}, duration={}, value= {}", cacheName, cachePersistence.getClass().getSimpleName(), key,
+                    duration, value);
+        }
+        cachePersistence.put(key, new CacheData<T>(value, duration, cryptoAccessProvider, Instant.now()));
     }
 
     /**
@@ -98,12 +99,18 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
     public Optional<T> get(String key) {
         requireNonNull(key, "Argument 'key' must not be null");
 
-        CacheData cacheData = cacheMap.get(key);
+        CacheData<T> cacheData = cachePersistence.get(key);
 
         if (cacheData == null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Cache:{} - Get: key={} - not found", cacheName, key);
+            }
             return Optional.empty();
         }
 
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - Get: key={} - found", cacheName, key);
+        }
         return Optional.of(cacheData.getValue());
     }
 
@@ -115,7 +122,11 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
      * @throws NullPointerException if the specified key is null
      */
     public void remove(String key) {
-        cacheMap.remove(key);
+        requireNonNull(key, "key must not be null!");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - Remove: key={}", cacheName, key);
+        }
+        cachePersistence.remove(key);
     }
 
     public Duration getCacheClearJobPeriod() {
@@ -139,49 +150,10 @@ public class InMemoryCache<T extends Serializable> implements ShutdownListener {
     }
 
     private void clearCache() {
-        Instant now = Instant.now();
-
-        cacheMap.forEach((key, value) -> {
-            Instant cacheDataCreatedAt = value.getCreatedAt();
-            Duration cacheDataDuration = value.getDuration();
-
-            if (cacheDataCreatedAt.plus(cacheDataDuration).isBefore(now)) {
-                cacheMap.remove(key);
-            }
-        });
-    }
-
-    /**
-     * Represents the data stored in the cache under a specific key.
-     *
-     * <p>
-     * The cached data can be any serializable object. It is securely sealed using a
-     * {@link CryptoAccess} instance of type <code>T</code>.
-     * </p>
-     */
-    private class CacheData {
-
-        private final SealedObject sealedValue;
-        private final Duration duration;
-        private final Instant createdAt = Instant.now();
-
-        public CacheData(T value, Duration duration) {
-            requireNonNull(value, "Property 'value' must not be null");
-            this.sealedValue = InMemoryCache.this.cryptoAccess.seal(value);
-            this.duration = requireNonNull(duration, "Property 'duration' must not be null");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cache:{} - clear cache", cacheName);
         }
-
-        public T getValue() {
-            return cryptoAccess.unseal(sealedValue);
-        }
-
-        public Duration getDuration() {
-            return duration;
-        }
-
-        public Instant getCreatedAt() {
-            return createdAt;
-        }
+        cachePersistence.removeOutdated(Instant.now());
     }
 
 }

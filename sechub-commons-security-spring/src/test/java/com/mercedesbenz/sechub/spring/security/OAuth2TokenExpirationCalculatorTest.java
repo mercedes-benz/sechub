@@ -48,7 +48,7 @@ class OAuth2TokenExpirationCalculatorTest {
 
         /* prepare */
         OAuth2OpaqueTokenIntrospectionResponse response = mock();
-        when(response.getExpiresAt()).thenReturn(expiresAt);
+        when(response.getExpiresAtAsInstant()).thenReturn(expiresAt);
 
         /* execute */
         boolean expired = calculatorToTest.isExpired(response, now);

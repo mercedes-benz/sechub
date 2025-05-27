@@ -1,0 +1,13 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+package com.mercedesbenz.sechub.spring.security {
+
+	class AES256Encryption {
+		encrypt(String plainText) : byte[]
+		decrypt(byte[] encryptedBytes) : String
+	}
+}
+@enduml 

@@ -40,6 +40,8 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.security.SecHubSecurityConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.security.clustercache.OAuth2OpaqueTokenClusterCachePersistence;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorageFactory;
 
@@ -104,6 +106,12 @@ public class SecHubMultiSpringBootTest {
     TargetResolverService targetResolverServiceToTest;
 
     @Autowired
+    SecHubSecurityConfiguration securityConfiguration;
+
+    @Autowired
+    OAuth2OpaqueTokenClusterCachePersistence clusterPersistence;
+
+    @Autowired
     private SchedulerGetJobStatusService getJobStatusServiceToTest;
 
     @Autowired
@@ -137,6 +145,11 @@ public class SecHubMultiSpringBootTest {
         when(job.getUUID()).thenReturn(jobUUID);
         when(job.getProjectId()).thenReturn(projectUUID);
         when(jobFactory.createJob(eq(configuration))).thenReturn(job);
+    }
+
+    @Test
+    void clusterPersistence_is_not_null_when_server_starts() {
+        assertThat(clusterPersistence).isNotNull();
     }
 
     @Test

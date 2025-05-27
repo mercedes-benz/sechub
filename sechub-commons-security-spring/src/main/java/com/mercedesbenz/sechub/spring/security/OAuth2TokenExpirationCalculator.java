@@ -17,7 +17,7 @@ public class OAuth2TokenExpirationCalculator {
         requireNonNull(response, "parameter 'response' may not be null!");
         requireNonNull(now, "parameter 'now' may not be null!");
 
-        Instant expires = response.getExpiresAt();
+        Instant expires = response.getExpiresAtAsInstant();
         if (expires == null) {
             return true;
         }
