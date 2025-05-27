@@ -10,11 +10,13 @@ function usage() {
 # setting default values for keycloak admin user and password
 export KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN:-admin}
 export KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
+export SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET=${SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET:-$(uuidgen)}
 
 echo  "${KEYCLOAK_ADMIN}:${KEYCLOAK_ADMIN_PASSWORD}"
 addEnv "DATABASE_START_MODE=server"
 addEnv "KEYCLOAK_ADMIN=$KEYCLOAK_ADMIN"
 addEnv "KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD"
+addEnv "SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET=$SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET"
 
 defineContainerPort 8080
 if [[ -z "$1" ]]; then
@@ -32,3 +34,15 @@ ensureImageBuild
 ensureContainerNotRunning
 
 startContainer
+
+# Copy keycloak properties as local sechub-server properties using envsubst
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+local_template="${script_dir}/application-local-test-keycloak-template.yaml"
+sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local-test-keycloak-gen.${USER}.yaml"
+
+if [ -f "${sechub_properties_local_keycloak}" ]; then
+    echo "Removing existing local Keycloak properties file: ${sechub_properties_local_keycloak}"
+    rm -f "${sechub_properties_local_keycloak}"
+fi
+
+envsubst < "${local_template}" > "${sechub_properties_local_keycloak}"

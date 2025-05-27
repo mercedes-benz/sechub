@@ -809,7 +809,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "${SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET}",
       "redirectUris": [
         "*"
       ],

@@ -1,0 +1,31 @@
+sechub:
+  security:
+    server:
+      modes: oauth2, classic
+      oauth2:
+        mode: opaque-token
+        opaque-token:
+          introspection-uri: http://localhost:8080/realms/web-ui-server-local/protocol/openid-connect/token/introspect
+          client-id: web-ui-server-local
+          client-secret: n8Ka5Wnkl
+          max-cache-duration: 300s
+    login:
+      enabled: true
+      login-page: /login
+      redirect-uri: http://localhost:3000
+      modes: oauth2, classic
+      oauth2:
+        client-id: web-ui-server-local
+        client-secret: ${SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET}
+        provider: keycloak
+        redirect-uri: https://localhost:8443/login/oauth2/code/keycloak
+        issuer-uri: http://localhost:8080/realms/web-ui-server-local
+        authorization-uri: http://localhost:8080/realms/web-ui-server-local/protocol/openid-connect/auth
+        token-uri: http://localhost:8080/realms/web-ui-server-local/protocol/openid-connect/token
+        user-info-uri: http://localhost:8080/realms/web-ui-server-local/protocol/openid-connect/userinfo
+        jwk-set-uri: http://localhost:8080/realms/web-ui-server-local/protocol/openid-connect/certs
+      classic:
+        cookie-age-seconds: 3600
+    encryption:
+      secret-key: aB3xYz8KpL9mQw2VcT1sNj7FuW4vEp0Z
+    minimumTokenValidity: 24h

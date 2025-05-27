@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.developertools.container.keycloak;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLaunchConfig;
 import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLauncher;
@@ -24,7 +25,12 @@ public class KeycloakTestContainer {
     }
 
     private static Path resolveScript(String scriptName) {
-        return Path.of("../scripts", "container", "keycloak", scriptName).toAbsolutePath().normalize();
+        // Resolve the script path relative to the class location
+        // It should not matter where the TestContainer is executed from
+        String classLocation = KeycloakTestContainer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        Path classPath = Paths.get(classLocation).getParent();
+
+        return classPath.resolve(Paths.get("../../../scripts/container/keycloak", scriptName)).normalize();
     }
 
     public void start() throws Exception {
