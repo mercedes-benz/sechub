@@ -3,6 +3,8 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 
+provideHeadlessUseId(() => useId());
+
 const links = [
   {
     name: 'Client',
@@ -33,6 +35,7 @@ const links = [
         <p class="mt-4 text-lg text-gray-700">
           Download SecHub for seamless security integration.<br>Orchestrates security tools through an unified API.<br>MIT License.
         </p>
+        <!-- Re-enable this block once issue #3744 is solved
 
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
@@ -43,7 +46,8 @@ const links = [
             </MenuButton>
           </div>
         </Menu>
-        <!-- Re-enable this block once issue #3744 is solved
+      -->
+
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
             <MenuButton class="button">
@@ -75,7 +79,7 @@ const links = [
             </MenuItems>
           </transition>
         </Menu>
-        -->
+
       </div>
     </div>
   </section>
