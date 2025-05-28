@@ -69,3 +69,28 @@ tasks.register('stopLocalTestKeycloakStarter', Delete) {
         }
     }
 }
+
+tasks.register('runLocalTestPostgreSQLStarter', JavaExec) {
+    group = "PostgreSQL"
+    description = "Run LocalPostgreSQLStarter with optional arguments (use -PpostgresArgs=\"49152 myadmin mypass mydatabase\")"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mercedesbenz.sechub.developertools.container.postgres.LocalTestPostgreSQLStarter'
+    if (project.hasProperty('postgresArgs')) {
+        args project.property('postgresArgs').split("\\s+")
+    }
+}
+
+tasks.register('stopLocalTestPostgreSQLStarter', Delete) {
+    group = "PostgreSQL"
+    description = "delete the .info file to stop the running PostgreSQL instance (use -PpostgresPort=49152)"
+    def port = project.hasProperty('postgresPort') ? project.property('postgresPort') : '49152'
+    def infoFile = file("$rootDir/sechub-developertools/build/tmp/postgres_container_${port}.info")
+    doFirst {
+        if (infoFile.exists()) {
+            println "Stopping PostgreSQL by deleting info file: ${infoFile.absolutePath}"
+            infoFile.delete()
+        } else {
+            println "No PostgreSQL instance is running on port ${port}, nothing to stop."
+        }
+    }
+}

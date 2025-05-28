@@ -70,3 +70,25 @@ This will generate a keycloak oauth properties file for your local sechub server
 ----
 ./gradlew stopLocalTestKeycloakStarter
 ----
+
+=== Local PostgreSQL Server (as docker container)
+
+LocalTestPostgreSQLStarter is a simple PostgreSQL server starter for local development. (starting docker)
+It is not intended to be used in production!
+
+==== Start
+
+PostgreSQL is by default started on http://localhost:49152.
+If you do not set a port, admin and an admin password, the values are generated randomly and can be taken from the /build/tmp/postgresql_container_<port>.info file.
+
+[source, bash]
+----
+./gradlew runLocalTestPostgreSQLStarter
+----
+
+==== Stop
+
+[source, bash]
+----
+./gradlew stopLocalTestPostgreSQLStarter
+----

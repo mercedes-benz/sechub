@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 source ./../common-containerscript.sh
-container="keycloak"
 
 function usage() {
     echo "Usage: $script_name <port>" 
@@ -11,11 +10,16 @@ function usage() {
 if [[ -z "$1" ]]; then
     echo "No port given, using default port 8080"
     defineExposedPort 8080
+    export "KEYCLOAK_CONTAINER_PORT=8080"
 else
     defineExposedPort $1
+    export "KEYCLOAK_CONTAINER_PORT=$1"
 fi
-  defineImage ${container}
-defineContainerName ${container}
+
+container="keycloak_${KEYCLOAK_CONTAINER_PORT}"
+
+defineImage "keycloak"
+defineContainerName "${container}"
 
 killContainer
 

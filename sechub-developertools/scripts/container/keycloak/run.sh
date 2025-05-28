@@ -10,8 +10,8 @@ debug () {
 }
 
 server () {
-    echo "Starting Keycloak server on port ${CONTAINER_PORT}..."
-    exec /opt/keycloak/bin/kc.sh start-dev --import-realm --http-port="$CONTAINER_PORT" &
+    echo "Starting Keycloak server on port ${KEYCLOAK_CONTAINER_PORT}..."
+    exec /opt/keycloak/bin/kc.sh start-dev --import-realm --http-port="$KEYCLOAK_CONTAINER_PORT" &
 
     # Wait for the server to start
     sleep 30
@@ -28,7 +28,7 @@ create_user () {
     echo "Creating user 'newuser' with password 'newpassword' in realm 'web-ui-server-local'..."
 
     # Login to Keycloak
-    /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:"${CONTAINER_PORT}" --realm master --user "${KEYCLOAK_ADMIN}" --password "${KEYCLOAK_ADMIN_PASSWORD}"
+    /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:"${KEYCLOAK_CONTAINER_PORT}" --realm master --user "${KEYCLOAK_ADMIN}" --password "${KEYCLOAK_ADMIN_PASSWORD}"
 
     # Create a new user
     /opt/keycloak/bin/kcadm.sh create users -r web-ui-server-local -s username=int-test_superadmin -s enabled=true -s email=int-test_superadmin@sechub.example.org
