@@ -1,38 +1,48 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 public class PDSKeyToEnvConverterTest {
 
     private PDSKeyToEnvConverter converterToTest;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    public void beforeEach() throws Exception {
         converterToTest = new PDSKeyToEnvConverter();
+
     }
 
-    @Test
-    public void abc_DOT_def_DOT_ghi_is_converted_to_ABC_DEF_GHI() {
-        assertEquals("ABC_DEF_GHI", converterToTest.convertKeyToEnv("abc.def.ghi"));
+    @ParameterizedTest
+    @ArgumentsSource(ConverterArgumentsProvider.class)
+    void convertKeyToEnv_converts_origin_to_expected_result(String origin, String expectedResult) {
+        assertThat(converterToTest.convertKeyToEnv(origin)).isEqualTo(expectedResult);
     }
 
-    @Test
-    public void empty_keeps_empty() {
-        assertEquals("", converterToTest.convertKeyToEnv(""));
-    }
-
-    @Test
-    public void null_keeps_null() {
-        assertEquals(null, converterToTest.convertKeyToEnv(null));
-    }
-
-    @Test
-    public void abc_becomes_ABC() {
-        assertEquals("ABC", converterToTest.convertKeyToEnv("abc"));
+    private static class ConverterArgumentsProvider implements ArgumentsProvider {
+        /* @formatter:off */
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                      /* origin, expectedResult */
+              Arguments.of("abc", "ABC"),
+              Arguments.of("abc.def.ghi", "ABC_DEF_GHI"),
+              Arguments.of("pds.config.filefilter.EXCLUDES", "PDS_CONFIG_FILEFILTER_EXCLUDES"),
+              Arguments.of("pds.Config.Product.timeout.minutes", "PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES"),
+              Arguments.of("all-hyphens.are.re-moved", "ALLHYPHENS_ARE_REMOVED"),
+              Arguments.of(null, null),
+		      Arguments.of("", ""));
+        }
+        /* @formatter:on*/
     }
 
 }
