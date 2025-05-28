@@ -146,7 +146,7 @@ sechub -reportformat html scan
 The URL of the SecHub Web-UI can be retrieved like this:
 [source, shell]
 --
-WEB_UI_IP=$(kubectl $KUBE_FLAGS get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+WEB_UI_IP=$(kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 WEB_UI_URL="https://$WEB_UI_IP:4443/"
 echo $WEB_UI_URL
 --
