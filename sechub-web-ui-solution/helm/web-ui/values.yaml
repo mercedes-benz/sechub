@@ -47,7 +47,8 @@ deploymentComment: "my deployment comment"
 
 service:
   loadbalancer:
-    ip: ""
+    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
+    ip: none
     port:
       name: web-ui-https
       number: 4443

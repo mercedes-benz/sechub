@@ -18,7 +18,7 @@ This tutorial teaches you how to setup a SecHub environment and to do a scan usi
 You will learn:
 
 * How to start a SecHub environment and PDS with a SAST scanner using SecHub's Helm charts and container images
-* Scan a vulnerable application containing a "forgotten" secret.
+* Scan vulnerable source code.
 * Install and use SecHub's extension for VsCodium (Optional)
 
 plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title="Setup Overview"]
@@ -88,6 +88,7 @@ cd sechub-solutions-shared/setup-with-kubernetes
 ./01_init.sh
 ./10_deploy_sechub_server.sh
 ./20_deploy_pds-multi.sh
+./30_deploy_web-ui.sh
 ./40_apply-profiles.sh
 --
 
@@ -140,6 +141,17 @@ If you want the report in HTML format instead, add `-reportformat html` as an op
 --
 sechub -reportformat html scan
 --
+
+=== SecHub Web-UI
+The URL of the SecHub Web-UI can be retrieved like this:
+[source, shell]
+--
+WEB_UI_IP=$(kubectl $KUBE_FLAGS get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+WEB_UI_URL="https://$WEB_UI_IP:4443/"
+echo $WEB_UI_URL
+--
+
+NOTE: After successful login with sechubadm / demo you must open the URL manually. Then the SecHub Web-UI should work.
 
 == Optional
 === SecHub's IDE plugins

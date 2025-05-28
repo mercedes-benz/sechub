@@ -16,6 +16,7 @@ SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
 SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
 SECHUB_SERVER_LB_PORT_DEFAULT="8443"
+SECHUB_SERVER_LOGIN_MODES_DEFAULT="classic"
 PDS_CHECKMARX_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/checkmarx/helm/pds-checkmarx" # directory where the extracted pds-checkmarx Helm chart resides
 PDS_CHECKMARX_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-checkmarx" # Where to get the pds-checkmarx container image from
 PDS_CHECKMARX_IMAGE_TAG_DEFAULT="latest" # image tag of above
@@ -76,6 +77,9 @@ PDS_XRAY_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-xray" # Where 
 PDS_XRAY_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_XRAY_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_XRAY_TOKEN_TECHUSER_DEFAULT="undefined"
+WEBUI_IMAGE_DEFAULT="ghcr.io/mercedes-benz/sechub/web-ui:latest" # The SecHub Web-UI container image
+WEBUI_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-web-ui-solution/helm/web-ui" # directory where the extracted SecHub Web-UI Helm chart resides
+WEBUI_LB_PORT_DEFAULT="4443"
 
 MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
@@ -87,6 +91,7 @@ TEMPLATE_VARIABLES=" \
   SECHUB_SERVER_IMAGE_REGISTRY \
   SECHUB_SERVER_IMAGE_TAG \
   SECHUB_SERVER_LB_PORT \
+  SECHUB_SERVER_LOGIN_MODES \
   PDS_CHECKMARX_HELMCHART \
   PDS_CHECKMARX_IMAGE_REGISTRY \
   PDS_CHECKMARX_IMAGE_TAG \
@@ -147,6 +152,9 @@ TEMPLATE_VARIABLES=" \
   PDS_XRAY_IMAGE_TAG \
   PDS_XRAY_TOKEN_ADMINUSER \
   PDS_XRAY_TOKEN_TECHUSER \
+  WEBUI_IMAGE \
+  WEBUI_HELMCHART \
+  WEBUI_LB_PORT \
 "
 
 ## Functions
