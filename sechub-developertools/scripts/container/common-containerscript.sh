@@ -34,7 +34,7 @@ function defineContainerPort(){
 
 #
 # param 1: exposed port, may not be empty
-function defineEexposedPort(){
+function defineExposedPort(){
     assertNotEmpty "port not defined" $1
     
     exposed_port=$1
@@ -61,9 +61,14 @@ function defineImage(){
 
 }
 
+function defineContainerName(){
+    assertNotEmpty "container name not defined" $1
+    container_name=$1
+}
+
 function ensureImageBuild(){
     assertNotEmpty "image name not defined" $image_name
-    
+
     docker build -t $image_name -f Dockerfile .
 
     buildResult=$?
@@ -131,6 +136,7 @@ function killContainer(){
     if [ "$running" != CONST_DOES_NOT_EXIST ]; then
         echo "* trigger kill of container $container_name"
         docker container kill $container_name
+
         echo "* container $container_name killed"
     fi
 
