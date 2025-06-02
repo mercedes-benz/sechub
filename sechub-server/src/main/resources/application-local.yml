@@ -9,4 +9,3 @@ spring:
     import:
       - optional:classpath:application-local.${USER}.yml
       - optional:classpath:application-local.${USER}.yaml
-      - optional:classpath:application-local-test-keycloak-gen.${USER}.yaml

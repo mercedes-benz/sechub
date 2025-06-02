@@ -43,6 +43,7 @@ public abstract class AbstractTestContainerStarter {
         container.start();
 
         createInfoFile(container);
+        LOG.info("Saving temporary container info file to: {}", filePath);
 
         Thread inspectThread = new Thread(new InspectStillWantedToRun(), "Inspect still wanted to run");
         inspectThread.start();

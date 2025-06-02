@@ -12,7 +12,7 @@ WARNING: No other gradle submodule shall have this project as a dependency!
 
 === DAUI
 The Developer Administration UI (DAUI) is a simple quick and dirty administration client which will reuse parts
-from `sechub-integration--test` (for example REST api access, URL building).
+from `sechub-integration-test` (for example REST api access, URL building).
 
 Every single feature we implement, is available at this simple UI from the beginning.
 It is extreme simple to extend.
@@ -48,7 +48,7 @@ export SECHUB_ADMIN_SERVER_PORT=8443
 java -jar ./sechub-developertools/build/libs/sechub-developertools-0.0.0.jar
 ----
 
-=== Local Keycloak Server (as docker container)
+=== Local Keycloak Server (OAuth2) (as docker container)
 
 LocalTestKeycloakStarter is a simple keycloak server starter for local development. (starting docker)
 It is not intended to be used in production!
@@ -56,12 +56,18 @@ It is not intended to be used in production!
 ==== Start
 
 Keycloak is by default started on http://localhost:8080.
-If you do not set a port, admin and an admin password, the values are generated randomly and can be taken from the /build/tmp/keycloak_container_<port>.info file.
-This will generate a keycloak oauth properties file for your local sechub server. Add -Dspring.profiles.active=local to your spring properties to use the generated properties file.
+If you do not set an admin and an admin password, the values are generated randomly and can be taken from the /build/tmp/keycloak_container_<port>.info file.
+This will generate a keycloak oauth properties file for your local sechub server. Add `-Dspring.profiles.active=local-keycloak` to your spring properties to use the generated properties file.
 
 [source, bash]
 ----
 ./gradlew runLocalTestKeycloakStarter
+----
+
+you can set a custom port with the `-PkeycloakArgs=<port>` parameter, for example:
+[source, bash]
+----
+./gradlew runLocalTestKeycloakStarter -PkeycloakArgs="8081 myAdministrator myAdministratorPassword"
 ----
 
 ==== Stop
@@ -69,6 +75,12 @@ This will generate a keycloak oauth properties file for your local sechub server
 [source, bash]
 ----
 ./gradlew stopLocalTestKeycloakStarter
+----
+
+Or with custom port:
+[source, bash]
+----
+./gradlew stopLocalTestKeycloakStarter -PkeycloakPort=8081
 ----
 
 === Local PostgreSQL Server (as docker container)
@@ -86,9 +98,21 @@ If you do not set a port, admin and an admin password, the values are generated 
 ./gradlew runLocalTestPostgreSQLStarter
 ----
 
+you can set a custom port with the `PpostgresArgs=<port>` parameter, for example:
+[source, bash]
+----
+./gradlew runLocalTestPostgreSQLStarter -PpostgresArgs="8082 myDBUser myDBPassword"
+----
+
 ==== Stop
 
 [source, bash]
 ----
 ./gradlew stopLocalTestPostgreSQLStarter
+----
+
+Or with custom port:
+[source, bash]
+----
+./gradlew stopLocalTestPostgreSQLStarter -PpostgresPort=8082
 ----

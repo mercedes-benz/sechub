@@ -4,4 +4,4 @@
 # Ignore local property files
 application-local.*.yaml
 application-local.*.yml
-application-local-test-keycloak-gen.*.yaml
+application-local-keycloak-gen.yaml

@@ -25,19 +25,19 @@ server () {
 }
 
 create_user () {
-    echo "Creating user 'newuser' with password 'newpassword' in realm 'web-ui-server-local'..."
+    echo "Creating user ${KEYCLOAK_INITIAL_USER} with password ${KEYCLOAK_INITIAL_USER} in realm 'web-ui-server-local'..."
 
     # Login to Keycloak
     /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:"${KEYCLOAK_CONTAINER_PORT}" --realm master --user "${KEYCLOAK_ADMIN}" --password "${KEYCLOAK_ADMIN_PASSWORD}"
 
     # Create a new user
-    /opt/keycloak/bin/kcadm.sh create users -r web-ui-server-local -s username=int-test_superadmin -s enabled=true -s email=int-test_superadmin@sechub.example.org
+    /opt/keycloak/bin/kcadm.sh create users -r web-ui-server-local -s username="${KEYCLOAK_INITIAL_USER}" -s enabled=true -s email=int-test_superadmin@sechub.example.org
 
     # Set password for the new user
-    /opt/keycloak/bin/kcadm.sh set-password -r web-ui-server-local --username int-test_superadmin --new-password int-test_superadmin-pwd
+    /opt/keycloak/bin/kcadm.sh set-password -r web-ui-server-local --username int-test_superadmin --new-password "${KEYCLOAK_INITIAL_USER_PASSWORD}"
 }
 
-if [ "$DATABASE_START_MODE" = "server" ]
+if [ "$KEYCLOAK_START_MODE" = "server" ]
 then
     server
 else
