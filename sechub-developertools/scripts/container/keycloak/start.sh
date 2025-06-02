@@ -58,7 +58,7 @@ startContainer
 # Copy keycloak properties template as local sechub-server properties using envsubst for variable substitution
 # can be used with spring profile "local"
 local_template="${script_dir}/application-local-keycloak-gen-template.yaml"
-sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local-keycloak-gen.yaml"
+sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local_keycloak_gen.yaml"
 
 if [ -f "${sechub_properties_local_keycloak}" ]; then
     echo "Removing existing local Keycloak properties file: ${sechub_properties_local_keycloak}"

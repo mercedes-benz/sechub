@@ -35,7 +35,10 @@ plantuml::diagrams/gen/gen_springprofiles-integrationtest.puml[format=svg, title
 
 We use `integrationtest` profile for server integration tests. You must add some
 additional profiles. We use `h2` and `mocked_products` for unit testing
-of sechub server itself.
+of sechub server itself. +
+
+The profile `local-keycloak` can be used to connect to a local keycloak server.
+Default server can be started with `./gradlew runLocalTestKeycloakStarter` command which will also generated a ready-to-use property file.
 
 *Test your security tool suite installation*
 
