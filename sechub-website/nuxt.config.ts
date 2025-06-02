@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // https://nuxt.com/docs/api/configuration/nuxt-config
-// todo why different base URL -> sechub?
-const baseURL = process.env.NODE_ENV === 'development' ? '' : '';
+
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
 
 export default defineNuxtConfig({
   app: {

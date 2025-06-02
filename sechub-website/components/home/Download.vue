@@ -35,18 +35,6 @@ const links = [
         <p class="mt-4 text-lg text-gray-700">
           Download SecHub for seamless security integration.<br>Orchestrates security tools through an unified API.<br>MIT License.
         </p>
-        <!-- Re-enable this block once issue #3744 is solved
-
-        <Menu as="div" class="relative mt-8 inline-block text-left">
-          <div>
-            <MenuButton class="button">
-              <a href="https://mercedes-benz.github.io/sechub/index-old.html">
-                Downloads
-              </a>
-            </MenuButton>
-          </div>
-        </Menu>
-      -->
 
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
