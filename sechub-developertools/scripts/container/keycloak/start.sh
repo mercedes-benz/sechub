@@ -12,9 +12,8 @@ usage() {
     echo "  SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET: OAuth2 client secret (default: generated)"
     echo "  KEYCLOAK_INITIAL_USER: Initial user for Keycloak (default: int-test_superadmin)"
     echo "  KEYCLOAK_INITIAL_USER_PASSWORD: Initial user password (default: int-test_superadmin-pwd)"
-    echo "  KEYCLOAK_CONTAINER_PORT: Port for Keycloak container (default: 8080)"
     echo ""
-    echo "  This will generate a local Keycloak properties file for the SecHub server, which can be used with the 'local-keycloak' Spring profile."
+    echo "  This will generate a local Keycloak properties file for the SecHub server, which can be used with the 'local_keycloak' Spring profile."
 }
 
 default_port=8080
@@ -29,12 +28,16 @@ else
     echo "Using provided port: $1"
 fi
 
-# setting default values for keycloak admin, admin password, oauth2 client secret, initial user and password
+# setting predefined or default values for keycloak admin, admin password, oauth2 client secret, initial user and password
 export KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN:-admin}
 export KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
 export SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET=${SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET:-$(uuidgen)}
+
+# keycloak specific variables for initial user creation, can only be set by environment variables
 export KEYCLOAK_INITIAL_USER=${KEYCLOAK_INITIAL_USER:-int-test_superadmin}
 export KEYCLOAK_INITIAL_USER_PASSWORD=${KEYCLOAK_INITIAL_USER_PASSWORD:-int-test_superadmin-pwd}
+
+# set by script argument or default
 export KEYCLOAK_CONTAINER_PORT="${1:-$default_port}"
 
 addEnv "KEYCLOAK_START_MODE=server"
@@ -57,7 +60,7 @@ startContainer
 
 # Copy keycloak properties template as local sechub-server properties using envsubst for variable substitution
 # can be used with spring profile "local"
-local_template="${script_dir}/application-local-keycloak-gen-template.yaml"
+local_template="${script_dir}/application-local_keycloak_gen_template.yaml"
 sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local_keycloak_gen.yaml"
 
 if [ -f "${sechub_properties_local_keycloak}" ]; then

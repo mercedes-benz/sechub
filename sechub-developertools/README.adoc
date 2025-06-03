@@ -57,7 +57,7 @@ It is not intended to be used in production!
 
 Keycloak is by default started on http://localhost:8080.
 If you do not set an admin and an admin password, the values are generated randomly and can be taken from the /build/tmp/keycloak_container_<port>.info file.
-This will generate a keycloak oauth properties file for your local sechub server. Add `-Dspring.profiles.active=local-keycloak` to your spring properties to use the generated properties file.
+This will generate a keycloak oauth properties file for your local sechub server. Add `-Dspring.profiles.active=local_keycloak` to your spring properties to use the generated properties file.
 
 [source, bash]
 ----

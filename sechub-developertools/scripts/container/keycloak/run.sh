@@ -20,7 +20,7 @@ server () {
     create_user
 
     # Keep the container running otherwise it will exit because the server is running in the background
-    # this is necessary to keep the create a user
+    # this is necessary to create an initial keycloak user
     tail -f /dev/null
 }
 

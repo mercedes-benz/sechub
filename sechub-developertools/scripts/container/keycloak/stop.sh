@@ -4,7 +4,7 @@
 source ./../common-containerscript.sh
 
 function usage() {
-    echo "Usage: $script_name <port>" 
+    echo "Usage: $0 [port]"
 }
 
 if [[ -z "$1" ]]; then
