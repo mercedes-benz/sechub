@@ -52,7 +52,7 @@ dependencies {
 /* END of copied part */
 
 /*
-// This will be used again after we migrate to the new sechub-openapi-java module
+// This will be used again after we migrate to the new sechub-openapi module
 sourceSets {
     main {
     	java {
