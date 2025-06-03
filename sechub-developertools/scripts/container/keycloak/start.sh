@@ -40,6 +40,20 @@ export KEYCLOAK_INITIAL_USER_PASSWORD=${KEYCLOAK_INITIAL_USER_PASSWORD:-int-test
 # set by script argument or default
 export KEYCLOAK_CONTAINER_PORT="${1:-$default_port}"
 
+# Copy keycloak properties template as local sechub-server properties using envsubst for variable substitution
+# can be used with spring profile "local"
+local_template="${script_dir}/application-local_keycloak_gen_template.yaml"
+sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local_keycloak_gen.yaml"
+
+if [ -f "${sechub_properties_local_keycloak}" ]; then
+    echo "Removing existing local Keycloak properties file: ${sechub_properties_local_keycloak}"
+    rm -f "${sechub_properties_local_keycloak}"
+    echo "Warning: new keycloak properties file was generated for sechub server"
+fi
+
+echo "Generating local Keycloak properties file from template: ${local_template} to ${sechub_properties_local_keycloak}"
+envsubst < "${local_template}" > "${sechub_properties_local_keycloak}"
+
 addEnv "KEYCLOAK_START_MODE=server"
 addEnv "KEYCLOAK_ADMIN=$KEYCLOAK_ADMIN"
 addEnv "KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD"
@@ -55,19 +69,4 @@ defineImage "keycloak"
 defineContainerName "keycloak_${KEYCLOAK_CONTAINER_PORT}"
 ensureImageBuild
 ensureContainerNotRunning
-
-# Copy keycloak properties template as local sechub-server properties using envsubst for variable substitution
-# can be used with spring profile "local"
-local_template="${script_dir}/application-local_keycloak_gen_template.yaml"
-sechub_properties_local_keycloak="${script_dir}/../../../../sechub-server/src/main/resources/application-local_keycloak_gen.yaml"
-
-if [ -f "${sechub_properties_local_keycloak}" ]; then
-    echo "Removing existing local Keycloak properties file: ${sechub_properties_local_keycloak}"
-    rm -f "${sechub_properties_local_keycloak}"
-    echo "Warning: new keycloak properties file was generated for sechub server"
-fi
-
-echo "Generating local Keycloak properties file from template: ${local_template} to ${sechub_properties_local_keycloak}"
-envsubst < "${local_template}" > "${sechub_properties_local_keycloak}"
-
 startContainer
