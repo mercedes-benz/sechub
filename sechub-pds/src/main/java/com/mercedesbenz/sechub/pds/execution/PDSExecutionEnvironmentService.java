@@ -88,7 +88,7 @@ public class PDSExecutionEnvironmentService {
 
         environmentCleaner.clean(environment, pdsScriptEnvWhitelist);
 
-        PDSSafeProcessEnvironmentAccess result = new PDSSafeProcessEnvironmentAccess(builder.environment());
+        PDSSafeProcessEnvironmentAccess result = new PDSSafeProcessEnvironmentAccess(environment);
 
         return result;
 

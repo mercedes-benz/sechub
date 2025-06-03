@@ -64,7 +64,7 @@ public class PDSSafeProcessEnvironmentAccessTest {
     }
 
     @Test
-    void get_keys_fetchs_keys_from_origina_map() {
+    void get_keys_fetchs_keys_from_original_map() {
         /* prepare */
         Map<String, String> env = new LinkedHashMap<>();
 
@@ -80,7 +80,7 @@ public class PDSSafeProcessEnvironmentAccessTest {
     }
 
     @Test
-    void get_existing_key__returns_value_from_origin_map() {
+    void get_existing_key__returns_value_from_original_map() {
         /* prepare */
         String key = "someKey";
         String value = "someValue";
@@ -94,7 +94,7 @@ public class PDSSafeProcessEnvironmentAccessTest {
     }
 
     @Test
-    void get_non_existing_key__returns_null_from_origin_map() {
+    void get_non_existing_key__returns_null_from_original_map() {
         /* prepare */
         String key = "nonExistingKey";
         when(environment.get(key)).thenReturn(null);
