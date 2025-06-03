@@ -56,8 +56,6 @@ defineContainerName "keycloak_${KEYCLOAK_CONTAINER_PORT}"
 ensureImageBuild
 ensureContainerNotRunning
 
-startContainer
-
 # Copy keycloak properties template as local sechub-server properties using envsubst for variable substitution
 # can be used with spring profile "local"
 local_template="${script_dir}/application-local_keycloak_gen_template.yaml"
@@ -71,3 +69,5 @@ fi
 
 echo "Generating local Keycloak properties file from template: ${local_template} to ${sechub_properties_local_keycloak}"
 envsubst < "${local_template}" > "${sechub_properties_local_keycloak}"
+
+startContainer
