@@ -47,7 +47,7 @@ if (!secHubBuildStage.providesGeneratedOpenApiFile()){
 
 tasks.register('runLocalTestKeycloakStarter', JavaExec) {
     group = "Keycloak"
-    description = "Run LocalTestKeycloakStarter with optional arguments (use -PkeycloakArgs=\"8081 myadmin mypass\")"
+    description = "Run LocalTestKeycloakStarter with optional arguments (use -PkeycloakArgs=\"8081 myadmin mypass myClientSecret\")"
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.mercedesbenz.sechub.developertools.container.keycloak.LocalTestKeycloakStarter'
     if (project.hasProperty('keycloakArgs')) {

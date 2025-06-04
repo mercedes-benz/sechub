@@ -10,7 +10,7 @@ import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLaunc
 
 public class PostgreSQLTestContainer extends AbstractTestContainer {
 
-    private String databaseName;
+    private final String databaseName;
 
     /**
      * Creates a postgres test container with wanted exposed port

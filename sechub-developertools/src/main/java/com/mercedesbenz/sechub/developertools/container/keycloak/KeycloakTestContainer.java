@@ -10,8 +10,11 @@ import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLaunc
 
 public class KeycloakTestContainer extends AbstractTestContainer {
 
-    public KeycloakTestContainer(int testPort, String user, String password) {
+    private final String clientSecret;
+
+    public KeycloakTestContainer(int testPort, String user, String password, String clientSecret) {
         super(testPort, user, password);
+        this.clientSecret = clientSecret;
     }
 
     @Override
@@ -22,8 +25,9 @@ public class KeycloakTestContainer extends AbstractTestContainer {
             throw new IllegalStateException("Does not exist:" + scriptPath);
         }
         config = new BashScriptContainerLaunchConfig(scriptPath);
-        config.getEnvironment().put("KEYCLOAK_ADMIN", username);
-        config.getEnvironment().put("KEYCLOAK_ADMIN_PASSWORD", password);
+        config.getEnvironment().put("KC_BOOTSTRAP_ADMIN_USERNAME", username);
+        config.getEnvironment().put("KC_BOOTSTRAP_ADMIN_PASSWORD", password);
+        config.getEnvironment().put("SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET", clientSecret);
         config.getParameters().add(String.valueOf(port));
 
         launcher.start(config);
@@ -36,5 +40,9 @@ public class KeycloakTestContainer extends AbstractTestContainer {
         config = new BashScriptContainerLaunchConfig(scriptPath);
         config.getParameters().add(String.valueOf(getPort()));
         launcher.start(config);
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
     }
 }

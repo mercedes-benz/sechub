@@ -25,14 +25,15 @@ public class LocalTestKeycloakStarter extends AbstractTestContainerStarter {
      * @param args optional parts in following order:
      *
      *             <pre>
-     * ${port} ${admin} ${password}
+     * ${port} ${admin} ${password} ${clientSecret}
      *             </pre>
      *
      *             When port is not set, the test container will start with port
      *             8080 {@value #DEFAULT_FIXED_PORT}. When no admin user is set the
      *             user will be auto generated. A defined user name must have at
      *             least 8 characters. A password must be at last 12 characters
-     *             long. If not defined a strong password will be generated.
+     *             long. If not defined a strong password will be generated. When no
+     *             client secret is set, a secret will be auto generated.
      *
      * @throws Exception
      */
@@ -40,29 +41,36 @@ public class LocalTestKeycloakStarter extends AbstractTestContainerStarter {
         String testPort = args.length > 0 ? args[0] : DEFAULT_FIXED_PORT;
         String admin = args.length > 1 ? args[1] : UUID.randomUUID().toString();
         String password = args.length > 2 ? args[2] : UUID.randomUUID().toString();
+        String clientSecret = args.length > 3 ? args[3] : UUID.randomUUID().toString();
 
         assertLength(admin, "Keycloak admin user name", 8);
         assertLength(password, "Keycloak admin password", 12);
+        assertLength(clientSecret, "Keycloak client-secret", 12);
 
         int keycloakPort = Integer.parseInt(testPort);
 
-        new LocalTestKeycloakStarter().start(keycloakPort, admin, password, "");
+        new LocalTestKeycloakStarter().start(keycloakPort, admin, password, clientSecret);
     }
 
     @Override
     protected void createInfoFile(AbstractTestContainer container) throws IOException {
+        if (!(container instanceof KeycloakTestContainer)) {
+            throw new IllegalArgumentException("Container must be of type KeyCloakTestContainer, but was:" + container.getClass().getName());
+        }
+
         Path created = Files.createFile(filePath);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("keycloak admin user:").append(container.getUsername()).append("\n");
-        sb.append("keycloak admin password:").append(container.getPassword()).append("\n");
+        sb.append("KC_BOOTSTRAP_ADMIN_USERNAME").append(container.getUsername());
+        sb.append("\nKC_BOOTSTRAP_ADMIN_PASSWORD").append(container.getPassword());
+        sb.append("\nSECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET").append(((KeycloakTestContainer) container).getClientSecret());
 
         Files.write(created, sb.toString().getBytes());
     }
 
     @Override
-    protected KeycloakTestContainer createContainer(int port, String username, String password, String dbName) {
-        return new KeycloakTestContainer(port, username, password);
+    protected KeycloakTestContainer createContainer(int port, String username, String password, String clientSecret) {
+        return new KeycloakTestContainer(port, username, password, clientSecret);
     }
 
     @Override

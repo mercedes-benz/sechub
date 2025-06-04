@@ -4,6 +4,9 @@
 # Fail on errors:
 set -e
 
+max_attempts=60
+counter=0
+
 debug () {
     while true
     do
@@ -14,10 +17,22 @@ debug () {
 
 server () {
     echo "Starting Keycloak server on port ${KEYCLOAK_CONTAINER_PORT}..."
-    exec /opt/keycloak/bin/kc.sh start-dev --import-realm --http-port="$KEYCLOAK_CONTAINER_PORT" &
+    exec /opt/keycloak/bin/kc.sh start-dev --import-realm --http-port="$KEYCLOAK_CONTAINER_PORT" --health-enabled=true &
 
     # Wait for the server to start
-    wait_for_keycloak_running
+    until wait_for_keycloak_running; do
+      echo "Waiting for Keycloak to be ready... Attempt $((counter + 1)) of $max_attempts"
+
+      counter=$((counter + 1))
+      if [ $counter -ge $max_attempts ]; then
+        # If the maximum number of attempts is reached, exit with an error and the container will stop
+        echo "Keycloak did not start within the expected time."
+        exit 1
+      fi
+
+      sleep 5  # Wait for 5 seconds before checking again
+    done
+    echo "Keycloak is now running on port ${KEYCLOAK_CONTAINER_PORT}."
 
     # Create initial user
     create_initial_user
@@ -27,23 +42,22 @@ server () {
     tail -f /dev/null
 }
 
+
 wait_for_keycloak_running () {
-    # because the docker container has no curl and no wget we
-    # use a java program to check that the keycloak server is available
-	java /opt/keycloak/bin/KeycloakAvailabilityChecker.java
+    # Check if Keycloak is ready by querying the health endpoint
+    curl --head -fsS "http://localhost:9000/health/ready"
 }
 
 create_initial_user () {
-
     # Login to Keycloak
-	echo "Login as administrator to keycloak"
-    /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:"${KEYCLOAK_CONTAINER_PORT}" --realm master --user "${KEYCLOAK_ADMIN}" --password "${KEYCLOAK_ADMIN_PASSWORD}"
+	  echo "Login as administrator to keycloak"
+    /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:"${KEYCLOAK_CONTAINER_PORT}" --realm master --user "${KC_BOOTSTRAP_ADMIN_USERNAME}" --password "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
 
     # Create a new user
     echo "Creating initial user '${KEYCLOAK_INITIAL_USER}' with password '${KEYCLOAK_INITIAL_USER_PASSWORD}' in realm 'web-ui-server-local'..."
-    /opt/keycloak/bin/kcadm.sh create users -r web-ui-server-local -s username="${KEYCLOAK_INITIAL_USER}" -s enabled=true -s email=${KEYCLOAK_INITIAL_USER}@sechub.example.org
+    /opt/keycloak/bin/kcadm.sh create users -r web-ui-server-local -s username="${KEYCLOAK_INITIAL_USER}" -s enabled=true -s email="${KEYCLOAK_INITIAL_USER}@sechub.example.org"
 
-	echo "Set new password for user ${KEYCLOAK_INITIAL_USER}"
+	  echo "Set new password for user ${KEYCLOAK_INITIAL_USER}"
     # Set password for the new user
     /opt/keycloak/bin/kcadm.sh set-password -r web-ui-server-local --username "${KEYCLOAK_INITIAL_USER}" --new-password "${KEYCLOAK_INITIAL_USER_PASSWORD}"
 }

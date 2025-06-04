@@ -33,10 +33,10 @@ public abstract class AbstractTestContainerStarter {
         }
     }
 
-    public void start(int port, String username, String password, String dbName) throws Exception {
+    public void start(int port, String username, String password, String additionalArgument) throws Exception {
         Runtime.getRuntime().addShutdownHook(createShutdownHookThread());
 
-        container = createContainer(port, username, password, dbName);
+        container = createContainer(port, username, password, additionalArgument);
         initializeDirectoryAndFiles(port);
 
         LOG.info("Starting container on port: {}", port);

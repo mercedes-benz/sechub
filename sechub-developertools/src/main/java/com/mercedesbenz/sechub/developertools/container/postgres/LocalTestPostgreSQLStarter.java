@@ -87,10 +87,9 @@ public class LocalTestPostgreSQLStarter extends AbstractTestContainerStarter {
         Path created = Files.createFile(filePath);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#!/bin/bash\n");
-        sb.append("\nPOSTGRES_DB_URL=" + ((PostgreSQLTestContainer) container).getJdbcUrl());
-        sb.append("\nPOSTGRES_DB_USERNAME=" + container.getUsername());
-        sb.append("\nPOSTGRES_DB_PASSWORD=" + container.getPassword());
+        sb.append("POSTGRES_DB_URL=").append(((PostgreSQLTestContainer) container).getJdbcUrl());
+        sb.append("\nPOSTGRES_DB_USERNAME=").append(container.getUsername());
+        sb.append("\nPOSTGRES_DB_PASSWORD=").append(container.getPassword());
 
         Files.write(created, sb.toString().getBytes());
     }

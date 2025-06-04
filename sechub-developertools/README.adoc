@@ -67,7 +67,7 @@ This will generate a keycloak oauth properties file for your local sechub server
 you can set a custom port with the `-PkeycloakArgs=<port>` parameter, for example:
 [source, bash]
 ----
-./gradlew runLocalTestKeycloakStarter -PkeycloakArgs="8081 myAdministrator myAdministratorPassword"
+./gradlew runLocalTestKeycloakStarter -PkeycloakArgs="8081 myAdministrator myAdministratorPassword myVeryStrongClientSecret"
 ----
 
 ==== Stop
@@ -101,7 +101,7 @@ If you do not set a port, admin and an admin password, the values are generated 
 you can set a custom port with the `PpostgresArgs=<port>` parameter, for example:
 [source, bash]
 ----
-./gradlew runLocalTestPostgreSQLStarter -PpostgresArgs="8082 myDBUser myDBPassword"
+./gradlew runLocalTestPostgreSQLStarter -PpostgresArgs="8082 myDBUser myDBPassword myDbName"
 ----
 
 ==== Stop
