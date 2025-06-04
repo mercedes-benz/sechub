@@ -33,7 +33,7 @@ clean.doFirst {
     delete 'gen'
 }
 
-def openApiSpecPath = "${project.rootDir}/sechub-openapi-java/src/main/resources/openapi.yaml"
+def openApiSpecPath = "${project.rootDir}/sechub-openapi/src/main/resources/openapi.yaml"
 
 openApiGenerate {
     generatorName = 'java'

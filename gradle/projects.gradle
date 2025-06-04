@@ -9,7 +9,7 @@ projectType = [
                     project(':sechub-cli'),
             ],
             javaProjects: [
-               project(':sechub-openapi-java'),
+               project(':sechub-openapi'),
                project(':sechub-openapi-java-client'),
                project(':sechub-api-java'),
                project(':sechub-testframework'),
