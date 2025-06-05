@@ -321,9 +321,9 @@ public class AsciidocGenerator implements Generator {
 
         generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("prod").build());
         generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("dev")
-                .satelites("mocked_notifications", "mocked_products", "real_products", "h2", "postgres").build());
+                .satelites("mocked_notifications", "mocked_products", "real_products", "h2", "postgres", "local_keycloak").build());
         generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("integrationtest")
-                .satelites("mocked_products", "real_products", "h2", "postgres").build());
+                .satelites("mocked_products", "real_products", "h2", "postgres", "local_keycloak").build());
 
     }
 

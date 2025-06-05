@@ -26,6 +26,7 @@ dependencies {
 }
 
 task importEclipseProjectsNeedingOpenApiFile(type: Exec){
+
     workingDir "$rootDir"
     commandLine './gradlew', ':sechub-systemtest:cleanEclipse',':sechub-systemtest:eclipse', ':sechub-api-java:cleanEclipse',':sechub-api-java:eclipse', ':sechub-pds-tools:cleanEclipse',':sechub-pds-tools:eclipse',':sechub-examples:example-sechub-api-java:cleanEclipse',':sechub-examples:example-sechub-api-java:eclipse','-Dsechub.build.stage=all'
 }
@@ -44,4 +45,52 @@ if (!secHubBuildStage.providesGeneratedOpenApiFile()){
     tasks.eclipse.dependsOn(importEclipseProjectsNeedingOpenApiFile)
 }
 
+tasks.register('runLocalTestKeycloakStarter', JavaExec) {
+    group = "Keycloak"
+    description = "Run LocalTestKeycloakStarter with optional arguments (use -PkeycloakArgs=\"8081 myadmin mypass myClientSecret\")"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mercedesbenz.sechub.developertools.container.keycloak.LocalTestKeycloakStarter'
+    if (project.hasProperty('keycloakArgs')) {
+        args project.property('keycloakArgs').split("\\s+")
+    }
+}
 
+tasks.register('stopLocalTestKeycloakStarter', Delete) {
+    group = "Keycloak"
+    description = "delete the .info file to stop the running keycloak instance (use -PkeycloakPort=8081)"
+    def port = project.hasProperty('keycloakPort') ? project.property('keycloakPort') : '8080'
+    def infoFile = file("$rootDir/sechub-developertools/build/tmp/keycloak_container_${port}.info")
+    doFirst {
+        if (infoFile.exists()) {
+            println "Stopping Keycloak by deleting info file: ${infoFile.absolutePath}"
+            infoFile.delete()
+        } else {
+            println "No Keycloak instance is running on port ${port}, nothing to stop."
+        }
+    }
+}
+
+tasks.register('runLocalTestPostgreSQLStarter', JavaExec) {
+    group = "PostgreSQL"
+    description = "Run LocalPostgreSQLStarter with optional arguments (use -PpostgresArgs=\"49152 myadmin mypass mydatabase\")"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mercedesbenz.sechub.developertools.container.postgres.LocalTestPostgreSQLStarter'
+    if (project.hasProperty('postgresArgs')) {
+        args project.property('postgresArgs').split("\\s+")
+    }
+}
+
+tasks.register('stopLocalTestPostgreSQLStarter', Delete) {
+    group = "PostgreSQL"
+    description = "delete the .info file to stop the running PostgreSQL instance (use -PpostgresPort=49152)"
+    def port = project.hasProperty('postgresPort') ? project.property('postgresPort') : '49152'
+    def infoFile = file("$rootDir/sechub-developertools/build/tmp/postgres_container_${port}.info")
+    doFirst {
+        if (infoFile.exists()) {
+            println "Stopping PostgreSQL by deleting info file: ${infoFile.absolutePath}"
+            infoFile.delete()
+        } else {
+            println "No PostgreSQL instance is running on port ${port}, nothing to stop."
+        }
+    }
+}

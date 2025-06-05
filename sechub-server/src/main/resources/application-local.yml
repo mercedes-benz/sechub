@@ -8,3 +8,4 @@ spring:
   config:
     import:
       - optional:classpath:application-local.${USER}.yml
+      - optional:classpath:application-local.${USER}.yaml

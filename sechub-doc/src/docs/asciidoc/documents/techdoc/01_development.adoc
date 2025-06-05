@@ -161,7 +161,26 @@ To stop your running server:
 ./gradlew stopIntegrationTestServer
 ----
 
-=== Developer administration UI
+=== Developer Tools
+
+The developer tools are a set of tools that help you to develop and test {sechub}.
+
+==== Shell scripts
+
+The scripts are located in the `sechub-developertools/scripts` module.
+They are used to start and stop the {sechub} server, run integration tests, and perform other tasks related to development (sdc.sh).
+The api scripts can communicate with the {sechub} API (sechub-api.sh) or with a PDS API (pds-api.sh).
+
+Execute the scripts with `-h` to get a list of available commands and options.
+
+==== Test containers: PostgreSQL and OAuth2 server (Keycloak)
+
+The test containers are used to run a PostgreSQL database and an OAuth2 server in a docker container for testing purposes.
+Both container can be started and stopped with gradle tasks, with bash scripts or as Java applications.
+
+Please see to the README of the `sechub-developertools` module for more information about the test containers. +
+
+==== Developer administration UI
 
 There exists a very simple user interface for developers to test out the behaviour of the {sechub} server. There will be
 all functions of server available, but in a very reduced way.
@@ -170,12 +189,13 @@ WARNING: The developer administration UI is only a tool for developers and shoul
          It's an extreme simple client for administrative parts. For real administration a frontend for admins
          will be developed in future! It's not purposed to be in a deployment, but only for development.
 
-==== General launch setup
+===== General launch setup
 include::./../shared/launchconfig/launchconfig_start_general_adminui.adoc[]
 
-==== Integration test variant
+===== Integration test variant
 include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui.adoc[]
 
+Please see to the README of the `sechub-developertools` module for more information about the DAUI. +
 
 === Branching model
 

@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+spring:
+  config:
+    import:
+      - optional:classpath:application-local_keycloak_gen.yaml
+
+sechub:
+  security:
+    server:
+      modes: oauth2, classic
+      oauth2:
+        mode: jwt
+    login:
+      enabled: true
+      login-page: /login
+      redirect-uri: http://localhost:3000
+      modes: oauth2, classic
+      oauth2:
+        client-id: web-ui-server-local
+        provider: keycloak
+        redirect-uri: https://localhost:8443/login/oauth2/code/keycloak
+    minimumTokenValidity: 10h
