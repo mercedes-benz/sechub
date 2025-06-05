@@ -61,9 +61,9 @@ public class LocalTestKeycloakStarter extends AbstractTestContainerStarter {
         Path created = Files.createFile(filePath);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("KC_BOOTSTRAP_ADMIN_USERNAME").append(container.getUsername());
-        sb.append("\nKC_BOOTSTRAP_ADMIN_PASSWORD").append(container.getPassword());
-        sb.append("\nSECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET").append(((KeycloakTestContainer) container).getClientSecret());
+        sb.append("KC_BOOTSTRAP_ADMIN_USERNAME=").append(container.getUsername());
+        sb.append("\nKC_BOOTSTRAP_ADMIN_PASSWORD=").append(container.getPassword());
+        sb.append("\nSECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET=").append(((KeycloakTestContainer) container).getClientSecret());
 
         Files.write(created, sb.toString().getBytes());
     }
