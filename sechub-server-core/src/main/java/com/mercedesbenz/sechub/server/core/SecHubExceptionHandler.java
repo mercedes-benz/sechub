@@ -1,38 +1,53 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server.core;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.firewall.RequestRejectedHandler;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonLocation;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 @ControllerAdvice
 public class SecHubExceptionHandler {
 
+    @Value("multipart.max-file-size")
+    private String maxFileSize;
+
     @ExceptionHandler(SizeLimitExceededException.class)
-    @ResponseBody
-    public String handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
-        return commonHandleFileUploadSizeExceed(ex, response);
+    public ResponseEntity<String> handleSizeLimitExceededException(SizeLimitExceededException ex) {
+        return createFileUploadSizeExceedResponse(ex.getPermittedSize());
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseBody
-    public String handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
-        return commonHandleFileUploadSizeExceed(ex, response);
+    public ResponseEntity<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        Throwable mostSpecificCause = ex.getMostSpecificCause();
+
+        if (mostSpecificCause instanceof SizeLimitExceededException sizeLimitExceededException) {
+            /*
+             * get the size limit from the root exception since it should always speak the
+             * truth
+             */
+            return handleSizeLimitExceededException(sizeLimitExceededException);
+        }
+
+        /* fall back to configured max file size from application properties */
+        DataSize size = DataSize.parse(maxFileSize);
+        long maxFileSizeBytes = size.toBytes();
+
+        return createFileUploadSizeExceedResponse(maxFileSizeBytes);
     }
 
     @ExceptionHandler(JacksonException.class)
-    @ResponseBody
-    public String handleJacksonException(JacksonException je, HttpServletResponse response) {
+    public ResponseEntity<String> handleJacksonException(JacksonException je) {
         /*
          * In this case the Jackson exception comes from Spring Boot framework - e.g.
          * when a user defines a wrong SecHubCongfigurationModel as JSON and the
@@ -48,7 +63,7 @@ public class SecHubExceptionHandler {
          * So we handle this special.
          *
          */
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        int status = HttpStatus.BAD_REQUEST.value();
 
         String jsonProblem = "JSON data failure";
 
@@ -59,7 +74,11 @@ public class SecHubExceptionHandler {
         jsonProblem += ". ";
         jsonProblem += je.getOriginalMessage();
 
-        return jsonProblem;
+        /* @formatter:off */
+        return ResponseEntity
+                .status(status)
+                .body(jsonProblem);
+        /* @formatter:on */
     }
 
     @Bean
@@ -67,16 +86,14 @@ public class SecHubExceptionHandler {
         return new SecHubHttpStatusRequestRejectedHandler();
     }
 
-    private String commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {
-        if (response == null) {
-            throw new IllegalStateException("response missing");
-        }
-        if (ex == null) {
-            throw new IllegalStateException("exception missing");
-        }
+    private ResponseEntity<String> createFileUploadSizeExceedResponse(long maxSize) {
+        String displayMaxSize = FileUtils.byteCountToDisplaySize(maxSize);
+        String errMsg = "The file upload size must not exceed %s".formatted(displayMaxSize);
 
-        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-
-        return "File upload maximum reached. Please reduce your upload file size.";
+        /* @formatter:off */
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(errMsg);
+        /* @formatter:on */
     }
 }

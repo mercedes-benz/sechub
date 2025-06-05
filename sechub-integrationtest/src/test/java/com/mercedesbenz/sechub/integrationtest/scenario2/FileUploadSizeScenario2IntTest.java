@@ -62,7 +62,7 @@ public class FileUploadSizeScenario2IntTest {
         testData.tooBig = true;
 
         testData.expectedException = BadRequest.class;
-        testData.expectedErrorMessagePart = "The file size in header field x-file-size exceeds the allowed upload size.";
+        testData.expectedErrorMessagePart = "The file size in header field x-file-size exceeds the allowed upload size of 400 KB";
 
         /* execute + test */
         handleBinariesUpload(testData);
@@ -149,7 +149,7 @@ public class FileUploadSizeScenario2IntTest {
         testData.tooBig = true;
 
         testData.expectedException = NotAcceptable.class;
-        testData.expectedErrorMessagePart = "File upload maximum reached. Please reduce your upload file size.";
+        testData.expectedErrorMessagePart = "The file upload size must not exceed 300 KB";
 
         /* execute + test */
         handleSourcecodeUpload(testData);
