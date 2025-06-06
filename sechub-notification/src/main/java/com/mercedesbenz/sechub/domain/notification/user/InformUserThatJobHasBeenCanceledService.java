@@ -12,6 +12,7 @@ import com.mercedesbenz.sechub.domain.notification.email.MailMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserCancelsJob;
 
 @Service
 public class InformUserThatJobHasBeenCanceledService {
@@ -25,6 +26,7 @@ public class InformUserThatJobHasBeenCanceledService {
     private EmailService emailService;
 
     @UseCaseAdminCancelsJob(@Step(number = 4, name = "Inform user that her/his job has been canceled"))
+    @UseCaseUserCancelsJob(@Step(number = 4, name = "Inform user that her/his job has been canceled"))
     public void notify(JobMessage jobMessage) {
         String ownerEmailAddress = jobMessage.getOwnerEmailAddress();
         if (ownerEmailAddress == null || ownerEmailAddress.isEmpty()) {

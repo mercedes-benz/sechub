@@ -22,6 +22,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 
 public class PDSCancellationScenario18IntTest {
 
@@ -34,6 +36,7 @@ public class PDSCancellationScenario18IntTest {
     TestProject project = PROJECT_1;
 
     @Test
+    @UseCaseAdminCancelsJob(@Step(number = 0, name = "integration test"))
     public void sechub_starts_job_and_triggers_cancel_must_be_handled_by_PDS_script() {
         /* @formatter:off */
         /* prepare */
