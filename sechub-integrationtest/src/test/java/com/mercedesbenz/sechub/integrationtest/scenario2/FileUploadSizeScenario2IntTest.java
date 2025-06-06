@@ -58,7 +58,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_binaries_tarfile_exceeds_configured_max_bin_file_size_a_BAD_REQUEST_is_returned() throws Exception {
 
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES + 2221204;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES + 2221204;
         testData.tooBig = true;
 
         testData.expectedException = BadRequest.class;
@@ -71,7 +71,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_binaries_tarfile_exceeds_NOT_max_bin_file_size_file_is_uploaded() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES - 1;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES - 1;
 
         /* execute + test */
         handleBinariesUpload(testData);
@@ -80,7 +80,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_binaries_tarfile_exceeds_NOT_max_bin_file_size_but_invalid_user_checksum_NOT_ACCEPTABLE_is_returned() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_BINARIES_UPLOAD_IN_BYTES - 1;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_BINARIES_UPLOAD_IN_BYTES - 1;
         testData.userChecksum = "wrong-checksum";
 
         testData.expectedException = NotAcceptable.class;
@@ -93,7 +93,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_source_zipfile_exceeds_NOT_max_bin_file_size_but_invalid_user_checksum_NOT_ACCEPTABLE_is_returned() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES;
         testData.userChecksum = "wrong-checksum";
 
         testData.expectedException = NotAcceptable.class;
@@ -106,7 +106,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_binaries_tarfile_exceeds_NOT_max_bin_file_size_but_differs_to_user_checksum_NOT_ACCEPTABLE_is_returned() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_BINARIES_UPLOAD_IN_BYTES - 1;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_BINARIES_UPLOAD_IN_BYTES - 1;
         // correct checksum:
         // 5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
         testData.userChecksum = "5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ee"; // last char changed so different
@@ -121,7 +121,7 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_source_zipfile_exceeds_NOT_max_bin_file_size_but_differs_to_user_checksum_NOT_ACCEPTABLE_is_returned() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES;
         // correct checksum:
         // cf414e31e73f986a9f3c8f76349a11d3a42d6880b3234258b5ff461c04a60b6f
         testData.userChecksum = "cf414e31e73f986a9f3c8f76349a11d3a42d6880b3234258b5ff461c04a60b6c"; // last char changed so different
@@ -136,16 +136,20 @@ public class FileUploadSizeScenario2IntTest {
     @Test
     public void when_binaries_tarfile_is_only_one_kilobyte_no_exception_thrown() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = 1024;
+        testData.fileUploadSizeInBytes = 1024;
 
         /* execute + test */
         handleBinariesUpload(testData);
     }
 
+    /**
+     * The test setup allows for 300KB file upload size and 320KB request size.
+     * With a file upload size > 300KB this should result in a file size exceeded exception.
+     */
     @Test
     public void when_sourcecode_zipfile_exceeds_configured_max_source_zip_file_size_a_NOT_ACCEPTABLE_is_returned() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES + 1;
         testData.tooBig = true;
 
         testData.expectedException = NotAcceptable.class;
@@ -155,10 +159,28 @@ public class FileUploadSizeScenario2IntTest {
         handleSourcecodeUpload(testData);
     }
 
+    /**
+     * The test setup allows for 300KB file upload size and 320KB request size.
+     * With a file upload size > 320KB this should result in a request size exceeded exception.
+     * Note that the request size is always evaluated first.
+     */
+    @Test
+    public void when_request_exceeds_configured_max_request_size_a_NOT_ACCEPTABLE_is_returned() throws Exception {
+        /* prepare */
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_REQUEST_SIZE_IN_BYTES + 1;
+        testData.tooBig = true;
+
+        testData.expectedException = NotAcceptable.class;
+        testData.expectedErrorMessagePart = "The request size must not exceed 320 KB";
+
+        /* execute + test */
+        handleSourcecodeUpload(testData);
+    }
+
     @Test
     public void when_sourcecode_zipfile_exceeds_NOT_max_source_zip_file_size_file_is_uploaded() throws Exception {
         /* prepare */
-        testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES;
+        testData.fileUploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_FILE_UPLOAD_SIZE_IN_BYTES;
 
         /* execute + test */
         handleSourcecodeUpload(testData);
@@ -169,7 +191,7 @@ public class FileUploadSizeScenario2IntTest {
         private Class<? extends Throwable> expectedException;
         private String expectedErrorMessagePart;
 
-        private int uploadSizeInBytes;
+        private int fileUploadSizeInBytes;
         private boolean tooBig;
         private String userChecksum;
         public String fileNameAtServerSide;
@@ -251,7 +273,7 @@ public class FileUploadSizeScenario2IntTest {
 
         UUID jobUUID = assertUser(USER_1).canCreateWebScan(PROJECT_1);
 
-        File fileToUpload = createZipFileContainingKilobytes(data.uploadSizeInBytes, data.tooBig);
+        File fileToUpload = createZipFileContainingKilobytes(data.fileUploadSizeInBytes, data.tooBig);
 
         /* execute */
         UnitTestExecutable executable = new UnitTestExecutable() {
@@ -335,7 +357,7 @@ public class FileUploadSizeScenario2IntTest {
         file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of
                                        // parent missing
 
-        int maximumUploadSizeInBytes = data.uploadSizeInBytes;
+        int maximumUploadSizeInBytes = data.fileUploadSizeInBytes;
         int bytesToOrder = maximumUploadSizeInBytes;
 
         byte[] content = new byte[bytesToOrder];

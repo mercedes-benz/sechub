@@ -2,13 +2,14 @@
 package com.mercedesbenz.sechub.server.core;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.firewall.RequestRejectedHandler;
-import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -19,12 +20,22 @@ import com.fasterxml.jackson.core.JsonLocation;
 @ControllerAdvice
 public class SecHubExceptionHandler {
 
-    @Value("multipart.max-file-size")
-    private String maxFileSize;
+    private static final Logger logger = LoggerFactory.getLogger(SecHubExceptionHandler.class);
 
     @ExceptionHandler(SizeLimitExceededException.class)
     public ResponseEntity<String> handleSizeLimitExceededException(SizeLimitExceededException ex) {
-        return createFileUploadSizeExceedResponse(ex.getPermittedSize());
+        logger.error("Request size limit exceeded:", ex);
+        String displayPermittedSize = FileUtils.byteCountToDisplaySize(ex.getPermittedSize());
+        String errMsg = "The request size must not exceed %s".formatted(displayPermittedSize);
+        return createNotAcceptableResponseEntity(errMsg);
+    }
+
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public ResponseEntity<String> handleFileSizeLimitExceededException(FileSizeLimitExceededException ex) {
+        logger.error("File size limit exceeded:", ex);
+        String displayPermittedSize = FileUtils.byteCountToDisplaySize(ex.getPermittedSize());
+        String errMsg = "The file upload size must not exceed %s".formatted(displayPermittedSize);
+        return createNotAcceptableResponseEntity(errMsg);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -32,18 +43,17 @@ public class SecHubExceptionHandler {
         Throwable mostSpecificCause = ex.getMostSpecificCause();
 
         if (mostSpecificCause instanceof SizeLimitExceededException sizeLimitExceededException) {
-            /*
-             * get the size limit from the root exception since it should always speak the
-             * truth
-             */
             return handleSizeLimitExceededException(sizeLimitExceededException);
         }
 
-        /* fall back to configured max file size from application properties */
-        DataSize size = DataSize.parse(maxFileSize);
-        long maxFileSizeBytes = size.toBytes();
+        if (mostSpecificCause instanceof FileSizeLimitExceededException fileSizeLimitExceededException) {
+            return handleFileSizeLimitExceededException(fileSizeLimitExceededException);
+        }
 
-        return createFileUploadSizeExceedResponse(maxFileSizeBytes);
+        logger.error("Max upload size exceeded:", ex);
+        String displayMaxUploadSize = FileUtils.byteCountToDisplaySize(ex.getMaxUploadSize());
+        String errMsg = "Upload size must not exceed %s".formatted(displayMaxUploadSize);
+        return createNotAcceptableResponseEntity(errMsg);
     }
 
     @ExceptionHandler(JacksonException.class)
@@ -86,10 +96,7 @@ public class SecHubExceptionHandler {
         return new SecHubHttpStatusRequestRejectedHandler();
     }
 
-    private ResponseEntity<String> createFileUploadSizeExceedResponse(long maxSize) {
-        String displayMaxSize = FileUtils.byteCountToDisplaySize(maxSize);
-        String errMsg = "The file upload size must not exceed %s".formatted(displayMaxSize);
-
+    private static ResponseEntity<String> createNotAcceptableResponseEntity(String errMsg) {
         /* @formatter:off */
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)

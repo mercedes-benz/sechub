@@ -18,6 +18,7 @@ import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestInputStream;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -103,13 +104,17 @@ public class PDSFileUploadJobService {
 
         } catch (FileUploadSizeException fileUploadSizeException) {
 
-            LOG.error("Size limit reached: {}", fileUploadSizeException.getMessage());
-            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", fileUploadSizeException);
+            long maxFileSize = fileUploadSizeException.getPermitted();
+            String displayMaxFileSize = FileUtils.byteCountToDisplaySize(maxFileSize);
+            LOG.error("File upload size exceeded: {}", fileUploadSizeException.getMessage());
+            throw new PDSBadRequestException("The file upload size must not exceed %s".formatted(displayMaxFileSize), fileUploadSizeException);
 
         } catch (SizeLimitExceededException sizeLimitExceededException) {
 
-            LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
-            throw new PDSBadRequestException("Upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
+            long maxFileSize = sizeLimitExceededException.getPermittedSize();
+            String displayMaxFileSize = FileUtils.byteCountToDisplaySize(maxFileSize);
+            LOG.error("Request size exceeded: {}", sizeLimitExceededException.getMessage());
+            throw new PDSBadRequestException("The request size must not exceed %s".formatted(displayMaxFileSize), sizeLimitExceededException);
 
         } catch (UnsupportedEncodingException e) {
 
@@ -156,7 +161,8 @@ public class PDSFileUploadJobService {
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
         if (fileSizeFromUser != null && fileSizeFromUser > maxUploadSizeWithHeaders) {
-            throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
+            throw new PDSBadRequestException(
+                    "The file size in header field %s exceeds the allowed upload size of %s".formatted(FILE_SIZE_HEADER_FIELD_NAME, maxUploadSizeWithHeaders));
         }
 
         upload.setSizeMax(maxUploadSizeWithHeaders);
@@ -210,11 +216,11 @@ public class PDSFileUploadJobService {
                     MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
                     /* @formatter:off */
-					MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
-							                                              setInputStream(fileInputstream).
-							                                              setMessageDigest(digest).
-							                                              get();
-					/* @formatter:on */
+                        MessageDigestInputStream messageDigestInputStream = MessageDigestInputStream.builder().
+                                setInputStream(fileInputstream).
+                                setMessageDigest(digest).
+                                get();
+                        /* @formatter:on */
 
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
