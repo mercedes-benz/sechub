@@ -20,6 +20,7 @@ import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestInputStream;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
@@ -162,7 +163,9 @@ public class SchedulerBinariesUploadService {
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
         if (binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
-            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
+            String displayMaxUploadSizeWithHeaders = FileUtils.byteCountToDisplaySize(maxUploadSizeWithHeaders);
+            throw new BadRequestException("The file size in header field %s exceeds the allowed upload size of %s".formatted(FILE_SIZE_HEADER_FIELD_NAME,
+                    displayMaxUploadSizeWithHeaders));
         }
 
         upload.setSizeMax(maxUploadSizeWithHeaders);

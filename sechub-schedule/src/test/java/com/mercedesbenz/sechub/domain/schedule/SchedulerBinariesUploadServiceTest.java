@@ -180,7 +180,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         /* execute + test */
         assertThrowsExceptionContainingMessage(BadRequestException.class,
-                "The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.",
+                "The file size in header field %s exceeds the allowed upload size of 610 bytes".formatted(FILE_SIZE_HEADER_FIELD_NAME),
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
 
         /* test */

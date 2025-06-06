@@ -86,4 +86,5 @@ spring:
  servlet: 
     # to speed up integration tests, we use here only 300kb
     multipart.max-file-size: 300KB
-    multipart.max-request-size: 300KB
+    # requests are usually a little larger than the file upload itself
+    multipart.max-request-size: 320KB
