@@ -143,8 +143,9 @@ public class FileUploadSizeScenario2IntTest {
     }
 
     /**
-     * The test setup allows for 300KB file upload size and 320KB request size.
-     * With a file upload size > 300KB this should result in a file size exceeded exception.
+     * The test setup allows for 300KB file upload size and 320KB request size. With
+     * a file upload size > 300KB this should result in a file size exceeded
+     * exception.
      */
     @Test
     public void when_sourcecode_zipfile_exceeds_configured_max_source_zip_file_size_a_NOT_ACCEPTABLE_is_returned() throws Exception {
@@ -160,9 +161,9 @@ public class FileUploadSizeScenario2IntTest {
     }
 
     /**
-     * The test setup allows for 300KB file upload size and 320KB request size.
-     * With a file upload size > 320KB this should result in a request size exceeded exception.
-     * Note that the request size is always evaluated first.
+     * The test setup allows for 300KB file upload size and 320KB request size. With
+     * a file upload size > 320KB this should result in a request size exceeded
+     * exception. Note that the request size is always evaluated first.
      */
     @Test
     public void when_request_exceeds_configured_max_request_size_a_NOT_ACCEPTABLE_is_returned() throws Exception {
