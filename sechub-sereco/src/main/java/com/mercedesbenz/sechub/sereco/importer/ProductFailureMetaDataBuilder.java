@@ -10,10 +10,10 @@ public class ProductFailureMetaDataBuilder extends AbstractProductMetaDataBuilde
 
     public SerecoMetaData build() {
         requireNonNull(parameter);
-        
+
         if (parameter.isCanceled()) {
-            return createSerecoMetaDataAndAppendAnnotationWhenSecurityProduct(SerecoAnnotationType.USER_INFO,
-                    "Canceled");
+            return createSerecoMetaDataAndAppendAnnotationWhenSecurityProduct(SerecoAnnotationType.INTERNAL_PRODUCT_CANCELED,
+                    "Canceled " + parameter.getProductId());
         }
         return createSerecoMetaDataAndAppendAnnotationWhenSecurityProduct(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED,
                 "failed, so cannot give a correct answer");

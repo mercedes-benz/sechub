@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
-import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 
 public class ProductExecutorContext {

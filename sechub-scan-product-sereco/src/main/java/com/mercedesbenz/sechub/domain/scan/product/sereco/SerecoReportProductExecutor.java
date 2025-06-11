@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.product.AdapterMetaDataConverter;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -127,7 +128,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }
 
-    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult, ProductExecutorContext executorContext) {
+    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult,
+            ProductExecutorContext executorContext) {
         String importData = productResult.getResult();
 
         String productId = productResult.getProductIdentifier().name();
@@ -146,15 +148,17 @@ public class SerecoReportProductExecutor implements ProductExecutor {
                 productMessages.addAll(messages);
             }
         }
-        
+
         LOG.debug("{} found product result for '{}'", traceLogId, productId);
-        
+
         boolean canceled = false;
-        
+
         ProductExecutorCallback callback = executorContext.getCallback();
-        // we now use the product result meta data and check if the product has been been canceled
-        AdapterMetaData metaData = callback.getMetaDataConverter().convertToMetaDataOrNull(productResult.getMetaData());
-        if (metaData!=null) {
+        // we now use the product result meta data and check if the product has been
+        // been canceled
+        AdapterMetaDataConverter metaDataConverter = callback.getMetaDataConverter();
+        AdapterMetaData metaData = metaDataConverter.convertToMetaDataOrNull(productResult.getMetaData());
+        if (metaData != null) {
             canceled = metaData.getValueAsBoolean(META_DATA_KEY_PRODUCT_CANCELED);
         }
 

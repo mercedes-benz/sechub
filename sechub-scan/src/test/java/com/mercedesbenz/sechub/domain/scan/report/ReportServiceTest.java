@@ -63,7 +63,7 @@ public class ReportServiceTest {
 
         reportTransformationResult = mock(ReportTransformationResult.class);
         sechubResult = mock(SecHubResult.class);
-        SecHubReportModel model= mock();
+        SecHubReportModel model = mock();
         when(reportTransformationResult.getModel()).thenReturn(model);
         when(model.getResult()).thenReturn(sechubResult);
         secHubResultService = mock(SecHubReportProductTransformerService.class);

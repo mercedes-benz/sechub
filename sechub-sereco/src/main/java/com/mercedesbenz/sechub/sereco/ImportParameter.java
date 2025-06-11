@@ -17,7 +17,7 @@ public class ImportParameter {
     public static ImportParamBuilder builder() {
         return new ImportParamBuilder();
     }
-    
+
     public boolean isCanceled() {
         return canceled;
     }
@@ -53,7 +53,7 @@ public class ImportParameter {
     public static class ImportParamBuilder {
 
         private ImportParameter param;
-        
+
         private ImportParamBuilder() {
             clear();
         }
@@ -81,9 +81,9 @@ public class ImportParameter {
             param.productMessages = messages;
             return this;
         }
-        
+
         public ImportParamBuilder canceled(boolean canceled) {
-            param.canceled=canceled;
+            param.canceled = canceled;
             return this;
         }
 
@@ -92,7 +92,6 @@ public class ImportParameter {
             clear();
             return result;
         }
-
 
     }
 }

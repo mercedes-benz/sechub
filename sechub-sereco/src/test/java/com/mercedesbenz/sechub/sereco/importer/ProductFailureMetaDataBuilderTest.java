@@ -47,15 +47,15 @@ public class ProductFailureMetaDataBuilderTest {
         /* test */
         assertResultHasProductFailureAnnotationButNoVulnerabilities(result);
     }
-    
+
     @Test
     void when_canceled_creates_a_meta_model_without_product_information_at_least_works() {
         /* prepare */
         ImportParameter param = ImportParameter.builder().canceled(true).build();
-        
+
         /* execute */
         SerecoMetaData result = builderToTest.forParam(param).build();
-        
+
         /* test */
         assertResultHasProductCanceledAnnotationButNoVulnerabilities(result);
     }
@@ -63,11 +63,12 @@ public class ProductFailureMetaDataBuilderTest {
     private void assertResultHasProductFailureAnnotationButNoVulnerabilities(SerecoMetaData result) {
         assertResultHasProductFailureAnnotationButNoVulnerabilities(result, false);
     }
-    
-   private void assertResultHasProductCanceledAnnotationButNoVulnerabilities(SerecoMetaData result) {
-       assertResultHasProductFailureAnnotationButNoVulnerabilities(result, true);
-        
+
+    private void assertResultHasProductCanceledAnnotationButNoVulnerabilities(SerecoMetaData result) {
+        assertResultHasProductFailureAnnotationButNoVulnerabilities(result, true);
+
     }
+
     private void assertResultHasProductFailureAnnotationButNoVulnerabilities(SerecoMetaData result, boolean canceled) {
         assertNotNull(result);
 
@@ -82,8 +83,8 @@ public class ProductFailureMetaDataBuilderTest {
         SerecoAnnotation anno = annotations.iterator().next();
 
         if (canceled) {
-            assertEquals(SerecoAnnotationType.USER_INFO, anno.getType());
-        }else {
+            assertEquals(SerecoAnnotationType.INTERNAL_PRODUCT_CANCELED, anno.getType());
+        } else {
             assertEquals(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED, anno.getType());
         }
     }

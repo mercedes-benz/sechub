@@ -80,7 +80,6 @@ public class Workspace {
                 prefix = "Import data was empty.";
             }
             LOG.warn(prefix + "Import Id: {}. Product id: {}. Will mark as product failure", param.getImportId(), param.getProductId());
-            
 
             ProductFailureMetaDataBuilder failureMetaDataBuilder = new ProductFailureMetaDataBuilder();
             SerecoMetaData failureMetaData = failureMetaDataBuilder.forParam(param).build();

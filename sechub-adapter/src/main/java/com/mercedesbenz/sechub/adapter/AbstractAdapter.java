@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.util.Map;
 
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
 import com.mercedesbenz.sechub.adapter.support.APIURLSupport;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
-
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 
 public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends AdapterConfig> implements Adapter<C> {
 
@@ -91,7 +91,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         if (metaData == null) {
             return false;
         }
-        
+
         metaData.setValue(META_DATA_KEY_PRODUCT_CANCELED, true);
         callback.persist(metaData);
 
@@ -99,7 +99,6 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         runtimeContext.callback = null;
         runtimeContext.metaData = metaData;
         runtimeContext.type = ExecutionType.CANCEL;
-        
 
         AdapterExecutionResult result = execute(config, runtimeContext);
 

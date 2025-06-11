@@ -87,8 +87,8 @@ public class WithSecHubClient {
     }
 
     /**
-     * Starts download of SecHub json report an returns an assert object for report
-     * 
+     * Starts download of SecHub json report and returns an assert object for report
+     *
      * @param project
      * @param jobUUID
      * @return assert object

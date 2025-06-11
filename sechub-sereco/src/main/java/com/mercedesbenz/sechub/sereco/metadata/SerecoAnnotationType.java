@@ -20,10 +20,13 @@ public enum SerecoAnnotationType {
      * imported - NOT suitable to be reported back to user
      */
     INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED(true),
-    
-    /* an internal product failure - NOT suitable to be reported directly back to user */
+
+    /*
+     * Product has been canceled. This information is not directly transfered to
+     * user. Will be transformed to wanted output message later.
+     */
     INTERNAL_PRODUCT_CANCELED(true),
-    
+
     ;
 
     private boolean internal;

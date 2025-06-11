@@ -82,12 +82,10 @@ public class PDSCancellationScenario18IntTest {
 
         // Now check for the final cancel successful message:
         assertTrue(messageTextsFound.contains("Event type:cancel_requested was received and handled by script"));
-        
-        
+
         AssertReport assertReport = as(SUPER_ADMIN).withSecHubClient().startDownloadReport(PROJECT_1, jobUUID);
-        assertReport.hasMessages(2);
-        assertReport.hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!");
-        assertReport.hasMessage(SecHubMessageType.INFO,"Job has been canceled by user.");
+        assertReport.hasMessages(1);
+        assertReport.hasMessage(SecHubMessageType.WARNING,"Job has been canceled!");
         /* @formatter:on */
     }
 
