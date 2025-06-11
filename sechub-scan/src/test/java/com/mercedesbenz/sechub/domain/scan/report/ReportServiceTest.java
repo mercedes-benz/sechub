@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
@@ -62,7 +63,9 @@ public class ReportServiceTest {
 
         reportTransformationResult = mock(ReportTransformationResult.class);
         sechubResult = mock(SecHubResult.class);
-        when(reportTransformationResult.getResult()).thenReturn(sechubResult);
+        SecHubReportModel model= mock();
+        when(reportTransformationResult.getModel()).thenReturn(model);
+        when(model.getResult()).thenReturn(sechubResult);
         secHubResultService = mock(SecHubReportProductTransformerService.class);
         when(secHubResultService.createResult(context)).thenReturn(reportTransformationResult);
 

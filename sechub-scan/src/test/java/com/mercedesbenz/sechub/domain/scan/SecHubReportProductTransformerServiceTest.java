@@ -119,7 +119,7 @@ public class SecHubReportProductTransformerServiceTest {
         ReportTransformationResult result = serviceToTest.createResult(context);
 
         /* test */
-        assertThat(result.getMetaData().getExecuted()).containsAll(scanTypes);
+        assertThat(result.getModel().getMetaData().getExecuted()).containsAll(scanTypes);
     }
 
     private static class ScanTypeSetArgumentsProvider implements ArgumentsProvider {

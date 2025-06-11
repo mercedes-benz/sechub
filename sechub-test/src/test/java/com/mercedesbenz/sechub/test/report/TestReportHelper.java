@@ -103,9 +103,9 @@ public class TestReportHelper {
         ReportTransformationResult result = serecoProductResultTransformer.transform(productResult);
         result.setAtLeastOneRealProductResultContained(hasProductResults);
 
-        String transformationResultAsJson = result.toJSON();
+        String transformationResultAsJson = result.getModel().toJSON();
         if (TestUtil.isTraceEnabled()) {
-            LOG.info("Transformed sechub report is:\n{}", result.toFormattedJSON());
+            LOG.info("Transformed sechub report is:\n{}", result.getModel().toFormattedJSON());
         }
         ScanReport scanReport = new ScanReport(UUID.fromString(sechubJobUUID), "project1");
         scanReport.setResultType(ScanReportResultType.MODEL);

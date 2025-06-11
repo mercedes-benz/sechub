@@ -85,27 +85,27 @@ public class CreateScanReportService {
             
             if (reportTransformerResult.isAtLeastOneProductCanceled()) {
                 /* we only add the info that the job has been canceled one time - no matter how many products are executed */
-                reportTransformerResult.getMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Job "+sechubJobUUID+" has been canceled!"));
+                reportTransformerResult.getModel().getMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Job "+sechubJobUUID+" has been canceled!"));
             }else {
                 if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
                     /* in this case we add a warning message for the user inside the report */
-                    reportTransformerResult.getMessages()
+                    reportTransformerResult.getModel().getMessages()
                     .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
                 }
             }
             
             scanReport.setResultType(ScanReportResultType.MODEL);
-            scanReport.setResult(reportTransformerResult.toJSON());
+            scanReport.setResult(reportTransformerResult.getModel().toJSON());
 
         } catch (Exception e) {
             throw new ScanReportException("Was not able to build sechub result", e);
         }
 
         /* create and set the traffic light */
-        SecHubResult sechubResult = reportTransformerResult.getResult();
+        SecHubResult sechubResult = reportTransformerResult.getModel().getResult();
         TrafficLight trafficLight = null;
 
-        if (SecHubStatus.FAILED.equals(reportTransformerResult.getStatus())) {
+        if (SecHubStatus.FAILED.equals(reportTransformerResult.getModel().getStatus())) {
             /* at least one product failed - so turn off traffic light */
             trafficLight = TrafficLight.OFF;
 
