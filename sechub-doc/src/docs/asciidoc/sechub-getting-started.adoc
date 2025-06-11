@@ -53,11 +53,14 @@ Optional:
 * https://open-vsx.org/extension/mercedes-benz/sechub[SecHub Extension] for VSCodium
 
 === Access to a Kubernetes
-For local testing you could use https://k3s.io[K3s], https://kind.sigs.k8s.io[Kind] with https://github.com/kubernetes-sigs/cloud-provider-kind[cloud-provider-kind], Minikube, Docker Desktop, ... The SecHub team uses K3s for development.
+For local testing you could use https://kind.sigs.k8s.io[Kind] with https://github.com/kubernetes-sigs/cloud-provider-kind[cloud-provider-kind], Minikube, Docker Desktop, https://k3s.io[K3s] ...
+
+NOTE: The SecHub team uses **https://kind.sigs.k8s.io[Kind]** for development +
+      and experienced port problems with K3s.
 
 Create a Kube config file for access to your Kubernetes and point the environment variable `KUBECONFIG` to it. +
 Example: +
-`export KUBECONFIG="$HOME/.kube/k3s-config"``
+`export KUBECONFIG="$HOME/.kube/kind-config"``
 
 In your terminal type:
  `kubectl get ns` to verify the connectivity.
