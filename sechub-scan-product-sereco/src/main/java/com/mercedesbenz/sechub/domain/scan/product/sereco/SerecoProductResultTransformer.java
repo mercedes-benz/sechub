@@ -273,6 +273,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         case USER_INFO:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.INFO, annotationValue));
             break;
+        case INTERNAL_PRODUCT_CANCELED:
+            transformerResult.setAtLeastOneProductCanceled(true);
+            break;
         case USER_WARNING:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.WARNING, annotationValue));
             break;

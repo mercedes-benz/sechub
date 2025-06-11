@@ -20,6 +20,9 @@ public class ReportTransformationResult extends SecHubReportModel {
 
     @JsonIgnore
     private boolean atLeastOneRealProductResultContained;
+    
+    @JsonIgnore
+    private boolean atLeastOneProductCanceled;
 
     public void setAtLeastOneRealProductResultContained(boolean containingNoProductResultsAtAl) {
         this.atLeastOneRealProductResultContained = containingNoProductResultsAtAl;
@@ -27,6 +30,14 @@ public class ReportTransformationResult extends SecHubReportModel {
 
     public boolean isAtLeastOneRealProductResultContained() {
         return atLeastOneRealProductResultContained;
+    }
+    
+    public void setAtLeastOneProductCanceled(boolean atLeastOneProductCanceled) {
+        this.atLeastOneProductCanceled=atLeastOneProductCanceled;
+    }
+    
+    public boolean isAtLeastOneProductCanceled() {
+        return atLeastOneProductCanceled;
     }
 
 }

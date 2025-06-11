@@ -43,7 +43,7 @@ public class ProductExecutorContext {
         return executorConfig;
     }
 
-    public AdapterMetaDataCallback getCallback() {
+    public ProductExecutorCallback getCallback() {
         return callback;
     }
 
