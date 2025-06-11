@@ -94,15 +94,19 @@ class OAuth2TokenExpirationCalculatorTest {
     }
 
     @Test
-    void calculateAccessTokenDuration_minimumTokenValidity_null_throws_exception() {
+    void calculateAccessTokenDuration_minimumTokenValidity_does_not_throw_exception_when_null() {
         /* prepare */
         Instant now = mock();
         Duration defaultDuration = mock();
         OAuth2AccessToken oAuth2AccessToken = mock();
 
-        /* execute + test */
-        assertThatThrownBy(() -> calculatorToTest.calculateAccessTokenDuration(now, defaultDuration, oAuth2AccessToken, null))
-                .isInstanceOf(NullPointerException.class).hasMessageContaining("minimumTokenValidity");
+        when(oAuth2AccessToken.getExpiresAt()).thenReturn(mock());
+
+        /* execute */
+        Instant expiresAt = calculatorToTest.calculateAccessTokenDuration(now, defaultDuration, oAuth2AccessToken, null);
+
+        /* test */
+        assertThat(expiresAt).isNotNull();
     }
 
     @Test

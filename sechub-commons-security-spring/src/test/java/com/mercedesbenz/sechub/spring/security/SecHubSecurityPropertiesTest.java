@@ -77,6 +77,10 @@ class SecHubSecurityPropertiesTest {
         SecHubSecurityProperties.EncryptionProperties encryption = properties.getEncryptionProperties();
         assertThat(encryption).isNotNull();
         assertThat(encryption.getSecretKey()).isEqualTo("test-test-test-test-test-test-32");
+
+        Duration minimumTokenValidity = properties.getMinimumTokenValidity();
+        Duration expectedMinimumTokenValidity = Duration.ofHours(10);
+        assertThat(expectedMinimumTokenValidity).isEqualTo(minimumTokenValidity);
     }
 
     @Test
@@ -439,6 +443,27 @@ class SecHubSecurityPropertiesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("The property sechub.security.encryption.secret-key must be a 256-bit string");
         /* @formatter:on */
+    }
+
+    @Test
+    void construct_minimum_token_validity_with_valid_duration_succeeds() {
+        /* prepare */
+        Duration minimumTokenValidity = Duration.ofHours(10);
+
+        /* execute */
+        SecHubSecurityProperties properties = new SecHubSecurityProperties(null, null, null, minimumTokenValidity);
+
+        /* test */
+        assertThat(properties.getMinimumTokenValidity()).isEqualTo(minimumTokenValidity);
+    }
+
+    @Test
+    void construct_minimum_token_validity_with_null_duration_does_not_fail() {
+        /* execute */
+        SecHubSecurityProperties properties = new SecHubSecurityProperties(null, null, null, null);
+
+        /* test */
+        assertThat(properties.getMinimumTokenValidity()).isNull();
     }
 
     @Configuration
