@@ -211,7 +211,7 @@ func TestBuildGetSecHubJobListAPICallWithLabels(t *testing.T) {
 }
 
 // https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625
-func Example_CancelSecHubJobAPICall() {
+func Example_cancelSecHubJobAPICall() {
 	/* prepare */
 	context := new(Context)
 	config := new(Config)
