@@ -54,12 +54,10 @@
 </template>
 
 <script lang="ts">
-  import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useFetchUserDetail } from '@/composables/useUserDetail'
   import { useConfig } from '@/config'
-  import { handleApiError } from '@/services/apiErrorHandler'
 
   export default {
     name: 'AppHeader',
@@ -97,14 +95,8 @@
       }
 
       async function logout () {
-        try {
-          await defaultClient.withOtherApi.userLogout()
-          // redirect to root after logout
-          router.push('/login')
-        } catch (err) {
-          handleApiError(err)
-          console.error(err)
-        }
+        // Perform a full browser navigation to /logout so the nginx redirect is followed
+        window.location.href = '/logout'
       }
 
       return {

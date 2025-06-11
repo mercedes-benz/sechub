@@ -531,7 +531,15 @@ public abstract class AbstractSecurityConfiguration {
             return;
         }
 
-        /* we redirect to the frontend because of CORS */
+        /*
+         * After successful logout, the user will be redirected to the frontend
+         * index.html page The nginx (or vite in develop mode) configuration will then
+         * redirect the user to the login page. This is necessary because the frontend
+         * is served by nginx and not by the Spring Boot application. The web-ui client
+         * does not know the backend URL and a direct redirect to /login would not work
+         * because if special ports are used Example: https://myapp.com:4443/logout
+         * would redirect to https://myapp.com/login -> CORS missing port
+         */
         SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
         logoutSuccessHandler.setDefaultTargetUrl(loginProperties.getRedirectUri());
 

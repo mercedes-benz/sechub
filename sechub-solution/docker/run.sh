@@ -82,8 +82,8 @@ set_up_encryption_key() {
   if [ -z "$SECHUB_SECURITY_ENCRYPTION_SECRET_KEY" ]; then
     echo "SECHUB_SECURITY_ENCRYPTION_SECRET_KEY is empty. Generating a new AES256 key..."
 
-    # Generate a 256-bit (32-byte) AES256 compatible key
-    NEW_KEY=$(openssl rand -base64 32)
+    # Generate a 256-bit (32-byte) AES256 compatible key in hexadecimal format
+    NEW_KEY=$(openssl rand -hex 16)
 
     # Set the new key to the environment variable
     export SECHUB_SECURITY_ENCRYPTION_SECRET_KEY="$NEW_KEY"

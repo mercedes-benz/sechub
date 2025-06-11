@@ -32,7 +32,9 @@ security:
     # Must not collide with other existing paths.
     loginPage: /login
     # Defines the URI to which the user is redirected after successful login.
-    redirectUri: /
+    # replace 'web-ui-ip-placeholder' later with the actual IP address of the web UI:
+    # kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    redirectUri: https://web-ui-ip-placeholder:4443/index.html
     # The authentication can be configured in 'classic' or 'oauth2' mode.
     # While both are possible, at least one must be active when login is enabled.
     modes: {{ .SECHUB_SERVER_LOGIN_MODES }}
