@@ -16,7 +16,7 @@ BUILD_TYPE=download
 PDS_VERSION="1.1.0"
 
 # Go version used
-GO="go1.21.6.linux-amd64.tar.gz"
+GO="go1.24.4.linux-amd64.tar.gz"
 
 # The Java version used
 JAVA_VERSION="17"

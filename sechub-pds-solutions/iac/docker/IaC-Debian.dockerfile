@@ -9,7 +9,7 @@ ARG BASE_IMAGE
 ARG KICS_VERSION
 
 # Build args
-ARG GO="go1.21.6.linux-amd64.tar.gz"
+ARG GO="go1.24.4.linux-amd64.tar.gz"
 
 # Artifact folder
 ARG PDS_ARTIFACT_FOLDER="/artifacts"
