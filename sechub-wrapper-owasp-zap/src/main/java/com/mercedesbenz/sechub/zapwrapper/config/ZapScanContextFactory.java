@@ -15,6 +15,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.template.TemplateData;
@@ -84,9 +86,11 @@ public class ZapScanContextFactory {
 
         Map<String, File> headerValueFiles = fetchHeaderValueFiles(sechubScanConfig);
 
+        ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(configuration);
+
         File groovyScriptFile = fetchGroovyScriptFile(configuration);
         Map<String, String> templateVariables = fetchTemplateVariables(sechubScanConfig);
-        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables);
+        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables, productMessagehelper);
 
         /* we always use the SecHub job UUID as Zap context name */
         String contextName = configuration.getJobUUID();
@@ -98,7 +102,6 @@ public class ZapScanContextFactory {
         Set<String> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig);
         Set<String> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig);
 
-        ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(configuration);
         ZapPDSEventHandler zapEventHandler = createZapEventhandler(configuration);
 
         /* @formatter:off */
@@ -336,10 +339,20 @@ public class ZapScanContextFactory {
      * @throws ZapWrapperContextCreationException
      *
      */
-    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables) throws ZapWrapperContextCreationException {
+    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables, ZapProductMessageHelper messageHelper)
+            throws ZapWrapperContextCreationException {
         // no script login was defined
         if (groovyScriptFile == null && templateVariables.isEmpty()) {
             return;
+        }
+        // no script found, but template data were configured
+        if (groovyScriptFile == null && !templateVariables.isEmpty()) {
+            SecHubMessage secHubMessage = new SecHubMessage(SecHubMessageType.ERROR,
+                    "The SecHub configuration file contains a template data section, but no template was loaded for the scan. If you are no SecHub administrator get in touch with your Sechub contact to verify your project is assigned with the login template.");
+            messageHelper.writeSingleProductMessage(secHubMessage);
+            throw new ZapWrapperContextCreationException(
+                    "The SecHub configuration file contains a template data section, but no template was loaded for the scan.",
+                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         // A script was defined, but no template data where defined
         if (groovyScriptFile != null && templateVariables.isEmpty()) {
