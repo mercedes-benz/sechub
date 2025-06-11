@@ -67,8 +67,11 @@ public class OAuth2OpaqueTokenClusterCache {
     }
 
     public OAuth2OpaqueTokenClusterCache(String opaqueToken, String introSpectionResponse, Duration duration, Instant createdAt) {
-        super();
         this.opaqueToken = opaqueToken;
+        update(introSpectionResponse, createdAt, duration);
+    }
+
+    void update(String introSpectionResponse, Instant createdAt, Duration duration) {
         this.introSpectionResponse = introSpectionResponse;
         this.createdAt = requireNonNull(createdAt, "Parameter 'createdAt' must not be null");
         this.duration = requireNonNull(duration, "Parameter 'duration' must not be null");
