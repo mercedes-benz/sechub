@@ -34,10 +34,25 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
     public void put(String key, CacheData<OAuth2OpaqueTokenIntrospectionResponse> cacheData) {
         String introspectionResponse = JSONConverter.get().toJSON(cacheData.getValue());
 
-        OAuth2OpaqueTokenClusterCache clusterCache = new OAuth2OpaqueTokenClusterCache(key, introspectionResponse, cacheData.getDuration(),
-                cacheData.getCreatedAt());
+        handleResilient("update opaque token cache entry", () -> {
 
-        handleResilient("update opaque token cache entry", () -> repository.save(clusterCache));
+            OAuth2OpaqueTokenClusterCache clusterCache;
+
+            Optional<OAuth2OpaqueTokenClusterCache> fromDB = repository.findById(key);
+            if (fromDB.isPresent()) {
+                /* update existing entry */
+                clusterCache = fromDB.get();
+                clusterCache.update(introspectionResponse, cacheData.getCreatedAt(), cacheData.getDuration());
+
+            } else {
+                /* create new entry */
+                clusterCache = new OAuth2OpaqueTokenClusterCache(key, introspectionResponse, cacheData.getDuration(), cacheData.getCreatedAt());
+            }
+
+            repository.save(clusterCache);
+        }
+
+        );
 
     }
 

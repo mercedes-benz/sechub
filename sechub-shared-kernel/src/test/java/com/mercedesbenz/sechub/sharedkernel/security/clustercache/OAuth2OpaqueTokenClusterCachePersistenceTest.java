@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.sharedkernel.security.clustercache;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.Duration;
@@ -18,6 +19,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.ArgumentCaptor;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.mercedesbenz.sechub.commons.core.cache.CacheData;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
@@ -27,6 +29,7 @@ import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionRes
 
 class OAuth2OpaqueTokenClusterCachePersistenceTest {
 
+    private static final String TEST_OPAQUE_TOKEN_ID = "opaque-token-id";
     private OAuth2OpaqueTokenClusterCachePersistence persistenceToTest;
     private OAuth2OpaqueTokenClusterCacheRepository repository;
 
@@ -42,7 +45,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
     @ParameterizedTest
     @NullSource
     @ArgumentsSource(CryptoAccessArgumentsProvider.class)
-    void put_calls_repository_save_with_cluster_cache_entity_having_expected_content(
+    void simple_resilience_test__when_repository_save_fails_2_times_a_third_one_will_be_tried_successful_stores_data(
             CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoProvider) {
         /* prepare */
         OAuth2OpaqueTokenIntrospectionResponse value = createFakedIDPOpaqueTokenResponse("user1");
@@ -51,18 +54,85 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         Duration duration = Duration.ofSeconds(10).plusHours(1);
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
 
+        /* @formatter:off*/
+        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
+        when(repository.save(any())).
+            thenThrow(new DuplicateKeyException("failed-attempt-1")). // first save fails
+            thenThrow(new RuntimeException("failed-attempt-2")). // second save fails
+            thenReturn(null); // third save - okay (but we just return null for easier testing)
+        /* @formatter:on*/
+
         /* execute */
-        persistenceToTest.put("key", data);
+        persistenceToTest.put(TEST_OPAQUE_TOKEN_ID, data);
+
+        /* test */
+        ArgumentCaptor<OAuth2OpaqueTokenClusterCache> entityCaptor = ArgumentCaptor.forClass(OAuth2OpaqueTokenClusterCache.class);
+        verify(repository, times(3)).save(entityCaptor.capture());
+
+        OAuth2OpaqueTokenClusterCache entityValue = entityCaptor.getValue();
+        assertThat(entityValue.getOpaqueToken()).isEqualTo(TEST_OPAQUE_TOKEN_ID);
+        assertThat(entityValue.getCreatedAt()).isEqualTo(now);
+        assertThat(entityValue.getDuration()).isEqualTo(duration);
+        assertThat(entityValue.getExpiresAt()).isEqualTo(now.plusSeconds(3610));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    void put_creates_new_entry_in_databse_having_expected_content(CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoProvider) {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospectionResponse value = createFakedIDPOpaqueTokenResponse("user1");
+
+        Instant now = Instant.now();
+        Duration duration = Duration.ofSeconds(10).plusHours(1);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
+
+        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
+
+        /* execute */
+        persistenceToTest.put(TEST_OPAQUE_TOKEN_ID, data);
 
         /* test */
         ArgumentCaptor<OAuth2OpaqueTokenClusterCache> entityCaptor = ArgumentCaptor.forClass(OAuth2OpaqueTokenClusterCache.class);
         verify(repository).save(entityCaptor.capture());
 
         OAuth2OpaqueTokenClusterCache entityValue = entityCaptor.getValue();
-        assertThat(entityValue.getOpaqueToken()).isEqualTo("key");
+        assertThat(entityValue.getOpaqueToken()).isEqualTo(TEST_OPAQUE_TOKEN_ID);
         assertThat(entityValue.getCreatedAt()).isEqualTo(now);
         assertThat(entityValue.getDuration()).isEqualTo(duration);
         assertThat(entityValue.getExpiresAt()).isEqualTo(now.plusSeconds(3610));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ArgumentsSource(CryptoAccessArgumentsProvider.class)
+    void put_updates_existing_entry_in_database_having_expected_content(CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoProvider) {
+        /* prepare */
+        OAuth2OpaqueTokenIntrospectionResponse value = createFakedIDPOpaqueTokenResponse("user1");
+
+        Instant now = Instant.now();
+        Duration duration = Duration.ofSeconds(10).plusHours(1);
+        CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
+
+        OAuth2OpaqueTokenClusterCache existingCacheEntry = new OAuth2OpaqueTokenClusterCache(TEST_OPAQUE_TOKEN_ID, "old", Duration.ofSeconds(2),
+                Instant.ofEpochMilli(0));
+        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.of(existingCacheEntry));
+
+        /* execute */
+        persistenceToTest.put(TEST_OPAQUE_TOKEN_ID, data);
+
+        /* test */
+        ArgumentCaptor<OAuth2OpaqueTokenClusterCache> entityCaptor = ArgumentCaptor.forClass(OAuth2OpaqueTokenClusterCache.class);
+        verify(repository).save(entityCaptor.capture());
+
+        OAuth2OpaqueTokenClusterCache entityValue = entityCaptor.getValue();
+        assertThat(entityValue.getOpaqueToken()).isEqualTo(TEST_OPAQUE_TOKEN_ID);
+        assertThat(entityValue.getCreatedAt()).isEqualTo(now);
+        assertThat(entityValue.getDuration()).isEqualTo(duration);
+        assertThat(entityValue.getExpiresAt()).isEqualTo(now.plusSeconds(3610));
+
+        assertThat(entityValue == existingCacheEntry); // given value was existing one -> update statement will be used by JPA
+
     }
 
     @Test
