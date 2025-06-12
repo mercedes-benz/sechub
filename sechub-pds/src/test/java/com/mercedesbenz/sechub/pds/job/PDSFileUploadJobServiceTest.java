@@ -53,6 +53,7 @@ public class PDSFileUploadJobServiceTest {
     private PDSArchiveSupportProvider archiveSupportProvider;
     private UploadSizeConfiguration configuration;
     private CheckSumSupport checkSumSupport;
+    private PDSServletFileUploadFactory pdsServletFileUploadFactory;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -62,6 +63,7 @@ public class PDSFileUploadJobServiceTest {
         storageService = mock(PDSMultiStorageService.class);
         configuration = mock(UploadSizeConfiguration.class);
         checkSumSupport = mock(CheckSumSupport.class);
+        pdsServletFileUploadFactory = mock(PDSServletFileUploadFactory.class);
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn(2048L);
 
@@ -88,6 +90,7 @@ public class PDSFileUploadJobServiceTest {
         serviceToTest.archiveSupportProvider = archiveSupportProvider;
         serviceToTest.configuration = configuration;
         serviceToTest.checksumSupport = checkSumSupport;
+        serviceToTest.servletFileUploadFactory = pdsServletFileUploadFactory;
 
         when(checkSumSupport.hasCorrectSha256Checksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
         when(checkSumSupport.hasCorrectSha256Checksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
@@ -244,5 +247,31 @@ public class PDSFileUploadJobServiceTest {
 
         /* test */
         assertEquals("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.", exception.getMessage());
+    }
+
+    @Test
+    void upload_fails_when_x_file_size_header_exceeds_max_file_size() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "binaries.tar";
+
+        ServletContext context = new MockServletContext();
+
+        /* max upload size with headers is 2048 + 600 = 2648 */
+        String fileSize = "2649";
+        /* formatter:off */
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).header(FILE_SIZE_HEADER_FIELD_NAME, fileSize)
+                .buildRequest(context);
+        /* formatter:on */
+
+        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertEquals("The file size in header field %s exceeds the allowed upload size of 2648".formatted(FILE_SIZE_HEADER_FIELD_NAME), exception.getMessage());
     }
 }

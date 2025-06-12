@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentCo
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -70,7 +69,7 @@ public class PDSExecutionEnvironmentService {
 
     private void calculateAndSetupEnvironment(UUID pdsJobUUID, PDSJobConfiguration config, ProcessBuilder builder, PDSProductSetup productSetup) {
         /* now init environment map */
-        Map<String, String> environment = initCleanEnvironment(productSetup, builder);
+        PDSSafeProcessEnvironmentAccess environment = initCleanEnvironment(productSetup, builder);
 
         addPdsJobRelatedVariables(pdsJobUUID, environment);
         addPdsExecutorJobParameters(productSetup, config, environment);
@@ -81,7 +80,7 @@ public class PDSExecutionEnvironmentService {
         LOG.debug("Initialized environment variables for script of pds job: {} with: {}", pdsJobUUID, environment);
     }
 
-    private Map<String, String> initCleanEnvironment(PDSProductSetup productSetup, ProcessBuilder builder) {
+    private PDSSafeProcessEnvironmentAccess initCleanEnvironment(PDSProductSetup productSetup, ProcessBuilder builder) {
         Map<String, String> environment = builder.environment();
 
         Set<String> pdsScriptEnvWhitelist = productSetup.getEnvWhitelist();
@@ -89,47 +88,49 @@ public class PDSExecutionEnvironmentService {
 
         environmentCleaner.clean(environment, pdsScriptEnvWhitelist);
 
-        return environment;
+        PDSSafeProcessEnvironmentAccess result = new PDSSafeProcessEnvironmentAccess(environment);
+
+        return result;
 
     }
 
-    private void addPdsJobRelatedVariables(UUID pdsJobUUID, Map<String, String> map) {
+    private void addPdsJobRelatedVariables(UUID pdsJobUUID, PDSSafeProcessEnvironmentAccess envAccess) {
         WorkspaceLocationData locationData = workspaceService.createLocationData(pdsJobUUID);
 
-        map.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
-        map.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
-        map.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
-        map.put(PDS_JOB_EVENTS_FOLDER, locationData.getEventsLocation());
-        map.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
-        map.put(PDS_JOB_UUID, pdsJobUUID.toString());
-        map.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
-        map.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
+        envAccess.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
+        envAccess.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
+        envAccess.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
+        envAccess.put(PDS_JOB_EVENTS_FOLDER, locationData.getEventsLocation());
+        envAccess.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
+        envAccess.put(PDS_JOB_UUID, pdsJobUUID.toString());
+        envAccess.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
+        envAccess.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
 
         String extractedAssetsLocation = locationData.getExtractedAssetsLocation();
 
-        map.put(PDS_JOB_EXTRACTED_ASSETS_FOLDER, extractedAssetsLocation);
+        envAccess.put(PDS_JOB_EXTRACTED_ASSETS_FOLDER, extractedAssetsLocation);
 
         String extractedSourcesLocation = locationData.getExtractedSourcesLocation();
 
-        map.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);
-        map.put(PDS_JOB_EXTRACTED_SOURCES_FOLDER, extractedSourcesLocation);
+        envAccess.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);
+        envAccess.put(PDS_JOB_EXTRACTED_SOURCES_FOLDER, extractedSourcesLocation);
 
         String extractedBinariesLocation = locationData.getExtractedBinariesLocation();
-        map.put(PDS_JOB_EXTRACTED_BINARIES_FOLDER, extractedBinariesLocation);
+        envAccess.put(PDS_JOB_EXTRACTED_BINARIES_FOLDER, extractedBinariesLocation);
 
-        map.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(pdsJobUUID));
-        map.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(pdsJobUUID));
+        envAccess.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(pdsJobUUID));
+        envAccess.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(pdsJobUUID));
 
     }
 
-    private void addPdsExecutorJobParameters(PDSProductSetup productSetup, PDSJobConfiguration config, Map<String, String> map) {
+    private void addPdsExecutorJobParameters(PDSProductSetup productSetup, PDSJobConfiguration config, PDSSafeProcessEnvironmentAccess envAccess) {
 
         List<PDSExecutionParameterEntry> jobParams = config.getParameters();
         for (PDSExecutionParameterEntry jobParam : jobParams) {
-            addJobParamDataWhenAccepted(productSetup, jobParam, map);
+            addJobParamDataWhenAccepted(productSetup, jobParam, envAccess);
         }
 
-        addDefaultsForMissingParameters(productSetup, map);
+        addDefaultsForMissingParameters(productSetup, envAccess);
 
     }
 
@@ -138,32 +139,33 @@ public class PDSExecutionEnvironmentService {
      * of process builder: This map does throw an exception in this case (index of
      * problems)
      */
-    private void replaceNullValuesWithEmptyStrings(Map<String, String> map) {
+    private void replaceNullValuesWithEmptyStrings(PDSSafeProcessEnvironmentAccess envAccess) {
 
         List<String> keysForEntriesWithNullValue = new ArrayList<>();
 
-        for (Entry<String, String> entry : map.entrySet()) {
-            if (entry.getValue() == null) {
-                keysForEntriesWithNullValue.add(entry.getKey());
+        for (String key : envAccess.getKeys()) {
+            String value = envAccess.get(key);
+            if (value == null) {
+                keysForEntriesWithNullValue.add(key);
             }
         }
 
         for (String keyForEntryWithNullValue : keysForEntriesWithNullValue) {
-            map.put(keyForEntryWithNullValue, "");
+            envAccess.put(keyForEntryWithNullValue, "");
 
             LOG.warn("Replaced null value for key: {} with empty string", keyForEntryWithNullValue);
         }
 
     }
 
-    private void addDefaultsForMissingParameters(PDSProductSetup productSetup, Map<String, String> map) {
+    private void addDefaultsForMissingParameters(PDSProductSetup productSetup, PDSSafeProcessEnvironmentAccess envAccess) {
         PDSProductParameterSetup parameters = productSetup.getParameters();
 
-        addDefaultsForMissingParametersInList(parameters.getMandatory(), map);
-        addDefaultsForMissingParametersInList(parameters.getOptional(), map);
+        addDefaultsForMissingParametersInList(parameters.getMandatory(), envAccess);
+        addDefaultsForMissingParametersInList(parameters.getOptional(), envAccess);
     }
 
-    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> parameterDefinitions, Map<String, String> map) {
+    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> parameterDefinitions, PDSSafeProcessEnvironmentAccess envAccess) {
 
         for (PDSProductParameterDefinition parameterDefinition : parameterDefinitions) {
             if (!parameterDefinition.hasDefault()) {
@@ -171,17 +173,17 @@ public class PDSExecutionEnvironmentService {
             }
             String envVariableName = converter.convertKeyToEnv(parameterDefinition.getKey());
 
-            String value = map.get(envVariableName);
+            String value = envAccess.get(envVariableName);
 
             if (value == null) {
-                map.put(envVariableName, parameterDefinition.getDefault());
+                envAccess.put(envVariableName, parameterDefinition.getDefault());
             }
         }
 
     }
 
-    private void addSecHubJobUUIDAsEnvironmentEntry(PDSJobConfiguration config, Map<String, String> map) {
-        map.put(PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
+    private void addSecHubJobUUIDAsEnvironmentEntry(PDSJobConfiguration config, PDSSafeProcessEnvironmentAccess envAccess) {
+        envAccess.put(PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
     }
 
     private String fetchSecHubJobUUIDasString(PDSJobConfiguration pdsJobConfiguration) {
@@ -193,7 +195,7 @@ public class PDSExecutionEnvironmentService {
         return sechubJobUUID.toString();
     }
 
-    private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
+    private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, PDSSafeProcessEnvironmentAccess envAccess) {
         PDSProductParameterSetup params = productSetup.getParameters();
 
         boolean acceptedParameter = false;
@@ -214,7 +216,7 @@ public class PDSExecutionEnvironmentService {
 
         if (acceptedParameter) {
             String envVariableName = converter.convertKeyToEnv(jobParam.getKey());
-            map.put(envVariableName, jobParam.getValue());
+            envAccess.put(envVariableName, jobParam.getValue());
         } else {
             if (wellknown) {
                 LOG.debug("Wellknown parameter found - but not available inside script: {}", jobParam.getKey());

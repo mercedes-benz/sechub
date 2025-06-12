@@ -9,6 +9,7 @@ dependencies {
 
     implementation project(':sechub-scan')
     implementation project(':sechub-sereco')
+    implementation project(':sechub-adapter')
     
     testImplementation project(':sechub-testframework')
     testImplementation project(':sechub-scan-testframework')

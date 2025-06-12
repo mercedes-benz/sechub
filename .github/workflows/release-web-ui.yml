@@ -156,7 +156,7 @@ jobs:
           done
           # Define release data
           tag_name="v${{ inputs.web-ui-version }}-web-ui"
-          release_title="web-ui frontend Version ${{ inputs.web-ui-version }}"
+          release_title="web-ui Version ${{ inputs.web-ui-version }}"
           release_message="Changes in this Release
           - New shiny Web-UI features"
           release_footer="For more details please look at [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1)"

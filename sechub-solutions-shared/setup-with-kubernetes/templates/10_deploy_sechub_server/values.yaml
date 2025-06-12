@@ -22,6 +22,23 @@ service:
       name: https
       number: {{ .SECHUB_SERVER_LB_PORT }}
 
+security:
+  resourceServer:
+    modes: {{ .SECHUB_SERVER_LOGIN_MODES }}
+  login:
+    # Whether or not the login is enabled or not
+    enabled: true
+    # Path under which the login page will be hosted on the application (or server).
+    # Must not collide with other existing paths.
+    loginPage: /login
+    # Defines the URI to which the user is redirected after successful login.
+    # replace 'web-ui-ip-placeholder' later with the actual IP address of the web UI:
+    # kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    redirectUri: https://web-ui-ip-placeholder:4443/index.html
+    # The authentication can be configured in 'classic' or 'oauth2' mode.
+    # While both are possible, at least one must be active when login is enabled.
+    modes: {{ .SECHUB_SERVER_LOGIN_MODES }}
+
 env: |-
   - name: SECHUB_INITIALADMIN_APITOKEN
     value: "{{ .SECHUB_INITIALADMIN_APITOKEN }}"

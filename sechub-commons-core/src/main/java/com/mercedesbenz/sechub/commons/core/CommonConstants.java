@@ -37,4 +37,6 @@ public class CommonConstants {
         return Set.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER);
     }
 
+    public static final String META_DATA_KEY_PRODUCT_CANCELED = "PRODUCT_CANCELED";
+
 }

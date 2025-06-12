@@ -56,10 +56,6 @@ public class SecHubSecurityProperties {
         return set;
     }
 
-    public Duration getMinimumTokenValidity() {
-        return minimumTokenValidity;
-    }
-
     /* @formatter:off */
     @ConstructorBinding
     public SecHubSecurityProperties(
@@ -93,6 +89,10 @@ public class SecHubSecurityProperties {
 
     public EncryptionProperties getEncryptionProperties() {
         return encryption;
+    }
+
+    public Duration getMinimumTokenValidity() {
+        return minimumTokenValidity;
     }
 
     public static class ResourceServerProperties {

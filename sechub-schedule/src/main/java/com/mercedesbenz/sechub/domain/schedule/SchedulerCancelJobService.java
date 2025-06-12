@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -59,6 +60,7 @@ public class SchedulerCancelJobService {
      * @param ownerEmailAddress
      */
     @UseCaseAdminCancelsJob(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
+    @UseCaseUserCancelsJob(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
     public void cancelJob(UUID jobUUID, String ownerEmailAddress) {
         assertion.assertIsValidJobUUID(jobUUID);
 

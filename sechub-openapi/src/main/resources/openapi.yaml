@@ -4400,19 +4400,3 @@ paths:
       tags:
         - Job Management
       x-accepts: application/json
-
-  /logout:
-    post:
-      description: User logs out
-      operationId: userLogout
-      responses:
-        "204":
-          description: "No content"
-        "302":
-            description: "Redirect"
-      security:
-        - basic: [ ]
-      summary: User logs out
-      tags:
-        - Other
-      x-accepts: application/json

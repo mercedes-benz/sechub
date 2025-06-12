@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubRevisionData;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
@@ -81,10 +82,11 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         falsePositiveMarker.markFalsePositives(projectId, data.getVulnerabilities());
 
         ReportTransformationResult transformerResult = new ReportTransformationResult();
-        transformerResult.setReportVersion(SecHubReportVersion.VERSION_1_0.getVersionAsString());
-        transformerResult.setJobUUID(sechubJobUUID);
+        SecHubReportModel transformerResultModel = transformerResult.getModel();
+        transformerResultModel.setReportVersion(SecHubReportVersion.VERSION_1_0.getVersionAsString());
+        transformerResultModel.setJobUUID(sechubJobUUID);
 
-        List<SecHubFinding> findings = transformerResult.getResult().getFindings();
+        List<SecHubFinding> findings = transformerResultModel.getResult().getFindings();
 
         int findingId = 0;
         for (SerecoVulnerability vulnerability : data.getVulnerabilities()) {
@@ -146,23 +148,23 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
-        handleMetaData(data, transformerResult);
+        handleMetaData(data, transformerResultModel);
 
         /* when status is not set already, no failure has appeared and we mark as OK */
-        if (transformerResult.getStatus() == null) {
-            transformerResult.setStatus(SecHubStatus.SUCCESS);
+        if (transformerResultModel.getStatus() == null) {
+            transformerResultModel.setStatus(SecHubStatus.SUCCESS);
         }
 
         return transformerResult;
     }
 
-    private void handleMetaData(SerecoMetaData data, ReportTransformationResult transformerResult) {
+    private void handleMetaData(SerecoMetaData data, SecHubReportModel transformerResultModel) {
         /* ensure metadata never null */
-        if (transformerResult.getMetaData() == null) {
-            transformerResult.setMetaData(new SecHubReportMetaData());
+        if (transformerResultModel.getMetaData() == null) {
+            transformerResultModel.setMetaData(new SecHubReportMetaData());
         }
 
-        SecHubReportMetaData metaData = transformerResult.getMetaData();
+        SecHubReportMetaData metaData = transformerResultModel.getMetaData();
         SerecoVersionControl serecoVersionControl = data.getVersionControl();
         handleVersionControlMetaData(metaData, serecoVersionControl);
 
@@ -273,6 +275,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         case USER_INFO:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.INFO, annotationValue));
             break;
+        case INTERNAL_PRODUCT_CANCELED:
+            transformerResult.setAtLeastOneProductCanceled(true);
+            break;
         case USER_WARNING:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.WARNING, annotationValue));
             break;
@@ -281,7 +286,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             break;
         case INTERNAL_ERROR_PRODUCT_FAILED:
             /* internal errors are marked with status failed */
-            transformerResult.setStatus(SecHubStatus.FAILED);
+            transformerResult.getModel().setStatus(SecHubStatus.FAILED);
             /* we add an information to user as well */
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem!"));
             break;
@@ -301,7 +306,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
     private void appendSecHubMessage(ReportTransformationResult transformerResult, SecHubMessage sechubMessage) {
         if (sechubMessage != null) {
-            transformerResult.getMessages().add(sechubMessage);
+            transformerResult.getModel().getMessages().add(sechubMessage);
         }
     }
 

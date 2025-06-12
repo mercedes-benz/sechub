@@ -28,7 +28,6 @@ public class OAuth2TokenExpirationCalculator {
         requireNonNull(now, "Parameter 'now' may not be null!");
         requireNonNull(defaultDuration, "Parameter 'defaultDuration' may not be null!");
         requireNonNull(oAuth2AccessToken, "Parameter 'oAuth2AccessToken' may not be null!");
-        requireNonNull(minimumTokenValidity, "Parameter 'minimumTokenValidity' may not be null!");
 
         Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> now.plusSeconds(defaultDuration.toSeconds()));
         if (minimumTokenValidity != null) {

@@ -10,7 +10,7 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.21.6.linux-amd64.tar.gz"
+ARG GO="go1.24.4.linux-amd64.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="temurin"

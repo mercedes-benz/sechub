@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.util.Map;
 
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
@@ -89,6 +91,9 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         if (metaData == null) {
             return false;
         }
+
+        metaData.setValue(META_DATA_KEY_PRODUCT_CANCELED, true);
+        callback.persist(metaData);
 
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
         runtimeContext.callback = null;

@@ -54,12 +54,15 @@
 </template>
 
 <script lang="ts">
-  import defaultClient from '@/services/defaultClient'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useFetchUserDetail } from '@/composables/useUserDetail'
   import { useConfig } from '@/config'
-  import { handleApiError } from '@/services/apiErrorHandler'
+
+  import { useProjectStore } from '@/stores/projectStore'
+  import { useReportStore } from '@/stores/reportStore'
+  import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
+  import { useTmpFalsePositivesStore } from '@/stores/tempFalsePositivesStore'
 
   export default {
     name: 'AppHeader',
@@ -68,6 +71,11 @@
       const { t } = useI18n()
       const router = useRouter()
       const config = useConfig()
+
+      const projectStore = useProjectStore()
+      const reportStore = useReportStore()
+      const userDetailInformationStore = useUserDetailInformationStore()
+      const tempFalsePositivesStore = useTmpFalsePositivesStore()
 
       const faqLink = ref(config.value.SECHUB_FAQ_LINK)
 
@@ -97,14 +105,14 @@
       }
 
       async function logout () {
-        try {
-          await defaultClient.withOtherApi.userLogout()
-          // redirect to root after logout
-          router.push('/login')
-        } catch (err) {
-          handleApiError(err)
-          console.error(err)
-        }
+        // Reset all storages
+        projectStore.$reset()
+        reportStore.$reset()
+        tempFalsePositivesStore.$reset()
+        userDetailInformationStore.$reset()
+
+        // Perform a full browser navigation to /logout so the nginx redirect is followed
+        window.location.href = '/logout'
       }
 
       return {

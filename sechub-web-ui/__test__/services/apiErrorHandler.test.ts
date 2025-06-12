@@ -1,50 +1,63 @@
 // SPDX-License-Identifier: MIT
-import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { ResponseError } from '../../src/generated-sources/openapi/runtime';
-import router from '../../src/router/index'
-import { handleApiError } from '../../src/services/apiErrorHandler';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { ResponseError } from '../../src/generated-sources/openapi/runtime'
+import { handleApiError } from '../../src/services/apiErrorHandler'
 
 // Mock the router
-vi.mock('../../src/router/index');
+vi.mock('../../src/router/index')
 
 describe('handleApiError', () => {
+  let originalLocation: PropertyDescriptor | undefined
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks()
+    // Mock window.location.href
+    originalLocation = Object.getOwnPropertyDescriptor(window, 'location')
+    Object.defineProperty(window, 'location', {
+      value: { href: '' },
+      writable: true,
+    })
   })
 
-  it('router.push is called with "/login" when ResponseError status is 401', () => {
+  afterEach(() => {
+    // Restore window.location
+    if (originalLocation) {
+      Object.defineProperty(window, 'location', originalLocation)
+    }
+  })
+
+  it('sets window.location.href to "/login" when ResponseError status is 401', () => {
     /* prepare */
-    const response = {status: 401} as Response;
-    const responseError = new ResponseError(response, "Unauthorized");
+    const response = { status: 401 } as Response
+    const responseError = new ResponseError(response, 'Unauthorized')
 
     /* execute */
-    handleApiError(responseError);
+    handleApiError(responseError)
 
     /* test */
-    expect(router.push).toHaveBeenCalledWith('/login');
-  });
+    expect(window.location.href).toBe('/login')
+  })
 
-  it('router.push is not called for non-ResponseError errors', () => {
+  it('does not change window.location.href for non-ResponseError errors', () => {
     /* prepare */
-    const genericError = new Error("Invalid error type!")
+    const genericError = new Error('Invalid error type!')
 
     /* execute */
-    handleApiError(genericError);
+    handleApiError(genericError)
 
     /* test */
-    expect(router.push).not.toHaveBeenCalled();
-  });
+    expect(window.location.href).toBe('')
+  })
 
-  it('router.push is not called for ResponseError with status other than 401', () => {
+  it('does not change window.location.href for ResponseError with status other than 401', () => {
     /* prepare */
-    const response = {status: 403} as Response;
-    const responseError = new ResponseError(response, "Forbidden");
+    const response = { status: 403 } as Response
+    const responseError = new ResponseError(response, 'Forbidden')
 
     /* execute */
-    handleApiError(responseError);
+    handleApiError(responseError)
 
     /* test */
-    expect(router.push).not.toHaveBeenCalled();
-  });
-  
-});
+    expect(window.location.href).toBe('')
+  })
+})

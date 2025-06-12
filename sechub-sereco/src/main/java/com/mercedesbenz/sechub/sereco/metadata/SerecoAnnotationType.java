@@ -21,6 +21,12 @@ public enum SerecoAnnotationType {
      */
     INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED(true),
 
+    /*
+     * Product has been canceled. This information is not directly transfered to
+     * user. Will be transformed to wanted output message later.
+     */
+    INTERNAL_PRODUCT_CANCELED(true),
+
     ;
 
     private boolean internal;

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
 
 export default defineNuxtConfig({
@@ -12,6 +13,16 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-security'],
-  compatibilityDate: '2024-12-05'
+  modules: [
+      '@nuxtjs/tailwindcss',
+    'nuxt-security',
+    'nuxt-headlessui'
+  ],
+  compatibilityDate: '2024-12-05',
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 });

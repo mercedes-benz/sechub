@@ -1,38 +1,63 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server.core;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonLocation;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 @ControllerAdvice
 public class SecHubExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecHubExceptionHandler.class);
+
     @ExceptionHandler(SizeLimitExceededException.class)
-    @ResponseBody
-    public String handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
-        return commonHandleFileUploadSizeExceed(ex, response);
+    public ResponseEntity<String> handleSizeLimitExceededException(SizeLimitExceededException ex) {
+        logger.error("Request size limit exceeded:", ex);
+        String displayPermittedSize = FileUtils.byteCountToDisplaySize(ex.getPermittedSize());
+        String errMsg = "The request size must not exceed %s".formatted(displayPermittedSize);
+        return createNotAcceptableResponseEntity(errMsg);
+    }
+
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public ResponseEntity<String> handleFileSizeLimitExceededException(FileSizeLimitExceededException ex) {
+        logger.error("File size limit exceeded:", ex);
+        String displayPermittedSize = FileUtils.byteCountToDisplaySize(ex.getPermittedSize());
+        String errMsg = "The file upload size must not exceed %s".formatted(displayPermittedSize);
+        return createNotAcceptableResponseEntity(errMsg);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseBody
-    public String handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
-        return commonHandleFileUploadSizeExceed(ex, response);
+    public ResponseEntity<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        Throwable mostSpecificCause = ex.getMostSpecificCause();
+
+        if (mostSpecificCause instanceof SizeLimitExceededException sizeLimitExceededException) {
+            return handleSizeLimitExceededException(sizeLimitExceededException);
+        }
+
+        if (mostSpecificCause instanceof FileSizeLimitExceededException fileSizeLimitExceededException) {
+            return handleFileSizeLimitExceededException(fileSizeLimitExceededException);
+        }
+
+        logger.error("Max upload size exceeded:", ex);
+        String displayMaxUploadSize = FileUtils.byteCountToDisplaySize(ex.getMaxUploadSize());
+        String errMsg = "Upload size must not exceed %s".formatted(displayMaxUploadSize);
+        return createNotAcceptableResponseEntity(errMsg);
     }
 
     @ExceptionHandler(JacksonException.class)
-    @ResponseBody
-    public String handleJacksonException(JacksonException je, HttpServletResponse response) {
+    public ResponseEntity<String> handleJacksonException(JacksonException je) {
         /*
          * In this case the Jackson exception comes from Spring Boot framework - e.g.
          * when a user defines a wrong SecHubCongfigurationModel as JSON and the
@@ -48,7 +73,7 @@ public class SecHubExceptionHandler {
          * So we handle this special.
          *
          */
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        int status = HttpStatus.BAD_REQUEST.value();
 
         String jsonProblem = "JSON data failure";
 
@@ -59,7 +84,11 @@ public class SecHubExceptionHandler {
         jsonProblem += ". ";
         jsonProblem += je.getOriginalMessage();
 
-        return jsonProblem;
+        /* @formatter:off */
+        return ResponseEntity
+                .status(status)
+                .body(jsonProblem);
+        /* @formatter:on */
     }
 
     @Bean
@@ -67,16 +96,11 @@ public class SecHubExceptionHandler {
         return new SecHubHttpStatusRequestRejectedHandler();
     }
 
-    private String commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {
-        if (response == null) {
-            throw new IllegalStateException("response missing");
-        }
-        if (ex == null) {
-            throw new IllegalStateException("exception missing");
-        }
-
-        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-
-        return "File upload maximum reached. Please reduce your upload file size.";
+    private static ResponseEntity<String> createNotAcceptableResponseEntity(String errMsg) {
+        /* @formatter:off */
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(errMsg);
+        /* @formatter:on */
     }
 }
