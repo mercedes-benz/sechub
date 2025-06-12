@@ -27,7 +27,7 @@
               icon="mdi-arrow-left"
               @click="router.go(-1)"
             />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshProjectData,fetchProjectJobs(currentRequestParameters)" />
           </template>
 
           <!-- to edit project settings user must be superadmin or owner -->
@@ -40,15 +40,14 @@
           v-if="!loading"
           :project-data="projectData"
           :visible="settingsDialog"
-          @close="settingsDialog=false"
+          @close="settingsDialog=false,fetchProjectJobs(currentRequestParameters)"
           @project-changed="refreshProjectData"
         />
 
         <div v-if="(!jobs || jobs.length === 0 && !loading)">
           <v-list bg-color="background_paper" lines="two">
             <v-list-item class="ma-5 background-color" color="layer_01" rounded="lg">
-              <!-- either error, no scans to show (superadmin, members) or not allowed (owner only)-->
-              {{ error ? $t('ERROR_FETCHING_DATA') : user.superAdmin || (!projectData.isOwned) && (projectData.isOwned && !projectData.assignedUsers?.some(u => u.userId === user.userId)) ? $t('NO_JOBS_RUNNED') : $t('NON_PROJECT_MEMBER') }}
+              {{ getJobMessage }}
             </v-list-item>
           </v-list>
         </div>
@@ -218,10 +217,18 @@
 
       const settingsDialog = ref(false)
 
-      async function refreshRequestedByUser (requestParameters: UserListsJobsForProjectRequest) {
-        fetchProjectJobs(requestParameters)
-        refreshProjectData()
-      }
+      const getJobMessage = computed(() => {
+        if (error.value) {
+          return t('ERROR_FETCHING_DATA')
+        } else if (jobs.value?.length === 0) {
+          if (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId)) {
+            return t('NON_PROJECT_MEMBER')
+          } else {
+            return t('NO_JOBS_RUNNED')
+          }
+        }
+        return ''
+      })
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         // if user is only the owner of a project (no member and no superadmin), he can not see jobs
@@ -355,7 +362,7 @@
       }
 
       async function refreshProjectData () {
-        // We know the new owner id, but not the new owner email address.
+        // We know the new user id, but not the new user email address.
         // Because of missing other REST API endpoints, we must reload all projects data
         await useFetchProjects()
 
@@ -391,6 +398,7 @@
         loading,
         error,
         alert,
+        getJobMessage,
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
@@ -403,7 +411,6 @@
         settingsDialog,
         refreshProjectData,
         copyToClipboard,
-        refreshRequestedByUser,
       }
     },
 
