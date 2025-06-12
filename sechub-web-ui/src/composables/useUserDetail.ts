@@ -14,7 +14,7 @@ export async function useFetchUserDetail () {
     store.storeUserDetailInformation(userDetailInformation.value)
   } catch (error) {
     console.error(error)
-    store.clearUserDetailInformation()
+    store.$reset()
     handleApiError(error)
   }
 

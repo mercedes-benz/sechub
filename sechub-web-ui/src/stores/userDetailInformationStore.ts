@@ -19,11 +19,6 @@ export const useUserDetailInformationStore = defineStore(STORE_NAME, {
       this.userDetailInformation = userDetailInformation
       localStorage.setItem(STORE_NAME, JSON.stringify(this.userDetailInformation))
     },
-
-    clearUserDetailInformation () {
-      this.userDetailInformation = {}
-      localStorage.setItem(STORE_NAME, JSON.stringify(this.userDetailInformation))
-    },
   },
   getters: {
     getUserDetailInformation: state => {
