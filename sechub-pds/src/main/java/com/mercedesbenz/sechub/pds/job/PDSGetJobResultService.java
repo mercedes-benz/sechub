@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailureText;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResult;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobResult;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -23,14 +23,14 @@ public class PDSGetJobResultService {
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "Fetches job result from database. When job is not already done a failure will be shown", number = 2))
+    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "Fetches job result from database. When job is not done, a NOT_ACCEPTABLE will be returned instead", number = 2))
     @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
     public String getJobResult(UUID jobUUID) {
         return getJobResult(jobUUID, true);
     }
 
     @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
-    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name = "service call", description = "Result data will be returned - can be empty or even a failure text from job execution.", number = 2))
+    @UseCaseAdminFetchesJobResult(@PDSStep(name = "service call", description = "Result data will be returned - will be empty if job is not done", number = 2))
     public String getJobResultOrFailureText(UUID jobUUID) {
         return getJobResult(jobUUID, false);
     }

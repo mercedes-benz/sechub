@@ -4,7 +4,10 @@
 ==== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 
+// UC_USER_CREATES_JOB(1)
 ==== Create JOB
+See also <<section-usecase-PDS_UC_001,Usecase PDS_UC_001-User creates job >> 
+
 [source,bash]
 ----
 https://${baseURL}/api/job/create [POST]
@@ -23,8 +26,10 @@ include::product_delegation_job_config_example1.json[]
     Only `[a-z\.0-9]` is allowed. `.` will be converted always to `_` for the environment variables (spirng boot style)
 <5> Just the value. Must be always a string
 
-
+// UC_USER_UPLOADS_JOB_DATA(2)
 ==== Upload data
+See also <<section-usecase-PDS_UC_002,Usecase PDS_UC_002-User uploads job data>> 
+
 [source,bash]
 ----
 https://${baseURL}/api/job/${jobUUID}/upload [POST]
@@ -33,35 +38,59 @@ https://${baseURL}/api/job/${jobUUID}/upload [POST]
 Uploaded data must be automatically destroyed after job has been done.
 This avoids file system freezes...
 
+// UC_USER_MARKS_JOB_READY_TO_START(3)
 ==== Mark JOB ready to start
+See also <<section-usecase-PDS_UC_003,Usecase PDS_UC_003-User marks job ready to start>>
+
 [source,bash]
 ----
 https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]
 ----
 
-
-==== Fetch JOB status
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/status [GET]
-----
-
-
-==== Fetch JOB result
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/result [GET]
-----
-
+//UC_USER_REQUESTS_JOB_CANCELLATION(4)
 ==== Cancel JOB
+See also <<section-usecase-PDS_UC_004,Usecase PDS_UC_004-User cancels job>>
+
 [source,bash]
 ----
 https://${baseURL}/api/job/${jobUUID}/cancel [PUT]
 ----
 
-TIP: This will the process hard!
+TIP: This will stop the process hard!
 
+//UC_USER_FETCHES_STATUS_OF_JOB(5)
+==== Fetch JOB status
+See also <<section-usecase-PDS_UC_005,Usecase PDS_UC_005-User fetches job status>>
+
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/status [GET]
+----
+
+//UC_USER_FETCHES_JOB_RESULT(6)
+//UC_ADMIN_FETCHES_JOB_RESULT(9)
+==== Fetch JOB result
+
+*As user* +
+See also <<section-usecase-PDS_UC_006,Usecase PDS_UC_006-User fetches job result>>
+
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/result [GET]
+----
+
+*As administrator* +
+See also <<section-usecase-PDS_UC_009,Usecase PDS_UC_009-Admin fetches job result>>
+
+[source,bash]
+----
+https://${baseURL}api/admin/job/{jobUUID}/result [GET]
+----
+
+//UC_ADMIN_FETCHES_MONITORING_STATUS(7)
 ==== Get monitoring status
+See also <<section-usecase-PDS_UC_007,Usecase PDS_UC_007-Admin fetches monitoring status>>
+
 [source,bash]
 ----
 https://${baseURL}/api/admin/monitoring/status [GET]
@@ -72,4 +101,128 @@ Here an example output:
 ----
 include::pds-monitoring-result-example1.json[]
 ----
+
+//UC_ANONYMOUS_CHECK_ALIVE(8)
+==== Check server alive
+See also <<section-usecase-PDS_UC_008,Usecase PDS_PDS_UC_008-Anonymous check if server is alive>>
+
+[source,bash]
+----
+https://${baseURL}/api/anonymous/check/alive [GET,HEAD]
+----
+
+//UC_ADMIN_FETCHES_SERVER_CONFIGURATION(10)
+==== Fetch server configuration
+See also <<section-usecase-PDS_UC_010,Usecase PDS_UC_010-Admin fetches server configuration>>
+
+[source,bash]
+----
+https://${baseURL}/api/admin/config/server [GET]
+----
+
+Here an example output: 
+
+[source,json]
+----
+include::pds-server-config-example1.json[]
+----
+
+TIP: You find more details about PDS server configuration <<section-pds-server-config-file,here>> 
+
+//UC_ADMIN_FETCHES_OUTPUT_STREAM(11)
+==== Fetch job output stream
+See also <<section-usecase-PDS_UC_011,Usecase PDS_UC_011-Admin fetches job output stream>>
+
+[source,bash]
+----
+https://${baseURL}api/admin/job/{jobUUID}/stream/output [GET]
+----
+
+//UC_ADMIN_FETCHES_ERROR_STREAM(12)
+==== Fetch job error stream
+
+See also <<section-usecase-PDS_UC_012,Usecase PDS_UC_012-Admin fetches job error stream>>
+
+[source,bash]
+----
+https://${baseURL}api/admin/job/{jobUUID}/stream/error [GET]
+----
+
+[[section-rest-autocleanup]]
+//UC_ADMIN_FETCHES_AUTO_CLEANUP_CONFIGURATION(13)
+==== Fetch auto cleanup configuration
+See also <<section-usecase-PDS_UC_013,Usecase PDS_UC_013-Admin fetches auto cleanup configuration>>
+
+[source,bash]
+----
+https://${baseURL}/api/admin/config/autoclean [GET]
+----
+
+Example result:
+[source,json]
+----
+include::pds-autocleanup-example1.json[]
+----
+
+NOTE: The concept for auto cleanup is defined <<concept-pds-auto-cleanup,here>>.
+
+//UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(14)
+==== Update auto cleanup configuration
+See also <<section-usecase-PDS_UC_014,Usecase PDS_UC_014-Admin updates auto cleanup configuration>>
+
+[source,bash]
+----
+https://${baseURL}/api/admin/config/autoclean [PUT]
+----
+
+Example body data:
+[source,json]
+----
+include::pds-autocleanup-example2.json[]
+----
+<1> Defines the used time unit. Can be a either `MILLISECOND`, `SECOND`, `MINUTE`, `HOUR` or `DAY`  
+<2> Amount of time (for given unit) - in the example above we have defined 3 days
+
+NOTE: The concept for auto cleanup is defined <<concept-pds-auto-cleanup,here>>.
+
+// UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15) - NO REST documentation necessary
+
+// UC_USER_FETCHES_JOB_MESSAGES(16)
+==== Fetch job messages
+See also <<section-usecase-PDS_UC_016,Usecase PDS_UC_016-User fetches job messages>>
+
+[source,bash]
+----
+https://${baseURL}/api/job/{jobUUID}/messages [GET]
+----
+
+Example result:
+[source,json]
+----
+include::pds-job-messages-example1.json[]
+----
+
+
+//UC_ADMIN_FETCHES_JOB_META_DATA(17)
+[[section-rest-fetch-job-meta-data]]
+==== Fetch job meta data
+
+See also <<section-usecase-PDS_UC_017,Usecase PDS_UC_017-Admin fetches job meta data>>
+
+NOTE: The concept of PDS job meta data handling is described <<concept-pds_solution_metadata,here>> .
+
+[source,bash]
+----
+https://${baseURL}/api/admin/job/{jobUUID}/metadata [GET]
+----
+
+Example result:
+[source,json]
+----
+include::pds-metadata-file-example1.json[]
+----
+
+// UC_SYSTEM_SIGTERM_HANDLING(19)- NO REST documentation necessary
+// UC_SYSTEM_JOB_EXECUTION(20)- NO REST documentation necessary
+
 

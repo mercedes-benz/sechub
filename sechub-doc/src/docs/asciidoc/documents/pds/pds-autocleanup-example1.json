@@ -1,0 +1,7 @@
+{
+  "cleanupTime" : {
+    "unit" : "DAY",
+    "amount" : 2
+  },
+  "version" : "1.0"
+}

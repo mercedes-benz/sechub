@@ -10,11 +10,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PDSUseCaseDefinition(
-		id=PDSUseCaseIdentifier.UC_ADMIN_FETCHES_SERVER_CONFIGURATION,
-		group=PDSUseCaseGroup.MONITORING,
-		title="Admin fetches server configuration",
-		description="An administrator fetches the server configuration.")
-public @interface UseCaseAdminFetchesServerConfiguration {
+		id=PDSUseCaseIdentifier.UC_ADMIN_FETCHES_JOB_RESULT,
+		group=PDSUseCaseGroup.JOB_EXECUTION,
+		title="Admin fetches job result",
+		description = """
+    		Similar to the usecase when a user is fetching a job result.
+    		But will return current job result in any kind of state without throwning an error.
+	        """
+        )
+public @interface UseCaseAdminFetchesJobResult {
     PDSStep value();
 }
 /* @formatter:on */
