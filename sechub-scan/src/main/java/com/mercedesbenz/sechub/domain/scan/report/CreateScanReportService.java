@@ -82,23 +82,30 @@ public class CreateScanReportService {
         ReportTransformationResult reportTransformerResult;
         try {
             reportTransformerResult = reportTransformerService.createResult(context);
-            if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
-                /* in this case we add a warning message for the user inside the report */
-                reportTransformerResult.getMessages()
-                        .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
+
+            if (reportTransformerResult.isAtLeastOneProductCanceled()) {
+                /* in this case we inform the user that the job has been canceled */
+                reportTransformerResult.getModel().getMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "Job has been canceled!"));
+            } else {
+                if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+                    /* in this case we add a warning message for the user inside the report */
+                    reportTransformerResult.getModel().getMessages()
+                            .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
+                }
             }
+
             scanReport.setResultType(ScanReportResultType.MODEL);
-            scanReport.setResult(reportTransformerResult.toJSON());
+            scanReport.setResult(reportTransformerResult.getModel().toJSON());
 
         } catch (Exception e) {
             throw new ScanReportException("Was not able to build sechub result", e);
         }
 
         /* create and set the traffic light */
-        SecHubResult sechubResult = reportTransformerResult.getResult();
+        SecHubResult sechubResult = reportTransformerResult.getModel().getResult();
         TrafficLight trafficLight = null;
 
-        if (SecHubStatus.FAILED.equals(reportTransformerResult.getStatus())) {
+        if (SecHubStatus.FAILED.equals(reportTransformerResult.getModel().getStatus())) {
             /* at least one product failed - so turn off traffic light */
             trafficLight = TrafficLight.OFF;
 

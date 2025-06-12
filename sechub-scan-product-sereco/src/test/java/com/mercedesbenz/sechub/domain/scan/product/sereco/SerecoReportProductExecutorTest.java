@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.product.AdapterMetaDataConverter;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
@@ -47,6 +49,10 @@ class SerecoReportProductExecutorTest {
         jobUUID = UUID.randomUUID();
 
         executorContext = mock(ProductExecutorContext.class);
+        ProductExecutorCallback callback = mock();
+        AdapterMetaDataConverter converter = mock();
+        when(callback.getMetaDataConverter()).thenReturn(converter);
+        when(executorContext.getCallback()).thenReturn(callback);
         context = mock(SecHubExecutionContext.class);
         SecHubConfiguration configuration = new SecHubConfiguration();
         ProductExecutorConfig executorConfig = mock(ProductExecutorConfig.class);

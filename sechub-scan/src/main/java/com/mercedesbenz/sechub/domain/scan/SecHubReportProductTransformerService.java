@@ -62,7 +62,7 @@ public class SecHubReportProductTransformerService {
 
     private void addMetaDataToReport(SecHubExecutionContext context, ReportTransformationResult result) {
         SecHubReportMetaData reportMetaData = new SecHubReportMetaData();
-        result.setMetaData(reportMetaData);
+        result.getModel().setMetaData(reportMetaData);
 
         reportMetaData.getExecuted().addAll(context.getUsedPublicScanTypes());
 

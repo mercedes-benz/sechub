@@ -12,6 +12,8 @@ import com.mercedesbenz.sechub.sharedkernel.NullProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.ProgressState;
 import com.mercedesbenz.sechub.sharedkernel.ProgressStateFetcher;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserCancelsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.other.UseCaseSystemSuspendsJobsWhenSigTermReceived;
 
 /**
@@ -165,6 +167,8 @@ class ScanJobExecutor {
 
     }
 
+    @UseCaseAdminCancelsJob(@Step(number = 5, name = "start cancel operation thread"))
+    @UseCaseUserCancelsJob(@Step(number = 5, name = "start cancel operation thread"))
     private void startCancelThreadIfNecessary(ScanJobRunnableData data) {
         SecHubExecutionContext executionContext = data.getExecutionContext();
 

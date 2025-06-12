@@ -34,16 +34,16 @@ public class ReportTransformationResultMerger {
         }
 
         ReportTransformationResult mergedTransformerResult = new ReportTransformationResult();
-        SecHubResult merged = mergedTransformerResult.getResult();
+        SecHubResult merged = mergedTransformerResult.getModel().getResult();
 
-        mergeFindings(result1.getResult(), merged);
-        mergeFindings(result2.getResult(), merged);
+        mergeFindings(result1.getModel().getResult(), merged);
+        mergeFindings(result2.getModel().getResult(), merged);
 
-        mergeFalsePositives(result1.getResult(), merged);
-        mergeFalsePositives(result2.getResult(), merged);
+        mergeFalsePositives(result1.getModel().getResult(), merged);
+        mergeFalsePositives(result2.getModel().getResult(), merged);
 
-        mergeCounts(result1.getResult(), merged);
-        mergeCounts(result2.getResult(), merged);
+        mergeCounts(result1.getModel().getResult(), merged);
+        mergeCounts(result2.getModel().getResult(), merged);
 
         mergeStatus(result1, mergedTransformerResult);
         mergeStatus(result2, mergedTransformerResult);
@@ -62,8 +62,8 @@ public class ReportTransformationResultMerger {
          * currently very simple approach: last one wins, changes by different versions
          * produces at least a WARNING log entry
          */
-        String version = result.getReportVersion();
-        String formerMergedVersion = mergedTransformerResult.getReportVersion();
+        String version = result.getModel().getReportVersion();
+        String formerMergedVersion = mergedTransformerResult.getModel().getReportVersion();
 
         /* check there is another version already set by another product */
         if (formerMergedVersion == null) {
@@ -71,7 +71,7 @@ public class ReportTransformationResultMerger {
                 LOG.debug("Transformation result has no version set - no existing one found");
                 return;
             }
-            mergedTransformerResult.setReportVersion(version);
+            mergedTransformerResult.getModel().setReportVersion(version);
         } else {
 
             if (formerMergedVersion.equals(version)) {
@@ -82,7 +82,7 @@ public class ReportTransformationResultMerger {
             if (version == null || version.isEmpty()) {
                 LOG.debug("Transformation result has no version set - so keep existing one:{}", formerMergedVersion);
             } else {
-                mergedTransformerResult.setReportVersion(version);
+                mergedTransformerResult.getModel().setReportVersion(version);
                 LOG.warn("Different report version found! Transformation result has version {} - will replace in merge result (former report version :{})",
                         version, formerMergedVersion);
             }
@@ -91,16 +91,16 @@ public class ReportTransformationResultMerger {
     }
 
     private void mergeMessages(ReportTransformationResult result, ReportTransformationResult mergedTransformerResult) {
-        Set<SecHubMessage> resultMessages = result.getMessages();
+        Set<SecHubMessage> resultMessages = result.getModel().getMessages();
         for (SecHubMessage message : resultMessages) {
-            mergedTransformerResult.getMessages().add(message);
+            mergedTransformerResult.getModel().getMessages().add(message);
         }
     }
 
     private void mergeStatus(ReportTransformationResult result, ReportTransformationResult merged) {
         /* when one transformation result has failed, we mark ALL (merged) as failed: */
-        if (result.getStatus() == SecHubStatus.FAILED) {
-            merged.setStatus(SecHubStatus.FAILED);
+        if (result.getModel().getStatus() == SecHubStatus.FAILED) {
+            merged.getModel().setStatus(SecHubStatus.FAILED);
         }
     }
 

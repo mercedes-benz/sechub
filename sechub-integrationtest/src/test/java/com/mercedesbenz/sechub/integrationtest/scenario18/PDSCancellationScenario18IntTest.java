@@ -20,8 +20,11 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.integrationtest.api.AssertReport;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 
 public class PDSCancellationScenario18IntTest {
 
@@ -34,6 +37,7 @@ public class PDSCancellationScenario18IntTest {
     TestProject project = PROJECT_1;
 
     @Test
+    @UseCaseAdminCancelsJob(@Step(number = 0, name = "integration test"))
     public void sechub_starts_job_and_triggers_cancel_must_be_handled_by_PDS_script() {
         /* @formatter:off */
         /* prepare */
@@ -79,6 +83,9 @@ public class PDSCancellationScenario18IntTest {
         // Now check for the final cancel successful message:
         assertTrue(messageTextsFound.contains("Event type:cancel_requested was received and handled by script"));
 
+        AssertReport assertReport = as(SUPER_ADMIN).withSecHubClient().startDownloadReport(PROJECT_1, jobUUID);
+        assertReport.hasMessages(1);
+        assertReport.hasMessage(SecHubMessageType.WARNING,"Job has been canceled!");
         /* @formatter:on */
     }
 

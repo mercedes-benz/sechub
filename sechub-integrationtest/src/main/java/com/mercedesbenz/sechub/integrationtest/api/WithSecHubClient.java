@@ -86,8 +86,20 @@ public class WithSecHubClient {
         return TestAPI.assertReportUnordered(report);
     }
 
-    public AssertReport startDownloadReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
-        ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
+    /**
+     * Starts download of SecHub json report and returns an assert object for report
+     *
+     * @param project
+     * @param jobUUID
+     * @return assert object
+     */
+    public AssertReport startDownloadReport(TestProject project, UUID jobUUID) {
+        // For the download we do not really need a sechub configuration file, but the
+        // test utils needs an existing file, so we just use here the generic code scan
+        // configuration to have one.
+        String clientSecHubConfigFilePath = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE.getPath();
+
+        ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, clientSecHubConfigFilePath);
         String report = reportLoader.loadReport();
         return TestAPI.assertReport(report);
     }

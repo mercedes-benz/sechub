@@ -53,7 +53,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        Iterator<SecHubFinding> it = result.getResult().getFindings().iterator();
+        Iterator<SecHubFinding> it = result.getModel().getResult().getFindings().iterator();
         assertTrue(it.hasNext(), "no finding found!");
 
         SecHubFinding finding = it.next();
@@ -72,7 +72,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        SecHubReportMetaData metaData = result.getMetaData();
+        SecHubReportMetaData metaData = result.getModel().getMetaData();
         if (metaData == null) {
             fail("Did not find metadata");
         }
@@ -100,7 +100,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        SecHubReportMetaData metaDataOpt = result.getMetaData();
+        SecHubReportMetaData metaDataOpt = result.getModel().getMetaData();
         if (metaDataOpt == null) {
             fail("Did not find metadata");
         }
@@ -120,7 +120,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        AssertSecHubResult.assertSecHubResult(result.getResult()).hasFindings(1);
+        AssertSecHubResult.assertSecHubResult(result.getModel().getResult()).hasFindings(1);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        SecHubResult sechubResult = result.getResult();
+        SecHubResult sechubResult = result.getModel().getResult();
         for (SecHubFinding finding : sechubResult.getFindings()) {
             assertEquals(ScanType.SECRET_SCAN, finding.getType());
         }
@@ -169,7 +169,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        SecHubResult sechubResult = result.getResult();
+        SecHubResult sechubResult = result.getModel().getResult();
         for (SecHubFinding finding : sechubResult.getFindings()) {
             assertEquals(ScanType.IAC_SCAN, finding.getType());
         }
@@ -206,7 +206,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        SecHubResult sechubResult = result.getResult();
+        SecHubResult sechubResult = result.getModel().getResult();
         for (SecHubFinding finding : sechubResult.getFindings()) {
             assertEquals(ScanType.CODE_SCAN, finding.getType());
         }
@@ -243,10 +243,11 @@ public class SerecoProductResultTransformerTest {
 
         /* test */
         /* @formatter:off */
-		for (SecHubFinding f: result.getResult().getFindings()) {
+		SecHubResult modelResult = result.getModel().getResult();
+        for (SecHubFinding f: modelResult.getFindings()) {
             assertEquals(ScanType.WEB_SCAN,f.getType());
         }
-		AssertSecHubResult.assertSecHubResult(result.getResult()).
+		AssertSecHubResult.assertSecHubResult(modelResult).
 			hasFindingWithId(1).
 				hasDescription("desc1").
 				hasSeverity(com.mercedesbenz.sechub.commons.model.Severity.MEDIUM).
@@ -264,7 +265,7 @@ public class SerecoProductResultTransformerTest {
 
         /* test */
         /* @formatter:off */
-        AssertSecHubResult.assertSecHubResult(result.getResult()).
+        AssertSecHubResult.assertSecHubResult(result.getModel().getResult()).
             hasFindingWithId(1).
                 hasSolution("solution1");
         /* @formatter:on */
@@ -279,7 +280,7 @@ public class SerecoProductResultTransformerTest {
         ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        List<SecHubFinding> findings = result.getResult().getFindings();
+        List<SecHubFinding> findings = result.getModel().getResult().getFindings();
         assertEquals(2, findings.size());
 
         Iterator<SecHubFinding> iterator = findings.iterator();

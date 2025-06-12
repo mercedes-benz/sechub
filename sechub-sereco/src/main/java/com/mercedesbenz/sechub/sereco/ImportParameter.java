@@ -12,9 +12,14 @@ public class ImportParameter {
     private String importData;
     private String importId;
     private List<SecHubMessage> productMessages;
+    private boolean canceled;
 
     public static ImportParamBuilder builder() {
         return new ImportParamBuilder();
+    }
+
+    public boolean isCanceled() {
+        return canceled;
     }
 
     public String getProductId() {
@@ -74,6 +79,11 @@ public class ImportParameter {
 
         public ImportParamBuilder importProductMessages(List<SecHubMessage> messages) {
             param.productMessages = messages;
+            return this;
+        }
+
+        public ImportParamBuilder canceled(boolean canceled) {
+            param.canceled = canceled;
             return this;
         }
 
