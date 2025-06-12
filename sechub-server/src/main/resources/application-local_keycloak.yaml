@@ -19,4 +19,3 @@ sechub:
         client-id: web-ui-server-local
         provider: keycloak
         redirect-uri: https://localhost:8443/login/oauth2/code/keycloak
-    minimumTokenValidity: 10h
