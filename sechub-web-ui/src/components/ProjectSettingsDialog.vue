@@ -130,28 +130,11 @@
                 </td>
                 <td class="text-right">
                   <v-btn
-                    v-if="user.userId !== projectData.owner.userId"
                     v-tooltip="$t('PROJECT_SETTINGS_USER_REMOVE_TOOLTIP')"
                     icon="mdi-close"
                     variant="text"
                     @click="onUnassignUserClicked(user.userId)"
                   />
-                  <v-tooltip
-                    v-else
-                    v-model="showToggle"
-                    location="right"
-                  >
-                    <template #activator="{ props }">
-                      <div v-bind="props" class="d-inline-block">
-                        <v-btn
-                          :disabled="true"
-                          icon="mdi-close"
-                          variant="text"
-                        />
-                      </div>
-                    </template>
-                    <span>{{ $t('PROJECT_SETTINGS_USER_REMOVE_TOOLTIP_FORBIDDEN') }}</span>
-                  </v-tooltip>
                 </td>
               </tr>
 

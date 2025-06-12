@@ -30,9 +30,10 @@
             <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
           </template>
 
-          <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
-          <v-btn v-if="projectData.assignedUsers" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
-          <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+          <!-- to edit project settings user must be superadmin or owner -->
+          <v-btn v-if="user.superAdmin || projectData.isOwned" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+          <!-- to scan user must be superadmin or project member, (non-owner can not see assigned users) -->
+          <v-btn v-if="user.superAdmin || !projectData.isOwned || projectData.assignedUsers?.some(u => u.userId === user.userId)" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
         </v-toolbar>
 
         <ProjectSettingsDialog
@@ -45,8 +46,10 @@
 
         <div v-if="(!jobs || jobs.length === 0 && !loading)">
           <v-list bg-color="background_paper" lines="two">
-            <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
-            <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
+            <v-list-item class="ma-5 background-color" color="layer_01" rounded="lg">
+              <!-- either error, no scans to show (superadmin, members) or not allowed (owner only)-->
+              {{ error ? $t('ERROR_FETCHING_DATA') : user.superAdmin || (!projectData.isOwned) && (projectData.isOwned && !projectData.assignedUsers?.some(u => u.userId === user.userId)) ? $t('NO_JOBS_RUNNED') : $t('NON_PROJECT_MEMBER') }}
+            </v-list-item>
           </v-list>
         </div>
 
@@ -156,6 +159,7 @@
   import defaultClient from '@/services/defaultClient'
   import { useRoute, useRouter } from 'vue-router'
   import { useProjectStore } from '@/stores/projectStore'
+  import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import { useI18n } from 'vue-i18n'
   import {
@@ -182,6 +186,9 @@
       }
 
       const store = useProjectStore()
+      const userStore = useUserDetailInformationStore()
+      const user = userStore.getUserDetailInformation()
+
       const projectData = ref<ProjectData>({
         projectId: '',
         isOwned: false,
@@ -217,6 +224,15 @@
       }
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
+        // if user is only the owner of a project (no member and no superadmin), he can not see jobs
+        if (!user.superAdmin && (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId))) {
+          // set everything empty
+          jobsObject.value = {}
+          jobs.value = []
+          loading.value = false
+          return
+        }
+
         try {
           jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
@@ -368,6 +384,7 @@
 
       return {
         projectData,
+        user,
         router,
         jobsObject,
         jobs,
