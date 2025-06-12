@@ -55,7 +55,7 @@ public class PDSUrlBuilder {
         return buildUrl(API_PDS_ANONYMOUS, "check/alive");
     }
 
-    public String buildGetJobResultOrErrorText(UUID jobUUID) {
+    public String buildGetJobResultAsAdmin(UUID jobUUID) {
         return buildUrl(API_PDS_ADMIN, "job", jobUUID, "result");
     }
 

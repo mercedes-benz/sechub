@@ -1,28 +1,43 @@
 // SPDX-License-Identifier: MIT
 [[concept-pds_solution_metadata]]
-
+====== General
 When communication of {pds} with the used product is stateful and is a long running operation, 
-it can be useful to store such state/meta data.  
+it can be useful to store state information as meta data.  
 
 One use case is the restart possibility for a {sechub} job. Another one are debugging or 
-trace information.
+trace information. The meta data from PDS can be reused by {sechub}.
+
+An administrator is able to fetch job meta data via <<section-rest-fetch-job-meta-data,REST>> .
+
 
 [TIP]
 ====
-Most times {pds} solutions do not need to store special meta data information: When the PDS job starts
-a CLI tool, the result or the failure will just be returned to the {sechub} side.
+Most times {pds} solutions do not need to store special meta data information: When the PDS 
+job starts a CLI tool, the result or the failure will just be returned to the {sechub} side.
 
 If it shall be done again (because of on failure) just a new {pds} job will be started. 
 
 If a PDS job has meta data this means it should be restarted
 ====
+====== PDS job meta data file
+*Access mechanism* +
+A {pds} launcher script has no access to the {pds} database.
+If meta data shall be read or written, we have a dedicated workspace file to write into.
+The location of the file is available with environment variable `PDS_JOB_METADATA_FILE`.
 
-A {pds} launcher script has no access to the {pds} database!
-If meta data shall be read or written, we just have the workspace file `metadata.txt`. 
-Inside this file the product relevant meta data
-of the job run must be available, see next diagram for details:
+*Exchanging meta data with SecHub* +
+The PDS executors inside {sechub} are able to access meta data (e.g. for restart handling).
+See next diagram for details:
 
-plantuml::diagrams/diagram_pds_metadata.puml[] 
+plantuml::diagrams/diagram_pds_metadata.puml[]
+
+The meta data file must have the same meta data syntax as in {sechub} product results: 
+
+[source,json]
+----
+include::../../pds/pds-metadata-file-example2.json[]
+----
+<1> Inside the `metaData` element we can provide any kind of key value combination.
 
 ====== Checkmarx PDS solution adapter meta data handling
 

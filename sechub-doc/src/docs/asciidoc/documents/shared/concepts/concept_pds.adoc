@@ -8,10 +8,10 @@ include::concept_pds_data_encryption.adoc[]
 
 [[concept-pds-auto-cleanup]]
 ==== Auto cleanup
-The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.
+The PDS provides an auto cleanup mechanism which will remove old PDS jobs and their data automatically.
 
 The default configuration is set to 2 days.
-Administrators can change the default configuration via REST.
+Administrators can change the default configuration via <<section-rest-autocleanup,REST>> .
 
 
 

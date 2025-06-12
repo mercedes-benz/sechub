@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
     @PDSUseCaseDefinition(
             id=PDSUseCaseIdentifier.UC_ANONYMOUS_CHECK_ALIVE,
             group=PDSUseCaseGroup.ANONYMOUS,
-            title="Anymous check if server is alive",
+            title="Anonymous check if server is alive",
             description="Anonymous access to check if server is alive or not")
     public @interface UseCaseAnonymousCheckAlive {
         PDSStep value();
