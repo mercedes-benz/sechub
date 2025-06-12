@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Getting Started Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 2.10.0</span>
+<span id="revnumber"> Server 2.11.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -554,6 +554,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#environment-vaiables">4.1. Environment vaiables</a></li>
 <li><a href="#scan">4.2. Scan</a></li>
+<li><a href="#sechub-web-ui">4.3. SecHub Web-UI</a></li>
 </ul>
 </li>
 <li><a href="#optional">5. Optional</a>
@@ -654,7 +655,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.10.0 - Build date: 2025-05-27 15:01 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.11.0 - Build date: 2025-06-12 14:07 (UTCZ)</code></p>
 </div>
 </div>
 </div>
@@ -673,7 +674,7 @@ build / contionus integration (CI) pipelines and helps to provide
 <p>How to start a SecHub environment and PDS with a SAST scanner using SecHub&#8217;s Helm charts and container images</p>
 </li>
 <li>
-<p>Scan a vulnerable application containing a "forgotten" secret.</p>
+<p>Scan vulnerable source code.</p>
 </li>
 <li>
 <p>Install and use SecHub&#8217;s extension for VsCodium (Optional)</p>
@@ -766,12 +767,25 @@ See [Appendix] below for installing the SecHub client manually.
 <div class="sect2">
 <h3 id="access-to-a-kubernetes">2.2. Access to a Kubernetes</h3>
 <div class="paragraph">
-<p>For local testing you could use <a href="https://k3s.io">K3s</a>, <a href="https://kind.sigs.k8s.io">Kind</a> with <a href="https://github.com/kubernetes-sigs/cloud-provider-kind">cloud-provider-kind</a>, Minikube, Docker Desktop, &#8230;&#8203; The SecHub team uses K3s for development.</p>
+<p>For local testing you could use <a href="https://kind.sigs.k8s.io">Kind</a> with <a href="https://github.com/kubernetes-sigs/cloud-provider-kind">cloud-provider-kind</a>, Minikube, Docker Desktop, <a href="https://k3s.io">K3s</a> &#8230;&#8203;</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The SecHub team uses <strong><a href="https://kind.sigs.k8s.io">Kind</a></strong> for development<br>
+      and experienced port problems with K3s.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Create a Kube config file for access to your Kubernetes and point the environment variable <code>KUBECONFIG</code> to it.<br>
 Example:<br>
-<code>export KUBECONFIG="$HOME/.kube/k3s-config"`</code></p>
+<code>export KUBECONFIG="$HOME/.kube/kind-config"`</code></p>
 </div>
 <div class="paragraph">
 <p>In your terminal type:
@@ -812,6 +826,7 @@ cd sechub</code></pre>
 ./01_init.sh
 ./10_deploy_sechub_server.sh
 ./20_deploy_pds-multi.sh
+./30_deploy_web-ui.sh
 ./40_apply-profiles.sh</code></pre>
 </div>
 </div>
@@ -879,6 +894,31 @@ If you want the report in HTML format instead, add <code>-reportformat html</cod
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="shell">sechub -reportformat html scan</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sechub-web-ui">4.3. SecHub Web-UI</h3>
+<div class="paragraph">
+<p>The URL of the SecHub Web-UI can be retrieved like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">WEB_UI_IP=$(kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+WEB_UI_URL=&quot;https://$WEB_UI_IP:4443/&quot;
+echo $WEB_UI_URL</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+After successful login with sechubadm / demo you must open the URL manually. Then the SecHub Web-UI should work.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -956,7 +996,7 @@ rm -rf sechub-cli-$CLIENT_VERSION.zip sechub-cli-$CLIENT_VERSION.zip.sha256 plat
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.10.0<br>
+ Server 2.11.0<br>
 </div>
 </div>
 </body>
