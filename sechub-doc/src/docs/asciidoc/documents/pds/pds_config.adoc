@@ -83,10 +83,17 @@ The {pds} reads a configuration JSON file on startup to configure the product de
 and the provided products.
 
 *Location* +
-Per default the file is located at `./pds-config.json`
 
+Per default the file is `pds-config.json` in the folder were the PDS instance has been started.
+
+[NOTE]
+====
 With `-Dpds.config.file=...` or using environment variable `PDS_CONFIG_FILE`
 its is possible to set a custom location file path. 
+
+In our container images, the path is defined as `/pds/pds-config.json`.
+
+====
 
 
 *Description* +

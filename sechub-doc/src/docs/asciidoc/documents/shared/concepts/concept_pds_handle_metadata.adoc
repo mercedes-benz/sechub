@@ -4,7 +4,7 @@
 When communication of {pds} with the used product is stateful and is a long running operation, 
 it can be useful to store state information as meta data.  
 
-One use case is the restart possibility for a {sechub} job. Another one are debugging or 
+One use case is the restart possibility for a {sechub} job. Other ones are debugging or 
 trace information. The meta data from PDS can be reused by {sechub}.
 
 An administrator is able to fetch job meta data via <<section-rest-fetch-job-meta-data,REST>> .

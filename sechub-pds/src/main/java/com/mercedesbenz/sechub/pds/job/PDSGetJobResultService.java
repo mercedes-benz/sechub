@@ -23,7 +23,7 @@ public class PDSGetJobResultService {
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "Fetches job result from database. When job is not done, a NOT_ACCPTABLE will be returned instead", number = 2))
+    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "Fetches job result from database. When job is not done, a NOT_ACCEPTABLE will be returned instead", number = 2))
     @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
     public String getJobResult(UUID jobUUID) {
         return getJobResult(jobUUID, true);
