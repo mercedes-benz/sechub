@@ -347,12 +347,9 @@ public class ZapScanContextFactory {
         }
         // no script found, but template data were configured
         if (groovyScriptFile == null && !templateVariables.isEmpty()) {
-            SecHubMessage secHubMessage = new SecHubMessage(SecHubMessageType.ERROR,
-                    "The SecHub configuration file's webscan section includes a template data section, but no template was loaded for the scan. If you're not a SecHub administrator, please contact your SecHub representative to ensure your project is assigned the correct login template.");
-            messageHelper.writeSingleProductMessage(secHubMessage);
-            throw new ZapWrapperContextCreationException(
-                    "The SecHub configuration file webscan section contains a template data section, but no template was loaded for the scan.",
-                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+            String errorMessage = "The SecHub configuration file's webscan section includes a template data section, but no template was loaded for the scan. If you're not a SecHub administrator, please contact your SecHub representative to ensure your project is assigned the correct login template.";
+            messageHelper.writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            throw new ZapWrapperContextCreationException(errorMessage, ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         // A script was defined, but no template data where defined
         if (groovyScriptFile != null && templateVariables.isEmpty()) {
