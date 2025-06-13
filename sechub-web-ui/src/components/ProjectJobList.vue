@@ -221,7 +221,7 @@
         if (error.value) {
           return t('ERROR_FETCHING_DATA')
         } else if (jobs.value?.length === 0) {
-          if (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId)) {
+          if (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId) && !user.superAdmin) {
             return t('NON_PROJECT_MEMBER')
           } else {
             return t('NO_JOBS_RUNNED')

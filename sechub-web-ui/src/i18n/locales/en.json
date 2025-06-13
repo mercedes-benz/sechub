@@ -7,7 +7,7 @@
     "NO_PROJECTS_ASSIGNED": "You are not assigned to any projects.",
     "ERROR_MESSAGE_FETCHING_PROJECTS": "Failed to fetch assigned projects.",
     "NO_JOBS_RUNNED": "No jobs were started for this project.",
-    "NON_PROJECT_MEMBER": "Assign yourself to your project to view and create new scan jobs!",
+    "NON_PROJECT_MEMBER": "Please assign yourself to see the scan jobs.",
     "ERROR_FETCHING_DATA": "Could not load data from server.",
     "CONFIRM_DIALOG_TITLE": "Please confirm your action",
     "CONFIRM_DIALOG_BUTTON_OK": "OK",
