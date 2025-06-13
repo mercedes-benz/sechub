@@ -63,6 +63,7 @@
           >
             <v-card-title>{{ $t('SCAN_CREATE_FILE_UPLOAD') }}</v-card-title>
             <ScanFileUpload
+              :selected-scan-types="selectedScanOptions"
               @on-file-update="updateFileselection"
             />
             <v-card-text v-if="isLoading">
@@ -113,7 +114,7 @@
   import { SecHubConfiguration } from '@/generated-sources/openapi'
   import scanConfigurationBuilderService from '@/services/scanConfigurationBuilderService'
   import defaultClient from '@/services/defaultClient'
-  import { CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER } from '@/utils/applicationConstants'
+  import { CODE_SCAN_IDENTIFIER, IAC_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER } from '@/utils/applicationConstants'
   import '@/styles/sechub.scss'
 
   export default defineComponent({
@@ -180,8 +181,16 @@
         }
 
         if (selectedFile.value !== null) {
-          configuration.value = scanConfigurationBuilderService.buildSecHubConfiguration(selectedScanOptions.value, selectedFileType.value, projectId.value)
-          createScan()
+          try {
+            configuration.value = scanConfigurationBuilderService.buildSecHubConfiguration(selectedScanOptions.value, selectedFileType.value, projectId.value)
+            createScan()
+          } catch (err) {
+            console.log(err)
+            if (err instanceof Error) {
+              errors.value.push(err.message)
+              alert.value = true
+            }
+          }
         }
       }
 
@@ -206,7 +215,7 @@
 
       return {
         projectId,
-        scanOptions: [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER] as string[],
+        scanOptions: [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER, IAC_SCAN_IDENTIFIER] as string[],
         selectedScanOptions,
         validateScanReady,
         selectedFile,

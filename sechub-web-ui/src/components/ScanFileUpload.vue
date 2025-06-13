@@ -11,6 +11,15 @@
     {{ error }}
   </v-alert>
 
+  <v-alert
+    v-model="infoAlert"
+    closable
+    color="primary"
+    title="Info"
+  >
+    {{ $t('SCAN_CREATE_IAC_SOURCE_CODE_ONLY_ALLOWED') }}
+  </v-alert>
+
   <v-radio-group
     v-model="selectedRadio"
     @update:model-value="clearSelectedFile"
@@ -22,6 +31,7 @@
     />
     <v-radio
       color="primary"
+      :disabled="binariesForbidden"
       :label="$t('SCAN_CREATE_BINARIES')"
       :value="2"
     />
@@ -53,16 +63,27 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { FILETYPE_BINARIES, FILETYPE_SOURCES } from '@/utils/applicationConstants'
+  import { FILETYPE_BINARIES, FILETYPE_SOURCES, IAC_SCAN_IDENTIFIER } from '@/utils/applicationConstants'
 
   export default defineComponent({
+
+    props: {
+      selectedScanTypes: {
+        type: Array<String>,
+        required: true,
+      },
+    },
+
     emits: ['onFileUpdate'],
+
     setup (props, { emit }) {
       const { t } = useI18n()
+      const { selectedScanTypes } = toRefs(props)
       const file = ref<File | null>(null)
       const selectedRadio = ref(1)
       const error = ref('')
       const alert = ref(false)
+      const infoAlert = ref(false)
 
       const fileInputLabel = computed(() => {
         const label = t('SCAN_CREATE_FILE_UPLOAD_INPUT')
@@ -72,6 +93,17 @@
       const fileAccept = computed(() => {
         // files allowed: .zip and .tar
         return selectedRadio.value === 1 ? '.zip' : '.tar'
+      })
+
+      const binariesForbidden = computed(() => {
+        if (selectedScanTypes.value.includes(IAC_SCAN_IDENTIFIER)) {
+          if (selectedRadio.value === 2) {
+            clearSelectedFile()
+            iacScanWithBinaries()
+          }
+          return true
+        }
+        return false
       })
 
       function onFileChange () {
@@ -105,6 +137,11 @@
         emit('onFileUpdate', file.value, fileType)
       }
 
+      function iacScanWithBinaries () {
+        infoAlert.value = true
+        selectedRadio.value = 1
+      }
+
       function clearSelectedFile () {
         if (file.value !== null) {
           file.value = null
@@ -117,8 +154,10 @@
         selectedRadio,
         fileAccept,
         fileInputLabel,
+        binariesForbidden,
         alert,
         error,
+        infoAlert,
         onFileChange,
         clearSelectedFile,
       }

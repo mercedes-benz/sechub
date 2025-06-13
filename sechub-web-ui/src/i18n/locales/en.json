@@ -86,6 +86,7 @@
     "SCAN_CREATE_SOURCE_CODE": "Source Code",
     "SCAN_CREATE_SCAN_START": "Start Scan",
     "SCAN_CREATE_SCAN_CONFIGURATION": "Scan Configuration",
+    "SCAN_CREATE_IAC_SOURCE_CODE_ONLY_ALLOWED": "For Infrastructure as Code (IaC) scans only source code can be scanned.",
     "SCAN_ERROR_ALERT_TITLE": "Something went wrong!",
     "SCAN_ERROR_ALERT_JOB_NOT_CREATED": "Could not create a new job.",
     "SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED": "Could not upload sources. Your zip file might be too big.",

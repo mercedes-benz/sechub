@@ -2,6 +2,7 @@
 import {
   SecHubCodeScanConfiguration,
   SecHubConfiguration,
+  SecHubIacScanConfiguration,
   SecHubSecretScanConfiguration,
 } from '@/generated-sources/openapi'
 
@@ -9,6 +10,7 @@ import {
   CODE_SCAN_IDENTIFIER,
   FILETYPE_BINARIES,
   FILETYPE_SOURCES,
+  IAC_SCAN_IDENTIFIER,
   SECRET_SCAN_IDENTIFIER,
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
@@ -36,6 +38,17 @@ class ScanConfigurationBuilderService {
       const secretScanConfiguration: SecHubSecretScanConfiguration = {}
       secretScanConfiguration.use = [UNIQUE_NAME]
       config.secretScan = secretScanConfiguration
+    }
+
+    if (scanTypes.includes(IAC_SCAN_IDENTIFIER)) {
+      const iacScanConfiguration: SecHubIacScanConfiguration = {}
+      if (UNIQUE_NAME === UPLOAD_BINARIES_IDENTIFIER) {
+        // should never happen because we forbid this through the UI
+        throw new Error(IAC_SCAN_IDENTIFIER + ' cannot be used with binary upload!')
+      }
+
+      iacScanConfiguration.use = [UNIQUE_NAME]
+      config.iacScan = iacScanConfiguration
     }
 
     return config

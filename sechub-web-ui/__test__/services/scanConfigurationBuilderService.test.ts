@@ -6,6 +6,7 @@ import {
   CODE_SCAN_IDENTIFIER,
   FILETYPE_BINARIES,
   FILETYPE_SOURCES,
+  IAC_SCAN_IDENTIFIER,
   SECRET_SCAN_IDENTIFIER,
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
@@ -65,9 +66,9 @@ describe('ScanConfigurationBuilderService', () => {
       expect(result.secretScan?.use).toEqual([UPLOAD_BINARIES_IDENTIFIER])
     })
 
-    it('should build SecHub configuration for code and secret scans', () => {
+    it('should build SecHub configuration for multiple scans', () => {
       /* prepare */
-      const scanTypes = [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER]
+      const scanTypes = [CODE_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER, IAC_SCAN_IDENTIFIER]
       const fileType = FILETYPE_SOURCES
       const projectId = 'project-id'
 
@@ -81,6 +82,8 @@ describe('ScanConfigurationBuilderService', () => {
       expect(result.codeScan?.use).toEqual([UPLOAD_SOURCE_CODE_IDENTIFIER])
       expect(result.secretScan).toBeDefined()
       expect(result.codeScan?.use).toEqual([UPLOAD_SOURCE_CODE_IDENTIFIER])
+      expect(result.iacScan).toBeDefined()
+      expect(result.iacScan?.use).toEqual([UPLOAD_SOURCE_CODE_IDENTIFIER])
     })
   })
 
@@ -110,6 +113,34 @@ describe('ScanConfigurationBuilderService', () => {
       /* test */
       expect(result.isValid).toBe(false)
       expect(result.errorMessage).toBe('Your .zip file is too big. Allowed source code file size: 200 bytes')
+    })
+
+    it('should return error message when iacScan is combined with binaries', () => {
+      /* prepare */
+      const scanTypes = [IAC_SCAN_IDENTIFIER]
+      const fileType = FILETYPE_BINARIES
+      const projectId = 'project-id'
+
+      /* execute + test */
+      expect(() => {
+        serviceToTest.buildSecHubConfiguration(scanTypes, fileType, projectId)
+      }).toThrow('iacScan cannot be used with binary upload!')
+    })
+
+    it('should build SecHub configuration for iac scan and source code', () => {
+      /* prepare */
+      const scanTypes = [IAC_SCAN_IDENTIFIER]
+      const fileType = FILETYPE_SOURCES
+      const projectId = 'project-id'
+
+      /* execute */
+      const result: SecHubConfiguration = serviceToTest.buildSecHubConfiguration(scanTypes, fileType, projectId)
+
+      /* test */
+      expect(result.apiVersion).toBe('1.0')
+      expect(result.projectId).toBe(projectId)
+      expect(result.iacScan).toBeDefined()
+      expect(result.iacScan?.use).toEqual([UPLOAD_SOURCE_CODE_IDENTIFIER])
     })
   })
 })
