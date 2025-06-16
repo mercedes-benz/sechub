@@ -124,3 +124,8 @@ management:
       prometheus:
         enabled: true
        
+
+level:
+  org:
+    springframework:
+      security: TRACE
