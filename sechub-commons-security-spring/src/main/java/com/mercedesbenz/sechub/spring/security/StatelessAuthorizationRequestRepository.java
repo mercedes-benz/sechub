@@ -126,10 +126,10 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         private static final String ADDITIONAL_PARAMETERS = "additionalParameters";
         private static final String AUTHORIZATION_REQUEST_URI = "authorizationRequestUri";
         private static final String ATTRIBUTES = "attributes";
-        private static final String GRANT_TYPE = "authorizationGrantType";
+        private static final String GRANT_TYPE = "grantType";
 
         private final String authorizationUri;
-        private final OAuth2AuthorizationResponseTypeMixin responseType;
+        private final OAuth2AuthorizationResponseType responseType;
         private final String clientId;
         private final String redirectUri;
         private final Set<String> scopes;
@@ -137,12 +137,12 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         private final Map<String, Object> additionalParameters;
         private final String authorizationRequestUri;
         private final Map<String, Object> attributes;
-        private final AuthorizationGrantTypeMixin authorizationGrantType;
+        private final AuthorizationGrantType authorizationGrantType;
 
         /* @formatter:off */
         @JsonCreator
         private OAuth2AuthorizationRequestMixin(@JsonProperty(AUTHORIZATION_URI) String authorizationUri,
-                                                @JsonProperty(RESPONSE_TYPE) OAuth2AuthorizationResponseTypeMixin responseType,
+                                                @JsonProperty(RESPONSE_TYPE) OAuth2AuthorizationResponseType responseType,
                                                 @JsonProperty(CLIENT_ID) String clientId,
                                                 @JsonProperty(REDIRECT_URI) String redirectUri,
                                                 @JsonProperty(SCOPES) Set<String> scopes,
@@ -150,7 +150,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
                                                 @JsonProperty(ADDITIONAL_PARAMETERS) Map<String, Object> additionalParameters,
                                                 @JsonProperty(AUTHORIZATION_REQUEST_URI) String authorizationRequestUri,
                                                 @JsonProperty(ATTRIBUTES) Map<String, Object> attributes,
-                                                @JsonProperty(GRANT_TYPE) AuthorizationGrantTypeMixin authorizationGrantType) {
+                                                @JsonProperty(GRANT_TYPE) AuthorizationGrantType authorizationGrantType) {
             /* @formatter:on */
             this.authorizationUri = authorizationUri;
             this.responseType = responseType;
@@ -168,7 +168,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
             return authorizationUri;
         }
 
-        public OAuth2AuthorizationResponseTypeMixin getResponseType() {
+        public OAuth2AuthorizationResponseType getResponseType() {
             return responseType;
         }
 
@@ -200,7 +200,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
             return attributes;
         }
 
-        public AuthorizationGrantTypeMixin getAuthorizationGrantType() {
+        public AuthorizationGrantType getGrantType() {
             return authorizationGrantType;
         }
 
