@@ -11,6 +11,7 @@ projectType = [
             javaProjects: [
                project(':sechub-openapi'),
                project(':sechub-openapi-java-client'),
+               project(':sechub-openapi-java-model'),
                project(':sechub-api-java'),
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
@@ -140,7 +141,8 @@ projectType = [
 
             noSpotless : [
                     project('sechub-examples:example-sechub-api-java'),
-                    project('sechub-openapi-java-client')
+                    project('sechub-openapi-java-client'),
+                    project('sechub-openapi-java-model'),
             ],
 
             integrationTestProjects: [
