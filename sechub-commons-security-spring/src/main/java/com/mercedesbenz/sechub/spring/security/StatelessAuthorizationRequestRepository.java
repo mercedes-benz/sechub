@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResp
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.Cookie;
@@ -34,7 +35,8 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
     private static final ObjectMapper mapper = new ObjectMapper()
             .addMixIn(OAuth2AuthorizationRequest.class, OAuth2AuthorizationRequestMixin.class)
             .addMixIn(OAuth2AuthorizationResponseType.class, OAuth2AuthorizationRequestMixin.OAuth2AuthorizationResponseTypeMixin.class)
-            .addMixIn(AuthorizationGrantType.class, OAuth2AuthorizationRequestMixin.AuthorizationGrantTypeMixin.class);
+            .addMixIn(AuthorizationGrantType.class, OAuth2AuthorizationRequestMixin.AuthorizationGrantTypeMixin.class)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     /* @formatter:on */
     private static final Base64.Encoder b64Encoder = Base64.getEncoder();
     private static final Base64.Decoder b64Decoder = Base64.getDecoder();
@@ -55,7 +57,16 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         String authorizationRequestString;
 
         try {
-            authorizationRequestString = mapper.writeValueAsString(authorizationRequest);
+            // Convert the OAuth2AuthorizationRequest to a map
+            Map map = mapper.convertValue(authorizationRequest, Map.class);
+
+            // Rename grantType to authorizationGrantType if present
+            Object grantType = map.remove("grantType");
+            if (grantType != null) {
+                map.put("authorizationGrantType", grantType);
+            }
+
+            authorizationRequestString = mapper.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             logger.error("Could not serialize authorization request:", e);
             throw new InternalAuthenticationServiceException("Could not serialize authorization request:", e);
@@ -126,7 +137,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         private static final String ADDITIONAL_PARAMETERS = "additionalParameters";
         private static final String AUTHORIZATION_REQUEST_URI = "authorizationRequestUri";
         private static final String ATTRIBUTES = "attributes";
-        private static final String GRANT_TYPE = "grantType";
+        private static final String GRANT_TYPE = "authorizationGrantType";
 
         private final String authorizationUri;
         private final OAuth2AuthorizationResponseType responseType;
@@ -150,7 +161,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
                                                 @JsonProperty(ADDITIONAL_PARAMETERS) Map<String, Object> additionalParameters,
                                                 @JsonProperty(AUTHORIZATION_REQUEST_URI) String authorizationRequestUri,
                                                 @JsonProperty(ATTRIBUTES) Map<String, Object> attributes,
-                                                @JsonProperty(GRANT_TYPE) AuthorizationGrantType authorizationGrantType) {
+                                                @JsonProperty(GRANT_TYPE) AuthorizationGrantType grantType) {
             /* @formatter:on */
             this.authorizationUri = authorizationUri;
             this.responseType = responseType;
@@ -161,7 +172,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
             this.additionalParameters = additionalParameters;
             this.authorizationRequestUri = authorizationRequestUri;
             this.attributes = attributes;
-            this.authorizationGrantType = authorizationGrantType;
+            this.authorizationGrantType = grantType;
         }
 
         public String getAuthorizationUri() {
