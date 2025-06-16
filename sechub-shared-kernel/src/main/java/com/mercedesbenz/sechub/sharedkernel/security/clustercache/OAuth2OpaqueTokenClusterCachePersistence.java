@@ -96,24 +96,31 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
     }
 
     private void handleResilient(String actionName, Runnable runnable, int maxRetries, long millsecondsToWaitBeforeRetry) {
-        int count = 0;
-        while (isRetryPossible(maxRetries, count)) {
+        int retries = 0;
+        while (isRetryPossible(maxRetries, retries)) {
             try {
+
                 runnable.run();
+
                 break;
+
             } catch (Exception e) {
-                count++;
-                if (!isRetryPossible(maxRetries, count)) {
-                    logger.error("{} failed {} time(s) - no more retries possible.", actionName, count);
+                retries++;
+                if (!isRetryPossible(maxRetries, retries)) {
+                    logger.error("{} failed {} time(s) - no more retries possible.", actionName, retries);
                     throw e;
                 }
-                logger.warn("{} failed {}. time. Message was: {}", actionName, count, e.getMessage());
+                logger.warn("{} failed {}. time. Message was: {}", actionName, retries, e.getMessage());
                 try {
                     Thread.sleep(millsecondsToWaitBeforeRetry);
                 } catch (InterruptedException e1) {
                     Thread.currentThread().interrupt();
                 }
             }
+        }
+
+        if (retries > 0) {
+            logger.info("{} was successful on {}. retry", actionName, retries);
         }
 
     }
