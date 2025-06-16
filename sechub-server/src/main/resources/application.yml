@@ -123,9 +123,8 @@ management:
     export:
       prometheus:
         enabled: true
-       
-
-level:
-  org:
-    springframework:
-      security: TRACE
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
