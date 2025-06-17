@@ -1,0 +1,20 @@
+[[section-sechub-user-roles]]
+There exist following set of roles in {sechub}:
+
+- User +
+  A user can only access project related information for projects being assigned to, means being a member.
+- SuperAdmin +
+  Has full access to everything, except encrypted data (e.g. job configuration data or API tokens).
+- Owner +
+  Is responsibile for one or more projects and is able to administrate project access etc. 
+  
+
+*User related overview*
+
+In the next diagram we see an overview of all use cases which can be handled by the `User` rule. Also some 
+the related usecases for the project `Owner` and `SuperAdmin`. 
+ 
+
+plantuml::diagrams/diagram_roles_sechub.puml[format=svg, title="User role model"]
+
+include::./../gen/gen_role2usecases.adoc[]

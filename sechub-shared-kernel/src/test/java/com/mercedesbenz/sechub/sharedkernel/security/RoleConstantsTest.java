@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.security;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RoleConstantsTest {
 
     @Test
-    public void isSuperAdminRole_works() {
+    void isSuperAdminRole_works() {
         assertTrue(RoleConstants.isSuperAdminRole("SUPERADMIN"));
         assertTrue(RoleConstants.isSuperAdminRole(RoleConstants.ROLE_SUPERADMIN));
 
@@ -20,7 +21,7 @@ public class RoleConstantsTest {
     }
 
     @Test
-    public void isUserRole_works() {
+    void isUserRole_works() {
         assertTrue(RoleConstants.isUserRole("USER"));
         assertTrue(RoleConstants.isUserRole(RoleConstants.ROLE_USER));
 
@@ -28,6 +29,12 @@ public class RoleConstantsTest {
         assertFalse(RoleConstants.isUserRole(RoleConstants.ROLE_SUPERADMIN));
         assertFalse(RoleConstants.isUserRole(""));
         assertFalse(RoleConstants.isUserRole("X"));
+    }
+
+    @Test
+    void getAllRoles_contains_expected_roles() {
+        assertThat(RoleConstants.getAllRoles()).containsOnly(RoleConstants.ROLE_OWNER, RoleConstants.ROLE_SUPERADMIN, RoleConstants.ROLE_USER)
+                .doesNotHaveDuplicates();
     }
 
 }

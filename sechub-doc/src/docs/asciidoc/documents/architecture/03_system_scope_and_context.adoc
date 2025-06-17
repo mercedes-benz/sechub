@@ -82,3 +82,6 @@ We provide following scan types
 The different solutions can be found at
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions
 
+==== User roles
+include::../shared/sechub_user_roles.adoc[]
+
