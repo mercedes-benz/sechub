@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
 import static java.util.Objects.requireNonNull;
@@ -31,6 +32,9 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
     private static final Logger logger = LoggerFactory.getLogger(StatelessAuthorizationRequestRepository.class);
     private static final String COOKIE_NAME = "SECHUB_OAUTH2_AUTHORIZATION_REQUEST";
     private static final Duration COOKIE_DURATION = Duration.ofMinutes(1);
+    private static final String SERIALIZE_AUTHORIZATION_GRANT_TYPE = "authorizationGrantType";
+    private static final String SERIALIZE_GRANT_TYPE = "grantType";
+
     /* @formatter:off */
     private static final ObjectMapper mapper = new ObjectMapper()
             .addMixIn(OAuth2AuthorizationRequest.class, OAuth2AuthorizationRequestMixin.class)
@@ -54,33 +58,18 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
 
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
-        String authorizationRequestString;
-
         try {
-            // Convert the OAuth2AuthorizationRequest to a map
-            Map map = mapper.convertValue(authorizationRequest, Map.class);
+            String authorizationRequestString = serializeAuthorizationRequest(authorizationRequest);
+            byte[] encryptedRequest = aes256Encryption.encrypt(authorizationRequestString);
+            String encodedRequest = b64Encoder.encodeToString(encryptedRequest);
+            Cookie cookie = CookieHelper.createCookie(COOKIE_NAME, encodedRequest, COOKIE_DURATION, AbstractSecurityConfiguration.BASE_PATH);
 
-            // Rename grantType to authorizationGrantType if present
-            Object grantType = map.remove("grantType");
-            if (grantType != null) {
-                map.put("authorizationGrantType", grantType);
-            }
-
-            authorizationRequestString = mapper.writeValueAsString(map);
+            logger.trace("Saving authorization request cookie: {}", cookie);
+            response.addCookie(cookie);
         } catch (JsonProcessingException e) {
             logger.error("Could not serialize authorization request:", e);
             throw new InternalAuthenticationServiceException("Could not serialize authorization request:", e);
         }
-
-        byte[] authorizationRequestStringEncrypted = aes256Encryption.encrypt(authorizationRequestString);
-
-        String authorizationRequestStringB64 = b64Encoder.encodeToString(authorizationRequestStringEncrypted);
-
-        Cookie cookie = CookieHelper.createCookie(COOKIE_NAME, authorizationRequestStringB64, COOKIE_DURATION, AbstractSecurityConfiguration.BASE_PATH);
-
-        logger.trace("Saving authorization request cookie to cookie: {}", cookie);
-
-        response.addCookie(cookie);
     }
 
     @Override
@@ -94,8 +83,20 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         }
 
         logger.trace("No authorization request found to remove. Returning null.");
-
         return null;
+    }
+
+    // package private for testing
+    String serializeAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) throws JsonProcessingException {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = mapper.convertValue(authorizationRequest, Map.class);
+
+        Object grantType = map.remove(SERIALIZE_GRANT_TYPE);
+        if (grantType != null) {
+            map.put(SERIALIZE_AUTHORIZATION_GRANT_TYPE, grantType);
+        }
+
+        return mapper.writeValueAsString(map);
     }
 
     private Optional<OAuth2AuthorizationRequest> getOAuth2AuthorizationRequestFromCookies(HttpServletRequest request) {
@@ -118,7 +119,6 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
 
     private static OAuth2AuthorizationRequest parseOAuth2AuthorizationRequestFromString(String value) {
         try {
-            logger.info("Hallo Laura. Das hier sollte mixins verwenden");
             return mapper.readValue(value, OAuth2AuthorizationRequest.class);
         } catch (JsonProcessingException e) {
             logger.error("Failed to deserialize OAuth2AuthorizationRequest from value: {}", value, e);
@@ -137,7 +137,7 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
         private static final String ADDITIONAL_PARAMETERS = "additionalParameters";
         private static final String AUTHORIZATION_REQUEST_URI = "authorizationRequestUri";
         private static final String ATTRIBUTES = "attributes";
-        private static final String GRANT_TYPE = "authorizationGrantType";
+        private static final String GRANT_TYPE = SERIALIZE_AUTHORIZATION_GRANT_TYPE; // Use the serialized name for grant type
 
         private final String authorizationUri;
         private final OAuth2AuthorizationResponseType responseType;
@@ -244,6 +244,5 @@ class StatelessAuthorizationRequestRepository implements AuthorizationRequestRep
                 return value;
             }
         }
-
     }
 }
