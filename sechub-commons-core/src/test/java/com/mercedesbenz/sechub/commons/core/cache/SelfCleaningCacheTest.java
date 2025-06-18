@@ -244,7 +244,7 @@ class SelfCleaningCacheTest {
     }
 
     @Test
-    void clearCache_does_not_remove_cache_data_until_it_has_expired() {
+    void clearCache_does_not_remove_cache_data_until_it_has_expired() throws InterruptedException {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
@@ -265,12 +265,8 @@ class SelfCleaningCacheTest {
         /* @formatter:off */
 
         /* assert that the cache data is still present right before it's expiration */
-        Awaitility.await()
-                .pollInSameThread()
-                .pollDelay(cacheDataDuration.minus(programExecutionBuffer))
-                .pollInterval(pollInterval)
-                .atMost(timeout)
-                .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isPresent());
+        Thread.sleep(cacheDataDuration.toMillis() - programExecutionBuffer.toMillis());
+        assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
         /* after the cache data has expired, it should be removed */
         Awaitility.await()
