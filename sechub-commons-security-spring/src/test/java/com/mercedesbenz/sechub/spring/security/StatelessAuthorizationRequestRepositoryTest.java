@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.spring.security;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +21,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 class StatelessAuthorizationRequestRepositoryTest {
 
+    private static final Duration COOKIE_AGE = Duration.ofMinutes(1);
+    private final static String COOKIE_NAME = "SECHUB_OAUTH2_AUTHORIZATION_REQUEST";
     private AES256Encryption aes256Encryption;
     private StatelessAuthorizationRequestRepository repositoryToTest;
     private HttpServletRequest httpRequest;
@@ -52,8 +55,9 @@ class StatelessAuthorizationRequestRepositoryTest {
         verify(httpResponse).addCookie(cookieCaptor.capture());
 
         Cookie cookie = cookieCaptor.getValue();
-        assertThat(cookie.getMaxAge()).isEqualTo(60);
-        assertThat(cookie.getName()).isEqualTo("SECHUB_OAUTH2_AUTHORIZATION_REQUEST");
+        assertThat(cookie.getMaxAge()).isEqualTo(COOKIE_AGE.getSeconds());
+        assertThat(cookie.getName()).isEqualTo(COOKIE_NAME);
+        assertThat(cookie.getPath()).isEqualTo("/");
 
         verify(aes256Encryption).encrypt(anyString());
     }
@@ -105,7 +109,8 @@ class StatelessAuthorizationRequestRepositoryTest {
         verify(httpResponse, times(2)).addCookie(cookieCaptor.capture());
         Cookie removedCookie = cookieCaptor.getValue();
         assertThat(removedCookie.getMaxAge()).isEqualTo(0);
-        assertThat(removedCookie.getName()).isEqualTo("SECHUB_OAUTH2_AUTHORIZATION_REQUEST");
+        assertThat(removedCookie.getName()).isEqualTo(COOKIE_NAME);
+        assertThat(cookie.getPath()).isEqualTo("/");
     }
 
     @Test
