@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -143,7 +144,7 @@ class SelfCleaningCacheTest {
         /* prepare */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
-        String key = "key";
+        String key = UUID.randomUUID().toString();;
         String value = "value";
         Duration duration = Duration.ofSeconds(1);
         inMemoryCacheToTest.put(key, value, duration);
@@ -160,7 +161,7 @@ class SelfCleaningCacheTest {
         /* prepare */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
-        String key = "key";
+        String key = UUID.randomUUID().toString();;
         String oldValue = "old value";
         Duration duration = Duration.ofSeconds(1);
         inMemoryCacheToTest.put(key, oldValue, duration);
@@ -192,13 +193,13 @@ class SelfCleaningCacheTest {
 
     @Test
     void put_throws_null_pointer_exception_when_value_is_null() {
-        /* test */
+        /* execute */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
         /* test */
         /* @formatter:off */
-        assertThatThrownBy(() -> inMemoryCacheToTest.put("key", null, Duration.ofSeconds(1)))
+        assertThatThrownBy(() -> inMemoryCacheToTest.put(UUID.randomUUID().toString(), null, Duration.ofSeconds(1)))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("Property 'value' must not be null");
         /* @formatter:on */
@@ -206,13 +207,13 @@ class SelfCleaningCacheTest {
 
     @Test
     void put_throws_null_pointer_exception_when_duration_is_null() {
-        /* test */
+        /* execute */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
         /* test */
         /* @formatter:off */
-        assertThatThrownBy(() -> inMemoryCacheToTest.put("key", "value", null))
+        assertThatThrownBy(() -> inMemoryCacheToTest.put(UUID.randomUUID().toString(), "value", null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("Property 'duration' must not be null");
         /* @formatter:on */
@@ -225,7 +226,7 @@ class SelfCleaningCacheTest {
         /* the cache clear job will run right away (point in time = 0s) */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
-        String key = "key";
+        String key = UUID.randomUUID().toString();;
         String value = "value";
         Duration cacheDataDuration = Duration.ofMillis(100);
         inMemoryCacheToTest.put(key, value, cacheDataDuration);
@@ -252,7 +253,7 @@ class SelfCleaningCacheTest {
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
-        String key = "key";
+        String key = UUID.randomUUID().toString();;
         String value = "value";
         /* the cache is valid for 200 millis */
         Duration cacheDataDuration = Duration.ofMillis(200);
@@ -264,7 +265,7 @@ class SelfCleaningCacheTest {
         Duration programExecutionBuffer = Duration.ofMillis(30);
         Duration pollDelay = cacheDataDuration.minus(programExecutionBuffer);
         Duration pollInterval = Duration.ofMillis(10);
-        Duration timeout = Duration.ofMillis(500);
+        Duration timeout = Duration.ofMillis(300);
 
         /* @formatter:off */
 
