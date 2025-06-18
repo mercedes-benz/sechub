@@ -24,13 +24,15 @@ class StatelessAuthorizationRequestRepositoryTest {
     private StatelessAuthorizationRequestRepository repositoryToTest;
     private HttpServletRequest httpRequest;
     private HttpServletResponse httpResponse;
+    private ArgumentCaptor<Cookie> cookieCaptor;
 
     @BeforeEach
-    void setUp() {
-        aes256Encryption = mock(AES256Encryption.class);
+    void beforeEach() {
+        aes256Encryption = mock();
+        httpRequest = mock();
+        httpResponse = mock();
         repositoryToTest = new StatelessAuthorizationRequestRepository(aes256Encryption);
-        httpRequest = mock(HttpServletRequest.class);
-        httpResponse = mock(HttpServletResponse.class);
+        cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
 
         // Mock the AES256Encryption methods by turning strings into byte arrays and
         // byte arrays back into strings
@@ -39,28 +41,39 @@ class StatelessAuthorizationRequestRepositoryTest {
     }
 
     @Test
-    void save_and_load_authorization_request_returns_expected_values() throws Exception {
+    void save_authorization_request_sets_expected_cookie() throws Exception {
         /* prepare */
-        OAuth2AuthorizationRequest expected = OAuth2AuthorizationRequest.authorizationCode().authorizationUri("https://auth.example.com").clientId("client-id")
-                .redirectUri("https://redirect.example.com").scopes(Set.of("openid", "profile")).state("state123")
-                .additionalParameters(Map.of("customParam", "customValue")).authorizationRequestUri("https://auth.example.com")
-                .attributes(Map.of("key1", "value1")).build();
+        OAuth2AuthorizationRequest request = buildOAuth2AuthorizationRequest();
 
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        /* execute */
+        repositoryToTest.saveAuthorizationRequest(request, httpRequest, httpResponse);
 
-        /* execute 1 */
+        /* test */
+        verify(httpResponse).addCookie(cookieCaptor.capture());
+
+        Cookie cookie = cookieCaptor.getValue();
+        assertThat(cookie.getMaxAge()).isEqualTo(60);
+        assertThat(cookie.getName()).isEqualTo("SECHUB_OAUTH2_AUTHORIZATION_REQUEST");
+
+        verify(aes256Encryption).encrypt(anyString());
+    }
+
+    @Test
+    void load_authorization_returns_expected_request_from_cookie() throws Exception {
+        /* prepare */
+        OAuth2AuthorizationRequest expected = buildOAuth2AuthorizationRequest();
+
         repositoryToTest.saveAuthorizationRequest(expected, httpRequest, httpResponse);
-
-        // Capture the cookie that was added to the response and add it to the request
         verify(httpResponse).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
+
         when(httpRequest.getCookies()).thenReturn(new Cookie[] { cookie });
 
-        /* execute 2 */
+        /* execute */
         OAuth2AuthorizationRequest request = repositoryToTest.loadAuthorizationRequest(httpRequest);
 
         /* test */
-        assertThat(cookie.getName()).isEqualTo("SECHUB_OAUTH2_AUTHORIZATION_REQUEST");
+        verify(aes256Encryption).decrypt(any(byte[].class));
 
         assertThat(request).isNotNull();
         assertThat(request.getAuthorizationUri()).isEqualTo(expected.getAuthorizationUri());
@@ -71,6 +84,28 @@ class StatelessAuthorizationRequestRepositoryTest {
         assertThat(request.getAdditionalParameters()).isEqualTo(expected.getAdditionalParameters());
         assertThat(request.getAttributes()).isEqualTo(expected.getAttributes());
         assertThat(request.getAuthorizationRequestUri()).isEqualTo(expected.getAuthorizationRequestUri());
+    }
+
+    @Test
+    void remove_authorization_request_removes_cookie() {
+        /* prepare */
+        OAuth2AuthorizationRequest request = buildOAuth2AuthorizationRequest();
+
+        repositoryToTest.saveAuthorizationRequest(request, httpRequest, httpResponse);
+        verify(httpResponse).addCookie(cookieCaptor.capture());
+        Cookie cookie = cookieCaptor.getValue();
+
+        when(httpRequest.getCookies()).thenReturn(new Cookie[] { cookie });
+
+        /* execute */
+        OAuth2AuthorizationRequest removedRequest = repositoryToTest.removeAuthorizationRequest(httpRequest, httpResponse);
+
+        /* test */
+        assertThat(removedRequest).isNotNull();
+        verify(httpResponse, times(2)).addCookie(cookieCaptor.capture());
+        Cookie removedCookie = cookieCaptor.getValue();
+        assertThat(removedCookie.getMaxAge()).isEqualTo(0);
+        assertThat(removedCookie.getName()).isEqualTo("SECHUB_OAUTH2_AUTHORIZATION_REQUEST");
     }
 
     @Test
@@ -88,10 +123,7 @@ class StatelessAuthorizationRequestRepositoryTest {
     @Test
     void serialize_authorization_request_handles_grant_type_field() throws Exception {
         /* prepare */
-        OAuth2AuthorizationRequest request = OAuth2AuthorizationRequest.authorizationCode().authorizationUri("https://auth.example.com").clientId("client-id")
-                .redirectUri("https://redirect.example.com").scopes(Set.of("openid", "profile")).state("state123")
-                .additionalParameters(Map.of("customParam", "customValue")).authorizationRequestUri("https://auth.example.com")
-                .attributes(Map.of("key1", "value1")).build();
+        OAuth2AuthorizationRequest request = buildOAuth2AuthorizationRequest();
 
         // get original json from OAuth2AuthorizationRequest
         ObjectMapper mapper = new ObjectMapper();
@@ -101,10 +133,26 @@ class StatelessAuthorizationRequestRepositoryTest {
         String json = repositoryToTest.serializeAuthorizationRequest(request);
 
         /* test */
+        assertThat(json).isNotEqualTo(originalJson);
         assertThat(json).contains("\"authorizationGrantType\":{\"value\":\"authorization_code\"}");
         assertThat(json).doesNotContain("\"grantType\"");
-        assertThat(json).isNotEqualTo(originalJson);
         assertThat(originalJson).contains("\"grantType\":{\"value\":\"authorization_code\"}");
         assertThat(originalJson).doesNotContain("\"authorizationGrantType\"");
+    }
+
+    private static OAuth2AuthorizationRequest buildOAuth2AuthorizationRequest() {
+        /* @formatter:off */
+        return OAuth2AuthorizationRequest
+                .authorizationCode()
+                .authorizationUri("https://auth.example.com")
+                .clientId("client-id")
+                .redirectUri("https://redirect.example.com")
+                .scopes(Set.of("openid", "profile"))
+                .state("state123")
+                .additionalParameters(Map.of("customParam", "customValue"))
+                .authorizationRequestUri("https://auth.example.com")
+                .attributes(Map.of("key1", "value1"))
+                .build();
+        /* @formatter:on */
     }
 }
