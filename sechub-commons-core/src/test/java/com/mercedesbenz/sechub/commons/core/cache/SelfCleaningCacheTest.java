@@ -144,7 +144,8 @@ class SelfCleaningCacheTest {
         /* prepare */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
-        String key = UUID.randomUUID().toString();;
+        String key = UUID.randomUUID().toString();
+        ;
         String value = "value";
         Duration duration = Duration.ofSeconds(1);
         inMemoryCacheToTest.put(key, value, duration);
@@ -161,7 +162,8 @@ class SelfCleaningCacheTest {
         /* prepare */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
-        String key = UUID.randomUUID().toString();;
+        String key = UUID.randomUUID().toString();
+        ;
         String oldValue = "old value";
         Duration duration = Duration.ofSeconds(1);
         inMemoryCacheToTest.put(key, oldValue, duration);
@@ -226,7 +228,8 @@ class SelfCleaningCacheTest {
         /* the cache clear job will run right away (point in time = 0s) */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
-        String key = UUID.randomUUID().toString();;
+        String key = UUID.randomUUID().toString();
+        ;
         String value = "value";
         Duration cacheDataDuration = Duration.ofMillis(100);
         inMemoryCacheToTest.put(key, value, cacheDataDuration);
@@ -253,7 +256,8 @@ class SelfCleaningCacheTest {
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
-        String key = UUID.randomUUID().toString();;
+        String key = UUID.randomUUID().toString();
+        ;
         String value = "value";
         /* the cache is valid for 200 millis */
         Duration cacheDataDuration = Duration.ofMillis(200);
