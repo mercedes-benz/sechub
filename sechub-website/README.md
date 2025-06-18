@@ -27,6 +27,17 @@ Build the application for production:
 npm run build
 ```
 
+### Workaround for local preview:
+
+If you want to test the website in production mode, please modify the `nuxt.config.ts` and adjust this line:
+```ts:
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub/';
+```
+to:
+```ts
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '';
+```
+
 Then you can build the application and run the production preview server:
 
 ```bash
