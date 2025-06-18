@@ -239,6 +239,7 @@ class SelfCleaningCacheTest {
 
         /* @formatter:off */
         Awaitility.await()
+                .pollInSameThread()
                 /*
                     Given a cache data duration of 100 milliseconds, the cache data should expire shortly after 100 milliseconds
                     including a small buffer for program execution.
@@ -275,6 +276,7 @@ class SelfCleaningCacheTest {
 
         /* assert that the cache data is still present right before it's expiration */
         Awaitility.await()
+                .pollInSameThread()
                 .pollDelay(pollDelay)
                 .pollInterval(pollInterval)
                 .atMost(timeout)
@@ -282,6 +284,7 @@ class SelfCleaningCacheTest {
 
         /* after the cache data has expired, it should be removed */
         Awaitility.await()
+                .pollInSameThread()
                 .pollDelay(programExecutionBuffer)
                 .pollInterval(pollInterval)
                 .atMost(timeout)
