@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -214,7 +213,7 @@ class SelfCleaningCacheTest {
     }
 
     @Test
-    void clearCache_removes_cache_data_after_is_has_expired() {
+    void clearCache_removes_cache_data_after_is_has_expired() throws InterruptedException {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         /* the cache clear job will run right away (point in time = 0s) */
@@ -223,23 +222,15 @@ class SelfCleaningCacheTest {
         String key = UUID.randomUUID().toString();
         String value = "value";
         Duration cacheDataDuration = Duration.ofMillis(100);
+        Duration programExecutionBuffer = Duration.ofMillis(10);
         inMemoryCacheToTest.put(key, value, cacheDataDuration);
-        Duration timeout = Duration.ofMillis(300);
 
         /* execute & test */
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
-        /* @formatter:off */
-        Awaitility.await()
-                /*
-                    Given a cache data duration of 100 milliseconds, the cache data should expire shortly after 100 milliseconds
-                    including a small buffer for program execution.
-                 */
-                .pollDelay(cacheDataDuration)
-                .pollInterval(Duration.ofMillis(10))
-                .atMost(timeout)
-                .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isEmpty());
-        /* @formatter:on */
+        /* Await until the cache data is removed */
+        Thread.sleep(cacheDataDuration.toMillis() + programExecutionBuffer.toMillis());
+        assertThat(inMemoryCacheToTest.get(key)).isEmpty();
     }
 
     @Test
@@ -258,8 +249,6 @@ class SelfCleaningCacheTest {
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
         Duration programExecutionBuffer = Duration.ofMillis(30);
-        Duration pollInterval = Duration.ofMillis(10);
-        Duration timeout = Duration.ofMillis(500);
 
         /* @formatter:off */
 
@@ -268,10 +257,8 @@ class SelfCleaningCacheTest {
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
         /* after the cache data has expired, it should be removed */
-        Awaitility.await()
-                .pollInterval(pollInterval)
-                .atMost(timeout)
-                .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isEmpty());
+        Thread.sleep(programExecutionBuffer.toMillis());
+        assertThat(inMemoryCacheToTest.get(key)).isEmpty();
 
         /* @formatter:on */
     }
