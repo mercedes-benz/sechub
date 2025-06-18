@@ -31,7 +31,7 @@ npm run build
 
 If you want to test the website in production mode, please modify the `nuxt.config.ts` and adjust this line:
 ```ts:
-const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
+const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub/';
 ```
 to:
 ```ts

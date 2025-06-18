@@ -3,7 +3,6 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/vue/20/solid';
 
-const baseURL = process.env.NODE_ENV === 'development' ? '' : '/sechub';
 
 const documentationItems = [
   {
@@ -42,10 +41,6 @@ const documentationItems = [
 
 const items = [
   {
-    title: 'Documentation',
-    href: 'https://mercedes-benz.github.io/sechub/index-old.html'
-  },
-  {
     title: 'Downloads',
     href: '#download'
   },
@@ -61,12 +56,11 @@ const items = [
     <nav>
       <div class="relative z-50 mx-auto flex max-w-7xl justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div class="relative z-10 flex items-center gap-16">
-          <NuxtLink aria-label="Home" :to="`${baseURL}/`">
+          <NuxtLink aria-label="Home" :to="`/`">
             <img src="/logo.svg" class="h-12 w-10 object-contain" alt="SecHub Logo" />
           </NuxtLink>
 
           <div class="hidden items-center lg:flex lg:gap-10">
-            <!-- Unfortunately this currently only works in dev mode.
             <Menu as="div" class="relative inline-block">
               <div>
                 <MenuButton class="menu-item"> Documentation </MenuButton>
@@ -95,7 +89,7 @@ const items = [
                 </MenuItems>
               </transition>
             </Menu>
-            -->
+
             <NuxtLink
               v-for="item in items"
               :key="item.title"
