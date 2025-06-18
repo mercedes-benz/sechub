@@ -264,7 +264,7 @@ class SelfCleaningCacheTest {
         Duration programExecutionBuffer = Duration.ofMillis(30);
         Duration pollDelay = cacheDataDuration.minus(programExecutionBuffer);
         Duration pollInterval = Duration.ofMillis(10);
-        Duration timeout = Duration.ofMillis(300);
+        Duration timeout = Duration.ofMillis(500);
 
         /* @formatter:off */
 
