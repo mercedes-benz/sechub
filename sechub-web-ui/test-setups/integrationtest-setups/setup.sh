@@ -16,6 +16,7 @@ test_gosec_kics_and_gitleaks_project_name="test-gosec-kics-and-gitleaks"
 test_checkmarx_project_name="test-checkmarx"
 test_zap_project_name="test-zap"
 test_kics_project_name="test-kics"
+test_only_owned_name="test-owned-only"
 
 test_user1_name="web-ui-tester1"
 test_user1_email="web-ui-tester1@example.org"
@@ -32,6 +33,7 @@ $SECHUB_API_SCRIPT project_create $test_gosec_kics_and_gitleaks_project_name $SE
 $SECHUB_API_SCRIPT project_create $test_checkmarx_project_name $SECHUB_USERID
 $SECHUB_API_SCRIPT project_create $test_zap_project_name $SECHUB_USERID
 $SECHUB_API_SCRIPT project_create $test_kics_project_name $SECHUB_USERID
+$SECHUB_API_SCRIPT project_create $test_only_owned_name $SECHUB_USERID
 
 echo "- create test user: '$test_user1_name'"
 # Create and assign a new test user which gains access to test project
@@ -48,6 +50,12 @@ $SECHUB_API_SCRIPT project_assign_user $test_gosec_kics_and_gitleaks_project_nam
 $SECHUB_API_SCRIPT project_assign_user $test_zap_project_name $test_user1_name
 $SECHUB_API_SCRIPT project_assign_user $test_zap_test_kics_project_name $test_user1_name
 $SECHUB_API_SCRIPT project_assign_user $test_zap_test_kics_project_name $test_user2_name
+$SECHUB_API_SCRIPT project_assign_user $test_only_owned_name $test_user1_name
+$SECHUB_API_SCRIPT project_unassign_user $test_only_owned_name $SECHUB_USERID
+
+# Make your user to non-admin user (e.g. for owner-only ui - normally not necessary)
+# $SECHUB_API_SCRIPT superadmin_grant $test_user1_name
+# $SECHUB_API_SCRIPT superadmin_revoke $SECHUB_USERID
 
 echo "- setup project '$test_gosec_kics_and_gitleaks_project_name' for codescan with gosec mock, iac with kics and secret scan with gitleaks"
 # Create and assign a mocked executor, the result will always be RED

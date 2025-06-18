@@ -27,26 +27,28 @@
               icon="mdi-arrow-left"
               @click="router.go(-1)"
             />
-            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshRequestedByUser(currentRequestParameters)" />
+            <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_REFRESH')" icon="mdi-refresh" @click="refreshProjectData,fetchProjectJobs(currentRequestParameters)" />
           </template>
 
-          <!-- workaround: only admins and owner can see members, project settings should only be accessible by owner and admins -->
-          <v-btn v-if="projectData.assignedUsers" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
-          <v-btn v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+          <!-- to edit project settings user must be superadmin or owner -->
+          <v-btn v-if="user.superAdmin || projectData.isOwned" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
+          <!-- to scan user must be superadmin or project member, (non-owner can not see assigned users) -->
+          <v-btn v-if="user.superAdmin || !projectData.isOwned || isAssignedToProject()" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
         </v-toolbar>
 
         <ProjectSettingsDialog
           v-if="!loading"
           :project-data="projectData"
           :visible="settingsDialog"
-          @close="settingsDialog=false"
+          @close="settingsDialog=false,fetchProjectJobs(currentRequestParameters)"
           @project-changed="refreshProjectData"
         />
 
         <div v-if="(!jobs || jobs.length === 0 && !loading)">
           <v-list bg-color="background_paper" lines="two">
-            <v-list-item v-if="error" class="ma-5 background-color" rounded="lg">{{ $t('ERROR_FETCHING_DATA') }}</v-list-item>
-            <v-list-item v-else class="ma-5" rounded="lg">{{ $t('NO_JOBS_RUNNED') }}</v-list-item>
+            <v-list-item class="ma-5 background-color" color="layer_01" rounded="lg">
+              {{ getJobMessage }}
+            </v-list-item>
           </v-list>
         </div>
 
@@ -156,6 +158,7 @@
   import defaultClient from '@/services/defaultClient'
   import { useRoute, useRouter } from 'vue-router'
   import { useProjectStore } from '@/stores/projectStore'
+  import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import { formatDate, getTrafficLightClass } from '@/utils/projectUtils'
   import { useI18n } from 'vue-i18n'
   import {
@@ -182,6 +185,9 @@
       }
 
       const store = useProjectStore()
+      const userStore = useUserDetailInformationStore()
+      const user = userStore.getUserDetailInformation()
+
       const projectData = ref<ProjectData>({
         projectId: '',
         isOwned: false,
@@ -211,12 +217,33 @@
 
       const settingsDialog = ref(false)
 
-      async function refreshRequestedByUser (requestParameters: UserListsJobsForProjectRequest) {
-        fetchProjectJobs(requestParameters)
-        refreshProjectData()
+      const getJobMessage = computed(() => {
+        if (error.value) {
+          return t('ERROR_FETCHING_DATA')
+        } else if (jobs.value?.length === 0) {
+          if (projectData.value.isOwned && !isAssignedToProject() && !user.superAdmin) {
+            return t('NON_PROJECT_MEMBER')
+          } else {
+            return t('NO_JOBS_RUNNED')
+          }
+        }
+        return ''
+      })
+
+      function isAssignedToProject () {
+        return projectData.value.assignedUsers?.some(u => u.userId === user.userId)
       }
 
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
+        // if user is only the owner of a project (no member and no superadmin), he can not see jobs
+        if (!user.superAdmin && (projectData.value.isOwned && !isAssignedToProject())) {
+          // set everything empty
+          jobsObject.value = {}
+          jobs.value = []
+          loading.value = false
+          return
+        }
+
         try {
           jobsObject.value = await defaultClient.withOtherApi.userListsJobsForProject(requestParameters)
           jobs.value = jobsObject.value.content
@@ -339,7 +366,7 @@
       }
 
       async function refreshProjectData () {
-        // We know the new owner id, but not the new owner email address.
+        // We know the new user id, but not the new user email address.
         // Because of missing other REST API endpoints, we must reload all projects data
         await useFetchProjects()
 
@@ -368,12 +395,14 @@
 
       return {
         projectData,
+        user,
         router,
         jobsObject,
         jobs,
         loading,
         error,
         alert,
+        getJobMessage,
         currentRequestParameters,
         showProjectsDetails,
         fetchProjectJobs,
@@ -386,7 +415,7 @@
         settingsDialog,
         refreshProjectData,
         copyToClipboard,
-        refreshRequestedByUser,
+        isAssignedToProject,
       }
     },
 
