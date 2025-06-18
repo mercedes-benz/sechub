@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
- /*============================================================================
- * Build file for subproject
- *
- * Root build file: "${rootProject.projectDir}/build.gradle"
- * ============================================================================
- */
+/*============================================================================
+* Build file for subproject
+*
+* Root build file: "${rootProject.projectDir}/build.gradle"
+* ============================================================================
+*/
 plugins {
     id 'java'
     id 'java-library'
@@ -13,22 +13,22 @@ dependencies {
 
     /* why as API? because to provide all parts here to developer tools */
     api project(':sechub-testframework')
-    api project(':sechub-shared-kernel') 
+    api project(':sechub-shared-kernel')
     api project(':sechub-scan-product-pds') // we want configuration entries available
     api project(':sechub-commons-pds')
     api library.springboot_starter_mail // to have easier access to email parts
-    
+
     api project(':sechub-adapter') // we reuse trustall approach from adapters
     api project(':sechub-adapter-pds')
-    api project(':sechub-administration') 
+    api project(':sechub-administration')
     api project(':sechub-scan') // we add this to have access to FullScanData
-    
+
     api project(':sechub-wrapper-checkmarx') // we have access to the parameter constants..
-    
+
     api library.junit4
 
     api library.apache_commons_lang3
-    
+
     implementation spring_boot_dependency.junit_jupiter
     implementation spring_boot_dependency.mockito_core
     implementation spring_boot_dependency.assertj_core
@@ -50,52 +50,52 @@ File tempFolder = new File("${project.projectDir}/build/tmp/sharedvolume-${nanoT
 def tempDirPath = tempFolder.toPath()
 
 
-task cleanLogFiles(type: Delete){
-       delete "${project.projectDir}/integrationtest-*.log" 
+task cleanLogFiles(type: Delete) {
+    delete "${project.projectDir}/integrationtest-*.log"
 }
 tasks.clean.dependsOn(tasks.cleanLogFiles)
 
 // configures integration test shared volume
 task configureIntTestSharedVolume {
     doFirst {
-            // at this point we create the temp directory structure for our integration tests
-            println (">> CREATE temp dir: $tempDirPath")
-            Files.createDirectories(tempDirPath)
-   }
+        // at this point we create the temp directory structure for our integration tests
+        println(">> CREATE temp dir: $tempDirPath")
+        Files.createDirectories(tempDirPath)
+    }
 }
 
-task configureIntegrationTestServer(dependsOn: configureIntTestSharedVolume){
-    def integrationTestServerPortProperty="sechub.integrationtest.serverport";
-    if ( project.hasProperty(integrationTestServerPortProperty)){
+task configureIntegrationTestServer(dependsOn: configureIntTestSharedVolume) {
+    def integrationTestServerPortProperty = "sechub.integrationtest.serverport";
+    if (project.hasProperty(integrationTestServerPortProperty)) {
         integrationTestServerPortValue = project.getProperty(integrationTestServerPortProperty)
     }
 }
 
-task configureIntegrationTestPDS(dependsOn: configureIntTestSharedVolume){
-    def integrationTestPDSPortProperty="sechub.integrationtest.pdsport";
-    if ( project.hasProperty(integrationTestPDSPortProperty)){
+task configureIntegrationTestPDS(dependsOn: configureIntTestSharedVolume) {
+    def integrationTestPDSPortProperty = "sechub.integrationtest.pdsport";
+    if (project.hasProperty(integrationTestPDSPortProperty)) {
         integrationTestPDSPortValue = project.getProperty(integrationTestPDSPortProperty)
     }
 }
 
-task waitForStop(dependsOn: [configureIntegrationTestServer, configureIntegrationTestPDS]){
-    doLast{
-        new IntegrationTestServerScriptAccess().waitForStop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
-        new IntegrationTestPDSScriptAccess().waitForStop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
+task waitForStop(dependsOn: [configureIntegrationTestServer, configureIntegrationTestPDS]) {
+    doLast {
+        new IntegrationTestServerScriptAccess().waitForStop(new File("${project.projectDir}"), "$integrationTestServerPortValue")
+        new IntegrationTestPDSScriptAccess().waitForStop(new File("${project.projectDir}"), "$integrationTestPDSPortValue")
     }
 
 }
 
-task stopOldIntegrationTestServer(dependsOn: configureIntegrationTestServer){
-    doLast{
-        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+task stopOldIntegrationTestServer(dependsOn: configureIntegrationTestServer) {
+    doLast {
+        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"), "$integrationTestServerPortValue")
     }
 
 }
 
-task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS){
-    doLast{
-        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
+task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS) {
+    doLast {
+        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"), "$integrationTestPDSPortValue")
     }
 
 }
@@ -103,14 +103,14 @@ task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS){
 /** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
-task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
+task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer) {
     group 'sechub'
 
     description 'Starts an integration test server - if already a server is running we will wait until timeout (10 minutes). ' +
-                'When timeout build fails but "zombie server" will be stopped too!'
-    doLast{
+            'When timeout build fails but "zombie server" will be stopped too!'
+    doLast {
         def pathString = tempDirPath.toString();
-        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), "$serverVersion","$integrationTestServerPortValue","$pathString")
+        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), "$serverVersion", "$integrationTestServerPortValue", "$pathString")
     }
 
 }
@@ -118,14 +118,14 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
 /** Starts integrationtestserver
  *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
  */
-task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
+task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS) {
     group 'sechub'
 
     description 'Starts an integration PDS server - if already a server is running we will wait until timout (10 minutes). ' +
-                'When timeout build fails but "zombie server" will be stopped too!'
-    doLast{
+            'When timeout build fails but "zombie server" will be stopped too!'
+    doLast {
         def pathString = tempDirPath.toString();
-        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), "$pdsVersion", "$integrationTestPDSPortValue","$pathString")
+        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), "$pdsVersion", "$integrationTestPDSPortValue", "$pathString")
     }
 
 }
@@ -135,63 +135,65 @@ task cleanIntegrationTestData(type: Delete) {
     delete "${project.buildDir}/sechub/integrationtest"
 }
 
-task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS, cleanIntegrationTestData]){
-   
+task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS, cleanIntegrationTestData]) {
+
 }
 
-task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
-    doLast{
-        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer) {
+    doLast {
+        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"), "$integrationTestServerPortValue")
     }
 }
-task stopIntegrationTestPDS(dependsOn: configureIntegrationTestServer){
-    doLast{
-        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
+task stopIntegrationTestPDS(dependsOn: configureIntegrationTestServer) {
+    doLast {
+        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"), "$integrationTestPDSPortValue")
     }
 }
 
 // Finalization part
-task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopIntegrationTestPDS]){
+task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopIntegrationTestPDS]) {
 
-    doLast{
-         def pathString = tempDirPath.toString();
-         println (">> CLEANUP temp dir: $pathString")
-         new IntegrationTestServerScriptAccess().deleteTmpFolder(new File("${project.projectDir}"),"$pathString")
+    doLast {
+        def pathString = tempDirPath.toString();
+        println(">> CLEANUP temp dir: $pathString")
+        new IntegrationTestServerScriptAccess().deleteTmpFolder(new File("${project.projectDir}"), "$pathString")
     }
 
 }
 
 task cleanIntegrationTest(type: Delete) {
-  delete "${project.buildDir}/test-results", "${project.buildDir}/reports/tests", "${project.buildDir}/sechub-testreports"
+    delete "${project.buildDir}/test-results", "${project.buildDir}/reports/tests", "${project.buildDir}/sechub-testreports"
 }
 
 /**
  * Own task for integration tests.
- 
+
  * When tests are executed before in CI/CD, the integration
  * tests are not execued by gradle when no gradle property 'sechub.integrationtest.serverport' is set
  * This means we have no longer problems with duplicated test results and it is not necessary to cleanup something. 
  */
 task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
-   group 'sechub'
-   description 'Starts integration test server, execute tests and automatically stops server after done or failed'
-   // integration tests seems to be very often  "up-to-date"
-   // but we want them always to be executed, so next line...
-   outputs.upToDateWhen { false }
-   
-   useJUnitPlatform() // we must enable this to execute Junit5 as well - even when already defined for task "test"
-   
-   // we must set the gradle properties as system properties, so available inside test framework
-   systemProperties groovyPropertiesMap(['sechub.integrationtest.serverport', 'sechub.integrationtest.pdsport'])
-   
-   /*
-    *  We must set the system property here - gradle does fork
-    * the jvm on testing and does not add system properties of calling automatically so we set
-    * integration test properties here
-    */
-   systemProperty "sechub.integrationtest.running", "true"
-   
-   finalizedBy "stopIntegrationTestInstances"
+    maxParallelForks = 1
+
+    group 'sechub'
+    description 'Starts integration test server, execute tests and automatically stops server after done or failed'
+    // integration tests seems to be very often  "up-to-date"
+    // but we want them always to be executed, so next line...
+    outputs.upToDateWhen { false }
+
+    useJUnitPlatform() // we must enable this to execute Junit5 as well - even when already defined for task "test"
+
+    // we must set the gradle properties as system properties, so available inside test framework
+    systemProperties groovyPropertiesMap(['sechub.integrationtest.serverport', 'sechub.integrationtest.pdsport'])
+
+    /*
+     *  We must set the system property here - gradle does fork
+     * the jvm on testing and does not add system properties of calling automatically so we set
+     * integration test properties here
+     */
+    systemProperty "sechub.integrationtest.running", "true"
+
+    finalizedBy "stopIntegrationTestInstances"
 
 }
 
@@ -200,69 +202,69 @@ task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
  * Unfortunately this has blocked always when using exec in combination (server runs) - even when using "&" option.
  * So this class was created to use just the java process builder.
  */
-class IntegrationTestScriptAccess extends CmdExecutor{
-       private String scriptName;
-       
-       public IntegrationTestScriptAccess(String scriptName){
-            this.scriptName=scriptName;
-       }
+class IntegrationTestScriptAccess extends CmdExecutor {
+    private String scriptName;
 
-       public void waitForStop(File workingDir, String port) throws Exception{
-            executeScript("waitForStop",workingDir,null,-1,port,"")
-       }
-       
-       public void deleteTmpFolder(File workingDir, String pathToDelete){
-            executeScript("deleteTmpFolder",workingDir,null,-1,"",pathToDelete)
-       }
+    public IntegrationTestScriptAccess(String scriptName) {
+        this.scriptName = scriptName;
+    }
 
-       public void stop(File workingDir,String port) throws Exception{
-            executeScript("stop",workingDir,null,60,port,"")
-       }
+    public void waitForStop(File workingDir, String port) throws Exception {
+        executeScript("waitForStop", workingDir, null, -1, port, "")
+    }
 
-       public void start(File workingDir, String useVersion, String port, String sharedVolumeBaseDir) throws Exception{
-            executeScript("start",workingDir,useVersion,300,port, sharedVolumeBaseDir); /* max 5 minutes */
-       }
-       
-       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds, String port, String sharedVolumeBaseDir) throws Exception{
-          CmdExecutor exec = new CmdExecutor();
-          exec.setTimeOutInSeconds(timeOutInSeconds);
-          
-          if (OSUtil.isWindows()){
-             exec.getCommand().add("cmd");
-             exec.getCommand().add("/c");
-             exec.getCommand().add(scriptName+".bat");
-          }else{
-             exec.getCommand().add("./"+scriptName+".sh");
-          }
-          exec.getCommand().add(command);
-          
-          if (command.equals("deleteTmpFolder")){
-             exec.getCommand().add("$sharedVolumeBaseDir");
-             
-          }else{
-          
-              if (command.equals("start")){
-                 exec.getCommand().add("$useVersion");
-              }
+    public void deleteTmpFolder(File workingDir, String pathToDelete) {
+        executeScript("deleteTmpFolder", workingDir, null, -1, "", pathToDelete)
+    }
 
-              exec.getCommand().add("$port");
-              exec.getCommand().add("$sharedVolumeBaseDir");
-              
-          }
-          exec.execute(workingDir)
+    public void stop(File workingDir, String port) throws Exception {
+        executeScript("stop", workingDir, null, 60, port, "")
+    }
+
+    public void start(File workingDir, String useVersion, String port, String sharedVolumeBaseDir) throws Exception {
+        executeScript("start", workingDir, useVersion, 300, port, sharedVolumeBaseDir); /* max 5 minutes */
+    }
+
+    private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds, String port, String sharedVolumeBaseDir) throws Exception {
+        CmdExecutor exec = new CmdExecutor();
+        exec.setTimeOutInSeconds(timeOutInSeconds);
+
+        if (OSUtil.isWindows()) {
+            exec.getCommand().add("cmd");
+            exec.getCommand().add("/c");
+            exec.getCommand().add(scriptName + ".bat");
+        } else {
+            exec.getCommand().add("./" + scriptName + ".sh");
         }
+        exec.getCommand().add(command);
+
+        if (command.equals("deleteTmpFolder")) {
+            exec.getCommand().add("$sharedVolumeBaseDir");
+
+        } else {
+
+            if (command.equals("start")) {
+                exec.getCommand().add("$useVersion");
+            }
+
+            exec.getCommand().add("$port");
+            exec.getCommand().add("$sharedVolumeBaseDir");
+
+        }
+        exec.execute(workingDir)
+    }
 
 
 }
 
-class IntegrationTestServerScriptAccess extends IntegrationTestScriptAccess{
-    public IntegrationTestServerScriptAccess(){
+class IntegrationTestServerScriptAccess extends IntegrationTestScriptAccess {
+    public IntegrationTestServerScriptAccess() {
         super("integrationtest-server");
     }
 }
 
-class IntegrationTestPDSScriptAccess extends IntegrationTestScriptAccess{
-    public IntegrationTestPDSScriptAccess(){
+class IntegrationTestPDSScriptAccess extends IntegrationTestScriptAccess {
+    public IntegrationTestPDSScriptAccess() {
         super("integrationtest-pds");
     }
 }

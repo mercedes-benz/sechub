@@ -98,7 +98,13 @@ subprojects{
         
         // add a testlistener to all tasks of type Test
         tasks.withType(Test) {
-        
+
+            /* The maximum number of test processes to start in parallel */
+            maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
+            reports.html.required = false
+            reports.junitXml.required = false
+
 			/* In case that no explicit integration test execution is defined, we skip always these tests.
 			 * This prevents unnecessary junit results in report (skipped) but also problems of mutiple test results 
 			 * for same Test classes when integration task is executed afterwards

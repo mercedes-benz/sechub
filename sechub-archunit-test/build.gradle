@@ -11,10 +11,10 @@ projectType.archUnitProjects.each { Project project ->
     evaluationDependsOn(project.path)
 }
 
-// Define a task dependency to ensure all tests are run before ArchUnit tests
+/* Define a task dependency to ensure all ArchUnit classes are built before running tests */
 tasks.named('test') {
     projectType.archUnitProjects.each { Project project ->
-        dependsOn "${project.path}:test"
+        dependsOn "${project.path}:classes"
     }
 }
 
