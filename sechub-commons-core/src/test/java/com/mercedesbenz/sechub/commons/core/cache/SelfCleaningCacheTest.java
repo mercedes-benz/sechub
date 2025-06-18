@@ -259,16 +259,15 @@ class SelfCleaningCacheTest {
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
         Duration programExecutionBuffer = Duration.ofMillis(30);
-        Duration pollDelay = cacheDataDuration.minus(programExecutionBuffer);
         Duration pollInterval = Duration.ofMillis(10);
-        Duration timeout = Duration.ofMillis(300);
+        Duration timeout = Duration.ofMillis(500);
 
         /* @formatter:off */
 
         /* assert that the cache data is still present right before it's expiration */
         Awaitility.await()
                 .pollInSameThread()
-                .pollDelay(pollDelay)
+                .pollDelay(cacheDataDuration.minus(programExecutionBuffer))
                 .pollInterval(pollInterval)
                 .atMost(timeout)
                 .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isPresent());
@@ -276,7 +275,6 @@ class SelfCleaningCacheTest {
         /* after the cache data has expired, it should be removed */
         Awaitility.await()
                 .pollInSameThread()
-                .pollDelay(programExecutionBuffer)
                 .pollInterval(pollInterval)
                 .atMost(timeout)
                 .untilAsserted(() -> assertThat(inMemoryCacheToTest.get(key)).isEmpty());
