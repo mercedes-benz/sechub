@@ -162,6 +162,10 @@
         if (metaData.summary?.secretScan) {
           scanTypeMap.set('secretscan', metaData.summary.secretScan)
         }
+
+        if (metaData.summary?.iacScan) {
+          scanTypeMap.set('iacscan', metaData.summary.iacScan)
+        }
       }
 
       function routeTo (route: string) {
