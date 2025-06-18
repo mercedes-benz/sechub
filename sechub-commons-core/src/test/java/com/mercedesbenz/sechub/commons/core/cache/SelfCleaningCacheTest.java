@@ -250,17 +250,17 @@ class SelfCleaningCacheTest {
 
         Duration programExecutionBuffer = Duration.ofMillis(30);
 
-        /* @formatter:off */
-
         /* assert that the cache data is still present right before it's expiration */
         Thread.sleep(cacheDataDuration.toMillis() - programExecutionBuffer.toMillis());
         assertThat(inMemoryCacheToTest.get(key)).isPresent();
 
         /* after the cache data has expired, it should be removed */
-        Thread.sleep(programExecutionBuffer.toMillis());
+        /*
+         * wait a bit longer than the cache data duration to ensure the cache clear job
+         * has run
+         */
+        Thread.sleep(programExecutionBuffer.toMillis() * 2);
         assertThat(inMemoryCacheToTest.get(key)).isEmpty();
-
-        /* @formatter:on */
     }
 
     @Test
