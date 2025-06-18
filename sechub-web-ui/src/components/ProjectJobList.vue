@@ -33,7 +33,7 @@
           <!-- to edit project settings user must be superadmin or owner -->
           <v-btn v-if="user.superAdmin || projectData.isOwned" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_SETTINGS')" icon="mdi-pencil" @click="settingsDialog=true" />
           <!-- to scan user must be superadmin or project member, (non-owner can not see assigned users) -->
-          <v-btn v-if="user.superAdmin || !projectData.isOwned || projectData.assignedUsers?.some(u => u.userId === user.userId)" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
+          <v-btn v-if="user.superAdmin || !projectData.isOwned || isAssignedToProject()" v-tooltip="$t('PROJECT_DETAILS_TOOLTIP_NEW_SCAN')" icon="mdi-plus" @click="openNewScanPage()" />
         </v-toolbar>
 
         <ProjectSettingsDialog
@@ -221,7 +221,7 @@
         if (error.value) {
           return t('ERROR_FETCHING_DATA')
         } else if (jobs.value?.length === 0) {
-          if (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId) && !user.superAdmin) {
+          if (projectData.value.isOwned && !isAssignedToProject() && !user.superAdmin) {
             return t('NON_PROJECT_MEMBER')
           } else {
             return t('NO_JOBS_RUNNED')
@@ -230,9 +230,13 @@
         return ''
       })
 
+      function isAssignedToProject () {
+        return projectData.value.assignedUsers?.some(u => u.userId === user.userId)
+      }
+
       async function fetchProjectJobs (requestParameters: UserListsJobsForProjectRequest) {
         // if user is only the owner of a project (no member and no superadmin), he can not see jobs
-        if (!user.superAdmin && (projectData.value.isOwned && !projectData.value.assignedUsers?.some(u => u.userId === user.userId))) {
+        if (!user.superAdmin && (projectData.value.isOwned && !isAssignedToProject())) {
           // set everything empty
           jobsObject.value = {}
           jobs.value = []
@@ -411,6 +415,7 @@
         settingsDialog,
         refreshProjectData,
         copyToClipboard,
+        isAssignedToProject,
       }
     },
 
