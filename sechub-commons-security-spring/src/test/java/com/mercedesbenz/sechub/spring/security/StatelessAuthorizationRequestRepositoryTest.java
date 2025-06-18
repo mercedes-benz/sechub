@@ -4,7 +4,9 @@ package com.mercedesbenz.sechub.spring.security;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +25,9 @@ class StatelessAuthorizationRequestRepositoryTest {
 
     private static final Duration COOKIE_AGE = Duration.ofMinutes(1);
     private final static String COOKIE_NAME = "SECHUB_OAUTH2_AUTHORIZATION_REQUEST";
+    private final static String SERIALIZED_REQUEST = "{\"authorizationUri\":\"https://auth.example.com\",\"responseType\":{\"value\":\"code\"},\"clientId\":\"client-id\",\"redirectUri\":\"https://redirect.example.com\",\"scopes\":[\"openid\",\"profile\"],\"state\":\"state123\",\"additionalParameters\":{\"customParam\":\"customValue\"},\"authorizationRequestUri\":\"https://auth.example.com\",\"attributes\":{\"key1\":\"value1\"},\"authorizationGrantType\":{\"value\":\"authorization_code\"}}";
+    private final static String SERIALIZED_REQUEST_ENCRYPTED = "encryptedRequest";
+    private final static String SERIALIZED_REQUEST_ENCODED = Base64.getEncoder().encodeToString(SERIALIZED_REQUEST_ENCRYPTED.getBytes(StandardCharsets.UTF_8));
     private AES256Encryption aes256Encryption;
     private StatelessAuthorizationRequestRepository repositoryToTest;
     private HttpServletRequest httpRequest;
@@ -39,8 +44,8 @@ class StatelessAuthorizationRequestRepositoryTest {
 
         // Mock the AES256Encryption methods by turning strings into byte arrays and
         // byte arrays back into strings
-        when(aes256Encryption.encrypt(anyString())).thenAnswer(inv -> inv.getArgument(0).toString().getBytes());
-        when(aes256Encryption.decrypt(any(byte[].class))).thenAnswer(inv -> new String((byte[]) inv.getArgument(0)));
+        when(aes256Encryption.encrypt(SERIALIZED_REQUEST)).thenReturn(SERIALIZED_REQUEST_ENCRYPTED.getBytes());
+        when(aes256Encryption.decrypt(SERIALIZED_REQUEST_ENCRYPTED.getBytes())).thenReturn(SERIALIZED_REQUEST);
     }
 
     @Test
@@ -57,6 +62,7 @@ class StatelessAuthorizationRequestRepositoryTest {
         Cookie cookie = cookieCaptor.getValue();
         assertThat(cookie.getMaxAge()).isEqualTo(COOKIE_AGE.getSeconds());
         assertThat(cookie.getName()).isEqualTo(COOKIE_NAME);
+        assertThat(cookie.getValue()).isEqualTo(SERIALIZED_REQUEST_ENCODED);
         assertThat(cookie.getPath()).isEqualTo("/");
 
         verify(aes256Encryption).encrypt(anyString());
@@ -77,7 +83,7 @@ class StatelessAuthorizationRequestRepositoryTest {
         OAuth2AuthorizationRequest request = repositoryToTest.loadAuthorizationRequest(httpRequest);
 
         /* test */
-        verify(aes256Encryption).decrypt(any(byte[].class));
+        verify(aes256Encryption).decrypt(SERIALIZED_REQUEST_ENCRYPTED.getBytes());
 
         assertThat(request).isNotNull();
         assertThat(request.getAuthorizationUri()).isEqualTo(expected.getAuthorizationUri());
