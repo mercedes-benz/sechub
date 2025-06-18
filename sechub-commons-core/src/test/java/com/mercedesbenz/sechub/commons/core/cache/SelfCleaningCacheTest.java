@@ -32,8 +32,8 @@ class SelfCleaningCacheTest {
     @SuppressWarnings("rawtypes")
     private static final ScheduledFuture scheduledFuture = mock();
     private static final ApplicationShutdownHandler applicationShutdownHandler = mock();
-
     private static final CryptoAccessProvider<String> cryptoAccessProvider = mock();
+    private static final TestCachePersistence testCachePersistence = new TestCachePersistence();
 
     @SuppressWarnings("unchecked")
     @BeforeEach
@@ -47,7 +47,6 @@ class SelfCleaningCacheTest {
     void construct_with_custom_cache_clear_job_period() {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofSeconds(1);
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -58,9 +57,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void construct_with_null_scheduled_executor_service_throws_exception() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* test */
         /* @formatter:off */
         assertThatThrownBy(() -> new SelfCleaningCache<>(TEST_CACHE_NAME,testCachePersistence,TEST_CACHE_CLEAR_JOB_PERIOD, null, applicationShutdownHandler, cryptoAccessProvider ))
@@ -71,9 +67,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void construct_with_null_cache_clear_job_period_throws_exception() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* test */
         /* @formatter:off */
         assertThatThrownBy(() -> new SelfCleaningCache<>(TEST_CACHE_NAME,testCachePersistence,null, scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider))
@@ -84,9 +77,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void construct_with_null_application_shutdown_handler_throws_exception() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* test */
         /* @formatter:off */
         assertThatThrownBy(() -> new SelfCleaningCache<>(TEST_CACHE_NAME,testCachePersistence,TEST_CACHE_CLEAR_JOB_PERIOD, scheduledExecutorService, null, cryptoAccessProvider))
@@ -98,8 +88,6 @@ class SelfCleaningCacheTest {
     @Test
     void remove_key_removes_value_from_cache() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -118,8 +106,6 @@ class SelfCleaningCacheTest {
     @Test
     void get_returns_empty_optional_when_cache_does_not_contain_key() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -130,8 +116,6 @@ class SelfCleaningCacheTest {
     @Test
     void get_throws_null_pointer_exception_when_key_is_null() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -142,8 +126,6 @@ class SelfCleaningCacheTest {
     @Test
     void remove_throws_null_pointer_exception_when_key_is_null() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -154,7 +136,6 @@ class SelfCleaningCacheTest {
     @Test
     void get_returns_value_when_cache_contains_key() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
         String key = UUID.randomUUID().toString();
@@ -172,7 +153,6 @@ class SelfCleaningCacheTest {
     @Test
     void put_overrides_existing_cache_data_with_same_key() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
         String key = UUID.randomUUID().toString();
@@ -193,9 +173,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void put_throws_null_pointer_exception_when_key_is_null() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* test */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
@@ -210,9 +187,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void put_throws_null_pointer_exception_when_value_is_null() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* execute */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
@@ -227,9 +201,6 @@ class SelfCleaningCacheTest {
 
     @Test
     void put_throws_null_pointer_exception_when_duration_is_null() {
-        /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
-
         /* execute */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
@@ -246,7 +217,6 @@ class SelfCleaningCacheTest {
     void clearCache_removes_cache_data_after_is_has_expired() {
         /* prepare */
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         /* the cache clear job will run right away (point in time = 0s) */
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
@@ -276,12 +246,10 @@ class SelfCleaningCacheTest {
     @Test
     void clearCache_does_not_remove_cache_data_until_it_has_expired() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         Duration cacheClearJobPeriod = Duration.ofMillis(10);
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, cacheClearJobPeriod,
                 Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
         String key = UUID.randomUUID().toString();
-        ;
         String value = "value";
         /* the cache is valid for 200 millis */
         Duration cacheDataDuration = Duration.ofMillis(200);
@@ -319,7 +287,6 @@ class SelfCleaningCacheTest {
     @Test
     void close_cancels_cache_clear_job_and_shuts_down_scheduled_executor_service() {
         /* prepare */
-        TestCachePersistence testCachePersistence = new TestCachePersistence();
         SelfCleaningCache<String> inMemoryCacheToTest = new SelfCleaningCache<>(TEST_CACHE_NAME, testCachePersistence, TEST_CACHE_CLEAR_JOB_PERIOD,
                 scheduledExecutorService, applicationShutdownHandler, cryptoAccessProvider);
 
@@ -332,13 +299,9 @@ class SelfCleaningCacheTest {
         inOrder.verify(scheduledExecutorService).shutdownNow();
     }
 
-    private class TestCachePersistence implements CachePersistence<String> {
+    private static class TestCachePersistence implements CachePersistence<String> {
 
         private final Map<String, CacheData<String>> cacheMap = new ConcurrentHashMap<>();
-
-        public void clear() {
-            cacheMap.clear();
-        }
 
         @Override
         public void remove(String key) {
