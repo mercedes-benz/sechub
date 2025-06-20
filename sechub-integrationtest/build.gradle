@@ -173,8 +173,6 @@ task cleanIntegrationTest(type: Delete) {
  * This means we have no longer problems with duplicated test results and it is not necessary to cleanup something. 
  */
 task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
-    maxParallelForks = 1
-
     group 'sechub'
     description 'Starts integration test server, execute tests and automatically stops server after done or failed'
     // integration tests seems to be very often  "up-to-date"
