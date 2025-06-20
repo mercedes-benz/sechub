@@ -486,12 +486,18 @@ public abstract class AbstractSecurityConfiguration {
 		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
 				aes256Encryption, loginProperties.getRedirectUri(), minimumTokenValidity, expirationCalculator);
 
+		StatelessAuthorizationRequestRepository authorizationRequestRepository = new StatelessAuthorizationRequestRepository(aes256Encryption);
+
 		/* Enable OAuth2 */
-		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage(loginProperties.getLoginPage())
+		/* @formatter:off */
+		httpSecurity.oauth2Login(oauth2 -> oauth2
+				.loginPage(loginProperties.getLoginPage())
+				.authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig.authorizationRequestRepository(authorizationRequestRepository))
 				.tokenEndpoint(token -> token.accessTokenResponseClient(loginOAuth2AccessTokenClient))
 				.successHandler(authenticationSuccessHandler));
-	}
-	/* @formatter:on */
+		/* @formatter:on */
+    }
+    /* @formatter:on */
 
     private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
             SecHubSecurityProperties secHubSecurityProperties) throws Exception {

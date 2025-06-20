@@ -35,6 +35,7 @@ public class SecHubSecurityConfiguration extends AbstractSecurityConfiguration {
                 .requestMatchers(APIConstants.API_ANONYMOUS + "**").permitAll()
                 .requestMatchers(APIConstants.ERROR_PAGE).permitAll()
                 .requestMatchers(APIConstants.ACTUATOR + "**").permitAll()
+                .requestMatchers(APIConstants.STATIC_LOGIN + "/**").permitAll()
                 .requestMatchers(APIConstants.LOGOUT).authenticated()
                 .requestMatchers("/**").denyAll();
         /* @formatter:on */
