@@ -28,10 +28,10 @@ ext.buildContainsFailedTests=false
 *
 * The method can be used to convert from gradle properties to system properies
 * easily. For example: Inside test task definitions, you can simply call
-* 
+*
 * systemProperties groovyPropertiesMap(['key1','key2' ] )
 *
-* 
+*
 */
 ext.groovyPropertiesMap = { propertyNames ->
 
@@ -44,12 +44,12 @@ ext.groovyPropertiesMap = { propertyNames ->
         if (project.hasProperty(propertyName)){
             map.put(propertyName, project.getProperty(propertyName))
         }else{
-            map.put(propertyName,'')         
+            map.put(propertyName,'')
         }
-        
+
     }
 
-    return map                
+    return map
 }
 
 
@@ -58,7 +58,7 @@ subprojects{
     if (! projectType.javaProjects.contains(project)){
 		return;
     }
-    
+
     apply plugin: 'java'
     apply plugin: 'java-library'
 
@@ -71,47 +71,50 @@ subprojects{
     dependencies {
         // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
         testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.2'
-        testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
+        testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431
     }
-    
+
     test {
 
 	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
         ignoreFailures = true
-        
+
         /* enable junit5 support in gradle! some of our tests are now written in junit5*/
         useJUnitPlatform()
 
         // we must set the gradle properties as system properties, so available inside test framework.
-        systemProperties groovyPropertiesMap([ 
+        systemProperties groovyPropertiesMap([
             'sechub.test.wiremock.http_port',
             'sechub.test.wiremock.https_port',
-            'sechub.test.restdoc.https.port', 
+            'sechub.test.restdoc.https.port',
             'sechub.test.mvcmock.https.port',
             'sechub.test.s3mock.http.port',
             'sechub.test.s3mock.https.port' ])
-        
+
         systemProperty 'sechub.build.gradle', 'true' // we can use this to check for gradle build inside java tests
-        
+
         // add a collection to track failedTests
         ext.failedTests = []
-        
+
         // add a testlistener to all tasks of type Test
         tasks.withType(Test) {
 
-            /* The maximum number of test processes to start in parallel */
-            maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-
 			/* In case that no explicit integration test execution is defined, we skip always these tests.
-			 * This prevents unnecessary junit results in report (skipped) but also problems of mutiple test results 
+			 * This prevents unnecessary junit results in report (skipped) but also problems of mutiple test results
 			 * for same Test classes when integration task is executed afterwards
 			 */
 		    if (! name.equals('integrationtest')) { // do only exlude when not integrationtest task
 		        exclude '**/*IntTest.class'
-		    }else{
+
+                /* Run regular tests in parallel, by setting maxParallelForks to half of available processors */
+                maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+		    } else {
 		    	include '**/*IntTest.class' // in case of integration test we do only inspect these tests
+
+                /* Integration tests have to run in sequence */
+                maxParallelForks = 1
 		    }
-        
+
             afterTest { TestDescriptor descriptor, TestResult result ->
                 if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
                     buildContainsFailedTests=true
@@ -119,7 +122,7 @@ subprojects{
                 }
             }
         }
-        
+
         // print out tracked failed tests when the build has finished
         gradle.buildFinished {
             if(!failedTests.empty){
@@ -156,7 +159,7 @@ subprojects{
 		archives sourcesJar
 		archives javadocJar
 	}
-    
+
 }
 
 
