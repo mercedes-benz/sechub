@@ -171,9 +171,9 @@ task cleanIntegrationTest(type: Delete) {
  * tests are not execued by gradle when no gradle property 'sechub.integrationtest.serverport' is set
  * This means we have no longer problems with duplicated test results and it is not necessary to cleanup something. 
  */
-task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
+task integrationtest(type: Test) {
     group 'sechub'
-    description 'Starts integration test server, execute tests and automatically stops server after done or failed'
+    description 'Execute Integration Tests'
     // integration tests seems to be very often  "up-to-date"
     // but we want them always to be executed, so next line...
     outputs.upToDateWhen { false }
@@ -189,8 +189,6 @@ task integrationtest(type: Test, dependsOn: [startIntegrationTestInstances]) {
      * integration test properties here
      */
     systemProperty "sechub.integrationtest.running", "true"
-
-    finalizedBy "stopIntegrationTestInstances"
 
 }
 
