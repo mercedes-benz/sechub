@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-sechub-user-roles]]
 There exist following set of roles in {sechub}:
 
