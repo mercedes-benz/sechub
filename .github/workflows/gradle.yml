@@ -87,13 +87,7 @@ jobs:
 
       # Integration test
       - name: Integration test
-        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances \
-          :sechub-integrationtest:integrationtest \
-          :sechub-systemtest:integrationtest \
-          :sechub-integrationtest:stopIntegrationTestInstances \
-          -Dsechub.build.stage=all \
-          --console=plain \
-          --no-parallel
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-integrationtest:integrationtest :sechub-systemtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain --no-parallel
 
       # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report
