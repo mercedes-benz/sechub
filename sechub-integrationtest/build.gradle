@@ -49,30 +49,6 @@ long nanoTime = System.nanoTime()
 File tempFolder = new File("${project.projectDir}/build/tmp/sharedvolume-${nanoTime}")
 def tempDirPath = tempFolder.toPath()
 
-tasks.register("runIntegrationTestFull") {
-    dependsOn(":sechub-integrationtest:startIntegrationTestInstances")
-
-    doLast {
-        // placeholder to enforce task order
-    }
-}
-
-tasks.named("runIntegrationTestFull") {
-    dependsOn(":sechub-integrationtest:integrationtest")
-    dependsOn(":sechub-systemtest:integrationtest")
-    dependsOn(":sechub-integrationtest:stopIntegrationTestInstances")
-}
-
-tasks.named(":sechub-integrationtest:integrationtest") {
-    mustRunAfter(":sechub-integrationtest:startIntegrationTestInstances")
-}
-tasks.named(":sechub-systemtest:integrationtest") {
-    mustRunAfter(":sechub-integrationtest:integrationtest")
-}
-tasks.named(":sechub-integrationtest:stopIntegrationTestInstances") {
-    mustRunAfter(":sechub-systemtest:integrationtest")
-}
-
 task cleanLogFiles(type: Delete) {
     delete "${project.projectDir}/integrationtest-*.log"
 }
