@@ -113,7 +113,6 @@ class MetaDataModelTest {
     void metadata_as_json_can_be_read_via_json_converter() {
         /* prepare */
         String json = "{\"metaData\":{\"key1\":\"1\",\"key2\":\"i-am-a-string\",\"key3\":\"true\"}}";
-
         /* execute */
         MetaDataModel result = JSONConverter.get().fromJSON(MetaDataModel.class, json);
 

@@ -1,0 +1,17 @@
+{
+  "apiVersion" : "1.0",
+  "serverId" : "example-server",
+  "products" : [ {
+    "id" : "PDS_TESTPRODUCT_ID",
+    "scanType" : "codeScan",
+    "path" : "./testproduct-codescan.sh",
+    "envWhitelist" : [ "SPECIAL_ENV_NAME" ],
+    "description" : "A description of the product",
+    "parameters" : {
+      "mandatory" : [ {
+        "key" : "testproduct.mandatory_parameter",
+        "description" : "A description for this mandatory parameter"
+      } ]
+    }
+  } ]
+}

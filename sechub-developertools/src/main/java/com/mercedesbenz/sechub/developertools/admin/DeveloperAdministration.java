@@ -320,6 +320,10 @@ public class DeveloperAdministration {
             return "PDS auto cleanup data has been changed";
         }
 
+        public String getJobMetaData(UUID jobUUID) {
+            return restHelper.getStringFromURL(pdsUrlBuilder.buildAdminFetchesJobMetaData(jobUUID));
+        }
+
     }
 
     public String acceptSignup(String userId) {

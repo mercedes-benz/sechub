@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailureText;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResult;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -43,7 +43,7 @@ public class PDSAdminJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "job/{jobUUID}/result", method = RequestMethod.GET)
-    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name="rest call",description = "an admin fetches result or failure text for job from db.", number=1))
+    @UseCaseAdminFetchesJobResult(@PDSStep(name="rest call",description = "an admin fetches result or failure text for job from db.", number=1))
     public String getJobResultOrFailureText(
             @PathVariable("jobUUID") UUID jobUUID
             ) {

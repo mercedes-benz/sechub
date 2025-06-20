@@ -79,18 +79,25 @@ workspace location can be defined
 
 [[section-pds-server-config-file]]
 === Server configuration file
-PDS reads configuration JSON file on startup.
+The {pds} reads a configuration JSON file on startup to configure the product delegation server 
+and the provided products.
 
-*Location*
+*Location* +
 
+Per default the file is `pds-config.json` in the folder were the PDS instance has been started.
+
+[NOTE]
+====
 With `-Dpds.config.file=...` or using environment variable `PDS_CONFIG_FILE`
-its is possible to set config file path ( when not defined fallback is `./pds-config.json`)
+its is possible to set a custom location file path. 
+
+In our container images, the path is defined as `/pds/pds-config.json`.
+
+====
 
 
-* `product-id` +
-     Must be *unique* for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it's not inside SERECO listed it must provide general sereco report format from #283.
-
-
+*Description* +
+Here an example configuration with explanations:
 [source,json]
 [[section-pds-server-example-config-file]]
 ----

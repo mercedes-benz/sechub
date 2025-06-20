@@ -273,7 +273,7 @@ public class UseCaseAsciiDocGenerator {
         if (!rolesAllowed.isEmpty()) {
             for (Iterator<String> ri = rolesAllowed.iterator(); ri.hasNext();) {
                 String role = ri.next();
-                sbx.append(role);
+                sbx.append("<<" + Role2UseCaseAsciiDocGenerator.createSectionId(role) + "," + role + ">>");
                 if (ri.hasNext()) {
                     sbx.append(", ");
                 }

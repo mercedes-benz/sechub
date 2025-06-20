@@ -28,7 +28,7 @@ public enum PDSUseCaseIdentifier {
     UC_ANONYMOUS_CHECK_ALIVE(8),
 
     /* result */
-    UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT(9),
+    UC_ADMIN_FETCHES_JOB_RESULT(9),
 
     /* configuration */
     UC_ADMIN_FETCHES_SERVER_CONFIGURATION(10),

@@ -1,0 +1,7 @@
+{
+  "secHubMessages" : [ {
+    "type" : "INFO",
+    "text" : "some information - e.g. from a PDS test product launcher script"
+  } ],
+  "type" : "sechubMessagesList"
+}

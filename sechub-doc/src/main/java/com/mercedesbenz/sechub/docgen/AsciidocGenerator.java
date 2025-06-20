@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.docgen.spring.SpringProfilesPlantumlGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SpringProfilesPlantumlGenerator.SpringProfileGenoConfig;
 import com.mercedesbenz.sechub.docgen.spring.SystemPropertiesDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SystemPropertiesJavaLaunchExampleGenerator;
+import com.mercedesbenz.sechub.docgen.usecase.Role2UseCaseAsciiDocGenerator;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseAsciiDocGenerator;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseModel;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModel;
@@ -59,6 +60,7 @@ public class AsciidocGenerator implements Generator {
     SystemPropertiesJavaLaunchExampleGenerator javaLaunchExampleGenerator = new SystemPropertiesJavaLaunchExampleGenerator();
     ScheduleDescriptionGenerator scheduleDescriptionGenerator = new ScheduleDescriptionGenerator();
     UseCaseRestDocModelAsciiDocGenerator useCaseRestDocModelAsciiDocGenerator = new UseCaseRestDocModelAsciiDocGenerator();
+    Role2UseCaseAsciiDocGenerator role2UseCaseAsciiDocGenerator = new Role2UseCaseAsciiDocGenerator();
     DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
 
     UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator;
@@ -144,7 +146,7 @@ public class AsciidocGenerator implements Generator {
 
         /* Parts necessary to have special integration tests run */
         executor.execute("messaging-files (needs integration tests)", () -> generateMessagingFiles(context));
-        executor.execute("usecase-files (needs integration tests)", () -> generateUseCaseFiles(context));
+        executor.execute("usecase-files", () -> generateUseCaseFiles(context));
 
         executor.execute("systemtest-doc-files (needs system integration tests)", () -> generateAndCopySystemTestsDocFiles(context));
 
@@ -357,6 +359,11 @@ public class AsciidocGenerator implements Generator {
         String usecaseRestDoc = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true, UseCaseIdentifier.values());
         File targetFile2 = new File(context.documentsGenFolder, "gen_uc_restdoc.adoc");
         writer.writeTextToFile(targetFile2, usecaseRestDoc);
+
+        File targetFile3 = new File(context.documentsGenFolder, "gen_role2usecases.adoc");
+        String role2Asciidoc = role2UseCaseAsciiDocGenerator.generateAsciidoc(model);
+        writer.writeTextToFile(targetFile3, role2Asciidoc);
+
     }
 
     private void generatePDSUseCaseFiles(GenContext context) throws IOException {
