@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +21,8 @@ import org.slf4j.LoggerFactory;
  */
 public class TestPortProvider {
 
-    private static final int DEFAULT_WIREMOCK_HTTP_PORT = 8180;
-    private static final int DEFAULT_WIREMOCK_HTTPS_PORT = 8143;
-
     private static final int DEFAULT_INTEGRATIONTEST_SERVER_PORT = 8443;
     private static final int DEFAULT_INTEGRATIONTEST_PDS_PORT = 8444;
-
-    private static final int DEFAULT_RESTDOC_HTTPS_PORT = 8081;
-    private static final int DEFAULT_MVC_MOCK_HTTPS_PORT = 8082;
 
     // "normal" tests
     private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
@@ -59,11 +57,11 @@ public class TestPortProvider {
     public static final TestPortProvider DEFAULT_INSTANCE = new TestPortProvider();
 
     TestPortProvider() {
-        wireMockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT, DEFAULT_WIREMOCK_HTTP_PORT);
-        wireMockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT, DEFAULT_WIREMOCK_HTTPS_PORT);
+        wireMockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT, findFreePort());
+        wireMockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT, findFreePort());
 
-        restDocPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT, DEFAULT_RESTDOC_HTTPS_PORT);
-        mvcMockPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT, DEFAULT_MVC_MOCK_HTTPS_PORT);
+        restDocPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT, findFreePort());
+        mvcMockPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT, findFreePort());
 
         integrationTestServerPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
         integrationTestPDSPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
@@ -104,6 +102,15 @@ public class TestPortProvider {
             return defaultValue;
         }
 
+    }
+
+    private static int findFreePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            socket.setReuseAddress(true);
+            return socket.getLocalPort();
+        } catch (IOException e) {
+            throw new TestAbortedException("Failed to find a free port", e);
+        }
     }
 
     public final int getWireMockTestHTTPPort() {

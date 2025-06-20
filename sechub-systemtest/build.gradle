@@ -33,8 +33,8 @@ dependencies {
  * Own task for integration tests.
  */
 task integrationtest(type: Test) {
-   description 'Starts integration test server, execute tests and automatically stops server after done or failed'
-   // integration tests seems to be very often  "up-to-date"
+    description 'Execute Integration Tests'
+    // integration tests seems to be very often  "up-to-date"
    // but we want them always to be executed, so next line...
    outputs.upToDateWhen { false }
    
