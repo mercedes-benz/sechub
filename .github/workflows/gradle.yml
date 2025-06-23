@@ -90,7 +90,10 @@ jobs:
         run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances -Dsechub.build.stage=all --console=plain
 
       - name: Run Integration Tests
-        run: ./gradlew :sechub-integrationtest:integrationtest :sechub-systemtest:integrationtest -Dsechub.build.stage=all --console=plain
+        run: ./gradlew :sechub-integrationtest:integrationtest -Dsechub.build.stage=all --console=plain
+
+      - name: Run System Tests
+        run: ./gradlew :sechub-systemtest:integrationtest -Dsechub.build.stage=all --console=plain
 
       # We use 'if: always()' to run a step even if a previous step failed
       - name: Stop Integration Test Servers
