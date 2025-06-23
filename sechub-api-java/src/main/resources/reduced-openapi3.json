@@ -993,19 +993,6 @@
                     "webScan": {
                         "type": "object",
                         "properties": {
-                            "maxScanDuration": {
-                                "type": "object",
-                                "properties": {
-                                    "duration": {
-                                        "type": "number",
-                                        "description": "Duration of the scan as integer"
-                                    },
-                                    "unit": {
-                                        "type": "string",
-                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
-                                    }
-                                }
-                            },
                             "headers": {
                                 "type": "array",
                                 "description": "List of HTTP headers. Can be used for authentication or anything else.",
@@ -1038,6 +1025,19 @@
                                             "type": "string",
                                             "description": "Value of the defined HTTP header. Either specify the header value directly here or reference a data section with 'use' e.g. if the value is to big, but never specify both."
                                         }
+                                    }
+                                }
+                            },
+                            "maxScanDuration": {
+                                "type": "object",
+                                "properties": {
+                                    "duration": {
+                                        "type": "number",
+                                        "description": "Duration of the scan as integer"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)"
                                     }
                                 }
                             },
@@ -1196,10 +1196,6 @@
                                         },
                                         "description": "basic login definition"
                                     },
-                                    "url": {
-                                        "type": "string",
-                                        "description": "Login URL"
-                                    },
                                     "verification": {
                                         "type": "object",
                                         "properties": {
@@ -1213,6 +1209,10 @@
                                             }
                                         },
                                         "description": "login verification definition"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "description": "Login URL"
                                     }
                                 },
                                 "description": "Webscan login definition"
@@ -1301,7 +1301,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@115d6979"
+                        "description": "The template type. Must be be defined when a new template is created. An update will ignore changes of this property because the type is immutable! Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@62418263"
                     }
                 }
             },
@@ -1404,7 +1404,7 @@
             "api-admin-encryption-rotate-638361826": {
                 "type": "object"
             },
-            "api-admin-template-templateId-23111581": {
+            "api-admin-template-templateId1361093240": {
                 "type": "object",
                 "properties": {
                     "variables": {
@@ -1451,7 +1451,7 @@
                     },
                     "type": {
                         "type": "string",
-                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@208c918d"
+                        "description": "The template type. Currently supported types are: [Lcom.mercedesbenz.sechub.commons.model.template.TemplateType;@2f397395"
                     }
                 }
             },
@@ -3387,7 +3387,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/api-admin-template-templateId-23111581"
+                                    "$ref": "#/components/schemas/api-admin-template-templateId1361093240"
                                 }
                             }
                         }
